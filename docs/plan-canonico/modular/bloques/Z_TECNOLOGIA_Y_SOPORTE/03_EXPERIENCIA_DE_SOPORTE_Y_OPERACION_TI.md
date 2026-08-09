@@ -4817,5 +4817,1422 @@ SIGUIENTE TAREA RESERVADA
 `TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos`
 
 
-### [ ] TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
+### ✅ TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación` — APROBADA
+**Tarea siguiente:** `TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia administrativa federada para gestionar aplicaciones y sus relaciones tecnológicas con proveedores, contratos, licencias, entitlements, asientos, uso, renovaciones, garantías y costos sin crear una fuente comercial, económica, patrimonial o de identidad paralela
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md`
+**Aplicación objetivo de coordinación:** VISO
+**Fuentes propietarias preservadas:** SHELL para identidad de aplicación y acceso; ORIGO para proveedor, compra y contrato; NUMERA para compromiso, gasto y costo; NEXO para activo físico y garantía; dominios TI para servicio, dependencia, uso técnico, soporte, cambio, observabilidad y recuperación
+**Artefactos producidos:** `TI-TECHNOLOGY-PORTFOLIO-UX-CONTRACT-001`; `TI-APPLICATION-COMMERCIAL-WORKSPACE-UX-CONTRACT-001`; `TI-RENEWAL-RIGHTSIZE-UX-CONTRACT-001`; `TI-TECHNOLOGY-COMMERCIAL-UX-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica aplicaciones, repositorios, ambientes, proveedores, contratos, compras, licencias, entitlements, asientos, cuentas, permisos, garantías, gastos, costos, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, integraciones, alertas, navegación desplegada ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar cómo una persona autorizada para administrar tecnología puede entender y conducir desde VISO el portafolio tecnológico de VENTO sin tener que reconstruir manualmente información dispersa entre aplicaciones, compras, proveedores, activos y hechos económicos, y sin convertir VISO en una segunda fuente de verdad.
+
+La experiencia deberá responder, para cualquier aplicación o capacidad tecnológica:
+
+```text
+¿QUÉ APLICACIÓN O SERVICIO ESTOY REVISANDO?
+¿QUÉ AMBIENTE, DEPENDENCIA Y PROVEEDOR PARTICIPAN?
+¿QUÉ ESTÁ DEMOSTRADO Y QUÉ SIGUE PENDIENTE DE EVIDENCIA?
+¿QUÉ CONTRATO, LICENCIA, ENTITLEMENT O ASIENTO APLICA?
+¿QUÉ USO REAL PUEDE DEMOSTRARSE Y PARA QUÉ PERIODO?
+¿QUÉ RENOVACIÓN O VENTANA CONTRACTUAL REQUIERE DECISIÓN?
+¿QUÉ GARANTÍA O SOPORTE CUBRE EL ELEMENTO CUANDO APLICA?
+¿QUÉ COSTO ESTÁ RECONCILIADO CON SU FUENTE ECONÓMICA?
+¿QUÉ CAPACIDAD EMPRESARIAL SE AFECTA SI SE REDUCE O RETIRA?
+¿QUÉ ACCIÓN PERTENECE A VISO Y CUÁL DEBE CONTINUAR EN SU FUENTE PROPIETARIA?
+```
+
+La tarea diseña una experiencia de coordinación, análisis y decisión. No diseña un ledger económico, un maestro paralelo de proveedores, un sistema alterno de compras, una nueva identidad de aplicaciones ni una consola de secretos.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se materializa una experiencia administrativa completa con el siguiente balance:
+
+| Elemento                                                     |                   Resultado |
+| ------------------------------------------------------------ | --------------------------: |
+| Aplicación de coordinación administrativa                    |                **1 — VISO** |
+| Aplicaciones canónicas preservadas                           |                **10 de 10** |
+| Familias externas técnicas heredadas                         |                  **5 de 5** |
+| Aplicaciones web con hosting aún no demostrado               |                  **7 de 7** |
+| Estados de licencia preservados                              |                  **7 de 7** |
+| Modelos normalizados de licencia o entitlement preservados   |                  **7 de 7** |
+| Resultados posibles de decisión de renovación preservados    |                  **7 de 7** |
+| Estados documentales de garantía preservados                 |                  **5 de 5** |
+| Modalidades descriptivas de costo tecnológico preservadas    |                  **9 de 9** |
+| Niveles de evidencia comercial presentados de forma separada |                  **6 de 6** |
+| Fuentes propietarias explícitamente diferenciadas            | **5 familias de autoridad** |
+| Cambios físicos                                              |                       **0** |
+| Requisitos de prueba nuevos o modificados                    |                       **0** |
+
+Se diseñan seis modos principales de trabajo dentro de la misma superficie administrativa:
+
+1. **Portafolio de aplicaciones**;
+2. **Proveedores y contratos**;
+3. **Licencias, entitlements y uso**;
+4. **Renovaciones y rightsizing**;
+5. **Garantías y soporte**;
+6. **Costos y conciliación**.
+
+Los seis modos son proyecciones coordinadas del mismo conjunto de relaciones. No crean seis catálogos independientes.
+
+---
+
+#### 3. Entradas y autoridades conservadas
+
+La tarea consume y preserva sin redefinir:
+
+- `TI-DOM-006`, incluidas las diez aplicaciones canónicas, los ambientes, las dependencias, las cinco familias externas observadas, los siete hostings no demostrados y la criticidad derivada por instancia;
+- `TI-DOM-012`, incluido el gobierno de proveedor, producto o plan, contrato, suscripción, licencia, entitlement, asiento, cuenta, garantía, renovación, uso y costo;
+- `TI-DOM-001`, especialmente `TI-SERVICE-005 — Aplicaciones, ambientes y proveedores tecnológicos` y `TI-SERVICE-010 — Licencias, garantías, contratos y costos tecnológicos`;
+- `TI-DOM-007` y `TI-UX-002` para soporte, caso tecnológico, prioridad, SLA interno y escalamiento;
+- `TI-DOM-009` y `TI-UX-004` para cualquier modificación tecnológica producida por cambio de plan, proveedor, capacidad, tenant, autenticación, ambiente o integración;
+- `TI-DOM-010` para señales y alertas de vencimiento, utilización, costo, proveedor y garantía cuando exista implementación autorizada;
+- `TI-DOM-011` para exportabilidad, recuperación y salida del proveedor;
+- `TI-UX-003` para mapa técnico, salud, dependencia y evidencia técnica de aplicaciones y servicios;
+- `TI-AUTH-001` a `TI-AUTH-004` para segregación, privilegio, configuración protegida, proveedores y evidencia sensible;
+- SHELL como autoridad de identidad canónica de aplicación, sesión, autorización y registro de aplicaciones;
+- ORIGO como autoridad de proveedor, compra, contrato y condición comercial;
+- NUMERA como autoridad de compromiso, gasto, costo, periodo, centro de costo y conciliación económica;
+- NEXO como autoridad de activo físico, compra relacionada, garantía, mantenimiento y retiro;
+- el propietario funcional como autoridad de la necesidad empresarial y del efecto de retirar o conservar una capacidad;
+- la experiencia administrativa general de E2, que exige vistas expertas para comparación y alto volumen, revisión guiada para decisiones sensibles, trazabilidad de fuente y ausencia de copias competidoras.
+
+Una proyección en VISO nunca convierte la proyección en fuente propietaria.
+
+---
+
+#### 4. Separaciones rectoras
+
+La interfaz deberá mantener visibles estas separaciones:
+
+```text
+APPLICATION
+≠ REPOSITORY
+≠ ENVIRONMENT
+≠ DEPLOYMENT
+```
+
+```text
+PROVIDER
+≠ PRODUCT_OR_PLAN
+≠ CONTRACT
+≠ SUBSCRIPTION
+≠ LICENSE
+≠ ENTITLEMENT
+≠ SEAT
+```
+
+```text
+SEAT_ASSIGNMENT
+≠ ACCESS_GRANT
+≠ PROVIDER_ACCOUNT
+≠ ACTIVE_SESSION
+```
+
+```text
+ASSIGNED
+≠ USED
+≠ NEEDED
+≠ CRITICAL
+```
+
+```text
+CATALOG_PRICE
+≠ CONTRACTED_PRICE
+≠ INVOICE_AMOUNT
+≠ COMMITMENT
+≠ PAID_AMOUNT
+≠ EXPENSE
+≠ ALLOCATED_COST
+```
+
+```text
+WARRANTY
+≠ SUPPORT_CONTRACT
+≠ MAINTENANCE_PLAN
+≠ ASSET_HEALTH
+≠ INCIDENT
+≠ REPLACEMENT_ASSET
+```
+
+```text
+AUTO_RENEWAL_ENABLED
+≠ BUSINESS_APPROVAL
+```
+
+```text
+RIGHTSIZING_CANDIDATE
+≠ AUTOMATIC_CANCEL
+≠ AUTOMATIC_DOWNGRADE
+```
+
+Estas separaciones deben reflejarse en etiquetas, agrupaciones, filtros, estados y acciones; no basta con conservarlas solo en el modelo documental.
+
+---
+
+#### 5. Cambio frente al AS-IS y utilidad
+
+La experiencia actual verificable ya ofrece piezas útiles, pero distribuidas:
+
+- VISO dispone de un shell administrativo y navegación gobernada por registros, además de superficies de administración de aplicaciones y navegación;
+- ORIGO dispone de catálogo de proveedores orientado a compras, con datos de contacto, estado y condición de pago;
+- NUMERA dispone de captura y consulta de gastos por categoría, periodo y centro de costo;
+- el catálogo tecnológico documental ya conserva identidades de aplicaciones, dependencias, familias de proveedor y estados de evidencia;
+- no se ha demostrado en las fuentes revisadas una única experiencia completa que una, sin duplicar autoridad, aplicación, proveedor, contrato, entitlement, uso, renovación, garantía, costo, salida y dependencia operativa.
+
+La mejora objetivo consiste en pasar de búsquedas y cruces manuales entre superficies a una vista federada donde:
+
+```text
+LA PERSONA EMPIEZA POR LA CAPACIDAD TECNOLÓGICA
+→ ENTIENDE SU ESTADO Y EVIDENCIA
+→ VE QUÉ FUENTE ES AUTORITATIVA PARA CADA DATO
+→ IDENTIFICA QUÉ DECISIÓN REALMENTE ESTÁ PENDIENTE
+→ ABRE EL HANDOFF CORRECTO SIN REDIGITAR CONTEXTO
+→ CONSERVA LA CORRELACIÓN HASTA EL RESULTADO
+```
+
+La utilidad es reducir doble digitación, renovaciones sin decisión, asientos abandonados, costos sin explicación tecnológica, cancelaciones peligrosas y afirmaciones comerciales basadas únicamente en SDK, URL, factura aislada o cuenta existente.
+
+---
+
+#### 6. `TI-TECHNOLOGY-PORTFOLIO-UX-CONTRACT-001`
+
+La entrada administrativa se presentará como un portafolio de tecnología con una sola identidad visual por relación y múltiples dimensiones separadas.
+
+Orden de lectura:
+
+```text
+PORTAFOLIO TECNOLÓGICO
+
+1. REQUIERE DECISIÓN
+   Renovaciones, evidencia insuficiente y riesgos que necesitan propietario
+
+2. APLICACIONES Y SERVICIOS
+   Qué capacidades existen y de qué dependen
+
+3. RELACIONES COMERCIALES
+   Proveedores, contratos, licencias, entitlements y soporte
+
+4. USO Y RIGHTSIZING
+   Asignación, uso demostrado, necesidad y oportunidades de revisión
+
+5. COSTO Y CONCILIACIÓN
+   Hechos económicos referenciados desde su autoridad
+
+6. GARANTÍAS Y SALIDA
+   Cobertura física, soporte, exportabilidad y retiro controlado
+```
+
+La pantalla principal no deberá comenzar por tablas contractuales densas. Primero mostrará qué requiere atención y qué está bloqueado por falta de evidencia.
+
+---
+
+#### 7. Resumen administrativo
+
+La cabecera deberá poder presentar, sin inventar cifras cuando las fuentes no estén reconciliadas:
+
+```text
+TECNOLOGÍA · PORTAFOLIO
+
+Requieren decisión
+- renovaciones con decisión pendiente
+- relaciones con auto-renovación conocida y revisión pendiente
+- rightsizing candidates
+- licencias o entitlements con anomalía
+
+Requieren evidencia
+- proveedor o hosting no demostrado
+- plan o entitlement no demostrado
+- costo sin reconciliación económica
+- garantía sin evidencia suficiente
+
+Riesgo operativo
+- capacidad crítica con salida no demostrada
+- proveedor sin propietario interno
+- licencia próxima a expiración cuando exista fecha fiable
+- relación comercial que puede afectar servicio
+
+[ Aplicaciones ] [ Proveedores ] [ Licencias ] [ Renovaciones ] [ Garantías ] [ Costos ]
+```
+
+Una tarjeta solo mostrará un conteo cuando exista un denominador y una consulta reproducibles. Si no existen, mostrará el estado cualitativo y el bloqueo, no un cero ficticio.
+
+---
+
+#### 8. Contexto administrativo persistente
+
+La superficie deberá hacer visible, según aplicabilidad:
+
+```text
+EMPRESA / ALCANCE EMPRESARIAL
+ACTOR EFECTIVO
+PERMISO APLICABLE
+MOMENTO DE CORTE
+FUENTES CONSULTADAS
+FRESCURA O VERSION DE LA EVIDENCIA
+FILTROS ACTIVOS
+```
+
+Un filtro por aplicación, proveedor o centro de costo no concede autoridad ni cambia la fuente propietaria.
+
+La interfaz distinguirá siempre:
+
+- contexto de consulta;
+- alcance autorizado;
+- selección visual;
+- fuente de verdad;
+- acción permitida.
+
+---
+
+#### 9. Portafolio de diez aplicaciones
+
+Se preservan exactamente las diez aplicaciones canónicas y su orden:
+
+| `app_code` | Nombre     | Foco de TI-UX-005                                                              | Decisión inicial de experiencia                                                                             |
+| ---------- | ---------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `shell`    | Vento OS   | identidad, autorización, catálogo, Supabase y relación comercial por demostrar | mostrar relaciones técnicas conocidas y separar cualquier contrato, hosting o costo no demostrado           |
+| `anima`    | ANIMA      | Supabase, Expo/EAS, Sentry SDK y dependencias móviles                          | distinguir configuración técnica de relación comercial; plan, uso y costo siguen sujetos a evidencia        |
+| `viso`     | VISO       | administración, soporte y Supabase                                             | usar VISO como coordinador visual sin volverlo autoridad de su propia licencia, contrato o costo            |
+| `nexo`     | NEXO       | activos, logística, Supabase y hosting no demostrado                           | enlazar garantías a activos reconciliados y mantener hosting/comercial pendiente cuando no exista evidencia |
+| `fogo`     | FOGO       | producción, Supabase y hosting no demostrado                                   | mostrar dependencia empresarial sin convertir criticidad en etiqueta global de la aplicación                |
+| `origo`    | ORIGO      | compras, proveedores, contratos y Supabase                                     | diferenciar la aplicación ORIGO de los proveedores que ORIGO administra                                     |
+| `pulso`    | PULSO      | venta/POS, Supabase y hosting no demostrado                                    | presentar dependencia y costo solo desde referencias demostradas                                            |
+| `numera`   | NUMERA     | hechos económicos, costos, Supabase y hosting no demostrado                    | NUMERA registra hechos económicos, pero la aplicación no se autoatribuye su propia licencia o costo         |
+| `aura`     | AURA       | continuidad diferida y proveedores no confirmados                              | mostrar `PENDIENTE_DE_EVIDENCIA` y handoff a la auditoría de AURA; no fabricar proveedor o ambiente         |
+| `pass`     | Vento Pass | Supabase, Expo/EAS, RevenueCat SDK y dominio cliente                           | separar SDK y producto técnico de plan, contrato, costo y derechos efectivamente demostrados                |
+
+Control:
+
+```text
+10 esperadas
+10 materializadas
+0 omitidas
+0 duplicadas
+0 añadidas
+```
+
+La experiencia no crea otro `app_code` para ambiente, plataforma, proveedor, tenant o canal.
+
+---
+
+#### 10. Tarjeta mínima de aplicación
+
+Cada aplicación deberá mostrar, cuando exista evidencia:
+
+```text
+app_code + nombre humano
+estado de catálogo
+alcance de roadmap
+ambientes y nivel de evidencia
+repositorio observado
+versión de manifiesto observada
+servicios y procesos dependientes
+familias de proveedor relacionadas
+licencia / entitlement / asiento
+uso observado y periodo
+próxima decisión comercial conocida
+estado de costo reconciliado
+soporte externo referenciado
+salida o recuperación referenciada
+health técnico mediante TI-UX-003
+casos o cambios relacionados cuando existan
+```
+
+La tarjeta no mostrará como equivalentes:
+
+- `active` de catálogo y servicio disponible;
+- versión de manifiesto y versión desplegada;
+- SDK y contrato;
+- proveedor técnico y proveedor comercial reconciliado;
+- licencia y acceso;
+- gasto y costo de la aplicación.
+
+---
+
+#### 11. Detalle de aplicación — workspace federado
+
+`TI-APPLICATION-COMMERCIAL-WORKSPACE-UX-CONTRACT-001` define cinco pestañas conceptuales dentro del detalle:
+
+1. **Resumen** — identidad, servicios, dependencias, evidencia y decisiones pendientes;
+2. **Proveedores y contratos** — relaciones externas y fuente propietaria;
+3. **Licencias y uso** — entitlement, asiento, asignación, utilización y necesidad;
+4. **Renovaciones y salida** — fechas demostradas, decisión, alternativas y handoffs;
+5. **Costo y evidencia** — referencias económicas, soporte, garantía y auditoría.
+
+El encabezado permanece visible y conserva:
+
+```text
+app_code
+nombre
+fuente de identidad
+alcance de roadmap
+estado de reconciliación
+criticidad derivada del contexto consultado
+propietario funcional
+responsable técnico
+último corte de evidencia
+```
+
+No se asigna una criticidad global fija a la aplicación.
+
+---
+
+#### 12. Fuerza de evidencia comercial
+
+La experiencia deberá mostrar explícitamente el nivel de evidencia alcanzado por cada relación:
+
+| Nivel | Evidencia                          | Qué permite afirmar                                 | Qué no permite afirmar                                      |
+| ----- | ---------------------------------- | --------------------------------------------------- | ----------------------------------------------------------- |
+| 1     | `REFERENCIA_TECNICA`               | existe una dependencia o configuración observada    | contrato, plan, costo o uso comercial                       |
+| 2     | `EVIDENCIA_DE_CUENTA`              | existe una identidad o cuenta ante proveedor        | asiento, autorización empresarial o costo                   |
+| 3     | `EVIDENCIA_DE_PLAN_O_ENTITLEMENT`  | existe derecho o capacidad demostrada               | necesidad, uso o costo final                                |
+| 4     | `EVIDENCIA_CONTRACTUAL_COMERCIAL`  | existen términos o condición comercial demostrados  | uso efectivo o necesidad futura                             |
+| 5     | `EVIDENCIA_DE_USO`                 | existe consumo o actividad demostrada en un periodo | costo, criticidad o conveniencia de renovación por sí solos |
+| 6     | `EVIDENCIA_ECONOMICA_RECONCILIADA` | existe hecho económico trazado hacia la capacidad   | licencia vigente o necesidad técnica por sí solos           |
+
+La interfaz no utilizará una única etiqueta “verificado” para esconder qué capa está realmente demostrada.
+
+---
+
+#### 13. Estado pendiente de evidencia
+
+`PENDIENTE_DE_EVIDENCIA` deberá ser accionable y explicar:
+
+```text
+QUÉ DATO FALTA
+POR QUÉ ES NECESARIO
+QUIÉN ES LA AUTORIDAD QUE PUEDE APORTARLO
+QUÉ DECISIÓN QUEDA BLOQUEADA
+QUÉ EVIDENCIA PERMITIRÍA SALIR DEL ESTADO
+```
+
+Ejemplo humano:
+
+```text
+Plan comercial no demostrado
+Sabemos que ANIMA utiliza Expo/EAS en su configuración técnica,
+pero no existe evidencia suficiente aquí para afirmar qué plan tiene VENTO,
+quién lo contrata, cuánto cuesta o cuándo renueva.
+
+Fuente esperada: relación contractual reconciliada con ORIGO.
+```
+
+La interfaz no deberá sugerir “Plan gratuito” o “Costo $0” por ausencia de evidencia.
+
+---
+
+#### 14. Proveedores y contratos
+
+La vista de proveedores deberá comenzar por relaciones tecnológicas, no por crear otro maestro de proveedores.
+
+Cada relación proyectada deberá poder mostrar:
+
+```text
+provider_ref o identidad pendiente
+familia o rol técnico
+producto o plan cuando esté demostrado
+aplicaciones y servicios relacionados
+propietario técnico
+propietario empresarial
+propietario de compra o contrato
+contrato_ref
+subscription_ref
+support_ref
+sla_ref externo
+account_ref sin credencial
+entitlement_ref
+renovación demostrada
+exposición de datos
+salida o exportabilidad
+nivel de evidencia
+estado de reconciliación
+```
+
+Las acciones sobre identidad de proveedor, compra o contrato continúan en ORIGO o en la autoridad que resulte aplicable. VISO presenta contexto, decisión y handoff.
+
+---
+
+#### 15. Cinco familias externas observadas
+
+Se preservan exactamente las cinco familias reconocidas por evidencia técnica previa:
+
+| Familia    | Alcance técnico heredado                                                   | Presentación en TI-UX-005                                                                                      |
+| ---------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| GitHub     | repositorios actuales de nueve aplicaciones confirmadas                    | relación técnica confirmada; contrato, plan, renovación, costo y owner comercial no se afirman sin evidencia   |
+| Supabase   | cliente presente en nueve repositorios confirmados y plataforma compartida | dependencia técnica visible; plan, costos, capacidad y términos comerciales permanecen independientes          |
+| Expo/EAS   | ANIMA y PASS                                                               | configuración y canales de build visibles; plan/cuenta/entitlement/costo se muestran solo si se demuestran     |
+| Sentry     | SDK observado en ANIMA                                                     | etiqueta `SDK observado`; no se presenta como servicio contratado o activo sin evidencia adicional             |
+| RevenueCat | SDK observado en PASS                                                      | etiqueta `SDK observado`; no se presenta como producto contratado, costo o entitlement sin evidencia adicional |
+
+Control:
+
+```text
+5 esperadas
+5 materializadas
+0 omitidas
+0 duplicadas
+0 relaciones comerciales inventadas
+```
+
+---
+
+#### 16. Hosting no demostrado
+
+Las siete aplicaciones web con repositorio confirmado conservan hosting `PENDIENTE_DE_EVIDENCIA`:
+
+```text
+shell
+viso
+nexo
+fogo
+origo
+pulso
+numera
+```
+
+La experiencia deberá mostrar el mismo patrón de bloqueo para las siete:
+
+```text
+Hosting: pendiente de evidencia
+
+Falta demostrar:
+- proveedor
+- cuenta o proyecto
+- propietario
+- plan o condición comercial
+- ambiente asociado
+- renovación cuando aplique
+- costo reconciliado
+```
+
+Una URL, DNS, framework, encabezado HTTP o despliegue accesible no se utilizarán como sustitutos de esa evidencia.
+
+---
+
+#### 17. Licencia, entitlement y asiento
+
+La vista de licencias tendrá como unidad primaria la relación comercial-tecnológica, no la persona.
+
+Deberá separar:
+
+```text
+PRODUCTO / PLAN
+LICENCIA
+ENTITLEMENT
+MODELO DE ASIENTO
+CANTIDAD ENTITLED
+ASIGNACIONES
+USO OBSERVADO
+CAPACIDAD DISPONIBLE CUANDO APLIQUE
+NECESIDAD EMPRESARIAL
+ESTADO DE RENOVACION
+COSTO REFERENCIADO
+```
+
+No todos los productos tienen asiento. La interfaz mostrará la unidad únicamente cuando el modelo demostrado la utilice.
+
+---
+
+#### 18. Siete estados de licencia
+
+Se preservan sin renombrar:
+
+| Estado                   | Presentación humana | Regla visual                                                     |
+| ------------------------ | ------------------- | ---------------------------------------------------------------- |
+| `PENDIENTE_DE_EVIDENCIA` | Evidencia pendiente | no usar color o iconografía de vigencia confirmada               |
+| `ACTIVE`                 | Vigente             | exige evidencia suficiente de vigencia, no solo cuenta o SDK     |
+| `SUSPENDED`              | Suspendida          | mostrar impacto y causa/referencia cuando esté disponible        |
+| `EXPIRING`               | Próxima a expirar   | exige fecha o condición demostrada; no inventar umbral universal |
+| `EXPIRED`                | Expirada            | no implica automáticamente retirada técnica o cierre contractual |
+| `CANCELLED`              | Cancelada           | no implica datos eliminados, cuenta revocada o gasto conciliado  |
+| `NO_APLICA`              | No aplica           | exige fundamento compatible con el producto o modelo             |
+
+El estado se acompaña de evidencia, fuente y momento de corte.
+
+---
+
+#### 19. Modelos de licencia o entitlement
+
+La experiencia conserva exactamente:
+
+- `NAMED_USER`;
+- `CONCURRENT_USER`;
+- `DEVICE`;
+- `ORGANIZATION_OR_TENANT`;
+- `CAPACITY_OR_TIER`;
+- `USAGE_BASED`;
+- `HYBRID`.
+
+La selección del modelo debe provenir de evidencia del proveedor o contrato.
+
+La interfaz nunca forzará una tabla de “asientos” para una relación `ORGANIZATION_OR_TENANT` o `USAGE_BASED` que no utilice esa unidad.
+
+---
+
+#### 20. Asignaciones de asiento
+
+Cuando exista `SEAT`, el detalle deberá permitir entender:
+
+```text
+seat_ref
+license_ref
+target tipo + target ref
+fecha de asignación
+vigencia
+motivo
+uso observado
+estado de candidato a reclaim
+estado de reconciliación
+evidencia
+```
+
+Alertas de consistencia visual:
+
+- asiento asignado sin licencia o entitlement vigente;
+- target retirado o sin vínculo vigente;
+- asignación simultánea incompatible con el modelo;
+- asiento nominal ligado a una identidad compartida insuficiente;
+- acceso revocado pero asiento todavía sin reconciliar;
+- asiento liberado pero cuenta o acceso todavía activo cuando requiera revisión separada.
+
+La corrección deberá realizarse en la autoridad aplicable y conservar historia.
+
+---
+
+#### 21. Cantidades y disponibilidad
+
+Para modelos finitos reconciliados:
+
+```text
+ENTITLED
+- ASSIGNED
+= AVAILABLE
+```
+
+La interfaz podrá mostrar esa aritmética solo cuando:
+
+- la cantidad contratada o reconocida esté demostrada;
+- las asignaciones estén reconciliadas;
+- el proveedor no aplique una regla adicional que altere disponibilidad.
+
+Casos visuales obligatorios:
+
+| Caso                               | Presentación                                                |
+| ---------------------------------- | ----------------------------------------------------------- |
+| cantidad desconocida               | `PENDIENTE_DE_EVIDENCIA`; no mostrar 0                      |
+| unlimited                          | “Sin cantidad finita aplicable”; no fabricar un número alto |
+| usage-based                        | mostrar unidad de consumo, no “asientos disponibles”        |
+| `AVAILABLE < 0`                    | anomalía de conciliación que exige revisión                 |
+| cantidad comprada mayor a asignada | capacidad disponible, no ahorro confirmado                  |
+| cantidad asignada mayor a uso      | candidato de análisis, no cancelación automática            |
+
+---
+
+#### 22. Uso, necesidad y criticidad
+
+La vista de uso deberá mostrar cuatro columnas conceptualmente independientes:
+
+```text
+ASIGNACIÓN
+USO OBSERVADO
+NECESIDAD APROBADA O JUSTIFICADA
+CRITICIDAD DEL RESULTADO DEPENDIENTE
+```
+
+El uso deberá declarar:
+
+- fuente;
+- periodo;
+- unidad;
+- población o capacidad observada;
+- frescura;
+- limitaciones.
+
+Una capacidad de contingencia puede ser necesaria aunque se use poco. Una cuenta con actividad puede ser innecesaria. Un producto muy utilizado puede seguir siendo no crítico. La interfaz no colapsará esas dimensiones en una puntuación única.
+
+---
+
+#### 23. Rightsizing
+
+`TI-RENEWAL-RIGHTSIZE-UX-CONTRACT-001` presenta un candidato de revisión cuando exista evidencia suficiente de alguno de estos patrones:
+
+- asiento asignado a identidad sin vigencia;
+- capacidad persistentemente disponible por encima de la necesidad demostrada;
+- capacidad contratada muy superior al consumo observado;
+- producto duplicado sin justificación demostrada;
+- aplicación retirada con relación comercial todavía activa;
+- plan con capacidades no utilizadas y alternativa inferior potencialmente suficiente;
+- facturación posterior a una cancelación documentada;
+- contratos múltiples para la misma capacidad sin causa aprobada.
+
+Cada candidato deberá mostrar:
+
+```text
+señal
+fuente
+periodo
+capacidad afectada
+impacto si se reduce
+criticidad y dependencias
+salida o rollback
+estimación separada de ahorro, si puede calcularse
+propietario de decisión
+```
+
+No existirá una acción “optimizar automáticamente”.
+
+---
+
+#### 24. Bandeja de renovaciones
+
+La bandeja de renovaciones no será una simple lista de fechas. Agrupará decisiones por condición:
+
+```text
+DECISIÓN REQUERIDA
+EVIDENCIA INCOMPLETA
+AUTO-RENOVACIÓN CONOCIDA
+RIGHTSIZING EN ANÁLISIS
+SALIDA O MIGRACIÓN EN PREPARACIÓN
+DECISIÓN TOMADA CON HANDOFF PENDIENTE
+CONCILIACIÓN POSTERIOR PENDIENTE
+```
+
+Orden operativo sugerido, sin inventar prioridad empresarial:
+
+1. ventana contractual demostrada cuya acción irreversible esté más próxima;
+2. capacidad cuya pérdida afectaría un proceso crítico sin alternativa demostrada;
+3. auto-renovación conocida sin decisión registrada;
+4. inconsistencia de entitlement o asignación con riesgo operativo;
+5. rightsizing y renegociación ordinarios;
+6. relaciones únicamente pendientes de mejor evidencia.
+
+El orden de bandeja es una ayuda de trabajo; no cambia criticidad, prioridad de incidente ni autoridad.
+
+---
+
+#### 25. Ficha de renovación
+
+La ficha guía la decisión con doce dimensiones canónicas:
+
+| Dimensión   | Qué debe responder la experiencia                                                  |
+| ----------- | ---------------------------------------------------------------------------------- |
+| Necesidad   | qué proceso, aplicación o servicio requiere la capacidad                           |
+| Criticidad  | qué resultado se degrada o bloquea si se retira                                    |
+| Uso         | qué consumo demostrable existe y en qué periodo                                    |
+| Asientos    | qué cantidades habilitadas, asignadas, utilizadas y disponibles pueden demostrarse |
+| Costo       | qué hecho económico reconciliado existe                                            |
+| Contrato    | qué término, ventana y restricciones se demostraron                                |
+| Soporte     | qué soporte, SLA externo o garantía se perderían                                   |
+| Seguridad   | qué cuentas, secretos, datos o privilegios dependen del proveedor                  |
+| Continuidad | qué fallback, recuperación o dependencia crítica existe                            |
+| Salida      | cómo se exportan datos y se retiran cuentas e integraciones                        |
+| Alternativa | qué opción equivalente ha sido realmente validada                                  |
+| Decisión    | qué resultado documental se adopta y con qué evidencia                             |
+
+La interfaz deberá impedir que una decisión se justifique únicamente por precio o únicamente por utilización.
+
+---
+
+#### 26. Siete resultados de renovación
+
+Se preservan exactamente:
+
+1. `RENEW`;
+2. `RIGHTSIZE`;
+3. `RENEGOTIATE`;
+4. `MIGRATE_OR_EXIT`;
+5. `CANCEL`;
+6. `NO_ACTION_REQUIRED`;
+7. `PENDIENTE_DE_EVIDENCIA`.
+
+Cada decisión mostrará antes de confirmar:
+
+```text
+qué cambia
+qué no cambia
+quién es autoridad
+dependencias afectadas
+riesgo
+handoffs posteriores
+condiciones comerciales conocidas
+evidencia utilizada
+```
+
+`PENDIENTE_DE_EVIDENCIA` es una decisión válida de no afirmar todavía, no un error de interfaz.
+
+---
+
+#### 27. Auto-renovación
+
+Cuando exista evidencia de auto-renovación, el detalle deberá mostrarla con alta visibilidad junto a:
+
+- fuente;
+- fecha o condición de término cuando esté demostrada;
+- ventana de cancelación cuando esté demostrada;
+- propietario de decisión;
+- decisión actual;
+- estado del handoff comercial.
+
+No deberá existir lenguaje como “se renovará aprobado” por el solo hecho de que el proveedor tenga auto-renovación activada.
+
+Una renovación ocurrida sin decisión previa se muestra como hecho que requiere conciliación y revisión, nunca como aprobación retroactiva.
+
+---
+
+#### 28. Contrato y ORIGO
+
+VISO proyectará el contrato como referencia contextual y no como documento editable duplicado.
+
+Desde una aplicación o proveedor podrá mostrar:
+
+```text
+contract_ref
+proveedor
+producto o plan
+vigencia demostrada
+condición de renovación
+soporte relacionado
+aplicaciones/servicios que dependen
+compra o relación comercial asociada
+estado de evidencia
+```
+
+Acciones conceptuales:
+
+- **Ver en ORIGO** — abre la fuente propietaria conservando contexto;
+- **Solicitar revisión contractual** — crea o enlaza el handoff apropiado sin duplicar el contrato;
+- **Relacionar evidencia** — solo cuando la autoridad y el modelo físico futuro lo permitan;
+- **Preparar decisión tecnológica** — conserva análisis en la coordinación TI sin alterar términos comerciales.
+
+No se copiarán contratos completos como texto libre en el expediente tecnológico.
+
+---
+
+#### 29. Costos y NUMERA
+
+La vista de costo es de consulta, explicación tecnológica y conciliación; no es un formulario alterno de gasto.
+
+Debe permitir recorrer:
+
+```text
+PROVIDER
+→ PRODUCT / PLAN
+→ CONTRACT / PURCHASE
+→ LICENSE / ENTITLEMENT
+→ APPLICATION / SERVICE / ASSET
+→ COMMITMENT / EXPENSE
+→ COST CENTER
+→ RECONCILIATION
+```
+
+Para cada cifra monetaria visible se mostrará, según exista:
+
+```text
+monto
+moneda
+periodo económico
+fuente económica
+centro de costo
+estado de conciliación
+base de asignación cuando exista distribución
+último cambio o versión relevante
+```
+
+Un importe sin fuente económica no se presenta como gasto realizado.
+
+---
+
+#### 30. Nueve modalidades descriptivas de costo
+
+Se preservan:
+
+| Modalidad                       | Uso visual                                 |
+| ------------------------------- | ------------------------------------------ |
+| `FIXED_RECURRING`               | cargo periódico fijo                       |
+| `PER_SEAT`                      | cargo relacionado con cantidad de asientos |
+| `USAGE_BASED`                   | cargo relacionado con consumo              |
+| `CAPACITY_OR_TIER`              | cargo por capacidad o nivel                |
+| `ONE_TIME`                      | adquisición o servicio no recurrente       |
+| `SUPPORT_OR_MAINTENANCE`        | soporte o mantenimiento contratado         |
+| `HARDWARE_ACQUISITION`          | adquisición de activo físico               |
+| `WARRANTY_OR_SUPPORT_EXTENSION` | extensión comercial de cobertura           |
+| `MIXED`                         | combinación demostrada de modalidades      |
+
+La modalidad explica cómo puede originarse el cargo; no sustituye el hecho económico.
+
+---
+
+#### 31. Conciliación de costo
+
+Un panel de conciliación deberá señalar diferencias como:
+
+- relación tecnológica sin hecho económico reconciliado;
+- gasto que referencia tecnología pero no tiene relación suficientemente demostrada;
+- centro de costo ausente o inconsistente;
+- periodo económico distinto del periodo de uso analizado;
+- moneda o importe no reconciliados con la fuente económica;
+- estimación de ahorro presentada junto a gasto real pero correctamente diferenciada;
+- compra de hardware o `commercial_value` que no debe sumarse automáticamente como gasto tecnológico.
+
+La corrección de un hecho económico permanece en NUMERA. La corrección de proveedor o contrato permanece en ORIGO. VISO conserva el vínculo y muestra si la diferencia quedó resuelta.
+
+---
+
+#### 32. Garantías y soporte
+
+La experiencia de garantía comienza desde un activo NEXO reconciliado, no desde una impresora, aplicación o nombre de producto aislado.
+
+Detalle mínimo:
+
+```text
+asset_ref
+product_ref
+provider_or_manufacturer_ref
+purchase_ref
+documento o evidencia
+alcance de cobertura
+inicio
+fin
+canal de reclamo
+soporte relacionado
+condiciones de sustitución
+estado de garantía
+```
+
+Estados preservados:
+
+- `PENDIENTE_DE_EVIDENCIA`;
+- `ACTIVE`;
+- `EXPIRING`;
+- `EXPIRED`;
+- `NO_APLICA`.
+
+La interfaz deberá recordar visualmente:
+
+```text
+GARANTÍA VIGENTE
+≠ ACTIVO SALUDABLE
+
+GARANTÍA VENCIDA
+≠ ACTIVO RETIRADO
+
+CASO DE GARANTÍA
+≠ INCIDENTE TECNOLÓGICO
+```
+
+---
+
+#### 33. Soporte externo y SLA del proveedor
+
+Una aplicación o proveedor podrá mostrar:
+
+- canal de soporte externo;
+- alcance contratado;
+- horario;
+- clasificación propia del proveedor;
+- SLA contractual referenciado;
+- contacto o mecanismo de escalamiento;
+- caso externo correlacionado.
+
+La interfaz deberá distinguir de forma explícita:
+
+```text
+SLA EXTERNO DEL PROVEEDOR
+≠ SLA INTERNO DEL CASO VENTO
+≠ PRIORIDAD DEL INCIDENTE
+```
+
+Una severidad P1 del proveedor no reemplaza la matriz interna de impacto y urgencia, y una prioridad interna alta no concede acceso a consolas del proveedor.
+
+---
+
+#### 34. Salida del proveedor
+
+Toda relación externa relevante deberá poder abrir un resumen de salida con:
+
+1. propiedad y exportabilidad de datos;
+2. formato y completitud de exportación;
+3. cuentas y accesos que deberán revocarse;
+4. secretos y material técnico que deberán tratarse;
+5. retención y eliminación del proveedor;
+6. alternativa o modo degradado;
+7. importación o restauración en destino;
+8. trabajos pendientes y conciliación;
+9. auditoría;
+10. cierre comercial y económico;
+11. prueba de retorno a operación;
+12. evidencia de salida.
+
+La interfaz debe advertir cuando cancelar primero pueda impedir exportar o recuperar datos.
+
+Una decisión `MIGRATE_OR_EXIT` deberá enlazarse con recuperación y cambio tecnológico antes de declarar completada la salida.
+
+---
+
+#### 35. Handoff con el mapa técnico de TI-UX-003
+
+Desde una aplicación, proveedor o licencia se podrá abrir el mapa técnico conservando:
+
+```text
+application_ref
+tech_service_refs[]
+dependency_refs[]
+ambiente consultado
+momento de corte
+```
+
+El mapa devuelve:
+
+- health técnico;
+- frescura;
+- dependencias demostradas;
+- alertas o casos correlacionados;
+- evidencia insuficiente.
+
+TI-UX-005 no duplica health ni topología dentro de la ficha comercial.
+
+Regla:
+
+```text
+RELACIÓN COMERCIAL VIGENTE
+≠ SERVICIO SALUDABLE
+```
+
+---
+
+#### 36. Handoff con mesa de servicio TI-UX-002
+
+Una condición comercial puede originar o relacionarse con un caso cuando:
+
+- falta licencia necesaria;
+- un asiento no puede asignarse o liberarse;
+- proveedor suspende capacidad;
+- existe duda de cobertura de garantía;
+- renovación amenaza continuidad;
+- facturación o condición comercial amenaza servicio;
+- se requiere soporte del proveedor.
+
+El handoff llevará únicamente el contexto necesario:
+
+```text
+application/service ref
+provider/commercial relation ref
+síntoma o riesgo
+condición conocida
+plazo demostrado cuando exista
+evidencia seleccionada
+propietario actual
+```
+
+El caso no modifica contrato, gasto, licencia o asiento por sí mismo.
+
+---
+
+#### 37. Handoff con cambio tecnológico TI-UX-004
+
+Una decisión comercial abrirá o enlazará un cambio únicamente cuando exista efecto técnico material, por ejemplo:
+
+- migrar proveedor;
+- cambiar plan con capacidades distintas;
+- retirar integración;
+- cambiar tenant;
+- cambiar región;
+- sustituir software;
+- reemplazar hardware por garantía;
+- cambiar autenticación o cuenta técnica;
+- modificar capacidad que afecte servicio.
+
+La interfaz deberá mostrar:
+
+```text
+DECISIÓN COMERCIAL
+→ puede requerir
+CAMBIO TECNOLÓGICO
+
+DECISIÓN COMERCIAL
+≠ CAMBIO APROBADO
+≠ CAMBIO EJECUTADO
+```
+
+Una renovación sin cambio técnico no genera artificialmente un cambio de configuración.
+
+---
+
+#### 38. Autorización y segregación
+
+La experiencia deberá consultar autorización acción por acción.
+
+No se inferirá autoridad por:
+
+- cargo;
+- propiedad funcional;
+- responsabilidad tecnológica;
+- acceso visible a VISO;
+- cuenta de proveedor;
+- posesión de credencial;
+- licencia asignada;
+- contrato existente;
+- urgencia;
+- costo alto.
+
+Acciones sensibles, como aprobar cancelación, modificar un entitlement, operar una consola de proveedor, acceder a precios restringidos, cambiar configuración o retirar una capacidad crítica, deberán usar la autoridad propietaria y la segregación aplicable.
+
+La interfaz puede presentar una acción como disponible para iniciar un handoff sin presentar al actor como autorizado para ejecutar el efecto final.
+
+---
+
+#### 39. Datos sensibles y secretos
+
+No se mostrarán por defecto ni se copiarán al portafolio:
+
+- contraseñas;
+- tokens;
+- API keys;
+- service-role keys;
+- recovery codes;
+- secretos de webhook;
+- claves privadas;
+- números bancarios no necesarios para la tarea;
+- precios o términos contractuales fuera del alcance autorizado;
+- datos personales de usuarios de consolas cuando no sean necesarios;
+- payloads o logs completos.
+
+La ficha puede mostrar una referencia a la cuenta o al mecanismo de autenticación, pero no el material de autenticación.
+
+---
+
+#### 40. Filtros, búsqueda y vistas guardadas
+
+La experiencia experta deberá permitir filtrar por:
+
+- aplicación;
+- servicio tecnológico;
+- proveedor;
+- tipo de evidencia;
+- estado de licencia;
+- modelo de entitlement;
+- estado de renovación;
+- estado de garantía;
+- centro de costo cuando la fuente lo permita;
+- propietario técnico;
+- propietario funcional;
+- estado de conciliación;
+- riesgo de salida;
+- evidencia pendiente.
+
+Búsqueda permitida por identidad o etiqueta segura:
+
+```text
+app_code
+nombre de aplicación
+provider_ref / nombre autorizado
+producto o plan
+license_ref
+contract_ref
+asset_ref
+```
+
+Una vista guardada conserva preferencias de consulta; no se convierte en alcance autorizado ni en fuente de verdad.
+
+---
+
+#### 41. Estados vacíos, desconocidos y contradictorios
+
+Se diseñan respuestas explícitas para cuatro situaciones:
+
+| Situación                       | Mensaje y comportamiento                                                     |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| sin relación aplicable          | explicar `NO_APLICA` y la evidencia que sustenta esa conclusión              |
+| relación esperada sin evidencia | mostrar `PENDIENTE_DE_EVIDENCIA`, propietario y condición de salida          |
+| fuentes contradictorias         | mostrar ambas fuentes, momento de corte y bloquear conclusión definitiva     |
+| fuente no disponible            | conservar última evidencia con frescura visible y no presentarla como actual |
+
+Ejemplo:
+
+```text
+Costo no reconciliado
+Existe una relación tecnológica con este proveedor, pero no hay un hecho económico
+reconciliado que permita afirmar el costo actual de esta capacidad.
+
+Consulta económica: NUMERA
+Relación contractual: ORIGO
+Estado: pendiente de evidencia
+```
+
+---
+
+#### 42. Alertas y trabajo proactivo
+
+Cuando la implementación posterior conecte observabilidad comercial, VISO podrá recibir señales sobre:
+
+- licencia próxima a expiración;
+- contrato próximo a término;
+- ventana de cancelación próxima;
+- auto-renovación sin decisión;
+- asiento sin identidad vigente;
+- asignación superior al entitlement;
+- capacidad sin evidencia suficiente de uso;
+- falla de facturación con posible efecto operativo;
+- garantía próxima a vencimiento;
+- garantía vencida sobre capacidad crítica;
+- proveedor sin propietario;
+- diferencia entre costo esperado y hecho económico reconciliado.
+
+La tarea no fija umbrales temporales universales.
+
+Una alerta crea trabajo visible; no renueva, compra, cancela, reasigna, cambia permisos ni modifica un contrato.
+
+---
+
+#### 43. Auditoría administrativa
+
+Toda decisión o corrección material deberá poder reconstruir:
+
+```text
+actor real
+actor efectivo
+acción solicitada
+autoridad aplicada
+objeto afectado
+fuente propietaria
+estado antes
+estado después o resultado del handoff
+motivo
+evidencia
+momento
+correlaciones posteriores
+```
+
+La vista de auditoría deberá poder distinguir:
+
+- consulta;
+- decisión;
+- aprobación;
+- handoff;
+- mutación en fuente propietaria;
+- conciliación posterior.
+
+La actividad de VISO no se presentará como la mutación autoritativa si el cambio ocurrió en ORIGO, NUMERA, NEXO o SHELL.
+
+---
+
+#### 44. Reconciliación AS-IS `TI-TECHNOLOGY-COMMERCIAL-UX-RECONCILIATION-001`
+
+La inspección actual de repositorios permite conservar estas conclusiones:
+
+| Superficie | Evidencia verificable                                                                                                    | Máxima afirmación permitida                                 | Brecha que TI-UX-005 resuelve documentalmente                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| VISO       | shell administrativo, navegación gobernada por datos y superficies para administrar registros de aplicaciones/navegación | VISO posee infraestructura administrativa reusable          | no se demostró una experiencia integral de portafolio comercial-tecnológico que reúna relaciones y decisiones sin duplicar fuentes |
+| ORIGO      | catálogo de proveedores con contacto, estado, condición de pago y acciones protegidas                                    | existe maestro operativo de proveedores orientado a compras | VISO debe referenciarlo y enlazarlo, no crear otro maestro de proveedor                                                            |
+| NUMERA     | captura y consulta de gastos por periodo, categoría y centro de costo                                                    | existe superficie económica para hechos de gasto            | VISO debe consultar referencias conciliadas y nunca capturar el mismo gasto como copia                                             |
+| SHELL      | identidad y catálogo de aplicaciones bajo contratos canónicos                                                            | conserva identidad de aplicación y autorización             | VISO no puede editar `app_code` ni convertir una lista local en catálogo canónico                                                  |
+| NEXO       | autoridad del activo físico y sus relaciones documentales                                                                | conserva activo, garantía y ciclo físico                    | garantía tecnológica se proyecta solo desde activo reconciliado                                                                    |
+| TI-DOM-006 | 10 aplicaciones, cinco familias técnicas y siete hostings pendientes                                                     | catálogo técnico-operativo especificado                     | TI-UX-005 materializa la experiencia de gestión sin inventar datos comerciales faltantes                                           |
+| TI-DOM-012 | licencias, asientos, garantías, renovación, uso y costo especificados                                                    | gobierno comercial-tecnológico especificado                 | TI-UX-005 vuelve esos contratos utilizables desde la experiencia administrativa                                                    |
+
+No se afirma ausencia absoluta de otras superficies no demostradas por las fuentes consultadas. La implementación futura deberá reconciliar el inventario real antes de crear cualquier pantalla física.
+
+---
+
+#### 45. Materialización física pendiente y propietarios
+
+| Pendiente físico                                         | Estado documental        | Propietario o destino                                 | Condición de salida                                                                       |
+| -------------------------------------------------------- | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| superficie física de portafolio en VISO                  | `ESPECIFICADO`           | paquete E5 VISO que resulte autorizado                | pantalla, autorización, fuentes, estados y pruebas implementados sin catálogo paralelo    |
+| modelo físico de relación comercial-tecnológica          | `FUERA_DE_ALCANCE`       | alcance de implementación autorizado en `vento-shell` | modelo y contratos implementados con migraciones propietarias y compatibilidad comprobada |
+| integración con maestro de proveedores y contratos       | `FUERA_DE_ALCANCE`       | `TI-INT-003` + paquete ORIGO/VISO                     | contrato de integración aprobado y fuentes reconciliadas                                  |
+| integración con hechos económicos de NUMERA              | `FUERA_DE_ALCANCE`       | `TI-INT-002`/`TI-INT-003` + paquete NUMERA/VISO       | consulta y correlación implementadas sin doble escritura                                  |
+| lectura de garantía desde NEXO                           | `FUERA_DE_ALCANCE`       | paquete NEXO/VISO                                     | activo, documento, garantía y autorización reconciliados                                  |
+| alertas productivas de renovación, uso, costo y garantía | `FUERA_DE_ALCANCE`       | `TI-DOM-010`; `TI-INT-001`; paquete VISO              | señales implementadas con fuente, condición y owner demostrables                          |
+| permisos sobre contratos, precios, licencias y consolas  | `FUERA_DE_ALCANCE`       | `TI-AUTH-001` a `TI-AUTH-004` + implementación AUTH   | acciones protegidas resuelven permiso, alcance y segregación en servidor                  |
+| proveedores y hostings no demostrados                    | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO; AURA mediante sus tareas de auditoría     | proveedor, cuenta, propietario, plan y evidencia técnica/comercial reconciliados          |
+| costos tecnológicos reales reconciliados                 | `PENDIENTE_DE_EVIDENCIA` | NUMERA + ORIGO + TI                                   | hecho económico y relación tecnológica demostrados                                        |
+| uso real de licencias/capacidad                          | `PENDIENTE_DE_EVIDENCIA` | TI + propietario funcional                            | fuente, periodo, unidad y necesidad reconciliados                                         |
+
+Ningún pendiente detectado queda sin propietario ni condición de salida.
+
+---
+
+#### 46. Estado de materialización
+
+| Componente                                      | Estado                   |
+| ----------------------------------------------- | ------------------------ |
+| arquitectura de información del portafolio      | `ESPECIFICADO`           |
+| portafolio 10/10 aplicaciones                   | `ESPECIFICADO`           |
+| relación con cinco familias de proveedor        | `ESPECIFICADO`           |
+| tratamiento de siete hostings pendientes        | `ESPECIFICADO`           |
+| presentación de evidencia comercial             | `ESPECIFICADO`           |
+| estados de licencia y entitlement               | `ESPECIFICADO`           |
+| asignación y conciliación de asiento            | `ESPECIFICADO`           |
+| uso, necesidad y criticidad separadas           | `ESPECIFICADO`           |
+| rightsizing                                     | `ESPECIFICADO`           |
+| renovación y siete decisiones                   | `ESPECIFICADO`           |
+| auto-renovación                                 | `ESPECIFICADO`           |
+| contratos y handoff ORIGO                       | `ESPECIFICADO`           |
+| costos y handoff NUMERA                         | `ESPECIFICADO`           |
+| garantía y handoff NEXO                         | `ESPECIFICADO`           |
+| soporte, salida y recuperación de proveedor     | `ESPECIFICADO`           |
+| handoff a mapa, soporte y cambio                | `ESPECIFICADO`           |
+| autorización y protección de secretos           | `ESPECIFICADO`           |
+| implementación física VISO                      | `FUERA_DE_ALCANCE`       |
+| migraciones Supabase                            | `NO_APLICA`              |
+| ejecución sobre proveedores reales              | `NO_APLICA`              |
+| contratos/licencias/costos reales reconciliados | `PENDIENTE_DE_EVIDENCIA` |
+
+---
+
+#### 47. Invariantes
+
+1. existen exactamente diez aplicaciones canónicas y TI-UX-005 no crea una undécima;
+2. `app_code` no cambia por ambiente, proveedor, plan o tenant;
+3. VISO coordina la experiencia, pero no sustituye la fuente propietaria;
+4. SHELL conserva identidad de aplicación y autorización;
+5. ORIGO conserva proveedor, compra y contrato;
+6. NUMERA conserva compromiso, gasto y costo;
+7. NEXO conserva activo físico y garantía;
+8. TI conserva relación técnica, uso observado, soporte y riesgo tecnológico;
+9. proveedor no es producto o plan;
+10. contrato no es licencia;
+11. licencia no es entitlement;
+12. entitlement no es asiento;
+13. asiento no es cuenta;
+14. cuenta no es credencial;
+15. asignación de asiento no concede permiso empresarial;
+16. revocar acceso no demuestra liberar asiento;
+17. liberar asiento no demuestra revocar cuenta;
+18. SDK no demuestra contrato;
+19. URL no demuestra hosting contratado;
+20. factura no demuestra entitlement;
+21. gasto no demuestra licencia vigente;
+22. uso no demuestra necesidad;
+23. poco uso no demuestra prescindibilidad;
+24. alta utilización no demuestra criticidad;
+25. criticidad se deriva del proceso, recurso y contexto;
+26. `NULL` no equivale a cero;
+27. unlimited no se representa con una cantidad ficticia;
+28. usage-based no se fuerza a modelo por asiento;
+29. `AVAILABLE` se calcula solo con cantidad y asignaciones reconciliadas;
+30. `AVAILABLE < 0` es anomalía, no estado ordinario;
+31. rightsizing es señal de revisión, no cancelación automática;
+32. auto-renovación no equivale a aprobación;
+33. decisión comercial no equivale a cambio aprobado;
+34. contrato renovado no implica servicio saludable;
+35. SLA externo no reemplaza SLA interno;
+36. garantía no equivale a health;
+37. garantía vencida no retira activo;
+38. cancelar licencia no elimina datos del proveedor;
+39. cancelar contrato no revoca automáticamente cuentas, secretos o integraciones;
+40. salida de proveedor conserva exportación, recuperación, revocación, conciliación y evidencia;
+41. costo visible conserva fuente económica;
+42. estimación de ahorro no se presenta como gasto real;
+43. `commercial_value` de un activo no se suma automáticamente como gasto;
+44. un filtro no fabrica alcance autorizado;
+45. una vista guardada no fabrica fuente de verdad;
+46. información pendiente se presenta como pendiente, no como ausencia;
+47. fuentes contradictorias se muestran y bloquean conclusión definitiva;
+48. secretos no se almacenan ni se muestran como datos del portafolio;
+49. una alerta no renueva, compra, cancela ni reasigna;
+50. esta tarea no modifica código, datos, proveedores, contratos ni Supabase.
+
+---
+
+#### 48. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-UX-004 → TI-UX-005 → TI-UX-006`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] VISO se diseña como coordinador administrativo sin convertirse en fuente comercial paralela;
+- [x] se preserva la autoridad de SHELL, ORIGO, NUMERA, NEXO y los dominios TI;
+- [x] se materializan exactamente diez aplicaciones;
+- [x] las diez aplicaciones reciben una decisión explícita de experiencia;
+- [x] se materializan exactamente cinco familias externas heredadas;
+- [x] los siete hostings no demostrados quedan explícitos sin inventar proveedor;
+- [x] se distinguen proveedor, plan, contrato, suscripción, licencia, entitlement, asiento, cuenta y credencial;
+- [x] se preservan los siete estados de licencia;
+- [x] se preservan los siete modelos de licencia/entitlement;
+- [x] asiento, acceso, cuenta y sesión permanecen separados;
+- [x] se definen cantidades, disponibilidad y anomalías sin usar cero para datos desconocidos;
+- [x] se separan asignación, uso, necesidad y criticidad;
+- [x] rightsizing no ejecuta cancelación automática;
+- [x] se diseña bandeja de renovación basada en decisión y evidencia, no solo fecha;
+- [x] se preservan exactamente los siete resultados de renovación;
+- [x] auto-renovación no equivale a aprobación;
+- [x] contrato se consulta desde su autoridad y no se duplica como texto libre en TI;
+- [x] costo se consulta y explica desde hechos económicos reconciliados;
+- [x] se preservan las nueve modalidades descriptivas de costo;
+- [x] garantía permanece vinculada a activo NEXO reconciliado;
+- [x] se preservan los cinco estados documentales de garantía;
+- [x] SLA externo, SLA interno y prioridad permanecen separados;
+- [x] se diseña salida de proveedor con exportación, revocación, recuperación y conciliación;
+- [x] se materializan handoffs con TI-UX-002, TI-UX-003 y TI-UX-004;
+- [x] autorización y segregación se resuelven por acción;
+- [x] secretos y datos sensibles no forman parte del portafolio ordinario;
+- [x] estados desconocidos y contradicciones se muestran explícitamente;
+- [x] alertas no ejecutan decisiones comerciales;
+- [x] la auditoría distingue proyección VISO de mutación en la fuente propietaria;
+- [x] el AS-IS de VISO, ORIGO y NUMERA se reconcilia sin afirmar ausencia absoluta por búsquedas incompletas;
+- [x] cada pendiente físico o de evidencia tiene propietario y condición de salida;
+- [x] no se ejecutan cambios físicos;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-UX-006` permanece únicamente reservada.
+
+---
+
+#### 49. Cobertura de prueba consumida
+
+La tarea se apoya en cobertura vigente que ya protege:
+
+- mesa de servicio tecnológica y administración de VISO;
+- separación de fuente de verdad, proyección y conciliación;
+- trazabilidad del proveedor y de las condiciones comerciales;
+- proveedor, contrato y condición comercial como objetos distintos;
+- reconciliación de hechos económicos y costos con sus fuentes;
+- experiencia administrativa con contexto, actor, permiso, segregación, impacto y fuente;
+- correlación entre aplicaciones, proveedores, licencias, contratos, costos y servicios;
+- identidad, garantía, mantenimiento y retiro de activos;
+- autorización de configuración protegida, proveedor y cuenta técnica;
+- uso de contratos versionados y handoffs entre aplicaciones;
+- no exposición de secretos en catálogos y soporte;
+- cambio y recuperación al migrar o retirar proveedor;
+- piloto y validación posterior de las superficies administrativas.
+
+TI-UX-005 materializa la experiencia que consume esas obligaciones sin introducir una nueva autoridad económica, algoritmo comercial, permiso, esquema físico o efecto empresarial adicional.
+
+---
+
+#### 50. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente una experiencia administrativa para comportamientos ya protegidos por el registro canónico vigente: fuente de verdad, conciliación, proveedor y contrato, licencia y acceso, trazabilidad económica, garantías, autorización, handoffs, cambio, recuperación y experiencia administrativa. No introduce una nueva conducta ejecutable, una regla económica nueva, una transición contractual nueva, una autorización nueva, un esquema físico ni una integración implementada. Por ello no corresponde crear ni modificar filas del registro de requisitos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 51. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación`
+
+TAREA ACTUAL APROBADA
+`TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos`
+
+SIGUIENTE TAREA RESERVADA
+`TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica`
+
+
 ### [ ] TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
