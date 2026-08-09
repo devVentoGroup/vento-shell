@@ -3217,6 +3217,1605 @@ SIGUIENTE TAREA RESERVADA
 `TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación`
 
 
-### [ ] TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación
+### ✅ TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica` — APROBADA
+**Tarea siguiente:** `TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos` — RESERVADA
+**Tipo de tarea:** documental; diseño materializado de la experiencia administrativa y operativa de VISO para incidentes, problemas, cambios, mantenimiento tecnológico y recuperación técnica, conservando los ciclos, autoridades, evidencias y handoffs canónicos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, pantallas desplegadas, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, redes, dispositivos, impresoras, aplicaciones, configuraciones, respaldos, restauraciones, proveedores, secretos ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** diseñar en VISO una experiencia integrada que permita operar y comprender cinco flujos tecnológicos relacionados —incidente, problema, cambio, mantenimiento y recuperación— sin convertirlos en un ticket genérico ni crear ciclos competidores. La experiencia reutiliza la mesa de servicio de `TI-UX-002`, el mapa técnico de `TI-UX-003` y los contratos aprobados de incidente, problema, cambio, observabilidad y recuperación; hace visibles estado, próxima acción, evidencia, dependencias y handoffs; y preserva que restauración, causa, cambio, mantenimiento, recuperación técnica, continuidad empresarial y cierre son hitos distintos.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-UX-004` queda documentalmente cerrada con una experiencia concreta de operación tecnológica en VISO compuesta por cinco lentes coordinadas:
+
+1. **Incidente:** restaurar o contener una interrupción, degradación o resultado desconocido sin confundir restauración con cierre.
+2. **Problema:** investigar recurrencia y causalidad sin promover hipótesis, coincidencias o workarounds a causa confirmada.
+3. **Cambio:** gobernar una modificación tecnológica desde evaluación hasta validación y revisión posterior sin convertir aprobación en ejecución.
+4. **Mantenimiento:** coordinar intervención física o técnica planificada o correctiva sobre un elemento, conservando autoridad física, soporte, prueba posterior y cambio formal cuando la intervención altera configuración administrada.
+5. **Recuperación:** coordinar restauración y recuperación técnica desde objetos y políticas verificables, separando backup, restore, validación técnica, validación empresarial, reconciliación y continuidad.
+
+La solución no crea cinco aplicaciones ni cinco fuentes de verdad. Proyecta en VISO objetos y estados propietarios con una navegación administrativa coherente.
+
+Cobertura materializada:
+
+| Control                                           | Resultado |
+| ------------------------------------------------- | --------: |
+| Lentes coordinadas                                |     **5** |
+| Estados canónicos del incidente preservados       |     **9** |
+| Esperas estructuradas del caso preservadas        |     **4** |
+| Clases de escalamiento preservadas                |     **5** |
+| Disparadores de problema preservados              |     **6** |
+| Estados del problema preservados                  |     **7** |
+| Transiciones del problema preservadas             |     **9** |
+| Estados de evidencia causal preservados           |     **4** |
+| Estados de error conocido preservados             |     **4** |
+| Estados de workaround preservados                 |     **5** |
+| Estados de eficacia preservados                   |     **5** |
+| Clases de cambio preservadas                      |     **3** |
+| Estados del cambio preservados                    |    **10** |
+| Niveles de riesgo del cambio preservados          |     **4** |
+| Estados de aprobación del cambio preservados      |     **5** |
+| Resultados de ejecución del cambio preservados    |     **4** |
+| Códigos de cierre del cambio preservados          |     **4** |
+| Perfiles cualitativos de recuperación preservados |     **5** |
+| Estados del ciclo de respaldo preservados         |     **9** |
+| Nuevos ciclos de estado inventados                |     **0** |
+| Cambios físicos                                   |     **0** |
+| Cambios en requisitos de prueba                   |     **0** |
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y conserva sin redefinir autoridad:
+
+- `TI-UX-002`, para cola de mesa de servicio, prioridad, SLA, asignación, comunicación, validación y cierre del caso;
+- `TI-UX-003`, para servicio y elemento afectados, salud, frescura, alertas, dependencias demostradas, cambios relacionados y evidencia segura;
+- `TI-DOM-007`, para caso tecnológico, incidente, impacto, urgencia, prioridad, SLA, escalamiento, restauración, validación, conocimiento, cierre y reapertura;
+- `TI-DOM-008`, para problema, hipótesis, causa raíz, error conocido, workaround, recurrencia, prevención y eficacia;
+- `TI-DOM-009`, para cambio tecnológico, clases, riesgo, aprobación, ventana, prueba, ejecución, rollback y revisión posterior;
+- `TI-DOM-010`, para señales, salud, alertas, logs y observabilidad;
+- `TI-DOM-011`, para respaldo, restauración, recuperación técnica y handoff hacia continuidad empresarial;
+- `TI-DOM-013`, para conocimiento, runbooks, capacitación y adopción;
+- `TI-AUTH-001` a `TI-AUTH-004`, para segregación, privilegio, configuración protegida y evidencia sensible;
+- `VPROC-0058`, como proceso propietario de solicitudes e incidentes tecnológicos;
+- `VPROC-0059`, como proceso separado de acceso tecnológico;
+- `VPROC-0062`, como proceso separado de continuidad empresarial;
+- NEXO, como autoridad del activo físico, ubicación, custodia, mantenimiento físico, garantía y ciclo de vida cuando corresponda;
+- BLOQUE T, E5, R y U, como autoridades posteriores de pruebas, release, implementación, migraciones, readiness, piloto y certificación;
+- `NOTIFY-ARC`, `EVID-ARC`, `QUEUE-ARC` y `PRINT-ARC`, cuando sus servicios participen en comunicación, evidencia, trabajos asíncronos o impresión.
+
+La interfaz no convierte una proyección en fuente autoritativa y no cambia el propietario del objeto por mostrarlo en VISO.
+
+---
+
+#### 3. Problema de experiencia que se cierra
+
+Sin una experiencia integrada, un operador técnico puede ver un ticket, una alerta, un dispositivo o un cambio como objetos aislados y perder la secuencia real:
+
+```text
+QUÉ FALLÓ
+→ QUÉ SERVICIO Y ELEMENTO ESTÁN AFECTADOS
+→ QUÉ ESTÁ CONFIRMADO Y QUÉ ES HIPÓTESIS
+→ QUÉ SE ESTÁ HACIENDO PARA RESTAURAR
+→ SI EXISTE UN PROBLEMA DE CAUSA O RECURRENCIA
+→ SI HAY UN CAMBIO NECESARIO O EN CURSO
+→ SI EXISTE MANTENIMIENTO FÍSICO O TÉCNICO RELACIONADO
+→ SI SE REQUIERE RECUPERACIÓN
+→ QUÉ VALIDACIÓN FALTA
+→ QUÉ PENDIENTES CONTINÚAN DESPUÉS DE RESTAURAR
+```
+
+`TI-UX-004` resuelve esa fragmentación sin fusionar objetos ni ciclos.
+
+Regla de experiencia:
+
+```text
+CORRELACIONAR
+≠
+FUSIONAR
+```
+
+y:
+
+```text
+VER TODO LO RELACIONADO
+≠
+PODER MODIFICAR TODO LO RELACIONADO
+```
+
+---
+
+#### 4. Arquitectura de información
+
+La experiencia administrativa de VISO se organiza conceptualmente en una superficie de **Operación TI** con cinco vistas de trabajo:
+
+- **Incidentes**
+- **Problemas**
+- **Cambios**
+- **Mantenimiento**
+- **Recuperación**
+
+Estas vistas son lentes sobre objetos canónicos relacionados. No obligan a crear una dirección web, menú, tabla o módulo físico en esta fase.
+
+La composición de escritorio utiliza tres zonas:
+
+1. **Lista de trabajo:** elementos que requieren atención del actor.
+2. **Expediente principal:** ciclo, estado, siguiente acción, decisiones y evidencia del objeto seleccionado.
+3. **Contexto correlacionado:** servicio, elemento, salud, dependencias, incidentes, problemas, cambios, mantenimiento, recuperación, proveedor y continuidad relacionados según autorización.
+
+La interfaz prioriza el trabajo actual y la siguiente acción. Métricas, historial amplio, configuración y evidencia avanzada permanecen en segundo nivel.
+
+---
+
+#### 5. Regla de entrada y preservación de contexto
+
+Los flujos pueden abrirse desde:
+
+- un caso de `TI-UX-002`;
+- un elemento o servicio de `TI-UX-003`;
+- una alerta accionable;
+- un problema existente;
+- un cambio;
+- una intervención de mantenimiento;
+- una solicitud de recuperación;
+- un handoff documentado desde otro dominio autorizado.
+
+Al cruzar entre lentes se conserva, cuando exista:
+
+```text
+objeto_origen
+servicio
+elemento
+sede
+área
+ambiente
+estado
+salud_y_frescura
+caso_relacionado
+problema_relacionado
+cambio_relacionado
+evidencia
+actor_efectivo
+alcance_autorizado
+```
+
+El cruce no hereda autorización. Cada acción se resuelve nuevamente bajo su autoridad.
+
+---
+
+#### 6. Cabecera común del expediente
+
+Todo expediente visible en estas cinco lentes muestra primero:
+
+- tipo de objeto;
+- referencia estable;
+- título humano;
+- estado canónico y etiqueta humana;
+- servicio afectado;
+- elemento o alcance técnico cuando esté demostrado;
+- sede, área o ambiente cuando sean pertinentes;
+- propietario o responsable actual;
+- siguiente acción;
+- bloqueo o espera actual;
+- última actualización material;
+- salud y frescura cuando exista evidencia;
+- relaciones activas con otros flujos;
+- indicador de información sensible restringida cuando corresponda.
+
+No se muestran como cabecera primaria:
+
+- IP completa;
+- topología detallada;
+- payloads;
+- logs;
+- secretos;
+- tokens;
+- credenciales;
+- datos personales innecesarios;
+- hipótesis como si fueran hechos;
+- métricas decorativas que compitan con la acción.
+
+---
+
+#### 7. Línea de tiempo común
+
+La línea de tiempo separa visualmente:
+
+- hecho observado;
+- señal técnica;
+- decisión;
+- acción ejecutada;
+- resultado;
+- comunicación;
+- validación;
+- handoff;
+- evidencia añadida.
+
+Cada entrada muestra fuente, actor o principal técnico cuando aplique, momento observado y momento recibido cuando sean distintos, y relación con el objeto propietario.
+
+La interfaz diferencia:
+
+```text
+HECHO CONFIRMADO
+≠
+HIPÓTESIS
+≠
+DECISIÓN
+≠
+ACCIÓN
+≠
+RESULTADO
+```
+
+Una corrección histórica se presenta como nueva entrada o revisión. No se reescribe silenciosamente la línea de tiempo.
+
+---
+
+#### 8. Flujo de incidente
+
+El incidente se opera dentro del caso de `VPROC-0058`. `TI-UX-004` no crea una segunda identidad de incidente.
+
+La vista de incidente enfatiza:
+
+1. impacto y alcance actual;
+2. prioridad y SLA provenientes de `TI-UX-002`;
+3. servicio y elementos afectados;
+4. salud y evidencia fresca;
+5. owner y nivel de atención;
+6. estrategia actual de restauración;
+7. workaround cuando exista;
+8. cambios, problemas, proveedores y recuperación relacionados;
+9. próxima comunicación;
+10. validación pendiente;
+11. deuda que continuará después de restaurar.
+
+La pantalla debe responder rápidamente:
+
+```text
+¿QUÉ ESTÁ AFECTADO?
+¿QUÉ FUNCIONA?
+¿QUÉ ESTAMOS HACIENDO AHORA?
+¿QUÉ BLOQUEA?
+¿CUÁNDO ES LA PRÓXIMA ACTUALIZACIÓN?
+¿QUÉ NECESITA VALIDACIÓN?
+```
+
+---
+
+#### 9. Estados del incidente en la experiencia
+
+Se preservan exactamente los nueve estados de `VPROC-0058`.
+
+| Estado canónico             | Etiqueta humana de VISO       | Foco principal                                     |
+| --------------------------- | ----------------------------- | -------------------------------------------------- |
+| `TECH_CASE_REPORTED`        | Reportado                     | completar entrada y contexto                       |
+| `TRIAGE_IN_PROGRESS`        | En triage                     | clasificar, resolver alcance inicial e impacto     |
+| `PRIORITIZED`               | Priorizado                    | confirmar owner, SLA y siguiente acción            |
+| `DIAGNOSIS_IN_PROGRESS`     | En diagnóstico                | trabajar con evidencia y dependencias              |
+| `WORKAROUND_APPLIED`        | Workaround aplicado           | comprobar efecto, riesgo y vigencia                |
+| `RESOLUTION_IN_PROGRESS`    | Resolución en curso           | ejecutar trabajo autorizado y restaurar            |
+| `USER_VALIDATION_PENDING`   | Esperando validación          | comprobar que el resultado volvió                  |
+| `KNOWLEDGE_CAPTURE_PENDING` | Cierre técnico en preparación | transferir conocimiento y pendientes               |
+| `TECH_CASE_CLOSED`          | Cerrado                       | mostrar cierre, resultado y relaciones posteriores |
+
+La etiqueta humana no sustituye el estado canónico ni crea otra máquina de estados.
+
+---
+
+#### 10. Esperas y bloqueos del incidente
+
+Las cuatro esperas estructuradas se muestran como bloque visible, nunca como texto libre enterrado:
+
+| Condición                    | Presentación                     | Información obligatoria                          |
+| ---------------------------- | -------------------------------- | ------------------------------------------------ |
+| `WAITING_REQUESTER_INFO`     | Esperando información solicitada | pregunta exacta, destinatario y fecha            |
+| `WAITING_REQUIRED_APPROVAL`  | Esperando aprobación necesaria   | decisión, autoridad y alcance                    |
+| `PLANNED_WINDOW_NOT_STARTED` | Esperando ventana programada     | inicio, zona horaria y condición                 |
+| `WAITING_EXTERNAL_PROVIDER`  | Esperando proveedor              | caso externo, owner interno y próximo compromiso |
+
+La interfaz no presenta una espera como ausencia de responsable y no oculta incumplimientos de SLA.
+
+---
+
+#### 11. Escalamiento desde el incidente
+
+Se preservan cinco clases:
+
+- `ESC_FUNCTIONAL`
+- `ESC_TECHNICAL`
+- `ESC_PROVIDER`
+- `ESC_SECURITY`
+- `ESC_CONTINUITY`
+
+La acción de escalar abre una vista de handoff con:
+
+- origen;
+- destino;
+- motivo;
+- pendientes;
+- evidencia;
+- fecha objetivo;
+- aceptación del receptor;
+- comunicación requerida.
+
+La reasignación no se muestra como completada hasta que el receptor acepta cuando el contrato lo exige.
+
+---
+
+#### 12. Incidente mayor
+
+`MAJOR_INCIDENT` se muestra como marcador reforzado sobre el incidente, no como un proceso separado.
+
+La vista de coordinación añade un panel persistente con:
+
+- inicio del incidente;
+- servicios afectados;
+- alcance empresarial conocido;
+- alcance todavía desconocido;
+- prioridad;
+- coordinador;
+- estado de operación mínima;
+- workaround o contención;
+- cambios de emergencia relacionados;
+- estado de recuperación técnica;
+- evaluación de continuidad;
+- última comunicación;
+- próxima actualización;
+- línea de tiempo resumida.
+
+El diagnóstico sensible permanece separado de la comunicación operativa.
+
+La vista nunca declara causa definitiva antes de confirmación ni presenta `RECOVERY` de una señal como cierre del incidente.
+
+---
+
+#### 13. Restauración, validación y cierre del incidente
+
+La interfaz muestra hitos separados:
+
+```text
+CONTENCIÓN
+→ WORKAROUND
+→ RESTAURACIÓN TÉCNICA
+→ VALIDACIÓN
+→ CONOCIMIENTO / HANDOFF
+→ CIERRE
+```
+
+Un botón o acción de cierre no aparece como acción ordinaria mientras falte restauración o fulfillment, validación, conocimiento aplicable o aceptación de pendientes.
+
+En `USER_VALIDATION_PENDING` se hace visible:
+
+- qué debe validar;
+- quién puede validar;
+- evidencia disponible;
+- opción de validación positiva;
+- opción de validación negativa;
+- impacto de la respuesta.
+
+Una validación negativa devuelve el trabajo a resolución. El silencio no se presenta como aceptación.
+
+---
+
+#### 14. Handoff incidente → problema
+
+La interfaz ofrece el handoff a problema cuando existe al menos uno de los seis disparadores canónicos:
+
+1. recurrencia material;
+2. incidentes con síntoma o dependencia compartida;
+3. causa desconocida después de restaurar;
+4. workaround temporal recurrente;
+5. incidente relacionado con cambio que requiere análisis causal;
+6. incumplimiento del guardrail de recurrencia.
+
+El handoff muestra:
+
+- disparador;
+- incidentes relacionados;
+- evidencia inicial;
+- servicio y elementos;
+- patrón observado;
+- pregunta causal todavía abierta;
+- responsable propuesto según autoridad.
+
+No presenta el problema como creado automáticamente por duración, prioridad o similitud de texto.
+
+---
+
+#### 15. Flujo de problema
+
+La vista de problema se divide en seis zonas de trabajo:
+
+1. **Enunciado y alcance**
+2. **Incidentes y recurrencia**
+3. **Hipótesis y evidencia**
+4. **Causa, error conocido y workaround**
+5. **Acciones preventivas**
+6. **Eficacia y cierre**
+
+La cabecera evita una falsa certeza: mientras no exista causa confirmada, la interfaz utiliza lenguaje como **“causa en investigación”** y mantiene visible la evidencia contradictoria.
+
+---
+
+#### 16. Estados del problema
+
+Se preservan exactamente siete estados.
+
+| Estado                   | Etiqueta humana        | Acción dominante                      |
+| ------------------------ | ---------------------- | ------------------------------------- |
+| `IDENTIFIED`             | Identificado           | aceptar alcance y owner               |
+| `ANALYSIS_IN_PROGRESS`   | Análisis en curso      | comparar hipótesis y evidencia        |
+| `CAUSE_CONFIRMED`        | Causa confirmada       | definir prevención                    |
+| `PREVENTION_PLANNED`     | Prevención planificada | aceptar acciones y responsables       |
+| `PREVENTION_IN_PROGRESS` | Prevención en curso    | seguir acciones propietarias          |
+| `EFFECTIVENESS_REVIEW`   | Evaluando eficacia     | observar resultado posterior          |
+| `CLOSED`                 | Cerrado                | conservar resultado y riesgo residual |
+
+Las nueve transiciones aprobadas permanecen gobernadas por `TI-DOM-008`; la interfaz no añade atajos.
+
+---
+
+#### 17. Panel de hipótesis y causalidad
+
+Cada hipótesis aparece como una tarjeta versionada con:
+
+- enunciado;
+- alcance;
+- autor;
+- observaciones esperadas;
+- evidencia compatible;
+- evidencia contradictoria;
+- prueba o comparación;
+- revisión;
+- estado de evidencia;
+- razón de decisión.
+
+Estados de evidencia:
+
+- `HYPOTHESIS`
+- `SUPPORTED`
+- `CONFIRMED`
+- `REFUTED`
+
+La interfaz impide visualmente estas equivalencias:
+
+```text
+CORRELACIÓN TEMPORAL = CAUSA
+```
+
+```text
+CAMBIO CERCANO EN EL TIEMPO = CULPABLE
+```
+
+```text
+WORKAROUND FUNCIONÓ = CAUSA CONFIRMADA
+```
+
+Esas equivalencias se muestran como inválidas.
+
+---
+
+#### 18. Relación incidente ↔ problema
+
+Los cuatro vínculos canónicos se muestran explícitamente:
+
+- `PRIMARY_CAUSAL_CANDIDATE`
+- `CONTRIBUTING_RELATION`
+- `RECURRENCE_INSTANCE`
+- `POST_INCIDENT_FINDING`
+
+La tarjeta del incidente muestra el tipo de relación, no solo un enlace genérico.
+
+Un vínculo causal candidato nunca se representa con el mismo tratamiento visual que una causa confirmada.
+
+---
+
+#### 19. Error conocido y workaround
+
+El problema puede mostrar un **error conocido** únicamente bajo el contrato de `TI-DOM-008`.
+
+Estados del error conocido:
+
+- `DRAFT`
+- `ACTIVE`
+- `SUPERSEDED`
+- `RETIRED`
+
+Estados del workaround:
+
+- `DRAFT`
+- `VALIDATED`
+- `ACTIVE`
+- `SUSPENDED`
+- `RETIRED`
+
+La interfaz muestra siempre:
+
+- alcance;
+- versión;
+- precondiciones;
+- contraindicaciones;
+- riesgo;
+- autorización requerida;
+- resultado esperado;
+- método de validación;
+- vigencia;
+- revisión;
+- owner.
+
+`DRAFT` nunca aparece como recomendación operativa y `ACTIVE` nunca concede permisos.
+
+---
+
+#### 20. Recurrencia y prevención
+
+La experiencia de problema ofrece una vista de recurrencia basada en las señales canónicas:
+
+- mismo servicio y firma de síntoma;
+- mismo componente o dependencia;
+- mismo código o firma de error verificable;
+- mismo cambio o familia de versión;
+- reutilización del mismo workaround;
+- reapertura o validación negativa repetida;
+- mismo proveedor o dependencia externa;
+- patrón temporal, carga, sede o contexto con evidencia adicional.
+
+Los niveles visibles son:
+
+- `RECURRENCE_SIGNAL`
+- `RECURRENCE_CORRELATED`
+- `RECURRENCE_CONFIRMED`
+
+No se define un umbral universal de cantidad o tiempo.
+
+Las acciones preventivas permanecen ligadas a su autoridad: cambio, hardware, proveedor, monitoreo, recuperación, conocimiento o proceso.
+
+---
+
+#### 21. Eficacia y cierre del problema
+
+Los cinco estados de eficacia se muestran separados del estado del problema:
+
+- `NOT_READY`
+- `OBSERVING`
+- `EFFECTIVE`
+- `INEFFECTIVE`
+- `INCONCLUSIVE`
+
+La vista de eficacia muestra:
+
+- criterio de éxito;
+- ventana de observación;
+- evidencia recogida;
+- recurrencias durante la ventana;
+- health relevante;
+- validación del proceso;
+- efectos adversos;
+- decisión.
+
+Un cambio exitoso no marca automáticamente `EFFECTIVE`.
+
+Los códigos de cierre disponibles bajo autoridad son:
+
+- `PREVENTION_EFFECTIVE`
+- `DUPLICATE_MERGED`
+- `INVALIDATED_BY_EVIDENCE`
+- `RISK_ACCEPTED_BY_AUTHORIZED_OWNER`
+
+La aceptación de riesgo no puede ejecutarla unilateralmente el técnico.
+
+---
+
+#### 22. Handoff problema → cambio
+
+Cuando una causa confirmada o acción preventiva requiere modificación tecnológica, el problema muestra:
+
+```text
+CHANGE_REQUIRED
+```
+
+como relación pendiente.
+
+El handoff incluye:
+
+- causa o condición;
+- objetivo preventivo;
+- servicios y elementos;
+- riesgo;
+- evidencia;
+- criterio de éxito;
+- restricciones;
+- relación con incidentes;
+- propietario de la acción.
+
+El problema continúa visible hasta conocer el resultado y la eficacia posterior del cambio.
+
+---
+
+#### 23. Flujo de cambio
+
+La vista de cambio organiza el expediente en:
+
+1. motivo y origen;
+2. alcance y elementos afectados;
+3. clase y riesgo;
+4. estado anterior y estado propuesto;
+5. dependencias;
+6. aprobación;
+7. ventana;
+8. plan de prueba;
+9. rollback;
+10. ejecución;
+11. validación;
+12. revisión posterior;
+13. cierre.
+
+Las clases preservadas son:
+
+- `STANDARD`
+- `NORMAL`
+- `EMERGENCY`
+
+La clase aparece junto al riesgo; no se usa como sustituto del riesgo.
+
+---
+
+#### 24. Estados del cambio
+
+Se preservan exactamente diez estados:
+
+| Estado                       | Etiqueta humana            |
+| ---------------------------- | -------------------------- |
+| `DRAFT`                      | Borrador                   |
+| `ASSESSMENT_IN_PROGRESS`     | En evaluación              |
+| `APPROVAL_PENDING`           | Esperando aprobación       |
+| `APPROVED`                   | Aprobado                   |
+| `SCHEDULED`                  | Programado                 |
+| `IMPLEMENTATION_IN_PROGRESS` | En implementación          |
+| `VALIDATION_PENDING`         | Esperando validación       |
+| `POST_IMPLEMENTATION_REVIEW` | Revisión posterior         |
+| `CLOSED`                     | Cerrado                    |
+| `CANCELLED`                  | Cancelado antes del efecto |
+
+La interfaz no ofrece `CANCELLED` después de producir un efecto técnico.
+
+---
+
+#### 25. Riesgo y aprobación de cambio
+
+Los cuatro niveles de riesgo se muestran con explicación de la dimensión que gobierna:
+
+- `LOW`
+- `MEDIUM`
+- `HIGH`
+- `CRITICAL`
+
+La vista de evaluación presenta las ocho dimensiones aprobadas:
+
+- servicio y proceso;
+- alcance;
+- seguridad y autorización;
+- datos y estado;
+- dependencias;
+- reversibilidad;
+- prueba y observabilidad;
+- ventana y continuidad.
+
+Estados de aprobación:
+
+- `NOT_READY_FOR_APPROVAL`
+- `PENDING`
+- `APPROVED`
+- `CHANGES_REQUIRED`
+- `REJECTED`
+
+La interfaz hace visible cuando una aprobación quedó obsoleta por cambio material de alcance, riesgo, ventana, baseline o dependencia.
+
+---
+
+#### 26. Ventana y go/no-go
+
+El bloque de ventana muestra:
+
+- sede, ambiente o alcance;
+- zona horaria;
+- inicio;
+- fin esperado;
+- límite de rollback;
+- etapa crítica;
+- dependencias externas;
+- freeze;
+- conflictos;
+- decisión go/no-go.
+
+Inmediatamente antes de ejecución se presenta un checklist de readiness:
+
+```text
+APROBACIÓN VIGENTE
++ VENTANA VIGENTE
++ BASELINE DISPONIBLE
++ DEPENDENCIAS LISTAS
++ PLAN DE PRUEBA LISTO
++ ROLLBACK LISTO
++ EJECUTORES LISTOS
++ COMUNICACIÓN LISTA
+```
+
+La interfaz devuelve **NO-GO** cuando falta una condición obligatoria y muestra cuál falta.
+
+Un cambio de emergencia puede aceptar una limitación únicamente bajo la autoridad correspondiente; la interfaz no presenta la emergencia como bypass.
+
+---
+
+#### 27. Ejecución y resultado del cambio
+
+Durante implementación se muestra un registro paso a paso con:
+
+- actor o principal;
+- momento;
+- paso;
+- estado anterior;
+- resultado;
+- evidencia;
+- desviación;
+- decisión de continuar, detener o revertir.
+
+Se preservan cuatro resultados de ejecución:
+
+- `IMPLEMENTED`
+- `ROLLED_BACK`
+- `STOPPED_NO_EFFECT`
+- `FAILED_OR_UNKNOWN`
+
+Ninguno se presenta como cierre automático.
+
+`FAILED_OR_UNKNOWN` activa un tratamiento visual de incertidumbre y exige contención, evidencia y correlación con incidente cuando pueda existir afectación.
+
+---
+
+#### 28. Rollback
+
+La vista de rollback muestra, antes de ejecutar:
+
+- estado objetivo de retorno;
+- mecanismo;
+- actor;
+- trigger;
+- punto de no retorno;
+- dependencias;
+- tratamiento de datos y efectos producidos;
+- compatibilidad;
+- evidencia de reversibilidad;
+- validación posterior.
+
+La interfaz evita un botón genérico **“Revertir”** cuando el objeto exige compensación, restauración de configuración, retorno de routing, recovery o forward-fix.
+
+Un rollback ejecutado conserva el intento fallido y sus efectos; no borra historia.
+
+---
+
+#### 29. Revisión posterior y cierre del cambio
+
+La revisión posterior muestra:
+
+- plan original;
+- ejecución real;
+- desviaciones;
+- evidencia;
+- incidentes relacionados;
+- rollback;
+- baseline recuperado o nuevo estado;
+- deuda;
+- aprendizaje;
+- nuevos handoffs.
+
+Los cuatro códigos de cierre preservados son:
+
+- `IMPLEMENTED_VALIDATED`
+- `ROLLED_BACK_VALIDATED`
+- `CANCELLED_BEFORE_EFFECT`
+- `CLOSED_WITH_CONTROLLED_HANDOFF`
+
+La última opción exige que cada deuda o riesgo tenga expediente y propietario aceptado; no puede ocultar un resultado todavía desconocido con capacidad de producir efecto.
+
+---
+
+#### 30. Cambio de emergencia
+
+Cuando `change_class = EMERGENCY`, la interfaz activa una presentación reforzada que exige:
+
+- incidente, seguridad o condición urgente relacionada;
+- motivo de urgencia;
+- alcance mínimo;
+- autoridad aplicable;
+- ejecutor;
+- riesgo;
+- baseline disponible;
+- estrategia de rollback, contención o recuperación;
+- criterio de éxito;
+- criterio de detención;
+- prueba posterior;
+- comunicación;
+- evidencia;
+- revisión posterior obligatoria.
+
+La experiencia nunca presenta **“emergencia”** como una opción para saltar aprobación, privilegio, evidencia, rollback o revisión.
+
+---
+
+#### 31. Flujo de mantenimiento
+
+**Mantenimiento es una lente coordinadora, no una nueva máquina de estados canónica.**
+
+La vista reúne intervenciones sobre activos, endpoints, redes, impresoras, periféricos y otros elementos cuando exista autoridad y evidencia, conservando:
+
+- identidad del elemento;
+- servicio dependiente;
+- ubicación y custodia;
+- condición o síntoma;
+- owner de soporte;
+- procedimiento de diagnóstico;
+- nivel de mantenimiento permitido en sede;
+- repuesto, sustituto o contingencia;
+- configuración reproducible;
+- consumible, cable, cargador, batería o pieza crítica cuando aplique;
+- criterio de reparación frente a reemplazo;
+- ventana;
+- proveedor o garantía relacionados;
+- prueba posterior;
+- resultado;
+- cambio relacionado cuando corresponda;
+- incidente relacionado cuando exista;
+- evidencia;
+- pendientes y próximo control cuando provenga de una fuente autoritativa.
+
+La vista no crea un mantenimiento genérico que compita con NEXO, garantía, proveedor o cambio.
+
+---
+
+#### 32. Regla mantenimiento ↔ cambio
+
+Se fija en la experiencia:
+
+```text
+MANTENIMIENTO FÍSICO
+≠
+CAMBIO TECNOLÓGICO
+```
+
+pero:
+
+```text
+MANTENIMIENTO
++ MODIFICACIÓN MATERIAL DE CONFIGURACIÓN
+→ CAMBIO TECNOLÓGICO REQUERIDO
+```
+
+Ejemplos que exigen correlación con cambio cuando alteran estado administrado:
+
+- IP, DHCP, DNS, segmento o SSID;
+- firmware;
+- driver;
+- versión o release;
+- baseline;
+- binding o routing;
+- configuración de aplicación;
+- integración;
+- política de identidad o seguridad;
+- configuración que afecta disponibilidad o dependencia.
+
+Limpieza, inspección o sustitución de consumible no se convierten automáticamente en cambio si no alteran configuración administrada ni introducen otro efecto material, pero conservan el registro físico o técnico en su autoridad.
+
+---
+
+#### 33. Mantenimiento correctivo relacionado con incidente
+
+Cuando una falla requiere intervención física:
+
+```text
+INCIDENTE
+→ IDENTIFICA ELEMENTO
+→ INTERVENCIÓN / MANTENIMIENTO
+→ PRUEBA POSTERIOR
+→ RESTAURACIÓN DEL SERVICIO
+→ VALIDACIÓN DEL CASO
+```
+
+La intervención puede terminar mientras el incidente continúa abierto.
+
+Si la reparación exige configuración protegida, el flujo muestra el cambio relacionado.
+
+Si exige sustitución física, la interfaz conserva el handoff hacia NEXO y verifica que el reemplazo no herede credenciales, sesiones o datos locales de manera no autorizada.
+
+---
+
+#### 34. Mantenimiento preventivo y disponibilidad
+
+La vista de mantenimiento puede mostrar trabajos programados provenientes de fuentes propietarias, pero no inventa una periodicidad.
+
+Para un trabajo planificado se muestran:
+
+- fuente de la necesidad;
+- elemento;
+- servicio afectable;
+- ventana;
+- riesgo de indisponibilidad;
+- contingencia;
+- repuesto;
+- prueba posterior;
+- cambios relacionados;
+- comunicación;
+- owner.
+
+La fecha de mantenimiento solo es autoritativa cuando proviene de una fuente vigente. Una recomendación, garantía o hábito operativo no se presenta como plan confirmado.
+
+---
+
+#### 35. Flujo de recuperación técnica
+
+La experiencia de recuperación sigue la secuencia aprobada de `TI-DOM-011`:
+
+```text
+OBJETO AUTORITATIVO
+→ PERFIL DE RECUPERACIÓN
+→ OBJETIVO DE CONTINUIDAD RECIBIDO
+→ POLÍTICA DE PROTECCIÓN
+→ CREACIÓN DE COPIA
+→ VERIFICACIÓN
+→ PRUEBA DE RESTAURACIÓN
+→ SOLICITUD DE RECUPERACIÓN
+→ AUTORIZACIÓN
+→ RESTAURACIÓN AISLADA O CONTROLADA
+→ VALIDACIÓN TÉCNICA
+→ VALIDACIÓN EMPRESARIAL
+→ RECONCILIACIÓN
+→ RETORNO CONTROLADO
+→ EVIDENCIA Y APRENDIZAJE
+```
+
+La secuencia se presenta como fases de trabajo y evidencia; no crea un state machine adicional.
+
+---
+
+#### 36. Perfiles de recuperación
+
+Se preservan los cinco perfiles cualitativos:
+
+| Perfil                    | Presentación                            |
+| ------------------------- | --------------------------------------- |
+| `RC0_SAFETY_INTEGRITY`    | Seguridad e integridad crítica          |
+| `RC1_CRITICAL_OPERATION`  | Operación crítica                       |
+| `RC2_IMPORTANT_OPERATION` | Operación importante                    |
+| `RC3_SUPPORTING`          | Capacidad de soporte                    |
+| `RC4_RECONSTRUCTIBLE`     | Reconstruible desde fuente autoritativa |
+
+La interfaz no inventa tiempos numéricos a partir del perfil.
+
+RTO, RPO, MTPD, MBCO u otros objetivos solo se muestran cuando existe una referencia aprobada y vigente.
+
+---
+
+#### 37. Estado de las copias y restaurabilidad
+
+Cuando el flujo depende de una copia, se preservan los nueve estados:
+
+- `SCHEDULED`
+- `RUNNING`
+- `COMPLETED_UNVERIFIED`
+- `VERIFIED`
+- `FAILED`
+- `DEGRADED`
+- `QUARANTINED`
+- `EXPIRED`
+- `DELETED`
+
+La presentación aplica reglas estrictas:
+
+- `COMPLETED_UNVERIFIED` se muestra como **no verificado**, nunca como listo para restaurar;
+- `QUARANTINED` bloquea uso;
+- `EXPIRED` no se presenta como vigente;
+- `DELETED` conserva solo la evidencia permitida;
+- `VERIFIED` no sustituye una prueba de restauración cuando la política la exige.
+
+---
+
+#### 38. Solicitud y autorización de recuperación
+
+Antes de cualquier restauración, la vista debe mostrar:
+
+- objeto o servicio;
+- incidente, cambio o continuidad relacionados;
+- motivo;
+- impacto actual;
+- perfil de recuperación;
+- objetivo recibido;
+- punto recuperable;
+- integridad y verificación;
+- dependencias;
+- autorización;
+- riesgo de sobrescritura;
+- efectos externos que deben inhibirse;
+- ambiente o aislamiento;
+- estrategia de reconciliación;
+- owner.
+
+La interfaz no ofrece una restauración destructiva con confirmación genérica.
+
+Una recuperación que toca Supabase, datos, Auth, Storage, Realtime, Edge Functions, secretos, migraciones o integraciones conserva los controles y paquetes propietarios; esta tarea no ejecuta ninguno.
+
+---
+
+#### 39. Restauración aislada y validación
+
+Cuando sea técnicamente posible y seguro, la experiencia privilegia primero una restauración aislada o controlada.
+
+La vista diferencia:
+
+```text
+RESTAURACIÓN EJECUTADA
+≠
+VALIDACIÓN TÉCNICA
+≠
+VALIDACIÓN EMPRESARIAL
+≠
+RECUPERACIÓN COMPLETA
+```
+
+La validación técnica comprueba integridad, configuración, dependencias, seguridad y health aplicables.
+
+La validación empresarial comprueba el resultado mínimo del proceso.
+
+Una pantalla que abre o un servicio que responde no se presenta como recuperación empresarial suficiente.
+
+---
+
+#### 40. Reconciliación y retorno controlado
+
+Después de recuperar, la interfaz hace visibles:
+
+- trabajos generados durante la interrupción;
+- backlog;
+- operaciones pendientes;
+- duplicados potenciales;
+- resultados desconocidos;
+- conciliaciones;
+- cambios temporales;
+- contingencias activas;
+- datos o documentos que deban reconstruirse;
+- accesos temporales que deban terminar;
+- diferencias entre estado recuperado y estado actual;
+- validación de retorno al modo normal.
+
+El retorno a operación normal exige reconciliación proporcional al proceso. No se ocultan efectos pendientes bajo la etiqueta **“recuperado”**.
+
+---
+
+#### 41. Recuperación técnica ↔ continuidad empresarial
+
+La interfaz mantiene:
+
+```text
+RECUPERACIÓN TÉCNICA
+≠
+CONTINUIDAD EMPRESARIAL
+```
+
+VISO muestra un bloque de continuidad cuando:
+
+- el resultado mínimo empresarial no está disponible;
+- se activó un modo alterno;
+- existe una sede, canal o procedimiento de contingencia;
+- quedan trabajos degradados que deben reconciliarse;
+- el alcance supera la coordinación ordinaria de soporte.
+
+El expediente de continuidad conserva su identidad `VPROC-0062`.
+
+Un servicio técnicamente restaurado puede coexistir con continuidad todavía abierta.
+
+---
+
+#### 42. Matriz de handoffs entre las cinco lentes
+
+| Origen        | Condición                        | Destino       | Qué se conserva                                                |
+| ------------- | -------------------------------- | ------------- | -------------------------------------------------------------- |
+| Incidente     | recurrencia o causa abierta      | Problema      | caso, evidencia, servicio, elementos, patrón                   |
+| Incidente     | modificación necesaria           | Cambio        | motivo, prioridad, riesgo, elementos, objetivo de restauración |
+| Incidente     | intervención física              | Mantenimiento | elemento, síntoma, ubicación, owner, prueba requerida          |
+| Incidente     | pérdida o corrupción recuperable | Recuperación  | alcance, impacto, objetos y punto de recuperación              |
+| Problema      | prevención mediante modificación | Cambio        | causa, acción preventiva, criterio de eficacia                 |
+| Problema      | control de recuperación          | Recuperación  | riesgo, objeto, criterio preventivo                            |
+| Cambio        | efecto adverso                   | Incidente     | efecto, ventana, baseline, evidencia                           |
+| Cambio        | rollback o restore necesario     | Recuperación  | estado objetivo, punto de retorno, datos y dependencias        |
+| Mantenimiento | modificación de configuración    | Cambio        | elemento, estado anterior, intervención propuesta, prueba      |
+| Mantenimiento | falla detectada                  | Incidente     | síntoma, elemento, evidencia, impacto                          |
+| Recuperación  | servicio no disponible           | Incidente     | estado técnico, fallos, evidencia                              |
+| Recuperación  | operación mínima no restituida   | Continuidad   | servicio mínimo, backlog, modo alterno, pendientes             |
+
+Ningún handoff borra o convierte el objeto origen.
+
+---
+
+#### 43. Panel de relaciones
+
+El panel contextual muestra relaciones por identidad y tipo, no una lista plana.
+
+Agrupaciones:
+
+- **Caso e incidente**
+- **Problema**
+- **Cambio**
+- **Mantenimiento**
+- **Recuperación**
+- **Servicio y elementos**
+- **Alertas y salud**
+- **Proveedor**
+- **Continuidad**
+- **Conocimiento**
+
+Cada relación indica:
+
+- tipo;
+- estado;
+- owner;
+- momento relevante;
+- motivo de relación;
+- acción disponible según autorización.
+
+La ausencia de relación se muestra como ausencia de evidencia, no como certeza de que no existe dependencia.
+
+---
+
+#### 44. Integración con el mapa técnico de TI-UX-003
+
+Desde el contexto de un flujo, el actor puede abrir el elemento o servicio correlacionado y consultar:
+
+- clase;
+- identidad;
+- salud;
+- frescura;
+- relaciones demostradas;
+- alertas;
+- cambios;
+- evidencia segura.
+
+Desde el mapa puede abrir un flujo relacionado preservando el contexto.
+
+Regla:
+
+```text
+MAPA EXPLICA DEPENDENCIAS
+→ FLUJO EXPLICA TRABAJO Y DECISIONES
+```
+
+El mapa no ejecuta el flujo y el flujo no redefine el grafo.
+
+---
+
+#### 45. Integración con la mesa de servicio de TI-UX-002
+
+`TI-UX-002` conserva la cola principal y las acciones ordinarias de caso.
+
+`TI-UX-004` profundiza únicamente cuando existe trabajo especializado:
+
+- incidente activo;
+- coordinación de incidente mayor;
+- análisis de problema;
+- cambio;
+- intervención de mantenimiento;
+- recuperación.
+
+Un operador no debe mantener datos duplicados en una pantalla de cola y otra de flujo. La lista de TI-UX-002 proyecta el estado propietario del expediente especializado.
+
+---
+
+#### 46. Seguridad, autorización y minimización
+
+La experiencia aplica:
+
+```text
+VISIBILIDAD
+≠
+AUTORIDAD DE ACCIÓN
+```
+
+y:
+
+```text
+DIAGNÓSTICO
+≠
+ACCESO ILIMITADO
+```
+
+Reglas:
+
+1. logs sensibles permanecen ocultos hasta autorización compatible;
+2. la vista primaria usa resúmenes minimizados;
+3. secretos no aparecen en timeline, cambio, mantenimiento, recovery o conocimiento;
+4. evidencia sensible se referencia;
+5. proveedor recibe solo contexto autorizado;
+6. soporte remoto no hereda permisos del trabajador;
+7. cambio aprobado no concede sesión privilegiada;
+8. prioridad crítica no amplía acceso;
+9. exportar o capturar evidencia es acción distinta de verla;
+10. el historial de autorización permanece auditable.
+
+---
+
+#### 47. Acciones peligrosas y confirmación reforzada
+
+Las siguientes acciones, cuando sean materializadas en una fase posterior, no usan confirmación genérica:
+
+- aplicar configuración;
+- ejecutar cambio;
+- iniciar rollback;
+- retirar capacidad;
+- restaurar sobre un destino;
+- retornar un objeto recuperado a operación;
+- aceptar riesgo;
+- cerrar un incidente mayor;
+- cerrar un problema por riesgo aceptado.
+
+La experiencia previa a la acción muestra:
+
+- objeto exacto;
+- alcance;
+- estado actual;
+- estado esperado;
+- autoridad;
+- impacto;
+- dependencias;
+- evidencia requerida;
+- reversibilidad;
+- próximo paso.
+
+La implementación real de controles pertenece a sus tareas y paquetes propietarios.
+
+---
+
+#### 48. Estados desconocidos, evidencia obsoleta y contradicción
+
+Se diseñan explícitamente cuatro condiciones de incertidumbre:
+
+1. **Sin evidencia:** no existe dato suficiente.
+2. **Evidencia obsoleta:** existe dato pero su frescura no permite confiar.
+3. **Evidencia contradictoria:** fuentes válidas discrepan.
+4. **Resultado desconocido:** una acción pudo producir efecto, pero no existe confirmación suficiente.
+
+Ninguna se transforma en verde o éxito por defecto.
+
+La interfaz muestra:
+
+- qué falta;
+- fuente;
+- última observación;
+- owner;
+- acción segura;
+- bloqueo;
+- condición para resolver.
+
+---
+
+#### 49. Concurrencia y actualización del expediente
+
+Cuando otro actor modifica el objeto mientras se edita:
+
+- el borrador no se pierde;
+- la interfaz muestra qué cambió;
+- acciones con estado obsoleto se bloquean;
+- el actor revisa la nueva versión;
+- aprobación y autoridad se recalculan cuando corresponde;
+- no se sobrescribe una revisión más reciente;
+- reintentos no duplican efectos.
+
+Un cambio, rollback o recuperación no se ejecuta sobre una versión de contexto que dejó de ser válida.
+
+---
+
+#### 50. Degradación, pérdida de conexión y reanudación
+
+La superficie administrativa distingue:
+
+- cargando;
+- sin conexión;
+- dato cacheado;
+- pendiente local no autoritativo;
+- guardado confirmado;
+- conflicto;
+- error;
+- acción bloqueada.
+
+Una pérdida de conexión nunca permite:
+
+- cerrar un caso autoritativamente;
+- aprobar un cambio;
+- declarar rollback;
+- declarar recuperación;
+- aceptar riesgo;
+- modificar configuración.
+
+Si una futura implementación conserva borradores locales, la interfaz declara que son borradores hasta confirmación del servidor.
+
+---
+
+#### 51. Accesibilidad y densidad
+
+La experiencia está diseñada para escritorio administrativo, pero conserva comportamiento accesible:
+
+- estado expresado por texto, no solo color;
+- foco visible;
+- navegación por teclado;
+- tablas con encabezados y lectura ordenada;
+- stepper con estado textual;
+- timeline con orden semántico;
+- relaciones comprensibles sin depender de líneas visuales;
+- confirmaciones con objeto y consecuencia explícitos;
+- contenido sensible no expuesto mediante tooltip accidental;
+- gráficos siempre acompañados por representación textual equivalente;
+- densidad progresiva: resumen primero, detalle técnico bajo demanda.
+
+---
+
+#### 52. Reconciliación AS-IS
+
+La evidencia actual demuestra una base parcial de soporte y no una implementación transversal completa de los cinco flujos.
+
+| Superficie                             | Estado observado o documental                                                     | Decisión de TI-UX-004                                                  |
+| -------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `support_tickets` / `support_messages` | soporte básico existente                                                          | no reinterpretar como problema, cambio, mantenimiento o recuperación   |
+| Mesa de servicio completa en VISO      | no demostrada integralmente en las fuentes inspeccionadas                         | diseño queda especificado; implementación futura                       |
+| Problema con identidad propia          | no materializado físicamente en la fundación de soporte revisada                  | no reutilizar `category` ni descripción libre como problema            |
+| Cambio tecnológico transversal         | no demostrada persistencia dedicada en las fuentes revisadas                      | conservar diseño y handoff; implementación posterior                   |
+| Mantenimiento físico                   | existe autoridad distribuida en activos, perfiles técnicos y fuentes propietarias | VISO coordina; no crea maestro físico                                  |
+| Recovery técnico transversal           | contrato documental especificado                                                  | no afirmar restore, failover o recuperación desplegados por esta tarea |
+| Observabilidad transversal             | contrato documental especificado; implementación completa no demostrada           | consumir health y señales cuando existan, conservar `UNKNOWN`          |
+| Implementación de controles            | fuera del alcance de la fase                                                      | no realizar cambios físicos                                            |
+
+La ausencia de una superficie dedicada en la evidencia inspeccionada no se utiliza como prueba de ausencia absoluta de capacidades externas o manuales; únicamente impide presentarlas como implementación canónica demostrada.
+
+---
+
+#### 53. Frontera con TI-UX-005
+
+`TI-UX-004` puede mostrar referencia a proveedor, garantía, contrato, licencia, renovación o costo únicamente como contexto relacionado.
+
+`TI-UX-005` conserva el diseño de:
+
+- catálogo y detalle de aplicaciones;
+- proveedores;
+- licencias;
+- asientos;
+- contratos;
+- renovaciones;
+- uso;
+- costos;
+- garantías como gobierno económico o contractual.
+
+Un incidente o mantenimiento no se convierte en pantalla de procurement.
+
+---
+
+#### 54. Frontera con TI-UX-006
+
+`TI-UX-004` muestra:
+
+- referencia a runbook;
+- workaround activo;
+- guía aplicable;
+- conocimiento relacionado;
+- advertencia de versión.
+
+`TI-UX-006` conserva:
+
+- diagnóstico guiado;
+- base de conocimiento;
+- navegación contextual de artículos;
+- capacitación;
+- entrenamiento por rol;
+- adopción.
+
+Esta tarea no construye un editor de conocimiento ni un asistente de diagnóstico completo.
+
+---
+
+#### 55. Frontera con implementación
+
+La decisión documental de esta tarea no autoriza:
+
+- crear nuevas pantallas productivas;
+- crear persistencia de problemas o cambios;
+- modificar `support_tickets`;
+- crear enums;
+- ejecutar cambios de configuración;
+- realizar mantenimiento físico;
+- desplegar software;
+- crear jobs de backup;
+- ejecutar restore;
+- cambiar red, endpoints o impresoras;
+- alterar proveedores;
+- modificar Supabase.
+
+Si el alcance físico de tecnología resulta incluido por la autoridad de implementación del carril prioritario, los paquetes propietarios deberán consumir este diseño y sus contratos de dominio.
+
+---
+
+#### 56. Pendientes y destinos exactos
+
+| Pendiente                                              | Estado             | Propietario                                                             | Condición de salida                                       |
+| ------------------------------------------------------ | ------------------ | ----------------------------------------------------------------------- | --------------------------------------------------------- |
+| implementación de la superficie VISO para estos flujos | `FUERA_DE_ALCANCE` | etapa de implementación que resulte autorizada en el carril prioritario | alcance físico aprobado, implementación y pruebas         |
+| persistencia de problema                               | `FUERA_DE_ALCANCE` | paquete VISO / modelo E3 autorizado                                     | identidad, relaciones, estados y evidencia materializados |
+| persistencia de cambio                                 | `FUERA_DE_ALCANCE` | paquete VISO + BLOQUE T y autoridad de datos cuando aplique             | expediente de cambio materializado sin conflar release    |
+| integración con activos y mantenimiento                | `FUERA_DE_ALCANCE` | NEXO + integraciones TI propietarias                                    | relaciones demostradas y acciones bajo autoridad          |
+| telemetría y salud runtime                             | `FUERA_DE_ALCANCE` | `TI-INT-001` a `TI-INT-003` y paquetes propietarios                     | señales, frescura y health disponibles con evidencia      |
+| recovery técnico ejecutable                            | `FUERA_DE_ALCANCE` | `TI-DOM-011`, continuidad y paquetes de implementación                  | restore/recovery implementados y probados                 |
+| protección física de acciones sensibles                | `FUERA_DE_ALCANCE` | AUTH + paquetes propietarios                                            | enforcement servidor y auditoría implementados            |
+| runbooks y diagnóstico guiado                          | `FUERA_DE_ALCANCE` | `TI-UX-006` + `TI-DOM-013`                                              | contenido versionado y experiencia aprobada               |
+
+No queda pendiente narrativo sin propietario y condición de salida.
+
+---
+
+#### 57. Cobertura de prueba vigente consumida
+
+La tarea consume cobertura existente que ya protege, entre otros comportamientos:
+
+- mesa de servicio trazable con incidente, problema y cambio separados;
+- problema con ciclo, causalidad, error conocido, workaround, recurrencia y eficacia;
+- cambio con clases, riesgo, aprobación, ventana, prueba, rollback, ejecución y revisión posterior;
+- mantenimiento, repuesto, sustitución y prueba posterior de dependencias técnicas;
+- clasificación de mantenimiento dentro de soporte sin mezclarlo con otros tipos de caso;
+- runbooks con recuperación, rollback y guardrails;
+- restauración técnica, recuperación empresarial, conciliación y cierre como hitos distintos;
+- perfil de recuperación, objetos, dependencias, orden, validación y ejercicios;
+- separación entre backup, réplica, snapshot, rollback, failover, restore y recovery;
+- privacidad, autorización, evidencia, observabilidad, operación degradada y continuidad.
+
+La cobertura relevante vigente incluye `TREQ-VISO-002`, `TREQ-VISO-047`, `TREQ-VISO-048`, `TREQ-PROC-454`, `TREQ-PROC-490`, `TREQ-PROC-493`, `TREQ-PROC-495`, `TREQ-PROC-501`, `TREQ-PROC-502`, `TREQ-PROC-506`, `TREQ-PROC-781` y `TREQ-PROC-782`, además de sus relaciones existentes.
+
+`TI-UX-004` materializa la experiencia que permite consumir esas reglas sin introducir una nueva conducta protegida.
+
+---
+
+#### 58. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el diseño no incorpora una regla empresarial, autorización, transición, estado, integración, persistencia, efecto técnico o riesgo verificable distinto de los contratos ya protegidos. Materializa en experiencia administrativa los ciclos y separaciones vigentes de incidente, problema, cambio, mantenimiento y recuperación, conserva sus autoridades y handoffs y deja la implementación física para los paquetes propietarios.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 59. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-UX-003 → TI-UX-004 → TI-UX-005`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se diseñan exactamente cinco lentes coordinadas;
+- [x] no se crea una aplicación, proceso o fuente de verdad paralela;
+- [x] `VPROC-0058` permanece propietario del incidente;
+- [x] `VPROC-0059` permanece separado para accesos;
+- [x] `VPROC-0062` permanece separado para continuidad;
+- [x] se preservan los nueve estados del incidente;
+- [x] se preservan las cuatro esperas estructuradas;
+- [x] se preservan las cinco clases de escalamiento;
+- [x] se diseña la coordinación de incidente mayor sin crear otro proceso;
+- [x] restauración, validación y cierre permanecen separados;
+- [x] se preservan los seis disparadores de problema;
+- [x] se preservan los siete estados y nueve transiciones del problema;
+- [x] se preservan los cuatro estados de evidencia causal;
+- [x] correlación temporal no se presenta como causa;
+- [x] se preservan error conocido, workaround, recurrencia, prevención y eficacia;
+- [x] se preservan las tres clases de cambio;
+- [x] se preservan los diez estados del cambio;
+- [x] se preservan los cuatro riesgos y cinco estados de aprobación;
+- [x] se diseña go/no-go con las ocho condiciones aprobadas;
+- [x] se preservan los cuatro resultados de ejecución;
+- [x] rollback conserva estado, evidencia y efectos;
+- [x] se preservan los cuatro códigos de cierre del cambio;
+- [x] emergencia no funciona como bypass de aprobación o privilegio;
+- [x] mantenimiento queda como lente coordinadora y no como ciclo inventado;
+- [x] mantenimiento físico conserva NEXO como autoridad;
+- [x] una intervención que altera configuración material exige cambio cuando corresponda;
+- [x] sustitución no hereda credenciales, sesiones o datos de forma implícita;
+- [x] se preserva la secuencia de recuperación técnica;
+- [x] se preservan los cinco perfiles cualitativos de recuperación;
+- [x] se preservan los nueve estados del ciclo de respaldo;
+- [x] una copia no verificada no se presenta como restaurable;
+- [x] restauración técnica y validación empresarial permanecen separadas;
+- [x] reconciliación y retorno controlado son visibles;
+- [x] continuidad empresarial conserva identidad separada;
+- [x] se materializan handoffs entre los cinco flujos;
+- [x] `TI-UX-002` conserva cola y trabajo ordinario de caso;
+- [x] `TI-UX-003` conserva mapa, salud y dependencias;
+- [x] `TI-UX-005` permanece únicamente reservada;
+- [x] `TI-UX-006` conserva diagnóstico guiado y conocimiento;
+- [x] se protege información sensible y acciones privilegiadas;
+- [x] se diseñan estados de incertidumbre, evidencia obsoleta y resultado desconocido;
+- [x] se diseña concurrencia sin sobrescritura silenciosa;
+- [x] se diseña comportamiento seguro ante pérdida de conexión;
+- [x] la reconciliación AS-IS no declara capacidades no demostradas;
+- [x] todos los pendientes tienen propietario y condición de salida;
+- [x] no se modifica código, datos, infraestructura ni Supabase;
+- [x] no se crean ni modifican requisitos de prueba.
+
+---
+
+#### 60. Estado del resultado
+
+| Resultado                                      | Estado             |
+| ---------------------------------------------- | ------------------ |
+| flujo de incidente                             | `ESPECIFICADO`     |
+| flujo de problema                              | `ESPECIFICADO`     |
+| flujo de cambio                                | `ESPECIFICADO`     |
+| lente de mantenimiento                         | `ESPECIFICADO`     |
+| flujo de recuperación técnica                  | `ESPECIFICADO`     |
+| handoffs entre flujos                          | `ESPECIFICADO`     |
+| integración conceptual con mesa de servicio    | `ESPECIFICADO`     |
+| integración conceptual con mapa técnico        | `ESPECIFICADO`     |
+| seguridad y minimización de la experiencia     | `ESPECIFICADO`     |
+| reconciliación AS-IS                           | `ESPECIFICADO`     |
+| implementación física en VISO                  | `FUERA_DE_ALCANCE` |
+| persistencia física nueva                      | `FUERA_DE_ALCANCE` |
+| ejecución de cambios, mantenimiento o recovery | `FUERA_DE_ALCANCE` |
+| cambios Supabase                               | `NO_APLICA`        |
+
+---
+
+#### 61. Invariantes
+
+1. incidente no equivale a problema;
+2. problema no equivale a cambio;
+3. mantenimiento no equivale a cambio;
+4. backup no equivale a restore;
+5. restore no equivale a recovery completa;
+6. recovery técnica no equivale a continuidad empresarial;
+7. restauración no equivale a cierre;
+8. workaround no equivale a causa eliminada;
+9. correlación no equivale a causalidad;
+10. señal no equivale a incidente;
+11. salud no equivale a disponibilidad empresarial;
+12. evidencia obsoleta no produce estado saludable;
+13. aprobación de cambio no equivale a ejecución;
+14. release no equivale a cambio aprobado;
+15. ejecución no equivale a validación;
+16. rollback no borra efectos;
+17. cambio implementado no equivale a prevención eficaz;
+18. error conocido no equivale a corrección definitiva;
+19. mantenimiento físico no mueve la fuente autoritativa del activo;
+20. sustitución no concede permiso ni copia credenciales;
+21. recovery no inventa objetivos numéricos;
+22. copia completada no equivale a copia verificable;
+23. proveedor no cierra el expediente VENTO;
+24. prioridad no concede privilegio;
+25. la interfaz no concede autoridad por visibilidad;
+26. un handoff no borra el objeto origen;
+27. una relación no fusiona identidades;
+28. una lista administrativa no es fuente de verdad;
+29. una acción offline no se presenta como confirmada;
+30. la tarea no ejecuta ninguna modificación física.
+
+---
+
+#### 62. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica`
+
+TAREA ACTUAL APROBADA
+`TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación`
+
+SIGUIENTE TAREA RESERVADA
+`TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos`
+
+
 ### [ ] TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
 ### [ ] TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
