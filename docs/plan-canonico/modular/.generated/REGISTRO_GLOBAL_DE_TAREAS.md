@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **641** |
+| Aprobadas | **642** |
 | En propuesta | **0** |
-| No iniciadas | **953** |
+| No iniciadas | **952** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.21% (641/1594)** |
+| Porcentaje de completamiento | **40.28% (642/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-UX-006` — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica | ✅ APROBADA |
-| Tarea actual | `TI-INT-001` — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-INT-002` — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | ⬜ NO INICIADA |
+| Última aprobada | `TI-INT-001` — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | ✅ APROBADA |
+| Tarea actual | `TI-INT-002` — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-INT-003` — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1530,7 +1530,7 @@
 | ✅ APROBADA | `TI-UX-004` | Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
 | ✅ APROBADA | `TI-UX-005` | Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
 | ✅ APROBADA | `TI-UX-006` | Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
-| ⬜ NO INICIADA | `TI-INT-001` | Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
+| ✅ APROBADA | `TI-INT-001` | Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ⬜ NO INICIADA | `TI-INT-002` | Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ⬜ NO INICIADA | `TI-INT-003` | Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ⬜ NO INICIADA | `INFO-DOM-001` | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
