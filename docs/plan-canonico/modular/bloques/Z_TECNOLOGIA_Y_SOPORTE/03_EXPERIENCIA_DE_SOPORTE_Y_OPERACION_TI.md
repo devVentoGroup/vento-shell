@@ -2051,7 +2051,1172 @@ SIGUIENTE TAREA RESERVADA
 `TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica`
 
 
-### [ ] TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica
+### ✅ TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica
+
+**Estado:** APROBADA  
+**Tarea anterior:** `TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación` — APROBADA  
+**Tarea siguiente:** `TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación` — RESERVADA  
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia administrativa de VISO para consultar el mapa tecnológico federado, sus dependencias, salud técnica, frescura de evidencia y brechas de observación sin crear una fuente de verdad paralela ni una consola de configuración  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md`  
+**Aplicación objetivo:** VISO  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica rutas, componentes, código, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, dispositivos, redes, impresoras, aplicaciones, telemetría, alertas, integraciones, permisos ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar cómo VISO deberá presentar un mapa técnico explicable de dispositivos, endpoints, redes, impresoras, aplicaciones y servicios a partir de las identidades y relaciones canónicas existentes; separar salud de condición física, configuración, disponibilidad y evidencia; hacer visible cuándo la información es desconocida o está obsoleta; permitir navegar dependencias e impacto sin inferir causalidad; y conectar el mapa con la mesa de servicio sin absorber los flujos de incidente, problema, cambio, mantenimiento, licencias o diagnóstico guiado que pertenecen a tareas posteriores.
+
+---
+
+#### 1. Propósito
+
+VISO deberá permitir que una persona autorizada para soporte responda, sin reconstruir manualmente información distribuida entre múltiples fuentes:
+
+```text
+¿QUÉ ELEMENTOS TECNOLÓGICOS CONOCE VENTO?
+¿DÓNDE ESTÁN Y A QUÉ SERVICIOS CONTRIBUYEN?
+¿QUÉ DEPENDE DE QUÉ?
+¿QUÉ SALUD TIENE CADA CAPACIDAD Y CON QUÉ EVIDENCIA?
+¿QUÉ INFORMACIÓN ESTÁ FRESCA, RETRASADA, OBSOLETA O AUSENTE?
+¿QUÉ SERVICIOS PUEDEN ESTAR AFECTADOS POR UNA CONDICIÓN OBSERVADA?
+¿QUÉ CASOS, ALERTAS O CAMBIOS YA ESTÁN CORRELACIONADOS?
+¿QUÉ SE DESCONOCE TODAVÍA?
+```
+
+El resultado no será una CMDB paralela, una tabla maestra nueva ni una pantalla que decida causalidad. Será una proyección administrativa federada de identidades, relaciones y señales cuyas autoridades ya están distribuidas entre NEXO, SHELL, PRINT-ARC, VISO y los contratos tecnológicos aprobados.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se materializa el diseño del mapa técnico con el siguiente balance:
+
+| Elemento                                                 |    Resultado |
+| -------------------------------------------------------- | -----------: |
+| Aplicación administrativa propietaria de la experiencia  | **1 — VISO** |
+| Modos primarios de presentación                          |        **4** |
+| Clases de configuración preservadas                      |   **7 de 7** |
+| Relaciones directas tipadas preservadas                  | **15 de 15** |
+| Estados de salud preservados                             |   **5 de 5** |
+| Servicios tecnológicos proyectados                       | **11 de 11** |
+| Subtipos de recurso de red proyectados                   |   **7 de 7** |
+| Impresoras con decisión explícita de presentación        |   **9 de 9** |
+| Aplicaciones con decisión explícita de presentación      | **10 de 10** |
+| Dispositivos compartidos AS-IS reconciliados             |   **2 de 2** |
+| Vínculos AS-IS dispositivo–aplicación reconciliados      |   **4 de 4** |
+| Instancias de red AS-IS declaradas `VALIDADO`            |        **0** |
+| Relaciones impresora–activo físico declaradas `VALIDADO` |        **0** |
+| Cambios físicos                                          |        **0** |
+| Requisitos de prueba nuevos o modificados                |        **0** |
+
+Los cuatro modos primarios son:
+
+1. **Resumen de salud**;
+2. **Mapa de dependencias**;
+3. **Inventario técnico**;
+4. **Evidencia y desconocidos**.
+
+El detalle de un elemento es un drill-down contextual desde cualquiera de esos modos y no constituye una quinta fuente de verdad.
+
+---
+
+#### 3. Entradas y autoridades conservadas
+
+La tarea consume y preserva sin redefinir:
+
+- `TI-DOM-002` y las siete clases `ASSET`, `ENDPOINT`, `SHARED_DEVICE`, `NETWORK_RESOURCE`, `PRINTER`, `APPLICATION` y `TECH_SERVICE`;
+- `TI-DOM-002` y las quince relaciones directas `TI-REL-001` a `TI-REL-015`;
+- `TI-DOM-003`, incluidos lifecycle, baseline, postura, estado deseado, estado observado, evidencia y frescura de endpoints;
+- `TI-DOM-004`, incluidos los siete subtipos de red, las seis capas de arquitectura, segmentación, direccionamiento, contingencia y handoff a observabilidad;
+- `TI-DOM-005`, incluidas las nueve identidades `PRN-*`, su condición física, bindings, canal, cola, adaptador, routing, fallback y separación frente a health y resultado de impresión;
+- `TI-DOM-006`, incluidas las diez aplicaciones canónicas, ambientes, dependencias, proveedores técnicos y separación entre catálogo activo, despliegue, salud, disponibilidad empresarial y autorización;
+- `TI-DOM-010`, incluidos señal, observación, frescura, los cinco estados de salud y la separación entre señal, alerta, incidente, problema y cambio;
+- `TI-AUTH-003`, respecto de consulta frente a mutación de configuración protegida;
+- `TI-AUTH-004`, respecto de logs, diagnósticos, IP, topología sensible, exportaciones, capturas, secretos y datos personales;
+- `TI-UX-002`, respecto de mesa de servicio, caso tecnológico y referencia del elemento afectado;
+- `TREQ-VISO-002`, `TREQ-NEXO-019`, `TREQ-PROC-457`, `TREQ-PROC-461` a `TREQ-PROC-500`, `TREQ-UX-003`, `TREQ-UX-005` y `TREQ-UX-010` como cobertura verificable vigente.
+
+No se reasigna propiedad de datos. El mapa consulta y compone referencias; no se convierte en maestro de activos, configuración, impresoras, aplicaciones, servicios, alertas o casos.
+
+---
+
+#### 4. Decisiones rectoras
+
+1. **VISO presenta; las fuentes propietarias mandan.** El mapa nunca conserva una copia editable de un dato solo para poder visualizarlo.
+2. **La identidad se conserva por clase.** `ASSET`, `ENDPOINT`, `SHARED_DEVICE`, `NETWORK_RESOURCE`, `PRINTER`, `APPLICATION` y `TECH_SERVICE` no se fusionan en un objeto genérico que pierda semántica.
+3. **Una relación visible requiere relación canónica o una derivación declarada.** Coincidencia de nombre, IP, MAC, serial, sede, URL o tiempo no crea un vínculo.
+4. **Salud no es condición física, lifecycle, posture, configuración, disponibilidad empresarial ni autorización.** Cada dimensión se presenta por separado.
+5. **`UNKNOWN` es un estado material.** No se pinta como verde, no desaparece del resumen y no se interpreta como ausencia de problema.
+6. **La evidencia tiene edad.** Toda salud visible debe declarar fuente y frescura suficiente para que el operador sepa si está viendo el presente o una observación vencida.
+7. **Componente y servicio no heredan salud mecánicamente.** La salud del servicio debe explicar dependencia, redundancia, alcance e impacto.
+8. **El mapa no diagnostica causa por correlación visual.** Un camino de dependencia indica posibilidad de afectación, no causalidad confirmada.
+9. **El mapa no cambia configuración.** Toda mutación protegida requiere el gobierno de `TI-AUTH-003` y el cambio válido de `TI-DOM-009` cuando corresponda.
+10. **El mapa no abre privilegio.** Ver un recurso no concede soporte remoto, consola, log sensible, secreto o acción administrativa.
+11. **La mesa de servicio y el mapa se enlazan.** Un caso puede referenciar el elemento afectado y el mapa puede mostrar casos relacionados sin duplicar expediente.
+12. **No se crea una ruta física en esta fase.** La experiencia, navegación conceptual y comportamiento quedan definidos; la ruta concreta se materializará únicamente dentro de un alcance de implementación autorizado.
+
+---
+
+#### 5. Unidad visual mínima
+
+Todo nodo mostrado deberá conservar, cuando exista en su fuente:
+
+```text
+CLASE CANÓNICA
++
+IDENTIDAD CANÓNICA
++
+ETIQUETA HUMANA
++
+FUENTE PROPIETARIA
++
+SEDE / ÁREA CUANDO APLIQUE
++
+ESTADO DE RECONCILIACIÓN
++
+SALUD TÉCNICA CUANDO EXISTA EVIDENCIA
++
+FRESCURA DE LA EVIDENCIA
++
+RELACIONES DIRECTAS
++
+SERVICIOS RELACIONADOS
++
+REFERENCIAS A ALERTAS / CASOS / CAMBIOS CUANDO EXISTAN
+```
+
+Una tarjeta nunca deberá colapsar en una sola etiqueta de “activo/inactivo”.
+
+Ejemplo conceptual:
+
+```text
+Impresora cocina
+PRINTER · PRN-VC-COCINA-DIGE200I-01
+
+Condición física: OPERATIVA
+Salud técnica: UNKNOWN
+Evidencia runtime: no demostrada como vigente
+Vínculo con activo NEXO: PENDIENTE_DE_EVIDENCIA
+Red relacionada: solo si existe relación canónica
+Servicio relacionado: Impresoras y periféricos
+
+[ Ver detalle ]
+```
+
+El ejemplo demuestra deliberadamente que una condición física `OPERATIVA` no fabrica health `HEALTHY`.
+
+---
+
+#### 6. Arquitectura de información
+
+La superficie administrativa se presentará como **Mapa técnico** dentro del carril de soporte de VISO. El rótulo es de experiencia; no crea una ruta de aplicación ni un identificador de dominio.
+
+Orden de lectura:
+
+```text
+MAPA TÉCNICO
+
+1. RESUMEN DE SALUD
+   Qué requiere atención y qué permanece desconocido
+
+2. MAPA DE DEPENDENCIAS
+   Servicios, elementos y relaciones demostradas
+
+3. INVENTARIO TÉCNICO
+   Exploración por clase, sede, área y fuente
+
+4. EVIDENCIA Y DESCONOCIDOS
+   Frescura, reconciliación y brechas que impiden concluir salud
+```
+
+Las cuatro vistas comparten filtros y contexto; ninguna mantiene una copia propia del objeto.
+
+---
+
+#### 7. Resumen de salud
+
+La entrada deberá priorizar comprensión antes que densidad técnica.
+
+Composición objetivo:
+
+```text
+MAPA TÉCNICO
+Estado técnico de Vento
+
+SERVICIOS
+Salud demostrada: ...
+Degradados: ...
+Fuera de línea: ...
+Configuración incorrecta: ...
+Salud desconocida: ...
+
+REQUIERE ATENCIÓN
+- condiciones con alerta o caso activo
+- servicios con degradación demostrada
+- componentes críticos con evidencia vencida
+- divergencias de configuración demostradas
+
+EVIDENCIA INSUFICIENTE
+- elementos sin señal vigente
+- relaciones pendientes de reconciliación
+- fuentes todavía no integradas
+
+[ Ver dependencias ]   [ Ver inventario ]
+```
+
+No se calcula un “porcentaje saludable” si el denominador incluye elementos sin observabilidad suficiente. Si se presenta cualquier proporción deberá declarar población, exclusiones, estado `UNKNOWN` y momento de corte.
+
+---
+
+#### 8. Mapa de dependencias
+
+El mapa de dependencias permite comenzar desde:
+
+- un `TECH_SERVICE`;
+- una de las otras seis clases del grafo;
+- una sede o área cuando la relación territorial exista;
+- un caso tecnológico que ya contenga `affected_element_ref` o equivalente;
+- una alerta ya correlacionada con elemento o servicio.
+
+La vista debe distinguir tres tipos de línea:
+
+| Presentación     | Significado                                                 | Regla                                                                                                      |
+| ---------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Relación directa | una de `TI-REL-001` a `TI-REL-015`                          | puede mostrarse como vínculo autoritativo de configuración                                                 |
+| Lectura inversa  | la misma relación directa navegada desde el extremo opuesto | no crea otra relación ni otro ID                                                                           |
+| Ruta derivada    | cadena de dos o más relaciones directas                     | se marca como “ruta de dependencia derivada”; no se presenta como causa ni se persiste como relación nueva |
+
+Una ruta derivada deberá poder desplegar sus aristas originales. No será válida una línea agregada que oculte qué relaciones demostradas la sustentan.
+
+---
+
+#### 9. Las siete clases del mapa
+
+| Clase              | Autoridad conservada                         | Qué muestra VISO                                                                           | Qué no debe inferir                                                       |
+| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `ASSET`            | NEXO / fuente física                         | identidad, ubicación, custodia, condición, mantenimiento y relaciones técnicas confirmadas | que todo activo es endpoint o dispositivo compartido                      |
+| `ENDPOINT`         | `TI-DOM-003` / futura persistencia canónica  | lifecycle, baseline, posture, configuración observada, frescura y health                   | que serial, IP, `employee_devices` o asset equivalen a endpoint           |
+| `SHARED_DEVICE`    | dispositivo compartido canónico              | código, sede, área, modo, aplicaciones autorizadas, heartbeat cuando exista y health       | actor humano, permiso del trabajador o endpoint implícito                 |
+| `NETWORK_RESOURCE` | `TI-DOM-004`                                 | subtipo, topología demostrada, finalidad, addressing seguro, health y frescura             | topología desde coincidencias o que reachability implica salud            |
+| `PRINTER`          | `TI-DOM-005` + NEXO + PRINT-ARC              | condición, canal, health, cola/routing/adaptador relacionados y evidencia                  | que impresión física, cola, job y resultado son el mismo estado           |
+| `APPLICATION`      | `TI-DOM-006` + SHELL + propietaria funcional | catálogo, ambiente, despliegue demostrado, health, dependencias y servicio                 | que `is_active`, una URL o un repositorio prueban disponibilidad          |
+| `TECH_SERVICE`     | `TI-DOM-001` + `TI-DOM-010`                  | health derivada, SLI, dependencias, alertas y casos correlacionados                        | que el peor nodo siempre define el servicio o que health define prioridad |
+
+Cobertura: **7 de 7 clases**.
+
+---
+
+#### 10. Las quince relaciones directas
+
+El mapa conservará exactamente estas relaciones:
+
+| Relación                                        | Semántica de presentación                                      |
+| ----------------------------------------------- | -------------------------------------------------------------- |
+| `TI-REL-001 — ENDPOINT_RUNS_ON_ASSET`           | endpoint ejecutándose sobre un activo físico identificado      |
+| `TI-REL-002 — SHARED_DEVICE_USES_ENDPOINT`      | dispositivo compartido sustentado por un endpoint identificado |
+| `TI-REL-003 — SHARED_DEVICE_ALLOWS_APPLICATION` | aplicación permitida en un dispositivo compartido              |
+| `TI-REL-004 — ENDPOINT_CONNECTS_VIA_NETWORK`    | endpoint conectado mediante recurso de red identificado        |
+| `TI-REL-005 — ENDPOINT_CLIENT_FOR_APPLICATION`  | endpoint cliente de una aplicación                             |
+| `TI-REL-006 — NETWORK_RESOURCE_RUNS_ON_ASSET`   | recurso de red materializado sobre un activo físico            |
+| `TI-REL-007 — PRINTER_REPRESENTS_ASSET`         | identidad de impresora reconciliada con activo físico          |
+| `TI-REL-008 — PRINTER_CONNECTS_VIA_NETWORK`     | impresora conectada mediante recurso de red identificado       |
+| `TI-REL-009 — PRINTER_ATTACHED_TO_ENDPOINT`     | impresora conectada o adjunta a endpoint identificado          |
+| `TI-REL-010 — SERVICE_DEPENDS_ON_ASSET`         | servicio dependiente de activo físico                          |
+| `TI-REL-011 — SERVICE_DEPENDS_ON_ENDPOINT`      | servicio dependiente de endpoint                               |
+| `TI-REL-012 — SERVICE_DEPENDS_ON_SHARED_DEVICE` | servicio dependiente de dispositivo compartido                 |
+| `TI-REL-013 — SERVICE_DEPENDS_ON_NETWORK`       | servicio dependiente de recurso de red                         |
+| `TI-REL-014 — SERVICE_DEPENDS_ON_PRINTER`       | servicio dependiente de impresora                              |
+| `TI-REL-015 — SERVICE_DEPENDS_ON_APPLICATION`   | servicio dependiente de aplicación                             |
+
+Cobertura: **15 de 15 relaciones**, sin alias nuevas ni renumeración.
+
+La interfaz puede usar verbos humanos, pero el detalle técnico deberá poder revelar la relación canónica que sustenta el vínculo.
+
+---
+
+#### 11. Salud técnica
+
+Se preservan exactamente los cinco estados aprobados:
+
+| Estado          | Presentación humana      | Condición mínima                                                                                     |
+| --------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `HEALTHY`       | Saludable                | evidencia fresca y suficiente demuestra la capacidad esperada                                        |
+| `DEGRADED`      | Degradado                | capacidad parcial con reducción, error repetido, retraso, saturación o pérdida de calidad demostrada |
+| `OFFLINE`       | Fuera de línea           | evidencia suficiente demuestra indisponibilidad de la capacidad observada                            |
+| `MISCONFIGURED` | Configuración incorrecta | el estado observado diverge demostrablemente del perfil esperado                                     |
+| `UNKNOWN`       | Salud desconocida        | evidencia ausente, obsoleta, contradictoria o insuficiente                                           |
+
+Reglas de interfaz:
+
+1. el texto del estado siempre acompaña al color;
+2. `UNKNOWN` utiliza una representación propia y visible;
+3. health incluye momento de última observación y fuente;
+4. una observación manual se identifica como manual;
+5. una recuperación puntual no oculta la necesidad de estabilidad posterior;
+6. una señal `RECOVERY` no cierra caso ni incidente;
+7. una alerta y health se muestran por separado;
+8. health histórico puede consultarse sin sustituir el estado vigente;
+9. si la evidencia requerida vence, la presentación deja de mantener `HEALTHY` por inercia.
+
+---
+
+#### 12. Frescura y suficiencia de evidencia
+
+Junto a health se presenta una condición de frescura humana equivalente a:
+
+- **Vigente**;
+- **Retrasada**;
+- **Obsoleta**;
+- **Desconocida**.
+
+La vista deberá responder:
+
+```text
+ÚLTIMA OBSERVACIÓN
+FUENTE
+FORMA DE OBSERVACIÓN
+EDAD DE LA EVIDENCIA
+CONDICIÓN ESPERADA DE FRESCURA
+```
+
+No se inventa un tiempo universal de expiración. Cada fuente conserva su contrato de frescura.
+
+Si un operador abre un elemento con health `UNKNOWN`, la interfaz debe explicar la razón, por ejemplo:
+
+```text
+No hay una observación vigente para concluir la salud de este elemento.
+El registro existe, pero la última comprobación no está disponible.
+```
+
+No deberá decir “sin problemas detectados” cuando no existe evidencia suficiente para comprobarlo.
+
+---
+
+#### 13. Reconciliación frente a health
+
+El mapa muestra por separado:
+
+```text
+RECONCILIACIÓN DE IDENTIDAD / CONFIGURACIÓN
+≠
+HEALTH TÉCNICA
+```
+
+Los estados documentales de reconciliación conservados son:
+
+- `ESPECIFICADO`;
+- `IMPLEMENTADO`;
+- `VALIDADO`;
+- `BLOQUEADO`;
+- `PENDIENTE_DE_EVIDENCIA`;
+- `NO_APLICA`;
+- `FUERA_DE_ALCANCE`.
+
+Ejemplos:
+
+- una impresora puede tener identidad `ESPECIFICADO`, condición física `OPERATIVA`, relación con activo `PENDIENTE_DE_EVIDENCIA` y health `UNKNOWN`;
+- una aplicación puede estar `is_active = true` en catálogo y continuar con despliegue o health `PENDIENTE_DE_EVIDENCIA` / `UNKNOWN`;
+- un recurso de red puede estar `ESPECIFICADO` como subtipo sin existir todavía una instancia `VALIDADO` en el inventario AS-IS.
+
+La interfaz no resume estas dimensiones en un único estado.
+
+---
+
+#### 14. Servicios tecnológicos — 11 de 11
+
+Cada servicio es una raíz navegable del mapa y conserva su identidad:
+
+| Servicio         | Nombre                                                                  | Foco de la vista de salud                                            |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | disponibilidad y resultado del ciclo autorizado de acceso            |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | health, postura y frescura de endpoint/dispositivo                   |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | disponibilidad y calidad de conectividad                             |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | health de impresora y camino de impresión                            |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | disponibilidad, rendimiento y dependencias de la capacidad publicada |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | salud del flujo de atención y sus dependencias                       |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | estado del servicio afectado y evolución de restauración             |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | comportamiento antes, durante y después del cambio                   |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | resultado verificable de pruebas y dependencias técnicas             |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | condiciones técnicas que pueden afectar disponibilidad               |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | disponibilidad y vigencia del soporte guiado                         |
+
+El mapa no asigna health fija a estos servicios por diseño. La health se deriva únicamente cuando las señales, dependencias y evidencia aplicables lo permiten.
+
+---
+
+#### 15. Salud de servicio frente a salud de componente
+
+Un servicio no hereda automáticamente el peor estado de todos sus nodos.
+
+La presentación de un servicio deberá explicar, cuando exista evidencia:
+
+- dependencia afectada;
+- criticidad de esa dependencia para el servicio;
+- redundancia o camino alterno conocido;
+- alcance territorial;
+- capacidad empresarial todavía disponible;
+- señales o SLI relevantes;
+- health resultante y su evidencia;
+- alertas y casos correlacionados.
+
+Ejemplo:
+
+```text
+Red principal de una sede: DEGRADED
+Wi-Fi de contingencia: HEALTHY
+Servicio Redes y conectividad: DEGRADED
+
+Razón visible:
+La sede conserva conectividad parcial por el camino alterno,
+pero la capacidad principal está degradada.
+```
+
+Ejemplo contrario:
+
+```text
+Un periférico no crítico: OFFLINE
+Servicio: HEALTHY
+
+Razón visible:
+El elemento no participa en la capacidad mínima del servicio actual.
+```
+
+La explicación requiere relaciones reales. No se crea redundancia por intuición del operador.
+
+---
+
+#### 16. Endpoints
+
+El mapa de endpoint deberá poder presentar:
+
+- identidad canónica de endpoint;
+- form factor;
+- modo de uso;
+- lifecycle;
+- activo físico relacionado cuando exista `TI-REL-001`;
+- dispositivo compartido relacionado cuando exista `TI-REL-002`;
+- aplicaciones cliente cuando exista `TI-REL-005`;
+- red cuando exista `TI-REL-004`;
+- baseline asignado;
+- estado deseado y observado;
+- posture;
+- estado de actualización;
+- última evaluación;
+- health y frescura;
+- servicios dependientes;
+- casos, alertas y cambios correlacionados.
+
+La línea base actual no demuestra una persistencia transversal consolidada de endpoints con identidades materializadas suficientes para poblar un inventario canónico completo. Por tanto:
+
+```text
+ENDPOINTS DISEÑADOS EN EL MAPA
+=
+SÍ
+
+ENDPOINTS AS-IS INVENTADOS PARA LLENAR EL MAPA
+=
+NO
+```
+
+Hasta disponer de identidades canónicas, el mapa muestra la brecha de evidencia y no transforma `employee_devices`, activo físico, IP, MAC, serial o fingerprint en endpoint.
+
+---
+
+#### 17. Dispositivos compartidos AS-IS
+
+La lectura canónica y remota disponible conserva **2 registros activos** y **4 vínculos activos dispositivo–aplicación**.
+
+| Código               | Etiqueta           | Tipo                 | Aplicación predeterminada | Otras aplicaciones activas   | Estado de activación | `last_seen_at` | Presentación health                                           |
+| -------------------- | ------------------ | -------------------- | ------------------------- | ---------------------------- | -------------------- | -------------- | ------------------------------------------------------------- |
+| `CAJA_VENTO_CAFE_01` | Caja Vento Café 01 | `pos_terminal`       | `pulso`                   | `nexo`, `shell`              | `active`             | `null`         | `UNKNOWN` hasta evidencia de heartbeat o comprobación vigente |
+| `KIOSCO_BODEGA_CP`   | Kiosco Bodega CP   | `warehouse_terminal` | `nexo`                    | ninguna adicional registrada | `active`             | `null`         | `UNKNOWN` hasta evidencia de heartbeat o comprobación vigente |
+
+Reglas:
+
+1. `active` es activación/configuración, no health;
+2. `last_seen_at = null` no se convierte automáticamente en `OFFLINE`;
+3. la ausencia de heartbeat produce incertidumbre conforme al contrato de frescura;
+4. las cuatro relaciones dispositivo–aplicación pueden proyectarse como `TI-REL-003` únicamente cuando la reconciliación canónica de esa relación lo sostenga;
+5. el dispositivo no identifica al trabajador y no concede sus permisos.
+
+---
+
+#### 18. Redes
+
+El mapa conserva los siete subtipos de `NETWORK_RESOURCE`:
+
+| Subtipo               | Presentación mínima                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `NETWORK_LINK`        | proveedor o camino referenciado, extremos, alcance, health y evidencia                                         |
+| `ROUTER`              | identidad, activo relacionado si existe, uplinks, segmentos y health                                           |
+| `SWITCH`              | identidad, uplinks, segmentos presentes y health                                                               |
+| `ACCESS_POINT`        | identidad, SSID publicados demostrados, segmento y health                                                      |
+| `SEGMENT`             | finalidad, sedes/áreas aplicables, direccionamiento seguro y health                                            |
+| `SSID`                | finalidad, AP relacionados, segmento y health                                                                  |
+| `ADDRESS_RESERVATION` | recurso autorizado, segmento y estado de reconciliación; dirección sensible solo bajo necesidad y autorización |
+
+La línea base de `TI-DOM-004` contiene **0 instancias AS-IS declaradas `VALIDADO`**.
+
+Por tanto, la primera versión documental del mapa no dibuja routers, switches, AP, VLAN, SSID o reservas ficticias. Presenta:
+
+```text
+MODELO DE RED DEFINIDO
+7 SUBTIPOS DISPONIBLES
+INVENTARIO VALIDADO ACTUAL: 0
+
+Estado:
+Se requiere evidencia reconciliada para poblar la topología.
+```
+
+La ausencia de instancias validadas no se interpreta como ausencia física de red.
+
+---
+
+#### 19. Reglas específicas de topología de red
+
+Cuando existan instancias reconciliadas, se preservarán las seis relaciones de topología de `TI-DOM-004` dentro de la proyección de red:
+
+1. enlace termina en router;
+2. uplink de red;
+3. segmento presente en nodo;
+4. SSID emitido por AP;
+5. SSID asociado a segmento;
+6. reserva perteneciente a segmento.
+
+La vista deberá distinguir:
+
+- enlace;
+- equipo;
+- interfaz;
+- segmento;
+- SSID;
+- direccionamiento;
+- reachability;
+- latencia;
+- pérdida;
+- saturación;
+- estado esperado y observado;
+- cambio activo;
+- dependencia de servicio.
+
+No se mostrarán PSK, secretos, credenciales o configuraciones completas. La dirección IP podrá quedar oculta en la vista ordinaria si una etiqueta segura y la identidad canónica son suficientes.
+
+---
+
+#### 20. Impresoras — 9 de 9
+
+Cada identidad `PRN-*` recibe decisión explícita de presentación:
+
+| ID                          | Contexto                       | Condición física aprobada | Health runtime inicial | Decisión del mapa                                                                            |
+| --------------------------- | ------------------------------ | ------------------------- | ---------------------- | -------------------------------------------------------------------------------------------- |
+| `PRN-VP-ZD230-01`           | Vento Producción · Zebra ZD230 | `ALMACENADA`              | `UNKNOWN`              | mostrar condición física y ausencia de canal activo por separado; no declarar disponibilidad |
+| `PRN-VP-L5590-01`           | Vento Producción · Epson L5590 | `REQUIERE_MANTENIMIENTO`  | `UNKNOWN`              | elevar condición física; health no sustituye mantenimiento ni rehabilita el equipo           |
+| `PRN-ADMIN-L4260-01`        | Administración · Epson L4260   | `OPERATIVA`               | `UNKNOWN`              | mostrar interfaz documentada y exigir evidencia runtime antes de `HEALTHY`                   |
+| `PRN-MOLKA-DIGE200I-01`     | Molka · caja                   | `OPERATIVA`               | `UNKNOWN`              | conservar USB como canal documentado; no inferir job o receipt                               |
+| `PRN-SAUDO-DIGE200I-01`     | Saudo · caja                   | `OPERATIVA`               | `UNKNOWN`              | conservar USB como canal documentado; no inferir job o receipt                               |
+| `PRN-VC-CAJA-DIGE200I-01`   | Vento Café · caja/mostrador    | `OPERATIVA`               | `UNKNOWN`              | conservar USB como canal documentado; mostrar servicio y casos relacionados cuando existan   |
+| `PRN-VC-BARRA-DIGE200I-01`  | Vento Café · barra calientes   | `OPERATIVA`               | `UNKNOWN`              | conservar LAN como canal documentado; red solo se enlaza con relación reconciliada           |
+| `PRN-VC-BAR-DIGE200I-01`    | Vento Café · bar bebidas frías | `OPERATIVA`               | `UNKNOWN`              | conservar LAN como canal documentado; red solo se enlaza con relación reconciliada           |
+| `PRN-VC-COCINA-DIGE200I-01` | Vento Café · cocina            | `OPERATIVA`               | `UNKNOWN`              | conservar LAN como canal documentado; red solo se enlaza con relación reconciliada           |
+
+Cobertura: **9 de 9 impresoras**.
+
+Para las nueve, la relación física `PRINTER_REPRESENTS_ASSET` permanece sin una reconciliación `VALIDADO` demostrada. El mapa deberá mostrar esa deuda de evidencia y no asociar impresoras a activos por similitud de descripción.
+
+---
+
+#### 21. Camino de impresión
+
+El detalle de impresora separa:
+
+```text
+IMPRESORA
+≠ CONDICIÓN FÍSICA
+≠ INTERFAZ
+≠ RECURSO DE RED
+≠ COLA
+≠ ROUTING
+≠ ADAPTADOR
+≠ JOB
+≠ INTENTO
+≠ RECEIPT
+≠ RESULTADO EMPRESARIAL
+≠ HEALTH
+```
+
+Una impresora puede estar físicamente operativa y tener health `UNKNOWN`; puede tener health técnico `HEALTHY` y una cola degradada; o un job puede fallar aun con impresora saludable.
+
+La vista muestra esos objetos como referencias relacionadas cuando existan. No crea una nueva cola, un nuevo job ni un receipt dentro del mapa.
+
+---
+
+#### 22. Aplicaciones — 10 de 10
+
+Cada aplicación canónica recibe decisión explícita de presentación:
+
+| Código   | Nombre     | Superficie canónica                 | Catálogo           | Health runtime inicial      | Decisión del mapa                                                                                           |
+| -------- | ---------- | ----------------------------------- | ------------------ | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `shell`  | Vento OS   | Hub · laboral · núcleo              | activa             | `UNKNOWN` sin señal vigente | mostrar dependencias y diferenciar origen/hub cuando exista evidencia de ambiente                           |
+| `anima`  | ANIMA      | híbrida · laboral · núcleo          | activa             | `UNKNOWN` sin señal vigente | mostrar disponibilidad y dependencias sin equiparar EAS/configuración con despliegue saludable              |
+| `viso`   | VISO       | administrativa · laboral · núcleo   | activa             | `UNKNOWN` sin señal vigente | mostrar salud de la propia mesa administrativa sin usar la apertura del mapa como health check              |
+| `nexo`   | NEXO       | híbrida · laboral · núcleo          | activa             | `UNKNOWN` sin señal vigente | relacionar dispositivos, impresión y procesos solo mediante dependencias demostradas                        |
+| `fogo`   | FOGO       | operativa · laboral · núcleo        | activa             | `UNKNOWN` sin señal vigente | separar catálogo, ambiente, health y disponibilidad empresarial                                             |
+| `origo`  | ORIGO      | híbrida · laboral · núcleo          | activa             | `UNKNOWN` sin señal vigente | mostrar dependencias técnicas; contratos y costos permanecen fuera de esta tarea                            |
+| `pulso`  | PULSO      | operativa · laboral · núcleo        | activa             | `UNKNOWN` sin señal vigente | relacionar con dispositivo compartido donde la relación esté materializada                                  |
+| `numera` | NUMERA     | híbrida · laboral · núcleo          | activa             | `UNKNOWN` sin señal vigente | mostrar dependencias técnicas; compromisos y costos conservan su autoridad                                  |
+| `aura`   | AURA       | administrativa · laboral · diferido | activa en catálogo | `UNKNOWN`                   | destacar evidencia de implementación/despliegue pendiente; catálogo activo no reactiva el producto diferido |
+| `pass`   | Vento Pass | cliente · adyacente                 | activa             | `UNKNOWN` sin señal vigente | presentar como superficie de cliente y conservar dependencias sin mezclarla con carril laboral              |
+
+Cobertura: **10 de 10 aplicaciones**.
+
+Para cada una se mantienen separadas estas dimensiones:
+
+```text
+CATALOG_ACTIVE
+DEPLOYMENT_PRESENT
+TECHNICALLY_HEALTHY
+BUSINESS_AVAILABLE
+AUTHORIZED_FOR_ACTOR
+DEPENDENCY_AVAILABLE
+```
+
+Ninguna implica automáticamente otra.
+
+---
+
+#### 23. Ambientes y versiones
+
+Cuando una aplicación disponga de evidencia, el detalle puede mostrar los roles de ambiente ya aprobados:
+
+- `DEVELOPMENT`;
+- `CI`;
+- `PREVIEW`;
+- `STAGING`;
+- `PRODUCTION`;
+- `SANDBOX`.
+
+La interfaz deberá identificar si la evidencia está:
+
+- configurada en repositorio;
+- referenciada en código;
+- verificada como despliegue;
+- pendiente de evidencia;
+- no aplicable.
+
+Una URL observable, un perfil de build, un repositorio o una fila `apps.is_active` no se presentarán como “Producción saludable”.
+
+---
+
+#### 24. Detalle de elemento
+
+El drill-down se organiza en este orden:
+
+1. **Identidad y fuente**;
+2. **Salud y frescura**;
+3. **Estado físico, lifecycle o configuración aplicables**;
+4. **Dependencias directas**;
+5. **Servicios relacionados**;
+6. **Alertas y casos relacionados**;
+7. **Cambios relacionados**;
+8. **Evidencia y brechas de reconciliación**;
+9. **Acciones autorizables por handoff**.
+
+Ejemplo:
+
+```text
+Kiosco Bodega CP
+SHARED_DEVICE · KIOSCO_BODEGA_CP
+
+Salud: UNKNOWN
+Última observación: no disponible
+Activación: active
+Aplicación predeterminada: NEXO
+Aplicaciones permitidas: NEXO
+Endpoint relacionado: no demostrado
+Activo físico relacionado: no demostrado
+
+Evidencia
+- configuración del dispositivo: disponible
+- heartbeat vigente: no disponible
+- vínculo endpoint/activo: pendiente
+
+Casos relacionados
+- mostrar solo referencias autorizadas existentes
+```
+
+---
+
+#### 25. Búsqueda y filtros
+
+La exploración admite filtros combinables por:
+
+- clase canónica;
+- servicio;
+- sede;
+- área;
+- health;
+- frescura;
+- estado de reconciliación;
+- aplicación;
+- tipo de red;
+- impresora;
+- presencia de alerta activa;
+- presencia de caso activo;
+- presencia de cambio relacionado.
+
+La búsqueda puede resolver código o etiqueta humana autorizada. No se convierte IP, MAC, serial, correo, nombre de persona o payload técnico en una búsqueda global indiscriminada.
+
+Filtros de presentación no crean alcance ni autorización. El servidor deberá conservar el control real de qué objetos y atributos puede consultar cada actor cuando la implementación sea autorizada.
+
+---
+
+#### 26. Qué requiere atención
+
+La sección de atención no inventa una prioridad técnica global.
+
+Puede agrupar elementos por condiciones verificables como:
+
+- alerta accionable correlacionada;
+- caso activo relacionado;
+- health `OFFLINE`;
+- health `DEGRADED`;
+- health `MISCONFIGURED`;
+- evidencia crítica obsoleta o ausente;
+- relación esencial `PENDIENTE_DE_EVIDENCIA`;
+- cambio activo relacionado.
+
+La ordenación deberá considerar la autoridad de los contratos de servicio, impacto, criticidad, alerta y caso cuando existan. El estado de health por sí solo no escribe prioridad P1–P4 ni SLA.
+
+---
+
+#### 27. Estado desconocido y deuda de evidencia
+
+La vista **Evidencia y desconocidos** separa al menos:
+
+```text
+SIN IDENTIDAD CANÓNICA SUFICIENTE
+SIN RELACIÓN RECONCILIADA
+SIN FUENTE DE TELEMETRÍA
+SIN OBSERVACIÓN RECIENTE
+OBSERVACIÓN CONTRADICTORIA
+FUENTE AÚN NO INTEGRADA
+OBJETO FUERA DE ALCANCE DE MONITOREO
+```
+
+Cada fila debe indicar:
+
+- objeto o clase afectada;
+- qué falta exactamente;
+- qué conclusión no puede emitirse;
+- fuente propietaria;
+- propietario documental/técnico del cierre cuando exista;
+- condición de salida.
+
+El objetivo es que `UNKNOWN` sea operable como deuda de evidencia, no un cajón sin explicación.
+
+---
+
+#### 28. Alertas, casos y cambios
+
+La interfaz conserva:
+
+```text
+SEÑAL
+≠ ALERTA
+≠ CASO
+≠ INCIDENTE
+≠ PROBLEMA
+≠ CAMBIO
+≠ HEALTH
+```
+
+Reglas:
+
+1. una señal puede cambiar health sin crear incidente automáticamente;
+2. una alerta puede aparecer relacionada con un nodo sin convertirlo en causa;
+3. un caso de `TI-UX-002` puede referenciar servicio y elemento afectados;
+4. desde el caso se puede abrir el contexto del elemento en el mapa;
+5. desde el mapa se puede entregar el `element_ref` al flujo de mesa de servicio cuando el actor decida reportar o relacionar una afectación;
+6. el mapa no cambia estado del caso al visualizar health;
+7. `HEALTHY` posterior no cierra caso ni valida al solicitante;
+8. el diseño detallado de incidente, problema, cambio, mantenimiento y recuperación permanece en `TI-UX-004`.
+
+---
+
+#### 29. Acciones y handoffs
+
+El mapa es predominantemente de consulta y contextualización.
+
+Acciones permitidas por diseño, siempre sujetas a autorización:
+
+- ver detalle del elemento;
+- navegar a una dependencia directa;
+- ver el servicio relacionado;
+- ver un caso existente;
+- entregar referencia del elemento a la mesa de servicio;
+- consultar evidencia segura disponible;
+- abrir una superficie propietaria de configuración o cambio cuando exista y el actor tenga derecho a usarla.
+
+Acciones que el mapa no ejecuta directamente:
+
+- cambiar IP, VLAN, SSID, driver, firmware o routing;
+- instalar o retirar aplicaciones;
+- cambiar baseline o posture;
+- modificar regla, threshold, silencio o routing de monitoreo;
+- elevar privilegios;
+- abrir sesión remota;
+- leer logs sensibles por defecto;
+- cerrar incidente, problema o cambio;
+- alterar condición física o custodia del activo;
+- cambiar contratos, licencias o costos.
+
+Una acción de configuración será un handoff a la autoridad propietaria, no un control escondido dentro del nodo.
+
+---
+
+#### 30. Protección de información
+
+La presentación ordinaria aplica minimización:
+
+**Visible cuando sea necesario y autorizado:**
+
+- código y etiqueta segura;
+- clase;
+- sede/área;
+- health;
+- frescura;
+- estado de reconciliación;
+- versión o ambiente no sensible;
+- relaciones y servicios;
+- resumen de alerta/caso no sensible.
+
+**No visible por defecto:**
+
+- contraseñas;
+- tokens;
+- API keys;
+- PSK;
+- credenciales de proveedor;
+- cookies o cabeceras de autorización;
+- logs completos;
+- payloads completos;
+- dumps de configuración;
+- topología sensible innecesaria;
+- direcciones o identificadores técnicos cuando una etiqueta segura sea suficiente;
+- datos personales de trabajadores o terceros no requeridos por la acción.
+
+El acceso progresivo a diagnóstico sensible conserva finalidad, recurso, intervalo, autorización y trazabilidad de `TI-AUTH-004`.
+
+---
+
+#### 31. Accesibilidad y densidad
+
+El mapa administrativo no dependerá exclusivamente de una visualización gráfica.
+
+Debe existir representación equivalente mediante lista o tabla para:
+
+- navegación por teclado;
+- lector de pantalla;
+- búsqueda;
+- filtros;
+- revisión de relaciones;
+- comparación de estados;
+- exportación solo cuando una tarea autorizada la habilite.
+
+Reglas:
+
+1. health usa texto e iconografía además de color;
+2. las relaciones tienen nombre visible;
+3. el foco del teclado es identificable;
+4. el detalle no depende de hover;
+5. los nodos con `UNKNOWN` no se atenúan hasta parecer irrelevantes;
+6. una red grande admite agrupación y expansión progresiva;
+7. la densidad técnica avanzada se revela progresivamente;
+8. la vista inicial prioriza atención y desconocidos, no una nube completa de nodos.
+
+---
+
+#### 32. Composición material — resumen
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ Mapa técnico                                                │
+│ Estado de servicios, equipos y dependencias                 │
+├──────────────────────────────────────────────────────────────┤
+│ Resumen | Dependencias | Inventario | Evidencia             │
+├──────────────────────────────────────────────────────────────┤
+│ SERVICIOS                                                   │
+│ Saludable ...  Degradado ...  Offline ...  Unknown ...     │
+│                                                              │
+│ REQUIERE ATENCIÓN                                           │
+│ [Servicio / elemento]  Estado  Evidencia  Caso/alerta       │
+│                                                              │
+│ EVIDENCIA INSUFICIENTE                                      │
+│ [Elemento]  Qué falta  Desde cuándo  Fuente propietaria     │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Los contadores solo usan poblaciones que puedan explicarse. El diseño no obliga a mostrar cero como si hubiera existido una comprobación.
+
+---
+
+#### 33. Composición material — dependencias
+
+```text
+Servicio: Impresoras y periféricos
+
+                  ┌─────────────────────┐
+                  │ TI-SERVICE-004      │
+                  │ Salud: UNKNOWN      │
+                  └──────────┬──────────┘
+                             │ depende de
+             ┌───────────────┴────────────────┐
+             │                                │
+┌─────────────────────────┐       ┌──────────────────────────┐
+│ PRINTER                  │       │ APPLICATION / ENDPOINT   │
+│ PRN-VC-COCINA-...        │       │ solo si relación existe  │
+│ Condición: OPERATIVA     │       │                          │
+│ Health: UNKNOWN          │       │                          │
+└────────────┬────────────┘       └──────────────────────────┘
+             │
+             │ red relacionada solo con TI-REL-008
+             ▼
+┌─────────────────────────┐
+│ NETWORK_RESOURCE        │
+│ si existe identidad     │
+│ reconciliada            │
+└─────────────────────────┘
+```
+
+Si `TI-REL-008` no existe, la interfaz no dibuja la arista aunque la impresora esté documentada como LAN.
+
+---
+
+#### 34. Estados vacíos, degradados y parciales
+
+##### Sin inventario validado
+
+```text
+Todavía no hay elementos reconciliados para esta clase.
+El modelo está definido, pero falta evidencia para poblar el mapa.
+```
+
+##### Fuente sin telemetría
+
+```text
+Conocemos este elemento, pero no existe una observación vigente para concluir su salud.
+Salud: UNKNOWN
+```
+
+##### Fuente temporalmente no disponible
+
+```text
+No pudimos actualizar esta fuente.
+Se conserva la última observación con su fecha original.
+La información puede estar obsoleta.
+```
+
+##### Relaciones parciales
+
+```text
+Este elemento tiene identidad válida, pero algunas dependencias todavía no están reconciliadas.
+No se completará el grafo mediante coincidencias automáticas no aprobadas.
+```
+
+##### Resultado contradictorio
+
+```text
+Las fuentes disponibles no permiten concluir un estado único.
+Salud: UNKNOWN
+Requiere revisión de evidencia.
+```
+
+---
+
+#### 35. Reconciliación AS-IS → diseño objetivo
+
+| Elemento                 | AS-IS verificable                                                                                               | Resultado de TI-UX-003                                                         |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Grafo de configuración   | contrato de siete clases y quince relaciones `ESPECIFICADO`; materialización transversal completa no demostrada | experiencia de proyección definida sin crear fuente paralela                   |
+| Endpoints                | contrato completo; persistencia transversal consolidada `PENDIENTE_DE_EVIDENCIA`                                | vista definida; cero endpoints ficticios                                       |
+| Dispositivos compartidos | 2 activos; 4 vínculos activos con aplicaciones; ambos sin `last_seen_at`                                        | 2/2 reciben presentación explícita con health `UNKNOWN`                        |
+| Redes                    | siete subtipos y topología definidos; 0 instancias AS-IS `VALIDADO`                                             | mapa muestra modelo y deuda de evidencia, no topología inventada               |
+| Impresoras               | 9 identidades con condición física; relación física con activo no `VALIDADO`; runtime health no demostrado      | 9/9 reciben decisión explícita y separan condición de health                   |
+| Aplicaciones             | 10 identidades activas en catálogo; despliegue/health requieren evidencia independiente                         | 10/10 reciben decisión explícita; catálogo activo no equivale a disponibilidad |
+| Servicios                | 11 servicios definidos y matriz de observabilidad aprobada                                                      | 11/11 son raíces navegables de dependencias y health explicable                |
+| Health                   | cinco estados y contrato de observabilidad `ESPECIFICADO`; plataforma transversal completa no demostrada        | semántica visual, frescura, desconocidos y explicación quedan definidas        |
+| VISO                     | mesa de servicio diseñada en TI-UX-002; panel técnico unificado no se declara implementado                      | mapa técnico queda `ESPECIFICADO` documentalmente                              |
+| Configuración            | gobierno protegido `ESPECIFICADO`                                                                               | mapa permanece de consulta/handoff; no se convierte en consola de cambio       |
+| Datos sensibles          | minimización y diagnóstico protegido `ESPECIFICADO`                                                             | detalle técnico restringido y progresivo                                       |
+| Implementación física    | fase actual exclusivamente documental                                                                           | `NO_APLICA` en esta tarea                                                      |
+
+---
+
+#### 36. Brechas y destinos exactos
+
+| Brecha o resultado pendiente                                                           | Estado tras TI-UX-003                    | Propietario / destino                                                                                              | Condición de salida                                                                             |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| adaptadores reales de telemetría para endpoint, red, impresora, aplicación y proveedor | `FUERA_DE_ALCANCE`                       | `TI-INT-001`                                                                                                       | fuente, autenticación, reloj, mapping, retries, idempotencia y señales implementables definidos |
+| contratos entre fuentes VENTO y capa tecnológica                                       | `FUERA_DE_ALCANCE`                       | `TI-INT-002`                                                                                                       | interfaces, propietarios y mappings aprobados                                                   |
+| MDM, soporte remoto, ISP, fabricantes y herramientas externas                          | `FUERA_DE_ALCANCE`                       | `TI-INT-003`                                                                                                       | integración concreta definida con alcance, autenticación, auditoría y salida                    |
+| flujos visuales de incidente, problema, cambio, mantenimiento y recuperación           | `FUERA_DE_ALCANCE`                       | `TI-UX-004`                                                                                                        | diseño de correlación y acciones operativas aprobado                                            |
+| proveedores, licencias, contratos, renovaciones y costos en experiencia TI             | `FUERA_DE_ALCANCE`                       | `TI-UX-005`                                                                                                        | experiencia administrativa económica/contractual aprobada                                       |
+| diagnóstico guiado, runbooks y aprendizaje contextual                                  | `FUERA_DE_ALCANCE`                       | `TI-UX-006`                                                                                                        | experiencia guiada y gobierno de conocimiento aprobados                                         |
+| configuración protegida desde cualquier superficie futura                              | `ESPECIFICADO`; implementación pendiente | `TI-AUTH-003` + alcance de implementación aplicable                                                                | enforcement real de actor, permiso, recurso, cambio, privilegio y evidencia                     |
+| logs y diagnóstico sensible desde cualquier drill-down futuro                          | `ESPECIFICADO`; implementación pendiente | `TI-AUTH-004` + alcance de implementación aplicable                                                                | acceso minimizado, autorizado y auditable implementado                                          |
+| poblamiento validado de topología de red                                               | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-004`; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba | identidades y relaciones verificadas sin inferencias por IP, nombre o ubicación                 |
+| reconciliación impresora ↔ activo físico                                               | `PENDIENTE_DE_EVIDENCIA`                 | NEXO + PRINT-ARC; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba       | las 9 impresoras resuelven o justifican explícitamente su relación física                       |
+| persistencia transversal de endpoint                                                   | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-003`; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba | identidades, lifecycle, baseline, posture y relaciones disponibles en fuente canónica           |
+| implementación física de la experiencia de mapa en VISO                                | `NO_APLICA` en esta fase                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado                                        | alcance de implementación autoriza explícitamente la superficie y sus consumidores              |
+
+No queda una decisión documental propia de TI-UX-003 diferida. Las brechas listadas corresponden a datos, integración, autorización, tareas vecinas o implementación física ya asignados.
+
+---
+
+#### 37. Fronteras con las tareas siguientes
+
+##### TI-UX-004
+
+Recibe del mapa:
+
+- elemento y servicio afectados;
+- health y frescura;
+- alertas relacionadas;
+- dependencias demostradas;
+- cambios relacionados;
+- evidencia segura.
+
+Conserva como propia la experiencia de incidente, problema, cambio, mantenimiento y recuperación.
+
+##### TI-UX-005
+
+Puede reutilizar la identidad de aplicación, proveedor o elemento, pero conserva la experiencia de licencias, contratos, renovaciones y costos. El mapa no muestra valores económicos como health.
+
+##### TI-UX-006
+
+Puede recibir síntoma, elemento y contexto técnico seguro para iniciar diagnóstico guiado. El mapa no incorpora un árbol de resolución ni publica runbooks completos.
+
+---
+
+#### 38. Frontera con TI-UX-002
+
+La mesa de servicio conserva el caso; el mapa conserva contexto tecnológico.
+
+```text
+CASO VISO
+affected_service_ref
++
+affected_element_ref
+        ↓
+ABRIR CONTEXTO EN MAPA
+        ↓
+IDENTIDAD + SALUD + FRESCURA + DEPENDENCIAS
+```
+
+Y en sentido inverso:
+
+```text
+ELEMENTO EN MAPA
+        ↓
+REPORTAR O RELACIONAR AFECTACIÓN
+        ↓
+ENTREGAR REFERENCIA A LA MESA DE SERVICIO
+```
+
+La transferencia de contexto evita volver a escribir manualmente sede, aplicación o elemento cuando ya están resueltos, pero la mesa de servicio conserva clasificación, prioridad, SLA, asignación, diagnóstico, restauración, validación y cierre.
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya asigna expresamente a `TI-UX-003` la protección del inventario y relaciones tecnológicas mediante `TREQ-NEXO-019`, mientras `TREQ-VISO-002` gobierna la mesa de servicio y el elemento afectado; `TREQ-PROC-457` exige anticipar disponibilidad, conexión, energía, red, periférico, consumible y ausencia de telemetría; `TREQ-PROC-461` a `TREQ-PROC-500` protegen observabilidad, salud, señal, alerta, evidencia y correlación; y `TREQ-UX-003`, `TREQ-UX-005` y `TREQ-UX-010` protegen densidad administrativa, fuente de verdad, estado, contexto y minimización. TI-UX-003 materializa la experiencia de esas obligaciones sobre VISO sin introducir un nuevo estado de dominio, algoritmo de prioridad, permiso, mecanismo de seguridad, relación tecnológica o efecto persistente que requiera otra identidad de prueba.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] la continuidad vigente es `TI-UX-002 → TI-UX-003 → TI-UX-004`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] VISO queda definido como aplicación objetivo de la experiencia administrativa;
+- [x] no se inventa una ruta física;
+- [x] se materializan exactamente cuatro modos primarios de presentación;
+- [x] se preservan 7 de 7 clases del grafo tecnológico;
+- [x] se preservan 15 de 15 relaciones directas `TI-REL-*`;
+- [x] se distingue relación directa, lectura inversa y ruta derivada;
+- [x] una ruta derivada no se presenta como causa;
+- [x] se preservan 5 de 5 estados de health;
+- [x] `UNKNOWN` queda visible y no equivale a saludable;
+- [x] toda health requiere fuente y frescura;
+- [x] health, condición física, lifecycle, posture, configuración y disponibilidad permanecen separados;
+- [x] la salud de servicio no adopta mecánicamente el peor nodo;
+- [x] los 11 servicios `TI-SERVICE-*` reciben una raíz de presentación explícita;
+- [x] los siete subtipos de `NETWORK_RESOURCE` quedan cubiertos;
+- [x] la ausencia actual de instancias de red `VALIDADO` no produce topología ficticia;
+- [x] los 2 dispositivos compartidos AS-IS reciben decisión explícita;
+- [x] los 4 vínculos activos dispositivo–aplicación quedan reconciliados;
+- [x] `last_seen_at = null` en ambos dispositivos se traduce a health `UNKNOWN`, no `OFFLINE` automático;
+- [x] las 9 impresoras `PRN-*` reciben decisión explícita;
+- [x] condición física de impresora y runtime health permanecen separados;
+- [x] ninguna de las 9 relaciones impresora–activo se declara validada sin evidencia;
+- [x] las 10 aplicaciones canónicas reciben decisión explícita;
+- [x] catálogo activo no equivale a despliegue, health, disponibilidad empresarial ni autorización;
+- [x] AURA no se reactiva por existir como aplicación activa en catálogo;
+- [x] se define drill-down de identidad, health, evidencia, relaciones, servicios, casos y cambios;
+- [x] se definen búsqueda y filtros sin convertirlos en autorización;
+- [x] se define una vista explícita de deuda de evidencia y desconocidos;
+- [x] señal, alerta, caso, incidente, problema, cambio y health permanecen separados;
+- [x] el mapa se integra con TI-UX-002 mediante referencias, no duplicación de expedientes;
+- [x] el mapa no ejecuta configuración protegida;
+- [x] el mapa no concede privilegio ni acceso sensible;
+- [x] logs, IP, topología sensible, secretos y datos personales se minimizan por defecto;
+- [x] la experiencia tiene alternativa tabular/lista y no depende exclusivamente del grafo ni del color;
+- [x] se materializan estados vacíos, sin telemetría, obsoletos, parciales y contradictorios;
+- [x] la reconciliación AS-IS diferencia especificado, implementado parcial, pendiente de evidencia y no aplica;
+- [x] toda brecha conserva propietario y condición de salida;
+- [x] no se modifica código, Supabase, datos, redes, impresoras, aplicaciones ni telemetría;
+- [x] se crean cero requisitos de prueba y se modifican cero requisitos existentes;
+- [x] `TI-UX-004` permanece únicamente reservada.
+
+---
+
+#### 41. Estado del resultado
+
+| Resultado                                                      | Estado                                                               |
+| -------------------------------------------------------------- | -------------------------------------------------------------------- |
+| experiencia administrativa del mapa técnico de VISO            | `ESPECIFICADO`                                                       |
+| arquitectura de cuatro modos de presentación                   | `ESPECIFICADO`                                                       |
+| proyección de siete clases y quince relaciones                 | `ESPECIFICADO`                                                       |
+| presentación de health y frescura                              | `ESPECIFICADO`                                                       |
+| proyección de 11 servicios                                     | `ESPECIFICADO`                                                       |
+| presentación de endpoints                                      | `ESPECIFICADO`; población canónica completa `PENDIENTE_DE_EVIDENCIA` |
+| presentación de 2 dispositivos compartidos AS-IS               | `ESPECIFICADO`                                                       |
+| presentación de red                                            | `ESPECIFICADO`; instancias validadas AS-IS: 0                        |
+| presentación de 9 impresoras                                   | `ESPECIFICADO`                                                       |
+| presentación de 10 aplicaciones                                | `ESPECIFICADO`                                                       |
+| integración contextual con mesa de servicio                    | `ESPECIFICADO`                                                       |
+| protección de configuración y diagnóstico                      | `ESPECIFICADO` mediante contratos propietarios                       |
+| adaptadores de telemetría                                      | `FUERA_DE_ALCANCE` — `TI-INT-001` a `TI-INT-003`                     |
+| flujos de incidente/problema/cambio/mantenimiento/recuperación | `FUERA_DE_ALCANCE` — `TI-UX-004`                                     |
+| implementación física del mapa                                 | `NO_APLICA` en esta fase                                             |
+| cambios de código o Supabase                                   | `NO_APLICA`                                                          |
+
+---
+
+#### 42. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación`
+
+TAREA ACTUAL APROBADA
+`TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica`
+
+SIGUIENTE TAREA RESERVADA
+`TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación`
+
+
 ### [ ] TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación
 ### [ ] TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
 ### [ ] TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
