@@ -846,7 +846,1211 @@ SIGUIENTE TAREA RESERVADA
 `TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación`
 
 
-### [ ] TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación
+### ✅ TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA` — APROBADA
+**Tarea siguiente:** `TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia administrativa de mesa de servicio en VISO para colas, triage, prioridad, SLA, asignación, comunicación, restauración, validación y cierre del caso tecnológico
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md`
+**Aplicación objetivo:** VISO
+**Proceso propietario:** `VPROC-0058 — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento`
+**Artefactos producidos:** `TI-SERVICE-DESK-UX-CONTRACT-001`; `TI-SERVICE-DESK-QUEUE-MATRIX-001`; `TI-CASE-WORKSPACE-UX-CONTRACT-001`; `TI-SERVICE-DESK-UX-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, componentes, navegación desplegada, tablas, enums, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, permisos, notificaciones, integraciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** diseñar la mesa administrativa con la que el equipo autorizado de soporte recibe en VISO los casos reportados desde ANIMA u otros iniciadores permitidos, los clasifica, prioriza, organiza por colas, controla compromisos SLA, asigna y escala trabajo, comunica al solicitante, registra restauración y obtiene validación antes del cierre, sin convertir la mensajería, el color de una tarjeta, una asignación o un estado legacy en autoridad sobre el expediente.
+
+---
+
+#### 1. Propósito
+
+Materializar la experiencia administrativa de `VPROC-0058` dentro de VISO de manera que un actor autorizado pueda responder, sin reconstruir manualmente el caso desde mensajes dispersos:
+
+```text
+¿QUÉ CASOS REQUIEREN ATENCIÓN AHORA?
+→ cola, prioridad, riesgo SLA y siguiente compromiso
+
+¿QUÉ ESTÁ AFECTADO?
+→ servicio, elemento, sede, actor y alcance empresarial
+
+¿QUIÉN RESPONDE?
+→ propietario vigente, asignación aceptada y escalamiento
+
+¿QUÉ SE SABE Y QUÉ FALTA?
+→ triage, diagnóstico, evidencia, dependencias y pendientes
+
+¿QUÉ DEBE COMUNICARSE?
+→ mensaje seguro al solicitante, próxima actualización y workaround
+
+¿EL SERVICIO VOLVIÓ A FUNCIONAR?
+→ restauración o cumplimiento con evidencia
+
+¿EL RESULTADO FUE VALIDADO?
+→ respuesta del solicitante o validación equivalente autorizada
+
+¿SE PUEDE CERRAR?
+→ criterios completos, pendientes transferidos y autoridad aplicable
+```
+
+La mesa de servicio no crea un segundo proceso ni sustituye a ANIMA. ANIMA conserva la experiencia personal del trabajador; VISO conserva la experiencia administrativa y el expediente tecnológico.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se materializa una mesa de servicio administrativa completa con el siguiente balance:
+
+| Elemento                                          |  Resultado |
+| ------------------------------------------------- | ---------: |
+| Aplicaciones nuevas                               |      **0** |
+| Procesos nuevos                                   |      **0** |
+| Máquinas de estado nuevas                         |      **0** |
+| Artefactos documentales de UX                     |      **4** |
+| Vistas operativas de cola definidas               |     **10** |
+| Prioridades canónicas representadas               | **4 de 4** |
+| Perfiles SLA representados                        | **4 de 4** |
+| Estados canónicos representados                   | **9 de 9** |
+| Condiciones estructuradas de espera representadas | **4 de 4** |
+| Clases de escalamiento representadas              | **5 de 5** |
+| Cambios físicos                                   |      **0** |
+| Requisitos de prueba nuevos o modificados         |      **0** |
+
+La solución documental se compone de:
+
+1. `TI-SERVICE-DESK-UX-CONTRACT-001`: arquitectura de información, reglas de interacción y fronteras de la mesa de servicio;
+2. `TI-SERVICE-DESK-QUEUE-MATRIX-001`: definición material de las diez vistas de cola y su orden operativo;
+3. `TI-CASE-WORKSPACE-UX-CONTRACT-001`: composición del espacio de trabajo de cada caso, triage, SLA, asignación, comunicación, diagnóstico, evidencia, validación y cierre;
+4. `TI-SERVICE-DESK-UX-RECONCILIATION-001`: reconciliación entre el soporte AS-IS y el diseño objetivo de VISO.
+
+---
+
+#### 3. Entradas y autoridades conservadas
+
+La tarea consume y preserva, sin redefinir:
+
+- `CAP-SCOPE-015` y la decisión de convertir el soporte existente en portal del trabajador y mesa de servicio coordinados;
+- `TI-DOM-001`, incluidos `TI-SERVICE-006`, `TI-SERVICE-007` y `TI-ATTN-001` a `TI-ATTN-004`;
+- `TI-DOM-007`, incluido `TI-SERVICE-CASE-CONTRACT-001`;
+- `TI-CASE-CLASSIFICATION-MATRIX-001`;
+- `TI-IMPACT-URGENCY-PRIORITY-MATRIX-001`;
+- `TI-SLA-COMMITMENT-MATRIX-001`;
+- `TI-ESCALATION-COMMUNICATION-MATRIX-001`;
+- `TI-CASE-CLOSURE-REOPEN-CONTRACT-001`;
+- `TI-SERVICE-DESK-ASIS-RECONCILIATION-001`;
+- `TI-AUTH-001`, para responsabilidades, segregación y autoridad de soporte;
+- `TI-AUTH-002` a `TI-AUTH-004`, para privilegio, configuración protegida, evidencia, secretos y divulgación;
+- `TI-UX-001`, como contrato de la experiencia personal de soporte en ANIMA;
+- `UX-BASE-001` a `UX-BASE-010`, para separación de carriles, foco, lenguaje humano, contexto, captura no duplicada y divulgación progresiva;
+- `TREQ-VISO-002`, que protege la mesa de servicio tecnológica completa;
+- `TREQ-VISO-046`, que protege la matriz de prioridad, los perfiles SLA, el reloj, las pausas y el escalamiento preventivo;
+- `TREQ-ANIMA-022`, que protege la proyección personal de soporte y las conversaciones autorizadas del trabajador.
+
+No se modifica ninguna definición de impacto, urgencia, prioridad, SLA, estado, cierre, autorización o propiedad ya aprobada.
+
+---
+
+#### 4. Frontera entre ANIMA y VISO
+
+Se fija la separación de experiencia:
+
+```text
+ANIMA
+→ trabajador reporta
+→ trabajador consulta su caso
+→ trabajador responde preguntas
+→ trabajador recibe comunicación segura
+→ trabajador confirma si el resultado volvió a funcionar
+
+VISO
+→ recibe y organiza la cola
+→ clasifica
+→ resuelve impacto y urgencia
+→ deriva prioridad
+→ aplica SLA
+→ asigna y escala
+→ diagnostica
+→ controla workaround y restauración
+→ comunica
+→ solicita y registra validación
+→ verifica criterios de cierre
+→ cierra o correlaciona reapertura
+```
+
+Regla obligatoria:
+
+```text
+PORTAL DEL TRABAJADOR
+≠
+MESA DE SERVICIO ADMINISTRATIVA
+```
+
+El caso conserva una sola identidad. Cambiar de ANIMA a VISO o entre niveles de atención no crea un expediente nuevo.
+
+---
+
+#### 5. Qué cambia respecto del soporte actual
+
+El cambio objetivo no consiste en eliminar el soporte que ya funciona. Consiste en convertir el backend funcional de tickets y mensajes en una experiencia administrativa capaz de gobernar el ciclo completo.
+
+| AS-IS verificable                                                         | Diseño objetivo de TI-UX-002                                                                                                        |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `support_tickets` conserva datos básicos y estado legacy                  | VISO presenta el caso con servicio, elemento, impacto, urgencia, prioridad, SLA, propietario, restauración, validación y relaciones |
+| `open`, `in_progress`, `resolved`, `closed` no prueban el ciclo canónico  | la interfaz usa los nueve estados de `VPROC-0058` y trata los estados legacy solo como transición técnica pendiente                 |
+| mensajería y estado pueden quedar acoplados en el soporte actual          | enviar un mensaje no cambia por sí solo la etapa empresarial                                                                        |
+| ANIMA puede marcar una conversación como cerrada                          | el cierre canónico se gobierna desde VISO con validación, evidencia, conocimiento y segregación aplicables                          |
+| no se demuestra una mesa VISO completa                                    | se especifica la superficie administrativa completa que deberá materializarse en la etapa de implementación autorizada              |
+| prioridad y SLA no están materializados en la estructura básica observada | VISO muestra impacto, urgencia, prioridad derivada, objetivos SLA y riesgo temporal de forma estructurada                           |
+| `assigned_to` puede representar una asignación básica                     | la experiencia distingue propuesta de asignación, aceptación efectiva, propietario vigente, reasignación y escalamiento             |
+| ticket y chat constituyen la experiencia principal                        | el caso se trabaja desde un espacio administrativo con resumen, comunicación, diagnóstico, evidencia e historial                    |
+| cierre o resolución pueden aparentar finalización                         | restauración, validación y cierre quedan separados visual y funcionalmente                                                          |
+
+La transición física de datos, estados y permisos no pertenece a esta tarea.
+
+---
+
+#### 6. Para qué sirve realmente la mesa de servicio
+
+La mesa de servicio resuelve cinco problemas operativos concretos:
+
+1. **Priorizar trabajo real:** evita que diez mensajes nuevos oculten un incidente crítico o que la antigüedad de un ticket se confunda con prioridad.
+2. **Controlar compromisos:** permite saber qué caso está próximo a incumplir acuse, primera respuesta, restauración, cumplimiento o comunicación.
+3. **Conservar propietario:** evita que un caso quede sin responsable durante reasignaciones, esperas de proveedor o cambios de turno.
+4. **Separar conversación de proceso:** permite hablar con el trabajador sin falsear diagnóstico, restauración o cierre.
+5. **Cerrar con evidencia:** impide presentar como terminado un caso que aún no fue validado o que dejó pendientes sin aceptación.
+
+El resultado esperado es que el responsable tecnológico pueda operar una cola priorizada y que el trabajador siga viendo en ANIMA únicamente la parte que necesita comprender o contestar.
+
+---
+
+#### 7. `TI-SERVICE-DESK-UX-CONTRACT-001`
+
+La mesa de servicio se integra conceptualmente al shell administrativo vigente de VISO. No se crea una aplicación paralela.
+
+Su arquitectura de información se organiza en tres niveles:
+
+```text
+NIVEL 1 — COLAS
+qué requiere atención y por qué
+
+NIVEL 2 — CASO
+qué ocurre, quién responde y cuál es la siguiente acción
+
+NIVEL 3 — DETALLE AUTORIZADO
+triage, diagnóstico, evidencia, relaciones, historial y decisiones protegidas
+```
+
+La profundidad técnica se revela progresivamente. La primera vista no obliga a abrir cada caso para identificar prioridad, riesgo SLA, propietario o próxima acción.
+
+---
+
+#### 8. Portada administrativa de la mesa
+
+La portada prioriza trabajo pendiente, no métricas decorativas.
+
+Composición objetivo:
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Mesa de servicio                                                            │
+│ Casos tecnológicos que requieren atención                                   │
+│                                                                              │
+│ [ Nuevos 12 ] [ P1/P2 5 ] [ SLA en riesgo 3 ] [ Validación pendiente 7 ]  │
+│                                                                              │
+│ Buscar caso, servicio, sede o solicitante                                    │
+│ Filtros: cola · servicio · sede · prioridad · propietario · estado · fecha  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+COLA ACTUAL: SLA EN RIESGO
+┌────┬──────────────────────┬──────────────┬────────┬──────────────┬────────────┐
+│ P1 │ Venta sin servicio   │ Sede Centro  │ Caso…  │ Responsable… │ 00:18      │
+│ P2 │ Impresión degradada  │ Sede Norte   │ Caso…  │ Sin aceptar  │ 00:42      │
+│ P3 │ Solicitud de soporte │ Oficina      │ Caso…  │ Responsable… │ 03:15      │
+└────┴──────────────────────┴──────────────┴────────┴──────────────┴────────────┘
+```
+
+Los contadores son accesos a conjuntos de trabajo. No sustituyen indicadores analíticos ni crean estados.
+
+---
+
+#### 9. `TI-SERVICE-DESK-QUEUE-MATRIX-001`
+
+Las colas son vistas derivadas sobre atributos canónicos. No son estados de dominio y no modifican el expediente por incluirlo o excluirlo de una vista.
+
+| Vista de cola               | Condición material                                                            | Acción principal esperada                                               | No significa                              |
+| --------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------- |
+| **Nuevos / por clasificar** | caso en `TECH_CASE_REPORTED` o `TRIAGE_IN_PROGRESS` con triage pendiente      | completar clasificación y contexto mínimo                               | prioridad conocida                        |
+| **Sin aceptación**          | existe asignación propuesta o transferencia pendiente sin aceptación efectiva | obtener aceptación o resolver reasignación                              | caso sin propietario anterior             |
+| **Mi trabajo**              | el actor actual es propietario aceptado dentro de su autorización             | ejecutar siguiente acción del caso                                      | autoridad ilimitada sobre el recurso      |
+| **SLA en riesgo**           | se alcanzó umbral preventivo o existe incumplimiento activo                   | escalar, definir estrategia y comunicar                                 | cambio automático de prioridad            |
+| **Esperando información**   | condición `WAITING_REQUESTER_INFO` vigente                                    | obtener dato estrictamente necesario y mantener trazabilidad            | pausa total de toda obligación            |
+| **Esperando aprobación**    | condición `WAITING_REQUIRED_APPROVAL` vigente                                 | mostrar decisión requerida, autoridad y siguiente revisión              | soporte liberado de contener un incidente |
+| **Esperando proveedor**     | condición `WAITING_EXTERNAL_PROVIDER` vigente                                 | seguir subcaso externo, mantener ownership y comunicación               | transferencia del caso a tercero          |
+| **Validación pendiente**    | estado `USER_VALIDATION_PENDING`                                              | obtener confirmación explícita o evidencia equivalente autorizada       | caso cerrado                              |
+| **Reabiertos**              | existe reapertura correlacionada o referencia `reopened_from_ref`             | recalcular contexto, impacto, urgencia, prioridad y SLA                 | reescritura del cierre anterior           |
+| **Incidentes mayores**      | marca `MAJOR_INCIDENT` vigente                                                | coordinación, línea de tiempo, comunicación y evaluación de continuidad | activación automática de continuidad      |
+
+Una misma fila puede aparecer en más de una vista porque las colas son perspectivas de trabajo, no identidades mutuamente excluyentes.
+
+---
+
+#### 10. Orden operativo predeterminado
+
+Dentro de una cola, el orden se resuelve sin alterar la prioridad del caso:
+
+```text
+1. incidente mayor activo con necesidad inmediata de coordinación
+2. objetivo SLA ya incumplido
+3. umbral preventivo de escalamiento alcanzado
+4. prioridad P1 → P2 → P3 → P4
+5. siguiente compromiso más próximo
+6. momento de reporte más antiguo como desempate
+```
+
+Reglas:
+
+- la antigüedad no eleva prioridad;
+- el orden visual puede cambiar por riesgo SLA sin reescribir la matriz de impacto y urgencia;
+- un caso esperando proveedor puede seguir arriba si mantiene riesgo o comunicación vencida;
+- los filtros personales no cambian propiedad, territorio ni autorización;
+- una fila fuera de la vista actual no deja de existir ni pierde sus obligaciones.
+
+---
+
+#### 11. Filtros y vistas guardadas
+
+La mesa puede ofrecer filtros por:
+
+- servicio tecnológico;
+- clase de caso;
+- sede y área cuando correspondan;
+- clase de elemento afectado;
+- prioridad;
+- estado canónico;
+- condición de espera;
+- propietario actual;
+- nivel de atención;
+- proveedor relacionado;
+- incidente mayor;
+- breach o riesgo SLA;
+- validación pendiente;
+- periodo de reporte.
+
+Una vista guardada es una preferencia de presentación. No concede acceso a casos fuera del alcance del actor ni reemplaza el filtro de autorización de servidor.
+
+---
+
+#### 12. Fila mínima de cola
+
+Cada fila deberá permitir decidir si abrir el caso sin exponer diagnóstico sensible.
+
+Contenido mínimo:
+
+```text
+referencia del caso
+título humano o síntoma resumido
+servicio afectado
+sede o alcance permitido
+prioridad
+estado humano
+propietario actual o transferencia pendiente
+objetivo SLA vigente y tiempo restante/incumplido
+siguiente compromiso o acción
+última actualización relevante
+```
+
+Contenido que no aparece por defecto en la cola:
+
+- logs completos;
+- IP o topología no necesarias;
+- secretos;
+- credenciales;
+- payloads;
+- datos personales de terceros;
+- hipótesis técnicas no confirmadas;
+- capturas sin sanitización.
+
+---
+
+#### 13. Presentación de prioridad
+
+La interfaz conserva cuatro prioridades:
+
+```text
+P1_CRITICAL
+P2_HIGH
+P3_MEDIUM
+P4_LOW
+```
+
+Presentación recomendada:
+
+```text
+P1 · Crítica
+P2 · Alta
+P3 · Media
+P4 · Baja
+```
+
+La prioridad nunca se escribe libremente. VISO resuelve primero impacto y urgencia y obtiene el resultado mediante la matriz canónica.
+
+Matriz conservada:
+
+| Impacto / Urgencia | `IMMEDIATE`   | `CURRENT_WINDOW` | `CURRENT_CYCLE` | `PLANNED`   |
+| ------------------ | ------------- | ---------------- | --------------- | ----------- |
+| `CRITICAL`         | `P1_CRITICAL` | `P1_CRITICAL`    | `P2_HIGH`       | `P3_MEDIUM` |
+| `HIGH`             | `P1_CRITICAL` | `P2_HIGH`        | `P2_HIGH`       | `P3_MEDIUM` |
+| `MEDIUM`           | `P2_HIGH`     | `P2_HIGH`        | `P3_MEDIUM`     | `P4_LOW`    |
+| `LOW`              | `P3_MEDIUM`   | `P3_MEDIUM`      | `P4_LOW`        | `P4_LOW`    |
+
+La ficha de prioridad muestra además:
+
+- impacto resuelto;
+- urgencia resuelta;
+- razón y evidencia de la última evaluación;
+- actor que efectuó la revisión;
+- momento de la revisión;
+- historial de recalculaciones.
+
+Una reducción de prioridad exige demostrar reducción real de impacto o urgencia y nunca borra un breach previo.
+
+---
+
+#### 14. Uso del color y accesibilidad de prioridad
+
+El color puede reforzar la lectura, pero no será la única señal.
+
+Toda prioridad deberá conservar simultáneamente:
+
+- código `P1` a `P4`;
+- nombre humano;
+- icono o forma distinguible;
+- texto de SLA y siguiente acción.
+
+Un usuario con baja percepción de color deberá poder ordenar y operar la cola sin perder la diferencia de prioridad.
+
+---
+
+#### 15. Presentación de SLA
+
+La mesa no muestra un único contador genérico llamado “SLA”. Presenta el compromiso actualmente relevante y conserva los demás objetivos en detalle.
+
+Objetivos visibles cuando apliquen:
+
+```text
+acuse
+primera respuesta
+restauración o workaround seguro
+cumplimiento de solicitud
+próxima comunicación
+```
+
+Cada objetivo muestra:
+
+- perfil aplicable;
+- fecha y hora objetivo;
+- calendario y zona horaria aplicables;
+- tiempo restante o tiempo excedido;
+- estado `en tiempo`, `en riesgo` o `incumplido`;
+- pausa estructurada cuando realmente afecte ese objetivo;
+- siguiente escalamiento preventivo;
+- responsable del próximo compromiso.
+
+El cierre administrativo nunca borra el historial de objetivos.
+
+---
+
+#### 16. Perfiles SLA conservados
+
+| Perfil       | Prioridad     | Acuse            | Primera respuesta | Restauración / workaround                          | Solicitud                                              | Comunicación                                      |
+| ------------ | ------------- | ---------------- | ----------------- | -------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------- |
+| `TI-SLA-001` | `P1_CRITICAL` | ≤ 5 min          | ≤ 15 min          | ≤ 60 min                                           | acción preautorizada o plan/autoridad ≤ 60 min         | cada ≤ 30 min                                     |
+| `TI-SLA-002` | `P2_HIGH`     | ≤ 15 min         | ≤ 30 min          | ≤ 4 h                                              | ≤ 8 h de ventana o fecha comprometida aceptada         | cada ≤ 60 min                                     |
+| `TI-SLA-003` | `P3_MEDIUM`   | ≤ 4 h de ventana | ≤ 8 h de ventana  | ≤ 2 días hábiles de servicio o workaround acordado | ≤ 2 días hábiles o fecha comprometida                  | al menos una vez por día hábil con trabajo activo |
+| `TI-SLA-004` | `P4_LOW`      | ≤ 1 día hábil    | ≤ 1 día hábil     | planificada; ordinario ≤ 5 días hábiles            | programación o cumplimiento ordinario ≤ 5 días hábiles | por hito o cambio de fecha                        |
+
+Los tiempos no prometen eliminación de causa raíz. Restauración y resolución definitiva permanecen separadas.
+
+---
+
+#### 17. Riesgo e incumplimiento SLA
+
+La interfaz distingue tres situaciones:
+
+```text
+EN TIEMPO
+→ el objetivo conserva margen operativo
+
+EN RIESGO
+→ se alcanzó el umbral preventivo aplicable
+
+INCUMPLIDO
+→ el objetivo venció y debe conservar evidencia de breach
+```
+
+Umbrales preventivos conservados:
+
+- P1: 50 % del objetivo de restauración sin estrategia validada;
+- P2: 50 % del objetivo de restauración sin diagnóstico o workaround viable;
+- P3: 75 % del objetivo vigente sin siguiente acción y propietario;
+- P4: fecha comprometida en riesgo o dependencia material modificada.
+
+El banner de incumplimiento no desaparece por bajar prioridad, reasignar o esperar un tercero.
+
+---
+
+#### 18. Condiciones estructuradas de espera
+
+La mesa representa exactamente las cuatro condiciones ya aprobadas:
+
+| Condición                    | Presentación humana                   | Información visible                                                        |
+| ---------------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
+| `WAITING_REQUESTER_INFO`     | Esperando información del solicitante | pregunta concreta, fecha de solicitud, canal, próximo seguimiento          |
+| `WAITING_REQUIRED_APPROVAL`  | Esperando aprobación requerida        | decisión exacta, autoridad, propietario y condición para continuar         |
+| `PLANNED_WINDOW_NOT_STARTED` | Trabajo programado                    | ventana aceptada, inicio previsto y prerrequisitos                         |
+| `WAITING_EXTERNAL_PROVIDER`  | Esperando proveedor                   | proveedor/subcaso correlacionado, última respuesta y siguiente seguimiento |
+
+La interfaz muestra qué objetivo puede estar pausado y qué obligaciones continúan. En particular, esperar proveedor no elimina ownership interno ni cadencia de comunicación.
+
+---
+
+#### 19. `TI-CASE-WORKSPACE-UX-CONTRACT-001`
+
+Al abrir un caso, VISO presenta un espacio de trabajo único con encabezado persistente y detalle progresivo.
+
+Encabezado mínimo:
+
+```text
+referencia del caso
+clase de caso
+servicio afectado
+elemento afectado cuando esté resuelto
+sede / alcance
+solicitante
+prioridad
+estado SLA
+propietario vigente
+estado canónico
+siguiente acción o compromiso
+```
+
+El encabezado permanece visible al cambiar entre secciones del caso para evitar que diagnóstico, comunicación o evidencia pierdan contexto.
+
+---
+
+#### 20. Composición del espacio de trabajo
+
+La composición lógica usa cinco secciones primarias:
+
+1. **Resumen** — contexto, clasificación, impacto, urgencia, prioridad, SLA, propietario y relaciones;
+2. **Comunicación** — mensajes al solicitante, solicitudes de información y compromisos;
+3. **Diagnóstico y trabajo** — hipótesis, comprobaciones, workaround, acciones y resultado técnico;
+4. **Evidencia** — referencias sanitizadas, adjuntos permitidos y acceso protegido;
+5. **Historial** — cambios de estado, prioridad, SLA, asignación, comunicaciones, escalamiento, restauración, validación y cierre.
+
+La separación evita que un comentario técnico se publique accidentalmente al trabajador.
+
+---
+
+#### 21. Ejemplo de espacio de trabajo
+
+```text
+┌────────────────────────────────────────────────────────────────────────────┐
+│ Caso TEC-…                 P2 · Alta              SLA restauración 01:42   │
+│ Aplicación afectada · Sede Centro · Responsable tecnológico               │
+│ Estado: En diagnóstico              Próxima actualización: 2:30 p. m.     │
+├────────────────────────────────────────────────────────────────────────────┤
+│ [ Resumen ] [ Comunicación ] [ Diagnóstico ] [ Evidencia ] [ Historial ]  │
+├────────────────────────────────────────────────────────────────────────────┤
+│ QUÉ ESTÁ PASANDO                                                         │
+│ Síntoma observado …                                                       │
+│ Servicio …      Elemento …      Alcance …                                 │
+│                                                                            │
+│ PRIORIDAD Y SLA                                                           │
+│ Impacto: Alto   Urgencia: Ventana actual   Resultado: P2                  │
+│ Restauración: 01:42 restantes      Comunicación: vence en 00:28           │
+│                                                                            │
+│ SIGUIENTE ACCIÓN                                                          │
+│ Verificar dependencia …                                                   │
+│                                                                            │
+│ PROPIEDAD                                                                 │
+│ Responsable actual …  Aceptada: …   Nivel de atención …                   │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+Los textos de ejemplo no sustituyen identificadores canónicos ni crean datos reales.
+
+---
+
+#### 22. Triage administrativo
+
+La superficie de triage permite resolver de forma estructurada:
+
+- `SERVICE_REQUEST`, `INCIDENT` o `CONSULTATION` cuando el caso permanece en `VPROC-0058`;
+- servicio afectado;
+- elemento afectado cuando exista evidencia suficiente;
+- impacto;
+- urgencia;
+- prioridad derivada;
+- perfil SLA derivado;
+- necesidad de incidente mayor;
+- nivel de atención requerido;
+- handoff de acceso, problema o cambio cuando aplique.
+
+Reglas de interacción:
+
+1. no se presenta un campo libre de prioridad final;
+2. impacto y urgencia muestran criterios y evidencia, no solo un selector;
+3. si el servicio o elemento no puede resolverse, se conserva como no resuelto durante triage en vez de inventarlo;
+4. clasificación de acceso produce handoff a `VPROC-0059` y no crea el ciclo de acceso dentro del caso tecnológico;
+5. problema candidato y cambio requerido conservan vínculos separados;
+6. la información ya disponible desde ANIMA, contexto o grafo no se vuelve a digitar sin necesidad.
+
+---
+
+#### 23. Asignación, aceptación y reasignación
+
+La experiencia distingue:
+
+```text
+PROPONER ASIGNACIÓN
+≠
+ACEPTAR ASIGNACIÓN
+≠
+TRANSFERIR RESPONSABILIDAD EFECTIVA
+```
+
+Toda asignación visible conserva:
+
+- propietario anterior;
+- destinatario o función propuesta;
+- motivo;
+- momento;
+- pendientes;
+- evidencia relevante;
+- fecha objetivo;
+- `accepted_at` cuando la transferencia sea aceptada.
+
+Hasta la aceptación, la interfaz no presenta al propietario anterior como liberado de responsabilidad.
+
+Una reasignación:
+
+- no crea otro caso;
+- no reinicia SLA;
+- no borra breach;
+- no amplía autorización;
+- conserva historial;
+- requiere que la persona receptora vea contexto suficiente para aceptar de forma informada.
+
+---
+
+#### 24. Asignación frente a autorización
+
+La interfaz deberá poder mostrar simultáneamente:
+
+```text
+CASO ASIGNADO
++
+ACCIÓN NO AUTORIZADA SOBRE EL RECURSO
+```
+
+Asignar un caso no concede:
+
+- privilegio;
+- acceso remoto;
+- lectura de logs sensibles;
+- administración de cuentas;
+- modificación de configuración;
+- aprobación de cambio;
+- acceso a secretos.
+
+Cuando una acción esté bloqueada por autorización, la mesa explica la condición y conserva el caso en propiedad del responsable correspondiente.
+
+---
+
+#### 25. Escalamiento
+
+La mesa expone las cinco clases aprobadas:
+
+| Clase            | Presentación                | Resultado UX                                                    |
+| ---------------- | --------------------------- | --------------------------------------------------------------- |
+| `ESC_FUNCTIONAL` | Requiere decisión funcional | incorporar responsable funcional sin perder owner tecnológico   |
+| `ESC_TECHNICAL`  | Requiere especialista       | transferir a nivel técnico superior con aceptación y contexto   |
+| `ESC_PROVIDER`   | Requiere proveedor          | crear o vincular subcaso externo manteniendo caso maestro VENTO |
+| `ESC_SECURITY`   | Requiere seguridad          | restringir detalle y activar responsable/controles de seguridad |
+| `ESC_CONTINUITY` | Evaluar continuidad         | mostrar evaluación y vínculo eventual sin fusionar expedientes  |
+
+Escalar es una acción explícita. No se infiere únicamente por tiempo transcurrido, cargo del solicitante o número de mensajes.
+
+---
+
+#### 26. Comunicación al solicitante
+
+La sección `Comunicación` separa al menos:
+
+```text
+MENSAJE AL SOLICITANTE
+≠
+NOTA INTERNA DE DIAGNÓSTICO
+≠
+COMUNICACIÓN A PROVEEDOR
+```
+
+Antes de enviar un mensaje al solicitante, VISO muestra la proyección exacta que será visible en ANIMA.
+
+La comunicación externa deberá responder, cuando aplique:
+
+1. qué se sabe;
+2. qué está afectado;
+3. qué funciona;
+4. qué acción segura debe realizar o evitar la persona;
+5. quién responde;
+6. cuándo será la siguiente actualización o compromiso;
+7. si existe workaround;
+8. cuándo se solicita validación;
+9. qué quedó cerrado y qué continúa pendiente.
+
+El formulario favorece contenido estructurado y breve sin impedir una explicación humana adicional.
+
+---
+
+#### 27. Nota interna y diagnóstico restringido
+
+La nota interna puede conservar hipótesis y contexto técnico únicamente para actores autorizados.
+
+No se proyecta automáticamente hacia ANIMA ni hacia proveedor.
+
+La mesa no muestra por defecto:
+
+- contraseñas;
+- tokens;
+- secretos;
+- cookies o materiales de sesión;
+- IP o topología innecesarias;
+- logs completos;
+- datos personales de terceros;
+- payloads sensibles;
+- hipótesis como causa confirmada.
+
+Una vista técnica ampliada sigue sometida a finalidad, recurso, permiso, alcance y segregación; estar asignado al caso no basta.
+
+---
+
+#### 28. Evidencia
+
+La sección `Evidencia` presenta referencias y metadatos antes que contenido sensible.
+
+Cada elemento debe poder mostrar, según aplique:
+
+- tipo;
+- origen;
+- fecha;
+- actor o principal técnico;
+- clasificación;
+- recurso relacionado;
+- estado de sanitización;
+- acceso autorizado o expirado;
+- relación con diagnóstico, restauración o decisión.
+
+Una captura, log o adjunto no se convierte en verdad del caso por existir. La interfaz distingue evidencia aportada, comprobación técnica e hipótesis.
+
+---
+
+#### 29. Diagnóstico y trabajo
+
+El panel técnico conserva la secuencia real del trabajo sin forzar una falsa causa definitiva:
+
+```text
+síntoma
+→ hipótesis
+→ comprobación
+→ resultado
+→ siguiente hipótesis o acción
+→ workaround cuando aplique
+→ restauración o cumplimiento
+```
+
+Debe ser posible registrar `UNKNOWN` como causa después de restaurar cuando la causa raíz todavía no esté demostrada y exista el handoff correspondiente.
+
+Diagnóstico no autoriza cambio. Si la solución exige cambio no preautorizado, el caso conserva el origen y se vincula con el gobierno de cambio correspondiente.
+
+---
+
+#### 30. Workaround
+
+Cuando exista workaround, VISO muestra de forma separada:
+
+- acción temporal;
+- alcance;
+- actor o población aplicable;
+- fecha de aplicación;
+- vigencia;
+- riesgos o limitaciones;
+- evidencia de que funciona;
+- responsable de retirarlo o revisarlo;
+- problema o cambio relacionado cuando corresponda.
+
+El badge `Workaround aplicado` nunca se presenta como `Causa resuelta`.
+
+---
+
+#### 31. Restauración y cumplimiento
+
+La mesa exige una acción explícita y evidenciada para declarar:
+
+- restauración de incidente; o
+- fulfillment de solicitud.
+
+Al registrar el resultado debe quedar visible:
+
+```text
+qué resultado volvió a estar disponible o fue entregado
+qué evidencia lo demuestra
+qué workaround continúa vigente
+qué dependencia permanece pendiente
+qué actor puede validar
+qué queda abierto después de restaurar
+```
+
+La interfaz no ofrece una equivalencia automática entre `resolved` legacy y restauración canónica.
+
+---
+
+#### 32. Validación del solicitante
+
+Después de restauración o cumplimiento, el caso entra en:
+
+```text
+VPROC-0058.USER_VALIDATION_PENDING
+```
+
+VISO muestra:
+
+- quién debe validar;
+- cuándo se solicitó;
+- qué resultado se pide comprobar;
+- respuesta recibida desde ANIMA u otro canal autorizado;
+- evidencia asociada;
+- siguiente acción.
+
+Resultados:
+
+```text
+VALIDACIÓN POSITIVA
+→ continúa hacia conocimiento y cierre
+
+VALIDACIÓN NEGATIVA
+→ regresa a RESOLUTION_IN_PROGRESS
+
+SIN RESPUESTA
+→ permanece pendiente; no se convierte en aceptación
+```
+
+Cuando el solicitante no pueda validar, una validación equivalente exige actor autorizado, fundamento y evidencia. La verificación de proveedor no sustituye la validación VENTO.
+
+---
+
+#### 33. Cierre
+
+El control de cierre se presenta como una verificación de condiciones, no como un botón genérico de finalización.
+
+Antes de habilitar el cierre, VISO comprueba visualmente:
+
+- restauración o fulfillment comprobados;
+- validación aceptada o equivalente autorizada;
+- prioridad y SLA final registrados;
+- comunicaciones requeridas emitidas;
+- acciones técnicas y cambios relacionados registrados;
+- problema relacionado cuando corresponda;
+- conocimiento capturado o excepción justificada;
+- pendientes transferidos y aceptados;
+- evidencia referenciada;
+- actor, tiempo y código de cierre;
+- segregación adicional cuando sea un caso protegido o incidente mayor.
+
+Si falta una condición, la interfaz explica exactamente cuál falta y quién puede resolverla.
+
+---
+
+#### 34. Reapertura
+
+La experiencia de reapertura conserva el cierre anterior inmutable.
+
+VISO muestra:
+
+- referencia al expediente cerrado;
+- motivo actual;
+- nuevo contexto;
+- nuevo impacto;
+- nueva urgencia;
+- prioridad recalculada;
+- SLA actual;
+- relación con problema si existe recurrencia.
+
+La reapertura no reutiliza silenciosamente el SLA anterior ni transforma una validación negativa previa al cierre en `REOPEN`.
+
+---
+
+#### 35. Presentación de los nueve estados canónicos
+
+| Estado canónico             | Etiqueta administrativa principal | Acción que debe quedar clara                    |
+| --------------------------- | --------------------------------- | ----------------------------------------------- |
+| `TECH_CASE_REPORTED`        | Reportado                         | iniciar triage                                  |
+| `TRIAGE_IN_PROGRESS`        | En clasificación                  | completar contexto, impacto y urgencia          |
+| `PRIORITIZED`               | Priorizado                        | aceptar owner e iniciar diagnóstico             |
+| `DIAGNOSIS_IN_PROGRESS`     | En diagnóstico                    | comprobar hipótesis y definir acción segura     |
+| `WORKAROUND_APPLIED`        | Operando con workaround           | verificar estabilidad y continuar resolución    |
+| `RESOLUTION_IN_PROGRESS`    | En resolución                     | ejecutar o coordinar solución/restauración      |
+| `USER_VALIDATION_PENDING`   | Esperando validación              | obtener confirmación explícita                  |
+| `KNOWLEDGE_CAPTURE_PENDING` | Documentando solución             | registrar conocimiento o excepción justificada  |
+| `TECH_CASE_CLOSED`          | Cerrado                           | solo consulta, auditoría o reapertura vinculada |
+
+El código canónico puede aparecer como metadato secundario para soporte avanzado, pero la acción principal se expresa en lenguaje operativo.
+
+---
+
+#### 36. Incidente mayor
+
+Un caso marcado `MAJOR_INCIDENT` incorpora una superficie de coordinación sin crear otro proceso.
+
+Cabecera mínima:
+
+```text
+referencia
+inicio
+servicios afectados
+alcance empresarial afectado
+estado actual
+workaround
+próxima actualización
+coordinador
+estado de evaluación de continuidad
+estado de restauración
+```
+
+La vista añade:
+
+- línea de tiempo visible;
+- cadencia de comunicación;
+- responsables activos;
+- escalamiento preventivo;
+- dependencias críticas;
+- vínculo con cambio de emergencia cuando corresponda;
+- estado de evaluación de continuidad.
+
+La prioridad o condición de incidente mayor no concede acceso adicional a información sensible.
+
+---
+
+#### 37. Notificaciones y compromisos
+
+VISO presenta el próximo compromiso del caso como dato operativo de primera clase.
+
+Ejemplos:
+
+```text
+Responder antes de 14:30
+Actualizar al solicitante antes de 15:00
+Revisar respuesta del proveedor a las 16:00
+Solicitar validación después de la prueba
+Escalar si no existe estrategia antes del umbral
+```
+
+La notificación es transporte. La política del caso conserva destinatario, contenido, obligatoriedad y cadencia.
+
+El preview externo usa contexto mínimo y no incluye diagnóstico restringido.
+
+---
+
+#### 38. Comportamiento ante datos desactualizados o dependencia no disponible
+
+La mesa no permite que una vista desactualizada produzca una mutación silenciosa.
+
+Cuando el estado de servidor no pueda confirmarse:
+
+- se muestra la hora del último estado confirmado;
+- se diferencia `información desactualizada` de `caso sin cambios`;
+- una acción protegida exige refrescar y revalidar contexto antes de continuar;
+- no se inventa un estado local como fuente autoritativa;
+- no se declara prioridad, restauración, validación o cierre desde una copia no reconciliada;
+- un fallo de red no se interpreta automáticamente como operación no ejecutada.
+
+La implementación física de reintentos, receipts o persistencia pertenece al paquete técnico que materialice la mesa.
+
+---
+
+#### 39. Navegación y densidad administrativa
+
+La mesa de servicio pertenece al carril `ADMINISTRATIVE_WORK` y puede utilizar mayor densidad que el portal personal de ANIMA, pero mantiene jerarquía visual clara.
+
+Principios:
+
+1. la cola responde primero qué requiere atención;
+2. el encabezado del caso responde qué está ocurriendo y cuál es la próxima acción;
+3. el detalle técnico se abre solo cuando es necesario;
+4. la autorización no se deduce de que un panel esté visible;
+5. filtros y vistas guardadas no fabrican alcance;
+6. acciones excepcionales permanecen fuera de la acción ordinaria;
+7. estado, prioridad y SLA se expresan con texto además de color;
+8. las acciones críticas exigen confirmación proporcional al efecto;
+9. los bloqueos explican causa segura, responsable y condición de salida;
+10. el diseño evita pedir de nuevo información ya resuelta por fuentes canónicas.
+
+---
+
+#### 40. Separación de funciones gerenciales heredadas de ANIMA
+
+La experiencia objetivo de `TI-UX-001` separó las acciones gerenciales `Enviar aviso` y `Conversación` del portal personal del trabajador.
+
+`TI-UX-002` fija su destino conceptual:
+
+- la comunicación iniciada por soporte o coordinación se realiza desde el contexto de un caso, incidente mayor o comunicación administrativa autorizada;
+- contactar a un trabajador no crea por sí solo un caso tecnológico exitoso;
+- una conversación administrativa no adquiere prioridad o SLA hasta que exista un caso clasificado que lo requiera;
+- comunicación masiva de un incidente se gobierna desde la coordinación del incidente, no desde un chat personal improvisado;
+- el destinatario se limita por autorización, caso y territorio.
+
+La implementación no elimina todavía controles existentes de ANIMA; esa transición física queda fuera de esta fase.
+
+---
+
+#### 41. `TI-SERVICE-DESK-UX-RECONCILIATION-001`
+
+| Componente                      | Estado AS-IS                                                      | Estado objetivo                           | Decisión de esta tarea                                       |
+| ------------------------------- | ----------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| canal de reporte del trabajador | existe en ANIMA                                                   | conservar                                 | `TI-UX-001` permanece propietario de la experiencia personal |
+| caso tecnológico completo       | modelo documental definido; implementación completa no demostrada | expediente único VISO                     | espacio de trabajo administrativo especificado               |
+| colas administrativas           | no demostradas integralmente                                      | diez vistas derivadas                     | matriz materializada sin crear estados nuevos                |
+| prioridad                       | no materializada en ticket básico                                 | 4 niveles derivados                       | matriz exacta consumida y presentación definida              |
+| SLA                             | no materializado en ticket básico                                 | 4 perfiles y objetivos múltiples          | presentación, riesgo, breach y compromiso definidos          |
+| asignación                      | campo básico observado                                            | transferencia con aceptación e historial  | UX de propiedad y reasignación definida                      |
+| mensajería                      | existente                                                         | canal separado del estado                 | comunicación externa, nota interna y proveedor separados     |
+| diagnóstico                     | no probado como ciclo completo VISO                               | panel restringido y trazable              | contrato de interacción definido                             |
+| restauración                    | `resolved` legacy insuficiente                                    | evidencia explícita                       | acción y resultado diferenciados                             |
+| validación                      | no materializada en ticket básico                                 | `USER_VALIDATION_PENDING`                 | interacción VISO↔ANIMA definida                              |
+| cierre                          | `closed` legacy insuficiente                                      | checklist canónico                        | condiciones y segregación visibles                           |
+| reapertura                      | no demostrada como ciclo completo                                 | expediente vinculado, historial inmutable | presentación definida                                        |
+| incidente mayor                 | no demostrado como superficie completa                            | coordinación y timeline                   | superficie conceptual definida                               |
+| evidencia sensible              | controles transversales documentados                              | detalle progresivo autorizado             | proyección segura definida                                   |
+
+---
+
+#### 42. Lo que no cambia en esta tarea
+
+No se modifica:
+
+- la identidad de `VPROC-0058`;
+- la definición de solicitud, incidente o consulta;
+- la matriz de impacto y urgencia;
+- la matriz de prioridad;
+- los tiempos SLA;
+- las condiciones de pausa;
+- las clases de escalamiento;
+- los nueve estados canónicos;
+- las reglas de cierre y reapertura;
+- la propiedad de ANIMA sobre el portal personal;
+- la propiedad de VISO sobre el caso;
+- la propiedad de NEXO sobre activos físicos;
+- la propiedad de otros procesos sobre acceso, problema, cambio o continuidad;
+- los controles de autorización y evidencia aprobados.
+
+La tarea define cómo esas decisiones se presentan y operan en la experiencia administrativa.
+
+---
+
+#### 43. Fronteras con las siguientes tareas
+
+| Tema                                                                 | Propietario | Límite de TI-UX-002                                                                      |
+| -------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| mapa visual de dispositivos, redes, impresoras, aplicaciones y salud | `TI-UX-003` | la mesa solo muestra referencias del elemento afectado                                   |
+| flujo completo de problema, cambio, mantenimiento y recuperación     | `TI-UX-004` | la mesa presenta handoffs y relaciones, no diseña esas experiencias completas            |
+| proveedores, licencias, contratos, renovaciones y costos             | `TI-UX-005` | la mesa puede mostrar proveedor relacionado, no administra su ciclo comercial            |
+| diagnóstico guiado, conocimiento y capacitación contextual           | `TI-UX-006` | la mesa captura conocimiento y puede referenciar guía, no diseña su experiencia completa |
+
+Ninguna de estas tareas se inicia desde TI-UX-002.
+
+---
+
+#### 44. Pendientes físicos con propietario y condición de salida
+
+| Pendiente físico                                                          | Bloqueo concreto                                                            | Propietario o destino exacto                                                                        | Condición de salida                                                         |
+| ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| identidad física de navegación y registro en inventario de pantallas VISO | la fase actual no autoriza implementación ni alta física de superficie      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete E5 VISO que resulte autorizado    | alcance físico aprobado y superficie registrada antes de implementación     |
+| materialización de campos de caso, estados, SLA, validación y relaciones  | `support_tickets` AS-IS no demuestra el contrato completo                   | paquete de implementación VISO/Supabase gobernado desde `vento-shell` cuando el alcance lo autorice | modelo físico compatible, transición determinista y pruebas aprobadas       |
+| desacoplar mensajería de cambio de estado                                 | comportamiento legacy conserva acoplamiento en el flujo observado           | paquete E5 ANIMA/VISO cuando sea incluido por el alcance de implementación                          | enviar mensaje no muta estado empresarial y existe regresión comprobada     |
+| retirar cierre canónico desde experiencia personal                        | ANIMA legacy puede marcar conversación `closed` y `resolved_at`             | paquete E5 ANIMA/VISO + autorización de servidor                                                    | cerrar conversación queda separado de validar y cerrar el caso              |
+| evidencia histórica de cumplimiento SLA                                   | no existe ejecución histórica probada del modelo objetivo                   | `TI-DOM-010` + paquete E5 VISO                                                                      | instrumentación y datos reales permiten calcular los SLI aprobados          |
+| calendario real de cobertura humana por servicio y sede                   | la disponibilidad operativa real no está materializada de extremo a extremo | `TI-DOM-012` para soporte contratado + operación VISO para calendario interno                       | cada servicio referencia una ventana vigente sin reducir obligaciones P1/A0 |
+
+La existencia de estos pendientes no rebaja el contrato documental definido en esta tarea.
+
+---
+
+#### 45. Estado de materialización
+
+| Resultado                                | Estado                                                    |
+| ---------------------------------------- | --------------------------------------------------------- |
+| contrato UX de mesa de servicio VISO     | `ESPECIFICADO`                                            |
+| matriz de diez vistas de cola            | `ESPECIFICADO`                                            |
+| orden operativo de cola                  | `ESPECIFICADO`                                            |
+| presentación de prioridad                | `ESPECIFICADO`                                            |
+| presentación de cuatro perfiles SLA      | `ESPECIFICADO`                                            |
+| riesgo, breach y escalamiento preventivo | `ESPECIFICADO`                                            |
+| asignación, aceptación y reasignación    | `ESPECIFICADO`                                            |
+| workspace único de caso                  | `ESPECIFICADO`                                            |
+| comunicación externa vs nota interna     | `ESPECIFICADO`                                            |
+| diagnóstico y evidencia restringidos     | `ESPECIFICADO`                                            |
+| restauración y fulfillment               | `ESPECIFICADO`                                            |
+| validación VISO↔ANIMA                    | `ESPECIFICADO`                                            |
+| cierre y reapertura                      | `ESPECIFICADO`                                            |
+| coordinación de incidente mayor          | `ESPECIFICADO`                                            |
+| reconciliación AS-IS→objetivo            | `ESPECIFICADO`                                            |
+| implementación física VISO               | `FUERA_DE_ALCANCE`                                        |
+| cambios Supabase                         | `FUERA_DE_ALCANCE`                                        |
+| validación operativa con casos reales    | `FUERA_DE_ALCANCE`                                        |
+| evidencia histórica de SLA               | `PENDIENTE_DE_EVIDENCIA` — `TI-DOM-010` + paquete E5 VISO |
+
+---
+
+#### 46. Invariantes
+
+1. VISO conserva el caso tecnológico; ANIMA conserva el portal personal.
+2. `VPROC-0058` mantiene una sola identidad de caso.
+3. una cola no es un estado.
+4. una vista guardada no concede autorización.
+5. un filtro no cambia territorio ni propiedad.
+6. antigüedad no equivale a prioridad.
+7. prioridad se deriva de impacto y urgencia.
+8. prioridad no equivale a criticidad del servicio.
+9. prioridad no equivale a nivel L0-L3.
+10. prioridad alta no concede privilegios.
+11. SLA no es un único reloj genérico.
+12. acuse no detiene el objetivo de primera respuesta.
+13. primera respuesta no detiene restauración o fulfillment.
+14. esperar proveedor no elimina ownership ni comunicación.
+15. breach no se borra por reclasificar o reasignar.
+16. asignación no equivale a autorización.
+17. transferencia sin aceptación no libera al propietario anterior.
+18. reasignación no crea otro caso.
+19. mensaje no cambia estado empresarial por sí solo.
+20. nota interna no se publica al trabajador.
+21. proveedor no recibe el expediente completo por defecto.
+22. diagnóstico no autoriza cambio.
+23. workaround no equivale a causa eliminada.
+24. restauración no equivale a cierre.
+25. `resolved` legacy no equivale a restauración validada.
+26. `closed` legacy no equivale a `TECH_CASE_CLOSED`.
+27. validación negativa regresa a resolución.
+28. silencio no equivale a aceptación.
+29. proveedor no valida por VENTO.
+30. cierre exige pendientes transferidos y aceptados.
+31. cierre protegido conserva segregación aplicable.
+32. reapertura no reescribe el cierre anterior.
+33. incidente mayor no equivale automáticamente a continuidad.
+34. color no es la única señal de prioridad o riesgo.
+35. logs y secretos no aparecen por defecto en la cola.
+36. un estado desactualizado no autoriza mutaciones silenciosas.
+37. esta tarea no modifica código, datos ni Supabase.
+38. `TI-UX-003` permanece únicamente reservada.
+
+---
+
+#### 47. Cobertura de prueba consumida
+
+La tarea consume cobertura vigente que ya protege:
+
+- el expediente completo de mesa de servicio, su clasificación y sus estados;
+- la matriz exacta de impacto, urgencia y prioridad;
+- los cuatro perfiles SLA, reloj, calendarios, pausas y escalamiento preventivo;
+- la separación entre restauración, validación y cierre;
+- la experiencia personal segura de ANIMA;
+- autorización territorial y por recurso;
+- segregación de funciones para decisiones protegidas;
+- protección de diagnóstico, logs, secretos, capturas y datos personales;
+- comunicación, notificaciones y evidencia;
+- operación frente a estado desconocido o conectividad degradada;
+- experiencia administrativa, lenguaje humano y divulgación progresiva.
+
+Entre las coberturas vigentes se encuentran `TREQ-VISO-002`, `TREQ-VISO-046`, `TREQ-ANIMA-022` y los requisitos transversales de autorización y experiencia que ya gobiernan estas superficies.
+
+La tarea especializa la presentación y operación administrativa de obligaciones existentes sin cambiar la regla protegida.
+
+---
+
+#### 48. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las conductas verificables de cola, clasificación, prioridad derivada, compromisos temporales, asignación, escalamiento, comunicación, restauración, validación, cierre, seguridad y experiencia administrativa ya están protegidas por el registro canónico vigente. Esta tarea materializa su diseño de experiencia en VISO sin crear un nuevo proceso, estado, regla empresarial, mecanismo de autorización, integración física o comportamiento ejecutable adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 49. Criterios de aceptación
+
+- [x] la continuidad vigente es `TI-UX-001 → TI-UX-002 → TI-UX-003`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] VISO conserva el caso tecnológico y ANIMA el portal personal;
+- [x] no se crea aplicación, proceso ni máquina de estados nueva;
+- [x] se materializan cuatro artefactos documentales de UX;
+- [x] se materializan exactamente diez vistas de cola;
+- [x] las colas quedan definidas como vistas derivadas y no como estados;
+- [x] se define un orden operativo reproducible sin alterar prioridad;
+- [x] filtros y vistas guardadas no amplían autorización;
+- [x] cada fila de cola muestra prioridad, SLA, owner y siguiente acción sin exponer diagnóstico sensible;
+- [x] se conservan exactamente cuatro prioridades;
+- [x] se conserva la matriz completa de 16 combinaciones impacto × urgencia;
+- [x] la prioridad final no puede escribirse libremente;
+- [x] se conservan exactamente cuatro perfiles SLA;
+- [x] se distinguen acuse, primera respuesta, restauración/fulfillment y comunicación;
+- [x] se muestran estado en tiempo, riesgo e incumplimiento;
+- [x] se conservan los umbrales preventivos por prioridad;
+- [x] se representan las cuatro condiciones estructuradas de espera;
+- [x] esperar proveedor no elimina ownership ni comunicación;
+- [x] se diseña un único espacio de trabajo de caso;
+- [x] el encabezado del caso conserva contexto, owner, prioridad, SLA y siguiente acción;
+- [x] triage separa clasificación, impacto, urgencia y prioridad;
+- [x] se conservan los handoffs de acceso, problema y cambio;
+- [x] asignación y aceptación quedan separadas;
+- [x] transferencia sin aceptación no libera al propietario anterior;
+- [x] asignación no amplía permisos;
+- [x] se representan las cinco clases de escalamiento;
+- [x] comunicación externa, nota interna y proveedor quedan separadas;
+- [x] la proyección hacia ANIMA puede previsualizarse antes de enviar;
+- [x] diagnóstico sensible se mantiene detrás de autorización;
+- [x] evidencia se presenta mediante referencias y metadatos seguros;
+- [x] workaround se distingue de causa eliminada;
+- [x] restauración se distingue de cierre;
+- [x] validación positiva, negativa y ausencia de respuesta quedan diferenciadas;
+- [x] silencio no equivale a aceptación;
+- [x] cierre se presenta como checklist de condiciones y no como acción genérica;
+- [x] reapertura preserva historial inmutable;
+- [x] se representan los nueve estados canónicos;
+- [x] incidente mayor dispone de coordinación y timeline sin fusionarse con continuidad;
+- [x] prioridad y riesgo no dependen únicamente de color;
+- [x] un estado desactualizado no autoriza mutaciones silenciosas;
+- [x] se materializa la reconciliación AS-IS→objetivo;
+- [x] todos los pendientes físicos tienen propietario/destino y condición de salida;
+- [x] se crean cero requisitos de prueba y se modifican cero existentes;
+- [x] no se modifica código, Supabase, permisos, datos ni navegación desplegada;
+- [x] `TI-UX-003` permanece únicamente reservada.
+
+---
+
+#### 50. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA`
+
+TAREA ACTUAL APROBADA
+`TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación`
+
+SIGUIENTE TAREA RESERVADA
+`TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica`
+
+
 ### [ ] TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica
 ### [ ] TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación
 ### [ ] TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
