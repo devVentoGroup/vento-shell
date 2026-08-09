@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **645** |
+| Aprobadas | **646** |
 | En propuesta | **0** |
-| No iniciadas | **949** |
+| No iniciadas | **948** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.46% (645/1594)** |
+| Porcentaje de completamiento | **40.53% (646/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | ✅ APROBADA |
-| Tarea actual | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | ⬜ NO INICIADA |
+| Última aprobada | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información | ✅ APROBADA |
+| Tarea actual | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-DOM-004` — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1534,7 +1534,7 @@
 | ✅ APROBADA | `TI-INT-002` | Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ✅ APROBADA | `TI-INT-003` | Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ✅ APROBADA | `INFO-DOM-001` | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
-| ⬜ NO INICIADA | `INFO-DOM-002` | Definir clasificación, sensibilidad, minimización y manejo por categoría de información | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
+| ✅ APROBADA | `INFO-DOM-002` | Definir clasificación, sensibilidad, minimización y manejo por categoría de información | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-003` | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-004` | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-005` | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |

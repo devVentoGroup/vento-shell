@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **645** |
+| Tareas aprobadas | **646** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **949** |
+| Tareas no iniciadas | **948** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.46% (645/1594)** |
+| Porcentaje de completamiento | **40.53% (646/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios** |
-| Tarea actual | **INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información** |
+| Última tarea aprobada | **INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información** |
+| Tarea actual | **INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias** |
+| Siguiente tarea | **INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 69 de 157 aprobadas; INFO-DOM-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 70 de 157 aprobadas; INFO-DOM-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios |
-| Tarea actual | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información — **NO INICIADA** |
-| Siguiente tarea | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias |
+| Última aprobada | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información |
+| Tarea actual | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias — **NO INICIADA** |
+| Siguiente tarea | `INFO-DOM-004` — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 69 DE 157 APROBADAS — ACTUAL INFO-DOM-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 70 DE 157 APROBADAS — ACTUAL INFO-DOM-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios
-        ↓
-TAREA ACTUAL
 INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 69 de 157 tareas aprobadas
+CARRIL NEXO — 70 de 157 tareas aprobadas
 ```
