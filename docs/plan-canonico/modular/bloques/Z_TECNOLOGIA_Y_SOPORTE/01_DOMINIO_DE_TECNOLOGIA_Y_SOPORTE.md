@@ -5047,7 +5047,1361 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre`
 
 
-### [ ] TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
+### ✅ TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad` — APROBADA
+**Tarea siguiente:** `TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del caso tecnológico, clasificación de solicitudes e incidentes, impacto, urgencia, prioridad, compromisos de servicio, escalamiento, comunicación, restauración, validación, cierre y reapertura
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-SERVICE-CASE-CONTRACT-001`; `TI-CASE-CLASSIFICATION-MATRIX-001`; `TI-IMPACT-URGENCY-PRIORITY-MATRIX-001`; `TI-SLA-COMMITMENT-MATRIX-001`; `TI-ESCALATION-COMMUNICATION-MATRIX-001`; `TI-CASE-CLOSURE-REOPEN-CONTRACT-001`; `TI-SERVICE-DESK-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, enums, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, aplicaciones, proveedores, canales, cuentas, licencias, infraestructura, redes, dispositivos, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el modelo canónico con el que VENTO recibe, clasifica y atiende una necesidad tecnológica desde su reporte hasta su cierre, conservando una sola identidad de caso, un criterio determinista de prioridad, compromisos de servicio verificables y una separación estricta entre restaurar servicio, resolver una solicitud, investigar causa, ejecutar un cambio y cerrar el expediente.
+
+La tarea materializa la respuesta a estas preguntas:
+
+- qué constituye una solicitud de servicio y qué constituye un incidente;
+- qué datos mínimos permiten abrir un caso sin exigir conocimiento técnico al solicitante;
+- cómo se calculan impacto y urgencia sin aceptar una prioridad escrita libremente por el usuario;
+- cómo se obtiene una prioridad reproducible;
+- qué compromisos de acuse, primera respuesta, restauración o cumplimiento, comunicación y escalamiento corresponden a cada prioridad;
+- qué condiciones permiten escalar de L0 a L3;
+- cuándo una falla tecnológica debe vincularse con continuidad empresarial;
+- cómo se comunica un caso sin exponer secretos, logs o diagnósticos sensibles;
+- qué evidencia demuestra restauración o cumplimiento;
+- cuándo puede cerrarse un caso;
+- cómo se reabre sin reescribir la historia;
+- cómo se reconcilia el modelo objetivo con `support_tickets` y `support_messages` existentes.
+
+Regla raíz:
+
+```text
+REPORTE
+≠ CLASIFICACIÓN
+≠ PRIORIDAD
+≠ DIAGNÓSTICO
+≠ WORKAROUND
+≠ RESTAURACIÓN
+≠ RESOLUCIÓN DE CAUSA
+≠ VALIDACIÓN
+≠ CIERRE
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban siete artefactos documentales coordinados:
+
+1. `TI-SERVICE-CASE-CONTRACT-001`, contrato único de identidad, datos, estados, propietario y evidencia del caso;
+2. `TI-CASE-CLASSIFICATION-MATRIX-001`, clasificación materializada de solicitud, incidente, consulta y handoffs hacia acceso, problema y cambio;
+3. `TI-IMPACT-URGENCY-PRIORITY-MATRIX-001`, escala determinista de impacto, urgencia y prioridad;
+4. `TI-SLA-COMMITMENT-MATRIX-001`, compromisos internos por prioridad, reglas de reloj, pausa, incumplimiento y dependencia externa;
+5. `TI-ESCALATION-COMMUNICATION-MATRIX-001`, escalamiento funcional, técnico, de proveedor, seguridad y continuidad, junto con cadencia de comunicaciones;
+6. `TI-CASE-CLOSURE-REOPEN-CONTRACT-001`, criterios de restauración, validación, cierre, cancelación, nulidad y reapertura;
+7. `TI-SERVICE-DESK-ASIS-RECONCILIATION-001`, reconciliación explícita entre el contrato objetivo y el soporte técnico existente.
+
+Cobertura materializada:
+
+| Control                                           |                                   Resultado |
+| ------------------------------------------------- | ------------------------------------------: |
+| Proceso propietario                               |                        **1 — `VPROC-0058`** |
+| Servicios tecnológicos directamente cubiertos     | **2 — `TI-SERVICE-006` y `TI-SERVICE-007`** |
+| Niveles de atención conservados                   |                             **4 — L0 a L3** |
+| Clases primarias de caso dentro de `VPROC-0058`   |                                       **3** |
+| Handoffs especializados definidos                 |                                       **3** |
+| Niveles de impacto                                |                                       **4** |
+| Niveles de urgencia                               |                                       **4** |
+| Prioridades calculadas                            |                                       **4** |
+| Perfiles SLA internos                             |                                       **4** |
+| Estados canónicos de `VPROC-0058` conservados     |                                       **9** |
+| Transiciones normales conservadas                 |                                      **10** |
+| Excepciones conservadas                           |                                       **4** |
+| Acciones CCR conservadas                          |                                       **4** |
+| Estados legacy de `support_tickets` reconciliados |                                       **4** |
+| Requisitos de prueba nuevos o modificados         |                                       **0** |
+| Cambios físicos                                   |                                       **0** |
+
+---
+
+#### 3. Autoridades y entradas heredadas
+
+La tarea consume y preserva:
+
+- `VPROC-0058 — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento` como proceso único de mesa de servicio tecnológica;
+- `VPROC-0059` como proceso separado para el ciclo de acceso tecnológico;
+- `VPROC-0062` como proceso separado para continuidad empresarial;
+- `TI-SERVICE-006 — Solicitudes de soporte tecnológico`;
+- `TI-SERVICE-007 — Incidentes y restauración tecnológica`;
+- `TI-ATTN-001` a `TI-ATTN-004`;
+- `TI-DOM-002` y su grafo de activos, endpoints, dispositivos compartidos, redes, impresoras, aplicaciones y servicios;
+- `TI-DOM-003` a `TI-DOM-006` como autoridades del elemento técnico afectado;
+- la criticidad por proceso `C0` a `C4` y las ventanas `A0` a `A4`;
+- para `VPROC-0058`, baseline `C1`, ventana `A0` y degradación `CONTROLLED_DEGRADED`;
+- para `VPROC-0058`, perfil de carga `L2`, concurrencia `K2` y crecimiento `G2+G3+G4`;
+- clase foreground `R1` y clase asíncrona `A2`;
+- perfil offline `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`;
+- prioridad de sincronización `SYNC-1_URGENT`;
+- eventos, auditoría y métricas ya aprobados para `VPROC-0058`;
+- `NOTIFY-ARC-*` como autoridad del servicio transversal de entrega de notificaciones;
+- `TI-DOM-008` como autoridad de problema, causa raíz, error conocido y prevención de recurrencia;
+- `TI-DOM-009` como autoridad del cambio tecnológico;
+- `TI-DOM-010` como autoridad de monitoreo, eventos, alertas y salud técnica;
+- `TI-DOM-011` como autoridad de respaldo y recuperación técnica;
+- `TI-AUTH-*` como autoridad de privilegios, soporte remoto, secretos y acceso técnico sensible.
+
+Ninguna decisión de esta tarea concede acceso, habilita soporte privilegiado, ejecuta un cambio o declara continuidad.
+
+---
+
+#### 4. Propiedad empresarial
+
+Se conserva la siguiente separación:
+
+```text
+VISO
+→ caso tecnológico
+→ clasificación
+→ impacto
+→ urgencia
+→ prioridad
+→ SLA
+→ asignación
+→ comunicación
+→ restauración
+→ validación
+→ cierre
+
+ANIMA
+→ canal simple para reportar y consultar
+→ no decide prioridad
+→ no cierra el caso canónico por sí sola
+
+NEXO
+→ identidad y estado del activo físico cuando aplique
+→ no se convierte en mesa de servicio
+
+APLICACIÓN O PROCESO AFECTADO
+→ conserva su hecho empresarial
+→ no convierte la falla en un segundo ticket propietario
+
+PROVEEDOR
+→ aporta diagnóstico o ejecución externa delimitada
+→ nunca cierra el caso VENTO
+
+TI-DOM-008
+→ problema y causa raíz
+
+TI-DOM-009
+→ cambio tecnológico
+
+VPROC-0062
+→ continuidad empresarial
+```
+
+El caso tecnológico es la coordinación del soporte; no absorbe los objetos propietarios de otros dominios.
+
+---
+
+#### 5. Definiciones canónicas
+
+| Concepto          | Definición                                                                                                                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SERVICE_REQUEST` | necesidad planificable de información, provisión, configuración estándar, asistencia o servicio predefinido que no nace de una interrupción no planificada |
+| `INCIDENT`        | interrupción, degradación, resultado desconocido o pérdida no planificada de una capacidad tecnológica que afecta o puede afectar un servicio o proceso    |
+| `CONSULTATION`    | pregunta o necesidad informativa que puede resolverse sin ejecutar un cambio de autoridad o infraestructura                                                |
+| `PROBLEM`         | investigación de causa o recurrencia que puede relacionar uno o varios incidentes; propietaria `TI-DOM-008`                                                |
+| `KNOWN_ERROR`     | problema con causa o condición conocida y tratamiento documentado; propietaria `TI-DOM-008`                                                                |
+| `CHANGE`          | modificación deliberada de configuración, versión, infraestructura, proveedor o comportamiento; propietaria `TI-DOM-009`                                   |
+| `WORKAROUND`      | medida temporal y controlada que reduce impacto sin afirmar que la causa fue eliminada                                                                     |
+| `RESTORATION`     | recuperación demostrable del resultado tecnológico requerido o de un modo degradado autorizado                                                             |
+| `FULFILLMENT`     | entrega verificable del resultado pedido en una solicitud de servicio                                                                                      |
+| `RESOLUTION`      | decisión o acción que termina el trabajo requerido para el caso; no siempre elimina causa raíz                                                             |
+| `CLOSURE`         | estado terminal aceptado después de validación, conocimiento y transferencia de pendientes aplicables                                                      |
+| `REOPEN`          | nueva revisión o caso vinculado al cierre anterior, sin reescribir el expediente original                                                                  |
+
+---
+
+#### 6. `TI-CASE-CLASSIFICATION-MATRIX-001`
+
+Toda entrada se clasifica durante `VPROC-0058.TRIAGE_IN_PROGRESS`.
+
+| Clasificación            | Permanece en `VPROC-0058`                          | Criterio                                                                             | Handoff obligatorio                                                    |
+| ------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `SERVICE_REQUEST`        | Sí                                                 | necesidad tecnológica planificada sin interrupción no prevista                       | ninguno salvo que derive en acceso o cambio                            |
+| `INCIDENT`               | Sí                                                 | interrupción, degradación o resultado desconocido no planificado                     | continuidad, problema o cambio solo cuando sus disparadores se cumplen |
+| `CONSULTATION`           | Sí                                                 | consulta resoluble sin modificación material                                         | ninguno                                                                |
+| `ACCESS_REQUEST_HANDOFF` | No como ciclo de acceso                            | crea o modifica cuenta, permiso, MFA, privilegio, alcance o vigencia                 | `VPROC-0059`                                                           |
+| `PROBLEM_CANDIDATE`      | El incidente permanece; la investigación se separa | recurrencia, patrón, causa desconocida material o necesidad de RCA                   | `TI-DOM-008`                                                           |
+| `CHANGE_REQUIRED`        | El caso permanece como origen                      | la resolución exige modificación no preautorizada de configuración o infraestructura | `TI-DOM-009`                                                           |
+
+Reglas:
+
+1. una solicitud no se convierte en incidente porque el solicitante la marque urgente;
+2. un incidente no se convierte en problema solo por durar mucho;
+3. un workaround no transforma un incidente en solicitud;
+4. un cambio requerido para resolver un incidente conserva identidad propia;
+5. el ciclo de acceso siempre conserva `VPROC-0059`;
+6. un incidente que activa continuidad conserva el incidente técnico y crea el vínculo con `VPROC-0062`;
+7. la reclasificación conserva versión anterior, motivo, actor y evidencia;
+8. una consulta que termina requiriendo cambio o acceso genera el handoff correspondiente;
+9. la UI no obliga al trabajador a conocer estas categorías antes de reportar.
+
+---
+
+#### 7. Identidad del caso
+
+`TI-SERVICE-CASE-CONTRACT-001` conserva un identificador estable durante todos los niveles de atención:
+
+```text
+tech_case_id
+process_id = VPROC-0058
+case_type
+case_revision
+requester_ref
+reporting_source
+reported_at
+affected_service_ref
+affected_element_refs[]
+site_ref
+area_ref
+symptom_summary
+business_impact_refs[]
+impact_level
+urgency_level
+priority
+sla_profile_ref
+attention_level
+assigned_owner_ref
+provider_case_refs[]
+security_flag
+continuity_ref
+problem_ref
+change_refs[]
+workaround_refs[]
+communication_state
+restoration_state
+validation_state
+closure_state
+evidence_refs[]
+correlation_id
+causation_id
+created_at
+updated_at
+closed_at
+reopened_from_ref
+```
+
+Reglas:
+
+- `tech_case_id` no cambia al pasar de L1 a L2 o L3;
+- reasignar no crea otro caso;
+- un caso de proveedor se referencia, no sustituye la identidad VENTO;
+- un incidente puede afectar varios elementos sin duplicarse por cada componente;
+- una misma alerta repetida puede deduplicarse cuando demuestra el mismo incidente;
+- dos usuarios afectados por la misma causa no obligan a crear dos incidentes si existe correlación demostrable;
+- las comunicaciones de cada usuario pueden conservar subreferencias sin fragmentar el incidente principal.
+
+---
+
+#### 8. Entrada mínima
+
+El nacimiento válido conserva:
+
+```text
+requester_or_monitor
+affected_service_or_element
+symptom_or_need
+reported_at
+context
+```
+
+Se materializan estos campos:
+
+| Campo                 | Origen                                 | Regla                                                                                                |
+| --------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| solicitante o monitor | sesión, actor o integración autorizada | debe ser atribuible; un monitor técnico conserva principal técnico                                   |
+| servicio afectado     | catálogo `TI-SERVICE-*`                | obligatorio cuando pueda resolverse; si es desconocido queda `UNRESOLVED_AT_TRIAGE`, nunca inventado |
+| elemento afectado     | grafo `TI-DOM-002`                     | opcional al reportar; L1 lo completa cuando exista evidencia                                         |
+| síntoma o necesidad   | solicitante/monitor                    | descripción observable, sin exigir causa técnica                                                     |
+| momento observado     | fuente del hecho                       | separado de `received_at`                                                                            |
+| sede y área           | contexto                               | se resuelven cuando correspondan; no se confían como autoridad desde texto libre                     |
+| adjuntos              | evidencia                              | opcionales y protegidos; no se solicitan secretos                                                    |
+| impacto declarado     | solicitante/monitor                    | señal de entrada; el impacto canónico se determina en triage                                         |
+| urgencia declarada    | solicitante                            | señal de entrada; no equivale a prioridad                                                            |
+
+Prioridad, SLA, causa, estado final y autoridad efectiva son valores resueltos, no campos libres aceptados desde el cliente.
+
+---
+
+#### 9. Principio de impacto
+
+El impacto mide la amplitud y gravedad empresarial actual o razonablemente inminente del caso.
+
+No mide:
+
+- jerarquía del solicitante;
+- volumen de mensajes;
+- antigüedad del ticket;
+- presión verbal;
+- complejidad técnica;
+- nivel de atención;
+- costo de la solución.
+
+La evaluación considera:
+
+1. procesos afectados y su criticidad;
+2. etapa crítica activa;
+3. sedes, áreas y canales afectados;
+4. cantidad y tipo de actores afectados;
+5. pérdida de identidad, autorización o seguridad;
+6. dinero, custodia, inventario, producción o inocuidad en riesgo;
+7. existencia y seguridad del workaround;
+8. propagación hacia dependencias;
+9. reversibilidad y capacidad de reconstrucción;
+10. alcance de proveedor o infraestructura compartida.
+
+---
+
+#### 10. Niveles de impacto
+
+| Código         | Nombre     | Criterio material                                                                                                                                                                                                                   |
+| -------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TI-IMPACT-01` | `CRITICAL` | afecta un proceso o etapa `C0`, compromete identidad o seguridad, produce estado financiero/custodia desconocido de alto riesgo, impide operación mínima o afecta simultáneamente múltiples servicios/sedes sin contingencia segura |
+| `TI-IMPACT-02` | `HIGH`     | detiene o degrada materialmente un proceso `C1`, una sede, un área crítica o un conjunto relevante de actores; existe contingencia limitada o con capacidad reducida                                                                |
+| `TI-IMPACT-03` | `MEDIUM`   | afecta una capacidad acotada, equipo, grupo o usuario con resultado recuperable y workaround seguro sin comprometer controles críticos                                                                                              |
+| `TI-IMPACT-04` | `LOW`      | consulta, solicitud planificada o afectación individual de bajo impacto sin bloqueo de un resultado empresarial activo                                                                                                              |
+
+Reglas:
+
+- una afectación individual puede ser `CRITICAL` si compromete acceso privilegiado, seguridad, pago o una etapa `C0`;
+- afectar muchos usuarios no vuelve crítico un caso si el resultado mínimo sigue disponible de forma segura;
+- la existencia de workaround no reduce automáticamente la clase;
+- el impacto se versiona cuando cambia el alcance.
+
+---
+
+#### 11. Principio de urgencia
+
+La urgencia mide cuánto puede esperar la atención antes de que el impacto empeore o se pierda una ventana necesaria.
+
+No mide prioridad final por sí sola.
+
+Se evalúa contra:
+
+- ventana de disponibilidad del proceso;
+- deadline empresarial;
+- turno, cierre, despacho, producción, venta o atención activa;
+- progresión del daño;
+- riesgo de pérdida irreversible;
+- ventana de proveedor;
+- vencimiento de una credencial o control;
+- capacidad restante de contingencia.
+
+---
+
+#### 12. Niveles de urgencia
+
+| Código          | Nombre           | Criterio material                                                                                                                      |
+| --------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `TI-URGENCY-01` | `IMMEDIATE`      | requiere atención ahora durante una ventana crítica o porque la espera aumenta daño, exposición, pérdida de control o indisponibilidad |
+| `TI-URGENCY-02` | `CURRENT_WINDOW` | debe resolverse o quedar bajo workaround seguro antes de terminar la ventana operativa, turno, handoff o hito actualmente aplicable    |
+| `TI-URGENCY-03` | `CURRENT_CYCLE`  | puede esperar dentro del día o ciclo empresarial vigente sin producir impacto material adicional                                       |
+| `TI-URGENCY-04` | `PLANNED`        | puede programarse con propietario y fecha sin afectar el resultado operativo actual                                                    |
+
+Reglas:
+
+- la urgencia no aumenta por el simple transcurso del tiempo;
+- un vencimiento mal gestionado puede elevar urgencia porque cambia la ventana, no porque el ticket sea antiguo;
+- una solicitud planificada puede escalar si una dependencia real bloquea una operación activa;
+- todo cambio de urgencia conserva motivo y evidencia.
+
+---
+
+#### 13. Cálculo de prioridad
+
+La prioridad es un valor derivado de impacto y urgencia.
+
+```text
+PRIORITY
+=
+F(IMPACT, URGENCY)
+```
+
+Matriz aprobada:
+
+| Impacto \ Urgencia | `IMMEDIATE`   | `CURRENT_WINDOW` | `CURRENT_CYCLE` | `PLANNED`   |
+| ------------------ | ------------- | ---------------- | --------------- | ----------- |
+| `CRITICAL`         | `P1_CRITICAL` | `P1_CRITICAL`    | `P2_HIGH`       | `P3_MEDIUM` |
+| `HIGH`             | `P1_CRITICAL` | `P2_HIGH`        | `P2_HIGH`       | `P3_MEDIUM` |
+| `MEDIUM`           | `P2_HIGH`     | `P2_HIGH`        | `P3_MEDIUM`     | `P4_LOW`    |
+| `LOW`              | `P3_MEDIUM`   | `P3_MEDIUM`      | `P4_LOW`        | `P4_LOW`    |
+
+Control:
+
+```text
+4 impactos
+×
+4 urgencias
+=
+16 combinaciones
+→
+4 prioridades
+```
+
+No existe prioridad escrita directamente por el solicitante.
+
+---
+
+#### 14. Reglas de prioridad
+
+1. la prioridad inicial se calcula en triage;
+2. una alerta automatizada puede proponer impacto/urgencia, pero VISO conserva la decisión;
+3. una prioridad puede subir o bajar solo mediante una nueva revisión;
+4. bajar prioridad exige demostrar reducción real de impacto o urgencia;
+5. un workaround puede cambiar urgencia o impacto únicamente si está aplicado y verificado;
+6. esperar a un proveedor no reduce prioridad;
+7. la llegada de otro caso más crítico no altera la prioridad del caso original, aunque cambie el orden operativo de atención;
+8. `P1_CRITICAL` no concede privilegio técnico;
+9. prioridad no equivale a criticidad del servicio;
+10. prioridad no equivale al nivel L0-L3;
+11. prioridad no equivale a clase de notificación;
+12. prioridad no equivale a severidad de continuidad.
+
+---
+
+#### 15. Activación de incidente mayor
+
+Se utiliza la marca `MAJOR_INCIDENT` sin crear otro proceso.
+
+Un incidente se marca `MAJOR_INCIDENT` cuando cumple al menos una condición:
+
+- `TI-IMPACT-01` y prioridad `P1_CRITICAL`;
+- afecta múltiples servicios con causa o dependencia común;
+- afecta más de una sede o un componente transversal;
+- compromete identidad, seguridad o autoridad de forma material;
+- no existe operación mínima segura para un proceso `C0` o `C1`;
+- amenaza propagarse a una interrupción empresarial mayor.
+
+La marca exige:
+
+- coordinador visible;
+- línea de tiempo;
+- canal de comunicación de incidente;
+- frecuencia de actualización P1;
+- evaluación explícita de continuidad;
+- preservación de evidencia;
+- revisión posterior cuando aplique.
+
+`MAJOR_INCIDENT` no equivale automáticamente a activar `VPROC-0062`; el disparador de continuidad se evalúa separadamente.
+
+---
+
+#### 16. `TI-SLA-COMMITMENT-MATRIX-001`
+
+Se aprueban cuatro perfiles internos de compromiso.
+
+Los tiempos son objetivos máximos de operación del caso, no tiempos de respuesta de interfaz ni promesas de eliminación de causa raíz.
+
+| Perfil       | Prioridad     |                        Acuse | Primera respuesta humana o técnica atribuible |        Restauración / workaround seguro para incidente |                Cumplimiento o plan comprometido para solicitud | Comunicación mientras sigue abierto                           |
+| ------------ | ------------- | ---------------------------: | --------------------------------------------: | -----------------------------------------------------: | -------------------------------------------------------------: | ------------------------------------------------------------- |
+| `TI-SLA-001` | `P1_CRITICAL` |                      ≤ 5 min |                                      ≤ 15 min |                                               ≤ 60 min | ≤ 60 min para acción preautorizada o plan/autoridad explícitos | cada ≤ 30 min                                                 |
+| `TI-SLA-002` | `P2_HIGH`     |                     ≤ 15 min |                                      ≤ 30 min |                                                  ≤ 4 h |     ≤ 8 h de ventana de servicio o fecha comprometida aceptada | cada ≤ 60 min                                                 |
+| `TI-SLA-003` | `P3_MEDIUM`   | ≤ 4 h de ventana de servicio |                  ≤ 8 h de ventana de servicio |     ≤ 2 días hábiles de servicio o workaround acordado |                          ≤ 2 días hábiles o fecha comprometida | al menos una vez por día hábil mientras exista trabajo activo |
+| `TI-SLA-004` | `P4_LOW`      |                ≤ 1 día hábil |                                 ≤ 1 día hábil | fecha planificada; objetivo ordinario ≤ 5 días hábiles |         programación o cumplimiento ordinario ≤ 5 días hábiles | por hito y ante cambio de fecha                               |
+
+La resolución definitiva puede superar el objetivo de restauración cuando exista workaround seguro, dependencia externa o necesidad de cambio formal. El caso conserva la deuda y su handoff; no se declara causa eliminada.
+
+---
+
+#### 17. Reloj del SLA
+
+El reloj debe ser reproducible.
+
+Se conservan:
+
+```text
+reported_at
+accepted_at
+first_response_at
+work_started_at
+restored_at
+fulfilled_at
+validation_requested_at
+validated_at
+closed_at
+```
+
+Reglas:
+
+1. para P1 y P2 durante una ventana empresarial requerida, el reloj corre de forma continua mientras el proceso afectado necesita el servicio;
+2. un incidente de seguridad, identidad o continuidad no espera al siguiente horario administrativo cuando la capacidad afectada debe responder en `A0`;
+3. para P3 y P4 se utiliza la ventana de servicio declarada para el servicio y la sede;
+4. no se asume `24×7` para todas las solicitudes;
+5. la aplicación debe conservar zona horaria y calendario aplicables;
+6. el acuse no detiene el reloj de primera respuesta;
+7. la primera respuesta no detiene el reloj de restauración o cumplimiento;
+8. un workaround validado puede cerrar el objetivo de restauración, pero no el problema relacionado;
+9. el cierre administrativo no modifica retroactivamente los tiempos.
+
+---
+
+#### 18. Pausas y tiempos excluidos
+
+Solo pueden separarse del objetivo aplicable mediante estado explícito y evidencia:
+
+| Estado                       | Puede pausar                                                                 | Condición                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `WAITING_REQUESTER_INFO`     | cumplimiento de solicitud; no acuse ni primera respuesta                     | información estrictamente necesaria solicitada con pregunta concreta y canal disponible          |
+| `WAITING_REQUIRED_APPROVAL`  | solicitud o cambio asociado                                                  | la decisión pertenece a una autoridad externa al soporte; incidente sigue requiriendo contención |
+| `PLANNED_WINDOW_NOT_STARTED` | solicitud planificada                                                        | fecha/ventana aceptada antes de iniciar el trabajo                                               |
+| `WAITING_EXTERNAL_PROVIDER`  | no elimina ownership ni comunicación; el tiempo externo se mide por separado | existe caso de proveedor correlacionado y no hay alternativa interna segura                      |
+
+Prohibiciones:
+
+- pausar un P1 por “esperando proveedor” y dejar de comunicar;
+- pausar porque el técnico cambió de turno;
+- pausar por falta de asignación interna;
+- pausar por falta de documentación que el propio equipo debió conservar;
+- pausar retrospectivamente para ocultar incumplimiento.
+
+---
+
+#### 19. Incumplimiento de SLA
+
+Un incumplimiento no cambia el estado empresarial del caso.
+
+Debe producir:
+
+```text
+sla_breach_detected_at
+breached_objective
+elapsed_time
+current_priority
+current_owner
+cause_class
+escalation_ref
+next_commitment
+communication_ref
+```
+
+Clases iniciales:
+
+- `NO_ASSIGNMENT`;
+- `CAPACITY_LIMIT`;
+- `WAITING_PROVIDER`;
+- `WAITING_APPROVAL`;
+- `TECHNICAL_COMPLEXITY`;
+- `MISSING_DEPENDENCY`;
+- `MISCLASSIFICATION`;
+- `COMMUNICATION_FAILURE`;
+- `OTHER_DOCUMENTED`.
+
+El incumplimiento:
+
+- no reduce la prioridad;
+- no autoriza cerrar;
+- no reinicia el reloj;
+- no se borra al reclasificar;
+- forma parte de métricas y revisión.
+
+---
+
+#### 20. Niveles de atención conservados
+
+| ID            | Nivel                       | Uso en el caso                                                                                                      |
+| ------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `TI-ATTN-001` | `L0_AUTOSERVICIO_GUIADO`    | consulta, guía y comprobación segura sin privilegio; puede cerrar solo una solicitud/consulta resuelta y comprobada |
+| `TI-ATTN-002` | `L1_MESA_DE_SERVICIO`       | recibe, clasifica, completa contexto, aplica acciones estándar seguras, comunica y enruta                           |
+| `TI-ATTN-003` | `L2_ESPECIALISTA_TECNICO`   | diagnóstico avanzado, correlación, restauración y preparación de cambio                                             |
+| `TI-ATTN-004` | `L3_PROVEEDOR_O_FABRICANTE` | soporte externo delimitado, garantía, ISP, fabricante o plataforma; devuelve evidencia al caso interno              |
+
+Nivel de atención y prioridad son dimensiones independientes.
+
+---
+
+#### 21. Escalamiento funcional y técnico
+
+Se aprueban cinco clases:
+
+| Código           | Disparador                                                                                  | Resultado                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `ESC_FUNCTIONAL` | ownership ambiguo, aprobación o decisión empresarial necesaria                              | transfiere o incorpora al responsable funcional sin perder el owner tecnológico     |
+| `ESC_TECHNICAL`  | L1 no puede diagnosticar/restaurar de forma segura                                          | L2 acepta el caso con contexto, evidencia y pendientes                              |
+| `ESC_PROVIDER`   | requiere garantía, ISP, fabricante, plataforma o servicio contratado                        | L3 recibe subcaso; VENTO conserva el caso maestro                                   |
+| `ESC_SECURITY`   | secreto, identidad, privilegio, compromiso, soporte remoto sensible o evidencia de abuso    | activa responsable y controles de seguridad; no expone detalles al público del caso |
+| `ESC_CONTINUITY` | no existe resultado mínimo seguro o la degradación supera la capacidad ordinaria de soporte | evaluación y posible caso vinculado `VPROC-0062`                                    |
+
+Todo escalamiento conserva:
+
+```text
+from_owner
+to_owner_or_role
+reason
+accepted_at
+pending_actions
+evidence_refs
+due_at
+communication_ref
+```
+
+Una reasignación sin aceptación no transfiere responsabilidad.
+
+---
+
+#### 22. Escalamiento temporal
+
+El SLA activa escalamiento antes del incumplimiento:
+
+| Prioridad     | Umbral preventivo                                                                 |
+| ------------- | --------------------------------------------------------------------------------- |
+| `P1_CRITICAL` | al consumir 50 % del objetivo de restauración sin una estrategia validada         |
+| `P2_HIGH`     | al consumir 50 % del objetivo de restauración sin diagnóstico o workaround viable |
+| `P3_MEDIUM`   | al consumir 75 % del objetivo vigente sin siguiente acción y propietario          |
+| `P4_LOW`      | cuando la fecha comprometida queda en riesgo o cambia una dependencia             |
+
+Al alcanzar el objetivo sin resultado:
+
+- se registra breach;
+- se eleva el nivel requerido;
+- se comunica el nuevo compromiso;
+- se preserva prioridad según impacto/urgencia actual;
+- no se cierra ni se reinicia el caso.
+
+---
+
+#### 23. Escalamiento hacia continuidad
+
+El incidente técnico conserva `VPROC-0058`.
+
+Se evalúa `VPROC-0062` cuando:
+
+- un proceso `C0` pierde el resultado mínimo;
+- un proceso `C1` queda sin operación mínima segura durante su ventana activa;
+- el incidente afecta múltiples sedes o servicios y requiere coordinación extraordinaria;
+- el workaround ordinario no es suficiente o introduce riesgo material;
+- la recuperación exige activar un sitio, canal, procedimiento o modo alternativo empresarial;
+- existe trabajo degradado que requerirá reconciliación transversal.
+
+Relación:
+
+```text
+TECH_CASE
+→ puede originar
+CONTINUITY_CASE
+
+TECH_CASE RESTORED
+≠
+CONTINUITY CASE RECONCILED
+```
+
+---
+
+#### 24. Escalamiento hacia problema
+
+`TI-DOM-008` conserva la autoridad de problema.
+
+Se genera handoff cuando:
+
+- existe recurrencia material;
+- varios incidentes comparten síntoma o dependencia;
+- la causa permanece desconocida después de restaurar;
+- un workaround temporal se vuelve recurrente;
+- un incidente causado por cambio requiere análisis causal;
+- el guardrail de recurrencia del proceso se incumple.
+
+El cierre del incidente no espera necesariamente la eliminación de la causa si el servicio fue restaurado, validado y el problema quedó aceptado con propietario.
+
+---
+
+#### 25. Escalamiento hacia cambio
+
+`TI-DOM-009` conserva la autoridad de cambio.
+
+Se requiere cambio formal cuando la resolución exige, entre otros:
+
+- modificar red, direccionamiento, firmware o driver;
+- alterar configuración administrada;
+- desplegar software;
+- cambiar proveedor o integración;
+- modificar políticas, permisos o identidad técnica fuera de una acción ya autorizada;
+- instalar, sustituir o reconfigurar un elemento con riesgo material;
+- aplicar una corrección que deba tener prueba y rollback.
+
+Diagnóstico:
+
+```text
+PUEDE PROPONER CAMBIO
+≠
+AUTORIZA CAMBIO
+```
+
+El incidente conserva su SLA de restauración mientras el cambio sigue su propio gobierno.
+
+---
+
+#### 26. Comunicación al solicitante
+
+Toda comunicación externa al equipo técnico debe responder:
+
+1. qué se sabe;
+2. qué está afectado;
+3. qué está funcionando;
+4. qué acción segura debe realizar o evitar el usuario;
+5. quién es responsable;
+6. cuál es la siguiente actualización o compromiso;
+7. si existe workaround;
+8. cuándo se solicita validación;
+9. qué quedó cerrado y qué permanece pendiente.
+
+No se muestra por defecto:
+
+- secretos;
+- tokens;
+- credenciales;
+- claves;
+- IP o topología innecesarias;
+- logs completos;
+- payloads sensibles;
+- datos personales de terceros;
+- hipótesis no verificadas como causa confirmada.
+
+---
+
+#### 27. Cadencia de comunicación
+
+`TI-ESCALATION-COMMUNICATION-MATRIX-001` materializa:
+
+| Prioridad     | Solicitante                                    | Responsables operativos                | Coordinación técnica                      | Proveedor                      |
+| ------------- | ---------------------------------------------- | -------------------------------------- | ----------------------------------------- | ------------------------------ |
+| `P1_CRITICAL` | acuse y cada ≤ 30 min                          | inmediato y cada cambio material       | canal activo hasta restauración           | inmediato cuando sea necesario |
+| `P2_HIGH`     | acuse y cada ≤ 60 min                          | ante bloqueo, riesgo o cambio material | seguimiento hasta workaround/restauración | según necesidad y SLA externo  |
+| `P3_MEDIUM`   | al menos diaria mientras exista trabajo activo | por hito o desviación                  | según asignación                          | cuando exista dependencia      |
+| `P4_LOW`      | por hito, fecha o cambio de compromiso         | solo cuando afecte planificación       | según cola                                | cuando aplique                 |
+
+El servicio `NOTIFY-ARC` podrá transportar esas comunicaciones, pero la política de caso conserva destinatario, contenido mínimo, obligatoriedad y cadencia.
+
+---
+
+#### 28. Comunicación de incidente mayor
+
+Un `MAJOR_INCIDENT` conserva una línea de comunicación separada del diagnóstico detallado.
+
+Contenido mínimo:
+
+```text
+incident_ref
+started_at
+affected_services
+affected_business_scope
+current_status
+workaround_status
+next_update_at
+owner
+continuity_status
+restoration_status
+```
+
+La comunicación:
+
+- no declara causa antes de confirmarla;
+- no culpa personas o proveedores sin evidencia;
+- no publica secretos;
+- no expone detalles de seguridad que amplíen el riesgo;
+- distingue restauración de resolución definitiva;
+- finaliza con resumen de restauración y siguientes acciones.
+
+---
+
+#### 29. Evidencia de diagnóstico
+
+El caso puede referenciar:
+
+- health signals;
+- eventos;
+- logs minimizados;
+- screenshots;
+- versiones;
+- configuración aprobada;
+- relaciones de dependencia;
+- evidencia física;
+- caso de proveedor;
+- resultado de prueba;
+- cambio relacionado.
+
+Reglas:
+
+1. el adjunto se protege por sensibilidad;
+2. un log no se pega íntegramente cuando basta una referencia;
+3. los secretos se redactan o excluyen;
+4. la evidencia conserva fuente y momento;
+5. una captura del usuario no sustituye la comprobación técnica;
+6. una señal técnica saludable no invalida una falla empresarial comprobada;
+7. un diagnóstico puede evolucionar sin sobrescribir hipótesis anteriores.
+
+---
+
+#### 30. Restauración
+
+Un incidente alcanza restauración cuando existe evidencia suficiente de que:
+
+- el resultado mínimo aplicable volvió a estar disponible;
+- el actor o responsable puede ejecutar la operación necesaria;
+- el workaround, si existe, está explícitamente autorizado y vigente;
+- no existe un estado de resultado desconocido pendiente que impida confiar en la operación;
+- las dependencias críticas requeridas están disponibles o degradadas de forma segura;
+- se registró `restored_at`;
+- se conoce qué queda pendiente después de restaurar.
+
+Restaurar no significa:
+
+- cerrar;
+- resolver causa raíz;
+- retirar el workaround;
+- completar un problema;
+- completar un cambio;
+- cerrar continuidad.
+
+---
+
+#### 31. Cumplimiento de solicitud
+
+Una `SERVICE_REQUEST` queda cumplida cuando:
+
+- el resultado solicitado fue entregado;
+- el alcance coincide con la solicitud aceptada;
+- cualquier aprobación requerida pertenece al proceso correcto;
+- la evidencia de ejecución está disponible;
+- el usuario puede comprobar el resultado;
+- no queda un efecto pendiente oculto.
+
+Una solicitud de acceso no se cumple dentro de `VPROC-0058`; el cumplimiento pertenece a `VPROC-0059`.
+
+Una solicitud que exige cambio no se considera cumplida solo porque el cambio fue creado; debe verificarse el resultado esperado después del cambio.
+
+---
+
+#### 32. Validación
+
+Después de restauración o cumplimiento:
+
+```text
+→ VPROC-0058.USER_VALIDATION_PENDING
+```
+
+La validación puede provenir de:
+
+- solicitante;
+- responsable del proceso;
+- responsable de sede/área;
+- señal objetiva autorizada cuando el resultado es técnicamente verificable y la aceptación humana no es necesaria.
+
+Reglas:
+
+- una validación negativa regresa a `RESOLUTION_IN_PROGRESS`;
+- la evidencia automática debe estar definida para el tipo de resultado;
+- el silencio del usuario no constituye aceptación automática;
+- cuando el solicitante no pueda validar, el responsable autorizado registra fundamento y evidencia;
+- una verificación del proveedor no sustituye la validación VENTO.
+
+---
+
+#### 33. Conocimiento y handoff
+
+Después de validación:
+
+```text
+→ VPROC-0058.KNOWLEDGE_CAPTURE_PENDING
+```
+
+Se registra, cuando aplique:
+
+- síntoma;
+- contexto;
+- causa confirmada o `UNKNOWN`;
+- diagnóstico útil;
+- acción aplicada;
+- workaround y vigencia;
+- resultado;
+- versión o configuración afectada;
+- referencias a cambio/problema;
+- advertencias;
+- quién puede reutilizar el conocimiento;
+- fecha de revisión.
+
+No se incluyen secretos ni datos personales innecesarios.
+
+Un caso sin conocimiento reutilizable puede declarar `NO_REUSABLE_KNOWLEDGE` con motivo; no se inventa una guía vacía.
+
+---
+
+#### 34. Cierre normal
+
+`TI-CASE-CLOSURE-REOPEN-CONTRACT-001` exige para `VPROC-0058.TECH_CASE_CLOSED`:
+
+- restauración o fulfillment comprobados;
+- validación aceptada o evidencia objetiva equivalente autorizada;
+- prioridad y SLA final registrados;
+- comunicaciones requeridas emitidas;
+- acciones técnicas y cambios relacionados registrados;
+- problema relacionado creado cuando corresponda;
+- conocimiento capturado o excepción justificada;
+- pendientes transferidos con aceptación;
+- adjuntos y evidencia referenciados;
+- cierre con actor, tiempo y código.
+
+Códigos normales:
+
+```text
+FULFILLED_VALIDATED
+RESTORED_VALIDATED
+CONSULTATION_COMPLETED
+```
+
+No se usa `CLOSED` como sustituto de esos criterios.
+
+---
+
+#### 35. Cancelación, nulidad, compensación y corrección
+
+Se conservan las acciones aprobadas:
+
+| Acción                            | Uso                                                                                  |
+| --------------------------------- | ------------------------------------------------------------------------------------ |
+| `VPROC-0058.CCR-001 — CANCEL`     | detener un caso abierto por causa válida sin afirmar cumplimiento                    |
+| `VPROC-0058.CCR-002 — VOID`       | anular registro duplicado o inválido conservando referencia al correcto              |
+| `VPROC-0058.CCR-003 — COMPENSATE` | crear medida compensatoria por efectos válidos que no pueden deshacerse literalmente |
+| `VPROC-0058.CCR-004 — CORRECT`    | corregir hechos, clasificación o responsables mediante versión auditada              |
+
+Estas acciones no se expresan como cierre normal exitoso.
+
+---
+
+#### 36. Reapertura
+
+Se conserva:
+
+```text
+VPROC-0058.EX-004 — REOPEN
+```
+
+Reglas:
+
+1. el expediente cerrado permanece inmutable;
+2. se crea revisión o caso vinculado;
+3. se conserva `reopened_from_ref`;
+4. se recalculan impacto, urgencia, prioridad y SLA con el contexto actual;
+5. recurrencia puede activar handoff a problema;
+6. el SLA anterior no se reescribe;
+7. las métricas distinguen reapertura de un caso que nunca debió cerrarse;
+8. una validación fallida antes del cierre utiliza el loop normal y no `REOPEN`.
+
+---
+
+#### 37. Estados canónicos de `VPROC-0058`
+
+Se preservan sin renombrar:
+
+| Orden | Estado                                 |
+| ----: | -------------------------------------- |
+|     0 | `VPROC-0058.TECH_CASE_REPORTED`        |
+|     1 | `VPROC-0058.TRIAGE_IN_PROGRESS`        |
+|     2 | `VPROC-0058.PRIORITIZED`               |
+|     3 | `VPROC-0058.DIAGNOSIS_IN_PROGRESS`     |
+|     4 | `VPROC-0058.WORKAROUND_APPLIED`        |
+|     5 | `VPROC-0058.RESOLUTION_IN_PROGRESS`    |
+|     6 | `VPROC-0058.USER_VALIDATION_PENDING`   |
+|     7 | `VPROC-0058.KNOWLEDGE_CAPTURE_PENDING` |
+|     8 | `VPROC-0058.TECH_CASE_CLOSED`          |
+
+La tarea no crea un segundo state machine.
+
+---
+
+#### 38. Transiciones y excepciones conservadas
+
+Transiciones normales:
+
+```text
+TR-001 reporte → triage
+TR-002 triage → priorizado
+TR-003 priorizado → diagnóstico
+TR-004 diagnóstico → workaround
+TR-005 diagnóstico → resolución sin workaround
+TR-006 workaround → resolución
+TR-007 resolución → validación
+TR-008 validación negativa → resolución
+TR-009 validación aceptada → conocimiento
+TR-010 conocimiento → cierre
+```
+
+Excepciones:
+
+```text
+EX-001 ESCALATE
+EX-002 CONTINGENCY
+EX-003 REASSIGN
+EX-004 REOPEN
+```
+
+Esta tarea especializa sus datos y condiciones; no cambia las identidades aprobadas.
+
+---
+
+#### 39. `TI-SERVICE-DESK-ASIS-RECONCILIATION-001`
+
+La implementación actual observada contiene `support_tickets`, `support_messages` y `support_ticket_reads`.
+
+`support_tickets` materializa actualmente:
+
+```text
+id
+created_by
+site_id
+category
+title
+description
+status
+assigned_to
+resolved_at
+created_at
+updated_at
+target_employee_id
+```
+
+El enum observado de `status` contiene:
+
+```text
+open
+in_progress
+resolved
+closed
+```
+
+La evidencia actual no materializa en `support_tickets` campos canónicos separados para:
+
+- `affected_service_ref`;
+- `affected_element_refs`;
+- `impact_level`;
+- `urgency_level`;
+- `priority`;
+- `sla_profile_ref`;
+- `restored_at`;
+- `validation_state`;
+- referencias a problema, cambio, continuidad o proveedor;
+- razón estructurada de cierre.
+
+Estado:
+
+```text
+MODELO AS-IS = PARCIAL
+MODELO OBJETIVO TI-DOM-007 = ESPECIFICADO
+IMPLEMENTACIÓN = PENDIENTE DE PAQUETE PROPIETARIO
+```
+
+---
+
+#### 40. Reconciliación de estados legacy
+
+| Estado AS-IS  | Significado máximo admisible durante transición | No puede inferirse                                                                  |
+| ------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `open`        | caso reportado o pendiente de triage            | prioridad, causa, asignación efectiva                                               |
+| `in_progress` | existe actividad sobre el caso                  | diagnóstico, workaround o resolución concreta                                       |
+| `resolved`    | existe una afirmación de resolución legacy      | restauración validada, causa eliminada o cierre                                     |
+| `closed`      | conversación/ticket legacy marcado cerrado      | `VPROC-0058.TECH_CASE_CLOSED` sin reconciliar validación, conocimiento y pendientes |
+
+La migración futura no asignará estados canónicos por nombre solamente. Cada fila requiere reglas deterministas y evidencia.
+
+---
+
+#### 41. Comportamiento AS-IS de ANIMA
+
+La implementación observada en ANIMA permite:
+
+- crear `support_tickets` desde cliente;
+- usar actualmente `category = attendance` en los flujos revisados;
+- crear un primer `support_message`;
+- mover un ticket a `in_progress` al enviar mensaje;
+- cerrar conversación actualizando `status = closed`;
+- escribir `resolved_at` al cerrar desde esa experiencia;
+- mostrar y actualizar mensajes y no leídos.
+
+Decisión:
+
+```text
+CERRAR CONVERSACIÓN
+≠
+CERRAR CASO TECNOLÓGICO CANÓNICO
+```
+
+La implementación futura deberá mantener una experiencia simple en ANIMA mientras VISO conserva clasificación, SLA, restauración, aceptación y cierre.
+
+---
+
+#### 42. Privacidad y seguridad de soporte
+
+El caso se clasifica como información restringida cuando contiene diagnóstico, identidad, datos laborales, infraestructura o evidencia.
+
+Reglas:
+
+1. ANIMA muestra al solicitante únicamente información necesaria para entender estado y siguiente acción;
+2. VISO puede mostrar diagnóstico ampliado solo a funciones autorizadas;
+3. un proveedor recibe el mínimo contexto necesario;
+4. secretos no se escriben en descripción, mensajes, screenshots ni conocimiento;
+5. soporte remoto requiere la autoridad y controles definidos por `TI-AUTH-*`;
+6. una captura debe poder redactarse antes de compartirse;
+7. logs completos se conservan en su sistema propietario y el caso guarda referencia;
+8. no se usa el caso como almacén de credenciales;
+9. los accesos diagnósticos forman parte de auditoría;
+10. la prioridad alta no amplía autorización.
+
+---
+
+#### 43. Operación degradada y offline
+
+Para `VPROC-0058` se conserva:
+
+```text
+OF1_CACHED_REFERENCE
++
+OF3_LOCAL_CAPTURE
++
+OF5_MANUAL_CONTINGENCY
+→
+SYNC-1_URGENT
+```
+
+Esto permite:
+
+- consultar guías cacheadas con versión y frescura;
+- capturar localmente reporte y evidencia cuando la conectividad no está disponible;
+- aplicar contención manual autorizada;
+- sincronizar prioritariamente al recuperar conectividad.
+
+No permite:
+
+- cerrar el caso localmente como si VISO hubiera aceptado;
+- asignar prioridad final desde caché;
+- conceder acceso;
+- ejecutar un cambio no autorizado;
+- declarar restauración sin reconciliación.
+
+---
+
+#### 44. Métricas y SLI del caso
+
+Se materializan los indicadores ya requeridos por `VPROC-0058`:
+
+| ID                | Indicador                   | Definición                                                              |
+| ----------------- | --------------------------- | ----------------------------------------------------------------------- |
+| `TI-CASE-SLI-001` | tiempo de acuse             | `accepted_at - reported_at` bajo el calendario aplicable                |
+| `TI-CASE-SLI-002` | tiempo de primera respuesta | primera respuesta atribuible menos `reported_at`                        |
+| `TI-CASE-SLI-003` | tiempo de restauración      | `restored_at - reported_at`, separando pausas válidas                   |
+| `TI-CASE-SLI-004` | tiempo de fulfillment       | `fulfilled_at - reported_at`, separando pausas válidas                  |
+| `TI-CASE-SLI-005` | cumplimiento SLA            | objetivo cumplido / casos elegibles por prioridad                       |
+| `TI-CASE-SLI-006` | tiempo en espera            | tiempo por clase de espera y responsable                                |
+| `TI-CASE-SLI-007` | reasignaciones              | cantidad y tiempo por transferencia                                     |
+| `TI-CASE-SLI-008` | reapertura                  | casos reabiertos / casos cerrados                                       |
+| `TI-CASE-SLI-009` | recurrencia                 | incidentes vinculados a problema o patrón repetido                      |
+| `TI-CASE-SLI-010` | cierre sin validación       | debe permanecer en cero salvo evidencia objetiva autorizada equivalente |
+
+Dimensiones mínimas:
+
+```text
+service
+affected_element_class
+site
+area
+priority
+case_type
+attention_level
+provider
+cause_class
+change_related
+major_incident
+```
+
+Las métricas no se usan para penalizar al trabajador por fallas de infraestructura.
+
+---
+
+#### 45. Cobertura de prueba consumida
+
+La tarea se apoya en requisitos vigentes que ya protegen:
+
+- una mesa de servicio que distingue solicitud, incidente, problema, error conocido y cambio;
+- servicio, elemento, sede, solicitante, impacto, urgencia, prioridad, SLA, asignación, comunicaciones, diagnóstico, trabajo, workaround, restauración, validación, cierre y reapertura;
+- separación de incidente, problema, cambio y continuidad;
+- correlación de servicios, activos, endpoints, aplicaciones, tickets, proveedores y cambios;
+- protección de secretos y diagnósticos sensibles;
+- latencia, timeout, resultado desconocido y trabajos asíncronos;
+- operación offline, captura local y reconciliación;
+- inventario tecnológico y relaciones físicas;
+- métricas de primera respuesta, restauración, espera, recurrencia y cierre sin validación.
+
+Entre las coberturas vigentes se encuentran `TREQ-VISO-002`, `TREQ-INTEGRATION-020`, `TREQ-NEXO-019` y los requisitos de proceso ya aprobados para tiempos de respuesta, offline, observabilidad y auditoría.
+
+TI-DOM-007 especializa esos comportamientos para el caso tecnológico sin crear una segunda obligación de prueba paralela.
+
+---
+
+#### 46. Hallazgos y propietarios
+
+| ID                 | Hallazgo                                                                                                        | Estado                   | Propietario                                                                           | Condición de salida                                                                                      |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `H-TI-DOM-007-001` | `support_tickets` no materializa servicio afectado, impacto, urgencia, prioridad ni SLA                         | `ESPECIFICADO`           | paquete de implementación VISO / E3                                                   | modelo físico implementa el contrato sin perder historial                                                |
+| `H-TI-DOM-007-002` | estados legacy `open/in_progress/resolved/closed` no son equivalentes al state machine de `VPROC-0058`          | `ESPECIFICADO`           | paquete de transición Supabase propietario                                            | mapping determinista, compatibilidad y backfill quedan probados antes de retirar legacy                  |
+| `H-TI-DOM-007-003` | ANIMA puede marcar la conversación `closed` y `resolved_at` desde cliente                                       | `ESPECIFICADO`           | paquete E5 ANIMA/VISO + autorización de servidor                                      | la experiencia distingue cerrar conversación de validar/cerrar caso y el servidor gobierna la transición |
+| `H-TI-DOM-007-004` | el flujo actual mueve `status` a `in_progress` al enviar un mensaje                                             | `ESPECIFICADO`           | paquete E5 ANIMA/VISO                                                                 | mensajería y transición de proceso quedan separadas                                                      |
+| `H-TI-DOM-007-005` | no se demostró en las fuentes revisadas una mesa de servicio VISO completa que materialice el contrato objetivo | `PENDIENTE_DE_EVIDENCIA` | paquete E5 VISO                                                                       | superficie, guards, modelo, acciones y pruebas quedan inventariados e implementados                      |
+| `H-TI-DOM-007-006` | el calendario real de cobertura humana por servicio y sede no está materializado en el soporte actual           | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` para soporte contratado y paquete operativo VISO para calendario interno | cada servicio referencia una ventana de soporte vigente sin reducir P1/A0                                |
+| `H-TI-DOM-007-007` | no existe evidencia de cumplimiento histórico de los SLA definidos en esta tarea                                | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-010` + paquete E5 VISO                                                        | instrumentación y datos reales calculan SLI por prioridad                                                |
+| `H-TI-DOM-007-008` | la espera de proveedor puede ocultar incumplimiento si no se separan reloj interno y externo                    | `RESUELTO_POR_CONTRATO`  | `TI-SLA-COMMITMENT-MATRIX-001`                                                        | implementación conserva ambos tiempos y no pausa comunicación                                            |
+| `H-TI-DOM-007-009` | un incidente crítico puede requerir continuidad sin convertirse en el mismo expediente                          | `RESUELTO_POR_CONTRATO`  | `ESC_CONTINUITY` + `VPROC-0062`                                                       | implementación conserva dos identidades correlacionadas                                                  |
+| `H-TI-DOM-007-010` | causa raíz y cambio pueden confundirse con cierre del incidente                                                 | `RESUELTO_POR_CONTRATO`  | `TI-DOM-008`; `TI-DOM-009`                                                            | incidentes cierran por restauración/validación y handoffs mantienen su propio ciclo                      |
+
+No queda un pendiente narrativo sin propietario y condición de salida.
+
+---
+
+#### 47. Estado de materialización
+
+| Componente                                 | Estado                   |
+| ------------------------------------------ | ------------------------ |
+| identidad del caso tecnológico             | `ESPECIFICADO`           |
+| clasificación solicitud/incidente/consulta | `ESPECIFICADO`           |
+| handoff acceso/problema/cambio             | `ESPECIFICADO`           |
+| impacto 4 niveles                          | `ESPECIFICADO`           |
+| urgencia 4 niveles                         | `ESPECIFICADO`           |
+| matriz 16 combinaciones                    | `ESPECIFICADO`           |
+| prioridad P1-P4                            | `ESPECIFICADO`           |
+| SLA P1-P4                                  | `ESPECIFICADO`           |
+| escalamiento                               | `ESPECIFICADO`           |
+| comunicación                               | `ESPECIFICADO`           |
+| restauración y fulfillment                 | `ESPECIFICADO`           |
+| validación, conocimiento y cierre          | `ESPECIFICADO`           |
+| reapertura                                 | `ESPECIFICADO`           |
+| modelo físico VISO                         | `FUERA_DE_ALCANCE`       |
+| migración de `support_tickets`             | `FUERA_DE_ALCANCE`       |
+| ejecución de SLA real                      | `PENDIENTE_DE_EVIDENCIA` |
+| cambios Supabase                           | `NO_APLICA`              |
+
+---
+
+#### 48. Invariantes
+
+1. `VPROC-0058` permanece como proceso propietario del caso tecnológico;
+2. `VPROC-0059` permanece separado para accesos;
+3. `VPROC-0062` permanece separado para continuidad;
+4. solicitud no equivale a incidente;
+5. incidente no equivale a problema;
+6. problema no equivale a cambio;
+7. prioridad no es entrada libre del usuario;
+8. impacto no es urgencia;
+9. criticidad de proceso no es prioridad;
+10. prioridad no es nivel L0-L3;
+11. prioridad no concede autorización;
+12. antigüedad no eleva prioridad por sí sola;
+13. workaround no equivale a causa eliminada;
+14. restauración no equivale a cierre;
+15. `resolved` legacy no equivale a validación;
+16. `closed` legacy no equivale a cierre canónico;
+17. un mensaje no cambia por sí solo el estado empresarial;
+18. proveedor externo no cierra el caso VENTO;
+19. espera de proveedor no elimina ownership interno;
+20. SLA vencido no reinicia el reloj;
+21. pausa de SLA requiere causa estructurada;
+22. P1 durante ventana crítica no espera horario administrativo;
+23. no se asume cobertura 24×7 para toda solicitud;
+24. soporte remoto no amplía autoridad;
+25. diagnóstico no autoriza cambio;
+26. causa desconocida puede coexistir con servicio restaurado;
+27. incidente cerrado puede tener problema abierto relacionado;
+28. reapertura no reescribe el cierre anterior;
+29. prioridad se recalcula con impacto y urgencia actuales;
+30. downgrade de prioridad conserva razón y evidencia;
+31. incidente mayor no equivale automáticamente a continuidad;
+32. comunicación no expone secretos;
+33. logs se referencian y minimizan;
+34. silencio del usuario no equivale a validación;
+35. cierre exige pendientes transferidos;
+36. cancelación no se presenta como fulfillment;
+37. void no se presenta como cierre exitoso;
+38. métricas distinguen espera interna, externa y validación;
+39. la operación offline no puede declarar cierre autoritativo;
+40. esta tarea no modifica código, datos ni Supabase.
+
+---
+
+#### 49. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-006 → TI-DOM-007 → TI-DOM-008`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] `VPROC-0058` se conserva como proceso único del caso;
+- [x] se distinguen solicitud, incidente y consulta;
+- [x] acceso, problema y cambio conservan handoffs propios;
+- [x] se define un contrato completo de identidad del caso;
+- [x] se define entrada mínima sin exigir diagnóstico técnico al usuario;
+- [x] se definen exactamente cuatro niveles de impacto;
+- [x] se definen exactamente cuatro niveles de urgencia;
+- [x] se materializan las 16 combinaciones impacto × urgencia;
+- [x] se definen exactamente cuatro prioridades;
+- [x] prioridad se deriva y no se acepta como texto del solicitante;
+- [x] se define el marcador `MAJOR_INCIDENT` sin crear otro proceso;
+- [x] se definen exactamente cuatro perfiles SLA;
+- [x] cada SLA distingue acuse, primera respuesta, restauración o cumplimiento y comunicación;
+- [x] se define un reloj reproducible y condiciones de pausa;
+- [x] esperar proveedor no elimina ownership ni comunicación;
+- [x] se conservan los cuatro niveles L0-L3;
+- [x] se definen escalamiento funcional, técnico, proveedor, seguridad y continuidad;
+- [x] se define escalamiento preventivo antes del breach;
+- [x] se define la frontera con `VPROC-0062`;
+- [x] se define la frontera con `TI-DOM-008`;
+- [x] se define la frontera con `TI-DOM-009`;
+- [x] se materializa cadencia de comunicación por prioridad;
+- [x] se definen restauración, fulfillment, validación y conocimiento;
+- [x] se preservan los nueve estados, diez transiciones, cuatro excepciones y cuatro CCR de `VPROC-0058`;
+- [x] se reconcilian los cuatro estados legacy observados;
+- [x] se documenta el comportamiento AS-IS de ANIMA sin presentarlo como modelo objetivo;
+- [x] se preserva privacidad de diagnósticos, logs y secretos;
+- [x] se preserva el perfil offline y `SYNC-1_URGENT`;
+- [x] se materializan diez SLI del caso;
+- [x] los diez hallazgos tienen propietario y condición de salida;
+- [x] no se crea ni modifica ningún requisito de prueba;
+- [x] no se modifica Supabase;
+- [x] `TI-DOM-008` permanece únicamente reservada.
+
+---
+
+#### 50. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa y materializa para el caso tecnológico reglas de mesa de servicio, clasificación, prioridad, compromiso de servicio, trazabilidad, restauración, validación, cierre, integración, rendimiento, operación degradada y auditoría que ya están protegidas por el registro canónico vigente. El resultado no crea una nueva superficie ejecutable, esquema físico, autorización, integración, transporte, proveedor ni comportamiento empresarial fuera de esas obligaciones; por tanto no requiere una fila adicional ni modificar una existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 51. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia`
+
+
 ### [ ] TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
 ### [ ] TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
 ### [ ] TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
