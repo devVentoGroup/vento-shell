@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **643** |
+| Tareas aprobadas | **644** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **951** |
+| Tareas no iniciadas | **950** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.34% (643/1594)** |
+| Porcentaje de completamiento | **40.40% (644/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad** |
-| Tarea actual | **TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos** |
+| Última tarea aprobada | **TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos** |
+| Tarea actual | **INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios** |
+| Siguiente tarea | **INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 67 de 157 aprobadas; TI-INT-003 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 68 de 157 aprobadas; INFO-DOM-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-INT-002` — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad |
-| Tarea actual | `TI-INT-003` — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos — **NO INICIADA** |
-| Siguiente tarea | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios |
+| Última aprobada | `TI-INT-003` — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos |
+| Tarea actual | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios — **NO INICIADA** |
+| Siguiente tarea | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 67 DE 157 APROBADAS — ACTUAL TI-INT-003** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 68 DE 157 APROBADAS — ACTUAL INFO-DOM-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad
-        ↓
-TAREA ACTUAL
 TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 67 de 157 tareas aprobadas
+CARRIL NEXO — 68 de 157 tareas aprobadas
 ```

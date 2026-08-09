@@ -2720,4 +2720,1506 @@ SIGUIENTE TAREA RESERVADA
 `TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos`
 
 
-### [ ] TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos
+### ✅ TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad` — APROBADA
+**Tarea siguiente:** `INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de las integraciones tecnológicas externas con administración de endpoints, soporte remoto, conectividad, fabricantes, licenciamiento y proveedores técnicos, preservando autoridad VENTO, autenticación, identidad, privilegio, telemetría, idempotencia, límites, conciliación, evidencia, reversibilidad y salida del proveedor
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md`
+**Fase:** exclusivamente documental
+**Cambios físicos autorizados:** ninguno; no selecciona ni contrata proveedores, no crea ni modifica código, SDK, agentes, MDM, clientes de soporte remoto, APIs, webhooks, jobs, colas, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, cuentas, tenants, licencias, asientos, contratos, costos, secretos, dispositivos, redes, firmware, drivers, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** cerrar el diseño de la frontera tecnológica externa de VENTO para seis familias —MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos—, materializando qué puede intercambiarse, qué autoridad conserva VENTO, cómo se autentica y correlaciona cada interacción, qué acciones requieren autorización o cambio, cómo se tratan límites, reintentos y resultados desconocidos, qué evidencia se conserva, cómo se reconcilian discrepancias y qué condiciones deben cumplirse antes de habilitar una integración física.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-INT-003` queda documentalmente cerrada con seis familias externas materializadas:
+
+1. **MDM**;
+2. **soporte remoto**;
+3. **ISP**;
+4. **fabricantes**;
+5. **licenciamiento**;
+6. **proveedores tecnológicos**.
+
+Cada familia queda definida con:
+
+- propósito exacto de integración;
+- fuente y autoridad que VENTO conserva;
+- identidad del objeto externo y del objeto VENTO relacionado;
+- información mínima de entrada y salida;
+- mecanismo conceptual de autenticación;
+- reglas de autorización y privilegio;
+- acciones permitidas y acciones prohibidas;
+- eventos, observaciones y resultados aceptables;
+- tratamiento de idempotencia, retries y límites;
+- tratamiento del reloj y de evidencia tardía;
+- tratamiento de timeout y resultado desconocido;
+- conciliación y manejo de discrepancias;
+- minimización de datos y prohibición de secretos en casos o telemetría;
+- relación con contrato, licencia, costo y proveedor;
+- estado AS-IS verificable;
+- propietario de cada pendiente y condición de salida.
+
+Balance documental:
+
+| Elemento                                                                         |    Resultado |
+| -------------------------------------------------------------------------------- | -----------: |
+| Familias externas esperadas                                                      |        **6** |
+| Familias externas materializadas                                                 |   **6 de 6** |
+| Proveedores MDM confirmados                                                      |        **0** |
+| Herramientas de soporte remoto productivo confirmadas                            |        **0** |
+| Acceso remoto no atendido persistente aprobado                                   |        **0** |
+| Instancias canónicas de red validadas para vincular con ISP                      |        **0** |
+| Referencias de impresora conservadas para relación con fabricante                |   **9 de 9** |
+| Familias de producto/fabricante observadas en impresión                          |        **3** |
+| Familias técnicas externas reconocidas por evidencia actual                      |        **5** |
+| Plataformas empresariales de licenciamiento confirmadas como maestro tecnológico |        **0** |
+| Aplicaciones del catálogo con decisión de proveedor/licenciamiento               | **10 de 10** |
+| Integraciones productivas creadas                                                |        **0** |
+| Cambios físicos                                                                  |        **0** |
+| Requisitos de prueba nuevos o modificados                                        |        **0** |
+
+La tarea define contratos de integración y condiciones de habilitación. No declara como contratado, activo, saludable, licenciado o autorizado un proveedor por la sola presencia de un SDK, repositorio, cuenta técnica, producto físico, URL, agente o configuración local.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y preserva, sin redefinir su autoridad:
+
+1. `TI-INT-001`, incluidas las cinco familias de adaptador, las siete formas de observación, las seis clases de señal, los cinco estados de health y las reglas de autenticación, reloj, mapping, retries, idempotencia, minimización y reconciliación;
+2. `TI-INT-002`, como contrato de integración interno entre SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad;
+3. `TI-DOM-001`, incluidos `TI-SERVICE-001` a `TI-SERVICE-011` y `TI-ATTN-004 — L3_PROVEEDOR_O_FABRICANTE`;
+4. `TI-DOM-002`, para identidad separada de activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio;
+5. `TI-DOM-003`, para lifecycle, baseline, postura, configuración observada, mantenimiento, revocación y retiro de endpoints;
+6. `TI-DOM-004`, para recursos de red, topología, direccionamiento, health y contingencia;
+7. `TI-DOM-005`, para impresoras, periféricos, reconciliación física y relación con PRINT-ARC;
+8. `TI-DOM-006`, para catálogo de aplicaciones, ambientes, dependencias y proveedores técnicos;
+9. `TI-DOM-007`, para caso tecnológico, escalamiento y relación L1/L2/L3;
+10. `TI-DOM-008`, para evidencia externa de fabricante o proveedor dentro de problema, causa, error conocido y workaround;
+11. `TI-DOM-009`, para cambios sobre endpoint, red, firmware, driver, integración, proveedor o configuración;
+12. `TI-DOM-010`, para observabilidad, health, señales, alertas, logs y frescura;
+13. `TI-DOM-011`, para recuperación técnica y relación con continuidad;
+14. `TI-DOM-012`, para licencias, asientos, garantías, contratos, renovaciones, uso y costos;
+15. `TI-DOM-013`, para documentación de fabricante o proveedor como conocimiento curado, no como verdad automática;
+16. `TI-AUTH-001` a `TI-AUTH-004`, para segregación, acceso privilegiado, soporte remoto, configuración protegida, logs, capturas, secretos y datos personales;
+17. `TI-UX-002` a `TI-UX-006`, para mesa de servicio, mapa técnico, incidentes/cambios, proveedores/licencias/costos y diagnóstico guiado;
+18. PRINT-ARC, para identidad de impresora, trabajo, enrutamiento, adaptador, intentos, resultados y confirmaciones;
+19. ORIGO, como autoridad sobre proveedor, compra y contrato;
+20. NUMERA, como autoridad sobre compromiso, gasto y costo;
+21. NEXO, como autoridad sobre identidad física, ubicación, condición y custodia de activos;
+22. SHELL y el modelo general de autorización, para identidad, permisos, aplicaciones y decisiones de acceso;
+23. BLOQUE T y E5, para compatibilidad, pruebas, release, rollback, readiness, piloto y estabilización;
+24. continuidad empresarial, para dependencias críticas, operación mínima, recuperación y proveedores alternativos cuando corresponda.
+
+No se crea un segundo catálogo de proveedores, un segundo inventario de activos, un segundo maestro de licencias, un segundo expediente de soporte ni un segundo modelo de identidad.
+
+---
+
+#### 3. Frontera general de integración externa
+
+Toda integración de esta tarea conserva la secuencia lógica:
+
+```text
+OBJETO Y NECESIDAD VENTO
+→ AUTORIDAD VENTO RESUELTA
+→ CONTRATO O RELACIÓN EXTERNA IDENTIFICADOS
+→ PRINCIPAL TÉCNICO Y ALCANCE MÍNIMO
+→ INTERACCIÓN CON EL PROVEEDOR
+→ RESPUESTA, EVENTO U OBSERVACIÓN EXTERNOS
+→ ADAPTACIÓN Y VALIDACIÓN
+→ CORRELACIÓN CON OBJETO VENTO
+→ RECONCILIACIÓN
+→ EVIDENCIA
+→ DECISIÓN O CIERRE BAJO AUTORIDAD VENTO
+```
+
+Invariantes:
+
+```text
+PROVEEDOR
+≠ AUTORIDAD EMPRESARIAL
+
+CUENTA DEL PROVEEDOR
+≠ IDENTIDAD VENTO
+
+TENANT DEL PROVEEDOR
+≠ EMPRESA VENTO
+
+DISPOSITIVO DEL PROVEEDOR
+≠ ENDPOINT CANÓNICO
+
+SUSCRIPCIÓN
+≠ CONTRATO
+≠ LICENCIA
+≠ ASIENTO
+≠ CUENTA
+≠ CREDENCIAL
+
+ESTADO DEL PROVEEDOR
+≠ HEALTH VENTO
+
+TICKET DEL PROVEEDOR
+≠ CASO TECNOLÓGICO VENTO
+
+RESPUESTA DEL PROVEEDOR
+≠ RESTAURACIÓN VALIDADA
+≠ CIERRE CANÓNICO
+```
+
+---
+
+#### 4. Contrato común de identidad y mapping
+
+Cada integración deberá resolver explícitamente dos identidades:
+
+- el objeto que conoce el proveedor;
+- el objeto canónico que VENTO reconoce.
+
+El vínculo nunca se crea únicamente por coincidencia de:
+
+- correo electrónico;
+- nombre de persona;
+- hostname;
+- serial;
+- MAC;
+- IP;
+- URL;
+- nombre de aplicación;
+- código de producto;
+- nombre comercial;
+- tenant;
+- account ID;
+- subscription ID.
+
+El mapping conserva como mínimo:
+
+| Elemento conceptual   | Regla                                                                      |
+| --------------------- | -------------------------------------------------------------------------- |
+| fuente externa        | proveedor y familia de integración identificables                          |
+| referencia externa    | identificador estable del objeto en la fuente, cuando exista               |
+| objeto VENTO          | identidad canónica resuelta o estado no reconciliado                       |
+| evidencia del vínculo | referencia suficiente para demostrar por qué se considera la misma entidad |
+| vigencia              | instante o versión desde la que el vínculo es válido                       |
+| estado                | resuelto, ambiguo, pendiente o inválido según la evidencia disponible      |
+| propietario           | dominio VENTO que puede aprobar o corregir la relación                     |
+
+Un mapping ambiguo bloquea acciones mutantes. Puede conservarse como evidencia para diagnóstico, pero no autoriza cambio, borrado, reasignación, bloqueo, activación, consumo de licencia ni cierre.
+
+---
+
+#### 5. Autenticación y principales técnicos
+
+Toda fuente o acción externa requiere un mecanismo de autenticación administrado y referenciable.
+
+Pueden existir, según el proveedor y la implementación posterior:
+
+- OAuth o autorización delegada;
+- principal de servicio;
+- credencial de API;
+- certificado;
+- firma de webhook;
+- identidad de dispositivo;
+- sesión humana autenticada;
+- credencial temporal;
+- token de acceso de alcance limitado.
+
+Esta tarea no selecciona uno por intuición.
+
+Reglas obligatorias:
+
+1. el secreto no se copia a VISO, ANIMA, logs, eventos, telemetría o documentación operativa;
+2. la identidad del principal técnico se conserva separada de la credencial;
+3. una credencial válida no concede autoridad empresarial;
+4. el principal debe tener propietario humano o de servicio identificable;
+5. el alcance solicitado debe ser mínimo para el caso de uso;
+6. los permisos de lectura y mutación permanecen separados;
+7. una integración que pueda modificar dispositivos, red, licencias o configuración queda sujeta a autorización y cambio cuando corresponda;
+8. expiración, revocación o rotación invalidan el uso posterior de la credencial anterior;
+9. no se admite fallback hacia una credencial más amplia para ocultar un fallo de permisos.
+
+---
+
+#### 6. Eventos, telemetría y afirmaciones externas
+
+Los proveedores pueden producir:
+
+- métricas;
+- eventos o transiciones;
+- logs;
+- heartbeats;
+- resultados de prueba;
+- resultados de operación;
+- observaciones manuales o de soporte.
+
+Cuando una fuente externa produzca telemetría, se adapta mediante `TI-INT-001`.
+
+Reglas:
+
+1. el proveedor conserva la afirmación original;
+2. VENTO conserva cuándo fue recibida;
+3. la afirmación se valida antes de transformarse en señal interna;
+4. severidad externa no sustituye prioridad, impacto, urgencia ni clase de señal VENTO;
+5. `healthy`, `online`, `resolved`, `closed`, `paid`, `licensed`, `compliant` o equivalentes del proveedor no escriben automáticamente el estado canónico VENTO;
+6. ausencia de evento no demuestra salud;
+7. evento tardío conserva su tiempo original;
+8. correlación temporal no prueba causalidad;
+9. un webhook autenticado no autoriza una mutación ajena a su contrato;
+10. un evento de proveedor nunca se convierte por sí solo en aprobación humana.
+
+---
+
+#### 7. Idempotencia, retries, límites y resultados desconocidos
+
+Toda interacción reintentable deberá conservar una identidad estable suficiente para distinguir:
+
+```text
+MISMA OPERACIÓN + MISMO CONTENIDO
+→ MISMO EFECTO O MISMO RESULTADO RECUPERABLE
+
+MISMA IDENTIDAD + CONTENIDO DIFERENTE
+→ CONFLICTO
+```
+
+Reglas:
+
+1. los reintentos conservan correlación con el intento original;
+2. un retry no crea un segundo caso, sesión, dispositivo, asignación, compra, licencia, RMA o cambio;
+3. se respetan límites y señales de rate limiting del proveedor;
+4. `Retry-After` se respeta cuando el contrato físico lo exponga;
+5. no se inventan tiempos de backoff o número de intentos en esta tarea;
+6. un timeout después de una operación posiblemente aceptada se clasifica como resultado desconocido hasta reconciliación;
+7. una acción destructiva o sensible no se repite para comprobar si funcionó;
+8. la conciliación consulta estado o evidencia cuando sea seguro antes de repetir;
+9. dead-letter o intervención manual futura deberá conservar identidad, causa y actor;
+10. una reconciliación no borra intentos, respuestas ni errores anteriores.
+
+---
+
+#### 8. Reloj, versiones y compatibilidad
+
+Se distinguen:
+
+```text
+MOMENTO DEL PROVEEDOR
+≠ MOMENTO DE RECEPCIÓN VENTO
+≠ MOMENTO DE PROCESAMIENTO
+≠ MOMENTO DE EFECTO EMPRESARIAL
+```
+
+Toda integración deberá conservar, cuando aplique:
+
+- versión de API o contrato;
+- versión de agente o cliente;
+- versión de payload;
+- versión de política;
+- instante observado por la fuente;
+- instante registrado por VENTO;
+- zona u offset cuando sean materiales;
+- calidad o confianza del reloj cuando sea conocida.
+
+Un cambio incompatible de API, esquema, agente o SDK deberá tratarse como cambio versionado y probarse contra consumidores. No se modifica silenciosamente el significado histórico de campos recibidos.
+
+---
+
+#### 9. Familia 1 — MDM
+
+##### 9.1. Propósito
+
+La integración MDM permite administrar y observar endpoints mediante una plataforma externa sin convertir el inventario del proveedor en fuente de verdad de activos, personas, autorizaciones o dispositivos compartidos.
+
+Puede soportar, cuando exista proveedor aprobado:
+
+- enrolamiento;
+- estado de gestión;
+- baseline o política asignada;
+- postura observada;
+- versión de sistema;
+- cifrado y bloqueo cuando la fuente los exponga;
+- software administrado;
+- señal de actualización;
+- estado de agente;
+- comandos autorizados de administración;
+- revocación y retiro.
+
+##### 9.2. Autoridad conservada
+
+| Objeto                          | Autoridad VENTO                             |
+| ------------------------------- | ------------------------------------------- |
+| activo físico                   | NEXO                                        |
+| endpoint                        | `TI-DOM-003`                                |
+| dispositivo compartido          | modelo de dispositivos compartidos / SHELL  |
+| trabajador o actor              | identidad y autorización VENTO              |
+| baseline esperado               | `TI-DOM-003` + cambio tecnológico aplicable |
+| privilegio                      | `TI-AUTH-002` / `TI-AUTH-003`               |
+| caso de soporte                 | VISO                                        |
+| contrato/licencia/costo del MDM | `TI-DOM-012` + ORIGO + NUMERA               |
+| observación técnica             | `TI-INT-001` + `TI-DOM-010`                 |
+
+##### 9.3. Mapping mínimo
+
+La plataforma MDM deberá poder relacionar su objeto administrado con un `endpoint` canónico mediante evidencia estable.
+
+No se acepta como vínculo suficiente:
+
+- nombre del dispositivo;
+- email del usuario;
+- IP;
+- MAC aislada;
+- serial sin reconciliación;
+- nombre local;
+- etiqueta libre del administrador.
+
+Cuando el endpoint no esté reconciliado, la observación puede conservarse como evidencia externa sin habilitar acciones mutantes.
+
+##### 9.4. Acciones protegidas
+
+Cualquier capacidad como:
+
+- bloqueo remoto;
+- borrado;
+- instalación o retiro de software;
+- cambio de política;
+- modificación de configuración;
+- rotación o eliminación de perfil;
+- aislamiento;
+- actualización forzada;
+
+requiere autorización específica y, cuando cambie configuración o riesgo operativo, gobierno de cambio.
+
+La telemetría MDM no puede ejecutar automáticamente una acción destructiva por mera clasificación externa de `non-compliant`, `risky`, `offline` o equivalente.
+
+##### 9.5. AS-IS
+
+**Estado:** `PENDIENTE_DE_EVIDENCIA`.
+
+No existe proveedor MDM aprobado ni integración runtime demostrada por las fuentes actuales. `TI-DOM-003` deliberadamente no seleccionó proveedor MDM.
+
+Bloqueo:
+
+- proveedor/tenant no confirmados;
+- población canónica de endpoints todavía no materializada de forma completa;
+- mapping endpoint–objeto MDM no demostrado;
+- permisos y credenciales no definidos físicamente;
+- contrato, licencia, costo y salida no demostrados.
+
+Propietarios de salida:
+
+- `TI-DOM-003` para endpoint y baseline;
+- `TI-AUTH-002` y `TI-AUTH-003` para privilegio y configuración;
+- `TI-DOM-012` + ORIGO + NUMERA para relación comercial;
+- alcance de implementación tecnológica autorizado para el conector físico.
+
+Condición de salida:
+
+- proveedor y cuenta/tenant identificados;
+- endpoint canónico reconciliado;
+- scopes mínimos definidos;
+- credencial o principal técnico gobernado;
+- contratos de lectura y mutación separados;
+- mapping reproducible;
+- eventos/telemetría adaptados;
+- revocación/offboarding demostrables;
+- sandbox o laboratorio disponible;
+- pruebas de autorización, idempotencia y reconciliación aprobadas.
+
+---
+
+#### 10. Familia 2 — soporte remoto
+
+##### 10.1. Propósito
+
+La integración de soporte remoto permite que un técnico interno o externo interactúe con un endpoint o sistema únicamente dentro de una sesión autorizada, trazable y temporal.
+
+La herramienta es un medio de ejecución. No es autoridad, aprobador, propietario del caso ni fuente de identidad.
+
+##### 10.2. Contrato de sesión
+
+Toda sesión privilegiada deberá poder conservar:
+
+- caso o cambio correlacionado;
+- finalidad;
+- patrocinador interno;
+- técnico o proveedor identificable;
+- recurso exacto;
+- alcance permitido;
+- modalidad atendida o no atendida;
+- decisión de autorización aplicable;
+- ventana de vigencia;
+- instante de inicio;
+- instante de fin;
+- acciones o evidencia permitidas;
+- estado de revocación;
+- resultado técnico;
+- validación posterior.
+
+##### 10.3. Modalidad atendida
+
+Una sesión atendida puede ser habilitable cuando:
+
+- el caso y la finalidad están vigentes;
+- existe autorización suficiente;
+- el recurso está correctamente resuelto;
+- la persona afectada o responsable participa cuando el procedimiento lo exija;
+- se limita la divulgación a lo necesario;
+- el cierre de la sesión no se confunde con cierre del caso.
+
+##### 10.4. Modalidad no atendida
+
+**Estado actual:** `BLOQUEADO` para acceso persistente no atendido.
+
+No se habilita hasta demostrar:
+
+- identidad técnica estable;
+- alcance específico;
+- política aprobada;
+- autorización compatible con la modalidad;
+- expiración;
+- revocación verificable;
+- registro de sesión;
+- minimización de datos;
+- auditoría suficiente;
+- pruebas de desconexión y no reutilización de autoridad vencida.
+
+La presencia de un agente instalado no equivale a acceso aprobado.
+
+##### 10.5. Datos sensibles
+
+La sesión no concede por sí misma derecho a:
+
+- leer secretos;
+- exportar logs completos;
+- copiar datos personales;
+- capturar toda la pantalla;
+- extraer archivos;
+- revelar credenciales;
+- inspeccionar información ajena a la finalidad.
+
+Ver, capturar, copiar, exportar y compartir continúan como acciones diferenciadas bajo `TI-AUTH-004`.
+
+##### 10.6. Reintento y reconexión
+
+Una reconexión no hereda una autorización expirada.
+
+Si la sesión pierde conectividad:
+
+```text
+AUTORIDAD TODAVÍA VIGENTE
++
+MISMO RECURSO
++
+MISMA FINALIDAD
++
+POLÍTICA QUE PERMITE RECONEXIÓN
+→ PUEDE EVALUARSE RECONEXIÓN
+
+AUTORIDAD EXPIRADA O REVOCADA
+→ NUEVA DECISIÓN O BLOQUEO
+```
+
+##### 10.7. AS-IS
+
+**Estado:** `PENDIENTE_DE_EVIDENCIA` para herramienta productiva.
+
+Las fuentes actuales no demuestran una herramienta canónica de soporte remoto en producción ni un ledger transversal completo de sesiones privilegiadas.
+
+Propietarios de salida:
+
+- `TI-AUTH-002` para gobierno de sesión y elevación;
+- `TI-AUTH-004` para evidencia y divulgación;
+- `TI-DOM-007` / VISO para caso maestro;
+- alcance de implementación autorizado para herramienta y registro físico.
+
+Condición de salida:
+
+- proveedor/herramienta identificados;
+- contrato y soporte comercial reconciliados;
+- sesión atendida implementada con autorización, vigencia y revocación;
+- identidad del técnico/proveedor trazable;
+- acciones registrables sin capturar secretos;
+- reconexión segura;
+- cierre de sesión separado del cierre del caso;
+- pruebas de expiración, revocación y segregación aprobadas.
+
+---
+
+#### 11. Familia 3 — ISP
+
+##### 11.1. Propósito
+
+La integración ISP conecta la operación tecnológica con el proveedor de conectividad para:
+
+- identificar el servicio contratado;
+- relacionarlo con un enlace y una sede;
+- recibir estados o avisos externos;
+- abrir o correlacionar soporte externo;
+- conservar mantenimientos anunciados;
+- correlacionar degradaciones;
+- verificar recuperación sin delegar el cierre empresarial al ISP.
+
+##### 11.2. Objeto externo frente a objeto VENTO
+
+El objeto del ISP puede ser un servicio, circuito, cuenta, ticket o referencia contractual.
+
+El objeto VENTO deberá ser una identidad de red reconciliada, principalmente `NETWORK_LINK`, relacionada con sede, servicio y dependencias cuando exista evidencia.
+
+Una cuenta del ISP no sustituye:
+
+- `NETWORK_LINK`;
+- router;
+- switch;
+- access point;
+- segmento;
+- SSID;
+- reserva de direccionamiento.
+
+##### 11.3. Subtipos de red preservados
+
+| Subtipo canónico      | Relación con ISP                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------- |
+| `NETWORK_LINK`        | objeto primario para vincular servicio externo de conectividad cuando exista evidencia |
+| `ROUTER`              | equipo interno o administrado; no se convierte en servicio ISP por coincidencia de IP  |
+| `SWITCH`              | recurso interno; no representa contrato ISP                                            |
+| `ACCESS_POINT`        | recurso interno; no representa contrato ISP                                            |
+| `SEGMENT`             | configuración interna; no representa circuito contratado                               |
+| `SSID`                | superficie de acceso interno; no representa proveedor                                  |
+| `ADDRESS_RESERVATION` | dato de direccionamiento; no identifica proveedor ni contrato                          |
+
+##### 11.4. Afirmaciones externas
+
+El ISP puede comunicar:
+
+- indisponibilidad;
+- degradación;
+- mantenimiento;
+- apertura o actualización de ticket;
+- recuperación declarada;
+- métricas o estado de circuito cuando su plataforma lo ofrezca.
+
+Estas afirmaciones son evidencia externa.
+
+`RECUPERADO` en el portal del ISP no equivale a `HEALTHY` ni a cierre de incidente VENTO hasta comprobar el servicio desde la perspectiva necesaria.
+
+##### 11.5. Escalamiento
+
+Cuando un caso requiera intervención del ISP:
+
+```text
+CASO VISO
+→ ESC_PROVIDER
+→ SUBCASO O REFERENCIA DEL ISP
+→ DIAGNÓSTICO / TRABAJO EXTERNO
+→ EVIDENCIA DEVUELTA
+→ VALIDACIÓN VENTO
+→ CIERRE INTERNO CUANDO CORRESPONDA
+```
+
+El proveedor externo nunca sustituye el caso maestro ni decide la aceptación empresarial.
+
+##### 11.6. AS-IS
+
+**Estado:** `PENDIENTE_DE_EVIDENCIA`.
+
+La arquitectura de red conserva siete subtipos, pero las fuentes actuales registran **0 instancias canónicas validadas**. Por tanto, no se inventa nombre de ISP, circuito, account ID, IP pública, contrato, SLA ni canal API.
+
+Propietarios de salida:
+
+- `TI-DOM-004` para inventario y topología;
+- `TI-DOM-012` + ORIGO para contrato/proveedor;
+- NUMERA para costo;
+- `TI-INT-001` para adaptación de telemetría;
+- alcance de implementación autorizado para integración física.
+
+Condición de salida:
+
+- `NETWORK_LINK` reconciliado;
+- sede y dependencias conocidas;
+- ISP y referencia contractual confirmados;
+- canal de soporte y autenticación conocidos;
+- mapping de servicio/circuito demostrable;
+- estados externos normalizados;
+- retries, límites y reloj definidos;
+- recuperación conciliada con comprobación VENTO;
+- contingencia o alternativa registrada cuando corresponda.
+
+---
+
+#### 12. Familia 4 — fabricantes
+
+##### 12.1. Propósito
+
+La integración con fabricante permite utilizar información y soporte externo sobre equipos sin convertir al fabricante en propietario del activo, de la configuración, del caso ni del cambio.
+
+Puede abarcar:
+
+- garantía;
+- RMA;
+- defecto conocido;
+- advisory;
+- firmware;
+- driver;
+- documentación técnica;
+- compatibilidad;
+- diagnóstico;
+- soporte de producto;
+- pieza o reemplazo;
+- evidencia de reparación.
+
+##### 12.2. Familias de producto observadas
+
+La evidencia actual de impresión permite conservar tres familias de producto/fabricante sin afirmar una integración activa con sus portales:
+
+1. Zebra / ZD230;
+2. Epson / EcoTank L5590 y EcoTank L4260;
+3. Digital POS / DIG-E200I.
+
+No se infiere:
+
+- cuenta de soporte;
+- contrato de fabricante;
+- garantía vigente;
+- API;
+- portal activo;
+- entitlement;
+- serial registrado;
+- RMA existente;
+- relación comercial directa.
+
+##### 12.3. Matriz de las nueve referencias de impresora
+
+| `printer_reference`         | Modelo/familia conservada | Estado de integración con fabricante | Decisión                                                                           |
+| --------------------------- | ------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------- |
+| `PRN-VP-ZD230-01`           | Zebra ZD230               | `PENDIENTE_DE_EVIDENCIA`             | conservar referencia de producto; no inferir cuenta, garantía ni canal de soporte  |
+| `PRN-VP-L5590-01`           | Epson EcoTank L5590       | `PENDIENTE_DE_EVIDENCIA`             | mantenimiento actual no demuestra gestión de garantía o fabricante                 |
+| `PRN-ADMIN-L4260-01`        | Epson EcoTank L4260       | `PENDIENTE_DE_EVIDENCIA`             | vínculo físico NEXO aún requiere reconciliación antes de asociar serial o garantía |
+| `PRN-MOLKA-DIGE200I-01`     | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | no inferir canal de fabricante desde modelo o uso actual                           |
+| `PRN-SAUDO-DIGE200I-01`     | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | no inferir canal de fabricante desde modelo o uso actual                           |
+| `PRN-VC-CAJA-DIGE200I-01`   | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | individualizar activo antes de asociar serial, garantía o RMA                      |
+| `PRN-VC-BARRA-DIGE200I-01`  | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | individualizar activo antes de asociar serial, garantía o RMA                      |
+| `PRN-VC-BAR-DIGE200I-01`    | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | individualizar activo antes de asociar serial, garantía o RMA                      |
+| `PRN-VC-COCINA-DIGE200I-01` | Digital POS DIG-E200I     | `PENDIENTE_DE_EVIDENCIA`             | individualizar activo antes de asociar serial, garantía o RMA                      |
+
+Control:
+
+```text
+REFERENCIAS ESPERADAS = 9
+REFERENCIAS MATERIALIZADAS = 9
+FALTANTES = 0
+DUPLICADOS = 0
+INTEGRACIONES DE FABRICANTE CONFIRMADAS = 0
+```
+
+##### 12.4. Firmware, drivers y configuración
+
+Una recomendación de fabricante no autoriza aplicación automática.
+
+Todo cambio de:
+
+- firmware;
+- driver;
+- configuración;
+- protocolo;
+- interfaz;
+- versión;
+
+se evalúa mediante `TI-DOM-009` y `TI-AUTH-003` cuando corresponda, con compatibilidad, prueba, rollback y evidencia.
+
+##### 12.5. Garantía y RMA
+
+La relación debe poder conservar:
+
+- activo o impresora;
+- fabricante/proveedor;
+- evidencia de compra cuando exista;
+- estado de garantía conocido o desconocido;
+- caso interno;
+- referencia externa;
+- diagnóstico;
+- decisión de reparación/reemplazo;
+- envío/recepción cuando aplique;
+- resultado externo;
+- activo resultante si existe reemplazo.
+
+Un reemplazo no sobrescribe la identidad histórica del activo anterior. NEXO conserva la identidad física y su transición.
+
+##### 12.6. AS-IS
+
+**Estado:** `PENDIENTE_DE_EVIDENCIA` para integración con fabricante.
+
+Propietarios de salida:
+
+- NEXO + `TI-DOM-005` para activo/impresora;
+- `TI-DOM-012` + ORIGO para garantía/contrato/proveedor;
+- `TI-DOM-009` para cambios;
+- PRINT-ARC para prueba funcional de impresión;
+- alcance de implementación autorizado para API/portal/conector.
+
+Condición de salida:
+
+- activo individual reconciliado;
+- fabricante/proveedor confirmado;
+- serial o identificador requerido demostrado cuando aplique;
+- garantía o no-aplicabilidad comprobada;
+- canal de soporte aprobado;
+- referencia externa correlacionable;
+- política de firmware/driver gobernada;
+- RMA o intervención reproducible y auditable cuando ocurra.
+
+---
+
+#### 13. Familia 5 — licenciamiento
+
+##### 13.1. Propósito
+
+La integración de licenciamiento permite observar y administrar derechos tecnológicos sin confundir objetos distintos.
+
+```text
+CONTRATO
+≠ PLAN
+≠ SUSCRIPCIÓN
+≠ LICENCIA
+≠ ENTITLEMENT
+≠ ASIENTO
+≠ CUENTA
+≠ USUARIO
+≠ CREDENCIAL
+≠ COSTO
+```
+
+##### 13.2. Autoridades
+
+| Materia                     | Autoridad                                            |
+| --------------------------- | ---------------------------------------------------- |
+| necesidad y uso técnico     | TI / `TI-DOM-012`                                    |
+| aplicación afectada         | catálogo de aplicaciones + propietario de aplicación |
+| proveedor y contrato        | ORIGO                                                |
+| compromiso, gasto y costo   | NUMERA                                               |
+| identidad de persona        | SHELL / identidad VENTO                              |
+| asignación o uso de asiento | contrato tecnológico gobernado por `TI-DOM-012`      |
+| cambio de configuración     | `TI-DOM-009` / `TI-AUTH-003` cuando aplique          |
+
+##### 13.3. Datos mínimos de una integración de licencia
+
+Cuando el proveedor los exponga, la integración deberá poder reconciliar:
+
+- producto o servicio;
+- plan o edición;
+- entitlement;
+- cantidad o capacidad contratada cuando aplique;
+- asiento o asignación;
+- usuario, principal o recurso relacionado;
+- estado;
+- vigencia;
+- renovación;
+- consumo o uso cuando sea legítimo medirlo;
+- soporte incluido;
+- referencia contractual;
+- costo referenciado, sin recrear el ledger económico;
+- evento de expiración, restricción o cambio;
+- evidencia de baja o reasignación.
+
+##### 13.4. Licencia sin usuario y asiento huérfano
+
+La conciliación deberá detectar, cuando aplique:
+
+- asiento sin usuario o recurso vigente;
+- usuario sin identidad VENTO reconciliada;
+- licencia asignada a persona inactiva;
+- producto sin contrato reconciliado;
+- renovación sin propietario;
+- consumo superior a capacidad conocida;
+- licencia sin uso demostrable cuando la medición sea admisible;
+- cuenta eliminada con asiento todavía asignado;
+- costo sin referencia técnica suficiente.
+
+La detección no autoriza retirar automáticamente el acceso. La acción posterior usa su autoridad correspondiente.
+
+##### 13.5. RevenueCat no es maestro de licencias empresariales
+
+El código actual de PASS utiliza RevenueCat para configurar compras, obtener ofertas, realizar una compra y restaurar compras del Club.
+
+Ese uso representa una integración comercial del cliente de PASS y **no** demuestra una plataforma maestra para licencias tecnológicas internas, asientos de personal, contratos de software o costos de TI.
+
+Por tanto:
+
+```text
+REVENUECAT / PASS CLUB
+≠ LICENCIAMIENTO EMPRESARIAL DE VENTO OS
+```
+
+Cualquier licencia tecnológica interna deberá conservar su propio contrato y autoridad bajo `TI-DOM-012`.
+
+##### 13.6. AS-IS
+
+**Estado:** `PENDIENTE_DE_EVIDENCIA` para una plataforma empresarial consolidada de licenciamiento.
+
+Las cinco familias técnicas externas reconocidas por `TI-DOM-006` mantienen estado comercial, contractual y de asiento pendiente de evidencia donde no exista fuente demostrada.
+
+Propietarios de salida:
+
+- `TI-DOM-012`;
+- ORIGO;
+- NUMERA;
+- propietario de identidad/aplicación cuando aplique;
+- alcance de implementación autorizado para conectores físicos.
+
+Condición de salida:
+
+- proveedor y producto reconciliados;
+- contrato y propietario demostrables;
+- entitlement y asiento definidos cuando apliquen;
+- identidad de usuario/recurso reconciliada;
+- renovación y salida definidas;
+- costo referenciado a NUMERA;
+- scopes de API mínimos;
+- eventos y conciliación probados;
+- baja y reasignación auditables.
+
+---
+
+#### 14. Familia 6 — proveedores tecnológicos
+
+##### 14.1. Propósito
+
+Esta familia cubre plataformas técnicas externas utilizadas por una o más aplicaciones VENTO y que no deben quedar gobernadas únicamente por presencia de SDK, variables de ambiente o configuración de build.
+
+La evidencia actual reconoce cinco familias técnicas externas:
+
+1. GitHub;
+2. Supabase;
+3. Expo/EAS;
+4. Sentry;
+5. RevenueCat.
+
+Este conjunto representa las familias técnicas demostradas por las fuentes actuales. No se afirma que constituya el universo contractual completo de proveedores de VENTO.
+
+##### 14.2. Matriz materializada de proveedores técnicos observados
+
+| Familia    | Evidencia técnica actual                                          | Alcance observado                             | Estado comercial/licencia | Decisión de integración                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------- | --------------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub     | repositorios actuales                                             | nueve aplicaciones con repositorio confirmado | `PENDIENTE_DE_EVIDENCIA`  | conservar como proveedor de código/colaboración; repositorio o workflow no adquieren propiedad funcional ni autoridad empresarial                                                               |
+| Supabase   | SDK en nueve repositorios confirmados y proyecto VENTO observable | nueve aplicaciones con repositorio confirmado | `PENDIENTE_DE_EVIDENCIA`  | conservar como plataforma técnica; esquema, RLS, funciones y datos siguen bajo gobierno VENTO; toda modificación Supabase se versiona desde `vento-shell` cuando una fase autorizada lo permita |
+| Expo/EAS   | configuración técnica de build/update                             | `anima`, `pass`                               | `PENDIENTE_DE_EVIDENCIA`  | conservar cuenta/proyecto/build/update como objetos técnicos separados; plan, propietario, permisos y costo requieren evidencia                                                                 |
+| Sentry     | SDK y configuración de monitoreo observados en ANIMA              | `anima`                                       | `PENDIENTE_DE_EVIDENCIA`  | integrar únicamente observabilidad autorizada y minimizada; SDK presente no demuestra servicio contratado, retención, plan o salud                                                              |
+| RevenueCat | SDK y flujo de compra/restauración observados en PASS             | `pass`                                        | `PENDIENTE_DE_EVIDENCIA`  | conservar como proveedor de compras/suscripción de cliente cuando aplique; no convertirlo en maestro de licenciamiento empresarial                                                              |
+
+Control:
+
+```text
+FAMILIAS TÉCNICAS EXTERNAS RECONOCIDAS = 5
+FILAS MATERIALIZADAS = 5
+FALTANTES = 0
+DUPLICADOS = 0
+CONTRATOS COMERCIALES CONFIRMADOS POR ESTA TAREA = 0
+```
+
+##### 14.3. GitHub
+
+La integración puede, en una implementación futura, consumir evidencia de:
+
+- repositorio;
+- commit;
+- release;
+- workflow;
+- artifact;
+- estado de checks;
+- incidente o cambio correlacionado.
+
+No puede inferir:
+
+- propietario funcional del proceso;
+- autorización empresarial;
+- despliegue productivo;
+- costo o contrato;
+- health de una aplicación únicamente porque el repositorio exista.
+
+##### 14.4. Supabase
+
+Supabase puede proveer capacidad técnica de base de datos, Auth, Storage, funciones y otros servicios, pero:
+
+- no se convierte en autoridad empresarial por ejecutar físicamente una operación;
+- `service_role` u otra credencial privilegiada no equivale a autorización humana;
+- cambios de esquema, políticas, funciones, datos o configuración permanecen bajo el gobierno de VENTO;
+- cualquier futura modificación de Supabase perteneciente a VENTO se crea y versiona desde `vento-shell`;
+- estado del proveedor no equivale a disponibilidad empresarial de todos los procesos consumidores.
+
+##### 14.5. Expo/EAS
+
+La presencia de configuración de build/update en ANIMA y PASS demuestra dependencia técnica, no:
+
+- plan contratado;
+- titular de cuenta;
+- número de asientos;
+- costo;
+- SLA;
+- autorización de publicación.
+
+Build, distribución, update y credenciales de plataforma permanecen objetos separados y gobernados.
+
+##### 14.6. Sentry
+
+ANIMA contiene integración de código que:
+
+- inicializa Sentry cuando existe DSN;
+- diferencia development/production;
+- adjunta referencias de Expo Update;
+- permite capturar errores;
+- puede asociar `id` y `email` del usuario al contexto de monitoreo.
+
+Decisiones:
+
+1. la presencia del SDK no demuestra que exista hoy un contrato comercial activo;
+2. `EXPO_PUBLIC_SENTRY_DSN` es configuración técnica y no se reproduce en casos o documentación;
+3. identificación de usuario y contexto de error debe respetar minimización y finalidad;
+4. un error capturado no crea automáticamente incidente;
+5. un issue cerrado en Sentry no cierra un caso VISO;
+6. el mapping de release/update se conserva como evidencia técnica, no como causa automática.
+
+##### 14.7. RevenueCat
+
+PASS contiene integración de código que:
+
+- carga el SDK `react-native-purchases`;
+- selecciona una clave pública según plataforma;
+- configura el cliente con `appUserID`;
+- consulta offerings;
+- ejecuta una compra;
+- restaura compras.
+
+Decisiones:
+
+1. el `appUserID` debe reconciliarse con la identidad de cliente que corresponda en PASS, no con un trabajador por conveniencia;
+2. la respuesta del proveedor no se transforma en contrato interno de licencia tecnológica;
+3. reintentos de compra requieren la semántica transaccional propia del dominio comercial, no la de asientos tecnológicos;
+4. una restauración de compra no equivale a restauración técnica de servicio VENTO;
+5. la relación comercial del proveedor, plan y costos continúan pendientes de evidencia bajo sus autoridades correspondientes.
+
+---
+
+#### 15. Matriz de las diez aplicaciones frente a proveedor y licenciamiento
+
+Se preservan exactamente las diez aplicaciones del catálogo tecnológico.
+
+| `app_code` | Evidencia técnica externa heredada         | Decisión de TI-INT-003                                                                                          | Estado comercial/licencia |
+| ---------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `shell`    | GitHub; Supabase; hosting no identificado  | conservar GitHub/Supabase como dependencias técnicas; no inventar hosting ni contrato                           | `PENDIENTE_DE_EVIDENCIA`  |
+| `anima`    | GitHub; Supabase; Expo/EAS; Sentry SDK     | conservar las cuatro familias y aplicar contratos específicos de build/monitoring; no inferir plan ni retención | `PENDIENTE_DE_EVIDENCIA`  |
+| `viso`     | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas; no crear proveedor de hosting por inferencia                                   | `PENDIENTE_DE_EVIDENCIA`  |
+| `nexo`     | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas y separar activos/periféricos de proveedor de aplicación                        | `PENDIENTE_DE_EVIDENCIA`  |
+| `fogo`     | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas; no inferir contrato de hosting                                                 | `PENDIENTE_DE_EVIDENCIA`  |
+| `origo`    | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas; la aplicación ORIGO no se convierte en proveedor de sí misma                   | `PENDIENTE_DE_EVIDENCIA`  |
+| `pulso`    | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas; relación POS externa sigue su contrato propio cuando aplique                   | `PENDIENTE_DE_EVIDENCIA`  |
+| `numera`   | GitHub; Supabase; hosting no identificado  | conservar dependencias técnicas; registrar costos no vuelve a NUMERA autoridad de su propia licencia            | `PENDIENTE_DE_EVIDENCIA`  |
+| `aura`     | proveedores actuales no confirmados        | no activar ni asignar proveedor por estar presente en catálogo; conservar decisión de continuidad propietaria   | `PENDIENTE_DE_EVIDENCIA`  |
+| `pass`     | GitHub; Supabase; Expo/EAS; RevenueCat SDK | conservar cuatro familias; RevenueCat permanece proveedor del flujo Club, no maestro de licencias TI            | `PENDIENTE_DE_EVIDENCIA`  |
+
+Control:
+
+```text
+APLICACIONES ESPERADAS = 10
+APLICACIONES MATERIALIZADAS = 10
+FALTANTES = 0
+DUPLICADOS = 0
+```
+
+---
+
+#### 16. Proveedor técnico frente a proveedor comercial
+
+Se fija la separación:
+
+```text
+DEPENDENCIA TÉCNICA OBSERVADA
+≠ RELACIÓN COMERCIAL CONFIRMADA
+≠ CONTRATO VIGENTE
+≠ LICENCIA VIGENTE
+≠ COSTO CONFIRMADO
+≠ SLA CONFIRMADO
+```
+
+Un SDK, repositorio, variable, project ID, endpoint o paquete puede demostrar una relación técnica. No basta para afirmar:
+
+- plan;
+- titular;
+- contrato;
+- costo;
+- asiento;
+- fecha de renovación;
+- soporte incluido;
+- nivel de servicio;
+- derecho a administración.
+
+La reconciliación comercial se mantiene bajo `TI-DOM-012`, ORIGO y NUMERA.
+
+---
+
+#### 17. Caso maestro VENTO y subcaso externo
+
+Todo proveedor que participe en soporte sigue el patrón:
+
+```text
+CASO VENTO
+→ NECESIDAD DE ESCALAMIENTO EXTERNO
+→ PROVEEDOR Y CONTRATO APLICABLES
+→ SUBCASO / RMA / REFERENCIA EXTERNA
+→ TRABAJO DEL TERCERO
+→ RESULTADO Y EVIDENCIA
+→ RECONCILIACIÓN VENTO
+→ VALIDACIÓN
+→ CIERRE INTERNO SI CORRESPONDE
+```
+
+Reglas:
+
+1. el identificador externo no reemplaza el caso VENTO;
+2. el proveedor no modifica prioridad VENTO;
+3. el proveedor no concede autorización;
+4. el proveedor no cierra el caso maestro;
+5. un resultado externo puede ser contradicho por evidencia interna;
+6. cada reapertura conserva relación con el subcaso previo;
+7. el expediente interno evita copiar datos innecesarios del portal externo;
+8. adjuntos externos se gobiernan como evidencia, no como contenido confiable por defecto.
+
+---
+
+#### 18. Cambios iniciados por proveedor
+
+Un advisory, fin de soporte, nueva versión, firmware, cambio de API, cambio de certificado, cambio de plan o mantenimiento programado puede originar una necesidad de cambio.
+
+No autoriza ejecución automática.
+
+El flujo es:
+
+```text
+AFIRMACIÓN DEL PROVEEDOR
+→ EVALUACIÓN DE APLICABILIDAD
+→ OBJETOS VENTO AFECTADOS
+→ RIESGO Y COMPATIBILIDAD
+→ CAMBIO CUANDO CORRESPONDA
+→ PRUEBA
+→ EJECUCIÓN AUTORIZADA
+→ VALIDACIÓN
+→ RECONCILIACIÓN
+```
+
+Un proveedor no puede convertir una recomendación en cambio aprobado.
+
+---
+
+#### 19. Seguridad, privacidad y minimización
+
+Queda prohibido incorporar en casos, telemetría o documentación operativa:
+
+- contraseñas;
+- secretos de API;
+- refresh tokens;
+- access tokens completos;
+- claves privadas;
+- OTP;
+- códigos de recuperación;
+- cookies de sesión;
+- service-role credentials;
+- PSK;
+- credenciales de fabricante o ISP;
+- payloads completos cuando una referencia sea suficiente.
+
+Las integraciones deben aplicar:
+
+- scopes mínimos;
+- separación lectura/escritura;
+- minimización de payload;
+- masking;
+- retención justificada;
+- auditoría de acceso privilegiado;
+- revocación;
+- rotación de credenciales;
+- evidencia sanitizada para soporte.
+
+Una herramienta externa no recibe acceso a información adicional por ser proveedor contratado.
+
+---
+
+#### 20. Reconciliación transversal
+
+La conciliación de TI-INT-003 deberá poder detectar, cuando aplique:
+
+1. objeto MDM sin endpoint canónico;
+2. endpoint canónico con asignación MDM contradictoria;
+3. sesión remota sin caso o autorización vigentes;
+4. sesión remota todavía activa después de expiración o revocación;
+5. enlace de ISP sin `NETWORK_LINK` reconciliado;
+6. ticket ISP sin caso VENTO correlacionado;
+7. proveedor que reporta recuperación mientras VENTO sigue degradado;
+8. garantía o RMA sin activo individual reconciliado;
+9. firmware recomendado que no coincide con versión o modelo aplicable;
+10. licencia o asiento sin usuario/recurso válido;
+11. usuario inactivo con asiento todavía asignado;
+12. producto tecnológico sin contrato reconciliado;
+13. contrato sin servicio o aplicación dependiente;
+14. costo sin referencia contractual/técnica suficiente;
+15. integración técnica activa sin propietario interno;
+16. credencial o principal sin propósito vigente;
+17. proveedor técnico observado sin relación comercial demostrada;
+18. webhook o evento duplicado;
+19. timeout con efecto desconocido;
+20. cambio de API o esquema sin compatibilidad demostrada.
+
+Cada discrepancia conserva:
+
+- fuente A;
+- fuente B;
+- objeto;
+- diferencia;
+- instante;
+- severidad operativa cuando corresponda;
+- propietario de resolución;
+- estado;
+- evidencia;
+- resultado de conciliación.
+
+No se corrige sobrescribiendo silenciosamente una de las fuentes.
+
+---
+
+#### 21. Relación con observabilidad
+
+Las fuentes externas pueden alimentar observabilidad mediante `TI-INT-001`, pero se preservan estas fronteras:
+
+```text
+SEÑAL DEL PROVEEDOR
+≠ ALERTA VENTO
+≠ HEALTH VENTO
+≠ INCIDENTE
+≠ PROBLEMA
+≠ CAMBIO
+≠ CONTINUIDAD
+```
+
+Un proveedor puede declarar indisponibilidad y VENTO puede permanecer parcialmente operativo.
+
+Un proveedor puede declarar recuperación y VENTO puede seguir degradado por caché, configuración, datos, red local, dependencia secundaria o proceso empresarial.
+
+Un adaptador degradado tampoco demuestra que el objeto observado esté degradado.
+
+---
+
+#### 22. Relación con continuidad
+
+Una falla de MDM, soporte remoto, ISP, fabricante, licenciamiento o proveedor tecnológico puede convertirse en dependencia de continuidad únicamente cuando su impacto sobre una capacidad empresarial crítica haya sido establecido por la autoridad de continuidad.
+
+No se activa continuidad por:
+
+- nombre del proveedor;
+- prioridad del ticket externo;
+- severidad del dashboard del proveedor;
+- indisponibilidad de una herramienta no crítica;
+- ausencia de una integración de administración que no afecte la operación mínima.
+
+Cuando corresponda, el caso tecnológico y el caso de continuidad permanecen relacionados pero no intercambiables.
+
+---
+
+#### 23. Relación con ORIGO y NUMERA
+
+##### 23.1. ORIGO
+
+ORIGO conserva:
+
+- proveedor;
+- compra;
+- contrato;
+- documentos comerciales;
+- condiciones vigentes;
+- relación contractual.
+
+TI-INT-003 conserva referencias técnicas suficientes para integrar el servicio sin recrear ese maestro.
+
+##### 23.2. NUMERA
+
+NUMERA conserva:
+
+- compromiso;
+- gasto;
+- costo;
+- periodo y centro económico cuando aplique.
+
+Una API de proveedor puede aportar uso o monto informativo, pero el dato externo no se convierte automáticamente en hecho económico final.
+
+##### 23.3. Regla conjunta
+
+```text
+PROVEEDOR TÉCNICO
+→ REFERENCIA DE CONTRATO EN ORIGO
+→ REFERENCIA ECONÓMICA EN NUMERA
+→ USO Y DEPENDENCIA TÉCNICA EN TI
+```
+
+Las tres perspectivas se correlacionan sin fusionarse.
+
+---
+
+#### 24. Alta de una integración externa
+
+Antes de habilitar físicamente una integración deberá existir, como mínimo:
+
+1. proveedor identificado;
+2. propietario interno;
+3. propósito y servicio afectado;
+4. objeto VENTO relacionado;
+5. contrato o decisión de no-aplicabilidad comercial cuando corresponda;
+6. clasificación de datos;
+7. mecanismo de autenticación;
+8. principal técnico;
+9. scopes mínimos;
+10. ambientes o sandbox cuando existan;
+11. versión de API/SDK;
+12. mapping de identidades;
+13. operaciones de lectura;
+14. operaciones de mutación separadas;
+15. eventos/webhooks/telemetría esperados;
+16. idempotencia;
+17. retry y rate limits;
+18. tratamiento de timeout;
+19. monitoreo del propio conector;
+20. revocación;
+21. salida del proveedor;
+22. compatibilidad y rollback;
+23. pruebas aplicables;
+24. evidencia de readiness.
+
+La ausencia de cualquiera de estos elementos no se rellena con valores genéricos.
+
+---
+
+#### 25. Cambio o ampliación de scopes
+
+Ampliar permisos de una integración es un cambio de seguridad y configuración.
+
+No se permite:
+
+```text
+FALLÓ POR PERMISOS
+→ USAR TOKEN MÁS PODEROSO
+→ CONTINUAR
+```
+
+La conducta correcta es:
+
+```text
+FALLÓ POR PERMISOS
+→ IDENTIFICAR OPERACIÓN
+→ COMPARAR CON CONTRATO APROBADO
+→ CORREGIR BUG O SOLICITAR CAMBIO DE SCOPE
+→ APROBAR CUANDO CORRESPONDA
+→ ROTAR / ACTUALIZAR CREDENCIAL
+→ PROBAR
+→ REINTENTAR CON NUEVA AUTORIDAD
+```
+
+---
+
+#### 26. Baja y salida del proveedor
+
+Toda integración deberá ser desmontable sin perder la historia VENTO.
+
+La salida contempla:
+
+- revocar credenciales;
+- retirar webhooks;
+- retirar agentes cuando corresponda;
+- cerrar accesos humanos;
+- reasignar o liberar licencias;
+- preservar evidencia necesaria;
+- exportar datos cuando contrato y gobierno lo permitan;
+- eliminar datos o accesos residuales conforme a autoridad aplicable;
+- reemplazar mappings;
+- actualizar dependencias;
+- verificar ausencia de automatizaciones huérfanas;
+- conservar la historia del proveedor anterior;
+- demostrar que el nuevo proveedor no reutiliza identidades ambiguas.
+
+Cambiar de proveedor no autoriza dual ownership indefinido.
+
+---
+
+#### 27. Datos y evidencia externos
+
+La integración conserva únicamente lo necesario para demostrar:
+
+- qué se solicitó;
+- quién o qué lo solicitó;
+- bajo qué autoridad;
+- qué proveedor recibió la interacción;
+- qué objeto externo participó;
+- qué respuesta produjo;
+- qué efecto se observó;
+- cómo se reconcilió;
+- qué quedó pendiente.
+
+No se duplica un portal externo completo dentro de VENTO.
+
+Cuando una referencia protegida sea suficiente, se conserva la referencia y no el payload íntegro.
+
+---
+
+#### 28. Errores y clasificación de fallo
+
+La integración distingue, como mínimo:
+
+- autenticación fallida;
+- autorización insuficiente;
+- objeto no encontrado;
+- mapping ambiguo;
+- schema incompatible;
+- rate limit;
+- timeout antes de envío;
+- timeout con efecto posible;
+- indisponibilidad del proveedor;
+- respuesta inválida;
+- conflicto de versión;
+- operación duplicada;
+- rechazo de política;
+- secreto o dato sensible detectado;
+- evidencia insuficiente.
+
+La interfaz y el caso muestran un mensaje seguro. El detalle técnico restringido se conserva bajo autorización.
+
+---
+
+#### 29. Propiedad del cambio físico futuro
+
+TI-INT-003 no selecciona archivos físicos, endpoints de API, nombres de tablas, topics, colas, tokens, tenants ni secretos.
+
+La implementación futura se distribuye según el objeto:
+
+| Resultado físico futuro                             | Propietario                                                                |
+| --------------------------------------------------- | -------------------------------------------------------------------------- |
+| adaptación de telemetría externa                    | `TI-INT-001` + alcance de implementación autorizado                        |
+| contratos internos VENTO consumidos por el conector | `TI-INT-002` + BLOQUE H cuando se materialicen paquetes compartidos        |
+| MDM / endpoint                                      | `TI-DOM-003` + AUTH + alcance autorizado                                   |
+| soporte remoto                                      | `TI-AUTH-002` / `TI-AUTH-004` + VISO + alcance autorizado                  |
+| ISP / red                                           | `TI-DOM-004` + alcance autorizado                                          |
+| fabricante / hardware                               | NEXO + `TI-DOM-005` + PRINT-ARC cuando aplique                             |
+| licenciamiento                                      | `TI-DOM-012` + ORIGO + NUMERA                                              |
+| proveedor tecnológico genérico                      | `TI-DOM-006` / `TI-DOM-012` + propietario de aplicación                    |
+| Supabase                                            | exclusivamente `vento-shell` cuando una fase de implementación lo autorice |
+| compatibilidad, release y rollback                  | BLOQUE T + E5                                                              |
+
+---
+
+#### 30. Pendientes y condiciones de salida
+
+| Pendiente                                          | Estado                   | Propietario / destino                                 | Condición de salida                                                                             |
+| -------------------------------------------------- | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| selección o confirmación de MDM                    | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-003` + `TI-DOM-012` + alcance autorizado      | proveedor, tenant, scopes, endpoint mapping, seguridad, salida y pruebas demostrados            |
+| integración MDM física                             | `FUERA_DE_ALCANCE`       | alcance de implementación autorizado                  | cliente/API/agente implementados, versionados y probados contra este contrato                   |
+| herramienta de soporte remoto                      | `PENDIENTE_DE_EVIDENCIA` | `TI-AUTH-002` + `TI-INT-003`                          | proveedor, modalidad atendida, identidad, sesión, revocación y evidencia demostrados            |
+| acceso no atendido persistente                     | `BLOQUEADO`              | `TI-AUTH-002` + autoridad de seguridad                | contrato explícito, alcance, expiración, revocación, auditoría y pruebas equivalentes aprobados |
+| inventario ISP                                     | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-004` + `TI-DOM-012`                           | enlace canónico, ISP, contrato, canal de soporte y mapping reconciliados                        |
+| integración ISP física                             | `FUERA_DE_ALCANCE`       | alcance de implementación autorizado                  | API/webhook/portal adaptado, autenticado, limitado y probado                                    |
+| canales de fabricante y garantía                   | `PENDIENTE_DE_EVIDENCIA` | NEXO + `TI-DOM-005` + `TI-DOM-012` + ORIGO            | activo individual, fabricante, garantía y canal externo demostrados                             |
+| APIs/RMA de fabricante                             | `PENDIENTE_DE_EVIDENCIA` | propietario técnico + alcance autorizado              | soporte/API aplicables, mapping, autenticación y evidencia de caso externo demostrados          |
+| maestro empresarial de licenciamiento              | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + ORIGO + NUMERA                         | productos, contratos, entitlements, asientos, usuarios, renovación y costos reconciliados       |
+| GitHub — contrato/plan/asientos/costo              | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + ORIGO + NUMERA                         | cuenta propietaria, plan, contrato, uso, renovación y costo demostrables                        |
+| Supabase — contrato/plan/costo                     | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + ORIGO + NUMERA                         | relación comercial y económica reconciliada con dependencia técnica existente                   |
+| Expo/EAS — cuenta/plan/permisos/costo              | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + propietarios ANIMA/PASS + ORIGO/NUMERA | cuenta, plan, permisos, renovación y costo demostrables                                         |
+| Sentry — servicio/plan/retención/costo             | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + ANIMA + INFO cuando aplique            | cuenta, servicio activo, política de datos, retención, contrato y costo demostrables            |
+| RevenueCat — relación comercial/costo              | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + PASS + ORIGO/NUMERA                    | producto contratado, cuenta, renovación, costo y gobierno de datos demostrables                 |
+| hosting de aplicaciones sin proveedor identificado | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-006` + `TI-DOM-012`                           | proveedor o no-aplicabilidad confirmados por cada aplicación correspondiente                    |
+| secretos y principales técnicos                    | `FUERA_DE_ALCANCE`       | implementación segura posterior + `TI-AUTH-*`         | secret store, scopes, rotación, revocación y auditoría implementados sin exponer secretos       |
+| pruebas contractuales y de consumidores            | `FUERA_DE_ALCANCE`       | BLOQUE T / E5                                         | contratos implementados y suites ejecutables sobre sandbox/staging                              |
+
+No queda un pendiente documental de TI-INT-003 sin propietario y condición de salida.
+
+---
+
+#### 31. Criterios de aceptación
+
+`TI-INT-003` queda documentalmente satisfecha cuando:
+
+- [x] desarrolla exclusivamente TI-INT-003;
+- [x] preserva TI-INT-002 como tarea anterior aprobada;
+- [x] reserva INFO-DOM-001 sin desarrollarla;
+- [x] mantiene la fase exclusivamente documental;
+- [x] materializa exactamente seis familias externas;
+- [x] MDM queda definido sin inventar proveedor;
+- [x] soporte remoto queda definido con sesiones temporales y acceso no atendido persistente bloqueado;
+- [x] ISP queda definido sin inventar proveedor ni circuito ante 0 instancias de red validadas;
+- [x] fabricantes quedan materializados contra las nueve referencias de impresora sin inventar cuenta, garantía o API;
+- [x] licenciamiento conserva separados contrato, suscripción, licencia, entitlement, asiento, cuenta, credencial y costo;
+- [x] RevenueCat no se utiliza como maestro de licencias empresariales;
+- [x] las cinco familias técnicas externas observadas quedan materializadas con evidencia y estado;
+- [x] las diez aplicaciones conservan una decisión explícita de proveedor/licenciamiento;
+- [x] toda afirmación externa se reconcilia antes de convertirse en estado VENTO;
+- [x] autenticación de fuente permanece separada de autorización de mutación;
+- [x] retries, límites, reloj, timeout y resultado desconocido quedan definidos;
+- [x] no se almacenan secretos en casos, eventos o telemetría;
+- [x] proveedor, contrato, costo y uso técnico conservan autoridades separadas;
+- [x] todo pendiente posee propietario y condición de salida;
+- [x] no se ejecuta código, Supabase, contratación, configuración, despliegue ni cambio físico;
+- [x] se crean cero requisitos de prueba y se modifican cero existentes.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la conducta ejecutable que esta tarea especializa ya está protegida por requisitos vigentes. `TREQ-INTEGRATION-020` asigna expresamente `TI-INT-001` a `TI-INT-003` y exige que MDM, herramientas de soporte remoto, ISP, fabricantes y licenciamiento utilicen autenticación mínima, idempotencia, reloj coherente, límites, retries y reconciliación, sin convertir adaptadores en maestros de identidad, activo, contrato o costo. `TREQ-SHELL-010` ya protege la separación entre cuenta, permiso, credencial, secreto, asiento, endpoint, dispositivo y sesión, además del ciclo de soporte remoto y proveedor. `TREQ-VISO-002` protege el caso tecnológico maestro y su validación; `TREQ-ORIGO-005` protege proveedor y contrato; `TREQ-NUMERA-001`, `TREQ-NUMERA-002` y `TREQ-NUMERA-004` protegen hechos y costos económicos; y los requisitos de continuidad ya protegen dependencias y recuperación de proveedores.
+
+Esta tarea materializa la especialización documental y las condiciones de habilitación de integraciones externas. No introduce una conducta ejecutable adicional que requiera una fila nueva ni altera el significado de los requisitos existentes.
+
+**Balance:**
+
+| Movimiento  | Cantidad |
+| ----------- | -------: |
+| Creados     |    **0** |
+| Modificados |    **0** |
+| Diferidos   |    **0** |
+| Descartados |    **0** |
+| Obsoletos   |    **0** |
+
+No se requiere actualización del registro 04A.
+
+---
+
+#### 33. Estado de materialización
+
+| Resultado                                     | Estado                               |
+| --------------------------------------------- | ------------------------------------ |
+| contrato MDM                                  | `ESPECIFICADO`                       |
+| proveedor MDM real                            | `PENDIENTE_DE_EVIDENCIA`             |
+| contrato de soporte remoto                    | `ESPECIFICADO`                       |
+| herramienta de soporte remoto real            | `PENDIENTE_DE_EVIDENCIA`             |
+| acceso remoto no atendido persistente         | `BLOQUEADO`                          |
+| contrato ISP                                  | `ESPECIFICADO`                       |
+| ISP/circuitos reales reconciliados            | `PENDIENTE_DE_EVIDENCIA`             |
+| contrato de fabricante                        | `ESPECIFICADO`                       |
+| canales/API/garantía de fabricante reales     | `PENDIENTE_DE_EVIDENCIA`             |
+| contrato de licenciamiento                    | `ESPECIFICADO`                       |
+| maestro empresarial de licencias implementado | `PENDIENTE_DE_EVIDENCIA`             |
+| cinco familias técnicas externas observadas   | `ESPECIFICADO` como relación técnica |
+| contratos comerciales de las cinco familias   | `PENDIENTE_DE_EVIDENCIA`             |
+| integración física de proveedores             | `FUERA_DE_ALCANCE`                   |
+| cambios Supabase                              | `NO_APLICA` en esta tarea            |
+| cambios en requisitos de prueba               | `NO_APLICA` — cero cambios           |
+
+---
+
+#### 34. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad`
+
+TAREA ACTUAL APROBADA
+`TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos`
+
+SIGUIENTE TAREA RESERVADA
+`INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios`
+
