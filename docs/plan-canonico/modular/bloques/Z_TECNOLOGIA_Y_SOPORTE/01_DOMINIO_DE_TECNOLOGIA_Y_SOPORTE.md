@@ -7715,7 +7715,1259 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior`
 
 
-### [ ] TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
+### ✅ TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia` — APROBADA
+**Tarea siguiente:** `TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno transversal de cambios tecnológicos, clasificación, evaluación de riesgo, aprobación, ventana, prueba, ejecución controlada, rollback, validación y revisión posterior
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, enums, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, redes, endpoints, impresoras, cuentas, proveedores, configuraciones, releases, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico con el que VENTO gobierna cualquier modificación tecnológica relevante desde que aparece la necesidad hasta que el resultado queda validado y revisado, sin confundir la aprobación empresarial con la ejecución técnica, el release de software con el cambio operativo ni el rollback con un cierre exitoso.
+
+La tarea cubre cambios sobre:
+
+- software y releases;
+- esquemas, migraciones y datos cuando exista un paquete autorizado;
+- configuración de aplicaciones y servicios;
+- red y direccionamiento;
+- endpoints y dispositivos administrados;
+- impresoras, drivers, firmware, canales y periféricos;
+- configuración de identidad y seguridad tecnológica;
+- integraciones, proveedores y dependencias externas.
+
+La regla raíz queda:
+
+```text
+NECESIDAD DE CAMBIO
+≠
+CAMBIO EVALUADO
+≠
+CAMBIO APROBADO
+≠
+VENTANA AUTORIZADA
+≠
+EJECUCIÓN
+≠
+VALIDACIÓN
+≠
+ROLLBACK
+≠
+REVISIÓN POSTERIOR
+≠
+EFICACIA PREVENTIVA
+```
+
+Un incidente puede necesitar un cambio para restaurar. Un problema puede necesitar un cambio para prevenir recurrencia. Ninguno de los dos autoriza por sí mismo la modificación.
+
+---
+
+#### 2. Resultado material
+
+Se materializan nueve piezas documentales coordinadas dentro de esta tarea:
+
+1. un contrato único de identidad y ciclo de vida del cambio tecnológico;
+2. una clasificación materializada de cambios estándar, normales y de emergencia;
+3. una matriz cualitativa de riesgo y autoridad de aprobación;
+4. un contrato de ventana, conflictos, freeze, dependencias y decisión go/no-go;
+5. un contrato de prueba pre-cambio, validación posterior y aceptación;
+6. un contrato de ejecución y despliegue que separa software, datos, configuración, hardware y proveedores;
+7. un contrato de rollback y recuperación del estado controlado;
+8. un contrato de cambio de emergencia sin bypass permanente;
+9. un contrato de revisión posterior, cierre y handoff hacia problema, observabilidad, recuperación, conocimiento o soporte.
+
+Cobertura materializada:
+
+| Control                                         | Resultado |
+| ----------------------------------------------- | --------: |
+| Clases de cambio                                |     **3** |
+| Dominios tecnológicos de cambio                 |     **8** |
+| Estados de ciclo de vida                        |    **10** |
+| Niveles cualitativos de riesgo                  |     **4** |
+| Dimensiones obligatorias de evaluación          |     **8** |
+| Estados de aprobación                           |     **5** |
+| Controles mínimos de ventana                    |    **10** |
+| Dimensiones mínimas del plan de prueba          |     **9** |
+| Modos de resultado de ejecución                 |     **4** |
+| Condiciones obligatorias de rollback            |    **10** |
+| Disparadores de revisión posterior reforzada    |     **8** |
+| Códigos de cierre                               |     **4** |
+| Hallazgos con propietario y condición de salida |    **10** |
+| Cambios físicos                                 |     **0** |
+| Cambios de requisitos de prueba                 |     **0** |
+
+---
+
+#### 3. Autoridades y decisiones heredadas
+
+La tarea consume y conserva sin redefinir:
+
+- el modelo operativo y las fronteras de `TI-DOM-001`;
+- el grafo federado de configuración de `TI-DOM-002`;
+- el ciclo de endpoints de `TI-DOM-003`;
+- el gobierno de red de `TI-DOM-004`;
+- el gobierno físico de impresión de `TI-DOM-005`;
+- el catálogo de aplicaciones, ambientes, dependencias y proveedores de `TI-DOM-006`;
+- el caso tecnológico, impacto, urgencia, prioridad, SLA, escalamiento, restauración y cierre de `TI-DOM-007`;
+- problema, causa, error conocido, workaround, prevención y eficacia de `TI-DOM-008`;
+- `VPROC-0058` como proceso de solicitudes e incidentes tecnológicos;
+- `VPROC-0059` como proceso separado del ciclo de acceso;
+- `VPROC-0062` como proceso separado de continuidad empresarial;
+- BLOQUE T como autoridad de pruebas, releases, despliegue y rollback técnico;
+- BLOQUE E5 como autoridad de diseño de paquetes, readiness, cutover, piloto e hypercare;
+- BLOQUE R como autoridad de implementación de migraciones Supabase cuando exista paquete autorizado;
+- BLOQUE U como autoridad de certificación integral posterior;
+- `TI-AUTH-001` a `TI-AUTH-004` como tareas propietarias de segregación, acceso privilegiado, configuración protegida y evidencia sensible;
+- `TI-UX-004` como tarea propietaria de la experiencia de incidente, problema, cambio, mantenimiento y recuperación;
+- `TI-INT-002` como tarea propietaria de los contratos tecnológicos entre dominios y BLOQUE T.
+
+Esta tarea no crea un proceso empresarial nuevo ni un identificador `VPROC-*`.
+
+---
+
+#### 4. Fronteras canónicas del cambio
+
+Se fijan las siguientes separaciones:
+
+```text
+CAMBIO TECNOLÓGICO
+≠
+SOLICITUD DE SERVICIO
+≠
+INCIDENTE
+≠
+PROBLEMA
+```
+
+```text
+CAMBIO APROBADO
+≠
+RELEASE PUBLICADO
+≠
+DESPLIEGUE EJECUTADO
+```
+
+```text
+PLAN DE ROLLBACK
+≠
+ROLLBACK PROBADO
+≠
+ROLLBACK EJECUTADO
+```
+
+```text
+CAMBIO EJECUTADO
+≠
+CAMBIO VALIDADO
+≠
+CAMBIO EFECTIVO
+```
+
+```text
+CAMBIO DE ACCESO
+≠
+AUTORIZACIÓN DE ACCESO
+```
+
+Reglas:
+
+1. la aprobación del cambio autoriza un alcance técnico definido; no concede permisos empresariales al actor ejecutor;
+2. un release puede existir sin estar aprobado para un ambiente concreto;
+3. un despliegue puede pertenecer a un cambio, pero no sustituye su evaluación, aprobación ni revisión;
+4. un rollback no elimina automáticamente los efectos producidos durante la ventana;
+5. una restauración de incidente no demuestra que el cambio preventivo sea efectivo;
+6. una acción ordinaria de alta, baja o ajuste de acceso que ya pertenece al proceso autorizado de acceso no se convierte artificialmente en cambio; modificar política, configuración, proveedor o mecanismo de seguridad sí queda sujeto a gobierno de cambio;
+7. un cambio de configuración de red, impresora, endpoint, proveedor o aplicación se gobierna aunque no exista commit de software.
+
+---
+
+#### 5. Identidad canónica del cambio
+
+Cada cambio deberá conservar conceptualmente:
+
+```text
+change_id
+change_revision
+change_class
+change_domain
+title
+reason
+requested_by_ref
+requested_at
+source_case_refs[]
+problem_refs[]
+affected_service_refs[]
+affected_element_refs[]
+affected_process_refs[]
+current_state_snapshot_ref
+proposed_state_ref
+risk_level
+risk_assessment_ref
+dependency_refs[]
+authorization_refs[]
+approval_state
+approver_refs[]
+planned_window_ref
+test_plan_ref
+rollback_plan_ref
+communication_plan_ref
+executor_refs[]
+implementation_refs[]
+validation_refs[]
+post_review_ref
+outcome
+closure_code
+evidence_refs[]
+created_at
+updated_at
+closed_at
+```
+
+Invariantes:
+
+- `change_id` permanece estable durante el expediente;
+- un cambio material de alcance crea una nueva revisión;
+- una revisión anterior no se sobrescribe;
+- un incidente, problema, release, migración, asset, endpoint o proveedor conserva su propia identidad;
+- la relación con un elemento no concede permiso para modificarlo;
+- el cambio referencia evidencia; no almacena secretos como mecanismo de transferencia.
+
+---
+
+#### 6. Dominios de cambio
+
+Se materializan ocho dominios para clasificación transversal:
+
+| Dominio                              | Incluye                                                                                           | Autoridad técnica relacionada                          |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `SOFTWARE_RELEASE`                   | código, paquete compartido, versión, build, release y despliegue                                  | BLOQUE T + repositorio propietario                     |
+| `DATABASE_OR_DATA`                   | esquema, migración, backfill, función, trigger o transformación de datos                          | `vento-shell`, E3/R y paquete autorizado               |
+| `APPLICATION_CONFIGURATION`          | configuración de aplicación, ambiente, runtime o dependencia                                      | propietario de aplicación + `TI-DOM-006`               |
+| `NETWORK_CONFIGURATION`              | router, switch, AP, segmento, SSID, DHCP, DNS, reserva, direccionamiento o firmware de red        | `TI-DOM-004`                                           |
+| `ENDPOINT_OR_DEVICE`                 | baseline, sistema, agente, postura, firmware, software o configuración administrada               | `TI-DOM-003`                                           |
+| `PRINTING_OR_PERIPHERAL`             | driver, firmware, IP, canal, host, adaptador o configuración física/técnica                       | `TI-DOM-005` + PRINT-ARC                               |
+| `IDENTITY_OR_SECURITY_CONFIGURATION` | configuración tecnológica de identidad, MFA, política, principal técnico o control privilegiado   | SHELL + `TI-AUTH-*` + proceso de acceso cuando aplique |
+| `PROVIDER_OR_INTEGRATION`            | proveedor, API, webhook, credencial técnica, endpoint externo, MDM, ISP, fabricante o integración | `TI-DOM-006`, `TI-DOM-012`, `TI-INT-*`                 |
+
+Una misma modificación puede afectar varios dominios. Se registra una identidad de cambio y múltiples alcances, no un expediente duplicado por dominio.
+
+---
+
+#### 7. Clases de cambio
+
+Se aprueban tres clases.
+
+| Clase       | Uso                                                                                                         | Regla principal                                                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `STANDARD`  | modificación repetible, de bajo riesgo, con procedimiento, guardas, prueba y rollback previamente aprobados | cada ejecución debe coincidir exactamente con la revisión autorizada del procedimiento; una desviación la saca de esta clase |
+| `NORMAL`    | modificación planificada que exige evaluación y aprobación específica                                       | no se ejecuta hasta completar evaluación, autoridad, ventana, prueba y rollback aplicables                                   |
+| `EMERGENCY` | modificación necesaria para contener o restaurar una afectación crítica o reducir un riesgo inmediato       | acelera la decisión, pero no elimina identidad, autoridad, alcance, evidencia, rollback, validación ni revisión posterior    |
+
+Prohibiciones:
+
+- usar `STANDARD` para evitar una aprobación que corresponde;
+- convertir un cambio repetido en estándar únicamente por frecuencia;
+- usar `EMERGENCY` por atraso de planificación;
+- convertir presión de un proveedor en emergencia interna;
+- declarar estándar una acción sin rollback o sin criterio de validación;
+- mantener indefinidamente una excepción como cambio estándar.
+
+---
+
+#### 8. Contrato del cambio estándar
+
+Un cambio `STANDARD` solo es elegible cuando se cumplen simultáneamente:
+
+1. procedimiento versionado;
+2. alcance acotado y repetible;
+3. clase de elementos definida;
+4. riesgo `LOW`;
+5. precondiciones verificables;
+6. prueba de salida definida;
+7. rollback definido y previamente demostrado para el alcance;
+8. ausencia de alteración material de autorización empresarial;
+9. ausencia de migración irreversible o estado de datos no reconciliable;
+10. registro obligatorio de cada ejecución;
+11. propietario técnico;
+12. revisión periódica de la autorización del procedimiento.
+
+La preautorización pertenece al procedimiento y su revisión, no a la persona que lo ejecuta.
+
+Cualquier diferencia de versión, alcance, dependencia, riesgo o condición convierte la ejecución en `NORMAL` o `EMERGENCY` según el contexto.
+
+---
+
+#### 9. Contrato del cambio normal
+
+El cambio `NORMAL` requiere, antes de ejecución:
+
+- necesidad y resultado esperado;
+- alcance;
+- estado anterior;
+- estado propuesto;
+- servicios y elementos afectados;
+- dependencias;
+- evaluación de riesgo;
+- autoridad técnica y empresarial aplicable;
+- ventana;
+- plan de prueba;
+- plan de rollback;
+- comunicaciones;
+- ejecutor;
+- validadores;
+- evidencia de go/no-go.
+
+La aprobación pierde vigencia cuando cambia materialmente el alcance, el riesgo, la ventana, el estado anterior o una dependencia relevante. En ese caso vuelve a evaluación mediante nueva revisión.
+
+---
+
+#### 10. Contrato del cambio de emergencia
+
+Un cambio `EMERGENCY` requiere como mínimo:
+
+- incidente, hallazgo de seguridad o condición urgente correlacionada;
+- razón por la que el flujo normal no protege el resultado a tiempo;
+- alcance mínimo necesario;
+- autoridad de emergencia aplicable;
+- ejecutor identificado;
+- riesgo conocido y limitaciones;
+- estado anterior disponible en la medida técnicamente posible;
+- estrategia de rollback, contención o recuperación;
+- criterio de éxito;
+- criterio de detención;
+- prueba posterior inmediata al efecto modificado;
+- comunicación proporcional;
+- evidencia;
+- revisión posterior obligatoria.
+
+Reglas:
+
+1. emergencia no significa “sin aprobación”;
+2. emergencia no concede acceso privilegiado por sí misma;
+3. cuando el acceso requerido todavía no esté autorizado, aplica la autoridad de `TI-AUTH-*`;
+4. un cambio de emergencia no se convierte automáticamente en configuración estándar;
+5. toda excepción temporal debe tener propietario y condición de retiro;
+6. el expediente del incidente permanece separado;
+7. la revisión posterior debe decidir si el cambio se conserva, se normaliza mediante otro cambio, se revierte o genera problema/acción preventiva.
+
+---
+
+#### 11. Estados del ciclo de vida
+
+Se materializan diez estados documentales:
+
+| Estado                       | Significado                                                           | Restricción                                                      |
+| ---------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `DRAFT`                      | necesidad registrada, todavía incompleta                              | no ejecutable                                                    |
+| `ASSESSMENT_IN_PROGRESS`     | alcance, riesgo, dependencias, prueba y rollback en evaluación        | no ejecutable                                                    |
+| `APPROVAL_PENDING`           | expediente suficiente y enviado a las autoridades aplicables          | no ejecutable                                                    |
+| `APPROVED`                   | alcance y condiciones autorizados                                     | aún no implica inicio                                            |
+| `SCHEDULED`                  | ventana, ejecutores, comunicaciones y dependencias confirmados        | no ejecutar fuera de la ventana salvo reclasificación autorizada |
+| `IMPLEMENTATION_IN_PROGRESS` | ejecución controlada en curso                                         | cada paso y desviación material conserva evidencia               |
+| `VALIDATION_PENDING`         | ejecución o rollback terminados y resultado pendiente de comprobación | no cerrar ni declarar éxito                                      |
+| `POST_IMPLEMENTATION_REVIEW` | resultado validado o controlado y revisión posterior abierta          | evalúa desviaciones, incidentes, rollback y deuda                |
+| `CLOSED`                     | cambio finalizado con resultado, evidencia y pendientes transferidos  | terminal para esa revisión                                       |
+| `CANCELLED`                  | cambio detenido antes de producir el efecto autorizado                | terminal; no se presenta como implementado                       |
+
+`CLOSED` no significa necesariamente que la modificación quedó activa: el código de cierre conserva el resultado real.
+
+---
+
+#### 12. Transiciones y revisiones
+
+Flujo ordinario:
+
+```text
+DRAFT
+→ ASSESSMENT_IN_PROGRESS
+→ APPROVAL_PENDING
+→ APPROVED
+→ SCHEDULED
+→ IMPLEMENTATION_IN_PROGRESS
+→ VALIDATION_PENDING
+→ POST_IMPLEMENTATION_REVIEW
+→ CLOSED
+```
+
+Retornos controlados:
+
+```text
+APPROVAL_PENDING
+→ ASSESSMENT_IN_PROGRESS
+```
+
+cuando se exige corregir alcance, riesgo, prueba, rollback o autoridad.
+
+```text
+APPROVED / SCHEDULED
+→ ASSESSMENT_IN_PROGRESS
+```
+
+cuando cambia materialmente el contexto antes de ejecutar.
+
+```text
+VALIDATION_PENDING
+→ IMPLEMENTATION_IN_PROGRESS
+```
+
+solo para ejecutar el rollback ya autorizado o una acción correctiva que siga dentro del alcance aprobado. Si cambia el alcance, se requiere nueva revisión o un cambio distinto.
+
+Cancelación:
+
+- `DRAFT`, `ASSESSMENT_IN_PROGRESS`, `APPROVAL_PENDING`, `APPROVED` o `SCHEDULED` pueden terminar en `CANCELLED` con motivo;
+- después de producir un efecto técnico no se usa `CANCELLED`; se registra el resultado real y se valida o revierte.
+
+---
+
+#### 13. Dimensiones de evaluación de riesgo
+
+Se materializan ocho dimensiones obligatorias:
+
+| Dimensión                | Pregunta                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| servicio y proceso       | ¿qué resultado empresarial y qué criticidad pueden verse afectados?                         |
+| alcance                  | ¿cuántos servicios, sedes, actores, componentes o ambientes pueden recibir el efecto?       |
+| seguridad y autorización | ¿cambia identidad, privilegios, secretos, controles, segmentación o superficie de ataque?   |
+| datos y estado           | ¿puede producir pérdida, corrupción, duplicación, irreversibilidad o resultado desconocido? |
+| dependencias             | ¿qué aplicaciones, proveedores, redes, dispositivos o contratos dependen del elemento?      |
+| reversibilidad           | ¿existe retorno verificable y compatible con el estado producido durante la ventana?        |
+| prueba y observabilidad  | ¿es posible comprobar antes, durante y después el resultado sin inferencia?                 |
+| ventana y continuidad    | ¿qué indisponibilidad, coexistencia, contingencia o reconciliación requiere la operación?   |
+
+La evaluación es cualitativa y trazable. No se inventa un puntaje numérico universal.
+
+---
+
+#### 14. Niveles de riesgo
+
+Se aprueban cuatro niveles:
+
+| Nivel      | Criterio                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `LOW`      | alcance acotado, efecto conocido, reversibilidad demostrada, sin control sensible ni estado empresarial comprometido                                         |
+| `MEDIUM`   | efecto limitado pero material sobre servicio, configuración o disponibilidad, con rollback y pruebas suficientes                                             |
+| `HIGH`     | puede afectar proceso crítico, múltiples dependencias, seguridad, disponibilidad relevante, datos o rollback complejo                                        |
+| `CRITICAL` | puede comprometer identidad/seguridad, integridad o estado irreversible, operación mínima, múltiples sedes/servicios o carece de reversión segura suficiente |
+
+Reglas:
+
+1. la categoría más severa aplicable gobierna;
+2. un cambio pequeño sobre un control privilegiado puede ser `HIGH` o `CRITICAL`;
+3. un cambio con rollback no probado no puede declararse `LOW`;
+4. una modificación con resultado de datos desconocido no se reduce por tener poca duración;
+5. la emergencia no reduce el nivel de riesgo;
+6. el riesgo se reevalúa si cambia el alcance o una dependencia.
+
+---
+
+#### 15. Autoridad de aprobación
+
+La matriz de aprobación conserva funciones canónicas y evita asignar personas nominales.
+
+| Caso                | Autoridad mínima de cambio                                                                                                     | Participación adicional                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `STANDARD / LOW`    | preautorización vigente del procedimiento bajo `RESPONSABLE_TECNOLOGICO` y segregación definida por `TI-AUTH-001`              | propietario del componente cuando corresponda                                 |
+| `NORMAL / LOW`      | `RESPONSABLE_TECNOLOGICO`                                                                                                      | propietario del componente                                                    |
+| `NORMAL / MEDIUM`   | `RESPONSABLE_TECNOLOGICO`                                                                                                      | `RESPONSABLE_DEL_PROCESO` cuando exista efecto empresarial                    |
+| `NORMAL / HIGH`     | `RESPONSABLE_TECNOLOGICO` + autoridad funcional aplicable                                                                      | `COORDINACION_DE_OPERACIONES`; seguridad cuando el cambio sea sensible        |
+| `NORMAL / CRITICAL` | `RESPONSABLE_TECNOLOGICO` + `COORDINACION_DE_OPERACIONES` + autoridad funcional aplicable                                      | `RESPONSABLE_DE_SEGURIDAD_TECNOLOGICA` cuando corresponda                     |
+| `EMERGENCY`         | autoridad técnica y de control aplicable al alcance, conservando `COORDINACION_DE_OPERACIONES` en cambios críticos o sensibles | seguridad, propietario funcional y proveedor según el riesgo y disponibilidad |
+
+Invariantes:
+
+- el ejecutor no se convierte en autoridad por poseer acceso;
+- una aprobación funcional no concede privilegios técnicos;
+- para cambios sensibles, la segregación definitiva queda bajo `TI-AUTH-001`;
+- proveedor o fabricante nunca es aprobador empresarial final;
+- una aprobación de cambio no sustituye aprobación de acceso, compra, contrato, riesgo o continuidad cuando alguna de ellas sea necesaria.
+
+---
+
+#### 16. Estados de aprobación
+
+Se materializan cinco estados:
+
+| Estado                   | Significado                                                    |
+| ------------------------ | -------------------------------------------------------------- |
+| `NOT_READY_FOR_APPROVAL` | falta información o control necesario                          |
+| `PENDING`                | expediente enviado a autoridad aplicable                       |
+| `APPROVED`               | autorizado en alcance, riesgo, ventana y condiciones definidos |
+| `CHANGES_REQUIRED`       | requiere corrección y nueva revisión                           |
+| `REJECTED`               | no autorizado; la decisión y razón se conservan                |
+
+Una aprobación no es reutilizable cuando cambia la revisión material del cambio.
+
+---
+
+#### 17. Ventana de cambio
+
+Todo cambio ejecutable conserva una ventana o una regla explícita de ejecución previamente autorizada.
+
+Se materializan diez controles mínimos:
+
+1. sede, ambiente o alcance;
+2. zona horaria;
+3. inicio permitido;
+4. fin esperado;
+5. límite para iniciar rollback;
+6. ventana o etapa crítica del proceso afectado;
+7. dependencias y ventanas de proveedor;
+8. freeze o restricción temporal aplicable;
+9. cambios concurrentes o conflictivos;
+10. decisión go/no-go y responsable.
+
+No se fija una hora universal de mantenimiento.
+
+Un cambio `STANDARD` puede usar una ventana preautorizada por procedimiento. Un `EMERGENCY` usa una ventana de emergencia correlacionada con el incidente, sin borrar sus restricciones de seguridad.
+
+---
+
+#### 18. Conflictos y cambios concurrentes
+
+Antes de iniciar se comprueba:
+
+- mismo servicio;
+- mismo elemento;
+- misma dependencia;
+- mismo repositorio o release;
+- misma migración o conjunto de datos;
+- misma sede o segmento;
+- mismo endpoint, dispositivo o impresora;
+- mismo proveedor;
+- cambios que modifiquen la capacidad de rollback del otro.
+
+Reglas:
+
+1. dos cambios aprobados no son automáticamente compatibles;
+2. un conflicto se resuelve antes del go/no-go;
+3. ejecutar cambios simultáneos que impidan atribuir el resultado requiere coordinación explícita;
+4. un cambio no puede usar como baseline un estado que otro cambio está modificando sin versionarlo;
+5. la urgencia de un incidente puede suspender una ventana planificada sin convertirla en fallida;
+6. la decisión de suspender conserva razón, actor y nuevo estado.
+
+---
+
+#### 19. Freeze y excepción
+
+Un freeze es una restricción de cambio sobre un alcance y período definidos.
+
+Debe conservar:
+
+- alcance;
+- razón;
+- inicio;
+- fin o condición de salida;
+- autoridad;
+- excepciones permitidas;
+- proceso de emergencia;
+- evidencia.
+
+Una excepción al freeze:
+
+- no lo elimina;
+- se limita al cambio autorizado;
+- conserva riesgo y razón;
+- requiere aprobación compatible con el nivel del cambio;
+- queda incluida en la revisión posterior.
+
+---
+
+#### 20. Plan de prueba
+
+Todo cambio conserva un plan de prueba proporcional al riesgo.
+
+Se materializan nueve dimensiones:
+
+1. baseline pre-cambio;
+2. precondiciones;
+3. prueba técnica del elemento;
+4. prueba del servicio dependiente;
+5. validación funcional del proceso cuando aplique;
+6. seguridad y autorización cuando aplique;
+7. integridad y reconciliación de datos cuando aplique;
+8. prueba física, de red, dispositivo o impresora cuando aplique;
+9. prueba de rollback o evidencia de reversibilidad.
+
+Cada prueba conserva:
+
+```text
+scope
+environment_or_site
+input_or_fixture
+expected_result
+failure_condition
+evidence
+actor
+timestamp
+version_or_configuration
+```
+
+Probar únicamente una aplicación no satisface un cambio que también afecta red, hardware, impresión, dispositivo, datos, contingencia o operación real.
+
+---
+
+#### 21. Baseline previo
+
+Antes de ejecutar se conserva el estado necesario para comparar:
+
+- versión;
+- commit, release o artefacto cuando exista;
+- configuración;
+- esquema y migraciones aplicables;
+- datos de control o conteos cuando sean necesarios;
+- dependencias;
+- health disponible;
+- relaciones de red o dispositivo afectadas;
+- binding de impresora cuando aplique;
+- proveedor o endpoint externo;
+- autorizaciones y principals técnicos relevantes;
+- evidencia de disponibilidad del servicio.
+
+El baseline no se inventa después del cambio para justificar el resultado.
+
+Cuando no sea técnicamente posible capturarlo, el riesgo y la limitación quedan explícitos antes de aprobar.
+
+---
+
+#### 22. Go/no-go
+
+Inmediatamente antes de ejecutar se confirma:
+
+```text
+APPROVAL VALID
++
+WINDOW VALID
++
+BASELINE AVAILABLE
++
+DEPENDENCIES READY
++
+TEST PLAN READY
++
+ROLLBACK READY
++
+EXECUTORS READY
++
+COMMUNICATION READY
+=
+GO
+```
+
+Cualquier condición obligatoria no satisfecha produce `NO-GO`, salvo un cambio `EMERGENCY` cuya autoridad haya aceptado explícitamente la limitación y exista una estrategia de contención suficiente.
+
+`NO-GO` no se presenta como fallo de implementación.
+
+---
+
+#### 23. Ejecución controlada
+
+Durante `IMPLEMENTATION_IN_PROGRESS` se conserva:
+
+- actor o principal técnico;
+- inicio;
+- paso ejecutado;
+- estado anterior;
+- resultado;
+- evidencia;
+- desviación;
+- decisión de continuar, detener o revertir;
+- correlación con release, migración, configuración o proveedor;
+- comunicación cuando corresponda.
+
+Reglas:
+
+1. el plan no se edita retrospectivamente para que coincida con lo ocurrido;
+2. una desviación material exige detener y reevaluar;
+3. una acción manual fuera del repositorio o herramienta controlada se documenta como tal;
+4. el acceso privilegiado sigue las reglas de `TI-AUTH-*`;
+5. un proveedor ejecuta únicamente dentro del alcance concedido;
+6. la ejecución no modifica automáticamente el estado del incidente o problema relacionado.
+
+---
+
+#### 24. Software, release y despliegue
+
+Para `SOFTWARE_RELEASE` se conserva la separación:
+
+```text
+COMMIT
+→ BUILD
+→ RELEASE
+→ CHANGE APPROVAL
+→ PACKAGE / ENVIRONMENT
+→ DEPLOYMENT
+→ VALIDATION
+```
+
+BLOQUE T conserva:
+
+- pruebas de paquetes;
+- build;
+- release versionado;
+- changelog;
+- compatibilidad de consumidores;
+- rollback por repositorio;
+- gates de CI;
+- evidencia;
+- ciclo de despliegue por paquete.
+
+BLOQUE E5 conserva el diseño del paquete, readiness, cutover, piloto e hypercare.
+
+`TI-DOM-009` gobierna la decisión operacional del cambio y consume esas evidencias. No reemplaza las tareas de BLOQUE T/E5.
+
+---
+
+#### 25. Supabase, migraciones y datos
+
+Toda modificación Supabase de VENTO deberá:
+
+- originarse y versionarse en `vento-shell`;
+- relacionarse con el paquete autorizado;
+- identificar objetos y consumidores afectados;
+- conservar migración, orden y precondiciones;
+- evaluar grants, RLS, funciones, triggers, Realtime, Storage y Edge Functions cuando apliquen;
+- definir validación de datos;
+- definir reversibilidad, compensación o estrategia forward-fix;
+- evitar que un rollback destruya datos válidos producidos durante la ventana;
+- conservar evidencia del ambiente y de la versión aplicada.
+
+Una migración irreversible o un backfill no se presenta como reversible mediante una instrucción ficticia. Si el retorno literal no es seguro, el expediente declara la limitación, eleva el riesgo y define compensación o forward-fix controlado.
+
+Durante esta tarea no se ejecuta DDL, DML, backfill ni despliegue.
+
+---
+
+#### 26. Red, endpoints, impresoras y configuración física
+
+Los cambios no basados en software conservan el mismo principio de control.
+
+Ejemplos:
+
+- IP, reserva, DHCP, DNS, segmento, SSID o firmware de red;
+- baseline, sistema, agente, firmware o configuración de endpoint;
+- driver, firmware, host, canal, red o dirección de impresora;
+- configuración de aplicación;
+- integración, endpoint externo o proveedor.
+
+En estos casos:
+
+- el estado anterior sustituye al concepto de commit cuando no exista commit;
+- la configuración deseada y observada permanecen separadas;
+- el activo y su identidad no cambian por editar configuración;
+- la prueba incluye el servicio dependiente;
+- la restauración física o técnica no se declara por intención;
+- el resultado queda correlacionado con el elemento canónico.
+
+---
+
+#### 27. Identidad, cuentas y seguridad
+
+Un cambio tecnológico puede modificar una configuración de identidad o seguridad, pero no puede fabricar la autoridad que lo permite.
+
+Se mantiene:
+
+```text
+CHANGE APPROVAL
+≠
+ACCESS APPROVAL
+≠
+PRIVILEGED SESSION
+```
+
+Reglas:
+
+1. altas, bajas o cambios de acceso siguen `VPROC-0059`;
+2. modificar políticas, MFA, integración de identidad, principal técnico o configuración protegida exige además gobierno de cambio;
+3. rollback no restaura automáticamente un privilegio revocado o inseguro;
+4. secretos no se copian al expediente;
+5. una credencial rotada no se “revierte” reutilizando material comprometido;
+6. la intervención privilegiada debe ser mínima, temporal y auditada conforme a `TI-AUTH-*`.
+
+---
+
+#### 28. Proveedores e integraciones externas
+
+Un cambio de proveedor o integración conserva:
+
+- proveedor interno de la decisión;
+- contrato y soporte referenciados;
+- ambiente;
+- endpoint o interfaz;
+- autenticación;
+- datos expuestos;
+- dependencia;
+- ventana externa;
+- compatibilidad;
+- contingencia;
+- rollback o salida;
+- evidencia.
+
+Reglas:
+
+- la aprobación del proveedor no sustituye la aprobación VENTO;
+- una ventana externa no determina por sí sola la ventana empresarial;
+- una actualización impuesta por proveedor se evalúa como cambio;
+- un SaaS que cambia sin control directo puede originar cambio de configuración, compatibilidad, contingencia o proveedor;
+- la indisponibilidad de rollback del proveedor eleva el riesgo y exige estrategia alternativa.
+
+---
+
+#### 29. Resultado de ejecución
+
+Se aprueban cuatro modos de resultado:
+
+| Resultado           | Uso                                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------------------- |
+| `IMPLEMENTED`       | el efecto planificado fue ejecutado; todavía requiere validación                                     |
+| `ROLLED_BACK`       | se ejecutó la estrategia de retorno; todavía requiere validar estado recuperado y efectos residuales |
+| `STOPPED_NO_EFFECT` | la ejecución se detuvo antes de producir el efecto material                                          |
+| `FAILED_OR_UNKNOWN` | existe fallo, efecto parcial o resultado que no puede declararse con certeza                         |
+
+Ninguno equivale automáticamente a cierre.
+
+`FAILED_OR_UNKNOWN` obliga a contener, preservar evidencia y correlacionar incidente cuando el servicio o la integridad puedan estar afectados.
+
+---
+
+#### 30. Contrato de rollback
+
+Todo cambio que pueda producir un efecto material debe resolver, antes de ejecución, estas diez condiciones:
+
+1. estado objetivo al que se pretende retornar;
+2. mecanismo de rollback;
+3. actor autorizado;
+4. trigger para iniciar;
+5. límite temporal o punto de no retorno;
+6. dependencias requeridas;
+7. tratamiento de datos y efectos producidos durante la ventana;
+8. compatibilidad con consumidores y versiones;
+9. prueba o evidencia de reversibilidad;
+10. validación posterior del estado recuperado.
+
+El rollback puede ser:
+
+- retorno de versión;
+- restauración de configuración;
+- retorno de routing o binding;
+- recuperación desde estado anterior;
+- compensación controlada;
+- forward-fix cuando volver literalmente sea más riesgoso.
+
+La estrategia elegida debe corresponder al objeto real; no se fuerza un `git revert` como respuesta universal.
+
+---
+
+#### 31. Disparadores de rollback
+
+El plan define condiciones observables, por ejemplo:
+
+- prueba crítica fallida;
+- pérdida de autorización o seguridad;
+- corrupción o resultado desconocido;
+- indisponibilidad superior a la condición aceptada;
+- incompatibilidad de consumidor;
+- health o dependencia fuera de condición segura;
+- resultado físico no conforme;
+- desviación de alcance que invalida la aprobación;
+- ausencia de evidencia necesaria para continuar.
+
+El trigger no puede depender únicamente de percepción informal.
+
+En un `EMERGENCY`, si el rollback empeora el riesgo, la decisión puede ser contener o aplicar forward-fix, pero debe quedar autorizada y evidenciada.
+
+---
+
+#### 32. Validación posterior
+
+Después de la ejecución o rollback se valida:
+
+- elemento técnico;
+- servicio afectado;
+- dependencias;
+- proceso empresarial cuando corresponda;
+- seguridad;
+- datos y conciliación;
+- observabilidad disponible;
+- operación física cuando aplique;
+- contingencia y pendientes.
+
+La validación distingue:
+
+```text
+CAMBIO APLICADO
+≠
+SERVICIO DISPONIBLE
+≠
+PROCESO VALIDADO
+```
+
+Una señal técnica saludable no invalida una falla empresarial comprobada.
+
+Una prueba funcional positiva no oculta una divergencia de datos o seguridad.
+
+---
+
+#### 33. Revisión posterior
+
+Todo cambio conserva al menos un registro de revisión posterior.
+
+La revisión reforzada es obligatoria cuando ocurra cualquiera de estos ocho disparadores:
+
+1. clase `EMERGENCY`;
+2. riesgo `HIGH` o `CRITICAL`;
+3. rollback ejecutado;
+4. resultado `FAILED_OR_UNKNOWN`;
+5. incidente causado o agravado por el cambio;
+6. desviación material de alcance, ventana o procedimiento;
+7. cambio de seguridad, identidad o datos con efecto no previsto;
+8. dependencia externa que obligó a una decisión distinta de la aprobada.
+
+La revisión responde:
+
+- qué se planeó;
+- qué se ejecutó;
+- qué cambió respecto del plan;
+- qué evidencia demuestra el resultado;
+- qué incidentes aparecieron;
+- si el rollback fue necesario;
+- si el baseline se recuperó;
+- qué deuda quedó;
+- qué aprendizaje o cambio de control se requiere.
+
+---
+
+#### 34. Handoff posterior
+
+La revisión puede generar, sin duplicar autoridad:
+
+| Hallazgo                                        | Propietario                                                           |
+| ----------------------------------------------- | --------------------------------------------------------------------- |
+| causa o recurrencia por investigar              | `TI-DOM-008`                                                          |
+| nueva señal, alerta o health requerido          | `TI-DOM-010`                                                          |
+| respaldo, restore o recuperación insuficiente   | `TI-DOM-011`                                                          |
+| contrato, garantía, proveedor o costo           | `TI-DOM-012`                                                          |
+| guía, known error, capacitación o adopción      | `TI-DOM-013`                                                          |
+| segregación, privilegio o evidencia sensible    | `TI-AUTH-*`                                                           |
+| experiencia de flujo de cambio                  | `TI-UX-004`                                                           |
+| contrato entre dominios o proveedor tecnológico | `TI-INT-002` / `TI-INT-003`                                           |
+| defecto de implementación de paquete            | `SHELL-CI-020` + tarea documental propietaria del componente afectado |
+
+La revisión no crea pendientes narrativos sin dueño.
+
+---
+
+#### 35. Códigos de cierre
+
+Se aprueban cuatro códigos:
+
+| Código                           | Condición                                                                                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMPLEMENTED_VALIDATED`          | cambio aplicado, validado y revisión completada                                                                                          |
+| `ROLLED_BACK_VALIDATED`          | rollback ejecutado, estado recuperado validado y efectos pendientes reconciliados                                                        |
+| `CANCELLED_BEFORE_EFFECT`        | detenido antes de producir efecto material                                                                                               |
+| `CLOSED_WITH_CONTROLLED_HANDOFF` | no existe resultado final limpio, pero el efecto está contenido y cada deuda o riesgo posee autoridad, propietario y expediente aceptado |
+
+`CLOSED_WITH_CONTROLLED_HANDOFF` no permite ocultar un estado desconocido que todavía pueda producir efecto empresarial.
+
+---
+
+#### 36. Relación con incidentes
+
+Desde `TI-DOM-007`:
+
+```text
+INCIDENT
+→ PUEDE PRODUCIR
+CHANGE_REQUIRED
+```
+
+El cambio conserva:
+
+- `tech_case_id` de origen;
+- motivo;
+- prioridad e impacto como contexto;
+- restauración requerida;
+- cambio de emergencia cuando aplique.
+
+El incidente conserva su SLA y su ciclo.
+
+```text
+INCIDENTE RESTAURADO
+≠
+CAMBIO CERRADO
+```
+
+Un cambio puede quedar en revisión posterior después de que el incidente haya sido restaurado y validado, siempre que el pendiente tenga propietario y no exista riesgo operativo oculto.
+
+---
+
+#### 37. Relación con problemas
+
+Desde `TI-DOM-008`:
+
+```text
+CAUSE_CONFIRMED
+→ PUEDE PRODUCIR
+CHANGE_REQUIRED
+```
+
+Se conserva:
+
+```text
+CHANGE_REQUIRED
+≠
+CHANGE_APPROVED
+≠
+CHANGE_IMPLEMENTED
+≠
+CHANGE_EFFECTIVE
+```
+
+El problema consume el resultado del cambio y evalúa eficacia posteriormente.
+
+Un cambio ejecutado no permite cerrar el problema por sí solo.
+
+---
+
+#### 38. Relación con BLOQUE T, E5 y U
+
+La separación obligatoria queda:
+
+```text
+TI-DOM-009
+→ GOBIERNA EL CAMBIO TECNOLÓGICO
+
+E5
+→ DISEÑA PAQUETE, READINESS, CUTOVER, PILOTO, ROLLBACK E HYPERCARE
+
+SHELL-CI-001 A SHELL-CI-019
+→ PRUEBAS, RELEASES, COMPATIBILIDAD, ROLLBACK Y GATES DE CI
+
+SHELL-CI-020 A SHELL-CI-024
+→ IMPLEMENTACIÓN, READINESS, CUTOVER, HYPERCARE Y CIERRE POR PAQUETE
+
+BLOQUE R
+→ IMPLEMENTA MIGRACIONES SUPABASE CUANDO APLIQUE
+
+BLOQUE U
+→ CERTIFICA COBERTURA INTEGRAL
+```
+
+Un paquete aprobado no autoriza un cambio fuera de su alcance.
+
+Un cambio aprobado no omite las gates del paquete.
+
+---
+
+#### 39. Estado AS-IS verificable
+
+La evidencia actual de `vento-shell` muestra:
+
+- el BLOQUE T existe documentalmente, pero `SHELL-CI-001` a `SHELL-CI-024` permanecen no iniciadas;
+- E5 define documentalmente readiness, cutover, piloto e hypercare, sin ejecutar esos controles en la fase actual;
+- el único workflow GitHub localizado bajo `.github/workflows` en `vento-shell` valida el plan canónico;
+- la fundación actual de `support_tickets` conserva ticket, categoría, título, descripción, estado, asignación y timestamps, pero no materializa un expediente de cambio tecnológico;
+- las búsquedas de solo lectura realizadas sobre `main` no localizaron una estructura dedicada denominada `change_requests`, `technology_change`, `change_id` o `emergency_change`;
+- existen artefactos documentales y SQL específicos con estrategias de rollback en otros contextos, pero eso no constituye por sí mismo un gobierno transversal de cambios implementado.
+
+Clasificación:
+
+| Componente                                   | Estado                                                 |
+| -------------------------------------------- | ------------------------------------------------------ |
+| contrato transversal de cambio               | `ESPECIFICADO` por esta tarea                          |
+| estado físico de cambios tecnológicos        | `FUERA_DE_ALCANCE` de esta fase                        |
+| workflow transversal de aprobación/ejecución | `PENDIENTE_DE_EVIDENCIA` para implementación           |
+| CI documental del plan canónico              | `IMPLEMENTADO`                                         |
+| BLOQUE T general                             | `ESPECIFICADO` / tareas de implementación no iniciadas |
+| E5 readiness/cutover/hypercare               | `ESPECIFICADO`                                         |
+| modelo de soporte actual                     | `IMPLEMENTADO` parcialmente                            |
+| persistencia dedicada de cambio              | no demostrada en las fuentes revisadas                 |
+| cambios Supabase de esta tarea               | `NO_APLICA`                                            |
+
+---
+
+#### 40. Hallazgos y propietarios
+
+| ID                 | Hallazgo                                                                                                                             | Estado                   | Propietario                              | Condición de salida                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `H-TI-DOM-009-001` | no se demuestra una identidad física transversal de cambio tecnológico                                                               | `ESPECIFICADO`           | `SHELL-CI-020`                           | el paquete aprobado que implemente la mesa de servicio materializa identidad, revisiones y relaciones sin duplicar ticket/incidente/problema |
+| `H-TI-DOM-009-002` | el BLOQUE T está definido pero sus tareas de CI/release/rollback permanecen no iniciadas                                             | `PENDIENTE_DE_EVIDENCIA` | `SHELL-CI-001` a `SHELL-CI-019`          | pruebas, releases, compatibilidad, rollback y gates quedan implementados y evidenciados                                                      |
+| `H-TI-DOM-009-003` | el ciclo de despliegue por paquete está definido pero no ejecutado                                                                   | `PENDIENTE_DE_EVIDENCIA` | `SHELL-CI-020` a `SHELL-CI-024`          | un paquete autorizado ejecuta implementación, readiness, cutover, hypercare y cierre con evidencia                                           |
+| `H-TI-DOM-009-004` | la segregación final para solicitar, aprobar, ejecutar y cerrar cambios todavía no está materializada                                | `PENDIENTE_DE_EVIDENCIA` | `TI-AUTH-001`                            | roles, segregación y acciones protegidas quedan definidos antes de operación real                                                            |
+| `H-TI-DOM-009-005` | cambios privilegiados pueden requerir elevación o soporte remoto                                                                     | `PENDIENTE_DE_EVIDENCIA` | `TI-AUTH-002`                            | privilegio temporal, principal, alcance, vigencia y revocación quedan protegidos                                                             |
+| `H-TI-DOM-009-006` | la configuración protegida de endpoints, redes, impresoras, aplicaciones y monitoreo requiere controles de autorización propios      | `PENDIENTE_DE_EVIDENCIA` | `TI-AUTH-003`                            | operaciones protegidas y evidencia quedan definidas antes de implementación                                                                  |
+| `H-TI-DOM-009-007` | la experiencia de solicitud, evaluación, aprobación, ventana, rollback y revisión no está materializada en una superficie de usuario | `PENDIENTE_DE_EVIDENCIA` | `TI-UX-004`                              | flujo de cambio queda diseñado sin conflar incidente, problema, mantenimiento o recuperación                                                 |
+| `H-TI-DOM-009-008` | las señales que demostrarán éxito, drift o necesidad de rollback requieren contrato de observabilidad                                | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-010`                             | health, eventos, logs y alertas aplicables quedan especificados                                                                              |
+| `H-TI-DOM-009-009` | backup, restore y recuperación no pueden darse por probados por existir un plan de rollback                                          | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-011`                             | política y prueba de recuperación técnica quedan definidas                                                                                   |
+| `H-TI-DOM-009-010` | cambios sobre proveedor o integración requieren contratos técnicos explícitos y salida controlada                                    | `PENDIENTE_DE_EVIDENCIA` | `TI-INT-002`; `TI-INT-003`; `TI-DOM-012` | contratos, proveedor, soporte, dependencia, licencia/costo y mecanismo de salida quedan reconciliados                                        |
+
+No se cierra ningún hallazgo mediante una afirmación sin evidencia.
+
+---
+
+#### 41. Estado de materialización
+
+| Componente                       | Estado                                                              |
+| -------------------------------- | ------------------------------------------------------------------- |
+| identidad y revisión del cambio  | `ESPECIFICADO`                                                      |
+| tres clases de cambio            | `ESPECIFICADO`                                                      |
+| ocho dominios de cambio          | `ESPECIFICADO`                                                      |
+| ciclo de vida                    | `ESPECIFICADO`                                                      |
+| evaluación cualitativa de riesgo | `ESPECIFICADO`                                                      |
+| autoridad de aprobación          | `ESPECIFICADO` con segregación detallada pendiente de `TI-AUTH-001` |
+| ventana y conflictos             | `ESPECIFICADO`                                                      |
+| baseline y go/no-go              | `ESPECIFICADO`                                                      |
+| plan de prueba                   | `ESPECIFICADO`                                                      |
+| ejecución y despliegue           | `ESPECIFICADO` como contrato; no ejecutado                          |
+| rollback                         | `ESPECIFICADO` como contrato; no ejecutado                          |
+| cambio de emergencia             | `ESPECIFICADO`                                                      |
+| validación posterior             | `ESPECIFICADO`                                                      |
+| revisión posterior               | `ESPECIFICADO`                                                      |
+| modelo físico VISO/E3            | `FUERA_DE_ALCANCE`                                                  |
+| CI/release general               | `FUERA_DE_ALCANCE` hacia BLOQUE T                                   |
+| monitoreo runtime                | `FUERA_DE_ALCANCE` hacia `TI-DOM-010`                               |
+| recuperación técnica             | `FUERA_DE_ALCANCE` hacia `TI-DOM-011`                               |
+| cambios de código o Supabase     | `NO_APLICA`                                                         |
+
+---
+
+#### 42. Invariantes
+
+1. cambio no equivale a incidente.
+2. cambio no equivale a problema.
+3. cambio no equivale a release.
+4. cambio no equivale a despliegue.
+5. aprobación no equivale a acceso.
+6. aprobación no equivale a ejecución.
+7. ejecutor no obtiene autoridad por tener credenciales.
+8. proveedor no aprueba el cambio empresarial.
+9. estándar no significa sin registro.
+10. emergencia no significa sin control.
+11. una urgencia causada por mala planificación no convierte el cambio en emergencia.
+12. una revisión material del alcance invalida la aprobación anterior.
+13. una ventana no es universal.
+14. una ventana externa no sustituye la ventana empresarial.
+15. dos cambios aprobados pueden ser incompatibles.
+16. un freeze no se elimina por una excepción.
+17. el baseline se captura antes del efecto.
+18. una prueba de aplicación no sustituye prueba física, red, datos o proceso cuando aplican.
+19. cambio aplicado no equivale a servicio disponible.
+20. servicio disponible no equivale a proceso validado.
+21. plan de rollback no equivale a rollback probado.
+22. rollback ejecutado no equivale a estado recuperado validado.
+23. rollback no puede destruir efectos empresariales válidos sin reconciliación.
+24. `git revert` no es estrategia universal.
+25. una migración irreversible no se presenta como reversible.
+26. una intervención manual se registra como tal.
+27. una desviación material exige reevaluación.
+28. secretos no forman parte del expediente.
+29. acceso privilegiado permanece bajo `TI-AUTH-*`.
+30. Supabase se modifica únicamente desde `vento-shell` en una fase autorizada.
+31. una corrección de proveedor sigue requiriendo validación VENTO.
+32. incidente restaurado no cierra el cambio.
+33. cambio ejecutado no cierra el problema.
+34. revisión posterior conserva desviaciones y deuda.
+35. toda deuda material tiene propietario y condición de salida.
+36. `TI-DOM-010` conserva observabilidad.
+37. `TI-DOM-011` conserva recuperación técnica.
+38. `TI-DOM-012` conserva contrato, licencia, garantía, renovación, uso y costo.
+39. BLOQUE T conserva releases, despliegue y rollback técnico.
+40. esta tarea no modifica código, infraestructura, datos ni Supabase.
+
+---
+
+#### 43. Cobertura de prueba consumida
+
+La tarea consume cobertura vigente que ya protege:
+
+- distinción entre solicitud, incidente, problema, error conocido y cambio;
+- cambio de emergencia y revisión posterior en incidentes críticos;
+- autorización, estado anterior, prueba y resultado para cambios de IP, driver, firmware, red o configuración;
+- rollback independiente de código, contratos, caché, migraciones y configuración;
+- compatibilidad entre consumidores durante despliegues no simultáneos;
+- identificación verificable del ambiente, commit, configuración y migraciones;
+- bloqueo de merge o despliegue cuando fallen controles obligatorios;
+- correlación transversal de servicios, activos, endpoints, redes, impresoras, aplicaciones, incidentes, problemas, cambios y proveedores;
+- detección de cambio sin prueba y riesgo de cambio sin rollback;
+- separación entre identidad, acceso, endpoint, dispositivo, configuración y autoridad.
+
+La cobertura vigente relevante incluye `TREQ-VISO-002`, `TREQ-SHELL-005` a `TREQ-SHELL-010`, `TREQ-NEXO-019` y `TREQ-INTEGRATION-020`.
+
+TI-DOM-009 especializa documentalmente esas obligaciones y conserva sus responsables posteriores de implementación y certificación.
+
+---
+
+#### 44. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya protege de forma explícita la existencia del cambio como objeto separado, el cambio de emergencia, la autorización, el estado anterior, la prueba, el resultado, la compatibilidad, el rollback, la identificación del ambiente, los gates de despliegue y la correlación transversal de cambios con servicios y elementos tecnológicos. Esta tarea materializa el contrato operativo que esas obligaciones ya requieren y no incorpora una nueva superficie ejecutable, esquema físico, permiso, algoritmo de negocio o efecto técnico adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 45. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-008 → TI-DOM-009 → TI-DOM-010`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se preservan las autoridades de `VPROC-0058`, `VPROC-0059` y `VPROC-0062`;
+- [x] se define una identidad estable de cambio sin inventar un nuevo proceso empresarial;
+- [x] se definen exactamente ocho dominios tecnológicos de cambio;
+- [x] se definen exactamente tres clases de cambio;
+- [x] `STANDARD` exige procedimiento, guardas, prueba y rollback previamente aprobados;
+- [x] `EMERGENCY` acelera decisión sin eliminar controles;
+- [x] se definen exactamente diez estados de ciclo de vida;
+- [x] se preservan revisiones ante cambios materiales de alcance;
+- [x] se definen exactamente ocho dimensiones de riesgo;
+- [x] se definen exactamente cuatro niveles cualitativos de riesgo;
+- [x] no se inventa un puntaje universal;
+- [x] se materializa una matriz de autoridad por clase y riesgo;
+- [x] la segregación detallada permanece en `TI-AUTH-001`;
+- [x] se definen exactamente cinco estados de aprobación;
+- [x] se materializan diez controles mínimos de ventana;
+- [x] se definen freeze, excepciones y conflictos concurrentes;
+- [x] se materializan nueve dimensiones del plan de prueba;
+- [x] se define baseline previo y decisión go/no-go;
+- [x] se separan commit, build, release, aprobación, despliegue y validación;
+- [x] se preserva BLOQUE T como autoridad de release, CI, despliegue y rollback técnico;
+- [x] se preserva E5 como autoridad de diseño de paquete, readiness, cutover, piloto e hypercare;
+- [x] se preserva BLOQUE R como autoridad de migraciones Supabase dentro de paquetes autorizados;
+- [x] se define gobierno de cambios de red, endpoint, impresora, configuración y proveedor aunque no exista commit;
+- [x] se definen exactamente cuatro resultados de ejecución;
+- [x] se materializan diez condiciones obligatorias del rollback;
+- [x] el rollback conserva datos, compatibilidad y validación posterior;
+- [x] se materializan ocho disparadores de revisión posterior reforzada;
+- [x] se definen cuatro códigos de cierre;
+- [x] se preservan handoffs hacia problema, observabilidad, recuperación, contratos, conocimiento, autorización e integraciones;
+- [x] se reconcilia el AS-IS sin declarar implementado un gobierno transversal no demostrado;
+- [x] los diez hallazgos tienen propietario y condición de salida;
+- [x] no se ejecuta ningún cambio tecnológico;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] no se modifica Supabase;
+- [x] `TI-DOM-010` permanece únicamente reservada.
+
+---
+
+#### 46. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios`
+
+
 ### [ ] TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
 ### [ ] TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
 ### [ ] TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **626** |
+| Tareas aprobadas | **627** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **968** |
+| Tareas no iniciadas | **967** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **39.27% (626/1594)** |
+| Porcentaje de completamiento | **39.34% (627/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia** |
-| Tarea actual | **TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior** |
+| Última tarea aprobada | **TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior** |
+| Tarea actual | **TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios** |
+| Siguiente tarea | **TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 50 de 157 aprobadas; TI-DOM-009 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 51 de 157 aprobadas; TI-DOM-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-008` — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia |
-| Tarea actual | `TI-DOM-009` — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior — **NO INICIADA** |
-| Siguiente tarea | `TI-DOM-010` — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios |
+| Última aprobada | `TI-DOM-009` — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior |
+| Tarea actual | `TI-DOM-010` — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios — **NO INICIADA** |
+| Siguiente tarea | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 50 DE 157 APROBADAS — ACTUAL TI-DOM-009** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 51 DE 157 APROBADAS — ACTUAL TI-DOM-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
-        ↓
-TAREA ACTUAL
 TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 50 de 157 tareas aprobadas
+CARRIL NEXO — 51 de 157 tareas aprobadas
 ```
