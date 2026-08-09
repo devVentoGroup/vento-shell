@@ -415,6 +415,626 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 
 `TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal`
-### [ ] TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
+### ✅ TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
+
+**Estado:** APROBADA  
+**Tarea anterior:** `TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos` — APROBADA  
+**Tarea siguiente:** `TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de acceso privilegiado, cuentas técnicas, soporte de proveedores, sesiones remotas, elevación temporal, vigencia, expiración, revocación y evidencia  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md`  
+**Artefactos producidos:** `TI-PRIVILEGED-ACCESS-GOVERNANCE-CONTRACT-001`; `TI-TECHNICAL-ACCOUNT-CLASSIFICATION-MATRIX-001`; `TI-PRIVILEGED-ACCESS-LIFECYCLE-MATRIX-001`; `TI-TEMPORARY-ELEVATION-CONTRACT-001`; `TI-PROVIDER-PRIVILEGED-ACCESS-MATRIX-001`; `TI-REMOTE-SUPPORT-SESSION-CONTRACT-001`; `TI-PRIVILEGED-ACCESS-ASIS-RECONCILIATION-001`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, RPC, funciones, Edge Functions, migraciones, datos, cuentas, permisos, grants, secretos, sesiones, dispositivos, integraciones, proveedores ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir un único gobierno para cualquier privilegio tecnológico humano o técnico, impedir cuentas humanas compartidas o privilegios permanentes por conveniencia, materializar el ciclo de solicitud, aprobación, activación, uso, expiración, revocación y verificación, reutilizar las concesiones individuales canónicas para elevación temporal cuando la modalidad lo admita, separar cuentas técnicas de credenciales y permisos, y gobernar el soporte remoto o de proveedor sin convertir al tercero, a la herramienta ni a una credencial en autoridad empresarial.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-AUTH-002` queda definida con las siguientes decisiones obligatorias:
+
+1. **El privilegio es un estado de autorización sobre una acción, recurso, alcance y ventana concretos; no es un rol, una cuenta, una licencia ni una credencial.**
+2. Toda elevación humana se resuelve mediante el modelo canónico de autorización existente. No se crea un carril paralelo para TI ni un rol base denominado administrador técnico.
+3. La elevación temporal que necesite añadir una capacidad administrativa individual reutiliza la semántica aprobada de concesión individual base: permiso exacto, alcance explícito, inicio, expiración, justificación, solicitante, aprobador, revisión y revocación.
+4. Ninguna elevación puede convertir un permiso `OPERATIONAL_ONLY` en capacidad base, eliminar un prerrequisito operativo, superar el alcance máximo del permiso ni prevalecer sobre una denegación aplicable.
+5. Una cuenta humana privilegiada debe ser nominativa. Las cuentas humanas genéricas, compartidas o prestadas quedan `BLOQUEADO` para operación privilegiada.
+6. Una cuenta técnica representa un principal no humano y debe tener propietario humano responsable, propósito técnico, sistema o proceso autorizado, alcance, ambiente, recurso, mecanismo de revocación y revisión. No puede usarse como sustituto de una identidad humana.
+7. `service_role` conserva su naturaleza de credencial técnica privilegiada de servidor: puede omitir RLS técnicamente, pero no produce autorización empresarial. Una operación iniciada por una persona requiere autorización humana previa; un proceso autónomo requiere identidad de servicio y operación incluida en una allowlist aprobada.
+8. Un principal técnico de dispositivo compartido sigue siendo un dispositivo, no una cuenta administrativa humana. No recibe elevación interactiva ni permisos empresariales por su existencia.
+9. El acceso privilegiado de proveedor o técnico externo requiere identidad trazable, patrocinador interno, caso o cambio correlacionado, recurso y alcance exactos, aprobación interna, ventana, mecanismo de autenticación aplicable, sesión identificable, expiración y verificación de revocación. El proveedor no se autoautoriza.
+10. El soporte remoto privilegiado se habilita por sesión y finalidad, no por presencia permanente de una herramienta. La herramienta de soporte no concede autoridad y una reconexión no hereda una autorización vencida.
+11. Una aprobación de cambio tecnológico no equivale a aprobación de acceso privilegiado. Cuando un cambio requiera privilegio, ambas decisiones permanecen correlacionadas y separadas.
+12. No existe renovación silenciosa. Extender una elevación o reactivar un acceso expirado exige una nueva decisión auditada y una nueva evaluación del contexto vigente.
+13. La expiración o revocación invalida la autoridad derivada; reintentos, caché, colas o reconexiones no pueden ejecutar después con la decisión anterior.
+14. Se materializa documentalmente `H-TI-DOM-009-005`: todo cambio privilegiado deberá identificar principal, actor, permiso o capacidad, recurso, alcance, vigencia, sesión y revocación antes de operación real.
+15. Se materializa el ciclo pendiente de `H-CAP-SCOPE-015-009` para acceso privilegiado, proveedor y soporte remoto: solicitud, aprobación, activación limitada, uso atribuible, expiración o revocación, verificación y cierre.
+16. Se conserva la frontera de `TI-AUTH-003`: esta tarea gobierna **quién y durante qué ventana** puede obtener privilegio; la tarea siguiente gobierna **qué operaciones de configuración** quedan protegidas.
+17. Se conserva la frontera de `TI-AUTH-004`: esta tarea prohíbe transportar credenciales dentro del expediente de privilegio; la protección detallada de logs, capturas, exportaciones, secretos y datos personales permanece en esa tarea.
+18. El acceso de continuidad `break-glass`, credenciales de recuperación y failover permanece fuera de alcance y bajo `CONT-AUTH-002`.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+Esta tarea consume sin redefinir:
+
+- `TI-AUTH-001` para responsabilidades, segregación y autoridades de decisión;
+- `VPROC-0058 — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento`;
+- `VPROC-0059 — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación`;
+- la regla de `VPROC-0059` que separa solicitante, administrador técnico y aprobador en accesos sensibles;
+- la aprobación obligatoria de `VPROC-0059` por `GERENCIA_GENERAL` o autoridad de seguridad competente para concesión, modificación, privilegio, suspensión o revocación de acceso;
+- `AUTH-MOD-001` para identidad humana, principal técnico de dispositivo y servicio del sistema;
+- `AUTH-RBAC-020` para concesiones individuales base, su vigencia, alcance, aprobación y revocación;
+- la precedencia canónica de autorización, incluida la prevalencia de denegaciones sobre concesiones positivas;
+- `TI-DOM-006` y `TI-DOM-012` para aplicaciones, proveedores, licencias, relaciones técnicas y relaciones comerciales;
+- `TI-DOM-007` para caso de soporte, incidente, prioridad, validación y cierre;
+- `TI-DOM-009` para cambio, riesgo, aprobación, ventana, ejecución, rollback y revisión posterior;
+- `TI-DOM-013` para conocimiento y capacitación sin convertir documentación en autoridad;
+- `TREQ-SHELL-010` como requisito vigente que ya protege el ciclo tecnológico de cuentas, privilegio, soporte remoto, proveedor, vigencia, MFA cuando aplique, actor, evidencia y cierre;
+- `TREQ-AUTH-014`, `TREQ-AUTH-015`, `TREQ-AUTH-016` y `TREQ-AUTH-165` para invalidación, auditoría, revocación coordinada y prohibición de convertir `service_role` en autorización empresarial;
+- `TI-INT-003` como propietario de la futura integración con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos;
+- `AUTH-DB-019`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-012` como destinos de implementación física de identidad, invalidación, evaluación y auditoría cuando un paquete posterior lo autorice;
+- `VISO-AUTH-017`, `VISO-AUTH-018` y `VISO-AUTH-019` para administración de excepciones individuales, auditoría de seguridad y restricción de administradores;
+- `READY-GATE-003` y `READY-GATE-010` para demostrar configuración de permisos y preparación de mesa de soporte antes de un piloto.
+
+No se crea un segundo catálogo de permisos, un esquema paralelo de roles ni una identidad ficticia para proveedores.
+
+---
+
+#### 3. Contrato `TI-PRIVILEGED-ACCESS-GOVERNANCE-CONTRACT-001`
+
+##### 3.1. Definición de privilegio
+
+Se considera **acceso privilegiado tecnológico** toda autoridad que permita, dentro de un sistema técnico o plano administrativo:
+
+- ejercer una capacidad administrativa o de seguridad no disponible al uso ordinario del actor;
+- ejecutar una operación mediante un principal o canal técnico capaz de superar controles ordinarios;
+- administrar identidades, permisos, sesiones o credenciales;
+- intervenir un recurso técnico mediante una sesión remota con autoridad superior a la del usuario ordinario;
+- actuar sobre una configuración, ambiente o servicio cuyo cambio exige controles adicionales;
+- utilizar una capacidad de proveedor o plataforma externa con efecto administrativo sobre recursos VENTO.
+
+La definición no concede autoridad por sí misma. La autorización efectiva sigue resolviéndose contra permiso o capacidad registrada, principal, actor, alcance, recurso, estado, modalidad, vigencia y denegaciones.
+
+##### 3.2. Separaciones obligatorias
+
+```text
+CUENTA
+≠ IDENTIDAD
+≠ PRINCIPAL
+≠ ACTOR EFECTIVO
+≠ PERMISO
+≠ CREDENCIAL
+≠ SECRETO
+≠ ASIENTO DE LICENCIA
+≠ SESION PRIVILEGIADA
+≠ AUTORIZACION
+```
+
+También:
+
+```text
+APROBACION DE CAMBIO
+≠ APROBACION DE ACCESO
+
+HERRAMIENTA DE SOPORTE REMOTO
+≠ AUTORIDAD
+
+PROVEEDOR
+≠ APROBADOR INTERNO
+
+SERVICE_ROLE
+≠ PERMISO EMPRESARIAL
+```
+
+##### 3.3. Principio de mínima autoridad
+
+Todo privilegio deberá estar limitado simultáneamente por:
+
+1. actor o principal exacto;
+2. finalidad verificable;
+3. capacidad o permiso exactos;
+4. aplicación, servicio, ambiente o plataforma objetivo;
+5. recurso o conjunto explícitamente autorizado;
+6. alcance territorial cuando el recurso lo requiera;
+7. ventana de inicio y fin;
+8. caso, solicitud o cambio que justifica la intervención;
+9. controles de autenticación aplicables;
+10. denegaciones y segregación vigentes.
+
+Un valor ausente o ambiguo no significa alcance global.
+
+---
+
+#### 4. Matriz `TI-TECHNICAL-ACCOUNT-CLASSIFICATION-MATRIX-001`
+
+| Clase                                           | Naturaleza                                                                |                           ¿Puede ser actor humano? |                                                            ¿Puede recibir privilegio? | Regla obligatoria                                                                                                                                                         | Estado objetivo                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------: | ------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **Cuenta humana nominativa interna**            | Principal personal vinculado a una identidad laboral activa.              |                                                 Sí |                             Sí, únicamente mediante autorización explícita y vigente. | No comparte credencial; la elevación no modifica el rol base ni crea bypass.                                                                                              | `ESPECIFICADO`                                                                              |
+| **Servicio del sistema**                        | Principal no humano para un proceso autónomo identificado.                |                                                 No |                  Sí, solo para operaciones técnicas allowlisted y recursos definidos. | Debe registrar identidad del servicio o job, propietario humano, propósito y límites. No puede simular una persona.                                                       | `ESPECIFICADO`                                                                              |
+| **Credencial `service_role`**                   | Credencial técnica privilegiada de Supabase usada únicamente en servidor. |                                                 No | Tiene capacidad técnica de omitir RLS, pero cero autorización empresarial automática. | Si la operación proviene de una persona, se autoriza primero al actor humano. Si es autónoma, se identifica proceso y allowlist. Nunca se entrega como credencial humana. | `IMPLEMENTADO` parcialmente como patrón técnico; gobierno integral `PENDIENTE_DE_EVIDENCIA` |
+| **Principal técnico de dispositivo compartido** | Identidad técnica de una terminal o dispositivo.                          |                                                 No |                          No recibe privilegio empresarial propio ni elevación humana. | Solo ejecuta operaciones técnicas expresamente permitidas y requiere actor humano para acciones empresariales.                                                            | `ESPECIFICADO`; materialización parcial existente                                           |
+| **Identidad humana externa de proveedor**       | Persona externa identificada por relación de proveedor o plataforma.      | Sí, como tercero trazable; no como rol base VENTO. |                          Solo dentro de una sesión o autorización externa delimitada. | Requiere patrocinador interno, aprobación, finalidad, recurso, ventana y evidencia. Una cuenta compartida del proveedor no satisface identidad.                           | `PENDIENTE_DE_EVIDENCIA` para bindings productivos actuales                                 |
+| **Credencial de integración o token técnico**   | Secreto que autentica una integración o servicio.                         |                                                 No |                                                                      No por sí mismo. | Es credencial, no identidad humana ni permiso. Su uso debe quedar ligado al servicio autorizado.                                                                          | `ESPECIFICADO`; instancias físicas dependen de cada integración                             |
+| **Cuenta humana genérica o compartida**         | Identidad no atribuible de manera unívoca a una persona.                  |                              No de forma confiable |                                                                                    No | Queda prohibida para operación privilegiada. No se corrige añadiendo un nombre informal en el ticket.                                                                     | `BLOQUEADO`                                                                                 |
+
+##### 4.1. Reglas adicionales de cuenta técnica
+
+Toda cuenta técnica o principal de servicio deberá declarar, antes de uso productivo:
+
+- `principal_id` o identidad técnica verificable;
+- clase de principal;
+- sistema o plataforma propietaria;
+- ambiente;
+- propietario humano responsable;
+- proceso, job o integración que la utiliza;
+- finalidad;
+- capacidades o allowlist aplicables;
+- recursos permitidos;
+- mecanismo de autenticación;
+- referencia al custodio de la credencial sin insertar el secreto en el expediente;
+- estado;
+- fecha de última revisión;
+- condición de suspensión o revocación;
+- evidencia de retiro cuando deje de ser necesaria.
+
+Una cuenta técnica no puede utilizarse interactívamente por una persona para evitar una autorización nominativa. Si una persona necesita operar, deberá hacerlo mediante su identidad humana y la sesión privilegiada aprobada correspondiente.
+
+---
+
+#### 5. Matriz `TI-PRIVILEGED-ACCESS-LIFECYCLE-MATRIX-001`
+
+El ciclo no crea un proceso empresarial nuevo. Utiliza `VPROC-0059` para acceso tecnológico y se correlaciona con `VPROC-0058` o `TI-DOM-009` cuando la necesidad nace de soporte, incidente o cambio.
+
+| Etapa                           | Entrada mínima                                                                                       | Autoridad / actor                                                                  | Resultado obligatorio                                         | Prohibición                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **1. Necesidad**                | Caso, cambio, evento o responsabilidad verificable.                                                  | Solicitante legítimo.                                                              | Motivo y objetivo identificados.                              | No activar privilegio por urgencia verbal o conveniencia.                          |
+| **2. Solicitud**                | Principal o beneficiario, capacidad, recurso, alcance, ambiente, inicio, fin y referencia de origen. | Solicitante o patrocinador interno.                                                | Solicitud completa y no ejecutable.                           | No usar un rol, una cuenta o una herramienta como sustituto del permiso requerido. |
+| **3. Evaluación**               | Riesgo, segregación, modalidad, denegaciones, alcance máximo, sensibilidad y conflicto de interés.   | Administrador técnico prepara; seguridad participa cuando corresponda.             | Expediente suficiente para decisión.                          | El administrador técnico no se concede autoridad por preparar el registro.         |
+| **4. Aprobación**               | Solicitud evaluada y autoridad aplicable.                                                            | `GERENCIA_GENERAL` o autoridad de seguridad competente según `VPROC-0059`.         | Decisión aprobada o rechazada con actor y condiciones.        | Solicitante, beneficiario o ejecutor no se autoaprueban en acceso sensible.        |
+| **5. Programación / provisión** | Decisión aprobada, inicio futuro cuando aplique.                                                     | Actor técnico autorizado.                                                          | Grant, vínculo o sesión preparado con alcance exacto.         | No activar antes de `effective_from`; no ampliar la decisión durante provisión.    |
+| **6. Activación**               | Vigencia iniciada y autenticación aplicable satisfecha.                                              | Actor o principal autorizado.                                                      | Autoridad efectiva únicamente dentro de la ventana y recurso. | No heredar autoridad de otra sesión, dispositivo, cambio o usuario.                |
+| **7. Uso**                      | Sesión vigente, recurso compatible y autorización revalidable.                                       | Actor efectivo o servicio identificado.                                            | Acciones atribuibles y auditables.                            | No compartir sesión, credencial ni identidad; no ejecutar fuera de finalidad.      |
+| **8. Terminación**              | Expiración, revocación, suspensión, cierre de ventana o pérdida de condición.                        | Sistema por expiración o actor autorizado por decisión.                            | Acceso deja de participar en autorización; sesión termina.    | No prolongar por reconexión, reintento, caché o proceso pendiente.                 |
+| **9. Verificación**             | Resultado de terminación y fuentes de autoridad.                                                     | Responsable técnico distinto cuando el riesgo lo exija.                            | Evidencia de que no queda autoridad residual utilizable.      | No considerar revocado únicamente porque una pantalla diga inactivo.               |
+| **10. Cierre**                  | Evidencia, pendientes transferidos y correlación con caso/cambio.                                    | Responsable del proceso de acceso; cierre empresarial según segregación aplicable. | Historial preservado y expediente cerrado.                    | No borrar evidencia ni convertir cierre en renovación.                             |
+
+##### 5.1. Datos mínimos del expediente
+
+Cada acceso privilegiado deberá poder reconstruir como mínimo:
+
+| Grupo         | Campos conceptuales obligatorios                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| identidad     | principal técnico o humano, actor efectivo cuando corresponda y beneficiario                     |
+| patrocinio    | solicitante, patrocinador interno cuando exista tercero y aprobador                              |
+| finalidad     | justificación, caso/incidente/cambio/proceso de origen                                           |
+| autoridad     | permiso o capacidad exacta, modalidad, fuente de la concesión y denegaciones relevantes          |
+| alcance       | aplicación o plataforma, ambiente, recurso, sede/área cuando aplique y restricciones             |
+| tiempo        | `effective_from`, `effective_until`, activación, terminación y última revisión                   |
+| autenticación | mecanismo aplicable y evidencia de reautenticación/MFA cuando corresponda, sin conservar secreto |
+| sesión        | identificador de sesión privilegiada o identidad de ejecución técnica cuando exista              |
+| proveedor     | proveedor, identidad externa y responsable interno cuando aplique                                |
+| cierre        | causa de expiración/revocación, actor, resultado de verificación y referencia de evidencia       |
+
+No se fija una duración universal. La ventana deberá ser la mínima necesaria para la finalidad aprobada y nunca podrá superar silenciosamente la ventana o condición que originó el acceso.
+
+---
+
+#### 6. Contrato `TI-TEMPORARY-ELEVATION-CONTRACT-001`
+
+##### 6.1. Mecanismo canónico
+
+La elevación temporal humana **no crea un tipo nuevo de rol ni un mecanismo alternativo de permisos**.
+
+Cuando la capacidad sea compatible con el carril base, la elevación reutiliza una concesión individual base con la semántica ya aprobada:
+
+```text
+TRABAJADOR ACTIVO
++
+PERMISO CANONICO COMPATIBLE
++
+CONCESION INDIVIDUAL VIGENTE
++
+ALCANCE APROBADO
++
+RECURSO COMPATIBLE
++
+CONTROLES SENSIBLES APLICABLES
++
+SIN DENEGACION PREVALENTE
+=
+ELEVACION TEMPORAL POSIBLE
+```
+
+##### 6.2. Invariantes
+
+1. `effective_from` es obligatorio.
+2. `effective_until` es obligatorio para una elevación temporal.
+3. Una elevación futura no autoriza antes del inicio.
+4. Una elevación vencida permanece en historial pero no participa como allow.
+5. Extender la vigencia genera una nueva decisión auditada; no se modifica silenciosamente la fecha anterior.
+6. Un cambio de rol, vínculo laboral, sede, área, responsabilidad, permiso, recurso o riesgo obliga a reevaluar la concesión.
+7. La concesión utiliza una clave canónica exacta; no admite wildcard, prefijo, aplicación completa ni permiso inexistente.
+8. La elevación no puede convertir una capacidad `OPERATIONAL_ONLY` en base.
+9. En `BASE_AND_OPERATIONAL`, la elevación solo puede aportar el componente base; turno, check-in, rol operativo y demás condiciones siguen siendo obligatorios.
+10. Una denegación aplicable prevalece sobre la concesión temporal.
+11. Un permiso sensible conserva reautenticación, motivo, segregación y demás controles propios; elevar no reduce sensibilidad.
+12. Una persona que administra técnicamente el grant no adquiere por ello facultad para aprobarlo.
+13. El beneficiario no aprueba su propia elevación sensible.
+14. La aprobación de un cambio no inserta automáticamente la concesión individual necesaria para ejecutarlo.
+15. La finalización de la ventana invalida el acceso incluso si el trabajo técnico no terminó; continuar exige una nueva solicitud o ampliación aprobada.
+
+##### 6.3. Prohibiciones
+
+Quedan expresamente prohibidos:
+
+- elevar mediante cambio permanente del rol base para resolver una necesidad temporal;
+- añadir permisos manuales sin origen, vigencia, aprobador y alcance;
+- conceder acceso total para facilitar diagnóstico;
+- reutilizar una concesión temporal de otro trabajador;
+- usar una cuenta técnica, dispositivo o `service_role` como identidad del humano elevado;
+- reactivar un grant expirado sin nueva decisión;
+- mantener privilegio activo porque el proveedor aún no respondió;
+- utilizar presión operativa o contractual como sustituto de aprobación.
+
+---
+
+#### 7. Gobierno de cuentas técnicas
+
+##### 7.1. Servicio del sistema
+
+Un servicio autónomo solo podrá realizar operaciones privilegiadas cuando:
+
+1. el principal o servicio esté identificado;
+2. la operación pertenezca a una allowlist aprobada;
+3. el ambiente y recurso estén definidos;
+4. el proceso tenga propietario humano;
+5. la credencial utilizada esté separada del permiso empresarial;
+6. la operación produzca auditoría suficiente;
+7. exista mecanismo de suspensión o revocación;
+8. una modificación de privilegio siga el proceso de acceso tecnológico.
+
+Una tarea programada, función, webhook o Edge Function no se convierte en actor humano. Su auditoría deberá conservar identidad del servicio y, cuando la operación sea originada por una persona, también el actor humano que la solicitó.
+
+##### 7.2. Uso de `service_role`
+
+La regla canónica es:
+
+```text
+SERVICE_ROLE
+=
+CAPACIDAD TECNICA PRIVILEGIADA
+≠
+AUTORIZACION EMPRESARIAL
+```
+
+Para operación iniciada por una persona:
+
+```text
+IDENTIDAD HUMANA
+→ AUTORIZACION CANONICA
+→ RECURSO Y ALCANCE VALIDOS
+→ OPERACION TECNICA CON SERVICE_ROLE
+→ AUDITORIA DEL ACTOR HUMANO
+```
+
+Para proceso autónomo:
+
+```text
+SERVICIO IDENTIFICADO
+→ OPERACION ALLOWLISTED
+→ RECURSO Y AMBIENTE PERMITIDOS
+→ OPERACION TECNICA
+→ AUDITORIA DEL SERVICIO
+```
+
+No se autoriza entregar `service_role` a un técnico, proveedor o administrador para uso interactivo.
+
+##### 7.3. Principal técnico de dispositivo
+
+El principal técnico de un dispositivo compartido conserva su autoridad propia y limitada. No recibe permisos del trabajador, no recibe una concesión individual base y no puede convertirse en administrador por configuración local.
+
+---
+
+#### 8. Matriz `TI-PROVIDER-PRIVILEGED-ACCESS-MATRIX-001`
+
+La matriz materializa exactamente las **cinco familias externas** ya reconciliadas por `TI-DOM-012`. La existencia de SDK, repositorio, proyecto o integración no demuestra acceso humano privilegiado actual.
+
+| Familia externa | Evidencia tecnológica conservada                                                                            | Evidencia actual de acceso privilegiado humano del proveedor                                                | Regla de acceso privilegiado                                                                                                                                                                       | Estado / propietario de cierre                                                                                        |
+| --------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **GitHub**      | Relación técnica confirmada mediante repositorios de aplicaciones.                                          | `PENDIENTE_DE_EVIDENCIA`; no se infiere desde la existencia del repositorio.                                | Toda intervención privilegiada debe identificar persona, organización/repositorio objetivo, finalidad, nivel exacto, patrocinador, ventana y revocación. Cuenta humana compartida queda bloqueada. | Gobierno de privilegio `ESPECIFICADO`; mecanismo e identidades reales se verifican durante implementación/readiness.  |
+| **Supabase**    | Dependencia técnica confirmada en aplicaciones y uso de cliente privilegiado backend en funciones actuales. | `PENDIENTE_DE_EVIDENCIA`; un proyecto o `service_role` no demuestra acceso humano del proveedor.            | `service_role` nunca se entrega al proveedor ni a una persona. Cualquier soporte privilegiado humano requiere identidad separada, aprobación, recurso, ambiente, ventana y sesión atribuible.      | Gobierno `ESPECIFICADO`; controles de identidad/evaluación bajo AUTH y la integración de proveedor bajo `TI-INT-003`. |
+| **Expo/EAS**    | Configuración técnica observada para ANIMA y PASS.                                                          | `PENDIENTE_DE_EVIDENCIA`; cuenta, plan y miembros con privilegio no están demostrados por la configuración. | Acceso administrativo solo con identidad trazable y alcance al proyecto/ambiente necesario; no usar credencial de integración como cuenta humana.                                                  | Gobierno `ESPECIFICADO`; evidencia de tenant/cuenta y mecanismo bajo `TI-DOM-012` y `TI-INT-003`.                     |
+| **Sentry**      | SDK observado en ANIMA.                                                                                     | `PENDIENTE_DE_EVIDENCIA`; SDK no prueba servicio activo ni acceso humano vigente.                           | Si se habilita soporte o administración privilegiada, deberá usar identidad trazable, proyecto definido, ventana y límites; el contenido sensible observado queda sujeto a `TI-AUTH-004`.          | Gobierno `ESPECIFICADO`; relación real y mecanismo pendientes de evidencia.                                           |
+| **RevenueCat**  | SDK observado en PASS.                                                                                      | `PENDIENTE_DE_EVIDENCIA`; SDK no prueba producto, contrato, cuenta o acceso humano vigente.                 | Toda administración privilegiada requiere identidad trazable, proyecto exacto, patrocinador, aprobación y alcance; no se deriva autoridad de un token técnico.                                     | Gobierno `ESPECIFICADO`; relación real y mecanismo pendientes de evidencia.                                           |
+
+Balance de la matriz:
+
+```text
+5 familias esperadas
+5 familias materializadas
+0 familias omitidas
+0 accesos humanos actuales inventados
+5 estados de acceso actual PENDIENTE_DE_EVIDENCIA
+```
+
+##### 8.1. Reglas transversales para proveedor
+
+1. El proveedor no se convierte en rol base, empleado, aprobador empresarial ni propietario del proceso.
+2. El patrocinador interno responde por necesidad, alcance y correlación, pero no puede ampliar la decisión aprobada.
+3. La plataforma del proveedor no sustituye el expediente VENTO.
+4. Un técnico externo debe ser individualmente atribuible; una identidad compartida invalida el acceso privilegiado interactivo.
+5. El acceso se habilita únicamente para el recurso, ambiente y ventana necesarios.
+6. Finalizada la ventana, la relación de sesión o grant deja de autorizar aunque el proveedor mantenga una cuenta en su plataforma.
+7. Una relación comercial vigente no concede acceso técnico.
+8. Una relación técnica observada no prueba relación comercial ni privilegio.
+9. La terminación del contrato o de la necesidad activa una revisión inmediata de accesos, credenciales de integración y sesiones relacionadas.
+10. La integración física de herramientas de proveedor pertenece a `TI-INT-003`; esta tarea define los controles que esa integración deberá respetar.
+
+---
+
+#### 9. Contrato `TI-REMOTE-SUPPORT-SESSION-CONTRACT-001`
+
+##### 9.1. Regla raíz
+
+```text
+CASO O CAMBIO VALIDO
++
+ACTOR DE SOPORTE IDENTIFICADO
++
+APROBACION DE ACCESO CUANDO HAY PRIVILEGIO
++
+OBJETIVO Y ALCANCE EXACTOS
++
+VENTANA VIGENTE
++
+SESION REMOTA IDENTIFICABLE
+=
+SOPORTE REMOTO PRIVILEGIADO POSIBLE
+```
+
+La instalación de un agente, la existencia de una consola o la disponibilidad de una plataforma no equivalen a una sesión autorizada.
+
+##### 9.2. Inicio de sesión
+
+Antes de abrir una sesión privilegiada deberá resolverse:
+
+- caso o cambio correlacionado;
+- identidad del actor que prestará soporte;
+- patrocinador interno si es tercero;
+- endpoint, servicio o recurso objetivo;
+- finalidad;
+- permiso o capacidad necesaria;
+- alcance;
+- inicio y expiración;
+- aprobación aplicable;
+- autenticación y reautenticación/MFA cuando corresponda;
+- política de supervisión o acompañamiento si el riesgo lo exige;
+- referencia a la evidencia sin incorporar secretos.
+
+##### 9.3. Durante la sesión
+
+La sesión deberá conservar:
+
+- identificador propio;
+- actor y principal;
+- recurso objetivo;
+- inicio y fin;
+- correlación con caso o cambio;
+- estado de autorización vigente;
+- eventos administrativos relevantes;
+- causa de terminación.
+
+La sesión no puede:
+
+- prestar la identidad de otro administrador;
+- reutilizar una sesión ajena;
+- convertir la credencial técnica del endpoint en actor humano;
+- ampliar el recurso objetivo sin nueva autorización;
+- continuar después de expiración por mantener abierta la conexión;
+- reanudar automáticamente una acción mutante después de perder conectividad;
+- transportar contraseñas, tokens o códigos de recuperación dentro del expediente de soporte.
+
+##### 9.4. Sesiones atendidas y no atendidas
+
+El modelo no presume que exista hoy una herramienta de soporte remoto ni un modo no atendido aprobado.
+
+- una sesión **atendida** puede operar cuando el flujo y la autorización correspondientes estén vigentes;
+- un acceso **no atendido persistente** no queda autorizado por esta tarea y permanece `BLOQUEADO` hasta que una implementación posterior demuestre identidad, alcance, política, expiración, revocación y auditoría equivalentes;
+- un agente técnico instalado puede permanecer como componente, pero su presencia no debe otorgar privilegio interactivo permanente.
+
+La implementación y verificación del mecanismo concreto pertenecen a `TI-INT-003` y al paquete de implementación que resulte expresamente autorizado.
+
+##### 9.5. Reconexión, offline y reintentos
+
+1. Una reconexión dentro de una ventana aún vigente debe revalidar la autorización y la identidad de sesión antes de continuar.
+2. Una reconexión posterior a expiración exige nueva autorización; no revive la sesión previa.
+3. Acciones privilegiadas pendientes no se ejecutan automáticamente después de recuperar conectividad.
+4. Colas y reintentos deben reautorizarse con contexto fresco antes de producir efecto.
+5. Una operación iniciada antes de expirar pero confirmada después no se da por válida únicamente por su hora de inicio; el contrato de la operación deberá demostrar la frontera transaccional aplicable.
+6. Duplicados, resultado incierto o efecto parcial se derivan al caso tecnológico y a la reconciliación correspondiente, sin afirmar éxito o rollback no demostrado.
+
+---
+
+#### 10. Relación con cambio tecnológico
+
+`TI-DOM-009` conserva las clases `STANDARD`, `NORMAL` y `EMERGENCY`. La autorización del cambio y la del privilegio son controles distintos.
+
+| Situación                                                          | Decisión de cambio                                                           | Decisión de privilegio                                                                                                                |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `STANDARD / LOW` sin acción privilegiada                           | Usa la preautorización vigente del procedimiento.                            | No se crea privilegio artificial.                                                                                                     |
+| `STANDARD / LOW` que requiere una capacidad privilegiada explícita | El procedimiento de cambio debe permitir esa clase de intervención.          | Requiere una concesión o sesión de acceso compatible, vigente y aprobada; la preautorización del cambio no crea el grant.             |
+| `NORMAL`                                                           | Conserva la autoridad definida por riesgo en `TI-DOM-009`.                   | Si exige privilegio, `VPROC-0059` conserva su aprobación propia y segregación.                                                        |
+| `EMERGENCY`                                                        | Acelera la decisión sin eliminar identidad, autoridad, rollback ni revisión. | No elimina el proceso de acceso. Si el caso exige un mecanismo de continuidad `break-glass`, su gobierno pertenece a `CONT-AUTH-002`. |
+| Proveedor ejecutor                                                 | Puede participar en el cambio según riesgo y contrato.                       | No recibe autoridad empresarial por estar asignado al cambio; su sesión privilegiada se gobierna de forma separada.                   |
+
+Un cambio aprobado tampoco autoriza:
+
+- acceso a otro ambiente;
+- acceso a otros recursos del mismo proveedor;
+- ampliación temporal sin nueva decisión;
+- uso de una cuenta compartida;
+- lectura sensible fuera de la finalidad autorizada;
+- configuración no incluida en el alcance del cambio.
+
+---
+
+#### 11. Expiración, suspensión, revocación y autoridad residual
+
+##### 11.1. Eventos que obligan a reevaluar o terminar acceso
+
+Como mínimo:
+
+- llegada de `effective_until`;
+- revocación o suspensión aprobada;
+- retiro o inactivación del vínculo laboral;
+- cambio material de rol, responsabilidad, sede o área;
+- modificación o retiro del permiso;
+- retiro o sustitución del recurso;
+- fin de la necesidad o ventana de soporte;
+- cierre o cancelación de la relación de proveedor aplicable;
+- cambio material de riesgo;
+- conflicto de seguridad;
+- cambio de principal, actor o identidad de la sesión;
+- pérdida de autenticación requerida;
+- revocación de la credencial técnica utilizada por un servicio.
+
+##### 11.2. Efecto
+
+La expiración automática ejecuta una condición ya autorizada y no necesita una segunda aprobación para dejar de autorizar. Reactivar, extender o volver a conceder sí exige una nueva decisión cuando la autorización anterior dejó de estar vigente.
+
+Después de terminación:
+
+```text
+GRANT INACTIVO
++
+SESION TERMINADA
++
+CONTEXTO INVALIDADO
++
+TOKENS O CACHE DERIVADOS NO REUTILIZABLES
++
+REINTENTOS O COLAS REAUTORIZADOS DESDE CERO
++
+EVIDENCIA CONSERVADA
+=
+CERO AUTORIDAD RESIDUAL ACEPTABLE
+```
+
+No se afirma que estos mecanismos estén físicamente implementados hoy; constituyen la condición documental que deberán materializar `AUTH-DB-035`, `AUTH-DB-034`, `AUTH-DB-012`, los consumidores y el paquete autorizado.
+
+---
+
+#### 12. Reconciliación `TI-PRIVILEGED-ACCESS-ASIS-RECONCILIATION-001`
+
+| Elemento AS-IS                                              | Evidencia actual                                                                                                                                      | Estado frente al contrato                                                                      | Decisión                                                                                                                                                   |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Modelo canónico de identidad y autorización                 | Personas, dispositivos técnicos, servicios del sistema, permisos, alcance y precedencia ya están definidos documentalmente.                           | `ESPECIFICADO`                                                                                 | Reutilizar; no crear otro modelo TI.                                                                                                                       |
+| Concesiones individuales                                    | Existe `employee_permissions` como estructura física de overrides y existe contrato documental de concesiones individuales con vigencia y aprobación. | `IMPLEMENTADO` parcialmente / ciclo objetivo `PENDIENTE_DE_EVIDENCIA`                          | Usar como base de futura elevación temporal; no asumir que la estructura física actual satisface toda la semántica de vigencia, aprobación e invalidación. |
+| Override temporal histórico                                 | Existe una migración que retiró un acceso temporal total de validación y devolvió el comportamiento a la matriz canónica.                             | `IMPLEMENTADO` como corrección histórica; no prueba gobierno general                           | Prohíbe normalizar overrides amplios ad hoc como mecanismo de soporte.                                                                                     |
+| Uso de `service_role`                                       | Funciones actuales consumen `SUPABASE_SERVICE_ROLE_KEY` en servidor para operaciones técnicas.                                                        | `IMPLEMENTADO` como patrón técnico; autorización empresarial integral `PENDIENTE_DE_EVIDENCIA` | Mantener credencial separada de autorización y exigir actor/servicio identificable.                                                                        |
+| Ledger transversal de sesiones privilegiadas                | Las fuentes consumidas no demuestran una materialización canónica completa de sesión privilegiada con ventana, actor, recurso y revocación.           | `PENDIENTE_DE_EVIDENCIA`                                                                       | Materialización posterior bajo AUTH/SHELL y paquete autorizado.                                                                                            |
+| Soporte remoto productivo                                   | No se demuestra una herramienta o contrato runtime canónico de soporte remoto en las fuentes actuales.                                                | `PENDIENTE_DE_EVIDENCIA`                                                                       | `TI-INT-003` define integración; no inferir capacidad desde agente, SDK o proveedor.                                                                       |
+| Familias externas                                           | GitHub, Supabase, Expo/EAS, Sentry y RevenueCat están reconciliados como cinco familias técnicas externas.                                            | `ESPECIFICADO`; relación comercial y acceso humano variables `PENDIENTE_DE_EVIDENCIA`          | Aplicar la matriz de proveedor sin inventar tenants, cuentas o miembros.                                                                                   |
+| Acceso no atendido persistente de tercero                   | No está aprobado ni demostrado por las fuentes consumidas.                                                                                            | `BLOQUEADO`                                                                                    | No habilitar hasta existir mecanismo trazable, limitado, revocable y auditado aprobado.                                                                    |
+| `break-glass` y credenciales de recuperación de continuidad | Existe tarea propietaria específica en continuidad.                                                                                                   | `FUERA_DE_ALCANCE`                                                                             | `CONT-AUTH-002`.                                                                                                                                           |
+
+La reconciliación distingue una capacidad técnica existente de un gobierno de privilegio completo. Encontrar un cliente administrativo, una tabla de override o una dependencia externa no permite declarar la tarea implementada.
+
+---
+
+#### 13. Cierre de hallazgos y pendientes con propietario
+
+| Hallazgo                                                                                           | Resultado en `TI-AUTH-002`                                                                         | Estado tras esta tarea                                                   | Propietario siguiente cuando existe evidencia o implementación pendiente      | Condición de salida                                                                                 |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `H-CAP-SCOPE-015-007` — ciclo de cuentas no reconciliado con altas, cambios, retiros y externos    | Se fija el ciclo privilegiado y su revocación; se conserva la dependencia de identidad y vínculo.  | `ESPECIFICADO` para privilegio; materialización `PENDIENTE_DE_EVIDENCIA` | `AUTH-DB-019`; `AUTH-DB-035`; procesos propietarios de personas/proveedor     | vínculo y eventos de ciclo alimentan invalidación real sin autoridad residual.                      |
+| `H-CAP-SCOPE-015-008` — cuenta, permiso, credencial, secreto y licencia conflados                  | Se materializa separación normativa y clasificación de principales/cuentas.                        | `ESPECIFICADO`                                                           | `TI-AUTH-004` para manejo de secretos; `TI-DOM-012` para licencia/contrato    | cada objeto conserva identidad, propietario y control independiente.                                |
+| `H-CAP-SCOPE-015-009` — privilegio, proveedor y soporte remoto sin ciclo explícito                 | Se define solicitud, aprobación, activación, sesión, vigencia, terminación, verificación y cierre. | `ESPECIFICADO`                                                           | `VISO-AUTH-017` a `VISO-AUTH-019`; `AUTH-DB-034`; `AUTH-DB-035`; `TI-INT-003` | flujo implementado y probado con identidades y sesiones reales.                                     |
+| `H-CAP-SCOPE-015-021` — credenciales o material sensible pueden terminar en expedientes o mensajes | El expediente de privilegio referencia la credencial pero no la incorpora.                         | `ESPECIFICADO` parcialmente                                              | `TI-AUTH-004`                                                                 | reglas completas de secreto, log, captura y dato sensible aprobadas y posteriormente implementadas. |
+| `H-CAP-SCOPE-015-031` — remoto, offline o reintento puede duplicar acciones o perder atribución    | Se prohíbe replay privilegiado y se exige reautorización en reconexión/reintento.                  | `ESPECIFICADO`                                                           | `TI-INT-003`; `AUTH-DB-035`; paquete E5 aplicable                             | adaptador y consumidores demuestran idempotencia, atribución y autoridad fresca.                    |
+| `H-TI-DOM-009-005` — cambio privilegiado requiere elevación o soporte remoto                       | Principal, actor, alcance, vigencia, sesión y revocación quedan gobernados.                        | `ESPECIFICADO`                                                           | implementación de AUTH y `TI-INT-003`                                         | cambio productivo puede demostrar privilegio temporal sin acceso residual.                          |
+
+No quedan pendientes narrativos sin propietario documental.
+
+---
+
+#### 14. Fronteras obligatorias
+
+##### 14.1. `TI-AUTH-003`
+
+`TI-AUTH-002` no define el catálogo de operaciones protegidas sobre endpoints, redes, impresoras, aplicaciones, licencias o monitoreo. Solo define cómo se gobierna el privilegio que pueda ser necesario para ejecutarlas.
+
+##### 14.2. `TI-AUTH-004`
+
+La tarea no define retención, minimización o exposición detallada de logs, capturas, exportaciones, secretos ni datos personales. Únicamente establece que una credencial o secreto no se convierte en evidencia del expediente ni en mecanismo de identidad humana.
+
+##### 14.3. `TI-INT-003`
+
+La tarea no selecciona ni integra una herramienta concreta de MDM o soporte remoto. `TI-INT-003` deberá materializar el contrato técnico de cualquier proveedor o herramienta respetando este gobierno.
+
+##### 14.4. `CONT-AUTH-002`
+
+No se define `break-glass`, credencial de recuperación, failover ni acceso de emergencia de continuidad. Esa superficie conserva su tarea propietaria.
+
+##### 14.5. Implementación física
+
+No se crean tablas, grants, funciones, secretos, cuentas, sesiones ni migraciones. La implementación posterior deberá pasar por las tareas y paquetes autorizados de AUTH/SHELL, BLOQUE R, E5 y `TI-INT-003` según el objeto materializado.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+La tarea no introduce una regla protegida distinta de las ya registradas para el ciclo tecnológico de cuentas y acceso, invalidación de autoridad, auditoría, revocación coordinada y separación de la capacidad técnica de la autorización empresarial. El requisito vigente del dominio SHELL ya incluye de forma expresa acceso privilegiado, soporte remoto, proveedor, vigencia, autenticación reforzada cuando aplique, actor, evidencia y cierre. Las decisiones de esta tarea materializan casos parametrizados y contratos documentales dentro de esa regla existente, sin cambiar su comportamiento protegido.
+
+---
+
+#### 15. Criterios de aceptación
+
+- [x] Se define acceso privilegiado sin convertirlo en rol, cuenta, credencial o licencia.
+- [x] Se preserva `VPROC-0059` como ciclo propietario de acceso tecnológico.
+- [x] Se preserva la aprobación obligatoria de acceso sensible por la autoridad ya definida.
+- [x] Se materializan exactamente siete clases relevantes en la matriz de cuentas y principales, incluida la cuenta humana compartida como `BLOQUEADO`.
+- [x] Se define un ciclo completo de diez etapas desde necesidad hasta cierre.
+- [x] Se define un expediente mínimo con identidad, autoridad, alcance, tiempo, autenticación, sesión y cierre.
+- [x] La elevación temporal reutiliza concesiones individuales base y no crea un carril paralelo.
+- [x] Una elevación temporal exige `effective_from` y `effective_until` y no admite renovación silenciosa.
+- [x] Una concesión no puede convertir `OPERATIONAL_ONLY` en base ni eliminar prerrequisitos de `BASE_AND_OPERATIONAL`.
+- [x] Las denegaciones aplicables continúan prevaleciendo sobre una elevación positiva.
+- [x] `service_role` permanece como capacidad técnica de servidor sin autorización empresarial automática.
+- [x] Un dispositivo compartido no puede recibir privilegio humano por su principal técnico.
+- [x] Una cuenta humana genérica o compartida queda bloqueada para acceso privilegiado.
+- [x] Se materializan las cinco familias externas ya aprobadas, sin inventar accesos humanos actuales.
+- [x] Proveedor, patrocinador, herramienta y credencial quedan separados de la autoridad interna.
+- [x] Se define soporte remoto por sesión, objetivo, ventana y actor, con reautorización después de expiración.
+- [x] Se impide replay de acciones privilegiadas después de pérdida de conectividad o expiración.
+- [x] Se separa aprobación de cambio de aprobación de acceso.
+- [x] `break-glass` y continuidad permanecen bajo `CONT-AUTH-002`.
+- [x] La configuración protegida permanece reservada a `TI-AUTH-003`.
+- [x] La protección detallada de información sensible permanece reservada a `TI-AUTH-004`.
+- [x] La integración física de soporte remoto permanece bajo `TI-INT-003`.
+- [x] Se reconcilia el AS-IS sin confundir piezas parciales con implementación completa.
+- [x] Los hallazgos y pendientes conservan propietario y condición de salida explícitos.
+- [x] Se reutiliza cobertura de prueba existente y se generan cero cambios TREQ.
+- [x] La tarea permanece exclusivamente documental y no modifica Supabase, código, cuentas ni configuración.
+
+---
+
+#### 16. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos
+        ↓
+TAREA ACTUAL APROBADA
+TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
+        ↓
+SIGUIENTE TAREA RESERVADA
+TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+```
+
 ### [ ] TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
 ### [ ] TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte

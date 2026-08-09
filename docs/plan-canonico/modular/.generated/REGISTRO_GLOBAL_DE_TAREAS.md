@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **632** |
+| Aprobadas | **633** |
 | En propuesta | **0** |
-| No iniciadas | **962** |
+| No iniciadas | **961** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.65% (632/1594)** |
+| Porcentaje de completamiento | **39.71% (633/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | ✅ APROBADA |
-| Tarea actual | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | ⬜ NO INICIADA |
+| Última aprobada | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | ✅ APROBADA |
+| Tarea actual | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1521,7 +1521,7 @@
 | ✅ APROBADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-013` | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
-| ⬜ NO INICIADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
+| ✅ APROBADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-003` | Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-004` | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-UX-001` | Diseñar portal simple de soporte para trabajadores dentro de ANIMA | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
