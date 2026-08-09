@@ -6235,4 +6235,1250 @@ SIGUIENTE TAREA RESERVADA
 `TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica`
 
 
-### [ ] TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
+### ✅ TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos` — APROBADA
+**Tarea siguiente:** `TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de diagnóstico guiado, consulta y gobierno de conocimiento tecnológico y capacitación contextual para ANIMA y VISO, con divulgación progresiva, autorización por sensibilidad y preservación de contexto
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md`
+**Aplicaciones consumidoras principales:** ANIMA y VISO
+**Cambios físicos autorizados:** ninguno; no crea ni modifica rutas, componentes, código, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, artículos persistidos, módulos de capacitación, asignaciones, métricas, permisos, notificaciones, integraciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar cómo una persona debe recibir ayuda tecnológica en Vento sin tener que comprender arquitectura, logs, redes, permisos internos, códigos de implementación o terminología especializada antes de poder avanzar.
+
+La experiencia objetivo debe resolver simultáneamente cuatro necesidades:
+
+- que el trabajador encuentre ayuda útil y segura desde su contexto real en ANIMA;
+- que la mesa de servicio conduzca un diagnóstico reproducible desde VISO sin empezar por la evidencia más sensible;
+- que el conocimiento reutilizable se consulte, revise y publique con identidad, versión, vigencia, audiencia y fuente;
+- que la capacitación aparezca cuando el contexto la justifica, sin convertir cada pantalla en un manual o cada cambio en un curso obligatorio.
+
+Regla raíz:
+
+```text
+AYUDA CONTEXTUAL
+≠ DIAGNÓSTICO TÉCNICO COMPLETO
+≠ CONOCIMIENTO PUBLICADO
+≠ MENSAJE DE SOPORTE
+≠ WORKAROUND
+≠ CAPACITACIÓN
+≠ COMPETENCIA
+≠ AUTORIZACIÓN
+```
+
+Y:
+
+```text
+MÁS DETALLE TÉCNICO
+NO SIGNIFICA
+MEJOR EXPERIENCIA
+```
+
+La interfaz debe revelar únicamente el nivel de información necesario para la tarea, la decisión y la autoridad vigentes.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea deja definido el diseño completo de experiencia para:
+
+- diagnóstico guiado vinculado a un caso tecnológico;
+- autoservicio seguro y ayuda contextual para el trabajador;
+- búsqueda y consumo de conocimiento vigente;
+- navegación entre guía, caso, error conocido, workaround y cambio sin fusionar sus identidades;
+- escalamiento que conserva el contexto ya capturado;
+- gobierno visual del ciclo de vida del conocimiento;
+- revisión y publicación sin transformar mensajes de soporte en verdad automática;
+- capacitación contextual por capacidad, versión, audiencia y disparador;
+- separación visible entre finalización, comprobación, competencia y autorización;
+- feedback y señales de adopción sin convertir telemetría en vigilancia individual;
+- tratamiento de contenido sensible mediante divulgación progresiva y autorización;
+- comportamiento cuando la guía, la evidencia o la vigencia no pueden comprobarse;
+- reconciliación del soporte y las FAQ actuales de ANIMA frente al contrato objetivo.
+
+Se preservan sin renumerar ni ampliar los conjuntos canónicos heredados:
+
+| Conjunto heredado                     | Cobertura conservada |
+| ------------------------------------- | -------------------: |
+| clases de conocimiento                |         **10 de 10** |
+| estados del ciclo de conocimiento     |           **6 de 6** |
+| clases de fuente de conocimiento      |         **12 de 12** |
+| audiencias de aprendizaje             |           **8 de 8** |
+| estados de asignación de aprendizaje  |           **6 de 6** |
+| estados de comprobación o competencia |           **5 de 5** |
+| clases de comunicación de cambio      |           **7 de 7** |
+| clases de señal de adopción           |           **8 de 8** |
+| servicios tecnológicos con decisión   |         **11 de 11** |
+
+No se crea una clase adicional para resolver un problema de interfaz.
+
+---
+
+#### 3. Autoridades y entradas conservadas
+
+La experiencia consume sin redefinir:
+
+- `TI-DOM-013` como autoridad del conocimiento tecnológico, su identidad, versión, ciclo de vida, publicación, capacitación, competencia, comunicación y adopción;
+- `TI-DOM-007` como autoridad del caso tecnológico, clasificación, prioridad, SLA, comunicación, restauración, validación y cierre;
+- `TI-DOM-008` como autoridad del problema, causa raíz, error conocido y workaround;
+- `TI-DOM-009` como autoridad del cambio tecnológico, su aprobación, ejecución, rollback y resultado;
+- `TI-DOM-010` como autoridad de señales, observaciones, health, frescura, alertas y telemetría;
+- `TI-DOM-011` como autoridad de recuperación técnica y runbooks relacionados;
+- `TI-AUTH-001` a `TI-AUTH-004` como autoridad de segregación, privilegio, configuración protegida y acceso a evidencia sensible;
+- `TI-UX-001` como experiencia personal de reporte y seguimiento del trabajador en ANIMA;
+- `TI-UX-002` como mesa de servicio administrativa de VISO;
+- `TI-UX-003` como mapa técnico y proyección de salud y dependencias;
+- `TI-UX-004` como experiencia de incidente, problema, cambio, mantenimiento y recuperación;
+- SHELL como autoridad de identidad de aplicación y política de acceso;
+- ANIMA como superficie personal del trabajador;
+- VISO como superficie administrativa de soporte;
+- la aplicación o servicio propietario como fuente del procedimiento o configuración que corresponda.
+
+La tarea no convierte la experiencia en fuente maestra de datos, configuración, permisos, estado técnico, aprendizaje o caso.
+
+---
+
+#### 4. Separación de carriles de ayuda
+
+La misma necesidad puede producir vistas distintas según intención y actor.
+
+| Carril                 | Propósito                                     | Contenido principal                                                        | Límite                                              |
+| ---------------------- | --------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| personal               | ayudar al trabajador sobre su propio contexto | explicación humana, guía segura, estado del caso, siguiente paso           | no expone diagnóstico restringido ni administración |
+| mesa de servicio       | conducir atención y diagnóstico               | caso, síntoma, evidencia mínima, guía diagnóstica, decisión y escalamiento | no concede privilegio por abrir la vista            |
+| conocimiento           | consultar o gobernar contenido reutilizable   | artículo, versión, alcance, fuente, vigencia, audiencia, relaciones        | no modifica la fuente técnica ni el caso            |
+| aprendizaje contextual | ayudar a aprender una capacidad aplicable     | módulo o referencia vigente, motivo de asignación, progreso y comprobación | no concede permiso ni prueba adopción por sí solo   |
+| auditoría              | reconstruir uso, versión, revisión y decisión | historia, fuente, actor, evidencia y cambios                               | no corrige silenciosamente el contenido histórico   |
+
+Una superficie puede enlazar otro carril, pero no debe mezclar en el mismo plano ordinario acciones de trabajador, administración editorial, privilegio técnico y auditoría.
+
+---
+
+#### 5. Principio de divulgación progresiva
+
+La experiencia se organiza desde lo necesario hacia lo especializado:
+
+```text
+NECESIDAD HUMANA
+→ CONTEXTO YA CONOCIDO
+→ SIGUIENTE ACCIÓN SEGURA
+→ RESULTADO DE LA COMPROBACIÓN
+→ EXPLICACIÓN ADICIONAL SI HACE FALTA
+→ DETALLE TÉCNICO SOLO SI ES PERTINENTE Y AUTORIZADO
+```
+
+Reglas:
+
+1. el primer plano usa lenguaje humano y orientado a la tarea;
+2. no se muestran nombres de tablas, schemas, RPC, RLS, componentes, migraciones, enums, permisos internos o repositorios como lenguaje ordinario;
+3. un código técnico puede aparecer en diagnóstico autorizado cuando ayude a identificar el hecho, pero no sustituye la explicación humana;
+4. los detalles extensos permanecen bajo demanda;
+5. si una persona no necesita una acción, esta no llena la pantalla como control deshabilitado sin explicación;
+6. una obligación bloqueada sí permanece visible con causa y siguiente acción;
+7. la ayuda contextual no debe interrumpir una tarea con material que no sea aplicable a esa acción;
+8. la interfaz no usa la capacitación para compensar copy incomprensible o una arquitectura de navegación deficiente.
+
+---
+
+#### 6. Entrada desde ANIMA
+
+El trabajador conserva una única experiencia personal de soporte. La ayuda contextual se integra conceptualmente con esa superficie y no crea un segundo canal de atención.
+
+La entrada deberá poder usar, cuando ya estén disponibles y autorizados:
+
+- aplicación desde la que se originó la necesidad;
+- tarea o capacidad en curso;
+- sede y área aplicables;
+- dispositivo o tipo de dispositivo;
+- servicio tecnológico relacionado;
+- mensaje de error seguro;
+- referencia de caso existente;
+- versión o cambio relevante;
+- pasos ya intentados dentro de una guía.
+
+El trabajador no debe volver a digitar esa información solo para abrir ayuda.
+
+La pantalla debe responder primero:
+
+```text
+¿QUÉ NECESITAS HACER?
+¿QUÉ ESTÁ PASANDO?
+¿HAY UNA ACCIÓN SEGURA QUE PUEDES PROBAR?
+¿NECESITAS CONTINUAR CON SOPORTE?
+```
+
+No debe responder primero con categorías técnicas que el trabajador tenga que diagnosticar por sí mismo.
+
+---
+
+#### 7. Ayuda rápida del trabajador
+
+Cuando exista conocimiento publicado, vigente, apropiado para la audiencia y compatible con el contexto, ANIMA podrá presentar una ayuda breve con:
+
+- título humano;
+- a qué situación aplica;
+- una acción segura actual;
+- resultado esperado;
+- qué hacer si no funciona;
+- señal clara de cuándo detenerse y pedir soporte;
+- referencia de versión o vigencia solo cuando sea material para comprender la aplicabilidad.
+
+La ayuda rápida no muestra de forma ordinaria:
+
+- logs;
+- IP;
+- topología;
+- identificadores de implementación;
+- secretos;
+- datos de otras personas;
+- hipótesis internas no confirmadas;
+- instrucciones privilegiadas;
+- configuración administrativa que el trabajador no puede ejecutar.
+
+Si la guía deja de ser segura o vigente, deja de presentarse como orientación actual.
+
+---
+
+#### 8. Continuación hacia soporte sin repetición
+
+Cuando la ayuda no resuelve la necesidad, la transición a caso tecnológico conserva:
+
+```text
+CONTEXTO DE ORIGEN
++
+GUÍA CONSULTADA Y VERSIÓN
++
+PASOS REALMENTE EJECUTADOS
++
+RESULTADOS OBSERVADOS
++
+EVIDENCIA SEGURA APORTADA
++
+SÍNTOMA QUE PERSISTE
+```
+
+El escalamiento no debe pedir nuevamente al trabajador la misma narración si ya existe de forma estructurada.
+
+La guía no clasifica por sí sola el caso, no fija prioridad, no determina causa raíz y no cierra el ticket.
+
+---
+
+#### 9. Entrada al diagnóstico guiado en VISO
+
+El diagnóstico se abre desde el expediente tecnológico y conserva como contexto, cuando exista:
+
+- referencia del caso;
+- clase del caso;
+- servicio afectado;
+- elemento afectado;
+- sede o alcance;
+- síntoma reportado;
+- prioridad y SLA;
+- owner actual;
+- señales o health correlacionadas;
+- cambio, problema o error conocido relacionado;
+- conocimiento ya consultado;
+- pasos de diagnóstico previamente ejecutados;
+- evidencia que el actor está autorizado a conocer.
+
+Abrir diagnóstico no cambia automáticamente el estado del caso y no amplía autorización.
+
+---
+
+#### 10. Flujo conceptual del diagnóstico guiado
+
+El diagnóstico se conduce como una secuencia verificable y ramificable:
+
+```text
+COMPRENDER EL SÍNTOMA
+→ REVISAR CONTEXTO SEGURO YA DISPONIBLE
+→ EJECUTAR COMPROBACIÓN MENOS INTRUSIVA
+→ REGISTRAR RESULTADO
+→ EVALUAR PATRÓN / ERROR CONOCIDO / GUÍA APLICABLE
+→ CONTINUAR, APLICAR ORIENTACIÓN AUTORIZADA O ESCALAR
+→ VERIFICAR EL EFECTO
+→ DEVOLVER EL RESULTADO AL CASO
+```
+
+No se obliga a completar pasos que no aplican.
+
+Una rama descartada conserva suficiente rastro para evitar repetirla innecesariamente, pero no convierte una hipótesis descartada en causa.
+
+---
+
+#### 11. Unidad de paso diagnóstico
+
+Cada paso de una guía diagnóstica deberá poder presentar:
+
+- objetivo de la comprobación;
+- pregunta o instrucción humana;
+- precondición;
+- información que ya se conoce;
+- acción permitida;
+- evidencia que se observará;
+- resultado esperado;
+- opciones de resultado;
+- rama siguiente;
+- condición de bloqueo;
+- condición que exige autorización adicional;
+- condición de escalamiento;
+- relación con conocimiento, error conocido, workaround o cambio cuando exista.
+
+Los resultados conceptuales deben poder distinguir, según el caso:
+
+- comprobado;
+- no comprobado;
+- no aplica;
+- no se puede determinar con la evidencia disponible;
+- bloqueado por precondición;
+- requiere autorización adicional;
+- requiere escalamiento.
+
+La interfaz no convierte “no se puede determinar” en “sin problema”.
+
+---
+
+#### 12. Diagnóstico por sensibilidad
+
+Se conserva la progresión canónica de menor a mayor intrusión:
+
+| Capa                     | Presentación de experiencia                                                            | Condición                                                  |
+| ------------------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| estado y metadata mínima | health, disponibilidad, versión, identificadores seguros y código humano del resultado | primera opción cuando puede resolver la hipótesis          |
+| contexto estructurado    | timestamps, correlación, recurso, operación y resultado                                | se revela cuando la hipótesis requiere más contexto        |
+| log restringido          | fragmento delimitado del recurso y ventana pertinentes                                 | requiere finalidad y autorización de diagnóstico sensible  |
+| contenido de evidencia   | adjunto, payload o detalle restringido imprescindible                                  | solo cuando no existe alternativa menos intrusiva          |
+| material para tercero    | subconjunto sanitizado destinado a proveedor o especialista                            | requiere autorización de divulgación, destinatario y canal |
+
+La interfaz debe indicar por qué se necesita avanzar a una capa más sensible antes de revelar su contenido.
+
+---
+
+#### 13. Estado visible de autorización del diagnóstico
+
+El diagnóstico distingue claramente:
+
+```text
+PUEDO VER ESTA COMPROBACIÓN
+≠
+PUEDO EJECUTAR UNA MUTACIÓN
+≠
+PUEDO ABRIR EVIDENCIA RESTRINGIDA
+≠
+PUEDO EXPORTARLA
+≠
+PUEDO COMPARTIRLA
+```
+
+Cuando una acción no está autorizada, la experiencia no ofrece un falso workaround de “copiar el dato y pedirle a otra persona que lo mire”.
+
+Si el caso requiere una capacidad distinta, se crea el handoff correspondiente sin transportar el privilegio del actor actual.
+
+---
+
+#### 14. Vista conceptual de diagnóstico en VISO
+
+La superficie objetivo se compone alrededor del caso, no alrededor de una consola técnica genérica.
+
+```text
+CASO TECNOLÓGICO
+Síntoma · servicio · elemento · prioridad · SLA · owner
+
+DIAGNÓSTICO GUIADO
+Qué estamos comprobando
+[ paso actual ]
+Resultado observado: ...
+[ registrar resultado ]
+
+CONTEXTO ÚTIL
+- señales seguras ya correlacionadas
+- cambios recientes relacionados
+- guía o error conocido aplicable
+
+DETALLE TÉCNICO
+Disponible solo cuando la tarea y la autorización lo requieren
+
+SIGUIENTE ACCIÓN
+Continuar comprobación · aplicar orientación autorizada · escalar
+```
+
+No se fija una ruta física ni un componente concreto en esta fase.
+
+---
+
+#### 15. Relación con health y mapa técnico
+
+El diagnóstico puede consumir el mapa técnico y observaciones ya existentes, pero conserva estas diferencias:
+
+```text
+HEALTH
+≠ DIAGNÓSTICO
+≠ CAUSA
+≠ PRIORIDAD
+≠ RESOLUCIÓN
+```
+
+Una dependencia degradada puede orientar la investigación sin demostrar causalidad.
+
+Una señal recuperada puede cerrar una hipótesis técnica sin cerrar el caso.
+
+Una health `UNKNOWN` obliga a explicar que falta evidencia en lugar de recomendar acciones como si el elemento estuviera saludable.
+
+---
+
+#### 16. Error conocido y workaround
+
+Cuando exista un error conocido aplicable, VISO presenta de forma separada:
+
+- condición o patrón reconocido;
+- población o versión afectada;
+- evidencia que sustenta la coincidencia;
+- workaround vigente;
+- riesgo y limitaciones;
+- condición de retiro;
+- relación con problema y corrección definitiva cuando exista.
+
+La interfaz no presenta el workaround como causa eliminada ni como procedimiento permanente.
+
+Si el workaround exige privilegio, cambio o configuración protegida, la guía detiene el flujo ordinario y deriva a la autoridad correspondiente.
+
+---
+
+#### 17. Verificación posterior a una acción
+
+Después de una orientación o acción permitida, el flujo vuelve a comprobar el resultado esperado.
+
+La experiencia distingue:
+
+- acción ejecutada;
+- resultado observado;
+- servicio restaurado;
+- resultado empresarial validado;
+- causa resuelta;
+- conocimiento candidato.
+
+Ninguno de esos estados se infiere automáticamente de otro.
+
+---
+
+#### 18. Escalamiento técnico
+
+El escalamiento conserva:
+
+- hipótesis evaluadas;
+- pasos completados;
+- pasos bloqueados;
+- evidencia disponible;
+- guía y versión utilizadas;
+- resultado de cualquier workaround;
+- razón exacta del escalamiento;
+- siguiente función requerida;
+- contenido sensible únicamente dentro del alcance autorizado.
+
+El nivel siguiente no empieza desde cero y tampoco hereda permisos del nivel anterior por recibir el caso.
+
+---
+
+#### 19. Base de conocimiento — consumo
+
+La búsqueda ordinaria solo debe priorizar conocimiento:
+
+- `PUBLISHED`;
+- vigente;
+- compatible con la audiencia;
+- aplicable al servicio, aplicación, capacidad, dispositivo o versión en contexto;
+- permitido por sensibilidad y autorización.
+
+Cada resultado deberá permitir comprender, sin abrir el artículo completo:
+
+- qué problema o tarea ayuda a resolver;
+- a quién aplica;
+- sobre qué aplicación, servicio o capacidad aplica;
+- si existe una versión o condición relevante;
+- si está vigente;
+- si requiere una capacidad que el actor no posee;
+- qué alternativa segura existe cuando no aplica.
+
+La relevancia contextual puede ordenar resultados, pero no altera su identidad ni su versión.
+
+---
+
+#### 20. Búsqueda de conocimiento
+
+La búsqueda se diseña alrededor de lenguaje humano y contexto.
+
+Puede usar como señales:
+
+- síntoma;
+- tarea que la persona intenta realizar;
+- aplicación o servicio;
+- dispositivo o periférico;
+- cambio reciente;
+- error conocido;
+- palabra o alias local registrado;
+- versión;
+- audiencia;
+- contexto territorial cuando realmente afecte la aplicabilidad.
+
+Los términos técnicos pueden existir como alias o filtro para soporte autorizado, pero no son requisito de entrada para un trabajador.
+
+Una búsqueda sin resultados no debe sugerir que “no existe problema”; ofrece continuar con soporte y conserva la consulta como señal de mejora.
+
+---
+
+#### 21. Presentación de un artículo
+
+La capa inicial muestra:
+
+- título;
+- finalidad;
+- situación a la que aplica;
+- audiencia;
+- versión o condición de aplicabilidad cuando sea material;
+- pasos o explicación principal;
+- fallback seguro;
+- estado de vigencia.
+
+Bajo demanda puede mostrar, según autorización:
+
+- fuente;
+- propietario técnico;
+- propietario funcional cuando aplique;
+- relaciones con caso, problema, error conocido, cambio o runbook;
+- revisión;
+- historial de versiones;
+- evidencia editorial.
+
+La interfaz no convierte la metadata editorial en ruido permanente para el trabajador.
+
+---
+
+#### 22. Ciclo de vida visible del conocimiento
+
+Se conservan exactamente:
+
+1. `DRAFT`;
+2. `IN_REVIEW`;
+3. `PUBLISHED`;
+4. `SUPERSEDED`;
+5. `EXPIRED`;
+6. `WITHDRAWN`.
+
+Reglas de experiencia:
+
+- `DRAFT` e `IN_REVIEW` no aparecen como guía actual para audiencia ordinaria;
+- `PUBLISHED` vigente es el contenido consumible ordinario;
+- `SUPERSEDED` informa cuál versión lo sustituyó cuando el actor puede consultar historia;
+- `EXPIRED` explica que la orientación ya no debe usarse;
+- `WITHDRAWN` no continúa disponible como solución ordinaria;
+- una referencia histórica desde un caso conserva la versión utilizada en ese momento;
+- la búsqueda ordinaria no promueve una versión histórica por encima de la vigente.
+
+---
+
+#### 23. Experiencia editorial de conocimiento
+
+La administración editorial en VISO debe permitir separar:
+
+```text
+CANDIDATO
+→ CURACIÓN
+→ REVISIÓN
+→ PUBLICACIÓN
+→ RETROALIMENTACIÓN
+→ NUEVA REVISIÓN O RETIRO
+```
+
+El intake puede originarse en soporte, incidente, problema, known error, workaround, cambio, proveedor, procedimiento, dispositivo, recuperación, seguridad o feedback.
+
+La interfaz exige antes de publicar, según aplicabilidad:
+
+- audiencia;
+- alcance;
+- fuente;
+- propietario;
+- versión;
+- condición de revisión o expiración;
+- sanitización;
+- aplicabilidad técnica;
+- fallback seguro;
+- evidencia de revisión.
+
+No existe un botón conceptual de “publicar este mensaje del ticket” sin pasar por la puerta de publicabilidad.
+
+---
+
+#### 24. Revisión desde casos de soporte
+
+Un caso puede proponer conocimiento cuando existe aprendizaje reutilizable.
+
+La experiencia debe ayudar a separar:
+
+- síntoma generalizable;
+- condición técnica;
+- pasos seguros;
+- resultado;
+- datos específicos del caso;
+- datos personales;
+- secretos;
+- información contractual o interna innecesaria.
+
+El candidato conserva relación con su fuente, pero el artículo resultante no replica el expediente.
+
+---
+
+#### 25. Las diez clases de conocimiento
+
+La interfaz preserva las diez clases aprobadas y no crea sinónimos paralelos:
+
+| Clase                        | Uso de experiencia                                                |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `QUICK_GUIDE`                | ayuda breve y segura en contexto                                  |
+| `DIAGNOSTIC_GUIDE`           | conducción de comprobaciones sin autoridad implícita para cambiar |
+| `RUNBOOK`                    | procedimiento técnico controlado para audiencia autorizada        |
+| `KNOWN_ERROR_ARTICLE`        | explicación reusable de error conocido y workaround vigente       |
+| `APPLICATION_GUIDE`          | uso y soporte de una aplicación o versión                         |
+| `DEVICE_OR_PERIPHERAL_GUIDE` | uso o soporte de elemento físico o endpoint                       |
+| `NETWORK_GUIDE`              | uso o diagnóstico permitido de conectividad                       |
+| `CHANGE_NOTE`                | efecto observable de un cambio aprobado                           |
+| `TRAINING_REFERENCE`         | contenido base consumido por una actividad de aprendizaje         |
+| `PROVIDER_REFERENCE`         | referencia externa curada y versionada en su aplicabilidad        |
+
+La clase principal orienta la experiencia; relaciones adicionales no duplican la identidad del contenido.
+
+---
+
+#### 26. Capacitación contextual
+
+La capacitación aparece por un motivo demostrable, no como feed indiscriminado.
+
+Disparadores conservados:
+
+- incorporación a una capacidad o herramienta;
+- cambio de función o contexto;
+- cambio tecnológico con efecto observable;
+- nueva aplicación, dispositivo o procedimiento;
+- error recurrente que requiere prevención;
+- cambio de seguridad que exige nueva práctica;
+- actualización de runbook o procedimiento crítico;
+- aprendizaje post-incidente o post-cambio;
+- evidencia suficiente de adopción insuficiente que justifique refuerzo.
+
+El disparador identifica una necesidad de evaluación; no asigna automáticamente a toda la organización.
+
+---
+
+#### 27. Las ocho audiencias de aprendizaje
+
+Se conservan exactamente:
+
+1. `END_USER`;
+2. `SHARED_STATION_OPERATOR`;
+3. `SERVICE_DESK_L1`;
+4. `TECHNICAL_SUPPORT_L2`;
+5. `APPLICATION_OR_SERVICE_OWNER`;
+6. `CHANGE_APPROVER_OR_OWNER`;
+7. `PRIVILEGED_TECHNICAL_ADMIN`;
+8. `EXTERNAL_SUPPORT_PROVIDER`.
+
+La experiencia puede adaptar lenguaje, profundidad y referencias según audiencia, pero ninguna audiencia se convierte en rol o permiso.
+
+---
+
+#### 28. Presentación de aprendizaje en ANIMA
+
+Cuando exista una asignación aplicable al trabajador, ANIMA deberá priorizar:
+
+- por qué aparece;
+- qué capacidad o cambio afecta;
+- qué debe aprender o comprobar;
+- versión del contenido;
+- estado de la asignación;
+- acción siguiente;
+- fecha o condición solo si proviene de una regla autorizada;
+- resultado de comprobación cuando aplique.
+
+No se debe bloquear una tarea ordinaria únicamente porque existe contenido recomendado.
+
+Si la formación es realmente obligatoria por una autoridad aplicable, la interfaz explica esa obligación y la condición de salida; no inventa la obligatoriedad desde TI.
+
+---
+
+#### 29. Estados de asignación y competencia
+
+La asignación conserva exactamente:
+
+- `ASSIGNED`;
+- `AVAILABLE`;
+- `STARTED`;
+- `COMPLETED`;
+- `CANCELLED`;
+- `SUPERSEDED`.
+
+La comprobación o competencia conserva de forma separada:
+
+- `NOT_REQUIRED`;
+- `PENDIENTE_DE_EVIDENCIA`;
+- `PASSED`;
+- `FAILED`;
+- `EXPIRED`.
+
+La experiencia debe impedir estas equivalencias falsas:
+
+```text
+COMPLETED = PASSED
+PASSED = COMPETENT PARA CUALQUIER CONTEXTO
+COMPETENCE_EVIDENCE = PERMISSION
+TRAINING_ASSIGNMENT = AUTHORIZATION
+```
+
+No se inventan nota mínima, duración, vigencia o periodicidad si la autoridad propietaria no las ha fijado.
+
+---
+
+#### 30. Capacitación de soporte técnico
+
+Para `SERVICE_DESK_L1` y `TECHNICAL_SUPPORT_L2`, el aprendizaje debe conectarse con el trabajo real sin convertir el expediente del caso en un curso.
+
+La experiencia puede presentar:
+
+- guía diagnóstica relacionada;
+- known error vigente;
+- cambio reciente que afecta la capacidad;
+- runbook permitido;
+- material de aprendizaje asignado;
+- señal de que una versión del material fue sustituida;
+- retroalimentación posterior a una resolución.
+
+El acceso a contenido restringido sigue dependiendo de autorización, no de pertenencia a la audiencia de aprendizaje.
+
+---
+
+#### 31. Sin saturación técnica
+
+Se establecen estas reglas de experiencia:
+
+1. **acción antes que explicación extensa**: la vista comienza por la tarea y el siguiente paso;
+2. **contexto reutilizado**: no se vuelve a preguntar lo que el sistema ya conoce de forma autorizada;
+3. **una guía no se muestra completa si solo un paso es relevante**;
+4. **detalle técnico bajo demanda**: logs, topología, códigos y evidencia restringida no compiten con la acción ordinaria;
+5. **jerga traducida o explicada**: el término interno no se usa como única instrucción;
+6. **sin manuales permanentes dentro del flujo**: el contenido extenso vive en conocimiento y se enlaza contextualmente;
+7. **sin curso como castigo por error**: un error puede generar una señal de aprendizaje, no una asignación automática;
+8. **sin alertas repetidas por contenido ya completado o sustituido**;
+9. **sin duplicación entre FAQ, artículo, mensaje, cambio y capacitación**;
+10. **sin privilegio por comprensión**: saber cómo se hace algo no autoriza hacerlo.
+
+---
+
+#### 32. Accesibilidad de la divulgación progresiva
+
+Expandir, colapsar o revelar detalle debe:
+
+- funcionar con teclado y tecnología asistiva en superficies web aplicables;
+- conservar nombre y estado del control;
+- relacionar control y contenido;
+- mantener orden de lectura y foco;
+- anunciar cambios relevantes;
+- no depender de color, ícono, hover o gesto como único mecanismo;
+- no dejar contenido colapsado navegable como si estuviera visible;
+- conservar el contexto del caso o artículo al abrir detalle especializado.
+
+En móvil, el patrón equivalente conserva objetivos táctiles suficientes y no depende de hover.
+
+---
+
+#### 33. Mensajes y explicación de bloqueos
+
+Cuando una guía o aprendizaje no puede continuar, el mensaje responde:
+
+```text
+QUÉ OCURRIÓ
+QUÉ SE CONSERVÓ
+POR QUÉ NO PUEDE CONTINUAR
+QUIÉN O QUÉ DEBE ACTUAR
+QUÉ PUEDE HACER LA PERSONA AHORA
+```
+
+Ejemplos de condiciones que deben distinguirse:
+
+- contenido vencido;
+- versión incompatible;
+- falta de evidencia;
+- falta de autorización;
+- paso no aplicable;
+- servicio no disponible;
+- dependencia externa;
+- conflicto de contexto;
+- guía sustituida;
+- información sensible que requiere otro nivel de acceso.
+
+No se usa un único mensaje de “algo salió mal” para todas esas condiciones.
+
+---
+
+#### 34. Comunicación de cambios y ayuda
+
+Las siete clases canónicas de comunicación de cambio permanecen separadas del conocimiento y del aprendizaje:
+
+- `PRE_CHANGE_NOTICE`;
+- `IN_WINDOW_STATUS`;
+- `CHANGE_AVAILABLE`;
+- `DEGRADED_OR_PARTIAL`;
+- `ROLLBACK_NOTICE`;
+- `KNOWN_ISSUE_NOTICE`;
+- `POST_CHANGE_LEARNING`.
+
+La experiencia puede enlazar una comunicación con una guía o capacitación, pero:
+
+- la comunicación no aprueba el cambio;
+- un anuncio no se convierte en artículo;
+- una nueva versión de conocimiento no demuestra despliegue;
+- un rollback invalida cualquier mensaje que presente el cambio como disponible cuando ya no lo está.
+
+---
+
+#### 35. Anuncios
+
+La superficie genérica de anuncios puede presentar una novedad o enlace, pero no debe convertirse en la fuente de identidad de conocimiento o capacitación.
+
+La experiencia objetivo mantiene:
+
+```text
+ANNOUNCEMENT
+≠ KNOWLEDGE_ITEM
+≠ CHANGE_COMMUNICATION
+≠ TRAINING_ASSIGNMENT
+```
+
+Si una implementación futura reutiliza anuncios, deberá conservar referencias suficientes para resolver audiencia, vigencia y objeto canónico sin duplicar el contenido gobernado.
+
+---
+
+#### 36. Feedback de conocimiento
+
+La persona puede indicar que una guía:
+
+- resolvió la necesidad;
+- no resolvió la necesidad;
+- no aplicaba;
+- estaba desactualizada;
+- era confusa;
+- produjo bloqueo o escalamiento.
+
+El feedback crea una señal o solicitud de revisión.
+
+No:
+
+- edita el artículo publicado;
+- cambia su fuente;
+- rebaja controles;
+- convierte la opinión individual en nueva verdad;
+- marca automáticamente a la persona como competente;
+- crea por sí solo una causa raíz.
+
+---
+
+#### 37. Señales de adopción
+
+Se conservan las ocho clases:
+
+1. `DELIVERY_SIGNAL`;
+2. `READ_SIGNAL`;
+3. `LEARNING_SIGNAL`;
+4. `COMPETENCE_SIGNAL`;
+5. `USAGE_SIGNAL`;
+6. `SUPPORT_SIGNAL`;
+7. `ERROR_SIGNAL`;
+8. `ROLLBACK_SIGNAL`.
+
+La experiencia administrativa debe explicar la fuente y el periodo de una señal antes de presentar conclusiones.
+
+No se presenta un porcentaje sin denominador, una tendencia sin periodo comparable ni una inferencia de adopción basada únicamente en lectura, finalización o bajo volumen de tickets.
+
+Las señales se usan para mejorar capacidad y experiencia; no se convierten por defecto en medición individual de productividad.
+
+---
+
+#### 38. Frescura, disponibilidad y modo degradado
+
+Si el sistema no puede comprobar que una guía sigue publicada y vigente, no la presenta silenciosamente como orientación actual.
+
+La experiencia diferencia:
+
+- contenido vigente confirmado;
+- contenido histórico consultado por referencia de caso;
+- contenido sustituido;
+- contenido vencido;
+- contenido retirado;
+- vigencia no comprobable.
+
+En vigencia no comprobable, se ofrece una alternativa segura o escalamiento.
+
+Una copia local o caché no puede elevar por sí sola un artículo a `PUBLISHED` vigente.
+
+---
+
+#### 39. Privacidad y minimización en ayuda y capacitación
+
+La experiencia de ayuda y aprendizaje no debe copiar innecesariamente:
+
+- nombres de terceros;
+- contactos;
+- información laboral ajena;
+- datos financieros;
+- contenido de tickets de otras personas;
+- secretos;
+- tokens;
+- credenciales;
+- sesiones;
+- logs completos;
+- payloads no sanitizados.
+
+Los ejemplos de capacitación deben preferir datos ficticios, minimizados o generalizados.
+
+Una captura o evidencia de soporte solo se reutiliza en conocimiento después de sanitización y revisión.
+
+---
+
+#### 40. Cobertura de experiencia por los once servicios
+
+Cada servicio heredado recibe una decisión explícita de ayuda, diagnóstico o aprendizaje sin cambiar su identidad ni su autoridad:
+
+| Servicio         | Nombre canónico                                                         | Decisión de experiencia                                                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | ayuda humana sobre acceso y estado; diagnóstico guiado puede comprobar contexto y resultado autorizado, pero nunca revelar secretos ni conceder permisos     |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | ayuda contextual por dispositivo y capacidad; comprobaciones separan activo, endpoint, dispositivo compartido, sesión y actor                                |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | la persona recibe lenguaje de conectividad y acciones seguras; el detalle de red, direccionamiento, topología o log se revela solo en diagnóstico autorizado |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | la guía distingue dispositivo físico, conexión, cola, trabajo y resultado; una prueba de envío no se presenta como impresión física confirmada               |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | la ayuda usa aplicación, capacidad, versión y ambiente demostrados; proveedor, contrato o disponibilidad externa no se infieren desde framework o SDK        |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | ANIMA permite pedir ayuda sin clasificar técnicamente; VISO conserva el caso y reutiliza contexto, guía y comprobaciones anteriores                          |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | diagnóstico y conocimiento priorizan restauración segura; restaurar no equivale a eliminar causa ni cerrar automáticamente                                   |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | comunicación, guía y aprendizaje explican el cambio; ninguna instrucción de conocimiento sustituye aprobación, ejecución o rollback                          |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | la experiencia relaciona procedimiento, versión, objeto probado, evidencia y resultado; una prueba técnica no sustituye aceptación empresarial               |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | la ayuda puede explicar capacidad, vigencia o soporte demostrados; no duplica proveedor, contrato, garantía, gasto o costo de sus fuentes propietarias       |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | consume directamente el diseño de búsqueda, publicación, aprendizaje contextual, competencia y señales definido en esta tarea                                |
+
+Control:
+
+```text
+11 servicios esperados
+11 servicios con decisión explícita
+0 omitidos
+0 renombrados
+0 añadidos
+```
+
+---
+
+#### 41. Reconciliación AS-IS de ANIMA
+
+La superficie actual de soporte de ANIMA ya materializa:
+
+- acceso a tickets del trabajador;
+- conversación dentro del ticket;
+- creación de ticket;
+- una sección de preguntas frecuentes;
+- seis temas de FAQ codificados actualmente en la aplicación;
+- expansión y colapso de cada respuesta;
+- contenido redactado como instrucciones breves.
+
+Frente al contrato objetivo:
+
+| Aspecto      | AS-IS observado                                                 | Decisión objetivo                                                         |
+| ------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| FAQ          | contenido estático dentro del cliente                           | consumir conocimiento gobernado y versionado cuando exista implementación |
+| vigencia     | no se demuestra ciclo canónico por artículo desde la FAQ actual | resolver `PUBLISHED` y vigencia desde la fuente propietaria               |
+| audiencia    | la lista es común a la pantalla                                 | filtrar por contexto y audiencia cuando aplique                           |
+| versión      | no se materializa como versión canónica de conocimiento         | conservar versión de contenido y aplicabilidad                            |
+| escalamiento | algunas respuestas indican crear ticket                         | conservar contexto y pasos al escalar                                     |
+| feedback     | no se demuestra contrato de revisión del conocimiento           | generar señal de feedback sin editar contenido automáticamente            |
+| sensibilidad | FAQ ordinaria evita diagnóstico profundo                        | mantener detalle restringido fuera del carril personal                    |
+
+La FAQ actual sirve como referencia de simplicidad visual, no como fuente canónica de conocimiento.
+
+---
+
+#### 42. Reconciliación AS-IS de VISO
+
+La inspección actual de VISO confirma una aplicación administrativa con navegación y superficies existentes, pero las fuentes revisadas no demuestran de extremo a extremo una experiencia física de base de conocimiento versionada ni un diagnóstico guiado bajo el contrato de esta tarea.
+
+La ausencia de resultados en una búsqueda de código no se utiliza como prueba absoluta de inexistencia.
+
+Estado documental:
+
+| Componente objetivo                        | Estado                   |
+| ------------------------------------------ | ------------------------ |
+| diagnóstico guiado vinculado al caso       | `ESPECIFICADO`           |
+| consumo de conocimiento vigente            | `ESPECIFICADO`           |
+| administración editorial                   | `ESPECIFICADO`           |
+| aprendizaje contextual para soporte        | `ESPECIFICADO`           |
+| persistencia física del conocimiento       | `PENDIENTE_DE_EVIDENCIA` |
+| persistencia física de capacitación        | `PENDIENTE_DE_EVIDENCIA` |
+| medición runtime de adopción bajo contrato | `PENDIENTE_DE_EVIDENCIA` |
+| implementación de nuevas superficies       | `NO_APLICA` en esta fase |
+
+---
+
+#### 43. Qué cambia respecto del estado actual
+
+Para el trabajador:
+
+- la FAQ deja de ser conceptualmente una lista fija independiente y pasa a ser una proyección contextual de conocimiento vigente;
+- al escalar, el caso recibe lo que ya se comprobó;
+- la ayuda no exige identificar la causa técnica;
+- capacitación y soporte permanecen relacionados pero separados.
+
+Para soporte:
+
+- el diagnóstico deja de depender de memoria personal o navegación libre por herramientas;
+- cada comprobación tiene propósito, resultado y rama;
+- el detalle sensible se abre gradualmente y con autorización;
+- known errors, workarounds, cambios y artículos quedan relacionados sin confundirse;
+- una solución reutilizable puede producir candidato de conocimiento con sanitización y revisión.
+
+Para gobierno:
+
+- conocimiento, anuncio, comunicación y capacitación ya no se tratan como el mismo tipo de contenido;
+- versión y vigencia quedan visibles;
+- feedback y adopción producen señales trazables;
+- contenido obsoleto no permanece como ayuda actual por inercia.
+
+---
+
+#### 44. Utilidad operativa esperada
+
+El diseño reduce:
+
+- repetición de preguntas ya contestadas;
+- dependencia de memoria del técnico;
+- exposición innecesaria de información técnica;
+- soporte basado en prueba y error sin registro;
+- FAQ divergente del procedimiento vigente;
+- capacitación general enviada a personas no afectadas;
+- confusión entre “leí”, “terminé”, “aprobé”, “soy competente” y “estoy autorizado”.
+
+Y mejora:
+
+- reproducibilidad del diagnóstico;
+- escalamiento con contexto;
+- reutilización segura del conocimiento;
+- comprensión del trabajador;
+- control de versiones;
+- revisión de contenido después de cambios o incidentes;
+- trazabilidad entre soporte, conocimiento y aprendizaje.
+
+---
+
+#### 45. Cómo se verá conceptualmente en ANIMA
+
+```text
+AYUDA Y SOPORTE
+
+¿En qué necesitas ayuda?
+Contexto detectado: tu tarea / aplicación / sede cuando sea pertinente
+
+AYUDA RECOMENDADA
+Título humano de la guía
+Aplica a: ...
+Siguiente acción segura: ...
+[ Ver guía ]
+
+Si no se resuelve
+[ Continuar con soporte ]
+
+MIS CASOS
+- estado humano
+- última actualización
+- siguiente acción
+
+APRENDIZAJE PARA TI
+Solo cuando existe una asignación o recomendación contextual aplicable
+```
+
+El detalle editorial, la telemetría y el diagnóstico restringido permanecen fuera de esta vista.
+
+---
+
+#### 46. Cómo se verá conceptualmente en VISO
+
+```text
+CASO TECNOLÓGICO
+
+RESUMEN
+Síntoma · servicio · elemento · prioridad · SLA · owner
+
+DIAGNÓSTICO
+Comprobación actual
+Resultado
+Siguiente rama
+[ Continuar ] [ Escalar ]
+
+CONOCIMIENTO RELACIONADO
+- guía diagnóstica vigente
+- error conocido aplicable
+- workaround vigente
+- cambio reciente relacionado
+
+DETALLE RESTRINGIDO
+Se muestra únicamente cuando la acción y autorización lo permiten
+
+APRENDIZAJE / MEJORA
+- candidato de conocimiento
+- feedback de guía
+- material actualizado o sustituido
+```
+
+Las superficies administrativas de publicación y auditoría se mantienen separadas del trabajo ordinario del caso.
+
+---
+
+#### 47. Handoffs físicos y propietarios
+
+| Pendiente físico                                      | Estado en esta tarea     | Propietario o destino                                                                                      | Condición de salida                                                              |
+| ----------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| persistencia de artículos, versiones, fuentes y ciclo | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete de implementación que resulte autorizado | alcance físico aprobado, modelo persistido y pruebas aplicables                  |
+| experiencia física de diagnóstico en VISO             | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete VISO autorizado                          | superficie implementada, protegida y validada contra caso y autorización         |
+| consumo de conocimiento contextual en ANIMA           | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete ANIMA autorizado                         | cliente consume fuente versionada sin FAQ competidora y conserva fallback seguro |
+| asignación, progreso y comprobación de capacitación   | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete ANIMA/VISO que resulte autorizado        | estados persistidos y separados de autorización                                  |
+| vínculo entre anuncio, cambio y conocimiento          | `FUERA_DE_ALCANCE`       | `TI-INT-002` y paquete autorizado                                                                          | contrato interaplicación materializado y probado                                 |
+| señales de adopción y frescura                        | `FUERA_DE_ALCANCE`       | `TI-INT-001` y paquete autorizado                                                                          | fuentes instrumentadas y observaciones reconciliables disponibles                |
+| integración con documentación o herramientas externas | `FUERA_DE_ALCANCE`       | `TI-INT-003`                                                                                               | contrato de proveedor, autenticación, alcance, sanitización y salida definidos   |
+| duración de retención de evidencia de soporte         | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-006`                                                                                             | política vigente fija disparador, duración, excepciones, hold y disposición      |
+
+No queda un pendiente propio de esta experiencia sin destino y condición de salida.
+
+---
+
+#### 48. Invariantes
+
+1. la guía no es el caso;
+2. el caso no es el artículo;
+3. el mensaje no es conocimiento publicado;
+4. el error conocido no es artículo por sí solo;
+5. el workaround no es resolución permanente;
+6. la health no es diagnóstico ni causa;
+7. abrir diagnóstico no concede privilegio;
+8. leer una guía no autoriza una acción;
+9. completar capacitación no concede permiso;
+10. una audiencia de aprendizaje no es rol;
+11. un artículo histórico no se presenta como vigente por existir en caché;
+12. una FAQ estática no sustituye la base gobernada;
+13. el trabajador no necesita conocer arquitectura para pedir ayuda;
+14. el técnico no empieza por el dato más sensible disponible;
+15. una señal de adopción no se convierte automáticamente en conclusión;
+16. el feedback no reescribe contenido publicado;
+17. una comunicación no prueba despliegue;
+18. un anuncio no es asignación de aprendizaje;
+19. la experiencia no crea fuente de verdad paralela;
+20. ninguna decisión documental de esta tarea modifica Supabase o aplicaciones.
+
+---
+
+#### 49. Estado de materialización
+
+| Componente                                         | Estado                    |
+| -------------------------------------------------- | ------------------------- |
+| experiencia personal de ayuda contextual           | `ESPECIFICADO`            |
+| escalamiento con contexto preservado               | `ESPECIFICADO`            |
+| diagnóstico guiado de VISO                         | `ESPECIFICADO`            |
+| progresión de sensibilidad diagnóstica             | `ESPECIFICADO`            |
+| búsqueda y consumo de conocimiento                 | `ESPECIFICADO`            |
+| presentación de ciclo de vida                      | `ESPECIFICADO`            |
+| intake, revisión y publicación                     | `ESPECIFICADO`            |
+| capacitación contextual                            | `ESPECIFICADO`            |
+| separación de estados de aprendizaje y competencia | `ESPECIFICADO`            |
+| feedback y adopción                                | `ESPECIFICADO`            |
+| reconciliación de FAQ actual de ANIMA              | `ESPECIFICADO`            |
+| reconciliación de VISO                             | `ESPECIFICADO`            |
+| persistencia runtime bajo este contrato            | `PENDIENTE_DE_EVIDENCIA`  |
+| implementación física                              | `NO_APLICA` en esta tarea |
+
+---
+
+#### 50. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-UX-005 → TI-UX-006 → TI-INT-001`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] ANIMA y VISO conservan responsabilidades distintas y complementarias;
+- [x] la ayuda del trabajador no exige conocimiento técnico previo;
+- [x] el escalamiento conserva contexto, guía, pasos y resultados ya capturados;
+- [x] el diagnóstico se vincula al caso tecnológico;
+- [x] cada comprobación puede expresar objetivo, resultado, bloqueo y rama siguiente;
+- [x] se conserva la progresión de cinco capas de sensibilidad diagnóstica;
+- [x] health, diagnóstico, causa, prioridad y resolución permanecen separados;
+- [x] known error, workaround, artículo y cambio permanecen separados;
+- [x] solo conocimiento publicado, vigente, compatible y autorizado se prioriza como ayuda ordinaria;
+- [x] se conservan 10/10 clases de conocimiento;
+- [x] se conservan 6/6 estados del ciclo de conocimiento;
+- [x] candidatos de soporte pasan por curación y puerta de publicación;
+- [x] la publicación no replica secretos, datos personales o contenido específico innecesario del caso;
+- [x] se conservan 12/12 clases de fuente;
+- [x] se conservan 8/8 audiencias de aprendizaje;
+- [x] las audiencias no crean roles ni permisos;
+- [x] se conservan 6/6 estados de asignación;
+- [x] se conservan 5/5 estados de comprobación o competencia;
+- [x] finalización, comprobación, competencia, adopción y autorización permanecen separadas;
+- [x] la capacitación se activa por contexto y no por envío indiscriminado;
+- [x] no se inventan puntajes, duraciones, periodicidades o vigencias;
+- [x] se conservan 7/7 clases de comunicación de cambio;
+- [x] se conservan 8/8 clases de señal de adopción;
+- [x] no se presenta porcentaje sin denominador ni tendencia sin periodo comparable;
+- [x] la experiencia aplica divulgación progresiva y lenguaje humano;
+- [x] el detalle técnico sensible permanece sujeto a autorización;
+- [x] la FAQ actual de ANIMA se reconcilia sin presentarla como base canónica;
+- [x] las búsquedas de código no se utilizan como prueba absoluta de ausencia;
+- [x] todo pendiente físico tiene propietario y condición de salida;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] no se ejecuta ningún cambio físico;
+- [x] `TI-INT-001` permanece únicamente reservada.
+
+---
+
+#### 51. Cobertura de prueba consumida
+
+La tarea consume cobertura canónica vigente que ya protege:
+
+- mesa de servicio simple, diagnóstico, error conocido, workaround, conocimiento y ocultamiento de detalles sensibles;
+- soporte personal de ANIMA limitado al actor y territorio autorizados;
+- lenguaje humano y ausencia de navegación ordinaria por identificadores técnicos;
+- relevancia y densidad adecuadas al actor y tarea;
+- divulgación progresiva y protección del contenido colapsado;
+- preservación de contexto al abrir detalle especializado;
+- ayuda y capacitación que no sustituyen comprensión;
+- separación de mensajes, estados, fallos, bloqueos y recuperación;
+- minimización de datos sensibles y protección de evidencia;
+- trazabilidad, autorización y pilotaje posterior.
+
+La tarea materializa estas obligaciones para la experiencia tecnológica sin cambiar la regla protegida ni el mecanismo de seguridad exigido.
+
+---
+
+#### 52. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento verificable de diagnóstico, conocimiento, ayuda contextual, soporte personal, autorización, divulgación progresiva, lenguaje humano, capacitación y protección de información sensible ya está cubierto por requisitos canónicos vigentes. Esta tarea organiza esas obligaciones en una experiencia materializada y conserva los contratos aprobados de `TI-DOM-013` y `TI-AUTH-004` sin introducir una nueva transición empresarial, permiso, algoritmo, efecto físico o condición de prueba independiente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 53. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos`
+
+TAREA ACTUAL APROBADA
+`TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica`
+
+SIGUIENTE TAREA RESERVADA
+`TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos`
+

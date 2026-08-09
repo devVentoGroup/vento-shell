@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **640** |
+| Tareas aprobadas | **641** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **954** |
+| Tareas no iniciadas | **953** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.15% (640/1594)** |
+| Porcentaje de completamiento | **40.21% (641/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos** |
-| Tarea actual | **TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica** |
+| Última tarea aprobada | **TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica** |
+| Tarea actual | **TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos** |
+| Siguiente tarea | **TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 64 de 157 aprobadas; TI-UX-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 65 de 157 aprobadas; TI-INT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-UX-005` — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos |
-| Tarea actual | `TI-UX-006` — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica — **NO INICIADA** |
-| Siguiente tarea | `TI-INT-001` — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos |
+| Última aprobada | `TI-UX-006` — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica |
+| Tarea actual | `TI-INT-001` — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos — **NO INICIADA** |
+| Siguiente tarea | `TI-INT-002` — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 64 DE 157 APROBADAS — ACTUAL TI-UX-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 65 DE 157 APROBADAS — ACTUAL TI-INT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
-        ↓
-TAREA ACTUAL
 TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 64 de 157 tareas aprobadas
+CARRIL NEXO — 65 de 157 tareas aprobadas
 ```
