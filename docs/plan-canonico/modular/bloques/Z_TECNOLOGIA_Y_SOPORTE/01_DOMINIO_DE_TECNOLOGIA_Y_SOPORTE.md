@@ -8968,7 +8968,905 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios`
 
 
-### [ ] TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
+### ✅ TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior` — APROBADA
+**Tarea siguiente:** `TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del modelo operativo de observabilidad tecnológica, señales, salud, alertas, logs, correlación con servicios, incidentes y cambios
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-OBSERVABILITY-OPERATING-CONTRACT-001`; `TI-TECHNICAL-SIGNAL-CONTRACT-001`; `TI-SERVICE-HEALTH-MATRIX-001`; `TI-ALERT-GOVERNANCE-MATRIX-001`; `TI-LOGGING-EVIDENCE-CONTRACT-001`; `TI-CHANGE-OBSERVABILITY-CORRELATION-001`; `TI-OBSERVABILITY-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, vistas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, dispositivos, redes, impresoras, aplicaciones, alertas productivas, herramientas externas, secretos, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar el contrato tecnológico que permite observar de manera coherente los once servicios `TI-SERVICE-*`, los siete tipos de elemento técnico ya definidos, las operaciones locales y las dependencias externas; conservar la separación entre señal, alerta, incidente, problema, cambio y continuidad; adoptar sin duplicar el contrato transversal de SLI/SLO ya aprobado; y fijar cómo se deriva salud, cómo se correlacionan eventos, cómo se gobiernan alertas, qué debe registrar un log y qué evidencia deberá conservarse antes de implementar adaptadores, tableros o automatizaciones.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-DOM-010` queda documentalmente cerrada con:
+
+- un contrato operativo único de observabilidad tecnológica;
+- una adopción explícita de `OBSERVABILITY-SLI-SLO-CONTRACT-001` como contrato transversal de SLI, SLO, umbrales, severidad y observabilidad;
+- seis clases de señal conservadas: `INFO`, `WARNING`, `FAILURE`, `RECOVERY`, `SATURATION` y `SECURITY_SIGNAL`;
+- siete formas de observación definidas para operación tecnológica: métrica, evento o transición, log, heartbeat, prueba sintética, resultado de operación y observación manual controlada;
+- cinco estados de salud conservados: `HEALTHY`, `DEGRADED`, `OFFLINE`, `MISCONFIGURED` y `UNKNOWN`;
+- ocho categorías de SLI conservadas y cuatro categorías obligatorias de SLO conservadas;
+- un conjunto mínimo de doce familias métricas;
+- un ciclo de alerta de seis etapas operativas, sin convertir señal en incidente por inferencia;
+- una matriz materializada para los once servicios `TI-SERVICE-001` a `TI-SERVICE-011`;
+- una matriz materializada para las siete clases de configuración de `TI-DOM-002`;
+- correlación obligatoria entre observabilidad y cambio tecnológico antes, durante y después de la ventana;
+- reglas de logging seguro y de evidencia que prohíben secretos y datos sensibles innecesarios;
+- una reconciliación AS-IS contra código, migraciones y estado desplegado consultado en modo de solo lectura;
+- cero cambios físicos;
+- cero cambios en requisitos de prueba.
+
+La tarea define el modelo operativo. No afirma que exista actualmente una plataforma unificada de monitoreo ni activa alarmas, integraciones, dashboards o recolección de telemetría en producción.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y conserva, sin redefinir su autoridad:
+
+1. `TI-DOM-001` y las once familias `TI-SERVICE-001` a `TI-SERVICE-011`;
+2. `TI-DOM-002` y `TI-CONFIGURATION-GRAPH-CONTRACT-001`, incluidas las clases `ASSET`, `ENDPOINT`, `SHARED_DEVICE`, `NETWORK_RESOURCE`, `PRINTER`, `APPLICATION` y `TECH_SERVICE`;
+3. `TI-DOM-003` y su separación entre baseline deseado, estado observado, postura, frescura de evidencia, última comprobación y salud del endpoint;
+4. `TI-DOM-004` y sus reglas de observación de red, donde conectado no equivale a saludable y ausencia de telemetría no equivale a salud;
+5. `TI-DOM-005` y la separación entre impresora física, cola, routing, adaptador, trabajo y resultado;
+6. `TI-DOM-006` y su catálogo de aplicaciones, ambientes, dependencias, proveedores y dependencia de observabilidad;
+7. `TI-DOM-007` y la separación entre solicitud, incidente, prioridad, restauración, validación y cierre;
+8. `TI-DOM-008` y la separación entre incidente, problema, causa, error conocido y workaround;
+9. `TI-DOM-009` y la separación entre cambio requerido, aprobado, implementado y eficaz, con ventana, prueba, rollback y revisión posterior;
+10. `CAP-SCOPE-015`, incluido el hallazgo de ausencia de monitoreo integrado para aplicaciones, endpoints, redes, impresoras, colas y servicios;
+11. `NFR-REQ-009` y `OBSERVABILITY-SLI-SLO-CONTRACT-001`;
+12. las cuarenta condiciones de prueba de observabilidad ya registradas desde `TREQ-PROC-461` hasta `TREQ-PROC-500`;
+13. `VPROC-0058` como proceso propietario de solicitudes e incidentes tecnológicos en VISO;
+14. NOTIFY-ARC como autoridad de transporte de notificaciones;
+15. EVID-ARC como autoridad de evidencia transversal;
+16. QUEUE-ARC como autoridad de colas transversales;
+17. BLOQUE T como autoridad de pruebas, releases, despliegue y rollback de software;
+18. E5 como autoridad de diseño de readiness, cutover, piloto e hypercare;
+19. los contratos vigentes de autorización, dispositivos compartidos, impresión, integración y continuidad que producen o consumen señales técnicas.
+
+Las referencias históricas de `NFR-REQ-009` a la familia `OBS-ARC-*` no se utilizan como propietario de ejecución de esta tarea: la ruta canónica vigente no materializa esa familia y las decisiones posteriores aprobadas de BLOQUE Z asignan operación de monitoreo y salud a `TI-DOM-010`, adaptadores de telemetría a `TI-INT-001`, experiencia de salud a `TI-UX-003` y protección de monitoreo y logs a `TI-AUTH-003` y `TI-AUTH-004`. No se crea una tarea nueva ni se altera la secuencia vigente por esa referencia histórica.
+
+---
+
+#### 3. Problema que se cierra
+
+La línea base tecnológica contiene señales parciales, estados de objetos, eventos y logs de distintas fuentes, pero no un contrato único que responda de forma consistente:
+
+```text
+QUÉ SERVICIO SE OBSERVA
+→ QUÉ ELEMENTO PRODUJO LA SEÑAL
+→ QUÉ SE OBSERVÓ Y CUÁNDO
+→ SI LA EVIDENCIA ES FRESCA
+→ QUÉ SLI O REGLA SE AFECTA
+→ SI EXISTE CANDIDATO DE ALERTA
+→ SI LA ALERTA ES ACCIONABLE
+→ SI SE CORRELACIONA CON INCIDENTE O CAMBIO
+→ QUÉ EVIDENCIA QUEDA
+→ QUIÉN DEBE ACTUAR
+```
+
+La respuesta canónica no es una tabla genérica de logs ni un proveedor externo convertido en fuente de verdad. Es una capa federada de observabilidad que referencia identidades y hechos ya propiedad de otros dominios.
+
+---
+
+#### 4. Contrato operativo `TI-OBSERVABILITY-OPERATING-CONTRACT-001`
+
+Se fija la cadena operativa:
+
+```text
+FUENTE
+→ SEÑAL
+→ REGISTRO OBSERVABLE
+→ CORRELACIÓN
+→ SLI
+→ SLO O REGLA OPERATIVA
+→ UMBRAL / ESTADO DE CONSUMO
+→ CANDIDATO DE ALERTA
+→ ALERTA ACCIONABLE
+→ INCIDENTE CUANDO CORRESPONDA
+→ COMUNICACIÓN
+→ MITIGACIÓN
+→ RECUPERACIÓN
+→ EVIDENCIA
+→ APRENDIZAJE
+```
+
+Invariantes:
+
+1. una señal no es una alerta;
+2. una alerta no es un incidente;
+3. un incidente no es una causa;
+4. un SLI no es un SLO;
+5. un SLO no es el SLA de servicio de `TI-DOM-007`;
+6. un umbral no diagnostica automáticamente la causa;
+7. `RECOVERY` no demuestra estabilidad sostenida;
+8. un `HEALTHY` previo no permanece vigente cuando la evidencia requerida queda obsoleta;
+9. una alarma cerrada no prueba que el problema fue eliminado;
+10. observabilidad no concede autorización, no modifica configuración y no ejecuta un cambio;
+11. los proveedores de monitoreo no se convierten en maestros de servicio, activo, identidad, incidente o cambio;
+12. una ausencia de señales esperadas se vuelve evidencia de incertidumbre, no evidencia de salud.
+
+---
+
+#### 5. Objetos observables y autoridad
+
+La observabilidad se proyecta sobre identidades existentes. No crea identidades técnicas paralelas.
+
+| Objeto observado       | Identidad o autoridad conservada              | Qué puede aportar observabilidad                                                                | Qué no puede concluir por sí sola                           |
+| ---------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Servicio tecnológico   | `TI-SERVICE-*`                                | salud derivada, SLI, tendencia, alertas, dependencias afectadas                                 | prioridad de incidente, SLA o continuidad                   |
+| Activo físico          | NEXO / `ASSET`                                | condición observada, disponibilidad física reportada, mantenimiento o pérdida de señal          | identidad de endpoint o estado lógico                       |
+| Endpoint               | `ENDPOINT` / `TI-DOM-003`                     | última comprobación, postura, baseline, actualización, disponibilidad y frescura                | autorización del actor o propiedad física                   |
+| Dispositivo compartido | `SHARED_DEVICE`                               | heartbeat, última presencia, fallas locales, versión de cliente, sesión técnica correlacionable | identidad del trabajador ni sus permisos                    |
+| Recurso de red         | `NETWORK_RESOURCE`                            | reachability, latencia, pérdida, saturación, drift y evidencia de conectividad                  | salud de una aplicación solo porque hay red                 |
+| Impresora              | `PRINTER` + NEXO + PRINT-ARC                  | heartbeat, conectividad, estado técnico, cola, resultado y error correlacionados                | éxito del hecho empresarial que originó el documento        |
+| Aplicación             | `APPLICATION` / SHELL + propietaria funcional | disponibilidad, latencia, error, versión, entorno y dependencia                                 | disponibilidad por la sola existencia del registro          |
+| Cola o integración     | QUEUE-ARC / contratos X                       | backlog, edad, error, reintento, latencia, resultado y recuperación                             | propiedad del proceso empresarial                           |
+| Proveedor externo      | contrato propietario                          | disponibilidad reportada, error, latencia, cuota o incidente externo correlacionado             | autoridad sobre identidad, contrato, costo o cierre interno |
+
+Cuando una señal apunte a un elemento del grafo de `TI-DOM-002`, deberá conservar clase e identidad canónica del nodo. La observación no fusiona activo, endpoint, dispositivo, red, impresora, aplicación o servicio.
+
+---
+
+#### 6. Contrato de señal `TI-TECHNICAL-SIGNAL-CONTRACT-001`
+
+Toda señal que pretenda participar en salud, alerta, diagnóstico o evidencia deberá poder reconstruir, cuando aplique:
+
+| Dato                 | Regla                                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Momento observado    | instante en que ocurrió o fue medido el hecho                                                                             |
+| Momento recibido     | instante en que Vento recibió la señal                                                                                    |
+| Clase de señal       | una de las seis clases canónicas                                                                                          |
+| Forma de observación | métrica, evento/transición, log, heartbeat, prueba sintética, resultado de operación u observación manual                 |
+| Clase de fuente      | aplicación, endpoint, dispositivo, red, impresora, cola, proveedor, base de datos, integración u otra fuente identificada |
+| Fuente               | identidad estable o referencia verificable de la fuente                                                                   |
+| Servicio             | `TI-SERVICE-*` cuando la relación esté demostrada                                                                         |
+| Elemento técnico     | clase e identidad de configuración cuando aplique                                                                         |
+| Ambiente             | ambiente técnico cuando exista                                                                                            |
+| Sede o área          | contexto territorial solo cuando tenga semántica para la señal                                                            |
+| Clave de correlación | valor estable que permita unir intentos, eventos o estados de la misma operación                                          |
+| Resumen              | descripción breve no sensible                                                                                             |
+| Medición             | valor y unidad cuando la señal sea cuantitativa                                                                           |
+| Detalle estructurado | contexto mínimo para diagnóstico sin secretos                                                                             |
+| Evidencia            | referencia al soporte probatorio cuando deba conservarse                                                                  |
+| Sensibilidad         | regla de enmascaramiento o restricción aplicable                                                                          |
+| Frescura             | vigente, retrasada, obsoleta o desconocida según el contrato de la fuente                                                 |
+| Cambio relacionado   | referencia al cambio cuando la señal ocurra en una ventana controlada                                                     |
+| Caso relacionado     | referencia a solicitud, incidente o problema únicamente cuando exista correlación real                                    |
+
+No se infieren relaciones únicamente por nombre, IP, serial, URL, sede o coincidencia temporal.
+
+---
+
+#### 7. Clases y formas de señal
+
+Se conservan las seis clases de `OBSERVABILITY-SLI-SLO-CONTRACT-001`:
+
+| Clase             | Uso                                                                                                              |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `INFO`            | hecho técnico útil que no representa por sí mismo degradación                                                    |
+| `WARNING`         | condición que requiere atención o tendencia de riesgo                                                            |
+| `FAILURE`         | fallo observado de una operación, componente o capacidad                                                         |
+| `RECOVERY`        | recuperación observada de una condición previa                                                                   |
+| `SATURATION`      | agotamiento o presión de capacidad                                                                               |
+| `SECURITY_SIGNAL` | señal con relevancia de seguridad que requiere evaluación y no equivale automáticamente a incidente de seguridad |
+
+Las formas de observación son:
+
+1. **métrica:** medición numérica periódica o por operación;
+2. **evento o transición:** cambio de estado o hecho discreto;
+3. **log:** registro contextual de una operación o error;
+4. **heartbeat:** evidencia periódica de presencia o capacidad de reportar;
+5. **prueba sintética:** comprobación controlada diferenciada del tráfico real;
+6. **resultado de operación:** éxito, error o resultado desconocido de una acción concreta;
+7. **observación manual controlada:** captura humana con actor, método, momento y evidencia.
+
+La forma no determina severidad. Un heartbeat recibido puede ser `INFO`; su ausencia puede producir `UNKNOWN` o un candidato de alerta según la frescura esperada.
+
+---
+
+#### 8. Semántica temporal y orden de eventos
+
+Se conservan como tiempos distintos:
+
+- `ObservedAt`: cuando ocurrió o se midió el hecho;
+- `ReceivedAt`: cuando la plataforma recibió la señal;
+- `StartedAt`: inicio de una condición;
+- `LastObservedAt`: última evidencia de que la condición seguía presente;
+- `ResolvedAt`: evidencia de recuperación o resolución de la condición.
+
+Reglas:
+
+1. el instante canónico se conserva en UTC mediante una representación equivalente a `timestamptz`;
+2. la presentación territorial usa la zona IANA de la sede cuando corresponda;
+3. la hora declarada por un cliente o dispositivo no es autoridad única;
+4. drift de reloj, backfill, retraso y llegada fuera de orden deben ser detectables;
+5. una señal tardía no reescribe silenciosamente el presente;
+6. la línea de tiempo de VISO debe poder ordenar hechos por tiempo observado y distinguir el tiempo de recepción;
+7. la correlación no depende de que dos señales hayan llegado en el mismo orden.
+
+---
+
+#### 9. Salud de elemento y salud de servicio
+
+Se conservan cinco estados:
+
+| Estado          | Significado operativo                                                                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HEALTHY`       | existe evidencia fresca y suficiente de que las capacidades observadas cumplen su condición esperada                                                      |
+| `DEGRADED`      | la capacidad continúa parcialmente disponible, pero existe incumplimiento, reducción, error repetido, retraso, saturación o pérdida de calidad demostrada |
+| `OFFLINE`       | existe evidencia suficiente de indisponibilidad de la capacidad observada                                                                                 |
+| `MISCONFIGURED` | la configuración observada diverge del perfil esperado de manera demostrable                                                                              |
+| `UNKNOWN`       | la evidencia es ausente, obsoleta, contradictoria o insuficiente para concluir salud                                                                      |
+
+Reglas:
+
+1. `UNKNOWN` es un estado válido y preferible a fabricar `HEALTHY`;
+2. `MISCONFIGURED` describe conformidad de configuración del elemento; el efecto sobre el servicio puede ser `DEGRADED`, `OFFLINE` o todavía no demostrado;
+3. salud de componente y salud de servicio no se confunden;
+4. un servicio no adopta automáticamente el peor estado de todos sus componentes; deberá distinguir dependencia crítica, redundancia, alcance e impacto;
+5. un servicio tampoco puede ignorar un componente crítico porque otra señal esté verde;
+6. estado deseado, estado observado, excepción y salud permanecen separados;
+7. el estado deberá declarar fuente y frescura;
+8. el cambio de estado genera un evento observable;
+9. la recuperación de una señal no cierra por sí sola un incidente;
+10. un recurso alcanzable no se presume correctamente configurado.
+
+---
+
+#### 10. SLI y SLO adoptados
+
+`TI-DOM-010` adopta las ocho categorías de SLI ya aprobadas:
+
+1. disponibilidad;
+2. integridad;
+3. rendimiento;
+4. capacidad;
+5. frescura;
+6. confiabilidad;
+7. observabilidad;
+8. resultado humano.
+
+Para cada flujo crítico deberán existir, cuando aplique, cuatro categorías de SLO:
+
+1. disponibilidad;
+2. integridad;
+3. rendimiento o capacidad;
+4. observabilidad.
+
+Cada SLO deberá conservar:
+
+- objetivo;
+- ventana;
+- población;
+- exclusiones;
+- muestra mínima;
+- retraso permitido de datos;
+- condición de incumplimiento;
+- consecuencia operativa.
+
+Los SLO técnicos no reemplazan los SLA de atención definidos por `TI-DOM-007`. El SLA gobierna compromiso de atención; el SLO describe objetivo técnico medible.
+
+---
+
+#### 11. Conjunto mínimo de métricas
+
+El conjunto mínimo adoptado es:
+
+1. latencia `p50`, `p95` y `p99` cuando exista población suficiente;
+2. razón de éxito empresarial;
+3. razón de error por código o clase;
+4. throughput;
+5. tamaño y edad de backlog;
+6. cantidad de reintentos o reprocesos;
+7. cumplimiento de SLI/SLO y burn rate cuando exista SLO;
+8. salud de dispositivo local;
+9. disponibilidad de integración o workflow;
+10. razón de captura exitosa de evidencia;
+11. frescura de sincronización o lag de replicación cuando aplique;
+12. cantidad de excepciones observacionales o manuales cuando no exista métrica automática.
+
+No se exige que toda fuente produzca las doce métricas. Cada servicio seleccionará las aplicables y justificará `NO_APLICA` para las restantes durante su paquete de implementación.
+
+---
+
+#### 12. Baseline provisional y umbrales
+
+Mientras no exista suficiente historia operacional, se conservan como referencias provisionales, no como SLO finales:
+
+| Condición                     | Referencia inicial                                                  |
+| ----------------------------- | ------------------------------------------------------------------- |
+| Caída sostenida de throughput | reducción igual o superior al 20 % frente a la referencia aplicable |
+| Degradación de latencia       | `p95` por encima de la referencia inicial durante cinco minutos     |
+| Saturación                    | 80 % como advertencia y 90 % como candidato crítico                 |
+| Captura de evidencia          | razón inferior a `0.99`                                             |
+| Backlog                       | tamaño o edad por encima del baseline del servicio                  |
+| Drift                         | diferencia superior a la tolerancia aprobada del objeto             |
+| Falla de dispositivo local    | repetición dentro de una ventana de diez minutos                    |
+
+Reglas:
+
+1. estas referencias son transitorias hasta que exista baseline histórico suficiente;
+2. no se aplican ciegamente a todos los servicios;
+3. eventos de integridad crítica pueden requerir tolerancia cero a pérdida silenciosa;
+4. percentiles solo se interpretan con muestra suficiente;
+5. backlog se evalúa por cantidad y edad;
+6. error repetido requiere frecuencia y ventana;
+7. la fuente del umbral debe quedar explícita;
+8. un umbral sin propietario, destinatario o acción no constituye una alerta operativa.
+
+---
+
+#### 13. Ciclo de alerta `TI-ALERT-GOVERNANCE-MATRIX-001`
+
+Se adopta el ciclo:
+
+```text
+CANDIDATO
+→ SUPRIMIDO O DEDUPLICADO, SI APLICA
+→ ACTIVO Y ACCIONABLE
+→ ACK
+→ CORRELACIONADO CON INCIDENTE, CUANDO CORRESPONDA
+→ CLEAR / CIERRE DE LA ALERTA
+```
+
+La recuperación puede ocurrir antes o después de que exista incidente y deberá conservarse como hecho.
+
+Toda regla de alerta deberá declarar, como mínimo:
+
+1. identidad única de la regla;
+2. condición de activación;
+3. fuente o SLI;
+4. severidad;
+5. propietario;
+6. destinatario;
+7. canal;
+8. intervalo de deduplicación;
+9. regla de inhibición o silencio;
+10. ruta de escalamiento;
+11. runbook;
+12. relación esperada con incidente;
+13. fecha o condición de revisión;
+14. comportamiento cuando falle el canal de notificación.
+
+Una regla sin destinatario y sin canal verificable no se considera operativa.
+
+---
+
+#### 14. Deduplicación, inhibición, silencio y mantenimiento
+
+1. señales originales no se eliminan por deduplicación;
+2. la deduplicación agrupa candidatos equivalentes por regla, recurso, correlación y ventana;
+3. un cambio o mantenimiento planificado puede inhibir una alerta si la regla lo permite;
+4. la inhibición no convierte un fallo en éxito;
+5. la ventana aprobada de `TI-DOM-009` deberá correlacionarse con las señales que cambien durante el trabajo;
+6. un silencio deberá conservar alcance, razón, actor autorizado, inicio y fin;
+7. un silencio vencido deja de inhibir;
+8. una señal de seguridad no se silencia por mera conveniencia operativa;
+9. una señal `RECOVERY` deberá seguir siendo registrable durante una ventana silenciada;
+10. una condición que exceda el efecto esperado del cambio puede reactivar alertamiento aunque exista mantenimiento planificado.
+
+---
+
+#### 15. Severidad de alerta
+
+Se conservan cuatro niveles:
+
+| Severidad | Criterio general                                                                                                                    |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `SEV1`    | interrupción crítica, pérdida de una capacidad esencial, riesgo material de integridad o seguridad, o afectación empresarial severa |
+| `SEV2`    | degradación significativa con impacto alto, pero con operación parcial o mitigación disponible                                      |
+| `SEV3`    | degradación moderada, error localizado o riesgo que requiere atención programada                                                    |
+| `SEV4`    | información operativa, anomalía de bajo impacto o seguimiento preventivo                                                            |
+
+La severidad de una alerta no reemplaza el cálculo de impacto, urgencia y prioridad del incidente. Cuando se cree un incidente, `TI-DOM-007` calcula la prioridad con su propio contrato.
+
+---
+
+#### 16. Correlación con solicitud, incidente y problema
+
+```text
+SEÑAL
+≠ ALERTA
+≠ INCIDENTE
+≠ PROBLEMA
+```
+
+Reglas:
+
+1. una señal puede existir sin caso;
+2. un candidato de alerta puede ser deduplicado o suprimido sin crear incidente;
+3. una alerta activa crea o se correlaciona con incidente únicamente cuando la regla y el impacto lo requieren;
+4. el incidente conserva `VPROC-0058` y la identidad de VISO;
+5. la alerta conserva vínculo con el servicio y elemento afectado;
+6. el incidente puede consumir múltiples alertas;
+7. una alerta puede correlacionarse con un incidente existente en lugar de duplicarlo;
+8. recurrencia, patrón o causa desconocida se transfieren a `TI-DOM-008`;
+9. resolución del incidente no elimina la historia de señales;
+10. un problema puede seguir observando señales después de restaurar el servicio.
+
+---
+
+#### 17. Correlación con cambio `TI-CHANGE-OBSERVABILITY-CORRELATION-001`
+
+Todo cambio de `TI-DOM-009` que afecte un servicio observable deberá definir qué se observará antes, durante y después.
+
+| Momento            | Evidencia mínima                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Antes de ventana   | baseline disponible, salud actual, señales críticas, dependencias y evidencia de que el monitoreo requerido está disponible |
+| Inicio             | identificación del cambio, ventana, elementos afectados y momento efectivo de inicio                                        |
+| Durante            | variación de métricas, errores, saturación, salud, alertas y operaciones fallidas relacionadas                              |
+| Validación         | comparación contra baseline y criterios de éxito de la prueba                                                               |
+| Rollback           | disparador, estado que motivó reversión, ejecución y señales posteriores                                                    |
+| Estabilización     | observación suficiente para distinguir recuperación puntual de estabilidad                                                  |
+| Revisión posterior | tendencias, alertas, incidentes, drift, regresiones y efecto empresarial correlacionados                                    |
+
+Una métrica favorable no convierte por sí sola un cambio en eficaz. La revisión posterior conserva la decisión de `TI-DOM-009`.
+
+---
+
+#### 18. Logging seguro `TI-LOGGING-EVIDENCE-CONTRACT-001`
+
+Un log técnico deberá conservar únicamente el contexto necesario para reconstruir operación y diagnóstico.
+
+Campos mínimos cuando apliquen:
+
+- timestamp;
+- proceso, servicio u operación;
+- fuente;
+- actor o principal técnico;
+- elemento técnico;
+- correlation id;
+- resultado;
+- código o clase de error;
+- versión o ambiente;
+- referencia al cambio o incidente cuando exista;
+- contexto estructurado minimizado;
+- clasificación de sensibilidad.
+
+Queda prohibido registrar en texto claro o payload ordinario:
+
+- contraseñas;
+- tokens completos;
+- secretos;
+- OTP;
+- códigos de recuperación MFA;
+- credenciales privilegiadas;
+- datos de pago;
+- datos personales completos cuando no sean necesarios;
+- secretos embebidos en URLs;
+- dumps indiscriminados de cabeceras, cookies o variables de ambiente;
+- configuraciones completas que contengan credenciales.
+
+Los logs de diagnóstico sensibles requieren autorización específica. La definición detallada de acceso corresponde a `TI-AUTH-004`.
+
+---
+
+#### 19. Evidencia frente a log operativo
+
+```text
+LOG OPERATIVO
+≠ EVIDENCIA CANÓNICA
+```
+
+1. un log puede aportar evidencia, pero no toda línea de log debe preservarse como expediente;
+2. EVID-ARC conserva la evidencia que requiera permanencia empresarial;
+3. una captura o exportación de diagnóstico debe minimizar datos antes de adjuntarse a un caso;
+4. eliminar ruido de un dashboard no elimina el hecho histórico que deba conservarse;
+5. una observación manual solo se acepta si identifica actor, método, momento, fuente y resultado;
+6. una observación manual no puede presentarse como telemetría automática;
+7. el acceso a logs sensibles deberá ser auditable;
+8. el usuario final no recibe trazas internas, IP, tokens, payloads o errores técnicos que no necesite para actuar.
+
+---
+
+#### 20. Observabilidad de los once servicios
+
+`TI-SERVICE-001` a `TI-SERVICE-011` se conservan sin renombrar y reciben una decisión explícita.
+
+| Servicio         | Servicio canónico                                                       | Observación primaria                                      | Señales o indicadores relevantes                                                                                                    | Propietario de profundización                            |
+| ---------------- | ----------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | disponibilidad y resultado del ciclo autorizado de acceso | autenticación, MFA cuando aplique, aprovisionamiento, revocación, error técnico, dependencia de aplicación y evidencia de ejecución | `TI-AUTH-001`; `TI-AUTH-002`; `TI-INT-002`; `TI-INT-003` |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | salud y frescura de endpoint/dispositivo                  | última comprobación, postura, baseline, versión, actualización, heartbeat, fallas locales y disponibilidad de señal                 | `TI-DOM-003`; `TI-INT-001`; `TI-AUTH-003`                |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | disponibilidad y calidad de conectividad                  | enlace, reachability, latencia, pérdida, saturación, drift, segmento, AP y dependencia de sede/servicio                             | `TI-DOM-004`; `TI-INT-001`; `TI-DOM-011`                 |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | salud de impresora y camino de impresión                  | heartbeat, conectividad, cola, edad, resultado, error, adaptador, routing y falla local o de red                                    | `TI-DOM-005`; PRINT-ARC; `TI-INT-001`                    |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | disponibilidad y rendimiento de la capacidad publicada    | disponibilidad, error, latencia, versión, ambiente, integración, proveedor y dependencia crítica                                    | `TI-DOM-006`; `TI-INT-001`; `TI-INT-003`                 |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | salud del flujo de atención                               | backlog, edad, asignación, comunicaciones, acciones pendientes y dependencia del servicio afectado                                  | `TI-DOM-007`; `TI-UX-002`                                |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | estado del servicio afectado y evolución de restauración  | salud del servicio, alertas correlacionadas, degradación, recuperación, recurrencia y evidencia de validación                       | `TI-DOM-007`; `TI-DOM-008`; `TI-UX-004`                  |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | comportamiento antes, durante y después del cambio        | baseline, drift, error, latencia, alertas, rollback, estabilización y revisión posterior                                            | `TI-DOM-009`; BLOQUE T; `TI-UX-004`                      |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | disponibilidad y resultado verificable de pruebas         | ejecución, resultado, evidencia, compatibilidad, hardware, red, impresión, recuperación y observabilidad requerida                  | E5; BLOQUE T; BLOQUE U                                   |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | condiciones técnicas que pueden afectar disponibilidad    | vigencia, asiento o uso cuando aplique, renovación, garantía, proveedor y evento de expiración o restricción                        | `TI-DOM-012`; ORIGO; NUMERA; `TI-INT-003`                |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | disponibilidad y vigencia del soporte guiado              | presencia de runbook, versión relacionada, cambios comunicados, material disponible y señal de adopción cuando exista               | `TI-DOM-013`; `TI-UX-006`                                |
+
+Cobertura materializada: **11 de 11 servicios**, sin faltantes ni duplicados.
+
+---
+
+#### 21. Observabilidad de las siete clases de configuración
+
+| Clase              | Señales principales                                                                            | Regla de interpretación                                              |
+| ------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `ASSET`            | condición física reportada, mantenimiento, disponibilidad o falla demostrada                   | no determina salud de endpoint por sí sola                           |
+| `ENDPOINT`         | última evaluación, postura, baseline, versión, parche, cifrado, disponibilidad y frescura      | sin evidencia fresca, la salud no se presume                         |
+| `SHARED_DEVICE`    | heartbeat, `last_seen`, sesión técnica, versión de cliente, fallas locales, operación reciente | actor humano y dispositivo permanecen separados                      |
+| `NETWORK_RESOURCE` | reachability, latencia, pérdida, saturación, drift, estado observado                           | interfaz activa no demuestra conectividad extremo a extremo          |
+| `PRINTER`          | heartbeat, conectividad, resultado de trabajo, cola, error y ruta                              | impresora disponible no demuestra entrega empresarial correcta       |
+| `APPLICATION`      | disponibilidad, latencia, error, versión, ambiente, proveedor y dependencias                   | registro activo no equivale a disponibilidad operativa               |
+| `TECH_SERVICE`     | SLI, SLO, dependencias críticas, alertas, incidentes, cambios y tendencias                     | salud es una proyección explicable, no una fuente de verdad paralela |
+
+Cobertura materializada: **7 de 7 clases**.
+
+---
+
+#### 22. Dispositivos locales y estación compartida
+
+Una estación o dispositivo local deberá poder correlacionar, cuando aplique:
+
+- `device_code`;
+- identidad del endpoint;
+- red o dirección observada sin convertir IP en identidad;
+- versión de navegador o aplicación;
+- periférico o cola relacionada;
+- perfil esperado;
+- heartbeat;
+- última operación exitosa;
+- cola local;
+- última sincronización;
+- última evaluación de postura.
+
+Reglas:
+
+1. una falla local debe distinguirse de una falla de backend;
+2. pérdida de red debe distinguirse de aplicación caída;
+3. periférico desconectado debe distinguirse de cola bloqueada;
+4. configuración incorrecta puede producir `MISCONFIGURED`;
+5. ausencia prolongada de heartbeat produce incertidumbre conforme al contrato de frescura, no una presunción automática de `OFFLINE`;
+6. soporte remoto no se habilita por el solo estado de salud;
+7. el trabajador activo no hereda privilegios técnicos del dispositivo.
+
+---
+
+#### 23. Redes
+
+La observación de red deberá permitir distinguir:
+
+- enlace;
+- equipo;
+- interfaz;
+- segmento o VLAN;
+- SSID;
+- direccionamiento o reserva;
+- reachability;
+- latencia;
+- pérdida;
+- saturación;
+- configuración esperada frente a observada;
+- cambio activo;
+- dependencia de servicio.
+
+Invariantes:
+
+1. conectado no equivale a saludable;
+2. interfaz `up` no prueba conectividad extremo a extremo;
+3. Internet disponible no prueba disponibilidad de servicios internos;
+4. equipo alcanzable no prueba configuración correcta;
+5. ausencia de telemetría es ausencia de evidencia;
+6. la telemetría no almacena PSK, claves, secretos o configuraciones completas;
+7. pruebas sintéticas se distinguen de tráfico real;
+8. monitoreo de red no sustituye diagnóstico de endpoint, aplicación, impresora o proveedor.
+
+---
+
+#### 24. Impresión y periféricos
+
+La observabilidad de impresión conserva:
+
+```text
+IMPRESORA
+≠ COLA
+≠ ROUTING
+≠ ADAPTADOR
+≠ TRABAJO
+≠ RESULTADO
+```
+
+Debe ser posible distinguir:
+
+- impresora no disponible;
+- impresora disponible pero mal configurada;
+- red no disponible;
+- cola con backlog;
+- trabajo en reintento;
+- adaptador no disponible;
+- resultado desconocido;
+- trabajo enviado pero no confirmado;
+- error de formato o capacidad;
+- recuperación técnica.
+
+PRINT-ARC conserva el trabajo y resultado de impresión. `TI-DOM-010` únicamente define cómo esos hechos participan en salud, alerta y diagnóstico.
+
+---
+
+#### 25. Aplicaciones, colas, integraciones y proveedores
+
+Para aplicaciones y servicios remotos se observarán, cuando apliquen:
+
+- disponibilidad;
+- latencia;
+- razón de éxito;
+- razón de error;
+- throughput;
+- backlog;
+- edad de backlog;
+- reintentos;
+- respuesta de dependencia;
+- versión o ambiente;
+- cuota o saturación;
+- frescura;
+- resultado desconocido;
+- estado reportado por proveedor.
+
+Reglas:
+
+1. métrica del proveedor no sustituye evidencia interna del efecto;
+2. status page externa no cierra un incidente interno;
+3. fallo de pool o base de datos debe distinguirse de error empresarial;
+4. error de integración debe conservar contrato y correlación;
+5. reintentos no pueden duplicar efectos;
+6. los adaptadores específicos pertenecen a `TI-INT-001` a `TI-INT-003`;
+7. secretos de proveedor no aparecen en logs o casos.
+
+---
+
+#### 26. Notificación y escalamiento
+
+NOTIFY-ARC conserva transporte y entrega. La alerta conserva verdad operativa.
+
+Secuencia:
+
+```text
+ALERTA ACCIONABLE
+→ SELECCIÓN DE DESTINATARIO
+→ CANAL PRIMARIO
+→ FALLBACK CONTROLADO SI CORRESPONDE
+→ EVIDENCIA DE ENTREGA
+→ ACK CUANDO SEA REQUERIDO
+```
+
+El baseline de canal mantiene:
+
+```text
+push / in-app
+→ email
+→ contingencia manual controlada
+```
+
+El fallo de notificación es un hecho observable distinto de la condición técnica que originó la alerta. No se cierra la alerta porque falló el canal.
+
+---
+
+#### 27. Experiencia operativa
+
+La experiencia se divide:
+
+**Trabajador:**
+- estado comprensible;
+- efecto operativo;
+- acción segura disponible;
+- referencia al caso cuando exista;
+- sin trazas sensibles.
+
+**Responsable tecnológico o VISO autorizado:**
+- servicio;
+- elemento;
+- origen;
+- alcance;
+- inicio;
+- estado actual;
+- impacto;
+- propietario;
+- acción siguiente;
+- alertas relacionadas;
+- incidente o cambio relacionado;
+- tendencia reciente;
+- evidencia disponible según autorización.
+
+La materialización de pantallas corresponde a `TI-UX-003` y `TI-UX-004`. Esta tarea no crea interfaz.
+
+---
+
+#### 28. Seguridad de monitoreo y diagnóstico
+
+La observabilidad aplica mínimo privilegio.
+
+1. ver estado resumido no autoriza ver logs completos;
+2. diagnosticar no autoriza cambiar configuración;
+3. abrir un log no autoriza exportarlo;
+4. una herramienta externa recibe solo el alcance y credencial estrictamente necesarios;
+5. credenciales técnicas no se reutilizan como permisos empresariales;
+6. acceso extraordinario deberá ser temporal y trazable;
+7. toda elevación permanece bajo `TI-AUTH-002`;
+8. configuración de monitoreo queda bajo `TI-AUTH-003`;
+9. logs, exportaciones, capturas y datos sensibles quedan bajo `TI-AUTH-004`;
+10. la señal conserva suficiente contexto para diagnosticar sin exponer secretos.
+
+---
+
+#### 29. Reconciliación AS-IS `TI-OBSERVABILITY-ASIS-RECONCILIATION-001`
+
+La inspección de solo lectura del repositorio y del proyecto desplegado permite materializar el siguiente estado sin asumir capacidades no demostradas:
+
+| Elemento                                           | Estado                                                  | Evidencia o límite                                                                                                                                                         |
+| -------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contrato transversal SLI/SLO                       | `ESPECIFICADO`                                          | `OBSERVABILITY-SLI-SLO-CONTRACT-001` ya define envelope, SLI, SLO, alertas, salud, logging y métricas mínimas                                                              |
+| Observabilidad tecnológica de los once servicios   | `ESPECIFICADO`                                          | esta tarea materializa el modelo; no existe evidencia de una implementación transversal completa                                                                           |
+| `shared_operational_devices.last_seen_at`          | `IMPLEMENTADO` parcialmente                             | la columna existe; en la inspección desplegada se observaron 2 dispositivos y 0 con `last_seen_at` informado                                                               |
+| Eventos de dispositivo compartido                  | `IMPLEMENTADO` parcialmente                             | existe `shared_operational_device_events`; se observaron 3 filas, sin asumir que constituyan telemetría de salud completa                                                  |
+| Mesa de soporte AS-IS                              | `IMPLEMENTADO` parcialmente                             | se observaron 2 `support_tickets` y 4 `support_messages`; la estructura básica no demuestra incidente, alerta o observabilidad completos                                   |
+| Registro de dispositivos de trabajador             | `IMPLEMENTADO` como estructura, sin población observada | `employee_devices` existe y se observaron 0 registros                                                                                                                      |
+| Impresión en esquema desplegado inspeccionado      | `IMPLEMENTADO` parcialmente                             | se observó `printing_label_templates` con 1 fila; la búsqueda de tablas por nombres de monitoreo/alerta/health no demostró un registro transversal de runtime de impresión |
+| Auditoría de Auth                                  | `IMPLEMENTADO` por la plataforma                        | `auth.audit_log_entries` existe; no se promueve a log tecnológico empresarial general                                                                                      |
+| Tabla transversal dedicada de monitor/health/alert | `PENDIENTE_DE_EVIDENCIA`                                | la inspección por nombres en `public`, `auth`, `storage` y `realtime` no localizó una estructura dedicada; esto no prueba ausencia de telemetría externa                   |
+| Plataforma externa unificada de observabilidad     | `PENDIENTE_DE_EVIDENCIA`                                | la búsqueda específica en `vento-shell` no localizó referencias a Sentry, OpenTelemetry, Prometheus, Grafana o Datadog; no se infiere inexistencia fuera del repositorio   |
+| Adaptadores tecnológicos de telemetría             | `FUERA_DE_ALCANCE` de esta tarea                        | propietario documental: `TI-INT-001` a `TI-INT-003`                                                                                                                        |
+| Panel operativo de salud                           | `FUERA_DE_ALCANCE` de esta tarea                        | propietario documental: `TI-UX-003`; flujos correlacionados: `TI-UX-004`                                                                                                   |
+| Autorización sobre monitoreo y logs                | `FUERA_DE_ALCANCE` de esta tarea                        | propietario documental: `TI-AUTH-003` y `TI-AUTH-004`                                                                                                                      |
+| Implementación física transversal                  | `NO_APLICA` en esta tarea                               | la fase actual es documental; cualquier implementación requiere alcance de implementación autorizado                                                                       |
+
+No se interpreta la ausencia de una tabla dedicada como ausencia absoluta de logs o métricas. Solo se concluye que la evidencia inspeccionada no demuestra una plataforma tecnológica transversal ya materializada.
+
+---
+
+#### 30. Brechas y destinos documentales
+
+| Brecha o resultado pendiente                                                           | Estado                        | Propietario exacto                                                          | Condición de salida                                                                 |
+| -------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Adaptadores de telemetría para endpoint, red, impresora, aplicación y servicio externo | `FUERA_DE_ALCANCE`            | `TI-INT-001`                                                                | contrato por fuente, autenticación, reloj, retries, idempotencia y mapping aprobado |
+| Contratos de integración con fuentes Vento                                             | `FUERA_DE_ALCANCE`            | `TI-INT-002`                                                                | interfaces y propietarios por sistema aprobados                                     |
+| Integraciones con MDM, soporte remoto, ISP, fabricantes y licenciamiento               | `FUERA_DE_ALCANCE`            | `TI-INT-003`                                                                | proveedor, alcance, credencial, eventos y conciliación definidos                    |
+| Mapa y panel de salud técnica                                                          | `FUERA_DE_ALCANCE`            | `TI-UX-003`                                                                 | experiencia de dispositivos, redes, impresoras, aplicaciones y salud aprobada       |
+| Flujos visuales de incidente, problema, cambio, mantenimiento y recuperación           | `FUERA_DE_ALCANCE`            | `TI-UX-004`                                                                 | correlación y acciones operativas aprobadas                                         |
+| Gobierno de configuración de monitoreo                                                 | `FUERA_DE_ALCANCE`            | `TI-AUTH-003`                                                               | capacidades y segregación autorizadas                                               |
+| Acceso a logs y diagnósticos sensibles                                                 | `FUERA_DE_ALCANCE`            | `TI-AUTH-004`                                                               | política de acceso, masking, exportación y auditoría aprobada                       |
+| Señales de respaldo, restauración y recuperación                                       | `FUERA_DE_ALCANCE`            | `TI-DOM-011`                                                                | contrato de respaldo y restauración aprobado                                        |
+| Señales de licencias, garantías, contratos, renovaciones, uso y costo                  | `FUERA_DE_ALCANCE`            | `TI-DOM-012`                                                                | modelo contractual y económico aprobado                                             |
+| Runbooks, conocimiento y aprendizaje                                                   | `FUERA_DE_ALCANCE`            | `TI-DOM-013`                                                                | base de conocimiento y gobierno de capacitación aprobados                           |
+| Implementación física del alcance tecnológico aplicable al carril                      | `NO_APLICA` en la fase actual | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado | alcance de implementación explícitamente aprobado antes de cambios físicos          |
+
+No queda una brecha de esta tarea sin propietario documental.
+
+---
+
+#### 31. Frontera con respaldo y continuidad
+
+`TI-DOM-010` puede observar:
+
+- ejecución reportada de backup;
+- fallo técnico de una tarea de backup;
+- frescura de última ejecución;
+- disponibilidad de una señal de restauración;
+- estado de infraestructura necesaria para recuperar.
+
+No define:
+
+- política de respaldo;
+- RTO;
+- RPO;
+- alcance de copias;
+- restauración;
+- recuperación técnica;
+- activación de continuidad empresarial.
+
+Esos resultados pertenecen a `TI-DOM-011` y a las tareas canónicas de continuidad. Un backup marcado como exitoso no equivale a restauración comprobada.
+
+---
+
+#### 32. Frontera con licencias y contratos
+
+`TI-DOM-010` puede recibir o enrutar señales como:
+
+- vigencia próxima;
+- asiento sin uso;
+- cuota o límite;
+- fallo del proveedor;
+- garantía próxima a vencer;
+- restricción del plan;
+- alerta contractual ya originada por su autoridad.
+
+No calcula compromiso, gasto o costo ni redefine contrato. `TI-DOM-012`, ORIGO y NUMERA conservan esas autoridades.
+
+---
+
+#### 33. Frontera con conocimiento
+
+Toda alerta accionable deberá disponer de runbook cuando el riesgo o frecuencia lo requiera.
+
+`TI-DOM-010` conserva la referencia al runbook y su versión. `TI-DOM-013` gobierna:
+
+- creación;
+- publicación;
+- mantenimiento;
+- capacitación;
+- adopción;
+- comunicación de cambios tecnológicos.
+
+Un runbook existente no prueba que la causa esté diagnosticada y una capacitación no modifica la salud técnica.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente para tecnología un contrato de observabilidad y un conjunto de condiciones verificables ya materializados previamente en el registro canónico. No introduce una condición ejecutable adicional, no modifica la semántica de las pruebas existentes y no autoriza implementación física. Las matrices de esta tarea asignan esas condiciones existentes a servicios, elementos técnicos y handoffs sin crear comportamiento nuevo que requiera otra identidad de prueba.
+
+---
+
+#### 35. Criterios de aceptación
+
+`TI-DOM-010` se considera documentalmente completa cuando:
+
+1. existe un único contrato de observabilidad tecnológica;
+2. las once familias `TI-SERVICE-*` tienen decisión explícita de observación;
+3. las siete clases de configuración tienen interpretación de salud;
+4. se conservan las seis clases de señal aprobadas;
+5. se conservan los cinco estados de salud aprobados;
+6. se conservan las ocho categorías de SLI y cuatro de SLO;
+7. se conservan las doce familias métricas mínimas;
+8. la ausencia de evidencia no puede producir `HEALTHY`;
+9. señal, alerta, incidente, problema y cambio permanecen separados;
+10. el ciclo de alerta define deduplicación, silencio, ACK, correlación y cierre;
+11. un cambio tecnológico puede correlacionar baseline, ventana, resultado, rollback y revisión posterior;
+12. los logs tienen campos mínimos y exclusiones de secretos;
+13. NOTIFY-ARC, EVID-ARC y QUEUE-ARC conservan su autoridad;
+14. VISO conserva la identidad y ciclo del incidente;
+15. la observabilidad no crea una fuente de verdad paralela;
+16. los estados AS-IS están diferenciados entre implementado, especificado, pendiente de evidencia, fuera de alcance y no aplica;
+17. toda brecha detectada tiene propietario exacto;
+18. no se ejecutan cambios físicos;
+19. no se crean ni modifican requisitos de prueba;
+20. `TI-DOM-011` queda únicamente reservada.
+
+---
+
+#### 36. Estado del resultado
+
+| Resultado                                         | Estado                                             |
+| ------------------------------------------------- | -------------------------------------------------- |
+| `TI-OBSERVABILITY-OPERATING-CONTRACT-001`         | `ESPECIFICADO`                                     |
+| `TI-TECHNICAL-SIGNAL-CONTRACT-001`                | `ESPECIFICADO`                                     |
+| `TI-SERVICE-HEALTH-MATRIX-001`                    | `ESPECIFICADO`                                     |
+| `TI-ALERT-GOVERNANCE-MATRIX-001`                  | `ESPECIFICADO`                                     |
+| `TI-LOGGING-EVIDENCE-CONTRACT-001`                | `ESPECIFICADO`                                     |
+| `TI-CHANGE-OBSERVABILITY-CORRELATION-001`         | `ESPECIFICADO`                                     |
+| `TI-OBSERVABILITY-ASIS-RECONCILIATION-001`        | `ESPECIFICADO`                                     |
+| Implementación de adaptadores                     | `FUERA_DE_ALCANCE` — `TI-INT-001` a `TI-INT-003`   |
+| Implementación de panel de salud                  | `FUERA_DE_ALCANCE` — `TI-UX-003` y `TI-UX-004`     |
+| Configuración de autorización de monitoreo y logs | `FUERA_DE_ALCANCE` — `TI-AUTH-003` y `TI-AUTH-004` |
+| Implementación física transversal                 | `NO_APLICA` en esta tarea                          |
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial`
+
+
 ### [ ] TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
 ### [ ] TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
 ### [ ] TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
