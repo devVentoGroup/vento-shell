@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **629** |
+| Aprobadas | **630** |
 | En propuesta | **0** |
-| No iniciadas | **965** |
+| No iniciadas | **964** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.46% (629/1594)** |
+| Porcentaje de completamiento | **39.52% (630/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | ✅ APROBADA |
-| Tarea actual | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | ✅ APROBADA |
+| Tarea actual | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1518,7 +1518,7 @@
 | ✅ APROBADA | `TI-DOM-009` | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-010` | Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-013` | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |

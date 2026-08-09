@@ -10747,5 +10747,1181 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos`
 
 
-### [ ] TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
+### ✅ TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial` — APROBADA
+**Tarea siguiente:** `TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno comercial-tecnológico de licencias, asientos, garantías, contratos, renovaciones, uso y costos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-TECHNOLOGY-COMMERCIAL-GOVERNANCE-CONTRACT-001`; `TI-TECHNOLOGY-LICENSE-SEAT-CONTRACT-001`; `TI-APPLICATION-ENTITLEMENT-RECONCILIATION-MATRIX-001`; `TI-TECHNOLOGY-PROVIDER-COMMERCIAL-MATRIX-001`; `TI-TECHNOLOGY-WARRANTY-CONTRACT-001`; `TI-TECHNOLOGY-RENEWAL-DECISION-MATRIX-001`; `TI-TECHNOLOGY-USAGE-COST-RECONCILIATION-CONTRACT-001`; `TI-TECHNOLOGY-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea, modifica ni elimina proveedores, compras, contratos, licencias, asientos, garantías, cuentas, usuarios, activos, gastos, costos, tablas, funciones, políticas, RLS, migraciones, Edge Functions, secretos, configuraciones, suscripciones ni datos desplegados
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar el contrato tecnológico que permite saber qué capacidad comercial habilita cada aplicación o servicio, quién es su autoridad, qué licencia o asiento aplica, qué evidencia demuestra uso, qué garantía cubre un activo, qué contrato y renovación deben seguirse, cómo se detecta sobredimensionamiento o riesgo de vencimiento y cómo se reconcilia el costo con ORIGO y NUMERA sin construir una fuente económica paralela.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-DOM-012` queda documentalmente cerrada con:
+
+- un contrato único de gobierno comercial-tecnológico;
+- una separación obligatoria entre proveedor, producto o plan, contrato, suscripción, licencia, entitlement, asiento, cuenta, credencial, factura, compromiso, gasto, costo, garantía, activo, aplicación y servicio;
+- una frontera explícita entre TI, ORIGO, NUMERA, NEXO, SHELL y los propietarios funcionales;
+- un contrato completo de licencia y asiento que reutiliza los estados aprobados en `TI-DOM-006`;
+- una decisión explícita para las diez aplicaciones canónicas;
+- una reconciliación explícita para las cinco familias de proveedor observadas en `TI-DOM-006`;
+- una decisión expresa para los siete casos de hosting aún no identificados;
+- un contrato de garantía que mantiene la identidad física bajo NEXO;
+- un ciclo de renovación que separa alerta, análisis, decisión, compra, cambio técnico y efecto económico;
+- reglas de uso, consumo, disponibilidad y rightsizing sin inferir uso desde una mera asignación;
+- conciliación de costo tecnológico contra compra, contrato, compromiso y gasto;
+- integración con observabilidad, soporte, cambio y recuperación;
+- reconciliación AS-IS con el estado desplegado consultado en modo de solo lectura;
+- cero valores comerciales, fechas, planes, cantidades o proveedores inventados;
+- cero cambios físicos;
+- cero cambios en requisitos de prueba.
+
+La tarea no afirma que GitHub, Supabase, Expo/EAS, Sentry, RevenueCat o cualquier hosting tengan hoy un plan comercial, contrato, costo, asiento, fecha de renovación o propietario económico confirmado cuando esa evidencia no está disponible.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y conserva:
+
+1. `TI-DOM-001`, especialmente `TI-SERVICE-010 — Licencias, garantías, contratos y costos tecnológicos`;
+2. `TI-DOM-002` y la separación entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio;
+3. `TI-DOM-003` para activos relacionados con endpoints;
+4. `TI-DOM-004` para infraestructura y servicios de red;
+5. `TI-DOM-005` para impresoras, periféricos, consumibles y relaciones físicas;
+6. `TI-DOM-006` como catálogo de diez aplicaciones y fuente de las relaciones proveedor/licencia pendientes;
+7. `TI-DOM-007` para solicitudes, incidentes, soporte y casos relacionados;
+8. `TI-DOM-008` para problemas y recurrencia;
+9. `TI-DOM-009` para cambios de producto, plan, configuración o proveedor cuando afecten operación;
+10. `TI-DOM-010` para señales, alertas y observabilidad;
+11. `TI-DOM-011` para recuperación, exportabilidad y salida de proveedor;
+12. `CAP-SCOPE-015`, en particular `CAP-15.10`;
+13. ORIGO como autoridad de proveedor, compra y contrato;
+14. NUMERA como autoridad de compromiso, gasto, costo y conciliación económica;
+15. NEXO como autoridad del activo físico, compra relacionada, garantía, mantenimiento y retiro;
+16. SHELL como autoridad de identidad, catálogo de aplicaciones y autorización;
+17. los propietarios funcionales como autoridad de necesidad empresarial;
+18. el registro vigente de requisitos de prueba y su cobertura transversal;
+19. el estado desplegado disponible en Supabase únicamente como evidencia AS-IS.
+
+Esta tarea no modifica las identidades heredadas. Las profundiza dentro del alcance comercial-tecnológico.
+
+---
+
+#### 3. Regla raíz de autoridad
+
+Se conserva:
+
+```text
+ORIGO
+→ proveedor, compra, contrato y condición comercial
+
+NUMERA
+→ compromiso, gasto, costo, periodo, centro de costo y conciliación económica
+
+NEXO
+→ activo físico, compra relacionada, valor patrimonial operativo, garantía,
+  mantenimiento y retiro
+
+SHELL
+→ identidad, cuenta empresarial, aplicación y política de acceso
+
+TI
+→ necesidad técnica, relación licencia/asiento/capacidad,
+  asignación técnica, uso observado, renovación operativa,
+  riesgo de expiración, soporte y relación con el servicio
+
+PROPIETARIO FUNCIONAL
+→ necesidad empresarial y aceptación de continuidad o retiro
+```
+
+Invariantes:
+
+1. TI no se convierte en maestro de proveedor, contrato o costo;
+2. ORIGO no decide por sí solo si una capacidad técnica sigue siendo necesaria;
+3. NUMERA no convierte una fila de gasto en licencia activa;
+4. NEXO no convierte `commercial_value` en gasto tecnológico realizado;
+5. SHELL no convierte una cuenta en asiento de licencia;
+6. el proveedor no se convierte en fuente de identidad empresarial;
+7. una factura no demuestra uso;
+8. un pago no demuestra entitlement vigente;
+9. una licencia no concede autorización empresarial;
+10. una suscripción activa no demuestra criticidad ni necesidad.
+
+---
+
+#### 4. Separaciones obligatorias
+
+Se fija:
+
+```text
+PROVIDER
+≠ PRODUCT_OR_PLAN
+≠ CONTRACT
+≠ SUBSCRIPTION
+≠ LICENSE
+≠ ENTITLEMENT
+≠ SEAT
+≠ ACCOUNT
+≠ CREDENTIAL
+≠ INVOICE
+≠ COMMITMENT
+≠ EXPENSE
+≠ COST
+≠ WARRANTY
+≠ ASSET
+≠ APPLICATION
+≠ TECH_SERVICE
+```
+
+Definiciones:
+
+| Objeto            | Significado                                                                   |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `PROVIDER`        | tercero o contraparte que entrega un producto, servicio, soporte o capacidad  |
+| `PRODUCT_OR_PLAN` | oferta comercial o técnica identificable del proveedor                        |
+| `CONTRACT`        | acuerdo comercial o jurídico gobernado por su fuente propietaria              |
+| `SUBSCRIPTION`    | relación recurrente de consumo o acceso; puede existir sin modelo por asiento |
+| `LICENSE`         | derecho de uso sobre producto o capacidad                                     |
+| `ENTITLEMENT`     | alcance concreto de derechos habilitados por licencia, plan o contrato        |
+| `SEAT`            | unidad asignable de un entitlement cuando el modelo comercial la utiliza      |
+| `ACCOUNT`         | identidad registrada ante un proveedor o sistema                              |
+| `CREDENTIAL`      | material de autenticación                                                     |
+| `INVOICE`         | documento de cobro; no es licencia ni uso                                     |
+| `COMMITMENT`      | obligación económica reconocida por su autoridad                              |
+| `EXPENSE`         | hecho económico reconocido por NUMERA                                         |
+| `COST`            | medida económica derivada de hechos y reglas trazables                        |
+| `WARRANTY`        | derecho de cobertura sobre un activo o producto bajo condiciones determinadas |
+| `ASSET`           | bien físico con identidad NEXO                                                |
+| `APPLICATION`     | aplicación canónica de VENTO                                                  |
+| `TECH_SERVICE`    | familia de servicio tecnológico que consume o administra capacidades          |
+
+---
+
+#### 5. Contrato `TI-TECHNOLOGY-COMMERCIAL-GOVERNANCE-CONTRACT-001`
+
+Toda capacidad comercial-tecnológica administrada deberá poder relacionar, cuando aplique:
+
+```text
+commercial_relation_id
+provider_ref
+product_or_plan
+contract_ref
+subscription_ref
+license_ref
+entitlement_ref
+seat_model
+seat_ref
+account_ref
+application_refs[]
+tech_service_refs[]
+asset_refs[]
+business_owner_ref
+technical_owner_ref
+procurement_owner_ref
+economic_owner_ref
+start_at
+renewal_at
+end_at
+cancellation_window_ref
+auto_renewal_state
+usage_evidence_ref
+quantity_entitled
+quantity_assigned
+quantity_usage_confirmed
+cost_ref
+cost_center_ref
+currency_ref
+support_ref
+warranty_ref
+exit_ref
+evidence_refs[]
+reconciliation_state
+```
+
+Reglas:
+
+- los campos económicos son referencias a NUMERA u ORIGO cuando exista fuente propietaria;
+- los datos de identidad y acceso son referencias a SHELL o a la autoridad correspondiente;
+- no se almacenan secretos ni credenciales dentro del contrato;
+- un campo sin evidencia queda `PENDIENTE_DE_EVIDENCIA`;
+- la ausencia de dato no se sustituye por cero;
+- una cantidad ilimitada no se representa con un número arbitrariamente alto;
+- un plan gratuito no se presenta como costo cero verificado sin evidencia del plan vigente;
+- una oferta observada públicamente no prueba que VENTO tenga ese plan;
+- una relación técnica confirmada no prueba relación comercial.
+
+---
+
+#### 6. Contrato `TI-TECHNOLOGY-LICENSE-SEAT-CONTRACT-001`
+
+Se reutilizan exactamente los estados de licencia aprobados en `TI-DOM-006`:
+
+1. `PENDIENTE_DE_EVIDENCIA`
+2. `ACTIVE`
+3. `SUSPENDED`
+4. `EXPIRING`
+5. `EXPIRED`
+6. `CANCELLED`
+7. `NO_APLICA`
+
+La clasificación no se eleva a `ACTIVE` por:
+
+- una cuenta existente;
+- un SDK instalado;
+- una aplicación que responde;
+- una factura aislada;
+- una orden histórica;
+- una tarjeta registrada;
+- una credencial disponible;
+- un correo comercial;
+- un monto encontrado en una hoja de cálculo;
+- un plan mostrado por el proveedor.
+
+Una licencia o entitlement deberá conservar:
+
+```text
+license_ref
+provider_ref
+product_or_plan
+contract_ref
+license_model
+entitlement_scope
+seat_model
+quantity_entitled
+business_owner_ref
+technical_owner_ref
+effective_from
+renewal_at
+effective_to
+auto_renewal_state
+usage_evidence_ref
+cost_ref
+exit_ref
+status
+evidence_refs[]
+```
+
+---
+
+#### 7. Modelos de licencia y entitlement
+
+El modelo deberá clasificarse por evidencia del proveedor o contrato, sin forzar un esquema por asiento.
+
+Clases normalizadas:
+
+| Clase                    | Uso                                                      |
+| ------------------------ | -------------------------------------------------------- |
+| `NAMED_USER`             | derecho asignado a una identidad nominal                 |
+| `CONCURRENT_USER`        | límite por uso simultáneo sin asiento nominal permanente |
+| `DEVICE`                 | derecho ligado a un dispositivo o activo elegible        |
+| `ORGANIZATION_OR_TENANT` | derecho a nivel de organización, tenant o workspace      |
+| `CAPACITY_OR_TIER`       | derecho condicionado por capacidad, plan o nivel         |
+| `USAGE_BASED`            | derecho/costo determinado por consumo medible            |
+| `HYBRID`                 | combinación demostrada de dos o más modelos              |
+
+Reglas:
+
+1. `seat_model` solo se usa cuando el producto realmente tiene unidad asignable;
+2. una licencia organizacional no se convierte artificialmente en asientos;
+3. un modelo por consumo no se convierte en asientos por comodidad de reporte;
+4. la cuenta de servicio no implica una licencia independiente;
+5. un usuario invitado puede o no consumir asiento; se determina por contrato;
+6. un dispositivo compartido puede consumir entitlement sin convertir al trabajador activo en propietario del asiento;
+7. el modelo se versiona cuando cambia el plan o contrato.
+
+---
+
+#### 8. Asiento, asignación y acceso
+
+Se fija:
+
+```text
+SEAT_ASSIGNMENT
+≠ ACCESS_GRANT
+≠ PROVIDER_ACCOUNT
+≠ ACTIVE_SESSION
+```
+
+Cada asiento, cuando exista, deberá poder declarar:
+
+```text
+seat_ref
+license_ref
+assignment_target_type
+assignment_target_ref
+assigned_at
+effective_from
+effective_to
+assignment_reason
+usage_evidence_ref
+reclaim_candidate_state
+reconciliation_state
+evidence_refs[]
+```
+
+`assignment_target_type` puede referenciar únicamente una identidad válida para el modelo demostrado, por ejemplo:
+
+- trabajador;
+- cuenta técnica;
+- aplicación;
+- dispositivo;
+- servicio;
+- tenant.
+
+Reglas:
+
+1. asignar un asiento no concede permiso empresarial;
+2. revocar acceso no demuestra que el asiento haya sido liberado;
+3. liberar asiento no revoca por sí solo una cuenta;
+4. una cuenta compartida no sirve como identidad suficiente para un asiento nominal;
+5. una identidad retirada o sin vínculo vigente produce revisión de asiento, no borrado automático de historia;
+6. un asiento reasignado conserva la asignación anterior como historia;
+7. una asignación sin licencia o entitlement vigente queda bloqueada para conciliación;
+8. un asiento no se asigna dos veces simultáneamente cuando el modelo no lo permite.
+
+---
+
+#### 9. Cantidades y disponibilidad
+
+Para modelos finitos por asiento:
+
+```text
+ENTITLED
+= cantidad reconocida por contrato o proveedor
+
+ASSIGNED
+= asignaciones vigentes reconciliadas
+
+AVAILABLE
+= ENTITLED - ASSIGNED
+```
+
+La fórmula se usa solo si:
+
+- existe cantidad finita demostrada;
+- las asignaciones están reconciliadas;
+- el proveedor no aplica reglas adicionales que modifiquen la disponibilidad.
+
+Reglas:
+
+1. `AVAILABLE < 0` es una anomalía de conciliación, no una cantidad normal;
+2. `NULL` no equivale a cero;
+3. unlimited, usage-based o tenant-wide no reciben una cantidad ficticia;
+4. cantidad comprada no equivale a cantidad usada;
+5. cantidad asignada no equivale a uso efectivo;
+6. cantidad usada no autoriza compra adicional sin decisión;
+7. una reducción de cantidad requiere verificar dependencia y continuidad antes de materializarse.
+
+---
+
+#### 10. Uso y evidencia de consumo
+
+Se separa:
+
+```text
+ASSIGNED
+≠ USED
+≠ NEEDED
+≠ CRITICAL
+```
+
+Una evidencia de uso puede provenir, según proveedor:
+
+- actividad de cuenta;
+- consumo de API;
+- ejecuciones;
+- builds;
+- usuarios activos;
+- almacenamiento;
+- ancho de banda;
+- eventos;
+- dispositivos habilitados;
+- tickets o soporte utilizado;
+- utilización de capacidad;
+- telemetría del propio servicio.
+
+Reglas:
+
+1. el indicador de uso debe declarar fuente y periodo observado;
+2. no usar una herramienta durante una ventana corta no prueba que sea innecesaria;
+3. una capacidad pasiva, de contingencia o recuperación puede ser necesaria sin uso frecuente;
+4. el uso de una cuenta no demuestra que el asiento correspondiente esté correctamente asignado;
+5. la ausencia de telemetría deja uso `PENDIENTE_DE_EVIDENCIA`;
+6. los datos de uso sensibles se minimizan;
+7. no se copia información personal innecesaria desde consolas de proveedor.
+
+---
+
+#### 11. Rightsizing y sobredimensionamiento
+
+Una licencia, plan o capacidad puede ser candidata a rightsizing cuando exista evidencia de:
+
+- asientos asignados sin identidad vigente;
+- asientos disponibles persistentemente por encima de la necesidad aprobada;
+- capacidad contratada muy superior al consumo observado;
+- producto duplicado por dos proveedores sin justificación;
+- aplicación retirada que mantiene suscripción;
+- plan premium con funciones no utilizadas cuando la alternativa inferior mantiene los requisitos;
+- proveedor que sigue facturando después de cancelación documentada;
+- múltiples contratos para la misma capacidad sin causa aprobada.
+
+La detección es una señal de revisión.
+
+```text
+RIGHTSIZING_CANDIDATE
+≠ AUTOMATIC_CANCEL
+≠ AUTOMATIC_DOWNGRADE
+```
+
+La decisión conserva propietario, impacto, dependencia, costo, salida, seguridad, continuidad y evidencia.
+
+---
+
+#### 12. Ciclo de renovación
+
+El ciclo conceptual queda:
+
+```text
+RELACIÓN VIGENTE
+→ FECHAS Y CONDICIONES DEMOSTRADAS
+→ SEÑAL DE RENOVACIÓN
+→ SNAPSHOT DE USO
+→ SNAPSHOT DE COSTO
+→ DEPENDENCIAS Y CRITICIDAD
+→ ALTERNATIVAS Y SALIDA
+→ DECISIÓN
+→ COMPRA / CONTRATO SI APLICA
+→ CAMBIO TÉCNICO SI APLICA
+→ CONCILIACIÓN ECONÓMICA
+→ EVIDENCIA
+```
+
+La señal no ejecuta la decisión.
+
+Se aprueban siete resultados documentales de decisión:
+
+1. `RENEW`
+2. `RIGHTSIZE`
+3. `RENEGOTIATE`
+4. `MIGRATE_OR_EXIT`
+5. `CANCEL`
+6. `NO_ACTION_REQUIRED`
+7. `PENDIENTE_DE_EVIDENCIA`
+
+Una decisión de renovación deberá poder relacionar:
+
+```text
+renewal_ref
+provider_ref
+product_or_plan
+contract_ref
+license_ref
+current_term_ref
+renewal_at
+cancellation_window_ref
+notice_deadline_ref
+auto_renewal_state
+business_owner_ref
+technical_owner_ref
+usage_snapshot_ref
+cost_snapshot_ref
+dependency_snapshot_ref
+support_snapshot_ref
+exit_ref
+decision
+decision_reason
+decision_at
+procurement_ref
+change_ref
+evidence_refs[]
+```
+
+No se inventa una fecha de aviso si el contrato no la demuestra.
+
+---
+
+#### 13. Renovación automática
+
+```text
+AUTO_RENEWAL_ENABLED
+≠ BUSINESS_APPROVAL
+```
+
+Reglas:
+
+1. la existencia de auto-renovación debe conocerse por evidencia;
+2. si está activa, la ventana de cancelación debe correlacionarse con la decisión;
+3. desactivar auto-renovación puede requerir autorización y evidencia del proveedor;
+4. la renovación automática no justifica mantener asientos o capacidad innecesarios;
+5. una alerta tardía no reescribe las condiciones contractuales;
+6. una renovación ejecutada sin decisión previa se registra como hecho y genera conciliación, no como aprobación retroactiva.
+
+---
+
+#### 14. Contrato y suscripción
+
+ORIGO conserva el contrato y la relación comercial propietaria.
+
+TI conserva referencias suficientes para responder:
+
+- qué servicio o aplicación depende del contrato;
+- qué producto o plan habilita;
+- qué entitlement produce;
+- qué soporte incluye;
+- qué ambientes cubre;
+- qué datos o integración dependen del proveedor;
+- qué renovación o terminación puede afectar operación;
+- qué salida o exportación existe;
+- qué cambio técnico debe ejecutarse si cambia.
+
+Prohibiciones:
+
+- duplicar el documento contractual como texto libre en TI;
+- convertir una orden de compra en contrato cuando no lo sea;
+- convertir una factura en prueba de entitlement;
+- convertir una suscripción de usuario final en licencia tecnológica sin autoridad;
+- editar condiciones históricas para reflejar un término nuevo;
+- conservar credenciales en la ficha contractual.
+
+---
+
+#### 15. Contrato `TI-TECHNOLOGY-WARRANTY-CONTRACT-001`
+
+La garantía permanece vinculada al activo o producto físico propietario de NEXO.
+
+```text
+WARRANTY
+≠ SUPPORT_CONTRACT
+≠ MAINTENANCE_PLAN
+≠ ASSET_HEALTH
+≠ INCIDENT
+≠ REPLACEMENT_ASSET
+```
+
+Cada garantía tecnológica deberá poder referenciar:
+
+```text
+warranty_ref
+asset_ref
+product_ref
+provider_or_manufacturer_ref
+purchase_ref
+invoice_or_document_ref
+coverage_scope_ref
+effective_from
+effective_to
+claim_channel_ref
+support_ref
+replacement_terms_ref
+evidence_refs[]
+status
+```
+
+Estados documentales admitidos:
+
+- `PENDIENTE_DE_EVIDENCIA`
+- `ACTIVE`
+- `EXPIRING`
+- `EXPIRED`
+- `NO_APLICA`
+
+Reglas:
+
+1. `warranty_until` sin documento o alcance no demuestra cobertura completa;
+2. garantía vigente no demuestra que el activo esté operativo;
+3. garantía vencida no retira el activo;
+4. mantenimiento no extiende garantía salvo evidencia;
+5. soporte contratado no se presenta como garantía del fabricante;
+6. un caso de garantía puede correlacionarse con soporte, pero no sustituye el incidente;
+7. reparación conserva la identidad del activo cuando sigue siendo el mismo bien;
+8. sustitución por otro bien requiere la identidad NEXO correspondiente;
+9. garantía, compra, factura y costo permanecen relacionados pero separados.
+
+---
+
+#### 16. Costos tecnológicos
+
+TI no crea un ledger económico.
+
+Se reconocen como modalidades comerciales descriptivas:
+
+| Modalidad                       | Uso tecnológico                       |
+| ------------------------------- | ------------------------------------- |
+| `FIXED_RECURRING`               | cargo periódico fijo                  |
+| `PER_SEAT`                      | cargo asociado a cantidad de asientos |
+| `USAGE_BASED`                   | cargo asociado a consumo              |
+| `CAPACITY_OR_TIER`              | cargo por nivel o capacidad           |
+| `ONE_TIME`                      | adquisición o servicio no recurrente  |
+| `SUPPORT_OR_MAINTENANCE`        | soporte o mantenimiento contratado    |
+| `HARDWARE_ACQUISITION`          | adquisición de activo físico          |
+| `WARRANTY_OR_SUPPORT_EXTENSION` | extensión comercial de cobertura      |
+| `MIXED`                         | combinación demostrada de modalidades |
+
+Estas modalidades describen la relación tecnológica. El hecho económico efectivo pertenece a NUMERA.
+
+Se fija:
+
+```text
+CATALOG_PRICE
+≠ CONTRACTED_PRICE
+≠ INVOICE_AMOUNT
+≠ COMMITMENT
+≠ PAID_AMOUNT
+≠ EXPENSE
+≠ ALLOCATED_COST
+```
+
+---
+
+#### 17. Contrato `TI-TECHNOLOGY-USAGE-COST-RECONCILIATION-CONTRACT-001`
+
+Para relacionar costo y tecnología se exige trazabilidad:
+
+```text
+PROVIDER
+→ PRODUCT / PLAN
+→ CONTRACT / PURCHASE
+→ LICENSE / ENTITLEMENT
+→ APPLICATION / SERVICE / ASSET
+→ COMMITMENT / EXPENSE
+→ COST CENTER
+→ RECONCILIATION
+```
+
+Campos conceptuales:
+
+```text
+technology_cost_relation_id
+provider_ref
+product_or_plan
+contract_ref
+purchase_ref
+license_ref
+application_refs[]
+tech_service_refs[]
+asset_refs[]
+expense_ref
+commitment_ref
+cost_center_ref
+economic_period_ref
+currency_ref
+allocation_basis_ref
+usage_snapshot_ref
+reconciliation_state
+evidence_refs[]
+```
+
+Reglas:
+
+1. monto, moneda, impuesto y periodo provienen de la autoridad económica;
+2. TI puede explicar el destino tecnológico, no reescribir el monto;
+3. una relación puede distribuirse entre aplicaciones, servicios o centros solo con base explícita;
+4. una distribución conserva método y versión;
+5. un monto estimado no se presenta como gasto real;
+6. `commercial_value` de NEXO no se suma automáticamente como gasto;
+7. una compra de hardware y su depreciación o tratamiento contable permanecen fuera de la autoridad de TI;
+8. costo por asiento puede calcularse solo con precio y cantidad demostrados;
+9. ahorro potencial de rightsizing es una estimación separada del gasto real;
+10. el costo total tecnológico se reporta únicamente desde hechos económicos reconciliados.
+
+---
+
+#### 18. Alertas y observabilidad
+
+`TI-DOM-010` podrá observar, cuando exista implementación:
+
+- licencia próxima a vencimiento;
+- contrato próximo a término;
+- ventana de cancelación próxima;
+- auto-renovación sin decisión registrada;
+- asiento sin identidad vigente;
+- asignación por encima del entitlement;
+- capacidad contratada sin evidencia de uso suficiente;
+- falla de facturación que pueda afectar servicio;
+- garantía próxima a vencimiento;
+- garantía vencida sobre activo crítico;
+- proveedor sin propietario;
+- relación comercial sin evidencia vigente;
+- diferencia entre costo esperado y hecho económico reconciliado.
+
+Reglas:
+
+1. una alerta no renueva, cancela ni compra;
+2. una alerta no cambia permisos;
+3. ausencia de alerta no demuestra vigencia;
+4. el umbral concreto pertenece a la política de observabilidad y no se inventa aquí;
+5. la señal conserva referencia al objeto comercial, no secretos del proveedor.
+
+---
+
+#### 19. Relación con soporte
+
+`TI-SERVICE-010` utiliza la mesa de servicio cuando:
+
+- falta una licencia necesaria;
+- una asignación no puede completarse;
+- el proveedor suspende capacidad;
+- existe duda de cobertura de garantía;
+- un asiento no puede liberarse;
+- una renovación tiene impacto operativo;
+- una factura o estado comercial amenaza continuidad técnica;
+- se requiere asistencia del proveedor.
+
+El caso de soporte no modifica contrato, gasto, licencia o asiento por sí solo. Las acciones se ejecutan en sus autoridades propietarias.
+
+---
+
+#### 20. Relación con cambio tecnológico
+
+Una decisión comercial puede requerir `TI-DOM-009`.
+
+Ejemplos:
+
+- cambio de plan con funciones distintas;
+- migración de proveedor;
+- retiro de una integración;
+- cambio de tenant;
+- cambio de región o capacidad;
+- sustitución de software;
+- reemplazo de hardware derivado de garantía;
+- cambio de autenticación o cuenta técnica.
+
+Se conserva:
+
+```text
+COMMERCIAL_DECISION
+≠ CHANGE_APPROVAL
+≠ CHANGE_IMPLEMENTATION
+```
+
+La renovación de un contrato sin cambio técnico no crea artificialmente un cambio de configuración.
+
+---
+
+#### 21. Relación con recuperación y salida
+
+`TI-DOM-011` consume de esta tarea:
+
+- producto o plan;
+- proveedor;
+- contrato;
+- entitlement requerido para recuperar capacidad;
+- vigencia;
+- soporte;
+- exportabilidad;
+- restricciones de salida;
+- dependencias;
+- evidencia de acceso a procedimientos de recuperación.
+
+Reglas:
+
+1. terminar contrato exige revisar datos, integraciones, cuentas y recuperación;
+2. cancelar licencia no elimina automáticamente datos del proveedor;
+3. restaurar una copia de contrato no reactiva una licencia;
+4. una cuenta cerrada puede bloquear exportación si no se planificó salida;
+5. la salida del proveedor debe poder completarse sin convertir al proveedor en única fuente de identidad empresarial.
+
+---
+
+#### 22. Seguridad y segregación
+
+Se conserva:
+
+- quien necesita una licencia no se la autoaprueba por esa necesidad;
+- soporte de proveedor no recibe acceso persistente por existir contrato;
+- las cuentas técnicas tienen propietario y vigencia;
+- credenciales, API keys, tokens, recovery codes y secretos quedan fuera del inventario comercial;
+- la asignación de asiento no modifica RBAC;
+- facturas, contratos, precios negociados y datos bancarios usan su autoridad y control de acceso;
+- la telemetría de uso minimiza datos personales;
+- el acceso a consola de proveedor se gobierna por las tareas de autorización;
+- una cuenta personal no se convierte en fundamento permanente de una capacidad empresarial.
+
+La segregación detallada corresponde a `TI-AUTH-001` a `TI-AUTH-004`.
+
+---
+
+#### 23. Matriz `TI-APPLICATION-ENTITLEMENT-RECONCILIATION-MATRIX-001`
+
+Se preservan exactamente las diez aplicaciones de `TI-DOM-006`.
+
+| `app_code` | Evidencia técnica heredada                 | Licencia / asiento       | Contrato / renovación    | Uso                      | Costo                    | Decisión y propietario                                                                                         |
+| ---------- | ------------------------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `shell`    | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; demostrar plan, cuenta, entitlement, uso, renovación y costo                              |
+| `anima`    | GitHub; Supabase; Expo/EAS; Sentry SDK     | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; demostrar planes, cuentas, asientos si aplican, uso, soporte y costo                      |
+| `viso`     | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; reconciliar relaciones comerciales con la operación real                                  |
+| `nexo`     | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; reconciliar relaciones comerciales y dependencia de activos/periféricos                   |
+| `fogo`     | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; reconciliar relaciones comerciales con capacidad productiva                               |
+| `origo`    | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; conservar separación entre la aplicación ORIGO y sus propios proveedores                  |
+| `pulso`    | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; reconciliar relaciones comerciales con operación POS                                      |
+| `numera`   | GitHub; Supabase; hosting no identificado  | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; la aplicación no es autoridad de su propia licencia por el solo hecho de registrar costos |
+| `aura`     | proveedores actuales no confirmados        | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | auditoría AURA conserva decisión de continuidad; TI reconcilia relaciones si continúa                          |
+| `pass`     | GitHub; Supabase; Expo/EAS; RevenueCat SDK | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | TI + ORIGO + NUMERA; demostrar planes, producto contratado, renovación, uso y costo                            |
+
+Reconciliación:
+
+```text
+10 aplicaciones esperadas
+10 aplicaciones materializadas
+0 omitidas
+0 duplicadas
+0 añadidas
+10 con decisión comercial explícita
+0 con licencia inventada
+0 con asiento inventado
+0 con costo inventado
+```
+
+---
+
+#### 24. Matriz `TI-TECHNOLOGY-PROVIDER-COMMERCIAL-MATRIX-001`
+
+Se preservan las cinco familias externas cuya relación técnica fue reconocida en `TI-DOM-006`.
+
+| Familia    | Evidencia técnica heredada                                        | Alcance observado                             | Contrato                 | Licencia / asiento       | Renovación               | Uso comercial            | Costo                    | Estado                                                           |
+| ---------- | ----------------------------------------------------------------- | --------------------------------------------- | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ---------------------------------------------------------------- |
+| GitHub     | repositorios actuales                                             | nueve aplicaciones con repositorio confirmado | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | relación técnica confirmada; relación comercial no demostrada    |
+| Supabase   | SDK en nueve repositorios confirmados y proyecto VENTO observable | nueve aplicaciones con repositorio confirmado | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | dependencia técnica confirmada; relación comercial no demostrada |
+| Expo/EAS   | configuración técnica                                             | `anima`, `pass`                               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | configuración confirmada; plan/cuenta no demostrados             |
+| Sentry     | SDK observado                                                     | `anima`                                       | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | SDK no prueba servicio contratado o activo                       |
+| RevenueCat | SDK observado                                                     | `pass`                                        | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | SDK no prueba producto contratado ni costo                       |
+
+Control:
+
+```text
+5 familias esperadas
+5 familias materializadas
+0 omitidas
+0 duplicadas
+5 con estado comercial pendiente de evidencia
+```
+
+---
+
+#### 25. Hosting no identificado
+
+Las siete aplicaciones Next.js con repositorio confirmado:
+
+- `shell`;
+- `viso`;
+- `nexo`;
+- `fogo`;
+- `origo`;
+- `pulso`;
+- `numera`;
+
+conservan `hosting = PENDIENTE_DE_EVIDENCIA`.
+
+Reglas:
+
+1. no se crea una identidad de proveedor por inferencia del framework;
+2. una URL que responda no identifica automáticamente el contrato de hosting;
+3. un dominio DNS no prueba quién paga ni qué plan existe;
+4. la condición de salida exige proveedor, cuenta, propietario, plan, renovación, costo y evidencia;
+5. el hosting pendiente no se cuenta dentro de las cinco familias confirmadas.
+
+---
+
+#### 26. Garantías y activos: reconciliación AS-IS
+
+El esquema desplegado de NEXO dispone de campos y documentos capaces de representar:
+
+- fecha de compra;
+- inicio de uso;
+- `warranty_until`;
+- valor comercial;
+- referencia de factura de compra;
+- documentos con tipo `warranty`.
+
+La lectura AS-IS disponible muestra:
+
+| Control                                       | Resultado |
+| --------------------------------------------- | --------: |
+| `asset_items` existentes                      |        38 |
+| con `commercial_value` informado              |        29 |
+| con `purchase_date` informada                 |        25 |
+| con `warranty_until` informado                |         0 |
+| con referencia de factura de compra informada |         1 |
+| `asset_documents` existentes                  |         0 |
+
+Una búsqueda nominal de candidatos tecnológicos encontró tres registros que requieren reconciliación con el inventario tecnológico, sin elevar la coincidencia nominal a binding canónico:
+
+| `asset_code`                     | Nombre runtime             | Estado de garantía observable | Decisión                                                                       |
+| -------------------------------- | -------------------------- | ----------------------------- | ------------------------------------------------------------------------------ |
+| `ACT-EQP-COMPUT-000984-MRXNMWUI` | Computadora multifuncional | `warranty_until` ausente      | `PENDIENTE_DE_EVIDENCIA`; reconciliar identidad tecnológica y cobertura        |
+| `ACT-EQP-MULTIF-000932-MRF4E56U` | Multifuncional epson       | `warranty_until` ausente      | `PENDIENTE_DE_EVIDENCIA`; no vincular a PRINT-ARC sin evidencia                |
+| `ACT-EQP-TABLET-000985-MRXNO5BA` | Tablet lenovo              | `warranty_until` ausente      | `PENDIENTE_DE_EVIDENCIA`; reconciliar con endpoint antes de atribuir cobertura |
+
+Consecuencias:
+
+- no existe una garantía verificable por esos campos en las 38 unidades actuales;
+- ello no demuestra que físicamente no exista garantía;
+- la evidencia puede residir fuera de las estructuras consultadas;
+- los nueve targets de PRINT-ARC no reciben garantía por identidad de impresión;
+- una garantía solo se relaciona con un activo NEXO reconciliado.
+
+---
+
+#### 27. Proveedores, compras y costos: reconciliación AS-IS
+
+La lectura desplegada muestra:
+
+| Superficie                                                                                                          | Resultado observado            |
+| ------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| proveedores en `public.suppliers`                                                                                   | 91                             |
+| coincidencias de nombre contra las cinco familias tecnológicas conocidas y términos tecnológicos consultados        | 0                              |
+| órdenes en `public.purchase_orders`                                                                                 | 3                              |
+| órdenes observadas vinculadas nominalmente a las cinco familias tecnológicas conocidas                              | 0                              |
+| filas en `public.numera_expenses`                                                                                   | 0                              |
+| categorías de gasto NUMERA                                                                                          | 7 categorías genéricas activas |
+| tablas públicas cuyo nombre identifica licencia, contrato, suscripción, asiento, renovación, garantía o entitlement | 0                              |
+
+Las siete categorías NUMERA observadas son:
+
+- arriendo;
+- nómina;
+- servicios públicos;
+- mantenimiento;
+- mercadeo;
+- insumos no inventariables;
+- otros gastos.
+
+Interpretación:
+
+1. el maestro de proveedores existe, pero la búsqueda actual no demuestra proveedor tecnológico reconciliado;
+2. la estructura de órdenes existe, pero las tres órdenes observadas no prueban compra tecnológica;
+3. la estructura económica NUMERA existe, pero actualmente no contiene hechos de gasto;
+4. las categorías genéricas no constituyen por sí mismas un catálogo comercial tecnológico;
+5. la ausencia de tabla dedicada no autoriza a construir una tabla paralela durante esta tarea;
+6. la futura implementación deberá decidir la materialización física respetando las autoridades ya definidas.
+
+---
+
+#### 28. Estado de Supabase relevante
+
+El proyecto VENTO consultado se encuentra desplegado y permite observar las superficies descritas.
+
+Para esta tarea:
+
+- `asset_items` aporta hechos físicos y patrimoniales operativos;
+- `asset_documents` puede contener evidencia documental del activo;
+- `suppliers` aporta maestro de proveedor existente;
+- `purchase_orders` aporta hechos de compra;
+- `numera_expenses` y presupuestos aportan superficie económica;
+- ninguna de esas estructuras, por sí sola, constituye el contrato tecnológico objetivo completo;
+- no se observó una estructura pública dedicada por nombre a licencia, asiento, entitlement o renovación;
+- no se ejecuta ninguna alteración física para cerrar esa brecha en esta fase.
+
+---
+
+#### 29. Regla de evidencia
+
+Fuerza de evidencia, de menor a mayor para una relación comercial:
+
+```text
+REFERENCIA TÉCNICA
+→ EVIDENCIA DE CUENTA
+→ EVIDENCIA DE PLAN O ENTITLEMENT
+→ EVIDENCIA CONTRACTUAL / COMERCIAL
+→ EVIDENCIA DE USO
+→ EVIDENCIA ECONÓMICA RECONCILIADA
+```
+
+Cada nivel responde una pregunta distinta.
+
+Ejemplos:
+
+- SDK → prueba dependencia de código, no contrato;
+- cuenta → prueba identidad en proveedor, no asiento;
+- entitlement → prueba derecho, no necesidad;
+- contrato → prueba condición comercial, no uso;
+- telemetría → prueba consumo, no costo;
+- gasto → prueba hecho económico, no licencia vigente.
+
+Ninguna capa sustituye a las demás.
+
+---
+
+#### 30. Matriz `TI-TECHNOLOGY-RENEWAL-DECISION-MATRIX-001`
+
+La decisión se evalúa con estas dimensiones:
+
+| Dimensión   | Pregunta obligatoria                                                                                     |
+| ----------- | -------------------------------------------------------------------------------------------------------- |
+| Necesidad   | ¿qué proceso, aplicación o servicio necesita la capacidad?                                               |
+| Criticidad  | ¿qué capacidad se degrada si se retira?                                                                  |
+| Uso         | ¿qué evidencia de utilización existe y para qué periodo?                                                 |
+| Asientos    | ¿cuántos están habilitados, asignados, utilizados y disponibles cuando el modelo aplica?                 |
+| Costo       | ¿qué hecho económico y centro de costo lo soportan?                                                      |
+| Contrato    | ¿qué término, ventana, auto-renovación y restricciones aplican?                                          |
+| Soporte     | ¿qué SLA, soporte o garantía se perderían?                                                               |
+| Seguridad   | ¿qué cuentas, secretos, datos y privilegios dependen del proveedor?                                      |
+| Continuidad | ¿qué recuperación, fallback o dependencia crítica existe?                                                |
+| Salida      | ¿cómo se exportan datos y se retiran cuentas/integraciones?                                              |
+| Alternativa | ¿existe opción equivalente validada?                                                                     |
+| Decisión    | renovar, redimensionar, renegociar, migrar/salir, cancelar, no actuar o mantener pendiente por evidencia |
+
+No se permite seleccionar una decisión únicamente por precio o únicamente por consumo.
+
+---
+
+#### 31. Ciclo de baja comercial y técnica
+
+La terminación de una relación tecnológica sigue:
+
+```text
+DECISIÓN APROBADA
+→ CONDICIÓN CONTRACTUAL
+→ COMPRA / CANCELACIÓN
+→ CAMBIO TÉCNICO
+→ EXPORTACIÓN / RETENCIÓN
+→ REVOCACIÓN DE ACCESOS
+→ LIBERACIÓN DE ASIENTOS
+→ RETIRO DE INTEGRACIONES
+→ RECONCILIACIÓN DE COSTOS
+→ EVIDENCIA DE CIERRE
+```
+
+Reglas:
+
+1. el orden concreto depende del proveedor y del riesgo;
+2. cancelar primero puede impedir exportar datos;
+3. eliminar cuenta primero puede impedir facturación o soporte de cierre;
+4. una factura final no confirma cierre técnico;
+5. una aplicación retirada no elimina automáticamente el contrato;
+6. una licencia cancelada no elimina el gasto ya causado;
+7. el cierre debe reconciliar obligaciones, datos, accesos, integraciones y recuperación.
+
+---
+
+#### 32. Brechas y propietarios
+
+| Brecha                                                                                      | Estado                               | Propietario exacto                               | Condición de salida                                          |
+| ------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------------ |
+| plan, contrato, entitlement, asiento y renovación de las cinco familias técnicas observadas | `PENDIENTE_DE_EVIDENCIA`             | TI + ORIGO                                       | evidencia contractual/comercial reconciliada                 |
+| uso y cantidad necesaria de licencias o capacidad                                           | `PENDIENTE_DE_EVIDENCIA`             | TI + propietario funcional                       | fuente, periodo y criterio de uso demostrables               |
+| costo tecnológico realizado por proveedor/aplicación/servicio                               | `PENDIENTE_DE_EVIDENCIA`             | NUMERA + ORIGO + TI                              | hecho económico y relación tecnológica reconciliados         |
+| hosting de siete aplicaciones Next.js                                                       | `PENDIENTE_DE_EVIDENCIA`             | `TI-DOM-006` + TI + ORIGO                        | proveedor, cuenta, propietario y evidencia técnica/comercial |
+| proveedores actuales de AURA                                                                | `PENDIENTE_DE_EVIDENCIA`             | `AURA-AUD-001` a `AURA-AUD-010`                  | auditoría y decisión de continuidad                          |
+| garantía de activos tecnológicos actuales                                                   | `PENDIENTE_DE_EVIDENCIA`             | NEXO + TI                                        | activo reconciliado, documento/condición y vigencia          |
+| alertas productivas de renovación, asiento, costo y garantía                                | `FUERA_DE_ALCANCE` de implementación | `TI-DOM-010`; `TI-INT-001`; `TI-UX-005`          | implementación autorizada y fuentes conectadas               |
+| permisos sobre contratos, precios, licencias y consolas                                     | `FUERA_DE_ALCANCE`                   | `TI-AUTH-001` a `TI-AUTH-004`                    | segregación y autorización aprobadas                         |
+| integración con consolas de licenciamiento                                                  | `FUERA_DE_ALCANCE`                   | `TI-INT-003`                                     | contrato de integración y sandbox aprobados                  |
+| materialización física del modelo                                                           | `NO_APLICA` en esta tarea            | paquete de implementación que resulte autorizado | alcance físico explícito y aprobado                          |
+
+No queda una brecha detectada sin propietario y condición de salida.
+
+---
+
+#### 33. Estado de los artefactos
+
+| Artefacto                                              | Estado                    |
+| ------------------------------------------------------ | ------------------------- |
+| `TI-TECHNOLOGY-COMMERCIAL-GOVERNANCE-CONTRACT-001`     | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-LICENSE-SEAT-CONTRACT-001`              | `ESPECIFICADO`            |
+| `TI-APPLICATION-ENTITLEMENT-RECONCILIATION-MATRIX-001` | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-PROVIDER-COMMERCIAL-MATRIX-001`         | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-WARRANTY-CONTRACT-001`                  | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-RENEWAL-DECISION-MATRIX-001`            | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-USAGE-COST-RECONCILIATION-CONTRACT-001` | `ESPECIFICADO`            |
+| `TI-TECHNOLOGY-ASIS-RECONCILIATION-001`                | `ESPECIFICADO`            |
+| licencias/asientos comerciales actuales                | `PENDIENTE_DE_EVIDENCIA`  |
+| contratos/renovaciones comerciales actuales            | `PENDIENTE_DE_EVIDENCIA`  |
+| uso comercial reconciliado                             | `PENDIENTE_DE_EVIDENCIA`  |
+| costos tecnológicos reconciliados                      | `PENDIENTE_DE_EVIDENCIA`  |
+| garantías tecnológicas verificadas                     | `PENDIENTE_DE_EVIDENCIA`  |
+| implementación física del modelo                       | `NO_APLICA` en esta tarea |
+
+---
+
+#### 34. Cobertura de prueba consumida
+
+La cobertura vigente ya protege:
+
+- correlación transversal entre proveedores, licencias, contratos y costos;
+- detección de licencia sin usuario;
+- uso de identificadores y eventos versionados;
+- autenticación mínima, idempotencia y reconciliación de adaptadores externos;
+- prohibición de convertir proveedor o adaptador en maestro de contrato o costo;
+- identidad, garantía, mantenimiento y retiro de activos tecnológicos;
+- separación entre proveedor, condición comercial y contrato;
+- trazabilidad de hechos económicos y costos hacia fuentes y centros;
+- consistencia entre compra, servicio, activo, contrato y gasto;
+- relaciones de aplicación con proveedor, licencia, asiento, renovación y salida.
+
+`TI-DOM-012` especializa y materializa esas condiciones para el servicio tecnológico y las diez aplicaciones sin ampliar su condición verificable.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el alcance verificable de licencias, asignaciones, proveedores, contratos, garantías, costos y reconciliación ya está protegido por requisitos canónicos vigentes de integración, activos, abastecimiento y economía. Esta tarea materializa las fronteras, estados, matrices y handoffs tecnológicos sobre esas obligaciones existentes, sin introducir un efecto empresarial, regla de autorización o algoritmo económico adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 36. Criterios de aceptación
+
+`TI-DOM-012` queda documentalmente completa cuando:
+
+1. existe una autoridad clara para TI, ORIGO, NUMERA, NEXO, SHELL y propietario funcional;
+2. proveedor, plan, contrato, suscripción, licencia, entitlement, asiento, cuenta, credencial, factura, gasto, costo, garantía, activo, aplicación y servicio permanecen separados;
+3. se conservan exactamente los siete estados de licencia heredados;
+4. se definen entitlement, asiento, cantidades y disponibilidad sin forzar modelo por asiento;
+5. asignación de asiento y autorización empresarial permanecen separadas;
+6. uso, asignación, necesidad y criticidad permanecen separados;
+7. rightsizing produce revisión y no cancelación automática;
+8. renovación separa señal, decisión, compra, cambio técnico y efecto económico;
+9. auto-renovación no equivale a aprobación;
+10. contrato y suscripción conservan ORIGO como autoridad;
+11. costo y gasto conservan NUMERA como autoridad;
+12. garantía conserva NEXO como autoridad física;
+13. se definen relación de garantía, soporte, mantenimiento, incidente y sustitución sin conflación;
+14. las diez aplicaciones canónicas tienen decisión explícita;
+15. se materializan 10/10 aplicaciones, sin omisiones ni duplicados;
+16. las cinco familias técnicas heredadas tienen reconciliación comercial explícita;
+17. se materializan 5/5 familias, sin omisiones ni duplicados;
+18. los siete hostings no identificados permanecen pendientes y no se inventa proveedor;
+19. AURA mantiene su handoff de auditoría;
+20. no se inventa plan, precio, cantidad, asiento, fecha, costo o renovación;
+21. el estado AS-IS diferencia estructura disponible de evidencia comercial real;
+22. los 38 activos actuales se tratan sin afirmar garantías inexistentes en la evidencia consultada;
+23. `commercial_value` no se convierte en gasto;
+24. las tres coincidencias nominales de activos tecnológicos no se promueven a binding canónico;
+25. las 91 filas de proveedor actuales no se presentan como inventario tecnológico;
+26. las tres órdenes actuales no se presentan como compras tecnológicas sin evidencia;
+27. cero filas de gasto actuales no se interpreta como costo tecnológico cero;
+28. alertas se remiten a observabilidad sin umbrales inventados;
+29. salida de proveedor se enlaza con recuperación y cambio;
+30. toda brecha tiene propietario y condición de salida;
+31. no se ejecuta cambio físico;
+32. no se crean ni modifican requisitos de prueba;
+33. `TI-DOM-013` queda únicamente reservada.
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos`
+
+
 ### [ ] TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
