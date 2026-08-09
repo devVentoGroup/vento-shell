@@ -9867,6 +9867,885 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial`
 
 
-### [ ] TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
+### ✅ TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios` — APROBADA
+**Tarea siguiente:** `TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del modelo tecnológico de respaldo, restauración, recuperación técnica, pruebas de restauración y handoff hacia continuidad empresarial
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-TECHNICAL-RECOVERY-CONTRACT-001`; `TI-RECOVERY-SERVICE-MATRIX-001`; `TI-RECOVERABLE-TECHNICAL-OBJECT-MATRIX-001`; `TI-BACKUP-RESTORE-GATE-CONTRACT-001`; `TI-RECOVERY-ORDER-CONTRACT-001`; `TI-CONTINUITY-HANDOFF-MATRIX-001`; `TI-RECOVERY-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, SQL, migraciones, tablas, datos, RLS, funciones, triggers, Storage, Edge Functions, cron, secretos, políticas de proveedor, respaldos administrados, restauraciones, failover, dispositivos, redes, aplicaciones ni configuración desplegada
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar el contrato tecnológico que define qué debe poder protegerse y recuperarse, cómo se distingue una copia de un respaldo verificable, qué condiciones habilitan una restauración, cómo se reconstruyen los once servicios tecnológicos y las siete clases de configuración, qué controles aplican a Supabase y a los demás objetos técnicos, y dónde termina la recuperación técnica para entregar el control a continuidad empresarial sin inventar RTO, RPO, MTPD o MBCO numéricos.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-DOM-011` queda documentalmente cerrada con:
+
+- un contrato único de recuperación técnica;
+- una separación explícita entre respaldo, réplica, snapshot, archivo, exportación, rollback, failover, restauración, recuperación técnica y continuidad empresarial;
+- la adopción de los cinco perfiles cualitativos de recuperación ya aprobados;
+- la adopción de los nueve estados canónicos del ciclo de respaldo ya aprobados;
+- quince clases de objeto recuperable materializadas;
+- decisiones explícitas de recuperación para los once servicios `TI-SERVICE-001` a `TI-SERVICE-011`;
+- decisiones explícitas de recuperación para las siete clases del grafo tecnológico;
+- un contrato de puerta de restauración que impide tratar una copia completada pero no verificada como evidencia de recuperabilidad;
+- un orden técnico de recuperación con dependencias y reconciliación;
+- una política de primera restauración en entorno aislado cuando sea técnicamente posible y seguro;
+- controles para impedir efectos reales durante pruebas de restauración;
+- separación entre validación técnica y validación empresarial;
+- separación entre failover y retorno al primario;
+- integración con observabilidad de `TI-DOM-010`;
+- handoff explícito hacia el BLOQUE AC de continuidad;
+- reconciliación AS-IS contra repositorio y estado desplegado consultado en modo de solo lectura;
+- cero cambios físicos;
+- cero cambios en requisitos de prueba.
+
+La tarea no afirma que Vento disponga hoy de un respaldo administrado, PITR, réplica, restore drill, failover o recuperación integral ya comprobados cuando esa evidencia no fue verificable.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y conserva:
+
+1. `TI-DOM-001` y los once servicios tecnológicos;
+2. `TI-DOM-002` y las siete clases del grafo de configuración;
+3. `TI-DOM-003` para reconstrucción y re-enrolamiento de endpoints;
+4. `TI-DOM-004` para configuración de redes, direccionamiento y contingencia técnica;
+5. `TI-DOM-005` para impresoras, periféricos y separación entre hardware, cola, routing, adaptador, trabajo y resultado;
+6. `TI-DOM-006` para aplicaciones, ambientes, dependencias y proveedores tecnológicos;
+7. `TI-DOM-007` para solicitud, incidente, restauración de servicio, prioridad, SLA y cierre;
+8. `TI-DOM-008` para problema, causa, error conocido y recurrencia;
+9. `TI-DOM-009` para cambio, ventana, prueba, despliegue, rollback y revisión posterior;
+10. `TI-DOM-010` para señales de respaldo, frescura, fallos, salud, alertas y evidencia de restauración;
+11. `NFR-BACKUP-RECOVERY-CONTRACT-001`;
+12. `NFR-RECOVERY-OBJECT-INVENTORY-001`;
+13. `NFR-PROCESS-RECOVERY-PROFILE-001`;
+14. `NFR-RTO-RPO-MATRIX-001`;
+15. `NFR-BACKUP-POLICY-MATRIX-001`;
+16. `NFR-RESTORE-RUNBOOK-CATALOG-001`;
+17. `NFR-RECOVERY-EXERCISE-MATRIX-001`;
+18. `NFR-RECOVERY-EXCEPTION-REGISTER-001`;
+19. `CAP-SCOPE-015` para tecnología y soporte;
+20. `CAP-SCOPE-018` para continuidad empresarial;
+21. el BLOQUE AC como propietario del gobierno permanente de continuidad;
+22. BLOQUE T como propietario de calidad, release, despliegue y rollback de software;
+23. QUEUE-ARC para colas, reintentos y replay;
+24. EVID-ARC para evidencia durable;
+25. las autoridades de Supabase, Storage, autorización e integraciones ya definidas.
+
+Esta tarea especializa para BLOQUE Z el contrato de recuperación aprobado. No reemplaza los artefactos NFR ni adelanta las decisiones que pertenecen al BLOQUE AC.
+
+---
+
+#### 3. Separaciones obligatorias
+
+Se fija como invariante:
+
+```text
+BACKUP
+≠ REPLICA
+≠ SNAPSHOT
+≠ ARCHIVE
+≠ EXPORT
+≠ ROLLBACK
+≠ FAILOVER
+≠ RESTORE
+≠ TECHNICAL_RECOVERY
+≠ BUSINESS_CONTINUITY
+```
+
+Significado:
+
+| Concepto            | Decisión                                                                                               |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| Backup              | copia protegida que cumple una política identificable y puede aspirar a ser fuente de restauración     |
+| Replica             | copia sincronizada para disponibilidad o distribución; puede replicar corrupción o borrado             |
+| Snapshot            | captura puntual de un objeto o volumen; su utilidad depende de alcance, consistencia y verificabilidad |
+| Archive             | conservación de largo plazo o cumplimiento; no implica restauración operativa rápida                   |
+| Export              | extracción portable o intercambio; no es respaldo por el solo hecho de existir                         |
+| Rollback            | reversión de una versión o cambio; no restaura automáticamente datos perdidos                          |
+| Failover            | traslado de servicio a una alternativa; no equivale a recuperar el estado correcto                     |
+| Restore             | reposición de datos, configuración o artefactos desde una fuente de recuperación                       |
+| Technical recovery  | reconstrucción coordinada de la capacidad técnica hasta un estado verificable                          |
+| Business continuity | decisión y operación empresarial para mantener o reanudar el proceso mínimo aceptable                  |
+
+Consecuencias:
+
+1. un backup completado no demuestra restaurabilidad;
+2. una réplica verde no demuestra recuperabilidad;
+3. un rollback exitoso no repara datos corruptos;
+4. un failover exitoso no demuestra integridad empresarial;
+5. una base restaurada no demuestra que el proceso empresarial esté recuperado;
+6. una aplicación respondiendo no demuestra que las obligaciones pendientes estén reconciliadas;
+7. la disponibilidad técnica no autoriza a BLOQUE Z a declarar activada o cerrada la continuidad empresarial.
+
+---
+
+#### 4. Perfiles cualitativos de recuperación adoptados
+
+Se conservan exactamente los cinco perfiles aprobados:
+
+| Perfil                    | Uso tecnológico                                                                                                                              |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RC0_SAFETY_INTEGRITY`    | capacidades cuya pérdida o corrupción puede comprometer seguridad, integridad, obligaciones críticas o una fuente de verdad no reconstruible |
+| `RC1_CRITICAL_OPERATION`  | capacidades necesarias para sostener una operación empresarial crítica                                                                       |
+| `RC2_IMPORTANT_OPERATION` | capacidades importantes cuya degradación admite una ventana controlada de recuperación                                                       |
+| `RC3_SUPPORTING`          | capacidades de soporte que pueden recuperarse después de las dependencias críticas                                                           |
+| `RC4_RECONSTRUCTIBLE`     | capacidades regenerables desde fuentes autoritativas sin conservar una copia operativa completa                                              |
+
+Reglas:
+
+1. el perfil no contiene una duración numérica implícita;
+2. el perfil tecnológico se vincula al proceso y dependencias que protege;
+3. un objeto puede elevar su perfil si habilita una dependencia crítica;
+4. el perfil no se degrada por facilidad técnica de reconstrucción si existe riesgo de integridad;
+5. los objetivos numéricos se consumen del BIA y del gobierno de continuidad cuando estén aprobados;
+6. esta tarea no inventa RTO, RPO, MTPD ni MBCO cuantitativos.
+
+---
+
+#### 5. Estados del ciclo de respaldo
+
+Se conservan exactamente los nueve estados aprobados:
+
+1. `SCHEDULED`
+2. `RUNNING`
+3. `COMPLETED_UNVERIFIED`
+4. `VERIFIED`
+5. `FAILED`
+6. `DEGRADED`
+7. `QUARANTINED`
+8. `EXPIRED`
+9. `DELETED`
+
+Reglas:
+
+- `COMPLETED_UNVERIFIED` no es evidencia de restaurabilidad;
+- `VERIFIED` exige la verificación definida por la política del objeto;
+- cuando la política exija prueba de restauración, la preparación para recuperar requiere además evidencia vigente de una restauración satisfactoria;
+- `DEGRADED` conserva el motivo, alcance y riesgo;
+- `QUARANTINED` impide usar la copia hasta resolver integridad o seguridad;
+- `EXPIRED` no puede presentarse como copia vigente;
+- `DELETED` conserva evidencia de disposición cuando la política lo requiera;
+- ningún estado se eleva por una marca de éxito emitida únicamente por el proceso que creó la copia.
+
+---
+
+#### 6. Contrato `TI-TECHNICAL-RECOVERY-CONTRACT-001`
+
+La recuperación técnica sigue esta secuencia conceptual:
+
+```text
+OBJETO AUTORITATIVO
+→ PERFIL DE RECUPERACIÓN
+→ OBJETIVO DE CONTINUIDAD RECIBIDO
+→ POLÍTICA DE PROTECCIÓN
+→ CREACIÓN DE COPIA
+→ VERIFICACIÓN
+→ PRUEBA DE RESTAURACIÓN
+→ SOLICITUD DE RECUPERACIÓN
+→ AUTORIZACIÓN
+→ RESTAURACIÓN AISLADA O CONTROLADA
+→ VALIDACIÓN TÉCNICA
+→ VALIDACIÓN EMPRESARIAL
+→ RECONCILIACIÓN
+→ RETORNO CONTROLADO
+→ EVIDENCIA Y APRENDIZAJE
+```
+
+Toda política técnica deberá poder declarar, cuando aplique:
+
+- objeto o grupo protegido;
+- autoridad del objeto;
+- perfil cualitativo;
+- referencia al RPO aprobado;
+- método de copia;
+- frecuencia o disparador;
+- regla de consistencia;
+- cadena completa o incremental;
+- PITR o mecanismo equivalente, si existe;
+- ubicación o dominio de falla;
+- inmutabilidad o protección contra eliminación;
+- cifrado;
+- referencia de llave;
+- accesos autorizados;
+- retención;
+- legal hold o retención extraordinaria;
+- verificación de integridad;
+- monitoreo;
+- método de restauración;
+- última restauración verificada;
+- dependencia de proveedor;
+- capacidad y costo cuando corresponda;
+- excepción activa;
+- estado vigente.
+
+La frecuencia se deriva del objetivo aprobado; la frecuencia no se utiliza para fabricar el objetivo.
+
+---
+
+#### 7. Inventario `TI-RECOVERABLE-TECHNICAL-OBJECT-MATRIX-001`
+
+Se materializan quince clases de objeto recuperable.
+
+|    # | Clase de objeto                      | Protección esperada                                                          | Regla de recuperación                                                      | Riesgo principal                                         | Autoridad / handoff             |
+| ---: | ------------------------------------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------- |
+|    1 | Fuente canónica                      | respaldo consistente y verificable acorde al perfil                          | restaurar sin crear una fuente competidora; reconciliar hechos posteriores | pérdida o corrupción irreversible                        | dominio propietario + TI        |
+|    2 | Proyección o copia regenerable       | puede omitirse del backup si la regeneración está demostrada                 | regenerar desde la fuente y verificar paridad                              | reconstrucción incompleta o stale                        | dominio propietario             |
+|    3 | Caché descartable                    | no requiere recuperación de contenido si puede invalidarse                   | vaciar y regenerar                                                         | datos obsoletos tratados como autoridad                  | aplicación propietaria          |
+|    4 | Estado transaccional                 | protección consistente e idempotente                                         | restaurar con atención a transacciones posteriores y efectos externos      | doble efecto, pérdida o orden incorrecto                 | dominio propietario + TI        |
+|    5 | Ledger o secuencia                   | protección fuerte de integridad y orden                                      | restaurar sin renumerar ni sobrescribir historia válida                    | doble contabilización o ruptura de secuencia             | dominio propietario             |
+|    6 | Documento o evidencia                | archivo, metadatos, versión, hash, permisos y referencia                     | restaurar contenido y vínculo, preservando retención y autoridad           | archivo huérfano o evidencia alterada                    | EVID-ARC + dominio              |
+|    7 | Configuración                        | versión y fuente autoritativa identificables                                 | aplicar la versión correcta y comprobar drift                              | configuración incompatible o desactualizada              | TI / propietario técnico        |
+|    8 | Secreto o llave                      | mecanismo seguro de recuperación o rotación, separado del backup ordinario   | recuperar o rotar según autoridad; nunca depender de texto plano en copias | exposición o imposibilidad de descifrar                  | TI-AUTH / autoridad de secretos |
+|    9 | Artefacto de software                | repositorio, commit, dependencias bloqueadas, build y release identificables | reconstruir o desplegar artefacto verificable                              | binario no reproducible o versión equivocada             | BLOQUE T + propietario          |
+|   10 | Estado de integración                | correlación, idempotencia y posición recuperables                            | reanudar sin duplicar efectos ni perder acknowledgements                   | replay doble o evento perdido                            | INT / QUEUE-ARC                 |
+|   11 | Cola o trabajo pendiente             | payload mínimo, identidad estable y estado durable                           | reconciliar antes de replay; no reinyectar ciegamente                      | duplicación, orden incorrecto o trabajo obsoleto         | QUEUE-ARC + propietario         |
+|   12 | Dato local u offline                 | intención original y clave idempotente cuando el flujo lo requiera           | sincronizar después de conocer el punto restaurado                         | duplicación o pérdida de trabajo ocurrido fuera de línea | aplicación + TI                 |
+|   13 | Telemetría o auditoría               | retención según obligación y valor probatorio                                | restaurar solo cuando sea necesario; no convertirla en fuente empresarial  | pérdida de trazabilidad o exceso de retención            | TI-DOM-010 + EVID-ARC           |
+|   14 | Configuración de activo o periférico | configuración versionada separada del objeto físico                          | reaplicar sobre hardware válido y luego probar                             | confundir reemplazo físico con restore                   | NEXO + TI                       |
+|   15 | Registro de proveedor externo        | exportabilidad, evidencia y contrato de recuperación                         | usar exportación, API o procedimiento alterno aprobado                     | lock-in, cierre de cuenta o proveedor indisponible       | ORIGO + TI + continuidad        |
+
+Total materializado: **15 de 15 clases**.
+
+---
+
+#### 8. Decisiones para los once servicios `TI-RECOVERY-SERVICE-MATRIX-001`
+
+| Servicio         | Qué debe poder recuperarse                                                                                    | Regla principal                                                                                                                               | Validación mínima                                                           | Handoff                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `TI-SERVICE-001` | configuración de cuentas, vínculos técnicos, políticas y evidencia necesaria para ejecutar identidad y acceso | una restauración no revive cuentas revocadas, permisos retirados, sesiones caducadas ni credenciales reemplazadas sin reconciliación          | identidad, vigencia, autorización y ausencia de acceso residual indebido    | SHELL + TI-AUTH + continuidad si el proceso se afecta |
+| `TI-SERVICE-002` | baseline de endpoint, enrolamiento, configuración administrada y estado local recuperable                     | reimagen o reconstrucción crea el estado técnico correcto sin reutilizar sesiones o autoridad obsoleta; trabajo local pendiente se reconcilia | endpoint correcto, baseline, postura, aplicación y red                      | `TI-DOM-003` + NEXO                                   |
+| `TI-SERVICE-003` | configuración versionada de enlaces, equipos, segmentos, SSID, direccionamiento, reservas y dependencias      | restaurar configuración no sustituye reemplazo de hardware; topología y direccionamiento se validan después                                   | conectividad, routing, resolución, segmentación y dependencias              | `TI-DOM-004` + continuidad                            |
+| `TI-SERVICE-004` | configuración de impresora, adaptador, routing, cola y trabajos pendientes recuperables                       | trabajos pendientes no se reimprimen ciegamente; hardware físico y estado lógico permanecen separados                                         | conectividad, capacidad, cola, resultado y reconciliación de trabajos       | `TI-DOM-005` + PRINT-ARC                              |
+| `TI-SERVICE-005` | código, release, configuración, esquema, datos, archivos, integraciones y dependencias de aplicación          | reconstrucción debe identificar commit, ambiente, migraciones, configuración y datos compatibles                                              | build/release, esquema, datos, Storage, dependencias y pruebas de servicio  | `TI-DOM-006` + BLOQUE T                               |
+| `TI-SERVICE-006` | casos de soporte, mensajes y evidencia necesaria                                                              | restaurar el caso no repite notificaciones, cambios o acciones técnicas ya ejecutadas                                                         | integridad del caso, autoría, estado y efectos correlacionados              | `TI-DOM-007`                                          |
+| `TI-SERVICE-007` | línea de tiempo, señales, estado de restauración y dependencias del incidente                                 | un incidente puede solicitar recuperación técnica, pero su cierre requiere validación del servicio y no activa continuidad por sí solo        | servicio restaurado, efectos reconciliados y aceptación aplicable           | `TI-DOM-007` + AC                                     |
+| `TI-SERVICE-008` | configuración previa, versión desplegada, evidencia pre/post y datos protegidos cuando el cambio lo requiera  | rollback y restauración de datos son mecanismos distintos y se coordinan cuando ambos son necesarios                                          | estado anterior o objetivo, datos, compatibilidad y señales posteriores     | `TI-DOM-009` + BLOQUE T                               |
+| `TI-SERVICE-009` | entornos y datos de prueba de restauración autorizados, resultados y evidencia                                | la primera prueba usa aislamiento y efectos externos suprimidos cuando aplique                                                                | restore reproducible, integridad, seguridad, tiempos observados y evidencia | E5 + T + U                                            |
+| `TI-SERVICE-010` | referencias técnicas a licencias, garantías y habilitaciones necesarias para reconstruir capacidad            | la recuperación técnica no convierte copia de licencia o contrato en fuente financiera o contractual                                          | vigencia, titularidad, asiento y habilitación técnica                       | `TI-DOM-012` + ORIGO + NUMERA                         |
+| `TI-SERVICE-011` | runbooks, guías, versiones y conocimiento necesario para recuperación                                         | conocimiento recuperado no sustituye configuración, autoridad ni prueba técnica                                                               | versión vigente, disponibilidad y vínculo con el servicio                   | `TI-DOM-013`                                          |
+
+Total materializado: **11 de 11 servicios**, sin faltantes ni duplicados.
+
+---
+
+#### 9. Decisiones para las siete clases del grafo tecnológico
+
+| Clase              | Decisión de recuperación                                                                                        | No se permite inferir                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `ASSET`            | reparar o reemplazar físicamente bajo NEXO; recuperar después la configuración técnica que le corresponda       | que una copia de configuración equivale a recuperar el activo                  |
+| `ENDPOINT`         | reconstruir baseline, enrolamiento, configuración y aplicaciones; reconciliar estado local pendiente            | reusar identidad técnica o sesión obsoleta solo porque el hardware es el mismo |
+| `SHARED_DEVICE`    | reconstruir plantilla, aplicaciones, perfil y binding técnico autorizado; revalidar credenciales                | restaurar una sesión de trabajador, PIN, actor efectivo o permiso ya vencido   |
+| `NETWORK_RESOURCE` | restaurar configuración versionada, direccionamiento y topología sobre equipo válido y probar extremo a extremo | que `up` equivale a servicio recuperado                                        |
+| `PRINTER`          | restaurar configuración, routing, adaptador y cola reconciliada; hardware permanece bajo NEXO                   | reimprimir automáticamente todo trabajo pendiente                              |
+| `APPLICATION`      | reconstruir release, esquema, datos, archivos, configuración e integraciones compatibles                        | que un deploy sano equivale a datos recuperados                                |
+| `TECH_SERVICE`     | derivar recuperación desde dependencias técnicas y validación empresarial del servicio                          | crear una fuente de verdad paralela para datos de los componentes              |
+
+Total materializado: **7 de 7 clases**.
+
+---
+
+#### 10. Alcance técnico mínimo de Supabase
+
+Para un servicio VENTO que dependa de Supabase, el plan de recuperación deberá considerar por separado, cuando existan:
+
+| Superficie                | Qué debe quedar reconstruible o recuperable                                       |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| Esquema de base de datos  | tablas, tipos, extensiones y estructura compatible                                |
+| Datos                     | fuentes autoritativas y estado transaccional según perfil                         |
+| Lógica de base            | funciones, triggers, vistas y RPC                                                 |
+| Seguridad                 | RLS, policies, grants y ownership aplicable                                       |
+| Auth                      | relaciones empresariales y configuración necesaria sin revivir autoridad revocada |
+| Storage                   | objetos, metadatos, buckets, permisos, referencias, hashes o versiones requeridas |
+| Realtime                  | configuración y consumidores necesarios para reanudar operación                   |
+| Edge Functions            | código, versión, configuración y dependencias                                     |
+| Secretos y llaves         | recuperación o rotación mediante autoridad separada                               |
+| Migraciones               | historial versionado y orden reproducible                                         |
+| Releases                  | commit, artefactos, dependencias y manifiesto del ambiente                        |
+| Cron y jobs               | definición, estado, último efecto y prevención de doble ejecución                 |
+| Colas y pending work      | identidad, estado, idempotencia y reconciliación antes de replay                  |
+| Integraciones externas    | endpoints, contratos, credenciales y posiciones reconciliables                    |
+| Configuración de ambiente | valores no secretos, feature flags y referencias necesarias                       |
+
+Invariantes:
+
+1. la base restaurada debe ser compatible con las migraciones y el release que se pretende ejecutar;
+2. restaurar datos no autoriza saltar una migración pendiente;
+3. RLS y grants son parte de la recuperación, no un ajuste posterior opcional;
+4. Storage incluye tanto contenido como metadatos y referencias;
+5. secretos no se incluyen en respaldos ordinarios en texto claro;
+6. cron, webhooks y Edge Functions se controlan durante una restauración para evitar efectos reales;
+7. PITR solo se declara disponible si existe evidencia de la capacidad y su cobertura;
+8. el nombre de un objeto con la palabra `backup` no demuestra que forme parte de una política canónica;
+9. una restauración de Supabase no se considera completa hasta validar contratos consumidores y efectos pendientes.
+
+---
+
+#### 11. Política de protección y dominios de falla
+
+La política de un objeto recuperable deberá demostrar que una falla relevante no destruye simultáneamente la fuente y todas sus copias.
+
+Se deberá evaluar:
+
+- mismo proyecto;
+- misma cuenta;
+- misma región;
+- mismo proveedor;
+- mismas credenciales;
+- misma llave;
+- misma sede;
+- mismo dispositivo;
+- mismo repositorio;
+- misma persona administradora;
+- misma ruta de red.
+
+Una segunda copia en el mismo dominio de falla puede aumentar conveniencia, pero no demuestra resiliencia frente a la causa compartida.
+
+La existencia de redundancia, réplica o alta disponibilidad no elimina la necesidad de recuperación frente a:
+
+- borrado accidental;
+- actualización masiva incorrecta;
+- migración defectuosa;
+- corrupción latente;
+- credencial comprometida;
+- eliminación de copias;
+- ransomware;
+- pérdida de llave;
+- indisponibilidad del proveedor;
+- cierre de cuenta;
+- falla regional;
+- restauración de una versión con vulnerabilidad conocida.
+
+---
+
+#### 12. Consistencia y grupos de recuperación
+
+Los objetos relacionados se recuperan respetando consistencia empresarial.
+
+Ejemplos de grupos que pueden requerir coordinación:
+
+- base y Storage;
+- ledger y proyecciones;
+- caso y evidencia;
+- cola y resultado aplicado;
+- identidad y vínculo empresarial;
+- aplicación y configuración;
+- impresora y trabajo pendiente;
+- endpoint y estado local pendiente.
+
+Reglas:
+
+1. una restauración no mezcla puntos temporales incompatibles sin reconciliación explícita;
+2. una proyección puede regenerarse después de la fuente si su proceso es determinista;
+3. un ledger no se reconstruye desde un saldo cuando la historia es autoridad;
+4. documentos restaurados requieren que la referencia empresarial vuelva a apuntar al objeto correcto;
+5. restaurar únicamente un lado de una relación crítica deja la recuperación en estado incompleto;
+6. el punto de restauración se selecciona por el daño y el objetivo, no por el archivo más reciente de forma automática.
+
+---
+
+#### 13. Contrato de puerta `TI-BACKUP-RESTORE-GATE-CONTRACT-001`
+
+Antes de presentar una copia como fuente apta para recuperación deberán existir, según política:
+
+1. identidad de la copia;
+2. objeto y alcance;
+3. punto temporal;
+4. estado no inferior al requerido por política;
+5. verificación de integridad;
+6. cadena completa de dependencias de la copia;
+7. acceso a la llave o procedimiento de rotación;
+8. versión del formato;
+9. método de restauración;
+10. ambiente de destino permitido;
+11. última prueba de restauración exigida y su resultado;
+12. evidencia disponible;
+13. ausencia de cuarentena;
+14. retención vigente;
+15. compatibilidad conocida o procedimiento de migración posterior.
+
+Una copia `COMPLETED_UNVERIFIED` nunca supera esta puerta por el solo resultado del job.
+
+---
+
+#### 14. Solicitud de restauración
+
+Toda restauración real o ejercicio deberá registrar, cuando aplique:
+
+- incidente, ejercicio o razón;
+- solicitante;
+- autoridad aprobadora;
+- objeto;
+- alcance;
+- punto de restauración;
+- naturaleza del daño;
+- riesgo de sobrescritura;
+- datos creados después del punto;
+- ambiente de destino;
+- copia seleccionada;
+- prueba de integridad;
+- efectos externos que deben suprimirse;
+- dependencias;
+- ventana;
+- criterios de validación;
+- condición de aborto;
+- mecanismo para volver atrás de la restauración si falla;
+- comunicaciones;
+- evidencia;
+- responsable de validación técnica;
+- responsable de validación empresarial.
+
+La restauración de producción no se inicia únicamente porque exista un backup disponible.
+
+---
+
+#### 15. Entorno aislado y supresión de efectos
+
+La primera restauración de una prueba o de una recuperación que admita verificación previa deberá ejecutarse en un destino aislado o equivalente controlado.
+
+Durante la verificación deberán suprimirse, según el sistema:
+
+- pagos reales;
+- correos reales;
+- mensajería real;
+- push productivo;
+- webhooks externos;
+- impresión física;
+- reintentos contra proveedores reales;
+- jobs que muten producción;
+- conciliaciones automáticas que no correspondan al ejercicio;
+- sesiones o credenciales productivas no necesarias.
+
+La supresión de efectos no puede alterar la evidencia de que esos componentes necesitarán ser reactivados y validados durante la recuperación real.
+
+---
+
+#### 16. Validación técnica de restauración
+
+La restauración técnica debe verificar, según aplique:
+
+1. integridad de la copia;
+2. esquema y tipos;
+3. orden de migraciones;
+4. funciones, triggers, vistas y RPC;
+5. RLS y grants;
+6. objetos de Storage y referencias;
+7. releases y contratos;
+8. configuración de ambiente;
+9. ausencia de secretos expuestos;
+10. colas y trabajos pendientes;
+11. cron y jobs;
+12. Edge Functions;
+13. integraciones;
+14. endpoints y periféricos;
+15. observabilidad;
+16. drift frente al estado objetivo;
+17. presencia de vulnerabilidades conocidas que invaliden la versión restaurada.
+
+Una verificación técnica exitosa habilita la siguiente decisión; no constituye validación empresarial.
+
+---
+
+#### 17. Validación empresarial
+
+El propietario empresarial deberá determinar, según el proceso:
+
+- si el mínimo de servicio requerido está disponible;
+- si faltan obligaciones;
+- si existen hechos duplicados;
+- si existen hechos posteriores al punto restaurado;
+- si hay transacciones, inventario, pagos, documentos, evidencia o comunicaciones pendientes;
+- si hay trabajo offline o manual no incorporado;
+- si existen conflictos entre fuentes;
+- si la cola de pendientes puede reanudarse;
+- si el proceso puede operar sin crear daño adicional;
+- si la reconciliación pendiente es tolerable dentro del objetivo vigente.
+
+BLOQUE Z entrega la capacidad técnica y evidencia. No sustituye esta aceptación empresarial.
+
+---
+
+#### 18. Contrato `TI-RECOVERY-ORDER-CONTRACT-001`
+
+Como orden técnico base, sujeto al perfil del proceso y a dependencias reales:
+
+```text
+1. AUTORIDADES, CREDENCIALES Y LLAVES
+2. RED Y CONECTIVIDAD
+3. BASE DE DATOS Y STORAGE
+4. COLAS, JOBS E INTEGRACIONES
+5. APLICACIONES Y SERVICIOS
+6. ENDPOINTS, DISPOSITIVOS E IMPRESORAS
+7. VALIDACIÓN TÉCNICA
+8. VALIDACIÓN EMPRESARIAL
+9. RECONCILIACIÓN DE EFECTOS Y TRABAJO PENDIENTE
+10. RETORNO CONTROLADO A OPERACIÓN NORMAL
+```
+
+Reglas:
+
+1. el orden genérico no reemplaza el runbook específico;
+2. una dependencia real puede exigir invertir o intercalar pasos;
+3. credenciales rotadas no se reemplazan por credenciales históricas restauradas;
+4. colas se mantienen controladas hasta conocer el punto restaurado;
+5. integraciones externas se reactivan después de validar idempotencia y estado;
+6. trabajo local/offline se reconcilia contra la verdad restaurada;
+7. no se reabre tráfico normal antes de la validación requerida;
+8. todo desvío del orden queda justificado en el runbook del servicio.
+
+---
+
+#### 19. Replay, reintentos y trabajo posterior al punto restaurado
+
+Una restauración puede dejar fuera del nuevo estado datos o efectos creados después del punto elegido.
+
+Por ello:
+
+1. las colas no se reproducen ciegamente;
+2. cada operación reintentable conserva identidad estable;
+3. el mismo identificador con el mismo contenido no produce doble efecto;
+4. un identificador reutilizado con contenido distinto produce conflicto;
+5. eventos tardíos se comparan con el estado restaurado;
+6. trabajo offline se importa únicamente después de reconciliar el recurso objetivo;
+7. pagos, inventario, impresión y notificaciones requieren especial control de efectos;
+8. si no puede determinarse si una operación ocurrió, el estado es resultado desconocido y requiere conciliación;
+9. compensar es distinto de borrar historia;
+10. el objetivo es converger a una única historia empresarial explicable.
+
+---
+
+#### 20. Relación con cambio y rollback
+
+`TI-DOM-009` y `TI-DOM-011` se conectan sin fusionarse.
+
+Antes de un cambio que tenga riesgo de datos deberá existir:
+
+- evaluación de daño potencial;
+- protección pre-cambio cuando corresponda;
+- identificación del punto de retorno;
+- criterio para rollback de software;
+- criterio separado para restauración de datos;
+- compatibilidad entre release y esquema;
+- prueba de que el mecanismo elegido no agrava la pérdida.
+
+Después:
+
+- rollback revierte software o configuración;
+- restore repone datos o estado;
+- ambos pueden ser necesarios;
+- cualquiera puede fallar independientemente;
+- la revisión posterior conserva cuál mecanismo se usó y su resultado.
+
+---
+
+#### 21. Failover y retorno
+
+```text
+FAILOVER ≠ FAILBACK
+```
+
+Failover:
+- cambia la capacidad activa hacia una alternativa;
+- requiere comprobar autoridad, datos, dependencias y tráfico;
+- no implica que el primario deba recuperarse inmediatamente.
+
+Retorno:
+- se ejecuta solo cuando el primario o destino objetivo es estable;
+- reconcilia datos y trabajo producido durante el failover;
+- verifica rutas, credenciales e integraciones;
+- evita doble procesamiento;
+- conserva ventana, decisión y evidencia.
+
+La mera respuesta del primario no autoriza el retorno automático.
+
+---
+
+#### 22. Relación con observabilidad
+
+`TI-DOM-010` deberá poder observar, cuando la implementación exista:
+
+- inicio y resultado del job de copia;
+- estado canónico de la copia;
+- edad desde la última copia válida;
+- edad desde la última restauración verificada exigida por política;
+- fallo o degradación de la cadena;
+- copia en cuarentena;
+- vencimiento;
+- capacidad insuficiente;
+- prueba de restauración;
+- tiempo real observado de recuperación;
+- errores de reconciliación;
+- dependencias no disponibles.
+
+Reglas:
+
+1. ausencia de señal no equivale a backup saludable;
+2. éxito del job no equivale a restore exitoso;
+3. un dashboard no reemplaza la evidencia del ejercicio;
+4. alertas de backup pueden producir incidente, pero no recalculan por sí solas RTO o RPO;
+5. la telemetría no contiene secretos, llaves o copias completas.
+
+---
+
+#### 23. Handoff `TI-CONTINUITY-HANDOFF-MATRIX-001`
+
+| Decisión                         | BLOQUE Z / TI                                     | BLOQUE AC / continuidad                 | Propietario empresarial           |
+| -------------------------------- | ------------------------------------------------- | --------------------------------------- | --------------------------------- |
+| Inventario técnico recuperable   | define y mantiene objetos técnicos                | consolida la visión de continuidad      | confirma criticidad empresarial   |
+| Método técnico de backup/restore | define capacidad y procedimiento técnico          | comprueba cobertura frente al escenario | consume resultado                 |
+| BIA                              | aporta dependencias y capacidades                 | gobierna análisis de impacto            | aporta impacto y mínimo aceptable |
+| MTPD                             | no lo inventa                                     | lo gobierna                             | lo valida                         |
+| MBCO                             | implementa soporte técnico necesario              | lo gobierna                             | lo valida                         |
+| RTO                              | consume el objetivo y reporta capacidad observada | lo establece/gobierna                   | lo valida                         |
+| RPO                              | deriva protección técnica del objetivo recibido   | lo establece/gobierna                   | lo valida                         |
+| Activación de continuidad        | informa incidente y capacidad técnica             | decide y coordina                       | participa según proceso           |
+| Restauración técnica             | ejecuta o coordina bajo autoridad                 | integra al plan de recuperación         | valida efecto empresarial         |
+| Failover técnico                 | ejecuta si está autorizado                        | coordina dentro del escenario           | valida capacidad mínima           |
+| Retorno                          | ejecuta parte técnica                             | coordina normalización                  | acepta reanudación                |
+| Ejercicio empresarial            | aporta restauración y evidencia técnica           | diseña y gobierna ejercicio             | participa y valida                |
+| Cierre                           | entrega evidencia técnica                         | decide cierre de continuidad            | confirma resultado del proceso    |
+
+Invariantes:
+
+- disponibilidad técnica no equivale a proceso recuperado;
+- continuidad puede activarse aunque el servicio técnico siga en recuperación;
+- un restore exitoso puede requerir trabajo empresarial de reconciliación;
+- BLOQUE Z no inventa tiempos que pertenecen al BIA;
+- BLOQUE AC no sustituye la autoridad técnica de restauración sobre componentes.
+
+---
+
+#### 24. Relación con CONT-DOM-011 a CONT-DOM-015
+
+Esta tarea deja listo el insumo tecnológico que las tareas de continuidad consumirán:
+
+| Tarea futura de continuidad | Insumo entregado por TI-DOM-011                                                   |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| `CONT-DOM-011`              | clases recuperables, política técnica, estado de evidencia y brechas de cobertura |
+| `CONT-DOM-012`              | orden técnico, restore gate, dependencias y fronteras de validación               |
+| `CONT-DOM-013`              | dependencias de proveedor y requisitos de exportabilidad/alternativa              |
+| `CONT-DOM-014`              | condiciones de ejercicio, aislamiento y evidencia                                 |
+| `CONT-DOM-015`              | resultados observados, fallas, excepciones y aprendizaje técnico                  |
+
+Las tareas futuras pueden completar el gobierno empresarial sin reabrir las separaciones técnicas ya fijadas aquí.
+
+---
+
+#### 25. Proveedores externos
+
+Un servicio dependiente de proveedor deberá conocer, cuando aplique:
+
+- propietario interno;
+- servicio habilitado;
+- datos o configuración almacenados por el proveedor;
+- formato de exportación;
+- frecuencia o mecanismo de extracción;
+- API o procedimiento de recuperación;
+- credenciales;
+- llaves;
+- retención;
+- borrado;
+- contactos;
+- SLA contractual;
+- región;
+- dependencia de DNS/red;
+- alternativa manual o secundaria;
+- procedimiento ante cierre de cuenta;
+- evidencia de prueba.
+
+Una copia retenida únicamente dentro de la misma cuenta del proveedor puede ser insuficiente frente al cierre o compromiso de esa cuenta.
+
+---
+
+#### 26. Secretos y llaves
+
+Secretos y llaves se gestionan separados de los respaldos ordinarios.
+
+Reglas:
+
+1. no se escriben secretos en documentos, logs, casos o dumps sin protección;
+2. una copia de base de datos no debe ser el único mecanismo para recuperar una llave;
+3. recuperar una llave histórica puede ser incorrecto si ya fue revocada;
+4. rotación y recuperación son decisiones distintas;
+5. una restauración puede requerir rotar credenciales antes de reactivar integraciones;
+6. pérdida de llave puede volver inútil una copia cifrada y debe formar parte del escenario de recuperación;
+7. el acceso a material de recuperación privilegiado requiere segregación y auditoría.
+
+La autorización detallada continúa en `TI-AUTH-001` a `TI-AUTH-004`.
+
+---
+
+#### 27. Retención y disposición
+
+Retención de backup no equivale a retención legal del dato.
+
+Una política deberá resolver:
+
+- cuánto tiempo se conserva una copia;
+- por qué;
+- qué ocurre con datos cuyo periodo empresarial ya terminó;
+- qué ocurre con legal holds;
+- cómo se evita que restaurar una copia reviva datos que ya debían estar eliminados o restringidos;
+- cómo se elimina una copia vencida;
+- qué evidencia de disposición queda.
+
+La restauración exige reconciliar eliminaciones, revocaciones, consentimientos y cambios de autoridad ocurridos después del punto restaurado.
+
+---
+
+#### 28. Reconciliación AS-IS `TI-RECOVERY-ASIS-RECONCILIATION-001`
+
+La inspección de solo lectura permite declarar el siguiente estado, sin promover indicios a evidencia de recuperabilidad:
+
+| Elemento                                                 | Estado                                          | Evidencia o límite                                                                                                                                                |
+| -------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contrato NFR de respaldo y recuperación                  | `ESPECIFICADO`                                  | existe el contrato aprobado con inventario, perfiles, política, runbooks, ejercicios y excepciones                                                                |
+| Contrato tecnológico de recuperación                     | `ESPECIFICADO`                                  | esta tarea materializa la especialización para BLOQUE Z                                                                                                           |
+| Gobierno empresarial de continuidad                      | `PENDIENTE_DE_EVIDENCIA` en su ejecución futura | las tareas `CONT-DOM-*` relevantes permanecen reservadas para su bloque                                                                                           |
+| Proyecto Supabase de desarrollo                          | `IMPLEMENTADO` como plataforma desplegada       | el proyecto consultado se reportó activo y saludable; esto no demuestra recuperación                                                                              |
+| Historial de migraciones Supabase                        | `IMPLEMENTADO`                                  | se observaron 550 versiones aplicadas entre la primera y la última versión reportadas por el esquema de migraciones                                               |
+| Buckets de Storage                                       | `IMPLEMENTADO` como superficie actual           | se observaron 14 buckets; su política de respaldo y restauración no fue demostrada por la inspección                                                              |
+| Edge Functions                                           | `IMPLEMENTADO` como superficie actual           | se observaron 24 funciones activas; su restauración integral como conjunto no fue demostrada                                                                      |
+| Jobs de `pg_cron`                                        | `IMPLEMENTADO` como superficie actual           | se observaron 7 jobs activos; ninguno de los nombres observados constituía por sí mismo una política de backup                                                    |
+| Extensiones relevantes observadas                        | `IMPLEMENTADO` parcialmente                     | `pg_cron` y `pg_net` están presentes; esto no informa el estado de respaldos administrados                                                                        |
+| Tabla `product_categories_backup_20260316_preparaciones` | `IMPLEMENTADO` como copia ad hoc existente      | se observaron aproximadamente 35 filas y 24 kB; no existe evidencia suficiente para clasificarla como respaldo canónico                                           |
+| Rutina dedicada de backup/restore por nombre             | `PENDIENTE_DE_EVIDENCIA`                        | la inspección de rutinas por nombres de backup, restore, recovery o snapshot no reveló una rutina técnica general; no prueba ausencia de mecanismos administrados |
+| Backup administrado de Supabase                          | `PENDIENTE_DE_EVIDENCIA`                        | las herramientas consultadas no expusieron una política verificable de backup administrado                                                                        |
+| PITR o equivalente                                       | `PENDIENTE_DE_EVIDENCIA`                        | no se obtuvo evidencia verificable de disponibilidad, cobertura o ventana                                                                                         |
+| Última restauración verificada de base                   | `PENDIENTE_DE_EVIDENCIA`                        | no se obtuvo resultado de ejercicio o restore verificable                                                                                                         |
+| Restauración verificada de Storage                       | `PENDIENTE_DE_EVIDENCIA`                        | no se obtuvo evidencia de ejercicio que reconcilie archivo, metadatos y referencia                                                                                |
+| Recuperación de secretos y llaves                        | `PENDIENTE_DE_EVIDENCIA`                        | no se inspeccionó ni se expuso material secreto; debe definirse/probarse por mecanismo seguro                                                                     |
+| Recuperación de cola/trabajo pendiente                   | `PENDIENTE_DE_EVIDENCIA`                        | existen superficies asíncronas, pero no se demostró un procedimiento transversal de replay post-restore                                                           |
+| Recuperación de endpoint/red/impresión                   | `PENDIENTE_DE_EVIDENCIA`                        | los contratos existen, pero no se demostró un ejercicio físico integral                                                                                           |
+| Implementación física creada por esta tarea              | `NO_APLICA`                                     | la fase es exclusivamente documental                                                                                                                              |
+
+Los conteos AS-IS sirven para delimitar la superficie actual. No constituyen prueba de respaldo, restauración o continuidad.
+
+---
+
+#### 29. Brechas y propietarios
+
+| Brecha                                                        | Estado                               | Propietario exacto                                                          | Condición de salida                                   |
+| ------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Valores empresariales de MTPD/MBCO/RTO/RPO                    | `FUERA_DE_ALCANCE`                   | `CONT-DOM-002` a `CONT-DOM-004`                                             | BIA y objetivos aprobados                             |
+| Consolidación empresarial del inventario y política de backup | `FUERA_DE_ALCANCE`                   | `CONT-DOM-011`                                                              | inventario transversal y política aprobados           |
+| Runbooks empresariales de recuperación y retorno              | `FUERA_DE_ALCANCE`                   | `CONT-DOM-012`                                                              | runbooks por escenario aprobados                      |
+| Alternativas de proveedor y dependencias externas             | `FUERA_DE_ALCANCE`                   | `CONT-DOM-013`; `TI-INT-003`                                                | dependencias, fallback y evidencia definidos          |
+| Ejercicios de restauración y continuidad                      | `FUERA_DE_ALCANCE`                   | `CONT-DOM-014` + paquetes de implementación                                 | ejercicio autorizado y evidencia real                 |
+| Aprendizaje y actualización posterior                         | `FUERA_DE_ALCANCE`                   | `CONT-DOM-015`; `TI-DOM-013`                                                | acciones y conocimiento versionados                   |
+| Señales y alertas de protección/restore                       | `FUERA_DE_ALCANCE` de implementación | `TI-DOM-010`; `TI-INT-001`                                                  | adaptadores y reglas implementados en fase autorizada |
+| Autorización de restore, secretos y acceso privilegiado       | `FUERA_DE_ALCANCE`                   | `TI-AUTH-001` a `TI-AUTH-004`; `CONT-AUTH-*`                                | matriz de segregación aprobada                        |
+| Implementación Supabase de cualquier mecanismo nuevo          | `NO_APLICA` en la fase actual        | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado | alcance físico explícitamente autorizado              |
+
+No queda una brecha detectada sin propietario y condición de salida.
+
+---
+
+#### 30. Cobertura de prueba ya existente
+
+El contrato transversal de respaldo y recuperación ya materializó pruebas para:
+
+- clasificación de objetos;
+- RTO/RPO y perfiles;
+- frecuencia derivada del objetivo;
+- consistencia;
+- cobertura de Supabase y Storage;
+- secretos y llaves;
+- software y artefactos;
+- colas y replay;
+- proveedores;
+- dominios de falla;
+- segregación;
+- retención;
+- estados de backup;
+- solicitud de restore;
+- aislamiento;
+- validación técnica;
+- validación empresarial;
+- failover y retorno;
+- escenarios de corrupción y pérdida;
+- ejercicios y evidencia.
+
+El registro canónico de continuidad además protege específicamente el inventario, la política, la restauración probada, la reentrada idempotente, la reconciliación y los ejercicios donde participa esta tarea. `TI-DOM-011` materializa esas reglas para los servicios y objetos de BLOQUE Z sin ampliar ni alterar su condición verificable.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las condiciones verificables de respaldo, restauración, recuperación, consistencia, seguridad, ejercicios, reconciliación y continuidad ya están protegidas por requisitos canónicos vigentes. Esta tarea las especializa para las identidades y servicios tecnológicos, materializa matrices y responsabilidades y conserva las mismas condiciones de prueba sin crear una obligación ejecutable nueva.
+
+---
+
+#### 32. Criterios de aceptación
+
+`TI-DOM-011` queda documentalmente completa cuando:
+
+1. existe un contrato único de recuperación técnica;
+2. respaldo, réplica, snapshot, archivo, exportación, rollback, failover, restore, recuperación técnica y continuidad permanecen separados;
+3. los cinco perfiles cualitativos están conservados sin tiempos inventados;
+4. los nueve estados del ciclo de backup están conservados;
+5. las quince clases recuperables tienen decisión explícita;
+6. los once servicios tecnológicos tienen decisión de recuperación;
+7. las siete clases del grafo tienen decisión de recuperación;
+8. `COMPLETED_UNVERIFIED` no puede presentarse como restaurable;
+9. la política deriva frecuencia del objetivo, no al contrario;
+10. Supabase se trata como conjunto de esquema, datos, seguridad, Auth, Storage, Realtime, Edge Functions, secretos, migraciones, jobs e integraciones;
+11. secretos y llaves están separados del backup ordinario;
+12. la primera restauración de prueba usa aislamiento cuando sea posible;
+13. efectos externos reales se suprimen durante pruebas controladas;
+14. restauración no revive autoridad o consentimiento obsoletos sin reconciliación;
+15. colas, reintentos y trabajo offline se reconcilian antes de replay;
+16. validación técnica y empresarial permanecen separadas;
+17. rollback y restore permanecen separados;
+18. failover y retorno permanecen separados;
+19. `TI-DOM-010` puede observar el estado sin convertir telemetría en evidencia de restore;
+20. BLOQUE AC conserva BIA, MTPD, MBCO, RTO/RPO y activación de continuidad;
+21. los datos AS-IS están diferenciados entre implementado, especificado, pendiente de evidencia, fuera de alcance y no aplica;
+22. toda brecha tiene propietario y condición de salida;
+23. no se ejecuta ningún cambio físico;
+24. no se crean ni modifican requisitos de prueba;
+25. `TI-DOM-012` queda únicamente reservada.
+
+---
+
+#### 33. Estado de los artefactos
+
+| Artefacto                                    | Estado                                                      |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| `TI-TECHNICAL-RECOVERY-CONTRACT-001`         | `ESPECIFICADO`                                              |
+| `TI-RECOVERY-SERVICE-MATRIX-001`             | `ESPECIFICADO`                                              |
+| `TI-RECOVERABLE-TECHNICAL-OBJECT-MATRIX-001` | `ESPECIFICADO`                                              |
+| `TI-BACKUP-RESTORE-GATE-CONTRACT-001`        | `ESPECIFICADO`                                              |
+| `TI-RECOVERY-ORDER-CONTRACT-001`             | `ESPECIFICADO`                                              |
+| `TI-CONTINUITY-HANDOFF-MATRIX-001`           | `ESPECIFICADO`                                              |
+| `TI-RECOVERY-ASIS-RECONCILIATION-001`        | `ESPECIFICADO`                                              |
+| Implementación física de backup/restore      | `NO_APLICA` en esta tarea                                   |
+| Restore drills reales                        | `PENDIENTE_DE_EVIDENCIA` hasta fase y ejercicio autorizados |
+| Objetivos numéricos empresariales            | `FUERA_DE_ALCANCE` — BLOQUE AC                              |
+
+---
+
+#### 34. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos`
+
+
 ### [ ] TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
 ### [ ] TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **628** |
+| Tareas aprobadas | **629** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **966** |
+| Tareas no iniciadas | **965** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **39.40% (628/1594)** |
+| Porcentaje de completamiento | **39.46% (629/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios** |
-| Tarea actual | **TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial** |
+| Última tarea aprobada | **TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial** |
+| Tarea actual | **TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos** |
+| Siguiente tarea | **TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 52 de 157 aprobadas; TI-DOM-011 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 53 de 157 aprobadas; TI-DOM-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-010` — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios |
-| Tarea actual | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial — **NO INICIADA** |
-| Siguiente tarea | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos |
+| Última aprobada | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial |
+| Tarea actual | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos — **NO INICIADA** |
+| Siguiente tarea | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 52 DE 157 APROBADAS — ACTUAL TI-DOM-011** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 53 DE 157 APROBADAS — ACTUAL TI-DOM-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
-        ↓
-TAREA ACTUAL
 TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 52 de 157 tareas aprobadas
+CARRIL NEXO — 53 de 157 tareas aprobadas
 ```

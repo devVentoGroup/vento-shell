@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **628** |
+| Aprobadas | **629** |
 | En propuesta | **0** |
-| No iniciadas | **966** |
+| No iniciadas | **965** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.40% (628/1594)** |
+| Porcentaje de completamiento | **39.46% (629/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-010` — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | ✅ APROBADA |
-| Tarea actual | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-011` — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | ✅ APROBADA |
+| Tarea actual | `TI-DOM-012` — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1517,7 +1517,7 @@
 | ✅ APROBADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-009` | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-010` | Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-013` | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
