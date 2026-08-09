@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **625** |
+| Aprobadas | **626** |
 | En propuesta | **0** |
-| No iniciadas | **969** |
+| No iniciadas | **968** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.21% (625/1594)** |
+| Porcentaje de completamiento | **39.27% (626/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | ✅ APROBADA |
-| Tarea actual | `TI-DOM-008` — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-009` — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-008` — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | ✅ APROBADA |
+| Tarea actual | `TI-DOM-009` — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-010` — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1514,7 +1514,7 @@
 | ✅ APROBADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-006` | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-007` | Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-009` | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-010` | Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |

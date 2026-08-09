@@ -6402,7 +6402,1319 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia`
 
 
-### [ ] TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
+### ✅ TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre` — APROBADA
+**Tarea siguiente:** `TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de gestión de problemas tecnológicos, análisis causal, errores conocidos, workarounds reutilizables, correlación de recurrencia, acciones preventivas y verificación de eficacia
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-PROBLEM-MANAGEMENT-CONTRACT-001`; `TI-PROBLEM-LIFECYCLE-MATRIX-001`; `TI-RCA-EVIDENCE-CONTRACT-001`; `TI-KNOWN-ERROR-CONTRACT-001`; `TI-WORKAROUND-GOVERNANCE-MATRIX-001`; `TI-RECURRENCE-DETECTION-MATRIX-001`; `TI-PREVENTION-EFFECTIVENESS-CONTRACT-001`; `TI-PROBLEM-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, enums, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, aplicaciones, redes, endpoints, impresoras, configuraciones, proveedores, cuentas, licencias, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el modelo canónico con el que VENTO transforma señales repetidas, incidentes relacionados, causas no explicadas y workarounds recurrentes en un problema tecnológico trazable, hasta determinar causalidad suficiente, gobernar un error conocido, transferir las acciones preventivas a sus autoridades propietarias y comprobar si la recurrencia fue realmente reducida.
+
+La tarea conserva una separación estricta:
+
+```text
+INCIDENTE
+≠ PROBLEMA
+≠ HIPÓTESIS
+≠ CAUSA CONFIRMADA
+≠ ERROR CONOCIDO
+≠ WORKAROUND
+≠ CAMBIO
+≠ ACCIÓN PREVENTIVA
+≠ EFICACIA DEMOSTRADA
+```
+
+Un incidente busca restaurar el servicio. Un problema investiga la causa o el patrón de recurrencia. Un error conocido conserva una causa o condición suficientemente identificada y un workaround gobernado. Un cambio modifica deliberadamente un componente o configuración y pertenece a `TI-DOM-009`.
+
+La tarea cierra documentalmente cinco riesgos:
+
+1. cerrar un incidente y asumir que la causa desapareció;
+2. tratar cada recurrencia como un caso aislado;
+3. convertir una hipótesis técnica en causa raíz sin evidencia;
+4. mantener workarounds por memoria personal, sin versión, alcance ni revisión;
+5. declarar prevención efectiva solo porque una corrección fue ejecutada.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban ocho artefactos documentales coordinados:
+
+1. `TI-PROBLEM-MANAGEMENT-CONTRACT-001`, identidad, propiedad, relaciones, estados e invariantes del problema;
+2. `TI-PROBLEM-LIFECYCLE-MATRIX-001`, siete estados y nueve transiciones documentales;
+3. `TI-RCA-EVIDENCE-CONTRACT-001`, hipótesis, factores causales, evidencia, confirmación y trazabilidad de análisis;
+4. `TI-KNOWN-ERROR-CONTRACT-001`, publicación, vigencia, alcance y retiro del error conocido;
+5. `TI-WORKAROUND-GOVERNANCE-MATRIX-001`, estados, condiciones de uso, riesgos, revisión y retiro de workarounds;
+6. `TI-RECURRENCE-DETECTION-MATRIX-001`, señales y reglas de correlación sin umbrales numéricos inventados;
+7. `TI-PREVENTION-EFFECTIVENESS-CONTRACT-001`, acciones preventivas, handoffs y verificación de eficacia;
+8. `TI-PROBLEM-ASIS-RECONCILIATION-001`, reconciliación del modelo objetivo contra la base actual de soporte.
+
+Cobertura materializada:
+
+| Control                                           |            Resultado |
+| ------------------------------------------------- | -------------------: |
+| Proceso de incidente conservado                   | **1 — `VPROC-0058`** |
+| Registros documentales especializados de problema |       **1 contrato** |
+| Estados de problema                               |                **7** |
+| Transiciones de problema                          |                **9** |
+| Estados de evidencia causal                       |                **4** |
+| Clases causales iniciales                         |                **9** |
+| Estados de error conocido                         |                **4** |
+| Estados de workaround                             |                **5** |
+| Señales de recurrencia                            |                **8** |
+| Niveles de confirmación de recurrencia            |                **3** |
+| Clases de acción preventiva                       |                **8** |
+| Estados de eficacia                               |                **5** |
+| Códigos de cierre de problema                     |                **4** |
+| Indicadores de problema y recurrencia             |               **10** |
+| Hallazgos con propietario y condición de salida   |               **10** |
+| Requisitos de prueba nuevos o modificados         |                **0** |
+| Cambios físicos                                   |                **0** |
+
+---
+
+#### 3. Autoridades y entradas heredadas
+
+La tarea consume y preserva:
+
+- `VPROC-0058 — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento`;
+- `TI-DOM-007` y su contrato de caso, prioridad, SLA, restauración, validación, cierre y reapertura;
+- el handoff `PROBLEM_CANDIDATE` ya aprobado;
+- los seis disparadores de problema aprobados en `TI-DOM-007`;
+- `TI-SERVICE-007 — Incidentes y restauración tecnológica`;
+- `TI-SERVICE-011 — Conocimiento, capacitación y adopción tecnológica`;
+- las clases de configuración y relaciones de `TI-DOM-002`;
+- el ciclo de endpoint de `TI-DOM-003`;
+- arquitectura y drift de red de `TI-DOM-004`;
+- gobierno físico de impresión de `TI-DOM-005`;
+- catálogo de aplicaciones, ambientes, dependencias y proveedores de `TI-DOM-006`;
+- `TI-DOM-009` como autoridad exclusiva de cambio tecnológico;
+- `TI-DOM-010` como autoridad de observabilidad, señales, alertas, métricas y salud técnica;
+- `TI-DOM-011` como autoridad de respaldo, restauración y recuperación técnica;
+- `TI-DOM-013` como autoridad de base de conocimiento, capacitación y adopción;
+- `TI-AUTH-*` como autoridad de acceso privilegiado y soporte sensible;
+- `VPROC-0062` como proceso separado de continuidad empresarial.
+
+Ninguna decisión de esta tarea autoriza una modificación técnica, un despliegue, una elevación de privilegios ni una aceptación de riesgo por parte del técnico.
+
+---
+
+#### 4. Fronteras conceptuales
+
+Se fijan las siguientes definiciones:
+
+| Concepto              | Definición canónica                                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `INCIDENT`            | interrupción, degradación o resultado desconocido cuya prioridad inmediata es restaurar o contener                               |
+| `PROBLEM`             | expediente de investigación causal o de recurrencia que correlaciona evidencia, incidentes, componentes, cambios y dependencias  |
+| `SYMPTOM`             | comportamiento observable; no es causa                                                                                           |
+| `HYPOTHESIS`          | explicación candidata todavía no confirmada                                                                                      |
+| `CONTRIBUTING_FACTOR` | condición que aumentó probabilidad, alcance o impacto sin demostrar por sí sola causalidad suficiente                            |
+| `ROOT_CAUSE`          | condición o conjunto causal confirmado con evidencia suficiente para explicar el patrón investigado dentro del alcance declarado |
+| `KNOWN_ERROR`         | problema cuya causa o condición está suficientemente identificada y para el que existe un workaround gobernado y consumible      |
+| `WORKAROUND`          | medida temporal y controlada que reduce impacto o permite operar sin afirmar eliminación de causa                                |
+| `PREVENTIVE_ACTION`   | obligación orientada a eliminar, reducir o controlar la recurrencia                                                              |
+| `EFFECTIVENESS`       | evidencia posterior que demuestra si la acción produjo el resultado preventivo esperado                                          |
+
+Reglas:
+
+```text
+SÍNTOMA REPETIDO
+≠
+CAUSA COMPARTIDA CONFIRMADA
+```
+
+```text
+CORRELACIÓN TEMPORAL
+≠
+CAUSALIDAD
+```
+
+```text
+WORKAROUND EXITOSO
+≠
+CAUSA RAÍZ CONFIRMADA
+```
+
+```text
+CAMBIO APLICADO
+≠
+PREVENCIÓN EFECTIVA
+```
+
+---
+
+#### 5. Propiedad y responsabilidades
+
+| Función                                             | Responsabilidad                                                                                             | Límite                                                                  |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `RESPONSABLE_TECNOLOGICO`                           | aceptar el problema, coordinar investigación, mantener relaciones, asegurar evidencia y transferir acciones | no se autoautoriza cambios, acceso privilegiado ni aceptación de riesgo |
+| responsable técnico asignado                        | ejecutar análisis, comparar evidencia, documentar hipótesis y resultados                                    | no convierte opinión en causa confirmada                                |
+| `RESPONSABLE_DEL_PROCESO`                           | aportar impacto, contexto y validar consecuencias empresariales de recurrencia o prevención                 | no sustituye el análisis técnico                                        |
+| `RESPONSABLE_DE_SEGURIDAD_TECNOLOGICA`              | intervenir cuando causa, evidencia o workaround afecten identidad, privilegios, secretos o seguridad        | no publica detalles sensibles como conocimiento general                 |
+| propietario del componente                          | aportar configuración, versión, historial, cambio y evidencia de su dominio                                 | no cierra por sí solo el problema transversal                           |
+| proveedor / fabricante                              | aportar diagnóstico, defecto conocido, workaround o corrección bajo alcance contratado                      | su afirmación es evidencia externa hasta reconciliación VENTO           |
+| `COORDINACION_DE_OPERACIONES` o autoridad aplicable | aceptar decisiones excepcionales de alto impacto o riesgo cuando corresponda                                | no sustituye causa ni eficacia                                          |
+| propietario de cambio                               | ejecutar la acción de cambio bajo `TI-DOM-009`                                                              | no reescribe el problema ni su evidencia histórica                      |
+
+El problema pertenece a VISO como expediente tecnológico coordinador, pero sus elementos afectados conservan las fuentes autoritativas de sus dominios.
+
+---
+
+#### 6. Disparadores canónicos de problema
+
+Se conservan exactamente los seis disparadores aprobados por `TI-DOM-007`:
+
+| ID                    | Disparador                                                                        | Resultado                                                                   |
+| --------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `TI-PROB-TRIGGER-001` | existe recurrencia material                                                       | crear o relacionar candidato de problema                                    |
+| `TI-PROB-TRIGGER-002` | varios incidentes comparten síntoma o dependencia                                 | iniciar correlación causal                                                  |
+| `TI-PROB-TRIGGER-003` | la causa permanece desconocida después de restaurar                               | aceptar investigación separada del incidente                                |
+| `TI-PROB-TRIGGER-004` | un workaround temporal se vuelve recurrente                                       | revisar causalidad, riesgo y necesidad de prevención                        |
+| `TI-PROB-TRIGGER-005` | un incidente causado o potencialmente causado por cambio requiere análisis causal | correlacionar cambio y evidencia sin declarar culpa por proximidad temporal |
+| `TI-PROB-TRIGGER-006` | se incumple el guardrail de recurrencia                                           | exigir revisión de patrón y propietario                                     |
+
+Reglas:
+
+1. un incidente no se convierte en problema por duración;
+2. un P1 no crea automáticamente un problema si la causa está clara y no existe necesidad de investigación posterior;
+3. un incidente cerrado puede originar o permanecer relacionado con un problema abierto;
+4. una reapertura repetida es evidencia de recurrencia, no causa;
+5. un proveedor puede proponer un problema, pero VENTO conserva la identidad del expediente;
+6. la detección futura por `TI-DOM-010` podrá proponer candidatos cuando exista patrón técnico suficiente; el monitor no los confirma automáticamente.
+
+---
+
+#### 7. Identidad de problema
+
+`TI-PROBLEM-MANAGEMENT-CONTRACT-001` conserva:
+
+```text
+problem_id
+problem_revision
+problem_status
+title
+problem_statement
+detection_source
+accepted_at
+owner_ref
+affected_service_refs[]
+affected_element_refs[]
+incident_links[]
+first_observed_at
+last_observed_at
+recurrence_state
+recurrence_signature_ref
+analysis_scope
+hypothesis_refs[]
+causal_factor_refs[]
+root_cause_ref
+known_error_ref
+workaround_refs[]
+change_refs[]
+preventive_action_refs[]
+effectiveness_status
+residual_risk_ref
+evidence_refs[]
+review_due_at
+closed_at
+closure_code
+reopened_from_problem_ref
+```
+
+Reglas:
+
+- `problem_id` es estable durante el expediente;
+- una nueva revisión no borra la anterior;
+- un incidente conserva su `tech_case_id`;
+- el problema referencia incidentes; no los absorbe;
+- un cambio conserva su identidad propia;
+- un error conocido referencia exactamente un problema fuente vigente;
+- un workaround puede ser reutilizado por varios incidentes solo bajo alcance compatible;
+- un problema puede afectar varios servicios y elementos;
+- la relación no modifica la fuente autoritativa del elemento;
+- las evidencias sensibles se referencian y minimizan.
+
+---
+
+#### 8. Relación incidente ↔ problema
+
+Se aprueban cuatro tipos de vínculo:
+
+| Tipo                       | Uso                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| `PRIMARY_CAUSAL_CANDIDATE` | el problema es la explicación principal actualmente investigada para el incidente   |
+| `CONTRIBUTING_RELATION`    | el problema representa un factor material, pero no necesariamente la causa completa |
+| `RECURRENCE_INSTANCE`      | el incidente es una nueva ocurrencia del patrón del problema                        |
+| `POST_INCIDENT_FINDING`    | el problema nació de una revisión posterior y conserva el incidente origen          |
+
+Reglas:
+
+1. un incidente puede tener cero o más relaciones de problema;
+2. un problema reactivo debe relacionar al menos un incidente;
+3. una relación `PRIMARY_CAUSAL_CANDIDATE` no confirma causa;
+4. cuando la evidencia cambia, la relación se versiona;
+5. el incidente no reabre automáticamente porque el problema siga abierto;
+6. cerrar el problema no modifica retroactivamente el cierre del incidente;
+7. una correlación errónea se corrige mediante revisión auditada, no borrando el vínculo.
+
+---
+
+#### 9. Estados del problema
+
+`TI-PROBLEM-LIFECYCLE-MATRIX-001` define siete estados documentales.
+
+| Estado                   | Significado                                                   | Entrada mínima                                                             | Salida normal                                               |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `IDENTIFIED`             | candidato aceptado como problema investigable                 | disparador, servicio o componente, propietario y evidencia inicial         | `ANALYSIS_IN_PROGRESS`                                      |
+| `ANALYSIS_IN_PROGRESS`   | hipótesis y evidencia en evaluación                           | alcance y plan de análisis                                                 | `CAUSE_CONFIRMED` o cierre excepcional justificado          |
+| `CAUSE_CONFIRMED`        | existe causa o conjunto causal confirmado para el alcance     | evidencia suficiente y revisión técnica                                    | `PREVENTION_PLANNED`                                        |
+| `PREVENTION_PLANNED`     | existen acciones preventivas con propietarios y criterios     | causa, riesgo y acciones asignadas                                         | `PREVENTION_IN_PROGRESS`                                    |
+| `PREVENTION_IN_PROGRESS` | acciones propietarias en ejecución                            | referencias a cambios, proveedor, monitoreo, conocimiento u otras acciones | `EFFECTIVENESS_REVIEW`                                      |
+| `EFFECTIVENESS_REVIEW`   | se observa el resultado después de las acciones               | criterios, ventana de observación y evidencia                              | `CLOSED` o retorno a `PREVENTION_PLANNED`                   |
+| `CLOSED`                 | expediente cerrado con resultado y riesgo residual explícitos | criterio de cierre satisfecho                                              | terminal; una nueva investigación crea expediente vinculado |
+
+El estado de problema no reemplaza estados de incidente, cambio, activo, aplicación, proveedor o continuidad.
+
+---
+
+#### 10. Transiciones del problema
+
+Se aprueban nueve transiciones:
+
+| ID               | Origen                   | Destino                  | Guarda                                                           |
+| ---------------- | ------------------------ | ------------------------ | ---------------------------------------------------------------- |
+| `TI-PROB-TR-001` | `IDENTIFIED`             | `ANALYSIS_IN_PROGRESS`   | alcance, owner y evidencia inicial suficientes                   |
+| `TI-PROB-TR-002` | `ANALYSIS_IN_PROGRESS`   | `CAUSE_CONFIRMED`        | causa confirmada según contrato de evidencia                     |
+| `TI-PROB-TR-003` | `CAUSE_CONFIRMED`        | `PREVENTION_PLANNED`     | acciones y propietarios definidos                                |
+| `TI-PROB-TR-004` | `PREVENTION_PLANNED`     | `PREVENTION_IN_PROGRESS` | al menos una acción exigible aceptada por su propietario         |
+| `TI-PROB-TR-005` | `PREVENTION_IN_PROGRESS` | `EFFECTIVENESS_REVIEW`   | acciones aplicables completadas o condición controlada alcanzada |
+| `TI-PROB-TR-006` | `EFFECTIVENESS_REVIEW`   | `CLOSED`                 | eficacia suficiente o cierre excepcional autorizado              |
+| `TI-PROB-TR-007` | `EFFECTIVENESS_REVIEW`   | `PREVENTION_PLANNED`     | recurrencia, efecto adverso o evidencia insuficiente             |
+| `TI-PROB-TR-008` | `ANALYSIS_IN_PROGRESS`   | `CLOSED`                 | únicamente duplicidad o invalidación demostrada                  |
+| `TI-PROB-TR-009` | `IDENTIFIED`             | `CLOSED`                 | únicamente duplicidad inequívoca con problema canónico existente |
+
+No existe transición `CLOSED → ANALYSIS_IN_PROGRESS`. Una investigación posterior conserva el cierre anterior y utiliza `reopened_from_problem_ref`.
+
+---
+
+#### 11. Declaración del problema
+
+El problema se formula con estructura:
+
+```text
+CONDICIÓN OBSERVADA
++
+SERVICIO / ELEMENTO / ALCANCE
++
+>PATRÓN O RECURRENCIA
++
+>IMPACTO O RIESGO
++
+>LO QUE TODAVÍA NO SE SABE
+```
+
+La redacción no debe:
+
+- declarar una causa antes de probarla;
+- culpar a una persona;
+- confundir error de usuario con causa sistémica;
+- convertir una tecnología específica en culpable por coincidencia temporal;
+- esconder una incertidumbre detrás de términos genéricos;
+- usar “intermitente” como explicación causal;
+- copiar el texto del ticket como causa.
+
+---
+
+#### 12. Hipótesis y evidencia causal
+
+`TI-RCA-EVIDENCE-CONTRACT-001` conserva cada hipótesis como revisión independiente:
+
+```text
+hypothesis_id
+problem_id
+statement
+proposed_at
+proposed_by
+scope
+expected_observations[]
+contradicting_observations[]
+evidence_refs[]
+test_or_comparison_ref
+evidence_state
+reviewed_by
+reviewed_at
+decision_reason
+```
+
+Estados de evidencia:
+
+| Estado       | Significado                                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| `HYPOTHESIS` | explicación candidata sin soporte suficiente                                                         |
+| `SUPPORTED`  | evidencia compatible relevante, todavía insuficiente para confirmar                                  |
+| `CONFIRMED`  | evidencia convergente suficiente y ausencia de contradicción material no resuelta dentro del alcance |
+| `REFUTED`    | evidencia incompatible con la explicación en el alcance evaluado                                     |
+
+Una hipótesis refutada permanece histórica.
+
+---
+
+#### 13. Evidencia admisible para análisis causal
+
+Pueden participar, según el caso:
+
+- línea de tiempo de incidentes;
+- estado anterior y posterior de configuración;
+- cambio correlacionado;
+- logs y trazas minimizados;
+- health signals;
+- métricas;
+- versiones;
+- fallos reproducibles;
+- comparación contra baseline;
+- dependencia degradada;
+- evidencia física;
+- resultado de proveedor;
+- resultado de rollback;
+- observaciones de usuarios;
+- pruebas controladas;
+- incidentes similares;
+- evidencia de ausencia de recurrencia posterior.
+
+Reglas:
+
+1. proximidad temporal entre cambio e incidente es señal, no prueba;
+2. una prueba de rollback compatible fortalece causalidad, pero debe interpretarse dentro de su alcance;
+3. una única captura no demuestra patrón;
+4. un proveedor puede confirmar un defecto propio, pero VENTO conserva alcance e impacto interno;
+5. una métrica agregada puede mostrar asociación sin identificar causalidad;
+6. logs sensibles se referencian sin copiar secretos;
+7. el análisis debe registrar evidencia contradictoria;
+8. la imposibilidad de reproducir no convierte la hipótesis en falsa ni confirmada;
+9. la ausencia de datos se registra como limitación;
+10. un análisis no obtiene acceso privilegiado por necesidad declarada; la autorización se resuelve por su autoridad propietaria.
+
+---
+
+#### 14. Métodos de análisis
+
+No se impone una única técnica. El análisis puede combinar:
+
+| Método                       | Uso adecuado                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
+| `TIMELINE_ANALYSIS`          | ordenar hechos, cambios, síntomas y recuperación                                     |
+| `CHANGE_CORRELATION`         | comparar comportamiento antes/después de cambios relevantes                          |
+| `BASELINE_COMPARISON`        | identificar drift de configuración, versión o dependencia                            |
+| `DEPENDENCY_TRACE`           | recorrer relaciones de servicio y componentes                                        |
+| `REPRODUCTION_TEST`          | reproducir condición bajo entorno controlado cuando sea seguro                       |
+| `CAUSAL_QUESTIONING`         | profundizar desde síntoma hacia controles y condiciones sin reducirse a culpa humana |
+| `FAULT_TREE_OR_CAUSAL_GRAPH` | analizar múltiples factores y condiciones necesarias                                 |
+| `VENDOR_EVIDENCE_REVIEW`     | reconciliar defectos, advisories o diagnósticos externos                             |
+
+Cada problema declara qué método se utilizó y qué limitaciones tuvo.
+
+---
+
+#### 15. Confirmación de causa raíz
+
+Una causa puede declararse `CONFIRMED` cuando:
+
+1. explica el síntoma o patrón dentro del alcance;
+2. es compatible con la línea de tiempo;
+3. la evidencia distingue causa de mera correlación;
+4. las observaciones relevantes no dejan una contradicción material sin tratar;
+5. las dependencias y cambios relacionados fueron considerados;
+6. existe evidencia reproducible o convergente suficiente para el riesgo del problema;
+7. se documentan factores contribuyentes por separado;
+8. el alcance exacto está declarado;
+9. existe revisión por un actor autorizado distinto del autor cuando la criticidad o sensibilidad lo exija;
+10. la afirmación puede actualizarse mediante nueva revisión si aparece mejor evidencia.
+
+No se exige una única causa. Un problema puede tener varias condiciones necesarias o contribuyentes.
+
+---
+
+#### 16. Clases causales iniciales
+
+Se aprueban nueve clases de clasificación. La clase organiza análisis; no sustituye el enunciado causal.
+
+| Código                      | Clase                                                                 |
+| --------------------------- | --------------------------------------------------------------------- |
+| `CAUSE_CONFIGURATION`       | configuración, drift o parámetro incorrecto                           |
+| `CAUSE_SOFTWARE`            | defecto o incompatibilidad de software                                |
+| `CAUSE_HARDWARE`            | falla o degradación física                                            |
+| `CAUSE_NETWORK`             | red, conectividad, direccionamiento o dependencia de transporte       |
+| `CAUSE_EXTERNAL_DEPENDENCY` | proveedor o servicio externo                                          |
+| `CAUSE_CAPACITY`            | saturación, límite o capacidad insuficiente                           |
+| `CAUSE_IDENTITY_SECURITY`   | identidad, sesión, autorización, credencial o control de seguridad    |
+| `CAUSE_DATA_STATE`          | estado, integridad, sincronización, migración o dato incompatible     |
+| `CAUSE_PROCESS_CONTROL`     | procedimiento, handoff, control o condición organizativa insuficiente |
+
+Reglas:
+
+- `CAUSE_PROCESS_CONTROL` no se etiqueta automáticamente como “error humano”;
+- un acto humano puede ser evento contribuyente sin ser causa raíz;
+- `UNKNOWN` no es una clase causal confirmada;
+- varias clases pueden coexistir;
+- la clasificación no determina por sí sola la acción preventiva.
+
+---
+
+#### 17. Error conocido
+
+`TI-KNOWN-ERROR-CONTRACT-001` materializa un objeto consumible solo cuando:
+
+```text
+PROBLEMA
++
+CAUSA O CONDICIÓN SUFICIENTEMENTE IDENTIFICADA
++
+WORKAROUND VALIDADO
+=
+ERROR CONOCIDO PUBLICABLE
+```
+
+Campos mínimos:
+
+```text
+known_error_id
+problem_id
+known_error_revision
+title
+affected_service_refs[]
+affected_element_or_version_scope[]
+symptom_signature
+confirmed_cause_ref
+workaround_ref
+prerequisites
+contraindications
+risk
+authorization_requirements
+valid_from
+review_at
+supersedes_ref
+state
+evidence_refs[]
+```
+
+Un error conocido no equivale a una solución definitiva.
+
+---
+
+#### 18. Estados del error conocido
+
+Se aprueban cuatro estados:
+
+| Estado       | Uso                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `DRAFT`      | causa y workaround se están estructurando; no es consumible como guía operativa                                  |
+| `ACTIVE`     | causa/condición y workaround están suficientemente validados para uso dentro del alcance                         |
+| `SUPERSEDED` | una revisión posterior reemplazó la guía anterior sin borrar historia                                            |
+| `RETIRED`    | ya no debe aplicarse por corrección definitiva, cambio de versión, riesgo, obsolescencia o retiro del componente |
+
+Reglas:
+
+1. `DRAFT` no aparece como solución recomendada al operador;
+2. `ACTIVE` requiere un workaround con estado compatible;
+3. un error conocido se limita a versiones, servicios, sitios o componentes demostrados;
+4. una nueva versión no edita silenciosamente la anterior;
+5. el retiro no borra su relación con incidentes históricos;
+6. un error conocido puede continuar activo mientras el problema espera prevención;
+7. un error conocido no autoriza un cambio.
+
+---
+
+#### 19. Workaround gobernado
+
+`TI-WORKAROUND-GOVERNANCE-MATRIX-001` define que todo workaround reutilizable conserve:
+
+```text
+workaround_id
+problem_id
+known_error_ref
+revision
+purpose
+applicable_scope
+preconditions
+steps_or_action_ref
+expected_result
+safety_limits
+authorization_requirements
+data_or_state_risk
+rollback_or_exit
+validation_method
+valid_from
+review_at
+expires_at_when_required
+owner
+state
+evidence_refs[]
+```
+
+No se utiliza un ticket antiguo como guía operativa sin convertir la acción en una revisión gobernada.
+
+---
+
+#### 20. Estados de workaround
+
+Se aprueban cinco estados:
+
+| Estado      | Significado                                                                         |
+| ----------- | ----------------------------------------------------------------------------------- |
+| `DRAFT`     | propuesta todavía no validada para reutilización                                    |
+| `VALIDATED` | comprobada dentro de un alcance, todavía no publicada o habilitada operacionalmente |
+| `ACTIVE`    | puede aplicarse en el alcance declarado y bajo sus guardas                          |
+| `SUSPENDED` | uso detenido por riesgo, cambio de contexto, contradicción o falla                  |
+| `RETIRED`   | no debe volver a utilizarse como acción vigente                                     |
+
+Reglas:
+
+1. un workaround aplicado una vez no se vuelve `ACTIVE` automáticamente;
+2. `ACTIVE` no concede acceso o privilegio;
+3. la acción debe declarar cuándo no aplicarla;
+4. un workaround que modifica configuración material puede requerir un cambio;
+5. un workaround que opera en modo degradado conserva reconciliación posterior;
+6. un workaround no se extiende a otra versión, sede o servicio por similitud;
+7. si deja de ser seguro, se suspende aunque todavía reduzca impacto;
+8. la repetición de un workaround aumenta la evidencia de recurrencia y deuda, no su legitimidad permanente.
+
+---
+
+#### 21. Uso del workaround desde el incidente
+
+El incidente de `VPROC-0058` puede referenciar un workaround activo.
+
+La aplicación registra:
+
+- caso;
+- workaround y revisión;
+- actor;
+- momento;
+- precondiciones comprobadas;
+- autorización cuando aplique;
+- resultado;
+- efecto sobre impacto o urgencia;
+- evidencia;
+- necesidad de seguimiento.
+
+```text
+WORKAROUND_APPLIED
+≠
+PROBLEM_CLOSED
+```
+
+Una aplicación fallida del workaround no se oculta; alimenta el problema y puede suspender la guía.
+
+---
+
+#### 22. Detección de recurrencia
+
+`TI-RECURRENCE-DETECTION-MATRIX-001` define ocho señales:
+
+| ID               | Señal                                                                         | Uso                                                  |
+| ---------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `REC-SIGNAL-001` | mismo servicio y firma de síntoma compatible                                  | candidato de patrón                                  |
+| `REC-SIGNAL-002` | mismo componente o dependencia afectada                                       | correlación técnica                                  |
+| `REC-SIGNAL-003` | mismo código o firma de error verificable                                     | correlación fuerte cuando el código es estable       |
+| `REC-SIGNAL-004` | mismo cambio o familia de versión relacionada                                 | evaluar regresión o incompatibilidad                 |
+| `REC-SIGNAL-005` | reutilización del mismo workaround                                            | detectar deuda temporal recurrente                   |
+| `REC-SIGNAL-006` | reapertura o validación negativa repetida                                     | revisar si el cierre/restauración fue insuficiente   |
+| `REC-SIGNAL-007` | mismo proveedor o dependencia externa con patrón compatible                   | correlación externa                                  |
+| `REC-SIGNAL-008` | mismo patrón temporal, carga, sede o contexto técnico con evidencia adicional | soporte contextual; no prueba causalidad por sí solo |
+
+No se fija un número universal de incidentes ni una ventana temporal arbitraria. La materialidad depende de criticidad, alcance, riesgo y evidencia.
+
+---
+
+#### 23. Niveles de recurrencia
+
+Se aprueban tres niveles:
+
+| Estado                  | Criterio                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `RECURRENCE_SIGNAL`     | existe similitud suficiente para revisar correlación                                             |
+| `RECURRENCE_CORRELATED` | múltiples señales y evidencia permiten relacionar casos bajo un mismo patrón operativo           |
+| `RECURRENCE_CONFIRMED`  | existe una causa/condición compartida confirmada o un error conocido que explica las ocurrencias |
+
+Reglas:
+
+- una coincidencia de texto no confirma recurrencia;
+- un mismo usuario no convierte casos en recurrentes;
+- una misma aplicación no basta;
+- un patrón puede quedar correlacionado antes de conocer la causa;
+- la confirmación de recurrencia puede retroalimentar la prioridad de investigación, pero no reescribe la prioridad histórica de incidentes cerrados.
+
+---
+
+#### 24. Firma de recurrencia
+
+La firma puede incluir, según aplicabilidad:
+
+```text
+service_ref
+element_class
+element_ref_or_family
+symptom_signature
+error_signature
+version_or_baseline
+dependency_ref
+change_ref
+provider_ref
+workaround_ref
+site_or_context
+operational_window
+```
+
+La firma:
+
+- no almacena secretos;
+- no usa datos personales como llave causal cuando no son necesarios;
+- puede versionarse;
+- no reemplaza la evidencia;
+- se utiliza para correlación, no para cerrar automáticamente casos.
+
+---
+
+#### 25. Prevención de recurrencia
+
+`TI-PREVENTION-EFFECTIVENESS-CONTRACT-001` define ocho clases de acción:
+
+| Clase                              | Autoridad principal                                        |
+| ---------------------------------- | ---------------------------------------------------------- |
+| `PREV_CONFIGURATION_CHANGE`        | `TI-DOM-009`                                               |
+| `PREV_SOFTWARE_OR_FIRMWARE_CHANGE` | `TI-DOM-009` + propietario técnico                         |
+| `PREV_HARDWARE_ACTION`             | NEXO + `TI-DOM-009` cuando exista cambio tecnológico       |
+| `PREV_PROVIDER_ACTION`             | proveedor + `TI-DOM-012`; cambio técnico bajo `TI-DOM-009` |
+| `PREV_MONITORING_CONTROL`          | `TI-DOM-010`                                               |
+| `PREV_RECOVERY_CONTROL`            | `TI-DOM-011` cuando aplique                                |
+| `PREV_KNOWLEDGE_OR_TRAINING`       | `TI-DOM-013` + propietario funcional                       |
+| `PREV_PROCESS_OR_POLICY_CONTROL`   | propietario del proceso o política correspondiente         |
+
+El problema conserva la obligación y su resultado, pero no ejecuta acciones fuera de su autoridad.
+
+---
+
+#### 26. Contrato de acción preventiva
+
+Cada acción conserva:
+
+```text
+preventive_action_id
+problem_id
+action_class
+action_statement
+owner_ref
+authority_ref
+target_ref
+risk
+success_criteria
+required_evidence
+change_ref
+planned_at
+due_at
+completed_at
+result
+effectiveness_measure_ref
+status
+```
+
+Estados conceptuales:
+
+```text
+PLANNED
+ACCEPTED
+IN_PROGRESS
+COMPLETED_PENDING_EFFECTIVENESS
+FAILED
+CANCELLED_WITH_REASON
+```
+
+Una acción transferida no desaparece del problema; permanece correlacionada hasta conocer su resultado.
+
+---
+
+#### 27. Frontera con cambio tecnológico
+
+El problema puede recomendar o exigir una acción que necesita cambio.
+
+Regla:
+
+```text
+CAUSA CONFIRMADA
+→ PUEDE PRODUCIR
+CHANGE_REQUIRED
+
+CHANGE_REQUIRED
+≠
+CHANGE_APPROVED
+≠
+CHANGE_IMPLEMENTED
+≠
+CHANGE_EFFECTIVE
+```
+
+`TI-DOM-009` conserva:
+
+- evaluación de riesgo;
+- aprobación;
+- ventana;
+- plan de prueba;
+- despliegue;
+- rollback;
+- revisión posterior.
+
+El problema consume el resultado del cambio y evalúa recurrencia después.
+
+---
+
+#### 28. Frontera con observabilidad
+
+`TI-DOM-010` conserva:
+
+- telemetría;
+- eventos;
+- health;
+- logs;
+- alertas;
+- SLI;
+- umbrales;
+- dashboards;
+- retención técnica.
+
+`TI-DOM-008` utiliza esas señales como evidencia y define qué pregunta causal debe responder.
+
+Una alerta no crea automáticamente causa ni problema confirmado.
+
+La acción preventiva puede solicitar una señal nueva cuando la falta de observabilidad impida demostrar recurrencia o eficacia.
+
+---
+
+#### 29. Frontera con conocimiento y capacitación
+
+`TI-DOM-013` conserva la base de conocimiento y adopción.
+
+`TI-DOM-008` entrega como entradas:
+
+- error conocido activo;
+- workaround activo;
+- alcance;
+- precondiciones;
+- riesgos;
+- revisión;
+- restricciones;
+- causa confirmada publicable;
+- indicadores de obsolescencia.
+
+La base de conocimiento no recibe:
+
+- secretos;
+- datos personales innecesarios;
+- hipótesis sin revisar presentadas como hechos;
+- topología sensible completa;
+- evidencia bruta que deba permanecer restringida.
+
+---
+
+#### 30. Proveedor y fabricante
+
+Un proveedor puede aportar:
+
+- identificación de defecto;
+- advisory;
+- workaround;
+- parche;
+- RMA;
+- evidencia de plataforma;
+- caso externo;
+- fecha estimada;
+- limitación conocida.
+
+Reglas:
+
+1. el caso externo se referencia y no reemplaza `problem_id`;
+2. el proveedor no cierra el problema VENTO;
+3. “known issue” del proveedor no se convierte automáticamente en error conocido interno;
+4. se valida que versión, producto y condición correspondan al alcance VENTO;
+5. la espera del proveedor no elimina propietario interno;
+6. una corrección del proveedor sigue requiriendo cambio/prueba cuando modifica el entorno;
+7. una promesa de fecha no se registra como corrección ejecutada;
+8. la salida o sustitución de proveedor se gobierna por sus tareas propietarias.
+
+---
+
+#### 31. Revisión posterior de incidente
+
+Una revisión posterior de incidente crítico debe evaluar al menos:
+
+1. línea de tiempo;
+2. alcance e impacto;
+3. señales de detección;
+4. diagnóstico;
+5. decisiones;
+6. workaround;
+7. cambios relacionados;
+8. restauración;
+9. validación;
+10. hipótesis causal;
+11. recurrencia previa;
+12. acciones preventivas;
+13. brechas de comunicación;
+14. brechas de observabilidad;
+15. necesidad de problema.
+
+La revisión posterior no es sinónimo de problema. Puede:
+
+- cerrar sin problema cuando no existe investigación pendiente;
+- crear `POST_INCIDENT_FINDING`;
+- enriquecer un problema existente;
+- descubrir una acción de cambio, observabilidad, recuperación o conocimiento.
+
+---
+
+#### 32. Estados de eficacia
+
+Se aprueban cinco estados:
+
+| Estado         | Significado                                                                                   |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| `NOT_READY`    | la acción todavía no está completa o no existe criterio de medición                           |
+| `OBSERVING`    | acción completada y evidencia en ventana de observación                                       |
+| `EFFECTIVE`    | el criterio preventivo fue satisfecho con evidencia suficiente                                |
+| `INEFFECTIVE`  | la recurrencia, degradación o resultado demuestra que la acción no produjo el efecto esperado |
+| `INCONCLUSIVE` | la evidencia disponible no permite concluir y requiere nueva decisión                         |
+
+No se fija una ventana universal. Cada problema declara una ventana coherente con frecuencia, criticidad, estacionalidad y posibilidad real de observación.
+
+---
+
+#### 33. Verificación de eficacia
+
+La eficacia puede considerar:
+
+- ausencia de recurrencia dentro de la ventana declarada;
+- reducción demostrable de recurrencia;
+- eliminación de la condición causal;
+- prueba controlada posterior;
+- comparación antes/después;
+- ausencia de efectos adversos;
+- health estable;
+- cumplimiento de guardrails;
+- validación de procesos dependientes.
+
+Reglas:
+
+1. “no volvió a ocurrir todavía” no basta sin una ventana razonable;
+2. una métrica debe declarar denominador y contexto;
+3. un resultado local no prueba eficacia en todas las sedes;
+4. un cambio exitoso técnicamente no prueba prevención empresarial;
+5. una acción puede quedar `INCONCLUSIVE` sin falsificar cierre;
+6. una recurrencia durante observación devuelve el problema a planificación preventiva.
+
+---
+
+#### 34. Cierre del problema
+
+El cierre normal exige:
+
+- alcance y relaciones actualizados;
+- causa confirmada cuando el cierre sea por prevención efectiva;
+- acciones preventivas completadas o reconciliadas;
+- eficacia `EFFECTIVE`;
+- error conocido y workaround reconciliados;
+- riesgo residual explícito;
+- conocimiento transferido cuando corresponda;
+- incidentes vinculados conservados;
+- cambios vinculados conservados;
+- evidencia y decisión de cierre;
+- actor y timestamp.
+
+Códigos de cierre:
+
+| Código                              | Uso                                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `PREVENTION_EFFECTIVE`              | causa tratada y eficacia demostrada                                                                      |
+| `DUPLICATE_MERGED`                  | el expediente era duplicado y queda vinculado al problema canónico                                       |
+| `INVALIDATED_BY_EVIDENCE`           | nueva evidencia demuestra que el problema planteado no existe en el alcance                              |
+| `RISK_ACCEPTED_BY_AUTHORIZED_OWNER` | la causa/riesgo permanece, pero la autoridad correspondiente acepta explícitamente el riesgo y controles |
+
+`RISK_ACCEPTED_BY_AUTHORIZED_OWNER` no puede ser decidido unilateralmente por el técnico.
+
+---
+
+#### 35. Error conocido y workaround al cierre
+
+Al cerrar:
+
+- un error conocido puede pasar a `RETIRED` si la causa quedó eliminada para todo su alcance;
+- puede pasar a `SUPERSEDED` si existe una revisión nueva;
+- puede permanecer `ACTIVE` únicamente cuando el cierre utiliza aceptación de riesgo y el control sigue siendo necesario;
+- un workaround se retira cuando ya no debe aplicarse;
+- un workaround no se conserva activo solo por costumbre;
+- incidentes históricos conservan referencia a la revisión utilizada.
+
+---
+
+#### 36. Nueva investigación después del cierre
+
+Un problema cerrado no se reabre destructivamente.
+
+Ante recurrencia posterior:
+
+```text
+PROBLEMA CERRADO
++
+NUEVA EVIDENCIA MATERIAL
+→
+NUEVO PROBLEMA O NUEVA INVESTIGACIÓN VINCULADA
+→
+reopened_from_problem_ref
+```
+
+La nueva investigación:
+
+- conserva la causa anterior como evidencia histórica;
+- puede confirmarla, refutarla o descubrir otra;
+- no altera métricas históricas;
+- no borra la eficacia declarada en la ventana anterior;
+- recalcula el alcance con el contexto actual.
+
+---
+
+#### 37. Métricas de problema y recurrencia
+
+Se materializan diez indicadores:
+
+| ID                   | Indicador                                             | Definición                                                      |
+| -------------------- | ----------------------------------------------------- | --------------------------------------------------------------- |
+| `TI-PROBLEM-SLI-001` | incidentes con problema relacionado                   | proporción y volumen por servicio y causa                       |
+| `TI-PROBLEM-SLI-002` | recurrencia sin problema relacionado                  | guardrail de casos recurrentes sin investigación aceptada       |
+| `TI-PROBLEM-SLI-003` | tiempo hasta aceptación del problema                  | desde el disparador material hasta `IDENTIFIED`                 |
+| `TI-PROBLEM-SLI-004` | problemas con causa confirmada                        | problemas que alcanzan `CAUSE_CONFIRMED` / problemas analizados |
+| `TI-PROBLEM-SLI-005` | antigüedad de error conocido activo                   | tiempo desde publicación y última revisión                      |
+| `TI-PROBLEM-SLI-006` | uso de workaround                                     | aplicaciones por workaround, servicio y alcance                 |
+| `TI-PROBLEM-SLI-007` | recurrencia después de prevención                     | nuevas ocurrencias compatibles después de acción preventiva     |
+| `TI-PROBLEM-SLI-008` | eficacia preventiva                                   | acciones `EFFECTIVE` / acciones evaluadas                       |
+| `TI-PROBLEM-SLI-009` | problemas reabiertos mediante investigación vinculada | recurrencia material posterior a cierre                         |
+| `TI-PROBLEM-SLI-010` | problemas cerrados por aceptación de riesgo           | volumen y criticidad con autoridad y control explícitos         |
+
+Dimensiones mínimas:
+
+```text
+service
+element_class
+application
+site
+cause_class
+known_error
+workaround
+provider
+change_related
+problem_status
+```
+
+Las métricas no se usan para atribuir culpa individual.
+
+---
+
+#### 38. Estado AS-IS verificable
+
+La implementación actual de soporte conserva una base simple de tickets y mensajes.
+
+La migración vigente de fundación define para `support_tickets`:
+
+```text
+id
+created_by
+site_id
+category
+title
+description
+status
+assigned_to
+resolved_at
+created_at
+updated_at
+```
+
+Una migración posterior agrega:
+
+```text
+target_employee_id
+```
+
+El enum actual de estado continúa:
+
+```text
+open
+in_progress
+resolved
+closed
+```
+
+En las fuentes técnicas revisadas no se encontró un modelo dedicado de `problem_id` ni un campo `root_cause` en la fundación de soporte. La búsqueda actual de `workaround` devuelve principalmente contratos documentales, no una persistencia de gestión de problemas. Las apariciones de términos semejantes fuera del dominio de soporte no se reinterpretan como modelo ITSM.
+
+Estado:
+
+```text
+INCIDENTE / TICKET AS-IS = IMPLEMENTADO PARCIAL
+PROBLEMA CANÓNICO = NO MATERIALIZADO FÍSICAMENTE EN LAS FUENTES REVISADAS
+ERROR CONOCIDO CANÓNICO = NO MATERIALIZADO FÍSICAMENTE EN LAS FUENTES REVISADAS
+WORKAROUND REUTILIZABLE GOBERNADO = NO MATERIALIZADO FÍSICAMENTE EN LAS FUENTES REVISADAS
+MODELO TI-DOM-008 = ESPECIFICADO
+```
+
+La ausencia de persistencia no autoriza cambios de esquema durante esta fase.
+
+---
+
+#### 39. Reconciliación con `support_tickets`
+
+`support_tickets` no se reutiliza como problema genérico mediante cambio de `category`.
+
+Reglas de transición futura:
+
+1. ticket e incidente conservan su identidad;
+2. problema requiere identidad propia;
+3. relaciones incidente–problema son explícitas;
+4. `resolved_at` no se convierte en `root_cause_confirmed_at`;
+5. mensajes no se convierten en evidencia causal estructurada por defecto;
+6. una descripción libre no se convierte en known error;
+7. una respuesta de soporte no se convierte en workaround publicado;
+8. el backfill futuro debe ser determinista y conservar incertidumbre;
+9. registros legacy sin evidencia suficiente permanecen sin problem link;
+10. cualquier modelo físico deberá ejecutarse mediante un paquete autorizado y migraciones de `vento-shell`.
+
+---
+
+#### 40. Privacidad, seguridad y evidencia
+
+1. un problema puede contener información técnica más sensible que el ticket visible al solicitante;
+2. hipótesis de seguridad no se publican como conocimiento general;
+3. secretos no se copian en causas, workarounds ni known errors;
+4. logs completos permanecen en su sistema propietario cuando una referencia basta;
+5. evidencia de proveedor se minimiza antes de exponerla;
+6. direcciones, topología y datos de usuarios se muestran solo cuando la finalidad lo exige;
+7. una investigación no habilita soporte remoto;
+8. un workaround no contiene credenciales como “paso”;
+9. la causa no identifica personas cuando el hecho causal puede expresarse mediante control, proceso o condición verificable;
+10. exportaciones de problemas respetan clasificación y alcance.
+
+---
+
+#### 41. Operación degradada y continuidad
+
+Un problema puede estudiarse mientras el incidente ya está restaurado.
+
+Si existe un workaround:
+
+- el incidente conserva su validación y cierre;
+- el problema conserva la deuda;
+- el error conocido conserva la guía temporal;
+- el proceso puede operar degradado solo dentro del contrato aprobado;
+- la continuidad empresarial permanece bajo `VPROC-0062`.
+
+Un problema no activa continuidad por existir. La continuidad depende del impacto empresarial actual y de la capacidad de producir el resultado mínimo.
+
+---
+
+#### 42. Handoffs exactos
+
+| Resultado de TI-DOM-008                     | Propietario receptor                  | Condición de salida                                   |
+| ------------------------------------------- | ------------------------------------- | ----------------------------------------------------- |
+| cambio requerido                            | `TI-DOM-009`                          | cambio aceptado con alcance, prueba y rollback        |
+| señal o control de observabilidad requerido | `TI-DOM-010`                          | señal implementada y evidencia utilizable             |
+| control de recuperación                     | `TI-DOM-011`                          | restauración/recuperación probada cuando aplique      |
+| proveedor, garantía o contrato              | `TI-DOM-012`                          | obligación contractual y soporte reconciliados        |
+| error conocido, guía o entrenamiento        | `TI-DOM-013`                          | conocimiento publicado con versión y alcance          |
+| acceso privilegiado requerido               | `TI-AUTH-*`                           | autorización temporal, mínima y auditable             |
+| control de proceso                          | propietario funcional aplicable       | acción aceptada con criterio verificable              |
+| riesgo de continuidad                       | `VPROC-0062` y dominio de continuidad | expediente de continuidad separado cuando corresponda |
+
+El handoff no transfiere ni elimina el `problem_id`.
+
+---
+
+#### 43. Hallazgos y propietarios
+
+| ID                 | Hallazgo                                                                             | Estado                   | Propietario                                  | Condición de salida                                              |
+| ------------------ | ------------------------------------------------------------------------------------ | ------------------------ | -------------------------------------------- | ---------------------------------------------------------------- |
+| `H-TI-DOM-008-001` | el modelo actual de soporte no materializa una identidad de problema                 | `ESPECIFICADO`           | paquete E5 VISO / modelo E3                  | persistencia y contratos implementados con relaciones explícitas |
+| `H-TI-DOM-008-002` | `resolved` legacy puede confundirse con causa eliminada                              | `RESUELTO_POR_CONTRATO`  | `TI-DOM-007`; `TI-DOM-008`                   | implementación separa restauración, causa y cierre               |
+| `H-TI-DOM-008-003` | no existe campo estructurado de causa raíz en la fundación actual de soporte         | `ESPECIFICADO`           | paquete E5 VISO                              | modelo físico conserva hipótesis, evidencia y causa confirmada   |
+| `H-TI-DOM-008-004` | no existe error conocido gobernado demostrado en el soporte actual                   | `ESPECIFICADO`           | paquete E5 VISO + `TI-DOM-013`               | known error versionado, autorizado y consumible                  |
+| `H-TI-DOM-008-005` | workarounds pueden permanecer como mensajes o memoria personal                       | `ESPECIFICADO`           | paquete E5 VISO + `TI-DOM-013`               | workaround versionado con alcance, guardas y revisión            |
+| `H-TI-DOM-008-006` | la recurrencia no está materializada como relación estructurada en `support_tickets` | `ESPECIFICADO`           | paquete E5 VISO + `TI-DOM-010`               | correlación y señales instrumentadas sin heurística silenciosa   |
+| `H-TI-DOM-008-007` | la proximidad entre cambio e incidente puede confundirse con causalidad              | `RESUELTO_POR_CONTRATO`  | `TI-RCA-EVIDENCE-CONTRACT-001`; `TI-DOM-009` | análisis conserva evidencia antes/después y resultado            |
+| `H-TI-DOM-008-008` | no existe evidencia histórica de eficacia preventiva bajo este contrato              | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-010` + paquete E5 VISO               | SLI y ventanas de observación producen evidencia reproducible    |
+| `H-TI-DOM-008-009` | una corrección de proveedor puede quedar como promesa sin verificación VENTO         | `RESUELTO_POR_CONTRATO`  | propietario técnico + `TI-DOM-009`           | corrección aplicada bajo autoridad y eficacia evaluada           |
+| `H-TI-DOM-008-010` | conocimiento técnico puede quedar desconectado de su problema y revisión             | `ESPECIFICADO`           | `TI-DOM-013`                                 | guía o known error conserva origen, revisión y retiro            |
+
+No queda un hallazgo narrativo sin propietario ni condición de salida.
+
+---
+
+#### 44. Estado de materialización
+
+| Componente                            | Estado                                |
+| ------------------------------------- | ------------------------------------- |
+| contrato de problema                  | `ESPECIFICADO`                        |
+| lifecycle de problema                 | `ESPECIFICADO`                        |
+| relación incidente–problema           | `ESPECIFICADO`                        |
+| hipótesis y evidencia causal          | `ESPECIFICADO`                        |
+| confirmación de causa raíz            | `ESPECIFICADO`                        |
+| error conocido                        | `ESPECIFICADO`                        |
+| workaround gobernado                  | `ESPECIFICADO`                        |
+| recurrencia                           | `ESPECIFICADO`                        |
+| acciones preventivas                  | `ESPECIFICADO`                        |
+| eficacia                              | `ESPECIFICADO`                        |
+| modelo físico VISO                    | `FUERA_DE_ALCANCE`                    |
+| migración de soporte                  | `FUERA_DE_ALCANCE`                    |
+| observabilidad runtime de recurrencia | `FUERA_DE_ALCANCE` hacia `TI-DOM-010` |
+| ejecución de cambios preventivos      | `FUERA_DE_ALCANCE` hacia `TI-DOM-009` |
+| evidencia histórica de eficacia       | `PENDIENTE_DE_EVIDENCIA`              |
+| cambios Supabase                      | `NO_APLICA`                           |
+
+---
+
+#### 45. Invariantes
+
+1. incidente y problema son objetos distintos.
+2. un incidente puede cerrar con problema abierto.
+3. un problema no cambia la prioridad histórica del incidente.
+4. duración no convierte incidente en problema.
+5. síntoma no es causa.
+6. correlación no es causalidad.
+7. cambio reciente no es causa confirmada por sí solo.
+8. hipótesis no es causa raíz.
+9. hipótesis refutada no se borra.
+10. causa puede ser multifactorial.
+11. no se usa “error humano” como cierre automático del análisis.
+12. error conocido requiere causa o condición suficientemente identificada.
+13. error conocido requiere workaround gobernado.
+14. error conocido no es corrección definitiva.
+15. workaround no es causa eliminada.
+16. workaround no concede permisos.
+17. workaround reutilizable exige alcance y versión.
+18. workaround inseguro se suspende.
+19. repetición del workaround es señal de deuda.
+20. recurrencia por texto parecido no se confirma automáticamente.
+21. no existe umbral universal de cantidad para declarar problema.
+22. un proveedor no se convierte en autoridad del problema VENTO.
+23. caso de proveedor no reemplaza `problem_id`.
+24. acción preventiva no equivale a cambio aprobado.
+25. cambio ejecutado no equivale a eficacia.
+26. eficacia requiere evidencia posterior.
+27. una ventana de observación no se inventa universalmente.
+28. una acción fallida devuelve el problema a planificación.
+29. un problema cerrado no se reabre reescribiendo historia.
+30. una nueva investigación referencia el problema anterior.
+31. aceptar riesgo requiere autoridad aplicable.
+32. el técnico no acepta unilateralmente riesgo residual.
+33. un known error retirado conserva historia.
+34. el cierre del problema no borra incidentes.
+35. el cierre del problema no borra cambios.
+36. la base de conocimiento no almacena secretos.
+37. un log no se copia completo si una referencia basta.
+38. el problema no amplía acceso privilegiado.
+39. continuidad permanece separada.
+40. esta tarea no modifica código, datos ni Supabase.
+
+---
+
+#### 46. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-007 → TI-DOM-008 → TI-DOM-009`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] `VPROC-0058` permanece como proceso propietario del incidente;
+- [x] se define una identidad especializada de problema sin inventar un nuevo `VPROC-*`;
+- [x] se conservan los seis disparadores aprobados de problema;
+- [x] se definen exactamente siete estados de problema;
+- [x] se definen exactamente nueve transiciones;
+- [x] se definen cuatro estados de evidencia causal;
+- [x] se distinguen síntoma, hipótesis, factor contribuyente y causa raíz;
+- [x] se permite causalidad multifactorial;
+- [x] se definen ocho métodos de análisis utilizables sin imponer uno universal;
+- [x] se definen nueve clases causales;
+- [x] se prohíbe convertir correlación temporal en causa;
+- [x] se define un error conocido consumible y versionado;
+- [x] se definen cuatro estados de error conocido;
+- [x] se define un workaround con alcance, guardas, riesgo, revisión y evidencia;
+- [x] se definen cinco estados de workaround;
+- [x] se materializan ocho señales de recurrencia;
+- [x] se definen tres niveles de recurrencia;
+- [x] no se inventa un umbral numérico universal;
+- [x] se definen ocho clases de acción preventiva;
+- [x] los handoffs conservan su autoridad propietaria;
+- [x] se definen cinco estados de eficacia;
+- [x] el cambio tecnológico permanece bajo `TI-DOM-009`;
+- [x] observabilidad permanece bajo `TI-DOM-010`;
+- [x] recuperación permanece bajo `TI-DOM-011`;
+- [x] conocimiento y capacitación permanecen bajo `TI-DOM-013`;
+- [x] se definen cuatro códigos de cierre;
+- [x] aceptación de riesgo no puede ser unilateral del técnico;
+- [x] se materializan diez indicadores;
+- [x] se reconcilia el modelo contra `support_tickets` actual sin reinterpretar campos legacy;
+- [x] los diez hallazgos tienen propietario y condición de salida;
+- [x] no se crean tablas, migraciones, datos, problemas, known errors o workarounds físicos;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-009` permanece únicamente reservada.
+
+---
+
+#### 47. Cobertura de prueba consumida
+
+La tarea consume cobertura vigente que ya protege:
+
+- distinción entre solicitud, incidente, problema, error conocido y cambio;
+- separación entre restauración, causa eliminada y cierre aceptado;
+- problema, workaround, diagnóstico, cambio, validación y reapertura dentro de la mesa de servicio;
+- recurrencia no investigada como guardrail de soporte;
+- correlación entre servicio, activos, endpoints, aplicaciones, incidentes, problemas, cambios y proveedores;
+- historial y evidencia de configuración;
+- protección de logs, secretos y acceso diagnóstico;
+- observabilidad, resultado desconocido y reconciliación;
+- conocimiento versionado y transferencia de pendientes.
+
+Entre las coberturas existentes se encuentra `TREQ-VISO-002`, que asigna expresamente responsabilidad a las tareas del dominio tecnológico para el ciclo completo de incidentes, problemas, errores conocidos y cambios, junto con requisitos transversales de integración y configuración ya vigentes.
+
+TI-DOM-008 especializa esas obligaciones sin crear una segunda conducta de prueba paralela.
+
+---
+
+#### 48. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente la gestión de problema, análisis causal, error conocido, workaround, recurrencia y prevención que ya forman parte de la cobertura canónica vigente de mesa de servicio, configuración, integración, trazabilidad, observabilidad y conocimiento. No introduce una nueva superficie ejecutable, esquema físico, autorización, proveedor, contrato de transporte ni comportamiento empresarial adicional; por tanto no se requiere una fila nueva ni una modificación del registro.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 49. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior`
+
+
 ### [ ] TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
 ### [ ] TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
 ### [ ] TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
