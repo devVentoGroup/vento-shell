@@ -1036,5 +1036,566 @@ SIGUIENTE TAREA RESERVADA
 TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
 ```
 
-### [ ] TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+### ✅ TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+
+**Estado:** APROBADA  
+**Tarea anterior:** `TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal` — APROBADA  
+**Tarea siguiente:** `TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de autorización para consultar, proponer, aplicar, revertir, deshabilitar y automatizar cambios de configuración tecnológica sobre endpoints, redes, impresoras, aplicaciones, licencias y monitoreo  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md`  
+**Artefactos producidos:** `TI-PROTECTED-CONFIGURATION-GOVERNANCE-CONTRACT-001`; `TI-PROTECTED-CONFIGURATION-AUTHORITY-MATRIX-001`; `TI-ENDPOINT-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-NETWORK-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-PRINT-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-APPLICATION-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-LICENSE-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-MONITORING-CONFIGURATION-PROTECTION-MATRIX-001`; `TI-PROTECTED-CONFIGURATION-ASIS-RECONCILIATION-001`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, RPC, funciones, Edge Functions, migraciones, datos, endpoints, redes, impresoras, aplicaciones, licencias, alertas, dashboards, proveedores, cuentas, permisos, secretos, integraciones ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar qué configuración tecnológica queda protegida, qué autoridad se requiere para modificarla, cómo se conserva la segregación entre solicitud, aprobación, ejecución y verificación, qué evidencia debe acompañar cada cambio y cómo se preservan las fronteras con acceso privilegiado, gobierno de cambios, datos sensibles, activos, impresión, contratos comerciales y observabilidad.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-AUTH-003` queda definida con las siguientes decisiones obligatorias:
+
+1. **Toda alteración de estado administrado de un endpoint, red, impresora, aplicación, licencia o monitoreo es una acción protegida cuando cambia comportamiento, seguridad, conectividad, disponibilidad, alcance, dependencia, enrutamiento, entitlement o capacidad de observación.**
+2. Una configuración protegida no crea un nuevo modelo de autorización. Se resuelve mediante identidad, actor efectivo, permiso exacto, alcance, recurso, contexto, segregación, decisión y auditoría canónicos.
+3. La autorización de configuración no sustituye el cambio tecnológico. Toda mutación queda correlacionada con `TI-DOM-009` y conserva su clase `STANDARD`, `NORMAL` o `EMERGENCY`, riesgo, autoridad, ventana, prueba, rollback y revisión posterior.
+4. La aprobación de un cambio no concede privilegio. Cuando la ejecución requiera capacidad elevada, cuenta administrativa, soporte remoto o proveedor, deberá existir además una concesión o sesión válida conforme a `TI-AUTH-002`.
+5. Un incidente, alerta, ticket, recomendación del fabricante, hallazgo de seguridad o necesidad operativa puede originar la propuesta, pero ninguno autoriza por sí solo la modificación.
+6. El estado anterior, el cambio propuesto, el resultado aplicado y la verificación posterior deben permanecer distinguibles. Una pantalla o herramienta que solo muestre el estado final no constituye evidencia suficiente.
+7. Los cambios estándar y de bajo riesgo pueden usar procedimiento preautorizado vigente, pero siguen exigiendo actor identificable, permiso, alcance, recurso, versión del procedimiento, evidencia y resultado.
+8. Los cambios sensibles, de alto impacto o críticos conservan separación obligatoria entre ejecutor y autoridad final conforme a `TI-AUTH-001` y a la matriz de `TI-DOM-009`.
+9. Un proveedor, fabricante, MDM, ISP, agente, adaptador, script, servicio del sistema o plataforma externa puede ejecutar únicamente el alcance autorizado; nunca se convierte en autoridad empresarial por disponer de capacidad técnica.
+10. La automatización solo puede aplicar una mutación cuando el procedimiento exacto esté previamente autorizado y el principal técnico tenga alcance explícito. Una desviación fuera del cambio esperado detiene la automatización y vuelve al flujo de evaluación.
+11. La lectura de configuración no sensible puede autorizarse como diagnóstico o administración ordinaria. La consulta de secretos, logs, exportaciones, capturas o datos personales permanece bajo `TI-AUTH-004`.
+12. La compra, renovación, costo, contrato o selección comercial de una licencia no se autoriza desde esta tarea; `TI-DOM-012`, ORIGO y NUMERA conservan esas decisiones. Esta tarea protege únicamente la configuración y asignación técnica que corresponda.
+13. La identidad física de activos, endpoints e impresoras permanece en sus dominios propietarios. Autorizar configuración no cambia custodia, propiedad ni identidad del objeto.
+14. Se cierra documentalmente `H-TI-DOM-009-006`: las operaciones protegidas y la evidencia exigible quedan definidas antes de implementación física.
+15. La implementación, integración con herramientas, enforcement físico y pruebas operativas permanecen fuera de esta fase documental y conservan destinos exactos ya existentes.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume sin redefinir:
+
+- `TI-AUTH-001`, para segregación entre solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar;
+- `TI-AUTH-002`, para acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal;
+- `TI-DOM-003`, incluidos `TI-ENDPOINT-LIFECYCLE-CONTRACT-001` y `TI-ENDPOINT-BASELINE-CONTRACT-001`;
+- `TI-DOM-004`, incluidos arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de red;
+- `TI-DOM-005`, incluidos las nueve identidades `PRN-*`, los bindings físicos y los handoffs con PRINT-ARC;
+- `TI-DOM-006`, incluido el catálogo de diez aplicaciones, ambientes, dependencias, proveedores y licencias;
+- `TI-DOM-009`, como única autoridad del ciclo de cambio tecnológico;
+- `TI-DOM-010`, como autoridad de señales, salud, alertas, logs y correlación de observabilidad;
+- `TI-DOM-012`, como autoridad comercial-tecnológica de licencias, asientos, contratos, renovaciones, uso y costos;
+- `CAP-SCOPE-015`, que originó el alcance transversal de tecnología y los requisitos de prueba existentes;
+- el modelo canónico de identidad, permisos, alcances, precedencia, denegaciones, decisiones y auditoría;
+- PRINT-ARC para colas, routing, adaptadores, trabajos y resultados de impresión;
+- NEXO para activos físicos, ubicación, custodia, mantenimiento y garantía;
+- ORIGO y NUMERA para decisiones comerciales y económicas;
+- BLOQUE T para release, prueba, despliegue y rollback;
+- `TI-INT-001` a `TI-INT-003` para adaptadores, contratos e integraciones tecnológicas posteriores.
+
+No se crean permisos locales, roles nuevos, un segundo catálogo de activos, un segundo registro de impresoras, una segunda fuente de aplicaciones, una segunda matriz de licencias ni una plataforma paralela de observabilidad.
+
+---
+
+#### 3. Frontera canónica de configuración protegida
+
+Se fija:
+
+```text
+CONFIGURACION PROTEGIDA
+≠
+PRIVILEGIO
+
+CONFIGURACION PROTEGIDA
+≠
+CAMBIO APROBADO
+
+CONFIGURACION PROTEGIDA
+≠
+CREDENCIAL O SECRETO
+
+CONFIGURACION PROTEGIDA
+≠
+ESTADO FISICO DEL ACTIVO
+
+CONFIGURACION PROTEGIDA
+≠
+CONTRATO O COSTO
+
+CONFIGURACION PROTEGIDA
+≠
+LOG O DATO SENSIBLE
+```
+
+La decisión efectiva se compone así:
+
+```text
+ACTOR AUTORIZADO
++ PERMISO EXACTO
++ ALCANCE Y RECURSO COMPATIBLES
++ CAMBIO VALIDO SEGUN TI-DOM-009
++ SEGREGACION APLICABLE
++ PRIVILEGIO VIGENTE CUANDO SEA NECESARIO
++ ESTADO ANTERIOR IDENTIFICABLE
++ DIFERENCIA PROPUESTA
++ PRUEBA Y ROLLBACK APLICABLES
++ SIN DENEGACION PREVALENTE
+=
+CONFIGURACION AUTORIZABLE
+```
+
+Un cambio puede estar aprobado y aun así no ser ejecutable si el actor carece del permiso, alcance o privilegio requerido. Del mismo modo, una persona con privilegio técnico no puede aplicar una configuración que no tenga cambio y autoridad válidos.
+
+---
+
+#### 4. `TI-PROTECTED-CONFIGURATION-GOVERNANCE-CONTRACT-001`
+
+##### 4.1. Unidad protegida
+
+La unidad de decisión es:
+
+```text
+actor
++ accion
++ familia de configuracion
++ recurso concreto
++ alcance
++ estado anterior
++ estado propuesto
++ ventana
++ cambio correlacionado
+```
+
+No se autoriza una familia completa de manera genérica cuando la operación requiere un recurso concreto.
+
+##### 4.2. Acciones conceptuales protegidas
+
+| Acción conceptual            | Resultado                                                       | Regla                                                                                    |
+| ---------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `CONSULTAR_CONFIGURACION`    | leer metadata o estado de configuración autorizado              | no concede mutación; la información sensible conserva las restricciones de `TI-AUTH-004` |
+| `PROPONER_CONFIGURACION`     | preparar una diferencia o plan de cambio                        | no autoriza ejecución                                                                    |
+| `APLICAR_CONFIGURACION`      | producir un estado técnico distinto                             | exige decisión de autorización y gobierno de cambio                                      |
+| `REVERTIR_CONFIGURACION`     | aplicar el rollback aprobado o una recuperación controlada      | conserva actor, causa, estado previo, resultado y nueva verificación                     |
+| `DESHABILITAR_CONFIGURACION` | retirar, pausar o desactivar una capacidad configurada          | se trata como mutación; no equivale a borrar historia                                    |
+| `AUTOMATIZAR_CONFIGURACION`  | permitir que un principal técnico aplique un cambio predefinido | exige allowlist de procedimiento, recurso y alcance; cualquier desviación falla cerrado  |
+
+Estas etiquetas son semántica documental y no crean claves de permiso nuevas. La implementación deberá mapearlas al catálogo canónico vigente sin inventar permisos.
+
+##### 4.3. Invariantes
+
+1. el estado deseado y el observado no se confunden;
+2. una deriva detectada no autoriza su propia corrección;
+3. una recomendación automática no se convierte en decisión;
+4. un rollback no borra la evidencia de la configuración fallida;
+5. una herramienta administrativa no define quién puede usarla;
+6. una credencial o token no constituye autorización;
+7. una configuración futura o programada no está activa antes de su ventana;
+8. una configuración expirada o sustituida permanece en historial;
+9. un recurso no identificado de forma inequívoca no puede modificarse;
+10. un valor desconocido no se interpreta como global, permitido o seguro.
+
+---
+
+#### 5. `TI-PROTECTED-CONFIGURATION-AUTHORITY-MATRIX-001`
+
+Se preserva exactamente la autoridad de `TI-DOM-009`; esta tarea añade únicamente la condición de autorización sobre configuración.
+
+| Clase y riesgo      | Autoridad de cambio conservada                                                                                                                                     | Condición adicional para configuración                                                               | Separación                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `STANDARD / LOW`    | preautorización vigente del procedimiento bajo `RESPONSABLE_TECNOLOGICO`                                                                                           | actor, permiso, alcance, recurso, versión exacta del procedimiento y evidencia                       | según `TI-AUTH-001`; no se crea aprobador artificial   |
+| `NORMAL / LOW`      | `RESPONSABLE_TECNOLOGICO`                                                                                                                                          | diferencia propuesta y recurso concretos                                                             | ejecutor dentro de autorización vigente                |
+| `NORMAL / MEDIUM`   | `RESPONSABLE_TECNOLOGICO`; `RESPONSABLE_DEL_PROCESO` cuando exista efecto empresarial                                                                              | validar efecto funcional y rollback                                                                  | separar cuando el objeto o decisión protegida lo exija |
+| `NORMAL / HIGH`     | `RESPONSABLE_TECNOLOGICO` + autoridad funcional aplicable; `COORDINACION_DE_OPERACIONES`; seguridad cuando sea sensible                                            | privilegio temporal cuando sea necesario y verificación independiente                                | ejecutor no emite solo la autoridad final              |
+| `NORMAL / CRITICAL` | `RESPONSABLE_TECNOLOGICO` + `COORDINACION_DE_OPERACIONES` + autoridad funcional aplicable; `RESPONSABLE_DE_SEGURIDAD_TECNOLOGICA` cuando corresponda               | prueba, rollback, ventana, comunicación y evidencia reforzadas                                       | separación obligatoria de ejecución y autoridad final  |
+| `EMERGENCY`         | autoridad técnica y de control aplicable; `COORDINACION_DE_OPERACIONES` en cambios críticos o sensibles; seguridad, propietario funcional y proveedor según riesgo | se acelera la decisión, no se eliminan identidad, alcance, evidencia, rollback ni revisión posterior | no existe bypass por urgencia                          |
+
+Reglas adicionales:
+
+- si la configuración modifica acceso o entitlement de una persona, también aplica `VPROC-0059`;
+- si la ejecución requiere elevación, soporte remoto o proveedor, también aplica `TI-AUTH-002`;
+- si la configuración afecta datos sensibles, la lectura de evidencia o contenido queda bajo `TI-AUTH-004`;
+- un tercero nunca es aprobador empresarial final;
+- quien aplica una modificación sensible no puede ser el único verificador de su propio resultado.
+
+---
+
+#### 6. `TI-ENDPOINT-CONFIGURATION-PROTECTION-MATRIX-001`
+
+`TI-DOM-003` conserva identidad, lifecycle y baseline. Esta tarea protege las mutaciones sobre esa configuración.
+
+| Configuración de endpoint     | Acción protegida                                               | Evidencia mínima                                                          | Frontera                                                |
+| ----------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| baseline aplicable            | publicar, asignar o cambiar `baseline_id` o versión aplicable  | baseline anterior, nuevo baseline, endpoint, actor, cambio y resultado    | no cambia identidad física ni custodia                  |
+| sistema operativo soportado   | cambiar política o versión objetivo                            | política anterior/nueva, compatibilidad, prueba y rollback                | despliegue físico posterior                             |
+| parches y actualización       | cambiar política, canal, ventana o versión objetivo            | versión previa, objetivo, ventana, resultado y health posterior           | no equivale a parche aplicado con éxito                 |
+| cifrado y bloqueo             | habilitar, endurecer, reducir o deshabilitar exigencias        | requisito anterior/nuevo, autoridad, prueba y estado posterior            | secretos y material criptográfico no se documentan aquí |
+| aplicaciones administradas    | instalar, retirar o cambiar política de aplicación en endpoint | aplicación, versión, endpoint, causa, resultado y reversibilidad          | licencia y permiso empresarial permanecen separados     |
+| administración remota / MDM   | enrolar o cambiar política de administración                   | endpoint, herramienta, alcance, actor, sesión privilegiada cuando aplique | integración física corresponde a `TI-INT-003`           |
+| postura y health configurados | cambiar qué postura se evalúa o cómo se reporta                | perfil anterior/nuevo y resultado de comprobación                         | la señal y health se gobiernan en `TI-DOM-010`          |
+
+No queda autorizado por esta tarea:
+
+- inventar un `endpoint_id`;
+- tratar `asset_id`, `device_id`, IP, MAC, serial o fingerprint como autorización;
+- retirar o borrar un equipo por una simple modificación de baseline;
+- exponer contraseñas, tokens, llaves o secretos;
+- convertir un endpoint administrado en fuente de permisos del trabajador.
+
+---
+
+#### 7. `TI-NETWORK-CONFIGURATION-PROTECTION-MATRIX-001`
+
+`TI-DOM-004` conserva arquitectura, inventario, segmentación y direccionamiento.
+
+| Configuración de red              | Acción protegida                              | Evidencia mínima                                                  | Regla de seguridad                                             |
+| --------------------------------- | --------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
+| segmentación y finalidad          | cambiar segmento, VLAN o finalidad aprobada   | estado anterior, topología afectada, propuesta, prueba y rollback | una convivencia excepcional requiere justificación y autoridad |
+| SSID y política de conectividad   | crear, cambiar, retirar o reasignar finalidad | SSID o referencia, finalidad, sedes, dependencias y resultado     | no registrar PSK, claves privadas o secretos                   |
+| direccionamiento                  | cambiar rango, perfil o política de dirección | anterior/nuevo, recursos afectados y prueba                       | una IP conocida no concede administración                      |
+| reserva DHCP / dirección estable  | crear, mover, cambiar o retirar una reserva   | recurso exacto, anterior/nuevo, conflicto comprobado y resultado  | la reserva debe corresponder al recurso autorizado             |
+| router, switch o punto de acceso  | modificar configuración administrada          | equipo, versión o estado previo, diferencia, prueba y rollback    | la posesión de consola no concede autoridad                    |
+| uplink, camino alterno o failover | cambiar ruta primaria o contingente           | dependencias, ventana, health anterior/posterior y retorno        | continuidad no se activa por una configuración no validada     |
+| perfil de monitoreo de red        | cambiar señales o health esperados            | perfil anterior/nuevo y verificación                              | contenido sensible queda fuera de esta tarea                   |
+
+Una alerta de red o una falla de proveedor puede originar el cambio, pero no autoriza modificar segmentación, direccionamiento o equipo de red sin la decisión aplicable.
+
+---
+
+#### 8. `TI-PRINT-CONFIGURATION-PROTECTION-MATRIX-001`
+
+La tarea conserva las nueve identidades `PRN-*` aprobadas y no crea impresoras nuevas.
+
+| Configuración de impresión        | Acción protegida                                              | Evidencia mínima                                          | Propiedad conservada                           |
+| --------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------- |
+| interfaz física o lógica          | cambiar LAN, Wi-Fi, USB, Bluetooth o puente local             | impresora exacta, interfaz anterior/nueva y prueba        | NEXO conserva activo físico                    |
+| dirección estable / reserva       | cambiar IP o reserva asociada                                 | anterior/nuevo, recurso, red, prueba y rollback           | red permanece gobernada por `TI-DOM-004`       |
+| driver                            | instalar, actualizar, cambiar o retirar versión               | versión anterior/nueva, compatibilidad y prueba de salida | no modifica plantilla ni trabajo               |
+| firmware                          | actualizar, revertir o cambiar canal aprobado                 | versión, ventana, prueba y recuperación                   | requiere autoridad proporcional al riesgo      |
+| binding técnico                   | cambiar relación entre impresora, endpoint, canal o adaptador | binding anterior/nuevo, dependencias y health             | PRINT-ARC conserva routing y adaptadores       |
+| cola, ruta o fallback relacionado | cambiar asociación operativa                                  | ruta anterior/nueva, alcance, prueba y resultado          | PRINT-ARC conserva cola, job y receipt         |
+| capacidades y medio esperado      | cambiar configuración que afecte salida                       | capacidad anterior/nueva y prueba aplicable               | el cambio no redefine el documento empresarial |
+
+Reglas:
+
+1. una impresora accesible por red no queda autorizada para uso por ese hecho;
+2. un técnico que conoce la IP no puede reconfigurarla sin autoridad;
+3. una prueba física satisfactoria no sustituye la aprobación del cambio;
+4. un cambio de driver, firmware, IP, interfaz, adaptador o ruta no es una corrección informal;
+5. el proveedor puede ejecutar bajo alcance temporal, pero no aprobar ni cerrar por sí solo.
+
+---
+
+#### 9. `TI-APPLICATION-CONFIGURATION-PROTECTION-MATRIX-001`
+
+Se preservan exactamente las diez aplicaciones canónicas:
+
+```text
+shell
+anima
+viso
+nexo
+fogo
+origo
+pulso
+numera
+aura
+pass
+```
+
+La matriz aplica a cada una sin inferir que una superficie esté desplegada o que un proveedor comercial esté confirmado.
+
+| Configuración de aplicación                 | Acción protegida                                         | Evidencia mínima                                                   | Frontera                                         |
+| ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| ambiente y superficie autorizada            | cambiar asociación de ambiente, URL o superficie         | valor anterior/nuevo, ambiente, propietario y prueba               | una URL observable no prueba despliegue          |
+| repositorio / versión / release relacionada | cambiar referencia desplegable o versión objetivo        | versión anterior/nueva y correlación con BLOQUE T                  | release y cambio aprobado permanecen distintos   |
+| dependencia técnica                         | añadir, cambiar o retirar dependencia administrada       | dependencia anterior/nueva, impacto y recuperación                 | no inventar dependencia por presencia de paquete |
+| proveedor o integración técnica             | cambiar endpoint, adaptador o relación técnica           | proveedor/integración exactos, contrato técnico, prueba y rollback | proveedor no se convierte en fuente de autoridad |
+| configuración runtime no secreta            | cambiar valor que afecte comportamiento o disponibilidad | clave conceptual, anterior/nuevo, ambiente y resultado             | secretos y credenciales quedan fuera             |
+| activación o retiro operativo               | habilitar o deshabilitar capacidad configurada           | estado anterior/nuevo, impacto y confirmación                      | no sustituye decisión de continuidad de producto |
+| configuración de cuenta técnica relacionada | cambiar vínculo o finalidad técnica                      | cuenta/principal exactos y autorización aplicable                  | ciclo privilegiado pertenece a `TI-AUTH-002`     |
+
+Una variable visible en un repositorio, una configuración de proveedor o un panel administrativo no crea por sí misma una fuente canónica de configuración.
+
+---
+
+#### 10. `TI-LICENSE-CONFIGURATION-PROTECTION-MATRIX-001`
+
+La licencia, el asiento, la cuenta, el permiso y el contrato permanecen objetos distintos.
+
+| Configuración de licencia          | Acción protegida                                          | Evidencia mínima                                    | Autoridad que no se sustituye                     |
+| ---------------------------------- | --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| asignación de asiento              | asignar un entitlement técnico a sujeto autorizado        | sujeto, producto, entitlement, vigencia y resultado | aprobación de acceso cuando aplique               |
+| reasignación                       | transferir asiento entre sujetos                          | origen, destino, causa y resultado                  | no crea autorización empresarial para el destino  |
+| revocación técnica                 | retirar entitlement o asiento                             | sujeto, motivo, momento y verificación              | offboarding y acceso conservan sus procesos       |
+| activación en aplicación/proveedor | habilitar capacidad técnica contratada                    | producto, ambiente, cuenta técnica y resultado      | contrato y costo siguen en `TI-DOM-012`           |
+| integración de licenciamiento      | cambiar relación técnica o proveedor consumido            | anterior/nuevo, contrato técnico y prueba           | `TI-INT-003` conserva implementación de proveedor |
+| parámetros de uso administrado     | cambiar configuración que afecte consumo o disponibilidad | anterior/nuevo, alcance y resultado                 | no modifica compra, renovación o presupuesto      |
+
+Quedan fuera de esta tarea y no se autorizan aquí:
+
+- seleccionar un proveedor;
+- aceptar términos comerciales;
+- comprar;
+- renovar;
+- modificar costo;
+- aprobar compromiso o gasto;
+- definir tratamiento contable.
+
+Cuando una asignación de licencia otorgue además acceso funcional, deberá existir la decisión de acceso correspondiente; el asiento no sustituye el permiso.
+
+---
+
+#### 11. `TI-MONITORING-CONFIGURATION-PROTECTION-MATRIX-001`
+
+`TI-DOM-010` conserva la semántica de señal, health, alerta, log y correlación. Esta tarea protege la configuración que determina qué se observa y cómo se actúa sobre la señal.
+
+| Configuración de monitoreo                | Acción protegida                                        | Evidencia mínima                              | Riesgo controlado                            |
+| ----------------------------------------- | ------------------------------------------------------- | --------------------------------------------- | -------------------------------------------- |
+| fuente o collector                        | habilitar, deshabilitar o cambiar fuente de señal       | fuente anterior/nueva, recurso y verificación | dejar un servicio ciego                      |
+| binding señal–recurso–servicio            | cambiar correlación                                     | relación anterior/nueva y prueba              | atribuir health al recurso equivocado        |
+| perfil de health                          | cambiar reglas de derivación aplicables                 | perfil anterior/nuevo y ejemplos verificados  | salud falsa o inconsistente                  |
+| regla de alerta                           | crear, modificar, retirar o deshabilitar                | regla anterior/nueva, alcance y prueba        | incidente no detectado o ruido               |
+| umbral                                    | aumentar, reducir o cambiar condición                   | valor anterior/nuevo, razón y evidencia       | ocultar degradación o generar falsas alarmas |
+| routing / escalamiento                    | cambiar destino, prioridad o ruta operativa de alertas  | ruta anterior/nueva y prueba                  | alerta sin responsable                       |
+| mute / suppression / ventana              | activar o ampliar supresión                             | alcance, inicio, expiración y causa           | supresión permanente o accidental            |
+| dashboard / vista operativa               | cambiar composición que represente health o alertas     | versión anterior/nueva y fuente               | tablero engañoso                             |
+| política técnica de retención o colección | cambiar parámetros bajo una decisión propietaria válida | anterior/nuevo, autoridad y efecto            | pérdida de evidencia o exceso de recolección |
+
+Límites:
+
+- consultar logs, payloads, exportaciones, capturas o datos personales pertenece a `TI-AUTH-004`;
+- silenciar una alerta no resuelve el incidente;
+- cambiar un umbral no modifica por sí solo el SLA;
+- un dashboard verde no prueba recuperación;
+- una herramienta externa de monitoreo no se convierte en fuente empresarial de servicio, incidente o cambio.
+
+---
+
+#### 12. Automatización, deriva y remediación
+
+##### 12.1. Detección de deriva
+
+La diferencia entre estado deseado y observado se registra como señal o hallazgo. Por sí sola no autoriza mutación.
+
+```text
+DRIFT DETECTADO
+→ IDENTIFICAR RECURSO
+→ CLASIFICAR IMPACTO
+→ CORRELACIONAR CAMBIO O PROCEDIMIENTO
+→ AUTORIZAR
+→ APLICAR
+→ VERIFICAR
+```
+
+##### 12.2. Remediación automática
+
+La remediación automática solo es admisible cuando:
+
+- existe procedimiento `STANDARD` vigente y exacto;
+- la operación y el recurso están en allowlist explícita;
+- el principal técnico está identificado;
+- el alcance está acotado;
+- el estado previo es compatible con el procedimiento;
+- la diferencia observada coincide con el patrón esperado;
+- existe rollback o salida segura aplicable;
+- la ejecución conserva evidencia y resultado.
+
+Si el estado previo, la diferencia o el recurso no coinciden con la expectativa, la automatización no amplía la corrección. Debe detenerse y escalar a evaluación humana.
+
+##### 12.3. Emergencia
+
+`EMERGENCY` acelera el proceso de decisión de `TI-DOM-009`; no elimina:
+
+- identidad;
+- permiso;
+- alcance;
+- recurso;
+- autoridad técnica;
+- segregación aplicable;
+- registro del estado previo;
+- evidencia de ejecución;
+- rollback cuando sea técnicamente posible;
+- validación posterior;
+- revisión post-implementación.
+
+---
+
+#### 13. Evidencia mínima y cierre
+
+Toda modificación protegida deberá poder reconstruir como mínimo:
+
+```text
+caso o cambio correlacionado
+familia de configuracion
+recurso exacto
+actor solicitante
+actor aprobador cuando aplique
+actor ejecutor
+actor verificador cuando aplique
+permiso y alcance evaluados
+sesion privilegiada cuando aplique
+estado anterior
+diferencia propuesta
+procedimiento o version aplicable
+ventana
+resultado de aplicacion
+prueba posterior
+rollback aplicado o disponible
+estado posterior verificado
+incidente o desviacion si existio
+timestamp y correlacion de auditoria
+```
+
+No se exige que todos estos datos residan en una sola tabla. La obligación es conservar correlación suficiente entre las fuentes propietarias.
+
+Criterios de cierre:
+
+1. el resultado técnico coincide con el cambio aprobado o se registra la desviación;
+2. la prueba posterior fue ejecutada por el actor habilitado;
+3. la salud o función relevante fue comprobada;
+4. los efectos no deseados se transfieren a un caso propietario;
+5. el rollback, si fue utilizado, queda registrado como hecho y no borra el intento anterior;
+6. un proveedor entrega evidencia pero no declara por sí solo el cierre empresarial;
+7. un cambio sensible no se cierra exclusivamente con evidencia del mismo ejecutor.
+
+---
+
+#### 14. Límites con tareas y dominios vecinos
+
+| Tema                                                   | Esta tarea define                                 | Propietario conservado                            |
+| ------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------- |
+| segregación                                            | aplicación a configuración protegida              | `TI-AUTH-001`                                     |
+| privilegio, cuenta técnica y soporte remoto            | prerequisito cuando la ejecución lo necesita      | `TI-AUTH-002`                                     |
+| contenido sensible de diagnóstico                      | no se amplía                                      | `TI-AUTH-004`                                     |
+| cambio, ventana, riesgo, aprobación, prueba y rollback | se consumen                                       | `TI-DOM-009`                                      |
+| endpoint y baseline                                    | autorización sobre mutaciones                     | `TI-DOM-003`                                      |
+| red, segmentación y direccionamiento                   | autorización sobre mutaciones                     | `TI-DOM-004`                                      |
+| impresora física y binding                             | autorización sobre mutaciones                     | `TI-DOM-005`; NEXO; PRINT-ARC                     |
+| aplicación, ambiente y dependencia                     | autorización sobre mutaciones                     | `TI-DOM-006`; BLOQUE T                            |
+| licencia, contrato y costo                             | configuración técnica únicamente                  | `TI-DOM-012`; ORIGO; NUMERA                       |
+| señal, health y alerta                                 | autorización de configuración                     | `TI-DOM-010`                                      |
+| adaptadores y proveedores técnicos                     | contrato de autorización consumible               | `TI-INT-001` a `TI-INT-003`                       |
+| enforcement físico de autorización                     | contrato de decisión consumido por implementación | `AUTH-DB-034` y paquetes autorizados              |
+| evidencia de autorización                              | correlación requerida                             | `AUTH-DB-032` y gobierno transversal de auditoría |
+
+---
+
+#### 15. `TI-PROTECTED-CONFIGURATION-ASIS-RECONCILIATION-001`
+
+La línea base documental y técnica disponible se reconcilia sin declarar implementaciones no demostradas.
+
+| Familia      | Estado documental actual | Evidencia disponible                                                                        | Decisión de esta tarea                                                                        | Destino físico exacto                                                            |
+| ------------ | ------------------------ | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| endpoints    | `ESPECIFICADO`           | lifecycle, baseline, desired/observed configuration y postura definidos en `TI-DOM-003`     | autorización de sus mutaciones queda `ESPECIFICADO`                                           | `AUTH-DB-034`; `TI-INT-003` para MDM/administración remota; paquete E5 aplicable |
+| redes        | `ESPECIFICADO`           | arquitectura, segmentación, direccionamiento y monitoring handoff definidos en `TI-DOM-004` | autorización de configuración queda `ESPECIFICADO`                                            | `AUTH-DB-034`; `TI-INT-001`; `TI-INT-003`; paquete E5 aplicable                  |
+| impresoras   | `ESPECIFICADO`           | nueve `PRN-*`, estado físico, bindings y handoffs definidos en `TI-DOM-005`                 | autorización de IP, interfaz, driver, firmware, binding, ruta y fallback queda `ESPECIFICADO` | `AUTH-DB-034`; PRINT-ARC; `TI-INT-002`; `TI-INT-003`                             |
+| aplicaciones | `ESPECIFICADO`           | diez aplicaciones, ambientes, dependencias y proveedores técnicos definidos en `TI-DOM-006` | autorización de configuración técnica queda `ESPECIFICADO`                                    | `AUTH-DB-034`; BLOQUE T; `SHELL-CI-020` a `SHELL-CI-024`                         |
+| licencias    | `ESPECIFICADO`           | contrato de licencias/asientos y reconciliación comercial definidos en `TI-DOM-012`         | asignación y configuración técnica quedan protegidas sin alterar autoridad comercial          | `AUTH-DB-034`; `TI-INT-003`; paquetes ORIGO/NUMERA cuando corresponda            |
+| monitoreo    | `ESPECIFICADO`           | contrato de observabilidad, señales, health y alertas definidos en `TI-DOM-010`             | configuración de fuentes, reglas, umbrales, routing y supresión queda `ESPECIFICADO`          | `AUTH-DB-034`; `TI-INT-001` a `TI-INT-003`                                       |
+
+Estado físico transversal:
+
+```text
+CONTRATO DOCUMENTAL DE AUTORIZACION DE CONFIGURACION = ESPECIFICADO
+IMPLEMENTACION TRANSVERSAL DEL CONTRATO = FUERA_DE_ALCANCE EN ESTA FASE
+VALIDACION OPERATIVA / REMOTA / FISICA = FUERA_DE_ALCANCE EN ESTA FASE
+```
+
+La existencia actual de un modelo genérico de aplicaciones, permisos, alcances y concesiones individuales no se presenta como evidencia de que las seis familias ya apliquen este contrato de configuración de extremo a extremo.
+
+---
+
+#### 16. Brecha `H-TI-DOM-009-006`
+
+Estado anterior:
+
+```text
+PENDIENTE_DE_EVIDENCIA
+```
+
+Decisión de `TI-AUTH-003`:
+
+```text
+ESPECIFICADO
+```
+
+Condición documental de salida satisfecha:
+
+- seis familias protegidas delimitadas;
+- acciones protegidas definidas;
+- autoridad preservada por clase de cambio;
+- vínculo con privilegio definido;
+- segregación definida;
+- evidencia antes/durante/después definida;
+- automatización y emergencia delimitadas;
+- destinos de implementación identificados;
+- fronteras con `TI-AUTH-004`, dominios propietarios y fuentes comerciales preservadas.
+
+La implementación física no se declara realizada.
+
+---
+
+#### 17. Cobertura de prueba vigente consumida
+
+La tarea consume requisitos existentes que ya protegen el comportamiento materializado:
+
+- `TREQ-SHELL-010`, para administración tecnológica de aplicaciones, endpoints, cuentas, licencias, privilegio, actor, alcance y evidencia;
+- `TREQ-NEXO-019`, para configuración de elementos tecnológicos, red e impresión y para cambios de IP, driver, firmware, red o configuración con autorización, estado anterior, prueba y resultado;
+- `TREQ-INTEGRATION-020`, para correlación y operación segura de redes, endpoints, impresoras, licencias, monitoreo, MDM, proveedores y adaptadores;
+- `TREQ-VISO-002`, para mantener el caso tecnológico y la autorización del diagnóstico dentro del proceso de soporte cuando corresponda.
+
+La tarea parametriza esas reglas existentes sobre las seis familias y no cambia el actor autorizado, el límite territorial, el efecto persistente protegido, el mecanismo de seguridad ni el comportamiento ante error ya cubiertos por esos requisitos.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Justificación: `CAP-SCOPE-015` ya creó la cobertura transversal necesaria para tecnología y asignó expresamente estas reglas a las tareas `TI-AUTH-*`. `TI-AUTH-003` materializa los casos de configuración previstos dentro de esa cobertura, sin introducir una regla ejecutable nueva que requiera otro identificador. Tampoco modifica, difiere, descarta u obsolete requisitos existentes.
+
+---
+
+#### 19. Criterios de aceptación
+
+- [x] La tarea cubre exactamente endpoints, redes, impresoras, aplicaciones, licencias y monitoreo.
+- [x] No crea un modelo de autorización paralelo.
+- [x] No crea una clasificación de riesgo paralela a `TI-DOM-009`.
+- [x] Conserva `STANDARD`, `NORMAL` y `EMERGENCY`.
+- [x] Distingue aprobación de cambio y privilegio de ejecución.
+- [x] Conserva la segregación de `TI-AUTH-001`.
+- [x] Consume el ciclo privilegiado de `TI-AUTH-002`.
+- [x] Mantiene secretos y datos sensibles fuera del alcance de esta tarea.
+- [x] Protege configuración de baseline, parcheo, cifrado, aplicaciones y administración remota de endpoints.
+- [x] Protege segmentación, SSID, direccionamiento, reservas y configuración administrada de red.
+- [x] Protege IP, interfaz, driver, firmware, binding, ruta y fallback de impresión.
+- [x] Protege ambientes, dependencias y configuración runtime no secreta de aplicaciones.
+- [x] Protege asignación y revocación técnica de licencias sin asumir autoridad comercial.
+- [x] Protege fuentes, health, alertas, umbrales, routing y supresión de monitoreo.
+- [x] Define comportamiento de automatización y deriva.
+- [x] Define evidencia mínima de antes, diferencia, ejecución, prueba, rollback y estado posterior.
+- [x] Define destinos exactos para la implementación física posterior.
+- [x] Cierra documentalmente `H-TI-DOM-009-006`.
+- [x] Crea 0 requisitos de prueba y modifica 0 requisitos existentes.
+- [x] No realiza código, migraciones, DDL, DML, cambios de Supabase ni configuración real.
+- [x] Mantiene `TI-AUTH-004` únicamente como tarea siguiente reservada.
+
+---
+
+#### 20. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
+        ↓
+TAREA ACTUAL APROBADA
+TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+        ↓
+SIGUIENTE TAREA RESERVADA
+TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
+```
+
+
 ### [ ] TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte

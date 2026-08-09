@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **633** |
+| Tareas aprobadas | **634** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **961** |
+| Tareas no iniciadas | **960** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **39.71% (633/1594)** |
+| Porcentaje de completamiento | **39.77% (634/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal** |
-| Tarea actual | **TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo** |
+| Última tarea aprobada | **TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo** |
+| Tarea actual | **TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte** |
+| Siguiente tarea | **TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 57 de 157 aprobadas; TI-AUTH-003 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 58 de 157 aprobadas; TI-AUTH-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal |
-| Tarea actual | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo — **NO INICIADA** |
-| Siguiente tarea | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte |
+| Última aprobada | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo |
+| Tarea actual | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte — **NO INICIADA** |
+| Siguiente tarea | `TI-UX-001` — Diseñar portal simple de soporte para trabajadores dentro de ANIMA |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 57 DE 157 APROBADAS — ACTUAL TI-AUTH-003** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 58 DE 157 APROBADAS — ACTUAL TI-AUTH-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
-        ↓
-TAREA ACTUAL
 TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 57 de 157 tareas aprobadas
+CARRIL NEXO — 58 de 157 tareas aprobadas
 ```
