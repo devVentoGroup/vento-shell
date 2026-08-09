@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **634** |
+| Aprobadas | **635** |
 | En propuesta | **0** |
-| No iniciadas | **960** |
+| No iniciadas | **959** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.77% (634/1594)** |
+| Porcentaje de completamiento | **39.84% (635/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | ✅ APROBADA |
-| Tarea actual | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-UX-001` — Diseñar portal simple de soporte para trabajadores dentro de ANIMA | ⬜ NO INICIADA |
+| Última aprobada | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | ✅ APROBADA |
+| Tarea actual | `TI-UX-001` — Diseñar portal simple de soporte para trabajadores dentro de ANIMA | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-UX-002` — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1523,7 +1523,7 @@
 | ✅ APROBADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ✅ APROBADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ✅ APROBADA | `TI-AUTH-003` | Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
-| ⬜ NO INICIADA | `TI-AUTH-004` | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
+| ✅ APROBADA | `TI-AUTH-004` | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-UX-001` | Diseñar portal simple de soporte para trabajadores dentro de ANIMA | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
 | ⬜ NO INICIADA | `TI-UX-002` | Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |
 | ⬜ NO INICIADA | `TI-UX-003` | Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica | `bloques/Z_TECNOLOGIA_Y_SOPORTE/03_EXPERIENCIA_DE_SOPORTE_Y_OPERACION_TI.md` |

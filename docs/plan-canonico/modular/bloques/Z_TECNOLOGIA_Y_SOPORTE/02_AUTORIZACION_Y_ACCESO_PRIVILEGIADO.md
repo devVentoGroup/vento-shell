@@ -415,6 +415,8 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 
 `TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal`
+
+
 ### ✅ TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
 
 **Estado:** APROBADA  
@@ -1598,4 +1600,756 @@ TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos 
 ```
 
 
-### [ ] TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
+### ✅ TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
+
+**Estado:** APROBADA  
+**Tarea anterior:** `TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo` — APROBADA  
+**Tarea siguiente:** `TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada de autorización, minimización, redacción, manejo de secretos, acceso a logs, exportación, captura, divulgación y evidencia sensible dentro del soporte tecnológico  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, RPC, funciones, Edge Functions, migraciones, datos, políticas desplegadas, secretos, cuentas, logs, herramientas de monitoreo, integraciones, notificaciones, Storage ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar las reglas que impiden que el diagnóstico y el soporte tecnológico conviertan tickets, mensajes, logs, exportaciones, capturas, adjuntos, notificaciones o sesiones con proveedores en canales de exposición de secretos o datos personales; separar cada acción sensible de la mera capacidad técnica de observar un sistema; y definir qué puede conocerse, copiarse, transmitirse, conservarse, compartir con terceros o convertirse en evidencia bajo finalidad, alcance, autorización, minimización y trazabilidad verificables.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-AUTH-004` queda definida con las siguientes decisiones obligatorias:
+
+1. **Diagnosticar no equivale a conocer todo el contenido disponible técnicamente.** La investigación debe obtener únicamente los datos necesarios para la finalidad del caso.
+2. **Ver un recurso, exportarlo, capturarlo, adjuntarlo, compartirlo, enviarlo a un proveedor y publicarlo como conocimiento son acciones distintas.** Cada una exige una decisión de autorización compatible con el objeto, clasificación, finalidad, destinatario y alcance.
+3. Los artefactos de diagnóstico de `VPROC-0058` se tratan como evidencia restringida; no se convierten en anexos de libre circulación por pertenecer a un ticket de soporte.
+4. El ticket, sus mensajes y la clasificación operativa no son depósitos de secretos. Nunca se registra deliberadamente en ellos el valor completo de contraseñas, tokens, claves privadas, códigos de recuperación, OTP, cookies de sesión, credenciales privilegiadas, secretos de proveedor o materiales equivalentes.
+5. Los logs operativos conservan contexto suficiente para correlación y diagnóstico, pero omiten o protegen el contenido sensible que no sea necesario.
+6. Un dato personal observable durante soporte no queda autorizado para reutilización, exportación, entrenamiento, publicación, mensajería o conocimiento por el solo hecho de haber sido visible durante el diagnóstico.
+7. La persona técnica, el proveedor, la herramienta de soporte remoto, la cuenta privilegiada y el principal técnico no adquieren autoridad empresarial sobre la información a la que pueden llegar técnicamente.
+8. La redacción o minimización produce una vista derivada para soporte o divulgación; no destruye ni altera la evidencia original cuando esta deba preservarse por auditoría, investigación, retención o hold.
+9. Toda divulgación a proveedor o tercero se limita al mínimo conjunto necesario, se vincula con un caso y finalidad, usa un canal autorizado y conserva evidencia de quién autorizó, qué se entregó y cuándo dejó de ser necesario.
+10. Los accesos temporales a evidencia conservan autorización previa, vigencia, expiración y nueva evaluación antes de ser emitidos nuevamente.
+11. La captura de pantalla, fotografía, grabación o exportación no demuestra por sí sola autenticidad, integridad ni cierre; su valor depende de procedencia, correlación, clasificación, custodia y controles de evidencia.
+12. Las notificaciones de soporte se consideran una superficie de divulgación: su contenido debe minimizarse y no podrá transportar secretos o datos sensibles innecesarios.
+13. Se conserva la separación entre incidente de servicio, incidente de seguridad e incidente de continuidad; pueden correlacionarse, pero no se fusionan para ampliar visibilidad.
+14. `TI-AUTH-004` cierra la protección específica del soporte tecnológico sin absorber el gobierno empresarial general de clasificación, privacidad, retención, investigación, exportación o disposición que pertenece al bloque de gobierno de información.
+15. La tarea cierra documentalmente el mini-bloque `TI-AUTH-001` a `TI-AUTH-004`; la siguiente continuidad pertenece a experiencia de soporte y permanece reservada.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume y conserva, sin redefinirlas:
+
+- `TI-AUTH-001`, para responsabilidad tecnológica, segregación, acumulaciones permitidas y decisiones que exigen autoridad separada;
+- `TI-AUTH-002`, para acceso privilegiado, cuentas técnicas, proveedores, soporte remoto, elevación temporal, expiración y revocación;
+- `TI-AUTH-003`, para autorización de cambios sobre configuración tecnológica;
+- `TI-DOM-007`, para solicitud, incidente, prioridad, comunicación, validación y cierre;
+- `TI-DOM-010`, para señales, salud, alertas, logs, correlación, evidencia y observabilidad;
+- `CAP-SCOPE-015`, especialmente las brechas de secretos y datos sensibles dentro de tickets, capturas, mensajería y soporte;
+- `CAP-SCOPE-016`, para clasificación, finalidad, minimización, datos personales, acceso sensible, exportación, auditoría, retención, investigación y protección de evidencia;
+- `VPROC-0058 — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento`;
+- la arquitectura transversal `EVID-ARC` para evidencia, adjuntos, acceso temporal, auditoría, retención y disposición;
+- el modelo canónico de identidad, actor efectivo, rol, permiso, alcance, contexto, privilegio, denegación y auditoría;
+- los requisitos de prueba vigentes que ya protegen administración tecnológica, exposición sensible en soporte, información restringida, evidencia, integraciones y auditoría.
+
+No se crea una política paralela de privacidad, un catálogo alterno de clasificación, un segundo repositorio de evidencia ni una lista local de cargos autorizados.
+
+---
+
+#### 3. Frontera de autorización
+
+Se fija la separación:
+
+```text
+CAPACIDAD TECNICA DE OBSERVAR
+≠
+AUTORIZACION PARA CONOCER
+≠
+AUTORIZACION PARA COPIAR
+≠
+AUTORIZACION PARA EXPORTAR
+≠
+AUTORIZACION PARA CAPTURAR
+≠
+AUTORIZACION PARA COMPARTIR
+≠
+AUTORIZACION PARA PUBLICAR
+```
+
+Y también:
+
+```text
+TICKET
+≠
+LOG
+≠
+DIAGNOSTICO
+≠
+CAPTURA
+≠
+EXPORTACION
+≠
+EVIDENCIA PRESERVADA
+≠
+SECRETO
+≠
+DATO PERSONAL
+```
+
+Una credencial privilegiada puede permitir técnicamente abrir un recurso. Esa capacidad no constituye autorización empresarial para leer todo su contenido, copiarlo o entregarlo a otra persona.
+
+---
+
+#### 4. Regla de acceso a diagnóstico sensible
+
+Una acción humana que revele información sensible de soporte será autorizable únicamente cuando converjan, como mínimo:
+
+```text
+IDENTIDAD HUMANA ACTIVA
++
+ACTOR EFECTIVO VIGENTE
++
+PERMISO EXACTO
++
+CASO, CAMBIO O INVESTIGACION CORRELACIONADOS CUANDO APLIQUE
++
+FINALIDAD EXPLICITA Y VIGENTE
++
+RECURSO EXACTO
++
+CLASIFICACION CONOCIDA O TRATADA CONSERVADORAMENTE
++
+ALCANCE MINIMO NECESARIO
++
+PRIVILEGIO VIGENTE CUANDO LA OPERACION LO EXIJA
++
+SEGREGACION Y AUTORIDAD APLICABLES
++
+SIN DENEGACION PREVALENTE
+=
+ACCESO SENSIBLE AUTORIZABLE
+```
+
+Si falta una guarda obligatoria, el acceso sensible no avanza por conveniencia operativa.
+
+---
+
+#### 5. Familias protegidas
+
+| Familia          | Objeto protegido                                                                                                                         | Riesgo principal                                                             | Regla de protección                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Diagnósticos     | hipótesis, comprobaciones, trazas correlacionadas, datos técnicos y resultado de investigación                                           | exposición excesiva durante la búsqueda de causa                             | recolectar y revelar solo lo necesario para responder una hipótesis o decisión concreta                 |
+| Logs             | registros estructurados, eventos, errores, telemetría y contexto técnico                                                                 | secretos o datos personales en texto claro; lectura masiva sin finalidad     | acceso por recurso, ventana, finalidad y permiso; contenido minimizado y correlacionable                |
+| Exportaciones    | subconjuntos de logs, datos, configuraciones, reportes o evidencias extraídos de su superficie original                                  | copia durable fuera del control original                                     | definir destinatario, finalidad, campos, clasificación, canal, vigencia, custodia y cierre              |
+| Capturas         | pantallas, fotografías, grabaciones, recortes y artefactos visuales                                                                      | captura incidental de información ajena al caso                              | capturar la mínima región necesaria, redactar lo no pertinente y conservar procedencia                  |
+| Secretos         | contraseñas, tokens, claves, OTP, códigos de recuperación, cookies, credenciales privilegiadas y materiales equivalentes                 | toma de control, persistencia de acceso y propagación en canales secundarios | nunca registrar deliberadamente el valor completo; referenciar identidad, estado o ubicación controlada |
+| Datos personales | identificadores, contacto, relación laboral, datos financieros, salud, comportamiento y demás información personal observable en soporte | tratamiento fuera de finalidad, divulgación y persistencia innecesaria       | finalidad, minimización, clasificación y acceso exacto antes de revelar o conservar                     |
+
+Las seis familias se gobiernan juntas cuando aparecen en un mismo caso, pero mantienen identidad y controles independientes.
+
+---
+
+#### 6. Clasificación mínima dentro de `VPROC-0058`
+
+Se conserva la clasificación ya materializada en la arquitectura de evidencia:
+
+| Artefacto de soporte | Clasificación vigente | Decisión de esta tarea                                                      |
+| -------------------- | --------------------- | --------------------------------------------------------------------------- |
+| ticket               | `S2_CONFIDENTIAL`     | visible únicamente dentro del alcance autorizado del proceso                |
+| clasificación y SLA  | `S2_CONFIDENTIAL`     | no amplía visibilidad sobre diagnóstico o evidencia                         |
+| diagnóstico          | `S3_RESTRICTED`       | exige acceso restringido y finalidad de diagnóstico                         |
+| workaround           | `S2_CONFIDENTIAL`     | debe omitir secretos y datos innecesarios                                   |
+| conocimiento         | `S2_CONFIDENTIAL`     | solo material sanitizado puede reutilizarse como conocimiento               |
+| cierre               | `S2_CONFIDENTIAL`     | conserva resultado y evidencia suficiente sin duplicar material restringido |
+
+Si un artefacto contiene material cuya clasificación aplicable sea superior o más restrictiva, prevalece el tratamiento más protector.
+
+---
+
+#### 7. Matriz de autoridad por actor
+
+| Actor o función                              | Puede hacer                                                                                  | Condición                                                               | No puede asumir                                                                                                  |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `TRABAJADOR`                                 | reportar síntomas, aportar evidencia mínima y revisar la parte de su caso que le corresponda | identidad y contexto válidos                                            | acceso a logs internos, secretos, datos de terceros o diagnósticos restringidos por ser solicitante              |
+| `RESPONSABLE_TECNOLOGICO`                    | ejecutar diagnóstico autorizado, correlacionar señales y consultar evidencia necesaria       | permiso, recurso, caso, alcance y finalidad compatibles                 | lectura indiscriminada, autoampliación de privilegio, divulgación libre o uso secundario de datos                |
+| `RESPONSABLE_DE_SEGURIDAD_TECNOLOGICA`       | intervenir cuando exista riesgo de seguridad, secreto o exposición                           | autoridad y alcance exactos                                             | acceso permanente o ilimitado por el nombre de la función                                                        |
+| `RESPONSABLE_DEL_PROCESO`                    | aportar contexto empresarial y validar recuperación                                          | conocer únicamente lo necesario para validar el resultado               | obtener logs completos, secretos o evidencia técnica restringida sin autorización específica                     |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`             | aportar contexto territorial y afectación                                                    | sede y finalidad compatibles                                            | ampliar el diagnóstico a otras sedes, personas o recursos                                                        |
+| autoridad aprobadora aplicable               | decidir cuando la acción o el umbral estén reservados                                        | objeto y regla de segregación correspondientes                          | sustituir al ejecutor técnico o conceder acceso fuera del alcance aprobado                                       |
+| `TECNICO_O_PRESTADOR_EXTERNO` / `PROVEEDOR`  | recibir y producir material técnico mínimo para el trabajo autorizado                        | patrocinio interno, caso, sesión, alcance, vigencia y canal autorizados | convertirse en propietario del dato, aprobador, custodio indefinido o receptor de datasets completos por defecto |
+| servicio, automatización o principal técnico | recolectar, correlacionar o transportar señales expresamente permitidas                      | finalidad técnica, allowlist, identidad técnica y alcance               | representar autoridad humana o transformar telemetría en permiso empresarial                                     |
+
+---
+
+#### 8. Diagnóstico por capas
+
+El diagnóstico debe avanzar desde la alternativa menos intrusiva hacia la más sensible.
+
+| Capa                        | Contenido permitido                                                                | Condición para avanzar                                        |
+| --------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 1. estado y metadata mínima | disponibilidad, código de error, health, versión, identificadores no sensibles     | suficiente para descartar o confirmar hipótesis sin contenido |
+| 2. contexto estructurado    | timestamps, correlación, recurso, actor o principal técnico, operación y resultado | la hipótesis exige contexto adicional                         |
+| 3. log restringido          | fragmento temporal y del recurso exacto                                            | finalidad concreta y permiso de acceso sensible               |
+| 4. contenido de evidencia   | adjunto, payload o detalle restringido necesario                                   | no existe alternativa menos invasiva y el caso lo justifica   |
+| 5. material de tercero      | subconjunto sanitizado para proveedor o especialista                               | autorización de divulgación, destinatario y canal controlados |
+
+No se empieza por copiar el dataset más amplio disponible.
+
+---
+
+#### 9. Contrato de acceso a logs
+
+Todo acceso humano a logs de soporte deberá conservar, cuando aplique:
+
+- identidad del actor;
+- caso, cambio, incidente o investigación correlacionados;
+- servicio y recurso;
+- ambiente;
+- intervalo temporal;
+- finalidad;
+- clasificación;
+- permiso y alcance;
+- privilegio o elevación cuando sea necesaria;
+- filtros utilizados;
+- resultado del acceso;
+- evidencia de exportación o divulgación si ocurrió;
+- cierre o terminación de la necesidad.
+
+Los logs no constituyen una nueva fuente de verdad de los hechos empresariales. Sirven para diagnóstico, correlación, auditoría y reconstrucción dentro de su finalidad.
+
+---
+
+#### 10. Contenido permitido y contenido prohibido en logs ordinarios
+
+El registro técnico debe favorecer:
+
+- identificadores estables;
+- códigos de resultado;
+- categorías de error;
+- timestamps;
+- correlación;
+- recurso;
+- ambiente;
+- versión;
+- principal técnico o actor cuando corresponda;
+- hashes o fingerprints no reversibles cuando el contrato aplicable lo permita;
+- tamaños, conteos o estados necesarios;
+- campos estructurados de contexto mínimo.
+
+Queda prohibido registrar deliberadamente en texto claro, salvo que una política canónica superior exija preservación controlada en una evidencia distinta:
+
+- contraseñas;
+- tokens completos;
+- claves privadas;
+- secretos de API;
+- credenciales de `service_role`;
+- OTP;
+- códigos de recuperación de MFA;
+- cookies de sesión;
+- secretos embebidos en URLs;
+- encabezados completos que contengan autorización;
+- variables de entorno completas;
+- PSK o credenciales de infraestructura;
+- datos de pago completos;
+- datos personales completos cuando identificadores minimizados sean suficientes.
+
+---
+
+#### 11. Redacción y minimización
+
+La regla general será:
+
+```text
+CONTENIDO ORIGINAL CONTROLADO
+→ CLASIFICAR
+→ IDENTIFICAR FINALIDAD
+→ SELECCIONAR SOLO LO NECESARIO
+→ REDACTAR O PSEUDONIMIZAR LO AJENO A LA FINALIDAD
+→ PRODUCIR VISTA DERIVADA
+→ AUTORIZAR DESTINATARIO Y CANAL
+→ REGISTRAR DIVULGACION
+```
+
+La redacción no autoriza alterar destructivamente el original que deba conservarse. Cuando exista una investigación, hold o obligación de preservación, se mantiene el original bajo custodia y se comparte únicamente la vista derivada autorizada.
+
+---
+
+#### 12. Reglas para datos personales durante soporte
+
+1. No se utilizarán datos personales productivos por comodidad cuando una reproducción sintética, anonimizada o mínima sea suficiente.
+2. El diagnóstico conserva la finalidad del caso; un dato observado incidentalmente no puede reutilizarse.
+3. El técnico no recopila campos ajenos a la hipótesis.
+4. Una búsqueda por persona debe tener recurso, relación y finalidad autorizados antes de revelar resultados.
+5. Listados masivos de trabajadores, clientes, proveedores o transacciones no son la respuesta predeterminada a un incidente puntual.
+6. La presencia de un dato en una interfaz visible para el usuario no autoriza su copia a un canal de soporte.
+7. El contenido de terceros que aparezca en una pantalla debe redactarse cuando no sea necesario para el diagnóstico.
+8. La publicación en conocimiento debe eliminar nombres, contactos, identificadores personales, secretos y referencias incidentales que no aporten a la solución general.
+9. Las métricas derivadas del soporte deben preferir agregados y categorías antes que contenido individual.
+10. El acceso extraordinario conserva justificación, mínimo alcance, vigencia y auditoría.
+
+---
+
+#### 13. Exportaciones
+
+Una exportación de soporte solo será autorizable cuando pueda responder de forma verificable:
+
+- qué caso o investigación la origina;
+- quién la solicita;
+- quién la autoriza cuando corresponda;
+- quién la produce;
+- cuál es la finalidad;
+- qué recursos y campos exactos incluye;
+- qué intervalo temporal cubre;
+- qué clasificación aplica;
+- qué datos se excluyeron o redactaron;
+- quién es el destinatario;
+- qué canal está autorizado;
+- cuánto tiempo sigue siendo necesaria;
+- cómo se verifica la recepción;
+- qué obligación de custodia o disposición aplica.
+
+Una exportación no hereda automáticamente toda la autoridad de la superficie origen. Su copia crea una nueva superficie de custodia que debe seguir controlada.
+
+---
+
+#### 14. Capturas, fotografías y grabaciones
+
+Toda captura de soporte deberá cumplir:
+
+1. capturar el mínimo contexto visual que demuestre el síntoma o resultado;
+2. excluir zonas no relacionadas con el caso;
+3. redactar secretos y datos personales ajenos a la finalidad;
+4. evitar mostrar notificaciones, pestañas, conversaciones o aplicaciones de terceros si no son relevantes;
+5. conservar fecha, actor, caso y recurso correlacionados cuando sea evidencia;
+6. distinguir una captura original controlada de una versión sanitizada;
+7. no usar una captura como sustituto de registros canónicos que ya existan;
+8. impedir que una imagen compartida con proveedor revele más información que el conjunto de datos autorizado;
+9. no convertir fotografías o videos informales en el único soporte de una decisión sensible;
+10. aplicar controles de retención y disposición equivalentes a su clasificación.
+
+---
+
+#### 15. Adjuntos y archivos de diagnóstico
+
+Los adjuntos usados como evidencia conservan el contrato transversal de evidencia:
+
+- tipo permitido mediante allowlist versionada;
+- tamaño máximo según política aplicable;
+- fingerprint del archivo;
+- estado de validación o escaneo requerido;
+- clasificación;
+- caso y proceso correlacionados;
+- actor y finalidad;
+- custodia;
+- acceso temporal cuando corresponda.
+
+Un archivo no se vuelve confiable por estar adjunto a un ticket. La validación de archivo y la autorización de contenido son controles independientes.
+
+---
+
+#### 16. Acceso temporal a evidencia
+
+Cuando una evidencia se exponga mediante acceso temporal:
+
+1. la autorización ocurre antes de emitir el acceso;
+2. el acceso es efímero;
+3. existe TTL obligatorio;
+4. el recurso y destinatario quedan limitados;
+5. una nueva emisión exige nueva autenticación y autorización;
+6. la expiración no elimina las reglas de retención del objeto original;
+7. una URL firmada o mecanismo equivalente no sustituye el permiso empresarial;
+8. el acceso expirado no puede reutilizarse mediante caché, historial o reintento.
+
+---
+
+#### 17. Secretos
+
+Se considera secreto o material equivalente cualquier valor cuya posesión pueda autenticar, autorizar, firmar, recuperar, impersonar o ampliar acceso técnico.
+
+Incluye, entre otros:
+
+- contraseñas;
+- tokens de acceso o refresh;
+- API keys;
+- claves privadas;
+- certificados privados;
+- cookies de sesión;
+- OTP;
+- códigos de recuperación;
+- secretos internos de webhook o funciones;
+- credenciales de servicio;
+- credenciales privilegiadas;
+- PSK;
+- capability URLs con vigencia activa;
+- materiales de recuperación.
+
+La identidad o existencia de un secreto puede referenciarse mediante un identificador, propietario, sistema, estado, fecha de rotación o ubicación controlada cuando ello sea necesario. El valor no se copia al caso.
+
+---
+
+#### 18. Respuesta ante exposición accidental de un secreto
+
+Si durante soporte aparece un secreto en un ticket, mensaje, log, captura, exportación o adjunto:
+
+1. se detiene su propagación;
+2. se restringe el artefacto afectado;
+3. no se reproduce el valor en comentarios, mensajes o conocimiento;
+4. se identifica el tipo de secreto y su propietario sin copiar el valor;
+5. se activa la revocación, rotación o invalidación mediante la autoridad propietaria cuando corresponda;
+6. se preserva únicamente la evidencia necesaria de que la exposición ocurrió y fue contenida;
+7. se revisan copias y destinatarios correlacionados;
+8. el caso conserva el resultado de contención y cierre sin volver a revelar el secreto.
+
+La gestión técnica del secreto no convierte a soporte en propietario del ciclo empresarial de credenciales.
+
+---
+
+#### 19. Proveedores y terceros
+
+Un proveedor solo recibe información cuando:
+
+```text
+CASO AUTORIZADO
++
+PATROCINADOR INTERNO
++
+FINALIDAD CONCRETA
++
+RECURSO Y ALCANCE EXACTOS
++
+CLASIFICACION COMPATIBLE
++
+MINIMIZACION O REDACCION
++
+CANAL AUTORIZADO
++
+VENTANA VIGENTE
++
+TRAZABILIDAD DE ENTREGA
+=
+DIVULGACION AUTORIZABLE
+```
+
+Reglas adicionales:
+
+- no se comparte un conjunto completo para que el proveedor "busque qué pasa";
+- no se entregan secretos de VENTO como mecanismo normal de soporte;
+- el proveedor usa su identidad y acceso autorizado conforme a `TI-AUTH-002`;
+- el proveedor no obtiene propiedad sobre el ticket, la evidencia ni los datos;
+- el material devuelto por el proveedor se clasifica antes de incorporarlo como evidencia;
+- el cierre del trabajo incluye terminación de accesos y custodia que ya no sean necesarios;
+- una herramienta de soporte remoto no autoriza capturar o transferir todo lo visible en pantalla.
+
+---
+
+#### 20. Diferencia entre soporte remoto y divulgación de información
+
+`TI-AUTH-002` gobierna quién puede abrir una sesión privilegiada o de proveedor. `TI-AUTH-004` gobierna qué información puede revelarse durante esa sesión.
+
+Por tanto:
+
+```text
+SESION REMOTA AUTORIZADA
+≠
+DATOS ILIMITADOS AUTORIZADOS
+```
+
+y:
+
+```text
+PRIVILEGIO VIGENTE
+≠
+PERMISO DE EXPORTAR
+```
+
+El técnico puede estar correctamente autenticado y aun así carecer de autorización para copiar, capturar o divulgar determinada información.
+
+---
+
+#### 21. Notificaciones y mensajería
+
+Los canales de notificación de soporte deben tratar el contenido como una superficie independiente de divulgación.
+
+Reglas:
+
+1. el asunto o preview debe contener el mínimo contexto necesario para avisar;
+2. no se incluyen secretos;
+3. no se incluyen datos personales sensibles si un identificador de caso o mensaje genérico es suficiente;
+4. no se proyecta un diagnóstico restringido completo en una notificación;
+5. la notificación no sustituye la autorización para abrir el caso;
+6. un destinatario que pueda recibir una alerta no queda autorizado a conocer todo el ticket;
+7. el contenido debe ser compatible con la exposición potencial en pantalla bloqueada, historial del sistema operativo o proveedor push.
+
+---
+
+#### 22. Conocimiento derivado de soporte
+
+Una solución de soporte puede convertirse en conocimiento reutilizable únicamente después de separar:
+
+- patrón técnico reutilizable;
+- procedimiento;
+- versión o ambiente relevante;
+- síntomas generales;
+- pasos de resolución;
+- datos específicos del caso;
+- secretos;
+- identidades personales;
+- información contractual o interna innecesaria.
+
+La base de conocimiento conserva el patrón general y elimina el contenido sensible que no sea necesario para resolver casos futuros.
+
+---
+
+#### 23. Evidencia, integridad y custodia
+
+Una captura, log o exportación usada como evidencia debe conservar:
+
+- referencia al caso o investigación;
+- origen;
+- fecha;
+- actor o principal técnico;
+- clasificación;
+- fingerprint cuando aplique;
+- resultado de validación del archivo cuando aplique;
+- relación con el recurso;
+- transformaciones o redacciones aplicadas;
+- acceso y divulgaciones relevantes;
+- retención o hold aplicables;
+- resultado de disposición cuando llegue a ser elegible.
+
+La evidencia sanitizada para compartir conserva relación con el original controlado sin convertir la copia derivada en fuente competidora.
+
+---
+
+#### 24. Retención y disposición
+
+Para la evidencia de soporte se conserva la política `RET_ACTIVE_CASE`.
+
+Esta tarea no inventa una duración temporal que las fuentes vigentes no han fijado.
+
+Mientras la duración permanezca sin definición materializada:
+
+- el estado se conserva como `PENDIENTE_DE_EVIDENCIA` respecto de la duración;
+- el bloqueo concreto es la ausencia de una regla empresarial aprobada de tiempo;
+- el propietario documental de cierre es `INFO-DOM-006`;
+- la condición de salida es una política vigente que defina disparador, duración, excepciones, hold y disposición para la clase correspondiente.
+
+Antes de cualquier disposición se verifica hold. Una evidencia preservada por investigación o obligación aplicable no se elimina por el mero cierre operativo del ticket.
+
+---
+
+#### 25. Auditoría e investigación
+
+El soporte debe poder reconstruir, según la sensibilidad de la acción:
+
+- quién consultó;
+- qué recurso;
+- desde qué contexto;
+- para qué finalidad;
+- qué permiso o decisión lo habilitó;
+- qué filtro o alcance se aplicó;
+- qué resultado obtuvo;
+- si produjo exportación, captura o divulgación;
+- quién recibió material;
+- qué redacción ocurrió;
+- qué acceso temporal se emitió;
+- cuándo terminó la necesidad;
+- qué evidencia quedó preservada.
+
+El gobierno empresarial general de investigación, chain of custody, acceso extraordinario y evidencia preservada permanece bajo `INFO-DOM-013` e `INFO-AUTH-004`.
+
+---
+
+#### 26. Incidente de servicio, seguridad y continuidad
+
+Se mantiene:
+
+```text
+INCIDENTE DE SERVICIO
+≠
+INCIDENTE DE SEGURIDAD
+≠
+INCIDENTE DE CONTINUIDAD
+```
+
+Un mismo hecho puede requerir correlación entre los tres.
+
+- `VPROC-0058` conserva la restauración del servicio tecnológico;
+- una exposición, secreto comprometido o acceso impropio activa el tratamiento de seguridad correspondiente;
+- una afectación que supere umbrales de operación mínima o recuperación se correlaciona con continuidad;
+- la correlación conserva identificadores y evidencia, no duplica el mismo contenido sensible en todos los expedientes.
+
+---
+
+#### 27. Frontera con gobierno de información
+
+`TI-AUTH-004` protege el uso de información dentro del soporte tecnológico.
+
+No absorbe las decisiones empresariales generales que permanecen en:
+
+- `INFO-DOM-002`, para clasificación y sensibilidad;
+- `INFO-DOM-006`, para retención, hold y disposición;
+- `INFO-DOM-010`, para gobierno general de compartición y exportación externa;
+- `INFO-DOM-013`, para auditoría, investigación e integridad de evidencia;
+- `INFO-AUTH-001`, para autorización general por clasificación, finalidad, identidad, relación, recurso, territorio y estado;
+- `INFO-AUTH-002`, para información sensible y acciones de copia, impresión, exportación o compartición;
+- `INFO-AUTH-004`, para auditoría, investigación, acceso extraordinario, logs y evidencia preservada.
+
+Las tareas futuras pueden ampliar el gobierno transversal sin rebajar las protecciones específicas fijadas aquí.
+
+---
+
+#### 28. Frontera con otras tareas tecnológicas
+
+| Tema                                              | Propietario   | Límite de `TI-AUTH-004`                                                                 |
+| ------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------- |
+| roles, responsabilidades y segregación            | `TI-AUTH-001` | consume las autoridades ya aprobadas                                                    |
+| privilegio, proveedor, soporte remoto y elevación | `TI-AUTH-002` | gobierna la información revelada durante el acceso, no la sesión en sí                  |
+| configuración protegida                           | `TI-AUTH-003` | gobierna evidencia y datos sensibles producidos al consultar o cambiar configuración    |
+| experiencia del trabajador                        | `TI-UX-001`   | no diseña pantallas                                                                     |
+| observabilidad                                    | `TI-DOM-010`  | no redefine señales, health o alertas; protege su contenido y acceso                    |
+| integraciones de soporte remoto y proveedores     | `TI-INT-003`  | no diseña adaptadores ni mecanismos de integración                                      |
+| evidencia transversal                             | `EVID-ARC`    | reutiliza sus contratos de archivo, acceso temporal, auditoría, retención y disposición |
+
+---
+
+#### 29. Reconciliación AS-IS verificable
+
+La inspección técnica disponible permite clasificar el estado actual sin extrapolar más allá de la evidencia observada.
+
+| Superficie observada                                                         | Evidencia actual                                                                                                        | Estado frente a esta tarea | Decisión                                                                                                      |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Edge Function `support-message-notify`                                       | usa credencial de servicio en servidor y un secreto interno para autorizar la invocación                                | `IMPLEMENTADO_PARCIAL`     | la existencia de autenticación técnica no demuestra por sí sola minimización del contenido                    |
+| preview de mensaje de soporte en push                                        | el flujo inspeccionado construye el cuerpo de la notificación con hasta 120 caracteres del mensaje                      | `PENDIENTE_DE_EVIDENCIA`   | debe demostrarse que el contenido enviado al proveedor push satisface clasificación, minimización y redacción |
+| redacción previa al preview push                                             | en el archivo inspeccionado no se observa una etapa explícita de clasificación o redacción antes de construir el cuerpo | `PENDIENTE_DE_EVIDENCIA`   | no se afirma ausencia global; se identifica únicamente la falta de demostración en este flujo concreto        |
+| reglas documentales de logging seguro                                        | `TI-DOM-010` ya prohíbe valores sensibles en logs ordinarios                                                            | `ESPECIFICADO`             | `TI-AUTH-004` añade autorización de lectura, copia, captura y divulgación                                     |
+| evidencia de soporte                                                         | arquitectura `EVID-ARC` define clasificación, validación de archivos, acceso temporal y auditoría                       | `ESPECIFICADO`             | se reutiliza sin crear un repositorio paralelo                                                                |
+| política temporal exacta de retención de soporte                             | `RET_ACTIVE_CASE` existe, pero la duración no está materializada                                                        | `PENDIENTE_DE_EVIDENCIA`   | cierre documental asignado a `INFO-DOM-006`                                                                   |
+| controles físicos completos de exportación, captura y divulgación de soporte | no se demuestran integralmente mediante las fuentes inspeccionadas                                                      | `PENDIENTE_DE_EVIDENCIA`   | la implementación se decide únicamente dentro del alcance de implementación autorizado que corresponda        |
+
+---
+
+#### 30. Destino de los pendientes detectados
+
+| Pendiente                                                      | Bloqueo concreto                                                                      | Propietario o destino exacto                                                                                    | Condición de salida                                                                                          |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| minimización/redacción del preview push                        | el flujo inspeccionado proyecta contenido del mensaje y no demuestra redacción previa | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` para decidir inclusión física en el paquete prioritario | decisión explícita de alcance; si aplica al paquete, control implementado y probado antes de exposición real |
+| duración de retención de evidencia de soporte                  | `RET_ACTIVE_CASE` no fija duración verificable en las fuentes consumidas              | `INFO-DOM-006`                                                                                                  | duración, disparador, excepciones, hold y disposición aprobados                                              |
+| gobierno empresarial general de exportaciones y compartición   | esta tarea solo protege el contexto de soporte                                        | `INFO-DOM-010`; `INFO-AUTH-002`                                                                                 | contrato empresarial general materializado sin degradar las reglas de soporte                                |
+| investigación, auditoría e integridad de evidencia             | falta gobierno transversal completo fuera del soporte                                 | `INFO-DOM-013`; `INFO-AUTH-004`                                                                                 | contrato transversal de investigación, auditoría y evidencia preservada materializado                        |
+| integración concreta de herramienta remota o proveedor técnico | mecanismo productivo no pertenece a esta tarea                                        | `TI-INT-003`                                                                                                    | integración definida con autenticación, alcance, auditoría y salida                                          |
+| controles físicos no demostrados para todas las superficies    | fase actual es documental                                                             | etapa de implementación que resulte autorizada por el plan canónico                                             | implementación y evidencia real en repositorio, servicio y ambiente aplicables                               |
+
+Ningún pendiente habilita una excepción temporal a las reglas documentales aprobadas.
+
+---
+
+#### 31. Hallazgos de descubrimiento que quedan cubiertos
+
+`TI-AUTH-004` materializa la respuesta documental específica de soporte para:
+
+- `H-CAP-SCOPE-015-021`, respecto de credenciales, tokens, códigos de recuperación y diagnóstico sensible que podrían propagarse por tickets, capturas o mensajería;
+- `H-CAP-SCOPE-015-032`, respecto de logs, capturas y exportaciones de soporte que podrían revelar información personal, secretos, direcciones o información financiera;
+- `H-CAP-SCOPE-015-034`, respecto de la separación y correlación entre incidentes de servicio, seguridad y continuidad;
+- `H-CAP-SCOPE-016-027`, respecto de logs, tickets, capturas y eventos que podrían contener secretos o datos personales innecesarios.
+
+Los componentes generales de privacidad, retención, auditoría e investigación conservan sus propietarios del bloque de gobierno de información.
+
+---
+
+#### 32. Cobertura de pruebas existente
+
+La regla protegida de esta tarea ya dispone de cobertura contractual vigente en el registro canónico, incluyendo:
+
+- `TREQ-SHELL-010`, para administración tecnológica sin conflar cuenta, permiso, credencial, secreto, licencia, endpoint, dispositivo o sesión;
+- `TREQ-SHELL-011`, para acceso, búsqueda, copia, impresión, exportación, compartición y administración de información según identidad, finalidad, clasificación, recurso, relación, territorio, estado, destinatario y acción;
+- `TREQ-VISO-002`, para evitar exponer logs, IP y detalles sensibles antes de un diagnóstico autorizado;
+- `TREQ-VISO-003`, para proteger investigación y evidencia sin exponer logs completos o datos innecesarios;
+- `TREQ-INTEGRATION-020`, para operación tecnológica e integraciones sin almacenar secretos en tickets ni convertir adaptadores en maestros;
+- `TREQ-INTEGRATION-021`, para ciclo de información, documentos y evidencia frente a copias, terceros, revocación, retención y reconciliación;
+- `TREQ-SUPABASE-013`, para la integridad y confiabilidad de evidencia y auditoría que no puede depender de registros mutables sin control;
+- requisitos `AUTH` vigentes que protegen identidad, contexto, privilegio, segregación, acceso extraordinario y auditoría.
+
+La tarea amplía casos documentales dentro de esas reglas existentes y no altera su identidad ni su regla protegida.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Justificación: las reglas verificables de acceso sensible, ocultamiento de diagnóstico, protección de secretos, tratamiento de evidencia, exportación, divulgación, integraciones y auditoría ya están protegidas por requisitos vigentes equivalentes. Esta tarea materializa casos y decisiones específicas del soporte tecnológico sin cambiar la regla empresarial, el mecanismo de seguridad protegido ni el riesgo que exigirían una identidad de prueba nueva.
+
+---
+
+#### 34. Criterios de aceptación
+
+- [x] La tarea protege explícitamente diagnósticos.
+- [x] La tarea protege explícitamente logs.
+- [x] La tarea protege explícitamente exportaciones.
+- [x] La tarea protege explícitamente capturas.
+- [x] La tarea protege explícitamente secretos.
+- [x] La tarea protege explícitamente datos personales.
+- [x] Ver, copiar, exportar, capturar, compartir y publicar quedan separados.
+- [x] El diagnóstico restringido conserva finalidad, recurso y alcance mínimo.
+- [x] La posesión de privilegio técnico no se interpreta como permiso sobre toda la información.
+- [x] El proveedor no adquiere autoridad empresarial.
+- [x] La sesión remota no concede divulgación ilimitada.
+- [x] Los logs ordinarios excluyen deliberadamente secretos y datos innecesarios.
+- [x] Los datos personales se minimizan antes de copiarse a canales de soporte.
+- [x] Las capturas se limitan al área necesaria y admiten vista sanitizada.
+- [x] Los adjuntos conservan validación, fingerprint, clasificación y correlación.
+- [x] El acceso temporal exige autorización previa y vigencia.
+- [x] Los secretos no se almacenan deliberadamente en ticket, mensaje o conocimiento.
+- [x] La exposición accidental de un secreto tiene contención y destino de revocación o rotación.
+- [x] La divulgación a proveedor exige destinatario, finalidad, alcance y canal.
+- [x] Las notificaciones se reconocen como superficie de divulgación.
+- [x] La base de conocimiento elimina contenido específico sensible del caso.
+- [x] La evidencia sanitizada no destruye el original que deba preservarse.
+- [x] `RET_ACTIVE_CASE` se conserva sin inventar duración.
+- [x] Los pendientes tienen bloqueo, propietario y condición de salida.
+- [x] Se separan incidente de servicio, seguridad y continuidad.
+- [x] Se conserva la frontera con el bloque de gobierno de información.
+- [x] Se conserva la frontera con `TI-AUTH-002` y `TI-AUTH-003`.
+- [x] Se conserva la frontera con `EVID-ARC`.
+- [x] La reconciliación AS-IS distingue evidencia observada de inferencias no demostradas.
+- [x] La tarea no realiza cambios físicos.
+- [x] La tarea crea cero requisitos nuevos y modifica cero existentes.
+- [x] `TI-UX-001` queda únicamente reservada.
+
+---
+
+#### 35. Estado del resultado
+
+| Resultado material                            | Estado                                    |
+| --------------------------------------------- | ----------------------------------------- |
+| gobierno de diagnóstico sensible              | `ESPECIFICADO`                            |
+| clasificación de artefactos de soporte        | `ESPECIFICADO`                            |
+| matriz de autoridad de diagnóstico            | `ESPECIFICADO`                            |
+| control de acceso a logs                      | `ESPECIFICADO`                            |
+| control de exportaciones y capturas           | `ESPECIFICADO`                            |
+| manejo de secretos                            | `ESPECIFICADO`                            |
+| minimización y redacción                      | `ESPECIFICADO`                            |
+| divulgación a proveedores y terceros          | `ESPECIFICADO`                            |
+| ciclo de evidencia sensible                   | `ESPECIFICADO`                            |
+| reconciliación AS-IS                          | `ESPECIFICADO`                            |
+| duración temporal exacta de `RET_ACTIVE_CASE` | `PENDIENTE_DE_EVIDENCIA` — `INFO-DOM-006` |
+| implementación física de controles            | `FUERA_DE_ALCANCE`                        |
+| cambios de código, Supabase o proveedores     | `NO_APLICA`                               |
+
+---
+
+#### 36. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+        ↓
+TAREA ACTUAL APROBADA
+TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
+        ↓
+SIGUIENTE TAREA RESERVADA
+TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA
+```
+
