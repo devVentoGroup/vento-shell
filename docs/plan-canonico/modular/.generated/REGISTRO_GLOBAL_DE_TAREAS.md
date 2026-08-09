@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **644** |
+| Aprobadas | **645** |
 | En propuesta | **0** |
-| No iniciadas | **950** |
+| No iniciadas | **949** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.40% (644/1594)** |
+| Porcentaje de completamiento | **40.46% (645/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-INT-003` — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | ✅ APROBADA |
-| Tarea actual | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información | ⬜ NO INICIADA |
+| Última aprobada | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | ✅ APROBADA |
+| Tarea actual | `INFO-DOM-002` — Definir clasificación, sensibilidad, minimización y manejo por categoría de información | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1533,7 +1533,7 @@
 | ✅ APROBADA | `TI-INT-001` | Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ✅ APROBADA | `TI-INT-002` | Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
 | ✅ APROBADA | `TI-INT-003` | Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/04_INTEGRACIONES_Y_TELEMETRIA.md` |
-| ⬜ NO INICIADA | `INFO-DOM-001` | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
+| ✅ APROBADA | `INFO-DOM-001` | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-002` | Definir clasificación, sensibilidad, minimización y manejo por categoría de información | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-003` | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-004` | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
