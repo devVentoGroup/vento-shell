@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **679** |
+| Tareas aprobadas | **680** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **915** |
+| Tareas no iniciadas | **914** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.60% (679/1594)** |
+| Porcentaje de completamiento | **42.66% (680/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales** |
-| Tarea actual | **DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística** |
+| Última tarea aprobada | **DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística** |
+| Tarea actual | **DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad** |
+| Siguiente tarea | **DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 103 de 157 aprobadas; DATA-DOM-010 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 104 de 157 aprobadas; DATA-DOM-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-009` — Definir analítica de ventas, demanda, precios, promociones y canales |
-| Tarea actual | `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad |
+| Última aprobada | `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística |
+| Tarea actual | `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 103 DE 157 APROBADAS — ACTUAL DATA-DOM-010** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 104 DE 157 APROBADAS — ACTUAL DATA-DOM-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
-        ↓
-TAREA ACTUAL
 DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 103 de 157 tareas aprobadas
+CARRIL NEXO — 104 de 157 tareas aprobadas
 ```

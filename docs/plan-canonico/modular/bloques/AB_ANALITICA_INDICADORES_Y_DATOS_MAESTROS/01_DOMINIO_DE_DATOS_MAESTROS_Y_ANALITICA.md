@@ -4901,7 +4901,710 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística`
 
 
-### [ ] DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
+### ✅ DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales` — APROBADA
+**Tarea siguiente:** `DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de analítica de inventario, abastecimiento, proveedores y logística
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues o publicación productiva de artefactos:** no autorizados
+
+#### 1. Propósito
+
+Definir la semántica analítica de inventario, abastecimiento, proveedores y logística de Vento OS sin convertir saldos, reportes, proyecciones o agregados en nuevas fuentes de verdad y sin adelantar la implementación física de modelos analíticos.
+
+La tarea debe permitir responder de forma reproducible:
+
+```text
+qué existe físicamente
+qué parte puede considerarse disponible
+qué parte está comprometida, bloqueada, en tránsito o en cuarentena
+cuánto tiempo cubre el inventario una demanda o consumo gobernados
+qué rota y qué permanece
+qué faltantes y quiebres están demostrados
+qué cantidades vencen, se dañan o se pierden
+qué diferencias detectan los conteos
+qué tan completamente se preparan, despachan y reciben remisiones
+qué tan completamente y a tiempo cumplen los proveedores
+qué compras urgentes ocurrieron con evidencia suficiente
+cómo se compara consumo real contra un plan compatible
+qué costo de inventario puede publicarse sin redefinir NUMERA
+qué capacidad de almacenamiento existe y cuánto se utiliza
+```
+
+Ningún resultado de esta tarea modifica stock, compras, órdenes, recepciones, proveedores, remisiones, lotes, ubicaciones, costos o datos operativos.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-DOM-010` con los siguientes resultados:
+
+- se cubren exactamente las **12 familias analíticas** heredadas de `CAP-SCOPE-017`;
+- se separan existencia física, disponible, comprometida, bloqueada, cuarentena y tránsito;
+- se define que disponibilidad es un derivado para un corte y contexto, no una fuente editable;
+- se define cobertura en días únicamente contra un denominador de consumo o demanda gobernado y compatible;
+- se separan rotación de permanencia y antigüedad;
+- se separan faltante, quiebre, stock cero, indisponibilidad y dato no actualizado;
+- se separan vencimiento, daño, pérdida, cuarentena y disposición;
+- se materializa la semántica de diferencia de conteo a partir de cantidad contada y existencia del sistema en el corte del conteo;
+- se separan solicitud, preparación, despacho, recepción, faltante y cierre de remisiones;
+- se define el cumplimiento de proveedores sobre orden y recepción, sin inferir un `lead time` oficial desde timestamps insuficientes;
+- se reconoce la recepción directa de emergencia de ORIGO como evidencia operativa de urgencia, sin convertirla en un carril canónico de compra urgente ya cerrado;
+- se separa consumo real de plan, requisición, compra, remisión y forecast;
+- se separa memoria operativa de costo de compra de valoración económica oficial de inventario;
+- se bloquea la utilización de capacidad de almacenamiento hasta existir una capacidad física gobernada y una unidad compatible de ocupación;
+- se preserva la regla de que una existencia negativa, nula o no actualizada se trata según su causa y no se oculta mediante agregación;
+- no se crean claves nuevas de métricas por inferencia; los campos técnicos observados son evidencia de implementación, no identidades semánticas nuevas;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+EXISTENCIA FÍSICA
+≠ EXISTENCIA DISPONIBLE
+≠ EXISTENCIA COMPROMETIDA
+≠ EXISTENCIA BLOQUEADA
+≠ EXISTENCIA EN CUARENTENA
+≠ EXISTENCIA EN TRÁNSITO
+```
+
+```text
+STOCK CERO
+≠ FALTANTE DEMOSTRADO
+≠ QUIEBRE DEMOSTRADO
+≠ PRODUCTO NO INVENTARIABLE
+≠ DATO NO RECIBIDO
+```
+
+```text
+RESERVA
+≠ PICK DE REMISIÓN
+≠ DESPACHO
+≠ SALIDA DE INVENTARIO
+```
+
+```text
+VENCIDO
+≠ DAÑADO
+≠ PERDIDO
+≠ CUARENTENA
+≠ DISPUESTO
+```
+
+```text
+SOLICITADO
+≠ PREPARADO
+≠ DESPACHADO
+≠ RECIBIDO
+≠ FALTANTE
+≠ CERRADO
+```
+
+```text
+ORDEN DE COMPRA
+≠ RECEPCIÓN
+≠ FACTURA
+≠ MOVIMIENTO DE INVENTARIO
+≠ HECHO ECONÓMICO
+```
+
+```text
+COSTO DE COMPRA OBSERVADO
+≠ COSTO UNITARIO DE INVENTARIO APROBADO
+≠ VALORACIÓN CONTABLE
+≠ GASTO
+≠ MARGEN
+```
+
+```text
+CAPACIDAD NOMINAL
+≠ CAPACIDAD UTILIZABLE
+≠ OCUPACIÓN
+≠ EXISTENCIA
+```
+
+Una comparación solo es válida cuando conserva producto o familia comparable, unidad, presentación cuando aplique, sede, ubicación, periodo, corte, población, fuente, tratamiento de estados y versión semántica equivalentes o una transformación explícita y trazable.
+
+#### 4. Autoridad y fuentes consumidas
+
+La analítica de esta tarea conserva el gobierno federado aprobado.
+
+| Elemento                                                                    | Autoridad funcional | Uso en esta tarea                           | Frontera                                                                        |
+| --------------------------------------------------------------------------- | ------------------- | ------------------------------------------- | ------------------------------------------------------------------------------- |
+| producto maestro, presentación, unidad y clasificación de inventario        | NEXO                | dimensiones físicas                         | no se reconstruyen por nombre ni por etiqueta externa                           |
+| LOC, posición, lote, LPN, existencia, movimiento, conteo, ajuste y remisión | NEXO                | hechos y estados de inventario/logística    | existencia es derivada por corte; movimiento y conteo conservan su propio grano |
+| proveedor, relación producto-proveedor y condición comercial                | ORIGO               | dimensiones de abastecimiento               | proveedor no se fusiona con contacto, cuenta o código externo                   |
+| orden de compra y recepción empresarial                                     | ORIGO               | hechos de compra y cumplimiento             | una recepción no reescribe la orden ni sustituye el movimiento físico           |
+| ejecución y consumo productivo                                              | FOGO                | consumo real cuando el análisis lo requiera | permanece separado del plan y de la compra                                      |
+| venta y devolución comercial                                                | PULSO               | salidas comerciales cuando correspondan     | no redefinen inventario ni costo                                                |
+| costo, valoración y efecto económico aprobado                               | NUMERA              | costo oficial y valoración                  | NEXO y ORIGO no redefinen la fórmula económica oficial                          |
+| reglas comunes de métricas, calidad y publicación                           | BLOQUE AB           | semántica, certificación y artefactos       | no adquiere autoridad sobre hechos fuente                                       |
+
+#### 5. Evidencia técnica actual observada
+
+La implementación actual demuestra superficies materiales útiles, pero no convierte automáticamente sus agregados en métricas certificadas.
+
+| Superficie observada                             | Evidencia material                                                                                                      | Qué sí demuestra                                                  | Qué no demuestra                                                                           |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| stock NEXO por sede y LOC                        | `current_qty`, `updated_at`, producto, sede, LOC y posición en las proyecciones vigentes                                | existencia física derivada actual y frescura técnica observable   | disponibilidad empresarial completa, reservas, cuarentena o historia certificada           |
+| movimientos de inventario                        | entradas, salidas, transferencias, ajustes y efectos relacionados con procesos                                          | existencia de hechos de cambio de stock                           | que toda causa empresarial esté completa o reconciliada                                    |
+| conteos NEXO                                     | cantidad contada, cantidad del sistema al abrir/cerrar, diferencia y aprobación antes de ajuste                         | diferencia de conteo explícita y auditable                        | conservación histórica completa de todos los conteos heredados                             |
+| remisiones NEXO                                  | cantidad solicitada, preparada, despachada, recibida y faltante; estados y tiempos; picks por LOC/posición/presentación | seguimiento material de cumplimiento interno y parcialidad        | un contrato universal de reserva o inventario comprometido                                 |
+| orden de compra ORIGO                            | proveedor, sede, estado, creación, fecha esperada, recepción, cantidades ordenadas/recibidas y costo de línea           | hechos actuales de orden y recepción comparables                  | que `created_at` sea inicio contractual de `lead time` o que toda parcialidad esté cerrada |
+| recepción ORIGO                                  | proveedor, OC opcional, fecha, cantidades, costos, lote, vencimiento, ubicación y modo normal/emergencia                | recepción empresarial e inventariable con evidencia de emergencia | un carril de compra urgente integral ya regularizado                                       |
+| memoria de costo proveedor-producto-presentación | último costo, promedios ponderados, cantidades, moneda y última recepción                                               | memoria operativa de costos reales de recepción                   | valoración económica oficial gobernada por NUMERA                                          |
+| maestro de proveedores ORIGO                     | identidad, contacto, condición de pago, días de crédito y estado                                                        | catálogo operativo actual de proveedores                          | evaluación canónica de desempeño del proveedor                                             |
+
+La ausencia de una evidencia en esta tabla significa únicamente que no se utiliza como hecho demostrado para certificar el resultado correspondiente.
+
+#### 6. Coordenada mínima del análisis
+
+Todo resultado de inventario, abastecimiento, proveedor o logística deberá conservar, cuando aplique:
+
+| Coordenada            | Regla canónica                                                                     |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| definición analítica  | significado, fórmula o regla de agregación y versión                               |
+| hecho o estado base   | movimiento, conteo, existencia, remisión, orden, recepción u otro objeto explícito |
+| producto              | identidad canónica; no nombre libre                                                |
+| presentación y unidad | presentación aplicada y unidad de stock o unidad analítica compatible              |
+| sede                  | sede del hecho o estado                                                            |
+| LOC/posición          | ubicación física cuando el resultado dependa de ella                               |
+| lote/LPN              | solo cuando exista identidad trazable aplicable                                    |
+| proveedor             | identidad ORIGO cuando el análisis sea de abastecimiento                           |
+| periodo               | ventana empresarial analizada                                                      |
+| corte                 | instante hasta el cual se incorporan hechos, estados y correcciones                |
+| moneda                | moneda original cuando exista valor monetario                                      |
+| estado operativo      | población incluida/excluida y tratamiento de parciales, cancelados o cerrados      |
+| cobertura             | fuentes, sedes, productos y periodos efectivamente observados                      |
+| calidad/certificación | estado consumido de `DATA-DOM-007`                                                 |
+| publicación           | contrato consumido de `DATA-DOM-008` y restatement cuando corresponda              |
+
+#### 7. Matriz materializada de las 12 familias
+
+|    # | Familia canónica                        | Definición materializada                                                                                                                                                                       | Evidencia actual                                                                                                                           | Certificación                                                                                     | Condición de salida / propietario exacto                                                                                                                                                                                     |
+| ---: | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | separar existencia física, comprometida, bloqueada/cuarentena, tránsito y disponible para un mismo corte; la disponible solo se calcula si todas las poblaciones requeridas están gobernadas   | stock por sede/LOC/posición; picks de remisión como compromiso parcial de un proceso                                                       | `NO EVALUADO` para existencia física; `BLOQUEADO` para disponible/comprometida global             | contrato integral de reservas/estados en `PROC-CAT-002`, `PROC-CAT-009` a `PROC-CAT-018`, `NEXO-UX-001`, `SUPA-AUD-019`, `SUPA-AUD-022`; binding en `DATA-INT-001` y `DATA-INT-002`                                          |
+|    2 | cobertura y días de inventario          | dividir una existencia elegible por una tasa diaria compatible de demanda o consumo, conservando unidad, población, ventana y corte; sin denominador válido no existe valor numérico           | existencia actual; movimientos de consumo/salida parciales                                                                                 | `BLOQUEADO`                                                                                       | población de consumo/demanda en `DATA-DOM-009`, `DATA-DOM-011` y contratos fuente en `DATA-INT-001`; cálculo material en `DATA-INT-002`                                                                                      |
+|    3 | rotación y permanencia                  | rotación compara flujo elegible con inventario medio compatible; permanencia/antigüedad se calcula sobre lote/cohorte o recepción demostrable y no desde el último movimiento por aproximación | movimientos e inventario actuales; lotes/vencimientos parciales                                                                            | `BLOQUEADO`                                                                                       | cierre de lote/vencimiento en `NEXO-DOM-023`, `PROC-CAT-002`, `CAP-SCOPE-013`; historia/modelo en `DATA-INT-001` y `DATA-INT-002`                                                                                            |
+|    4 | faltantes y quiebres                    | un faltante exige requerimiento conocido no satisfecho; un quiebre exige indisponibilidad demostrada para una necesidad elegible; stock cero por sí solo no prueba ninguno                     | `shortage_quantity` y parcialidad en remisiones; validaciones de stock en preparación                                                      | `NO EVALUADO` para faltante explícito de remisión; `BLOQUEADO` para quiebre transversal           | disponibilidad integral conforme a la fila 1; consumo/demanda y unión con comercial en `DATA-DOM-009`, `DATA-INT-001` y `DATA-INT-002`                                                                                       |
+|    5 | vencimiento, daño y pérdida             | vencimiento se deriva de existencia por lote y fecha; daño y pérdida son hechos explícitos con causa; cuarentena y disposición permanecen separados                                            | expiración parcial en recepción/lotes; ciclo integral de daño/pérdida no demostrado                                                        | `BLOQUEADO`                                                                                       | `NEXO-DOM-010`, `NEXO-DOM-017`, `PROC-CAT-009` a `PROC-CAT-018`; materialización analítica en `DATA-INT-001` y `DATA-INT-002`                                                                                                |
+|    6 | diferencias de conteo                   | diferencia firmada = cantidad contada menos cantidad del sistema para el mismo producto/ubicación/corte; diferencia absoluta conserva magnitud sin ocultar signo                               | conteos guardan cantidad del sistema, cantidad contada y `quantity_delta` antes del ajuste                                                 | `NO EVALUADO`                                                                                     | historia de conteos en `DAT-11` y `NEXO-UX-018`; modelo/certificación en `DATA-INT-002` y `DATA-DOM-007`                                                                                                                     |
+|    7 | cumplimiento de remisiones              | medir por separado preparación, despacho, recepción, faltante y cierre; los porcentajes se recomputan sobre cantidades compatibles y no se promedian por línea                                 | cantidades solicitadas/preparadas/despachadas/recibidas/faltantes y estados `partial`/`received`                                           | `NO EVALUADO`                                                                                     | reconciliación y modelo en `DATA-INT-001` y `DATA-INT-002`; calidad en `DATA-DOM-007`                                                                                                                                        |
+|    8 | lead time y cumplimiento de proveedores | `lead time` inicia en el evento contractual de orden enviada/aceptada y termina en recepción aceptada; cumplimiento separa cantidad, fecha prometida, rechazo y parcialidad                    | OC con `created_at`, `expected_at`, `received_at`, cantidades ordenadas/recibidas; no se demuestra timestamp contractual de envío completo | `BLOQUEADO`                                                                                       | cierre de estados/parcialidad en `ORIGO-UX-007` a `ORIGO-UX-015`, `PROC-CAT-009` a `PROC-CAT-014`, `INT-PROC-001` a `INT-PROC-005`; evaluación derivada en `ORIGO-UX-001` y `PROC-CAT-019`                                   |
+|    9 | compras urgentes                        | contar solo hechos explícitamente clasificados como urgentes/emergencia bajo un carril gobernado; una recepción directa no equivale por sí sola a compra urgente aprobada                      | ORIGO usa `entry_mode = emergency` sin OC y exige `emergency_reason`                                                                       | `NO EVALUADO` para recepciones de emergencia observadas; `BLOQUEADO` para compra urgente canónica | carril y regularización en `ORIGO-AUTH-005` a `ORIGO-AUTH-010` y `CAP-SCOPE-018`; modelo en `DATA-INT-002`                                                                                                                   |
+|   10 | consumo versus plan                     | comparar consumo real con un plan explícito de la misma población, producto, unidad, sede y ventana; requisición, OC, remisión y forecast no sustituyen automáticamente el plan                | movimientos reales y distintas señales de necesidad; plan transversal no demostrado                                                        | `BLOQUEADO`                                                                                       | plan productivo en `DATA-DOM-011` y fuentes propietarias aplicables; contratos en `DATA-INT-001` y modelo en `DATA-INT-002`                                                                                                  |
+|   11 | costo de inventario                     | valorar cantidad elegible mediante una base de costo aprobada y vigente; memoria de costo de compra es insumo operativo, no fórmula financiera oficial                                         | ORIGO conserva último/promedio ponderado por proveedor-producto-presentación y costos netos/brutos                                         | `NO EVALUADO` para costo de compra observado; `BLOQUEADO` para valoración oficial                 | definición económica en `DATA-DOM-013`; conciliación con NUMERA en `INT-PROC-004`; binding en `DATA-INT-002`                                                                                                                 |
+|   12 | capacidad de almacenamiento             | ocupación/capacidad solo se calcula cuando existe capacidad utilizable gobernada y una unidad física compatible; volumen, peso, posiciones, pallets y unidades no se mezclan                   | LOC y posiciones existen; no se observó capacidad física gobernada en la implementación consultada                                         | `BLOQUEADO`                                                                                       | capacidad física, peso, volumen y compatibilidad en `NEXO-DOM-024`; parámetro de abastecimiento preservado por `OPS-LOG-001`; contrato de lectura en `DATA-INT-001` y modelo en `DATA-INT-002` antes de publicar utilización |
+
+**Reconciliación:** 12 familias esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 8. Existencia física, comprometida y disponible
+
+##### 8.1. Existencia física
+
+La existencia física para una coordenada válida representa la cantidad derivada de hechos de inventario aceptados hasta un corte.
+
+La proyección técnica actual `current_qty` puede utilizarse como evidencia del estado vigente, pero no se presenta automáticamente como snapshot histórico ni como resultado certificado.
+
+Cuando se reconstruya historia:
+
+```text
+existencia física al corte =
+existencia inicial demostrable
++ entradas elegibles
++ transferencias recibidas
++ ajustes positivos válidos
+- salidas elegibles
+- transferencias despachadas
+- ajustes negativos válidos
+```
+
+La fórmula física exacta debe consumir el catálogo de movimientos vigente; no se inventan tipos ni signos por nombre de interfaz.
+
+##### 8.2. Existencia comprometida
+
+Una cantidad solo se considera comprometida cuando existe un contrato de compromiso que declare:
+
+- hecho que crea el compromiso;
+- cantidad y unidad;
+- producto/presentación/lote cuando aplique;
+- sede/LOC cuando aplique;
+- vigencia;
+- prioridad cuando corresponda;
+- evento de consumo, liberación, cancelación o expiración;
+- idempotencia y reconciliación.
+
+Los picks de remisión son evidencia actual de un compromiso físico dentro del proceso de remisiones. No prueban que exista una población universal de reservas para todos los procesos.
+
+##### 8.3. Existencia disponible
+
+Cuando todas las poblaciones sean completas y compatibles:
+
+```text
+existencia disponible =
+existencia física elegible
+- compromisos activos elegibles
+- cantidad bloqueada o en cuarentena elegible
+```
+
+El tránsito se informa por separado salvo que el contrato del consumidor declare expresamente otra semántica.
+
+No se aplica `max(0, ...)` en la capa analítica para ocultar una inconsistencia. Un resultado negativo conserva el valor observado y se clasifica como anomalía de calidad/reconciliación.
+
+#### 9. Cobertura y días de inventario
+
+La cobertura exige un numerador de existencia elegible y un denominador de consumo o demanda con la misma unidad y población.
+
+Forma canónica:
+
+```text
+cobertura_días =
+existencia elegible al corte
+/
+tasa diaria elegible
+```
+
+Reglas:
+
+1. la tasa debe declarar fuente, ventana de estimación, días incluidos y exclusiones;
+2. no se mezclan ventas, consumo productivo, merma, traslados o ajustes dentro del denominador sin definición explícita;
+3. una tasa nula, ausente o no comparable no produce automáticamente infinito ni cero días;
+4. cantidades de productos con unidades incompatibles no se suman antes de calcular cobertura;
+5. un periodo de baja actividad no autoriza extender cobertura de forma engañosa;
+6. metas o umbrales de cobertura no se fijan en esta tarea.
+
+#### 10. Rotación y permanencia
+
+Rotación y permanencia responden preguntas distintas.
+
+```text
+rotación
+→ intensidad con la que una población de inventario se consume o sale respecto de una base media comparable
+
+permanencia
+→ tiempo que una unidad, lote o cohorte permanece bajo control de inventario
+```
+
+La rotación puede calcularse en cantidad o valor únicamente cuando numerador y denominador comparten la misma base. No se suman kilogramos, litros y unidades como si fueran una sola magnitud.
+
+La permanencia requiere una fecha de entrada/cohorte/lote demostrable. El último movimiento del producto no se utiliza como fecha de adquisición de todas las unidades restantes.
+
+#### 11. Faltantes y quiebres
+
+Se distinguen:
+
+| Concepto         | Regla                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| stock cero       | estado de una proyección para una coordenada/corte                                    |
+| faltante         | cantidad conocida que no pudo satisfacerse total o parcialmente                       |
+| quiebre          | interrupción de disponibilidad para una necesidad elegible y demostrada               |
+| indisponibilidad | estado empresarial que puede tener causa de stock, calidad, capacidad, horario u otra |
+| no recibido      | ausencia de datos esperados                                                           |
+| dato vencido     | dato cuya frescura no permite afirmar el estado actual                                |
+
+La `shortage_quantity` de remisiones es evidencia de faltante dentro de ese proceso. No se extrapola a ventas perdidas ni a demanda no atendida sin la relación temporal y semántica exigida por `DATA-DOM-009`.
+
+#### 12. Vencimiento, daño y pérdida
+
+La analítica debe conservar los siguientes estados separados:
+
+```text
+próximo a vencer
+vencido
+bloqueado por calidad
+cuarentena
+dañado
+perdido
+dispuesto
+ajustado
+```
+
+Reglas:
+
+- un lote próximo a vencer exige fecha de vencimiento, cantidad positiva y corte; el horizonte de aviso es una regla/umbral gobernado, no se inventa aquí;
+- un producto vencido no se convierte automáticamente en pérdida económica;
+- daño exige evidencia de condición o evento;
+- pérdida exige una causa y cantidad reconocidas;
+- disposición exige su propio hecho y no borra el evento que originó el estado;
+- un ajuste de inventario sin causa explícita no se reclasifica analíticamente como daño o pérdida;
+- la cobertura global permanece bloqueada mientras el ciclo integral de daño, pérdida, vencimiento, cuarentena y disposición no esté cerrado.
+
+#### 13. Diferencias de conteo
+
+El conteo observado ya permite una semántica determinista:
+
+```text
+diferencia firmada =
+cantidad contada
+-
+cantidad del sistema al cierre del conteo
+```
+
+También pueden derivarse, bajo definición versionada:
+
+```text
+diferencia absoluta = abs(diferencia firmada)
+```
+
+Una tasa relativa solo se calcula si existe un denominador válido. Cuando la cantidad del sistema es cero y la cantidad contada es positiva, la diferencia absoluta existe, pero una división porcentual por cero no se sustituye por `0%`.
+
+El ajuste posterior es un hecho distinto del conteo y conserva su trazabilidad.
+
+#### 14. Cumplimiento de remisiones
+
+La remisión se analiza como secuencia, no como un único porcentaje.
+
+```text
+solicitado
+→ preparado
+→ despachado
+→ recibido
+→ faltante o diferencia, cuando exista
+→ cierre
+```
+
+Se podrán materializar, sin promediar porcentajes de líneas:
+
+- proporción preparada respecto de solicitado;
+- proporción despachada respecto de solicitado;
+- proporción recibida respecto de despachado;
+- proporción recibida respecto de solicitado;
+- cantidad faltante explícita;
+- líneas parciales;
+- tiempos entre hitos cuando sus timestamps sean válidos.
+
+Para cualquier tasa:
+
+```text
+SUMA(numerador elegible)
+/
+SUMA(denominador elegible)
+```
+
+Un estado `partial` permanece parcial hasta el cierre correspondiente. `received + shortage` no autoriza presentar la remisión como recibida completamente cuando lo recibido no alcanza lo despachado.
+
+#### 15. Lead time y cumplimiento de proveedores
+
+El desempeño de proveedor no se almacena como opinión libre ni como atributo permanente del maestro sin base de hechos.
+
+##### 15.1. Lead time
+
+La semántica objetivo es:
+
+```text
+lead time de proveedor =
+recepción aceptada
+-
+evento contractual de orden enviada/aceptada por el proveedor
+```
+
+`created_at` de una orden no se utiliza automáticamente como sustituto del evento contractual de inicio.
+
+##### 15.2. Cumplimiento de cantidad
+
+El cumplimiento cuantitativo compara cantidades recibidas aceptadas contra cantidades ordenadas de órdenes elegibles y cerradas. Recepciones parciales abiertas se mantienen separadas.
+
+##### 15.3. Cumplimiento de fecha
+
+Una fecha esperada solo se usa como promesa del proveedor si el contrato de ORIGO confirma esa semántica y su vigencia. La ausencia de una fecha prometida no se convierte en entrega tardía ni puntual.
+
+##### 15.4. Evaluación de proveedor
+
+Cualquier evaluación futura deberá derivarse de hechos gobernados, como cantidad, tiempo, rechazo, diferencia, reclamación o regularización, y conservar población, periodo, pesos y versión. No se crea una calificación compuesta arbitraria en esta tarea.
+
+#### 16. Compras urgentes
+
+La implementación observada distingue una recepción sin orden de compra mediante `entry_mode = emergency` y exige `emergency_reason`.
+
+Esa evidencia permite contar y describir recepciones directas de emergencia, pero no autoriza afirmar que existe un carril empresarial completo de compra urgente.
+
+La analítica de compra urgente deberá, cuando el carril esté cerrado, distinguir:
+
+- necesidad urgente;
+- autorización;
+- proveedor;
+- compra/recepción;
+- motivo;
+- regularización posterior;
+- impacto en precio, tiempo y abastecimiento;
+- excepciones o incumplimientos.
+
+Hasta entonces:
+
+```text
+recepción de emergencia observada
+≠ compra urgente canónica completamente regularizada
+```
+
+#### 17. Consumo versus plan
+
+El análisis exige dos poblaciones distintas:
+
+```text
+PLAN
+→ cantidad esperada/aprobada para una finalidad, sede, producto y ventana
+
+CONSUMO REAL
+→ hechos de salida/uso elegibles realmente registrados
+```
+
+No se trata como plan, por defecto:
+
+- una orden de compra;
+- una solicitud de remisión;
+- una venta;
+- un forecast financiero;
+- un nivel mínimo;
+- la existencia actual.
+
+La comparación solo se materializa cuando el plan propietario y el consumo real usan una identidad de producto, unidad y ventana reconciliables. El plan productivo se especializa en `DATA-DOM-011`.
+
+#### 18. Costo de inventario
+
+La tarea distingue tres capas:
+
+| Capa                         | Regla                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| costo de compra observado    | costo real recibido por proveedor/producto/presentación conservado por ORIGO |
+| base de costo de inventario  | criterio aprobado para valorar una cantidad física en un corte               |
+| valoración económica oficial | resultado gobernado por NUMERA y especializado en `DATA-DOM-013`             |
+
+La evidencia actual de ORIGO conserva costos netos, brutos, impuesto, costo por unidad de stock, último costo y promedios ponderados por cantidades recibidas. Esa memoria puede ser una fuente operacional de costo, pero no se convierte por esta tarea en la fórmula financiera oficial.
+
+Forma conceptual futura, solo cuando exista base aprobada:
+
+```text
+valor de inventario al corte =
+SUMA(cantidad elegible × costo unitario aprobado aplicable)
+```
+
+Reglas:
+
+- moneda original explícita;
+- conversiones de moneda separadas y versionadas;
+- impuesto recuperable/no recuperable según definición financiera, no por inferencia analítica;
+- cantidades negativas o inconsistentes no se corrigen mediante valor absoluto;
+- costo de reposición, costo histórico, promedio, estándar y valor contable no se tratan como equivalentes.
+
+#### 19. Capacidad de almacenamiento
+
+La capacidad debe declararse para un recurso físico y una unidad definida.
+
+Ejemplos de unidades que no son intercambiables sin conversión física aprobada:
+
+```text
+m3
+kg
+pallet positions
+bins
+unidades físicas
+metros lineales
+```
+
+La utilización, cuando exista contrato completo, tendrá forma:
+
+```text
+utilización de capacidad =
+ocupación elegible
+/
+capacidad utilizable elegible
+```
+
+No se infiere capacidad desde cantidad histórica máxima, cantidad actual, número de LOC ni número de posiciones. La capacidad utilizable puede ser menor que la nominal por seguridad, frío, incompatibilidades, acceso o configuración.
+
+La implementación observada permite conocer LOC y posiciones, pero no demostró un atributo gobernado de capacidad física. Por ello la familia permanece bloqueada para publicación oficial.
+
+#### 20. Tratamiento de existencia negativa, nula o no actualizada
+
+Se preserva la regla canónica heredada:
+
+> Una existencia negativa, nula o no actualizada se trata según su causa y no se oculta mediante agregación.
+
+Aplicación analítica:
+
+| Estado observado             | Tratamiento                                                                                       |
+| ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| cantidad negativa            | anomalía o estado a reconciliar; conservar signo y contexto                                       |
+| cantidad cero                | existencia cero para la coordenada si la fuente/corte son válidos; no implica quiebre por sí sola |
+| fila ausente                 | no asumir cero sin contrato de población completa                                                 |
+| `updated_at` vencido         | estado de frescura degradado; no afirmar disponibilidad actual                                    |
+| ubicación sin stock          | no inventar stock en otra ubicación                                                               |
+| diferencia sede/LOC/posición | incidente de reconciliación; no elegir silenciosamente una proyección                             |
+
+#### 21. Unidades, presentaciones y agregación
+
+Todo análisis cuantitativo preserva:
+
+- unidad de stock;
+- presentación física cuando sea relevante;
+- factor de conversión vigente;
+- cantidad original y cantidad convertida cuando el contrato lo requiera;
+- procedencia del factor;
+- lote/LOC cuando la unidad dependa de ellos.
+
+Queda prohibido:
+
+- sumar cantidades incompatibles;
+- usar etiqueta de presentación como unidad;
+- aplicar el factor actual retroactivamente si la transacción conservó otro factor;
+- reemplazar cantidad original por cantidad normalizada sin trazabilidad;
+- comparar cobertura o rotación entre productos solo porque sus valores numéricos son similares.
+
+#### 22. Proveedor, orden y recepción
+
+La cadena analítica conserva identidades separadas:
+
+```text
+PROVEEDOR
+→ RELACIÓN PRODUCTO-PROVEEDOR
+→ CONDICIÓN COMERCIAL / PRESENTACIÓN DE COMPRA
+→ ORDEN DE COMPRA
+→ LÍNEA DE ORDEN
+→ RECEPCIÓN
+→ LÍNEA RECIBIDA
+→ MOVIMIENTO FÍSICO
+→ EFECTO ECONÓMICO, cuando corresponda
+```
+
+Una recepción directa sin OC conserva su naturaleza y motivo. Una recepción contra OC conserva la relación con la orden y la línea. Una diferencia recibida no reescribe silenciosamente la cantidad ordenada.
+
+#### 23. Relación con demanda perdida y capacidad comercial
+
+`DATA-DOM-009` dejó bloqueadas disponibilidad perdida y capacidad comercial no utilizada hasta consumir una disponibilidad/capacidad demostrable.
+
+Esta tarea aporta únicamente la dimensión de inventario:
+
+```text
+intención de compra demostrada
++
+indisponibilidad de inventario demostrada
++
+misma oferta/producto, sede, canal y ventana
+→
+puede alimentar una señal de disponibilidad perdida
+```
+
+No establece causalidad por sí sola. Una venta no realizada puede deberse a precio, horario, capacidad productiva, canal, pago, servicio u otra causa.
+
+La unión material pertenece a `DATA-INT-002`; la capacidad productiva se especializa en `DATA-DOM-011`.
+
+#### 24. Calidad, frescura y certificación
+
+Toda familia consume las reglas de `DATA-DOM-007`.
+
+Un resultado no podrá presentarse como certificado cuando:
+
+- el stock o las recepciones estén fuera de frescura aplicable;
+- falten poblaciones obligatorias;
+- existan diferencias de reconciliación no resueltas;
+- la unidad o conversión sea ambigua;
+- la cobertura histórica sea desconocida;
+- el estado de una remisión u OC no permita cerrar la población;
+- la disponibilidad se haya calculado sin compromisos/bloqueos completos;
+- el costo provenga de una base no aprobada;
+- la capacidad física sea inferida y no gobernada.
+
+No se fija un SLA universal de frescura ni un umbral universal de diferencia, cobertura, rotación, vencimiento, cumplimiento o capacidad.
+
+#### 25. Publicación y drill-down
+
+Todo tablero, reporte, exportación, alerta o snapshot que consuma estas familias deberá heredar `DATA-DOM-008` y declarar como mínimo:
+
+- versión de definición;
+- periodo y corte;
+- zona horaria;
+- sede y ubicaciones;
+- productos/población;
+- unidad y moneda cuando aplique;
+- filtros;
+- frescura;
+- cobertura;
+- calidad/certificación;
+- fuente y drill-down autorizado.
+
+El drill-down conserva la secuencia de hechos y no permite editar agregados para corregir la fuente.
+
+#### 26. Handoffs documentales exactos
+
+| Brecha o dependencia                                                                 | Tarea propietaria                                                                              | Condición de salida                                                        |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| contrato completo de existencia física, reservada, disponible, tránsito y cuarentena | `PROC-CAT-002`, `PROC-CAT-009` a `PROC-CAT-018`, `NEXO-UX-001`, `SUPA-AUD-019`, `SUPA-AUD-022` | antes de certificar disponibilidad/compromiso global                       |
+| lotes y vencimientos de extremo a extremo                                            | `NEXO-DOM-023`, `PROC-CAT-002`, `CAP-SCOPE-013`                                                | antes de certificar permanencia y vencimiento global                       |
+| ciclo de daño, pérdida, cuarentena y disposición                                     | `NEXO-DOM-010`, `NEXO-DOM-017`, `PROC-CAT-009` a `PROC-CAT-018`                                | antes de certificar pérdida física                                         |
+| historia de conteos                                                                  | `DAT-11`, `NEXO-UX-018`                                                                        | antes de certificar series históricas de diferencias                       |
+| cierre de OC, parcialidad y recepción                                                | `ORIGO-UX-007` a `ORIGO-UX-015`, `INT-PROC-001` a `INT-PROC-005`                               | antes de certificar cumplimiento de proveedores                            |
+| evaluación de proveedor basada en hechos                                             | `ORIGO-UX-001`, `PROC-CAT-019`                                                                 | antes de publicar score o clasificación derivada                           |
+| carril canónico de compra urgente                                                    | `ORIGO-AUTH-005` a `ORIGO-AUTH-010`, `CAP-SCOPE-018`                                           | antes de equiparar recepción de emergencia con compra urgente regularizada |
+| historia operativa de compras y cantidades recibidas                                 | `DAT-06`, `DAT-07`, `ORIGO-UX-001`                                                             | antes de certificar comparaciones históricas de abastecimiento             |
+| definición de consumo/plan productivo                                                | `DATA-DOM-011`                                                                                 | antes de certificar consumo versus plan productivo                         |
+| definición económica de costo y valoración                                           | `DATA-DOM-013`, `INT-PROC-004`                                                                 | antes de publicar costo oficial de inventario                              |
+| capacidad física utilizable de almacenamiento                                        | `NEXO-DOM-024`, `OPS-LOG-001`, `DATA-INT-001`                                                  | antes de materializar denominador de utilización                           |
+| contratos analíticos de lectura/eventos                                              | `DATA-INT-001`                                                                                 | antes de ingestión productiva de las fuentes especializadas                |
+| modelos, snapshots, cálculos y consultas                                             | `DATA-INT-002`                                                                                 | antes de materializar las familias como modelos analíticos productivos     |
+| claves externas y reconciliación de maestros                                         | `DATA-INT-003`                                                                                 | antes de combinar proveedores/productos/ubicaciones desde fuentes externas |
+
+No queda una brecha detectada por esta tarea sin propietario y condición de salida explícitos.
+
+#### 27. Cobertura de requisitos de prueba vigente
+
+La conducta documental de esta tarea ya queda protegida por los requisitos DATA vigentes que cubren:
+
+- registro canónico versionado de métricas e indicadores;
+- fuentes, granularidad, calidad, reconciliación, datos tardíos y linaje;
+- publicación de reportes, dashboards, exportaciones y snapshots con contexto completo;
+- integridad de datos maestros, presentaciones, unidades y relaciones históricas.
+
+La especialización de estas reglas para las 12 familias no introduce un comportamiento ejecutable nuevo ni modifica una regla de prueba existente.
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente familias analíticas ya cubiertas por requisitos DATA vigentes; no crea ni modifica comportamiento ejecutable, contratos físicos, autorizaciones, cálculos implementados, migraciones o efectos productivos.
+
+#### 29. Criterios de aceptación
+
+1. las 12 familias heredadas de analítica de inventario, abastecimiento, proveedores y logística están materializadas exactamente una vez;
+2. existen 12 filas esperadas, 12 materializadas, 0 faltantes y 0 duplicadas;
+3. existencia física, disponible, comprometida, bloqueada, cuarentena y tránsito permanecen conceptos distintos;
+4. disponibilidad global queda bloqueada mientras no exista población completa de compromisos y bloqueos;
+5. cobertura en días exige denominador compatible y no convierte ausencia o cero de denominador en un valor numérico arbitrario;
+6. rotación y permanencia se definen por poblaciones y bases compatibles;
+7. stock cero no se presenta automáticamente como faltante, quiebre o demanda perdida;
+8. vencimiento, daño, pérdida, cuarentena y disposición no se colapsan;
+9. diferencia de conteo conserva cantidad del sistema, cantidad contada, signo, corte y ajuste posterior separado;
+10. remisiones conservan solicitado, preparado, despachado, recibido, faltante, parcialidad y cierre;
+11. el cumplimiento de proveedor no usa `created_at` como `lead time` contractual sin evidencia;
+12. recepción de emergencia no equivale automáticamente a compra urgente canónica regularizada;
+13. consumo versus plan exige plan propietario y consumo real compatibles;
+14. costo de compra observado no se presenta como valoración económica oficial;
+15. capacidad de almacenamiento no se infiere desde máximos históricos ni conteos de ubicaciones;
+16. cantidades y unidades incompatibles no se agregan;
+17. existencia negativa, nula o no actualizada no se oculta mediante agregación;
+18. los campos técnicos observados no se convierten por inferencia en nuevas identidades de métrica;
+19. calidad y certificación consumen `DATA-DOM-007`;
+20. publicación y snapshots consumen `DATA-DOM-008`;
+21. los bloqueos y brechas tienen tareas propietarias y condiciones de salida exactas;
+22. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+23. no se ejecutan cambios físicos de código, datos, migraciones o Supabase;
+24. `DATA-DOM-011` permanece únicamente reservada.
+
+#### 30. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
+
+TAREA ACTUAL APROBADA
+DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+```
+
+
 ### [ ] DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
 ### [ ] DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
 ### [ ] DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
