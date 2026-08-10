@@ -1557,7 +1557,7 @@
 | ✅ APROBADA | `INFO-UX-005` | Diseñar retención, legal hold, archivo y disposición controlada | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ✅ APROBADA | `INFO-UX-006` | Diseñar explorador de auditoría e investigación con divulgación progresiva | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ✅ APROBADA | `INFO-INT-001` | Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
-| ✅ APROBADA | `INFO-INT-002` | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio. | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
+| ✅ APROBADA | `INFO-INT-002` | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ✅ APROBADA | `INFO-INT-003` | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ⬜ NO INICIADA | `DATA-DOM-001` | Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-002` | Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
