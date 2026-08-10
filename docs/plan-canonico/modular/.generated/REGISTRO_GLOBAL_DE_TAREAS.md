@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **663** |
+| Aprobadas | **664** |
 | En propuesta | **0** |
-| No iniciadas | **931** |
+| No iniciadas | **930** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **41.59% (663/1594)** |
+| Porcentaje de completamiento | **41.66% (664/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-UX-002` — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | ✅ APROBADA |
-| Tarea actual | `INFO-UX-003` — Diseñar creación, revisión, aprobación, publicación y firma de documentos | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-UX-004` — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | ⬜ NO INICIADA |
+| Última aprobada | `INFO-UX-003` — Diseñar creación, revisión, aprobación, publicación y firma de documentos | ✅ APROBADA |
+| Tarea actual | `INFO-UX-004` — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-UX-005` — Diseñar retención, legal hold, archivo y disposición controlada | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1552,7 +1552,7 @@
 | ✅ APROBADA | `INFO-AUTH-004` | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ✅ APROBADA | `INFO-UX-001` | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ✅ APROBADA | `INFO-UX-002` | Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
-| ⬜ NO INICIADA | `INFO-UX-003` | Diseñar creación, revisión, aprobación, publicación y firma de documentos | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
+| ✅ APROBADA | `INFO-UX-003` | Diseñar creación, revisión, aprobación, publicación y firma de documentos | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-004` | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-005` | Diseñar retención, legal hold, archivo y disposición controlada | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-006` | Diseñar explorador de auditoría e investigación con divulgación progresiva | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
