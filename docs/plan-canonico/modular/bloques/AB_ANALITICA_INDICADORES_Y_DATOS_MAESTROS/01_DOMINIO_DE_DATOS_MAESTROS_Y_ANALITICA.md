@@ -5605,7 +5605,787 @@ DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merm
 ```
 
 
-### [ ] DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+### ✅ DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística` — APROBADA
+**Tarea siguiente:** `DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de analítica de producción, rendimiento, capacidad, merma y calidad
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues o publicación productiva de artefactos:** no autorizados
+
+#### 1. Propósito
+
+Definir la semántica analítica canónica para observar, comparar y explicar el desempeño productivo de Vento OS sin convertir una pantalla, un lote, un costo técnico, una existencia o una señal de demanda en una métrica oficial por inferencia.
+
+La tarea materializa las diez familias productivas reservadas por el alcance aprobado:
+
+1. demanda planificada versus producción;
+2. capacidad disponible y utilizada;
+3. adherencia al programa;
+4. rendimiento teórico y real;
+5. consumo estándar y real;
+6. merma, reproceso y aprovechamiento;
+7. calidad, retención y rechazo;
+8. tiempo de ciclo;
+9. cumplimiento de liberación;
+10. costo y variación por lote, producto y sede.
+
+Cada resultado deberá conservar la receta y versión aplicables, lote o ejecución, producto, unidad, sede, área, ventana temporal, corte, población, calidad y procedencia suficientes para reproducir el cálculo histórico.
+
+La analítica no sustituye al expediente productivo. FOGO conserva la autoridad sobre planificación, orden, receta, ejecución, lote, consumos, rendimiento, merma, calidad, liberación y cierre productivo; NEXO conserva existencia y movimientos físicos; NUMERA conserva la definición económica oficial.
+
+#### 2. Resultado material
+
+Queda definido un contrato analítico productivo completo con:
+
+- diez familias canónicas materializadas una sola vez;
+- fórmulas y reglas de denominador cuando la fuente autoritativa existe;
+- bloqueos explícitos cuando el denominador, evento o expediente aún no está cerrado canónicamente;
+- separación entre señal, necesidad aceptada, plan, programa, orden, lote, ejecución, salida y liberación;
+- separación entre capacidad nominal, disponible, comprometida, utilizada y perdida;
+- comparación reproducible entre rendimiento teórico y real;
+- comparación por ingrediente entre consumo estándar y real;
+- taxonomía obligatoria para merma, reproceso, aprovechamiento, coproducto, subproducto y descarte;
+- contrato de calidad que separa resultado de control, retención, disposición y liberación;
+- semántica de tiempo de ciclo por hitos y no por una única fecha genérica;
+- frontera entre costo técnico observado en FOGO y costo económico oficial gobernado por NUMERA;
+- reglas para producción con múltiples salidas y asignación de costo sin doble conteo;
+- handoffs exactos hacia tareas propietarias de las brechas todavía abiertas;
+- cero cambios físicos y cero cambios al Registro Canónico de Requisitos de Prueba.
+
+**Reconciliación del alcance:** 10 familias esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+SEÑAL DE DEMANDA
+≠ NECESIDAD PRODUCTIVA ACEPTADA
+≠ PLAN PRODUCTIVO
+≠ PROGRAMA PUBLICADO
+≠ ORDEN DE PRODUCCIÓN
+≠ LOTE
+≠ EJECUCIÓN
+≠ SALIDA PRODUCTIVA
+```
+
+```text
+PLANIFICADO
+≠ TEÓRICO DE RECETA
+≠ PRODUCIDO REAL
+≠ EMPACADO
+≠ LIBERADO
+≠ INGRESADO A INVENTARIO
+```
+
+```text
+CAPACIDAD NOMINAL
+≠ CAPACIDAD DISPONIBLE
+≠ CAPACIDAD COMPROMETIDA
+≠ CAPACIDAD UTILIZADA
+≠ CAPACIDAD COMERCIAL
+```
+
+```text
+ADHERENCIA AL PROGRAMA
+≠ CUMPLIMIENTO DE CANTIDAD
+≠ RENDIMIENTO
+≠ CALIDAD
+```
+
+```text
+CONSUMO ESTÁNDAR
+≠ CONSUMO REAL
+≠ MERMA
+≠ DESPERDICIO
+≠ REPROCESO
+```
+
+```text
+MERMA
+≠ REPROCESO
+≠ APROVECHAMIENTO
+≠ COPRODUCTO
+≠ SUBPRODUCTO
+≠ DESCARTE
+```
+
+```text
+PRODUCCIÓN TERMINADA
+≠ CALIDAD CONFORME
+≠ LOTE LIBERADO
+≠ INVENTARIO DISPONIBLE
+```
+
+```text
+COSTO TÉCNICO OBSERVADO
+≠ COSTO ESTÁNDAR
+≠ COSTO ECONÓMICO RECONOCIDO
+≠ MARGEN
+≠ RENTABILIDAD
+```
+
+Una cifra productiva solo será comparable cuando comparta definición, receta o puente explícito entre versiones, unidad, producto/salida, sede, área, ventana, corte, población, estado de calidad y cobertura.
+
+#### 4. Autoridad y fuentes consumidas
+
+| Elemento                                                      | Autoridad funcional      | Uso analítico                                 | Regla de frontera                                                            |
+| ------------------------------------------------------------- | ------------------------ | --------------------------------------------- | ---------------------------------------------------------------------------- |
+| señal de demanda comercial                                    | PULSO / PASS según hecho | insumo potencial de planificación             | no crea producción aprobada                                                  |
+| necesidad, plan, programa, orden, lote y ejecución productiva | FOGO                     | hechos y artefactos productivos               | cada identidad y revisión permanece separada                                 |
+| receta, versión, estándar de consumo y rendimiento esperado   | FOGO                     | base teórica                                  | la versión actual no sustituye la usada históricamente                       |
+| producto, unidad, existencia, lote físico, LOC y movimientos  | NEXO                     | dimensiones y efectos físicos                 | el saldo no redefine producción ni calidad                                   |
+| faltantes y lead times de compra                              | ORIGO                    | restricción potencial de capacidad/materiales | no modifica el plan FOGO por sí solo                                         |
+| disponibilidad laboral                                        | VISO                     | restricción potencial de capacidad            | una asignación laboral no crea una orden productiva                          |
+| disponibilidad y condición de equipos                         | NEXO                     | restricción potencial de capacidad            | activo disponible no equivale a capacidad productiva completa                |
+| costo y resultado económico oficial                           | NUMERA                   | costo, variación y rentabilidad oficiales     | FOGO aporta hechos técnicos y consumos; no redefine reconocimiento económico |
+| capa analítica                                                | BLOQUE AB                | cálculo, certificación y publicación          | nunca modifica el hecho fuente para cuadrar un indicador                     |
+
+#### 5. Evidencia técnica actual observada
+
+La implementación vigente demuestra capacidades productivas reales, pero no certifica automáticamente las diez familias analíticas.
+
+| Superficie observada                | Evidencia material                                                                                                                                                | Qué sí demuestra                                                    | Qué no demuestra                                                                    |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| lotes FOGO                          | `production_batches` conserva producto, sede, ruta, modo de salida, cantidad producida, cantidad esperada, empaque, costo, estado y fecha                         | existencia de lotes productivos reales con salida y resumen técnico | plan productivo canónico, programa, capacidad o calidad liberada                    |
+| consumo real                        | `production_batch_consumptions` y captura de ingredientes conservan consumo real; el formulario distingue cantidad requerida y real                               | existencia de consumo efectivo por ejecución                        | que toda historia tenga estándar versionado y reconciliado                          |
+| rendimiento                         | la superficie compara `produced_qty` y `expected_qty` y calcula diferencia y porcentaje                                                                           | existencia de comparación técnica esperada/real                     | que `expected_qty` sea por sí solo el estándar canónico escalado para toda historia |
+| receta                              | `recipe_cards` conserva producto, sede, área, rendimiento y unidad; la creación de lote exige receta publicada                                                    | existencia de base de receta aplicable a ejecución actual           | cierre integral del contrato de versión histórica de receta                         |
+| empaques                            | el lote conserva cantidad empacada y paquetes; cada paquete conserva esperado y real                                                                              | evidencia de salida física medida                                   | liberación de calidad o disponibilidad comercial                                    |
+| múltiples salidas                   | `production_batch_outputs` distingue salida primaria, coproducto y subproducto, cantidades, unidades, destino y asignación porcentual de costo                    | existencia de producción multi-salida y asignación técnica          | equivalencia económica oficial o aprovechamiento/reproceso por inferencia           |
+| efectos de inventario               | la creación productiva genera movimientos y actualiza existencia según modo de salida                                                                             | correlación técnica entre producción e inventario                   | cierre integral exactamente una vez de todos los contratos FOGO↔NEXO                |
+| costo técnico                       | lote y salidas conservan costo total/unitario y eventos de costo derivados de consumos y asignación                                                               | existencia de una base técnica de costo de producción               | costo estándar/económico oficial, variación financiera o rentabilidad               |
+| firma operativa                     | la creación de lote soporta firma de actor en dispositivo compartido                                                                                              | evidencia de actor técnico en el flujo actual cuando aplica         | validación integral de todas las autoridades de liberación y cierre                 |
+| planificación, calidad y liberación | no se observó en las superficies técnicas consultadas un expediente completo de plan/programa/capacidad ni ciclo integral de control-retención-rechazo-liberación | evidencia insuficiente para certificación                           | no autoriza concluir inexistencia global; mantiene bloqueos documentales vigentes   |
+
+Los nombres técnicos anteriores son evidencia de implementación. No crean nuevas identidades `metric_key` por sí solos y no sustituyen el registro semántico gobernado por `DATA-DOM-004`.
+
+#### 6. Coordenada mínima del análisis productivo
+
+Todo resultado productivo deberá conservar, cuando aplique:
+
+| Coordenada             | Regla canónica                                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| definición analítica   | fórmula, numerador, denominador, versión y estado                                                           |
+| hecho o artefacto base | señal, necesidad, plan, programa, orden, lote, ejecución, consumo, salida, control o disposición explícitos |
+| producto/salida        | identidad canónica del producto y rol de salida cuando haya múltiples salidas                               |
+| receta y versión       | versión realmente aplicable al plan o ejecución                                                             |
+| lote/ejecución         | identidad estable del hecho productivo                                                                      |
+| sede y área            | contexto operativo aplicable al hecho                                                                       |
+| ruta productiva        | ruta vigente cuando la comparación depende de proceso o recursos                                            |
+| unidad                 | unidad canónica o conversión gobernada y reproducible                                                       |
+| tiempo                 | ocurrencia y hitos específicos, no solo fecha de carga                                                      |
+| ventana                | horizonte de plan, programa, turno, día, lote u otra población explícita                                    |
+| corte                  | instante hasta el cual se incorporan hechos y correcciones                                                  |
+| estado                 | estado productivo, calidad y liberación conservados por separado                                            |
+| cobertura              | fuentes, sedes, productos, rutas y periodos incluidos/excluidos                                             |
+| calidad/certificación  | consume el estado definido por `DATA-DOM-007`                                                               |
+| versión de publicación | consume `DATA-DOM-008` y `DATA-DOM-017` cuando corresponda                                                  |
+
+#### 7. Matriz materializada de las 10 familias productivas
+
+|    # | Familia canónica                            | Definición materializada                                                                                                                                                                                                                          | Evidencia actual                                                                                                                                                   | Certificación                                                                             | Condición de salida / propietario exacto                                                                                                                                                                     |
+| ---: | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|    1 | demanda planificada versus producción       | compara una necesidad o cantidad planificada **aceptada por FOGO** contra producción elegible del mismo producto, versión/unidad, sede, ventana y revisión; señal, pedido, remisión o mínimo no sustituyen el plan                                | existen señales de demanda y lotes reales; `OPS-PLAN-001` a `OPS-PLAN-004` gobiernan levantamiento de evidencia, no un plan productivo definitivo                  | `BLOQUEADO`                                                                               | plan/revisión/horizonte y restricciones en `FOGO-UX-001`, `FOGO-UX-003`, `FOGO-UX-004`, `FOGO-UX-014`; contratos `INT-PROD-001` a `INT-PROD-005`; lectura/modelo en `DATA-INT-001` y `DATA-INT-002`          |
+|    2 | capacidad disponible y utilizada            | capacidad disponible es el máximo ejecutable bajo recursos y restricciones válidas para una ventana; utilizada es el recurso realmente consumido bajo la misma unidad; no se mezclan horas, kg, lotes, estaciones o personas sin puente explícito | hay lotes, áreas, rutas, inventario y activos parciales; no se observó denominador integral de capacidad                                                           | `BLOQUEADO`                                                                               | capacidad y restricciones en `FOGO-UX-004`, `FOGO-UX-014`, `OPS-PRD-001`; equipos `NEXO-DOM-012`, `NEXO-DOM-026`; compras `ORIGO-UX-014`; integración `INT-PROD-001` a `INT-PROD-005`; modelo `DATA-INT-002` |
+|    3 | adherencia al programa                      | mide cumplimiento de hitos de un programa publicado y versionado; inicio, finalización y cantidad se calculan por separado antes de cualquier indicador compuesto                                                                                 | no se observó programa productivo completo con hitos publicados y revisiones                                                                                       | `BLOQUEADO`                                                                               | programa/plan en `FOGO-UX-001`, `FOGO-UX-003`, `FOGO-UX-004`, `FOGO-UX-005` a `FOGO-UX-007`, `FOGO-UX-014`; eventos en `DATA-INT-001`; cálculo en `DATA-INT-002`                                             |
+|    4 | rendimiento teórico y real                  | rendimiento teórico se deriva de la receta/version, escala y unidad aplicables; rendimiento real es la salida elegible medida; diferencia y cumplimiento se calculan únicamente tras reconciliar ambas bases                                      | FOGO conserva `yield_qty`, `expected_qty`, `produced_qty`, unidades y diferencia visual; el contrato histórico de versión/escala aún no está cerrado integralmente | `NO EVALUADO` para evidencia actual; `BLOQUEADO` para certificación histórica transversal | contrato de receta/versionado en `OPS-REC-001`, `FOGO-UX-008`, `FOGO-UX-009`, `FOGO-UX-010`, `FOGO-AUTH-013`; modelo histórico en `DATA-INT-002`                                                             |
+|    5 | consumo estándar y real                     | estándar = cantidad aprobada por ingrediente desde receta/versión y escala; real = cantidad efectivamente consumida; la variación se calcula por ingrediente y unidad compatible, preservando sustituciones                                       | formulario FOGO distingue `required_qty` y `actual_qty`; existen consumos reales por lote                                                                          | `NO EVALUADO` para evidencia actual; `BLOQUEADO` para certificación histórica transversal | estándar/versionado en `OPS-REC-001` y `FOGO-UX-010`; cierre de consumo `INT-PROD-002`; lectura/modelo `DATA-INT-001` y `DATA-INT-002`                                                                       |
+|    6 | merma, reproceso y aprovechamiento          | registra hechos explícitos y genealogía; cada categoría usa denominador declarado y no se deriva automáticamente de una diferencia de rendimiento                                                                                                 | no se observó ciclo integral ejecutable de merma/reproceso/aprovechamiento; multi-salida demuestra coproductos/subproductos, no reproceso                          | `BLOQUEADO`                                                                               | fuente/formato de merma `DAT-27`, `OPS-PLAN-004`, `FOGO-UX-010`; genealogía `FOGO-UX-011`, `OPS-TRZ-001`, `CAP-SCOPE-006`; modelo `DATA-INT-002`                                                             |
+|    7 | calidad, retención y rechazo                | separa control realizado, resultado, conformidad, retención, rechazo, reproceso y liberación; tasas usan únicamente población inspeccionada o elegible declarada                                                                                  | no se observó un ciclo integral de controles de calidad y disposición en las superficies técnicas consultadas                                                      | `BLOQUEADO`                                                                               | planes/controles en `FOGO-UX-001`, `FOGO-UX-014`, `CAP-SCOPE-003`, `CAP-SCOPE-013`; disposición en `FOGO-UX-007`, `FOGO-AUTH-011`, `CAP-SCOPE-006`; modelo `DATA-INT-002`                                    |
+|    8 | tiempo de ciclo                             | calcula duraciones entre hitos productivos explícitos; tiempo de espera, preparación, ejecución, pausa, retención y liberación permanecen separables                                                                                              | lotes actuales conservan `created_at`, pero una sola fecha no demuestra inicio/pausa/reanudación/fin/retención/liberación                                          | `BLOQUEADO`                                                                               | eventos de ejecución en `FOGO-UX-005` a `FOGO-UX-011`; captura en `DATA-INT-001`; modelo en `DATA-INT-002`                                                                                                   |
+|    9 | cumplimiento de liberación                  | mide si lotes elegibles cumplen controles requeridos y son liberados por autoridad válida dentro de la ventana comprometida; producción terminada no cuenta como liberada                                                                         | no se observó expediente integral de liberación independiente de cierre productivo/inventario                                                                      | `BLOQUEADO`                                                                               | liberación/disposición en `FOGO-UX-007`, `FOGO-UX-014`, `FOGO-AUTH-011`; contrato de lote `OPS-TRZ-001`; lectura/modelo `DATA-INT-001` y `DATA-INT-002`                                                      |
+|   10 | costo y variación por lote, producto y sede | conserva costo técnico observado por lote/salida como insumo; costo estándar, costo económico oficial y variación financiera consumen la definición económica gobernada, sin recalcularla localmente                                              | FOGO conserva `total_cost`, `unit_cost`, consumos y asignación porcentual en salidas; existen eventos técnicos de costo                                            | `NO EVALUADO` para costo técnico; `BLOQUEADO` para costo/variación económica oficial      | definición económica `DATA-DOM-013`; materialización semántica `DATA-INT-002`; conciliación con hechos productivos mediante contratos propietarios aplicables                                                |
+
+**Reconciliación:** 10 familias esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 8. Demanda planificada versus producción
+
+La familia responde cuánto de una necesidad productiva formalmente aceptada y planificada fue producida dentro de una población comparable.
+
+Forma mínima cuando exista plan gobernado:
+
+```text
+VARIACIÓN_DE_PRODUCCIÓN
+:= PRODUCCIÓN_REAL_ELEGIBLE - PRODUCCIÓN_PLANIFICADA_ELEGIBLE
+
+CUMPLIMIENTO_DE_PRODUCCIÓN
+:= PRODUCCIÓN_REAL_ELEGIBLE / PRODUCCIÓN_PLANIFICADA_ELEGIBLE
+```
+
+El porcentaje solo existe cuando el denominador es positivo y ambas cantidades comparten producto, unidad, sede, ventana, revisión y reglas de inclusión.
+
+No podrán actuar como denominador por sustitución:
+
+- venta observada;
+- pedido recibido;
+- remisión solicitada;
+- faltante de inventario;
+- forecast financiero;
+- mínimo de inventario;
+- recomendación de un algoritmo;
+- rendimiento teórico de receta.
+
+Una señal puede originar o justificar una necesidad. Solo la decisión productiva propietaria puede convertirla en plan o revisión de plan.
+
+Cuando una revisión cambie cantidad, fecha o prioridad, las comparaciones deberán identificar qué versión era vigente para la ventana observada y no reescribir el plan original.
+
+#### 9. Capacidad disponible y utilizada
+
+La capacidad se modela como una restricción multidimensional, no como una cifra universal.
+
+Una capacidad productiva podrá depender de:
+
+- personal disponible y competente;
+- área y estación;
+- equipos disponibles y en condición apta;
+- materiales y lotes utilizables;
+- receta y ruta productiva;
+- tiempos de preparación y ejecución;
+- almacenamiento o staging disponible;
+- logística y ventana de salida;
+- calidad, saneamiento y restricciones de contaminación cruzada;
+- mantenimiento, pausas y bloqueos conocidos.
+
+Forma general:
+
+```text
+UTILIZACIÓN_DE_CAPACIDAD
+:= CAPACIDAD_UTILIZADA_COMPATIBLE / CAPACIDAD_DISPONIBLE_COMPATIBLE
+```
+
+Reglas:
+
+1. numerador y denominador comparten unidad y ventana;
+2. una hora-persona no se suma con una hora-equipo como si fueran la misma capacidad;
+3. una capacidad nominal del fabricante no es automáticamente capacidad disponible;
+4. una persona asignada no prueba competencia, presencia ni disponibilidad efectiva;
+5. un equipo existente no prueba disponibilidad si está averiado, en mantenimiento o reservado;
+6. material en inventario no prueba disponibilidad si está comprometido, retenido, vencido o fuera de la ventana;
+7. cuando varias restricciones limitan una salida, la causa y el recurso limitante se conservan en vez de atribuir toda pérdida a un único factor;
+8. capacidad productiva y capacidad comercial permanecen métricas distintas; `DATA-DOM-009` solo podrá consumir una proyección productiva compatible cuando esta familia salga de bloqueo.
+
+#### 10. Adherencia al programa
+
+La adherencia requiere un programa publicado, versionado y con hitos medibles.
+
+Como mínimo se separarán:
+
+- adherencia de inicio;
+- adherencia de finalización;
+- cumplimiento de cantidad programada;
+- cumplimiento de secuencia o prioridad cuando exista regla explícita;
+- producción adelantada;
+- producción tardía;
+- producción no programada;
+- reprogramación aprobada.
+
+Ejemplos de cálculos permitidos una vez exista el programa:
+
+```text
+ADHERENCIA_DE_INICIO
+:= EJECUCIONES_INICIADAS_DENTRO_DE_TOLERANCIA / EJECUCIONES_PROGRAMADAS_ELEGIBLES
+
+ADHERENCIA_DE_FINALIZACIÓN
+:= EJECUCIONES_FINALIZADAS_DENTRO_DE_TOLERANCIA / EJECUCIONES_PROGRAMADAS_ELEGIBLES
+```
+
+La tolerancia deberá ser una regla versionada del indicador o del proceso. No se inventará localmente por dashboard.
+
+No se promediarán porcentajes de lotes heterogéneos para obtener adherencia agregada cuando deba recomputarse el numerador y denominador sobre la población total.
+
+#### 11. Rendimiento teórico y real
+
+El rendimiento teórico pertenece al conocimiento productivo aplicable a la ejecución.
+
+```text
+RENDIMIENTO_TEÓRICO
+:= SALIDA_ESPERADA_SEGÚN_RECETA_Y_VERSIÓN × ESCALA_APROBADA
+
+RENDIMIENTO_REAL
+:= SALIDA_REAL_ELEGIBLE_MEDIDA
+
+VARIACIÓN_DE_RENDIMIENTO
+:= RENDIMIENTO_REAL - RENDIMIENTO_TEÓRICO
+
+VARIACIÓN_PORCENTUAL_DE_RENDIMIENTO
+:= VARIACIÓN_DE_RENDIMIENTO / RENDIMIENTO_TEÓRICO
+
+CUMPLIMIENTO_DE_RENDIMIENTO
+:= RENDIMIENTO_REAL / RENDIMIENTO_TEÓRICO
+```
+
+Los porcentajes requieren rendimiento teórico positivo.
+
+Reglas obligatorias:
+
+1. receta raíz y versión son coordenadas distintas;
+2. escala de ejecución debe reproducirse;
+3. unidad teórica y real debe ser igual o convertible mediante regla aprobada;
+4. si existe producción multi-salida, se conserva el rol de cada salida y no se suman cantidades incompatibles;
+5. un coproducto o subproducto no se interpreta automáticamente como sobre-rendimiento de la salida principal;
+6. el campo técnico `expected_qty` observado es evidencia de implementación, no autorización para omitir receta, versión, escala y unidad del cálculo canónico;
+7. una desviación no modifica retroactivamente el rendimiento esperado de la receta;
+8. las causas de desviación se conservan como hechos o clasificaciones evidenciadas y no se inventan desde el signo de la variación.
+
+#### 12. Consumo estándar y real
+
+La comparación se realiza por ingrediente o componente gobernado.
+
+```text
+CONSUMO_ESTÁNDAR_INGREDIENTE
+:= CANTIDAD_ESTÁNDAR_DE_RECETA_Y_VERSIÓN × ESCALA_APROBADA
+
+VARIACIÓN_DE_CONSUMO
+:= CONSUMO_REAL - CONSUMO_ESTÁNDAR
+
+VARIACIÓN_PORCENTUAL_DE_CONSUMO
+:= VARIACIÓN_DE_CONSUMO / CONSUMO_ESTÁNDAR
+```
+
+Reglas:
+
+- el porcentaje requiere estándar positivo;
+- cada ingrediente conserva producto, unidad y conversión aplicable;
+- sustituciones autorizadas se registran como sustituciones y no se fusionan con el ingrediente original por nombre;
+- devoluciones o reversos se conservan como hechos posteriores y no reescriben silenciosamente el consumo original;
+- cantidades de unidades incompatibles no se suman;
+- consumo real no se deriva de diferencia de stock cuando existe un hecho de consumo autoritativo;
+- la suma de consumo real por lote debe reconciliarse con los efectos físicos del dominio correspondiente antes de certificación;
+- el resultado alimenta `DATA-DOM-010` para consumo versus plan de inventario únicamente mediante una población y unidad compatibles.
+
+#### 13. Merma, reproceso y aprovechamiento
+
+La analítica exige hechos clasificados explícitamente.
+
+##### 13.1. Merma
+
+Merma representa pérdida o reducción productiva identificada conforme a una taxonomía propietaria. No se deriva automáticamente de:
+
+- menor rendimiento;
+- consumo mayor al estándar;
+- diferencia de inventario;
+- producto retenido;
+- subproducto;
+- empaque incompleto.
+
+Cuando exista una métrica de merma, deberá declarar el denominador. Por ejemplo, una tasa sobre insumo no es comparable con una tasa sobre salida esperada.
+
+##### 13.2. Reproceso
+
+Reproceso exige vínculo genealógico entre el material o lote origen, la decisión que autoriza reprocesar, la nueva ejecución y su resultado.
+
+Un lote nuevo sin referencia al origen no puede contarse como reproceso por semejanza de producto, fecha o cantidad.
+
+##### 13.3. Aprovechamiento
+
+Aprovechamiento exige un resultado reutilizable o recuperado cuya identidad, cantidad, destino y autorización sean verificables.
+
+Un coproducto o subproducto configurado como salida normal de receta no se reclasifica automáticamente como aprovechamiento.
+
+##### 13.4. Descarte
+
+Descarte es una disposición explícita. No es sinónimo de merma teórica ni de rechazo de calidad hasta que exista la decisión correspondiente.
+
+La fuente histórica de merma permanece condicionada por `DAT-27`; su ausencia bloquea cualquier backfill presentado como completo.
+
+#### 14. Calidad, retención y rechazo
+
+Cada ejecución podrá producir múltiples controles y resultados. La analítica deberá conservar:
+
+- plan o especificación de control y versión;
+- producto, lote y etapa;
+- característica controlada;
+- método;
+- instrumento cuando aplique;
+- unidad;
+- valor o resultado;
+- límite o criterio aplicable;
+- actor;
+- tiempo;
+- evidencia;
+- resultado de conformidad;
+- disposición posterior.
+
+Se separan los siguientes conceptos:
+
+```text
+CONTROL_REALIZADO
+≠ RESULTADO_CONFORME
+≠ LOTE_RETENIDO
+≠ LOTE_RECHAZADO
+≠ REPROCESO_AUTORIZADO
+≠ LOTE_LIBERADO
+```
+
+Una tasa de rechazo deberá declarar si su denominador son lotes, unidades, masa, volumen u otra población inspeccionada.
+
+Un lote sin control requerido no se clasifica como conforme por ausencia de resultados negativos.
+
+Una retención no equivale a rechazo. Una liberación posterior conserva el periodo retenido y la decisión que la produjo.
+
+#### 15. Tiempo de ciclo
+
+No existe un único tiempo de ciclo universal. Cada indicador debe declarar sus hitos.
+
+Posibles hitos gobernados incluyen:
+
+- necesidad aceptada;
+- plan publicado;
+- orden liberada;
+- preparación iniciada;
+- ejecución iniciada;
+- pausa;
+- reanudación;
+- ejecución finalizada;
+- control iniciado/finalizado;
+- retención iniciada/finalizada;
+- liberación;
+- ingreso físico de salida;
+- cierre productivo.
+
+Ejemplos:
+
+```text
+TIEMPO_ACTIVO_DE_EJECUCIÓN
+:= SUMA_DE_INTERVALOS_ACTIVOS
+
+TIEMPO_FIN_A_FIN_PRODUCTIVO
+:= HITO_FINAL_DEFINIDO - HITO_INICIAL_DEFINIDO
+
+TIEMPO_DE_RETENCIÓN
+:= LIBERACIÓN_O_DISPOSICIÓN - INICIO_DE_RETENCIÓN
+```
+
+Una sola marca `created_at` del lote no se interpreta como inicio y final simultáneamente.
+
+Las pausas y esperas solo se excluyen del tiempo activo cuando existen eventos suficientes para reconstruir los intervalos.
+
+#### 16. Cumplimiento de liberación
+
+La liberación es una decisión productiva/calidad independiente de finalizar la producción.
+
+Un lote cumple liberación cuando, para la población y versión aplicables:
+
+1. todos los controles obligatorios están resueltos;
+2. no existe retención activa incompatible;
+3. la decisión fue emitida por autoridad válida;
+4. el lote y versión inspeccionados corresponden al recurso liberado;
+5. la decisión ocurrió dentro de la ventana o compromiso definido cuando el indicador mida puntualidad;
+6. la evidencia mínima requerida está correlacionada;
+7. cualquier reproceso o corrección aplicable se encuentra reconciliado.
+
+Forma posible de puntualidad:
+
+```text
+LIBERACIONES_A_TIEMPO
+:= LOTES_ELEGIBLES_LIBERADOS_DENTRO_DE_VENTANA
+
+CUMPLIMIENTO_DE_LIBERACIÓN
+:= LIBERACIONES_A_TIEMPO / LOTES_ELEGIBLES_CON_LIBERACIÓN_REQUERIDA
+```
+
+Un lote terminado pero no liberado permanece fuera del numerador.
+
+Un lote rechazado no se presenta como liberación tardía; pertenece a una disposición distinta.
+
+#### 17. Costo y variación por lote, producto y sede
+
+La evidencia técnica actual conserva consumos reales, costo total/unitario de lote y asignación de costo para múltiples salidas. Esa base se clasifica como **costo técnico observado**, no como definición económica final.
+
+Se distinguen:
+
+| Capa                                 | Autoridad                                 | Uso permitido en DATA-DOM-011                                                            |
+| ------------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------- |
+| costo de insumo aplicado a ejecución | hecho técnico consumido por FOGO          | explicar la base observada del lote con procedencia                                      |
+| costo técnico total del lote         | FOGO                                      | analizar consistencia y distribución técnica sin declararlo resultado financiero oficial |
+| costo técnico asignado a salida      | FOGO                                      | observar asignación por salida y evitar doble conteo                                     |
+| costo estándar                       | definición económica/productiva gobernada | consumir únicamente cuando `DATA-DOM-013` la materialice                                 |
+| costo económico oficial              | NUMERA                                    | consumir; no recalcular localmente                                                       |
+| variación económica                  | NUMERA + capa semántica                   | calcular según definición aprobada en `DATA-DOM-013`                                     |
+
+En producción multi-salida:
+
+- la suma de asignaciones técnicas no podrá exceder ni duplicar el costo total elegible;
+- el método y versión de asignación deben conservarse;
+- coproducto y subproducto conservan identidad y cantidad propias;
+- valor cero o asignación cero no convierte una salida en merma;
+- una reasignación económica posterior no reescribe la cantidad física producida.
+
+Hasta `DATA-DOM-013`, no se publica como oficial una variación costo-real versus estándar por producto, lote o sede.
+
+#### 18. Comparabilidad histórica de receta, versión y lote
+
+Toda comparación histórica productiva conservará:
+
+- receta raíz;
+- versión exacta aplicable;
+- producto de salida;
+- roles de salida múltiples cuando existan;
+- escala;
+- ingredientes y sustituciones aplicables;
+- rendimiento teórico;
+- unidades y factores de conversión;
+- ruta productiva cuando cambie el proceso;
+- sede y área;
+- vigencia de especificaciones y controles de calidad;
+- corte analítico.
+
+Reglas:
+
+1. una receta publicada posteriormente no reemplaza la versión usada por un lote anterior;
+2. comparar dos versiones diferentes requiere declarar el cambio o una reexpresión explícita;
+3. una mejora de rendimiento por cambio de formulación no se presenta automáticamente como mejora operativa de ejecución;
+4. un cambio de unidad no altera cantidades históricas; se aplica una conversión versionada y trazable;
+5. una corrección posterior sigue `DATA-DOM-017`; no sobrescribe silenciosamente una publicación previa.
+
+#### 19. Unidades, conversiones y agregación
+
+Las métricas físicas solo se agregan cuando la magnitud y la conversión son compatibles.
+
+Reglas obligatorias:
+
+- masa con masa mediante conversión aprobada;
+- volumen con volumen mediante conversión aprobada;
+- unidades discretas con unidades discretas cuando representan la misma identidad o población;
+- conversiones entre masa y volumen requieren una regla física/contextual explícita; no se asumen;
+- presentaciones no se tratan como unidades de medida;
+- factor de conversión vigente se conserva con el hecho o con una referencia reproducible;
+- cantidades de salidas distintas no se suman para producir un “rendimiento total” si su unidad o rol no es comparable;
+- porcentajes agregados se recomputan desde numeradores y denominadores compatibles.
+
+#### 20. Producción con múltiples salidas
+
+El modelo actual permite salida primaria, coproducto y subproducto. La analítica preservará esa semántica.
+
+Para cada salida se conserva:
+
+- identidad de producto;
+- rol de salida;
+- cantidad real;
+- unidad;
+- ubicación destino cuando aplique;
+- porcentaje/método de asignación de costo observado;
+- movimiento correlacionado cuando exista;
+- relación con receta y lote.
+
+Prohibiciones:
+
+- sumar coproductos y producto principal como una sola cantidad si no existe unidad común y propósito definido;
+- interpretar subproducto como desperdicio por su etiqueta;
+- interpretar coproducto como aprovechamiento por defecto;
+- duplicar costo total al sumar costos de lote y costos de cada salida;
+- inferir calidad o liberación desde el hecho de que la salida ingresó técnicamente a inventario.
+
+#### 21. Tiempo, ventanas y cortes
+
+Para analítica productiva se distinguen:
+
+```text
+FECHA_DE_NECESIDAD
+≠ FECHA_DE_PLAN
+≠ FECHA_PROGRAMADA
+≠ INICIO_REAL
+≠ FIN_REAL
+≠ FECHA_DE_CONTROL
+≠ FECHA_DE_LIBERACIÓN
+≠ FECHA_DE_INGRESO_A_INVENTARIO
+≠ FECHA_DE_CIERRE
+≠ FECHA_DE_PROCESAMIENTO_ANALÍTICO
+```
+
+Una observación tardía conserva su tiempo de ocurrencia original.
+
+Un corte analítico declara hasta qué correcciones, resultados de calidad y liberaciones fueron incorporados.
+
+Un lote que cambia de estado después del corte no modifica silenciosamente un snapshot ya publicado.
+
+#### 22. Calidad y certificación analítica
+
+La certificación de una familia productiva consume `DATA-DOM-007`.
+
+Como mínimo deberá evaluar:
+
+- completitud de plan/orden/lote según la familia;
+- unicidad e identidad del lote y ejecución;
+- receta y versión resolubles;
+- unidades válidas y conversiones deterministas;
+- integridad entre consumos, salidas y movimientos cuando correspondan;
+- cobertura de sedes, productos y periodos;
+- datos tardíos y correcciones;
+- disponibilidad de hitos temporales;
+- consistencia de estado productivo, calidad y liberación;
+- reconciliación con NEXO cuando existan efectos físicos;
+- frescura del modelo y corte de consulta.
+
+El estado operativo `posted`, `completed` o equivalente de una implementación no se traduce a `CERTIFICADO` analítico.
+
+Las familias bloqueadas en esta tarea no podrán publicarse como KPI oficial con un valor numérico fabricado desde proxies locales.
+
+#### 23. Publicación, dashboards y snapshots
+
+Toda publicación productiva consume `DATA-DOM-008`.
+
+El artefacto deberá declarar, como mínimo:
+
+- versión de la métrica;
+- periodo y zona horaria;
+- sede/área y producto o familia;
+- receta/versión cuando afecte el resultado;
+- filtros y estados incluidos;
+- unidad;
+- corte;
+- frescura;
+- cobertura;
+- estado de calidad/certificación;
+- tratamiento de lotes retenidos, rechazados, cancelados, reprocesados o corregidos;
+- fuente y ruta de drill-down autorizada.
+
+Vista en vivo, snapshot oficial, simulación, exportación y análisis exploratorio permanecen artefactos distintos.
+
+#### 24. Handoffs entre analítica comercial, inventario y producción
+
+`DATA-DOM-011` entrega dos fronteras que otras familias ya reservaron:
+
+1. **Capacidad productiva para analítica comercial.** `DATA-DOM-009` podrá combinar una capacidad productiva certificada con demanda/venta únicamente cuando compartan producto/oferta resoluble, sede, canal cuando aplique, ventana y unidad. Una capacidad bloqueada aquí no puede convertirse en “capacidad comercial ociosa”.
+2. **Consumo productivo para inventario.** `DATA-DOM-010` podrá utilizar consumo estándar/real como denominador o comparación únicamente cuando receta/version, unidad, población y corte sean compatibles. Diferencia de stock no sustituye consumo productivo cuando existe hecho autoritativo.
+
+La combinación física y semántica pertenece a `DATA-INT-002` y no se implementa en esta tarea.
+
+#### 25. Dependencias y bloqueos con propietario exacto
+
+| Brecha o dependencia                                                  | Propietario documental                                                                       | Condición de salida                                                  |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| plan productivo, revisión, horizonte, prioridad y overrides           | `FOGO-UX-001`, `FOGO-UX-003`, `FOGO-UX-004`, `FOGO-UX-014`, `FOGO-AUTH-008`, `FOGO-AUTH-012` | antes de certificar demanda planificada, capacidad o adherencia      |
+| contrato canónico de receta y versión                                 | `OPS-REC-001`, `FOGO-UX-008`, `FOGO-UX-009`, `FOGO-AUTH-013`                                 | antes de certificar estándar histórico de rendimiento y consumo      |
+| ejecución completa con inicio, pausa, parcialidad, excepción y cierre | `FOGO-UX-005` a `FOGO-UX-011`, `UX-QA-025`                                                   | antes de certificar ciclo de ejecución y cierre                      |
+| cierre exactamente una vez de consumos/salidas con inventario         | `FOGO-UX-012`, `FOGO-UX-013`, `INT-PROD-001` a `INT-PROD-005`                                | antes de certificar reconciliación física productiva                 |
+| capacidad de personal                                                 | `FOGO-UX-004`, `CAP-SCOPE-002`, `INT-PROD-001` a `INT-PROD-005`                              | antes de usar disponibilidad laboral como capacidad disponible       |
+| capacidad/condición de equipos                                        | `NEXO-DOM-012`, `NEXO-DOM-026`, `FOGO-UX-014`                                                | antes de usar equipos como denominador de capacidad                  |
+| disponibilidad de materiales/lotes                                    | `CAP-SCOPE-006`, `FOGO-UX-012`, `INT-PROD-001` a `INT-PROD-005`                              | antes de declarar capacidad ejecutable por materiales                |
+| faltantes y lead times de compra                                      | `CAP-SCOPE-005`, `ORIGO-UX-014`, `INT-PROD-001` a `INT-PROD-005`                             | antes de incorporar abastecimiento externo a capacidad/promesa       |
+| pesaje, premezclas, porcionamiento, kits y staging                    | `OPS-PRD-001`, `FOGO-UX-012`, `CAP-SCOPE-006`                                                | antes de incluir esos recursos en capacidad o tiempos estándar       |
+| fuente histórica y formato de merma                                   | `DAT-27`, `OPS-PLAN-004`, `FOGO-UX-010`                                                      | antes de backfill o serie histórica certificada de merma             |
+| genealogía de reproceso/aprovechamiento/subproducto/descarte          | `FOGO-UX-010`, `FOGO-UX-011`, `OPS-TRZ-001`, `CAP-SCOPE-006`                                 | antes de métricas certificadas de reproceso/aprovechamiento          |
+| plan versionado de controles de calidad                               | `FOGO-UX-001`, `FOGO-UX-014`, `CAP-SCOPE-003`, `CAP-SCOPE-013`                               | antes de medir conformidad contra controles obligatorios             |
+| retención, rechazo, reproceso y liberación independientes             | `FOGO-UX-007`, `FOGO-UX-014`, `FOGO-AUTH-011`, `CAP-SCOPE-006`                               | antes de métricas oficiales de calidad/liberación                    |
+| identidad, genealogía y corrección de lote                            | `OPS-TRZ-001`, `FOGO-UX-011`, `FOGO-AUTH-012`                                                | antes de reexpresión histórica de lotes corregidos                   |
+| costo estándar y costo económico oficial                              | `DATA-DOM-013`                                                                               | antes de publicar variación económica oficial por lote/producto/sede |
+| contratos analíticos de lectura/eventos                               | `DATA-INT-001`                                                                               | antes de ingestión productiva automatizada de estas familias         |
+| modelos semánticos, cálculos, snapshots y consultas                   | `DATA-INT-002`                                                                               | antes de materializar estas familias como modelos productivos        |
+
+No queda brecha narrativa sin propietario documental exacto.
+
+#### 26. Tratamiento de prioridades, restricciones y causas
+
+Una desviación de producción no se atribuye automáticamente a una causa.
+
+Los factores posibles pueden incluir, únicamente cuando exista evidencia:
+
+- demanda o prioridad modificada;
+- indisponibilidad laboral;
+- indisponibilidad de equipo;
+- material faltante o retenido;
+- cambio de receta o ruta;
+- espera de calidad;
+- reproceso;
+- avería;
+- bloqueo logístico;
+- cambio aprobado de programa;
+- evento de continuidad.
+
+Reglas:
+
+1. una correlación temporal no demuestra causalidad;
+2. una clasificación de causa debe provenir del expediente o de una regla diagnóstica gobernada;
+3. el análisis causal transversal pertenece a `DATA-DOM-014`;
+4. un dashboard puede mostrar “sin causa resuelta” sin inventar una causa dominante;
+5. restricciones simultáneas pueden coexistir y deben conservar su evidencia.
+
+#### 27. Cobertura de requisitos de prueba vigente
+
+La especialización analítica definida aquí ya queda protegida por requisitos actuales y no introduce una obligación de prueba nueva independiente.
+
+Cobertura principal:
+
+- `TREQ-DATA-002` protege fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, fuente, calidad, versión y reproducibilidad de toda métrica; su responsabilidad ya incluye `DATA-DOM-011`.
+- `TREQ-DATA-003` protege contratos de origen, tiempos, granularidad, cobertura, datos tardíos, backfill, correcciones, reconciliación y linaje.
+- `TREQ-DATA-004` protege publicación, corte, frescura, cobertura, calidad, snapshots y restatements de los resultados.
+- `TREQ-FOGO-001` protege el ciclo del lote productivo, consumo, desperdicio, resultado, cierre, corrección y efectos de inventario.
+- `TREQ-FOGO-002` protege receta/version, rendimiento esperado/real, merma, sustituciones y desviaciones sin sobrescribir conocimiento histórico.
+- `TREQ-FOGO-003` protege planificación, revisión, capacidad, restricciones, prioridades, overrides y vínculo de órdenes con la versión del plan.
+- `TREQ-FOGO-004` protege ejecución, calidad, liberación, rechazo, reproceso, genealogía y conciliación del cierre.
+
+La tarea no modifica el alcance, prioridad, estado, relación ni destino de esos requisitos; únicamente especializa la semántica analítica que ya tenían asignada.
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente fórmulas, poblaciones, denominadores y fronteras analíticas productivas ya protegidas por requisitos vigentes de métricas, calidad de datos, publicación, planificación, ejecución, receta/versionado, rendimiento, merma, calidad, liberación y reconciliación. No introduce un comportamiento ejecutable nuevo ni modifica el comportamiento protegido existente.
+
+#### 29. Criterios de aceptación
+
+`DATA-DOM-011` queda materializada cuando se cumplen simultáneamente los siguientes criterios:
+
+1. las diez familias de analítica productiva aparecen exactamente una vez;
+2. demanda planificada se separa de señal, pedido, remisión, mínimo y forecast;
+3. producción planificada se separa de rendimiento teórico de receta;
+4. plan, programa, orden, lote, ejecución y salida conservan identidades distintas;
+5. ninguna familia usa un denominador inexistente para producir un porcentaje aparente;
+6. capacidad nominal, disponible, comprometida, utilizada y comercial permanecen separadas;
+7. capacidad solo agrega recursos bajo unidades y ventanas compatibles;
+8. personal, equipos, materiales, almacenamiento y logística no se presumen disponibles por existir;
+9. adherencia de inicio, finalización y cantidad pueden distinguirse;
+10. una reprogramación aprobada conserva revisión e historia;
+11. rendimiento teórico conserva receta/version, escala y unidad;
+12. rendimiento real conserva salida, cantidad y unidad efectivamente medidas;
+13. el campo técnico esperado no sustituye la definición semántica canónica;
+14. múltiples salidas conservan rol y no inflan el rendimiento principal;
+15. consumo estándar se deriva de receta/version y escala gobernadas;
+16. consumo real consume hechos productivos y no diferencias de stock por aproximación;
+17. variaciones de consumo se calculan por ingrediente y unidad compatible;
+18. sustituciones permanecen explícitas;
+19. merma no se infiere automáticamente desde menor rendimiento;
+20. merma, reproceso, aprovechamiento, coproducto, subproducto y descarte permanecen separados;
+21. reproceso exige genealogía verificable;
+22. calidad separa control, resultado, conformidad, retención, rechazo, reproceso y liberación;
+23. ausencia de un resultado negativo no equivale a conformidad;
+24. finalización productiva no equivale a liberación;
+25. liberación exige controles, autoridad, identidad del lote y evidencia aplicables;
+26. tiempo de ciclo usa hitos declarados y no una fecha genérica;
+27. pausas, esperas y retenciones solo se excluyen si existen eventos para reconstruirlas;
+28. costo técnico observado no se presenta como costo económico oficial;
+29. costo estándar y variación económica quedan bajo `DATA-DOM-013`;
+30. producción multi-salida evita doble conteo de cantidades y costo;
+31. comparación histórica conserva receta/version, unidad, sede, área, ruta y corte aplicables;
+32. unidades incompatibles no se suman;
+33. porcentajes agregados se recomputan desde poblaciones compatibles;
+34. estado operativo de lote no equivale a certificación analítica;
+35. publicación consume calidad, corte, cobertura y versión conforme a contratos vigentes;
+36. capacidad productiva solo alimenta capacidad comercial mediante binding compatible en `DATA-INT-002`;
+37. consumo productivo solo alimenta cobertura/plan de inventario mediante binding compatible;
+38. cada bloqueo conserva tarea propietaria y condición de salida exactas;
+39. no se crea ni modifica ningún requisito de prueba;
+40. no se ejecuta ningún cambio físico de código, datos, migraciones o Supabase;
+41. `DATA-DOM-012` permanece únicamente reservada.
+
+#### 30. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
+
+TAREA ACTUAL APROBADA
+DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+```
+
+
 ### [ ] DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
 ### [ ] DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
 ### [ ] DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **680** |
+| Aprobadas | **681** |
 | En propuesta | **0** |
-| No iniciadas | **914** |
+| No iniciadas | **913** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.66% (680/1594)** |
+| Porcentaje de completamiento | **42.72% (681/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1569,7 +1569,7 @@
 | ✅ APROBADA | `DATA-DOM-008` | Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-009` | Definir analítica de ventas, demanda, precios, promociones y canales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-010` | Definir analítica de inventario, abastecimiento, proveedores y logística | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-011` | Definir analítica de producción, rendimiento, capacidad, merma y calidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-011` | Definir analítica de producción, rendimiento, capacidad, merma y calidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-012` | Definir analítica de servicio, clientes, fidelización, reputación y experiencia | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-013` | Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-014` | Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
