@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **666** |
+| Tareas aprobadas | **667** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **928** |
+| Tareas no iniciadas | **927** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.78% (666/1594)** |
+| Porcentaje de completamiento | **41.84% (667/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada** |
-| Tarea actual | **INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva** |
+| Última tarea aprobada | **INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva** |
+| Tarea actual | **INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo** |
+| Siguiente tarea | **INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 90 de 157 aprobadas; INFO-UX-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 91 de 157 aprobadas; INFO-INT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-UX-005` — Diseñar retención, legal hold, archivo y disposición controlada |
-| Tarea actual | `INFO-UX-006` — Diseñar explorador de auditoría e investigación con divulgación progresiva — **NO INICIADA** |
-| Siguiente tarea | `INFO-INT-001` — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo |
+| Última aprobada | `INFO-UX-006` — Diseñar explorador de auditoría e investigación con divulgación progresiva |
+| Tarea actual | `INFO-INT-001` — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo — **NO INICIADA** |
+| Siguiente tarea | `INFO-INT-002` — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 90 DE 157 APROBADAS — ACTUAL INFO-UX-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 91 DE 157 APROBADAS — ACTUAL INFO-INT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
-        ↓
-TAREA ACTUAL
 INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 90 de 157 tareas aprobadas
+CARRIL NEXO — 91 de 157 tareas aprobadas
 ```

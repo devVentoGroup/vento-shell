@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **666** |
+| Aprobadas | **667** |
 | En propuesta | **0** |
-| No iniciadas | **928** |
+| No iniciadas | **927** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **41.78% (666/1594)** |
+| Porcentaje de completamiento | **41.84% (667/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-UX-005` — Diseñar retención, legal hold, archivo y disposición controlada | ✅ APROBADA |
-| Tarea actual | `INFO-UX-006` — Diseñar explorador de auditoría e investigación con divulgación progresiva | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-INT-001` — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo | ⬜ NO INICIADA |
+| Última aprobada | `INFO-UX-006` — Diseñar explorador de auditoría e investigación con divulgación progresiva | ✅ APROBADA |
+| Tarea actual | `INFO-INT-001` — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-INT-002` — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1555,7 +1555,7 @@
 | ✅ APROBADA | `INFO-UX-003` | Diseñar creación, revisión, aprobación, publicación y firma de documentos | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ✅ APROBADA | `INFO-UX-004` | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ✅ APROBADA | `INFO-UX-005` | Diseñar retención, legal hold, archivo y disposición controlada | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
-| ⬜ NO INICIADA | `INFO-UX-006` | Diseñar explorador de auditoría e investigación con divulgación progresiva | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
+| ✅ APROBADA | `INFO-UX-006` | Diseñar explorador de auditoría e investigación con divulgación progresiva | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-INT-001` | Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INFO-INT-002` | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INFO-INT-003` | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |

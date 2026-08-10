@@ -4382,4 +4382,1010 @@ Justificación: esta tarea materializa una experiencia documental sobre contrato
 **SIGUIENTE TAREA RESERVADA:** `INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva`
 
 
-### [ ] INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
+### ✅ INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada` — APROBADA
+**Tarea siguiente:** `INFO-INT-001 — Diseñar integración con e-signature, email, object storage, SIEM, DLP, HRIS y finance` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de exploración de auditoría e investigación en VISO, con búsqueda autorizada, correlación no destructiva, segregación investigativa y divulgación progresiva de información sensible, logs y evidencia preservada
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md`
+**Aplicación objetivo:** `VISO`
+**Superficie canónica consumida:** `VSCREEN-0122 — Privacidad, cumplimiento y conservación`
+**Fase:** exclusivamente documental
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, rutas, pantallas implementadas, tablas, vistas, buckets, políticas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, permisos, grants, roles, logs físicos, sistemas forenses, integraciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar una experiencia administrativa segura para explorar auditoría empresarial e investigaciones formales sin convertir el explorador en una copia irrestricta de logs, una consola forense universal, un mecanismo de bypass de autorización ni una vía para alterar evidencia histórica.
+
+La experiencia debe permitir que una persona autorizada responda, dentro de su alcance real:
+
+1. qué ocurrió y bajo qué categoría auditable;
+2. qué actor, principal, servicio, recurso, proceso y contexto pueden revelarse para la finalidad autorizada;
+3. qué eventos se relacionan con un caso sin fusionar identidades ni inventar causalidad;
+4. en qué estado se encuentra una investigación y qué condiciones de control la bloquean;
+5. qué fuentes fueron preservadas antes de una corrección que pudiera alterarlas;
+6. qué elementos son hechos, hipótesis, hallazgos o limitaciones;
+7. qué autoridad independiente puede revisar, cerrar o reabrir el caso;
+8. qué detalle puede mostrarse ahora y qué detalle requiere una decisión adicional de autorización.
+
+Principio rector:
+
+```text
+EXPLORADOR
+= BÚSQUEDA AUTORIZADA
++ PROYECCIÓN MINIMIZADA
++ CORRELACIÓN TRAZABLE
++ DIVULGACIÓN PROGRESIVA
++ NAVEGACIÓN GOBERNADA
+
+≠ LOG COMPLETO POR DEFECTO
+≠ COPIA DEL CONTENIDO PROTEGIDO
+≠ AUTORIDAD DE INVESTIGACIÓN
+≠ AUTORIDAD DE CIERRE
+≠ AUTORIDAD DE EXPORTACIÓN
+≠ AUTORIDAD DE PRESERVACIÓN O DISPOSICIÓN
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa cuatro artefactos lógicos coordinados:
+
+1. `INFO-AUDIT-INVESTIGATION-EXPLORER-UX-CONTRACT-001` — contrato de experiencia para búsqueda, resultados, detalle, correlación y navegación de auditoría e investigaciones.
+2. `INFO-AUDIT-INVESTIGATION-PROGRESSIVE-DISCLOSURE-MATRIX-001` — decisión concreta de qué grupos de información se muestran por defecto, cuáles requieren una nueva evaluación de autorización y cuáles no se exponen en la vista ordinaria.
+3. `INFO-AUDIT-INVESTIGATION-EXPLORER-STATE-PROJECTION-001` — proyección visual de categorías auditables, ciclo investigativo, condiciones transversales, tipos investigativos y estados de hallazgo sin crear estados paralelos.
+4. `INFO-AUDIT-INVESTIGATION-EXPLORER-BOUNDARY-MATRIX-001` — fronteras entre auditoría empresarial, log técnico, evidencia preservada, investigación, ciclo documental, legal hold, exportación e integraciones posteriores.
+
+Balance materializado:
+
+| Control                                                |     Resultado |
+| ------------------------------------------------------ | ------------: |
+| Superficies canónicas reutilizadas                     |         **1** |
+| Nuevas identidades `VSCREEN-*`                         |         **0** |
+| Nuevas rutas canónicas                                 |         **0** |
+| Modos lógicos dentro de la superficie                  |         **2** |
+| Categorías mínimas de acciones auditables proyectadas  |   **10 / 10** |
+| Estados principales de investigación proyectados       |     **9 / 9** |
+| Condiciones transversales de investigación proyectadas |     **6 / 6** |
+| Tipos investigativos proyectados                       |     **4 / 4** |
+| Estados de hallazgo proyectados                        |     **6 / 6** |
+| Procesos heredados referenciados                       |   **69 / 69** |
+| Identidades documentales heredadas referenciadas       | **332 / 332** |
+| Duplicación del inventario heredado                    |         **0** |
+| Nuevos estados de negocio                              |         **0** |
+| Nuevas capacidades de autorización                     |         **0** |
+| Cambios físicos                                        |         **0** |
+
+Los 69 procesos y las 332 identidades `DOCCTX-*` se consumen por referencia a sus matrices canónicas ya aprobadas. Esta tarea no reclasifica, reasigna ni modifica decisiones por identidad; por ello no crea una segunda tabla de 332 filas.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+El diseño consume sin redefinir:
+
+##### 3.1 Auditoría e investigación
+
+- `INFO-AUDIT-EVENT-CONTRACT-001`;
+- `INFO-AUDIT-TRAIL-CONTRACT-001`;
+- `INFO-INVESTIGATION-CASE-CONTRACT-001`;
+- `INFO-INVESTIGATION-LIFECYCLE-CONTRACT-001`;
+- `INFO-INVESTIGATION-EVIDENCE-PRESERVATION-CONTRACT-001`;
+- `INFO-INVESTIGATION-FINDING-ACTION-CONTRACT-001`;
+- `INFO-INVESTIGATION-CLOSURE-REOPEN-CONTRACT-001`;
+- `INFO-AUDIT-INVESTIGATION-MATRIX-001`.
+
+##### 3.2 Autorización reforzada
+
+- `INFO-AUDIT-INVESTIGATION-AUTHORIZATION-CONTRACT-001`;
+- `INFO-AUDIT-INDEPENDENCE-SEGREGATION-CONTRACT-001`;
+- `INFO-EMERGENCY-INFORMATION-ACCESS-CONTRACT-001`;
+- `INFO-PROTECTED-LOG-AUTHORIZATION-CONTRACT-001`;
+- `INFO-PRESERVED-EVIDENCE-AUTHORIZATION-CONTRACT-001`;
+- `INFO-AUDIT-INVESTIGATION-AUTH-MATRIX-001`.
+
+##### 3.3 Protección transversal
+
+También se conservan las decisiones ya aprobadas sobre:
+
+- clasificación `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED`;
+- finalidad, identidad, actor efectivo, relación, recurso, territorio, estado y política de campos;
+- minimización y protección diferenciada de consulta, copia, impresión, exportación y compartición;
+- segregación de retención, legal hold, disposición y eliminación;
+- prevalencia de preservación, retención y legal hold cuando protejan material relevante;
+- propiedad funcional de VISO como superficie administrativa de cumplimiento, investigación y supervisión.
+
+Ninguna vista, filtro, pestaña, modal, URL futura o control de interfaz se interpreta como fuente de autoridad.
+
+---
+
+#### 4. Superficie canónica y modos lógicos
+
+El explorador se materializa dentro de `VSCREEN-0122 — Privacidad, cumplimiento y conservación`, superficie `CANONICAL` de VISO ya vinculada con gobierno de información.
+
+La tarea crea **0** pantallas y **0** rutas nuevas.
+
+Dentro de la superficie existen dos modos lógicos subordinados:
+
+1. **Auditoría** — búsqueda, filtrado, correlación y detalle autorizado de eventos de auditoría empresarial.
+2. **Investigaciones** — búsqueda y exploración de casos formales, preservación, cronología, elementos investigativos, acciones, cierre y reapertura.
+
+Estos modos no reciben identidad `VSCREEN-*` propia y no se convierten en aplicaciones, registros maestros ni autoridades separadas.
+
+La navegación interna debe conservar el contexto autorizado, pero cada cambio de recurso, caso, detalle sensible o evidencia exige revalidar la decisión aplicable.
+
+---
+
+#### 5. Distinciones que la interfaz debe preservar
+
+La experiencia muestra de forma explícita que:
+
+```text
+EVENTO DE AUDITORÍA
+≠ LOG TÉCNICO
+≠ EVENTO DE DOMINIO
+≠ COMANDO
+≠ EVIDENCIA PRESERVADA
+≠ CASO DE INVESTIGACIÓN
+```
+
+También conserva:
+
+```text
+LEER AUDITORÍA
+≠ BUSCAR AUDITORÍA
+≠ CORRELACIONAR AUDITORÍA
+≠ EXPORTAR AUDITORÍA
+≠ ADMINISTRAR AUDITORÍA
+≠ LEER EVIDENCIA
+≠ PRESERVAR EVIDENCIA
+≠ LIBERAR EVIDENCIA
+≠ CERRAR INVESTIGACIÓN
+```
+
+Reglas:
+
+1. un evento puede referenciar un log sin convertirse en ese log;
+2. una investigación puede referenciar eventos sin absorber ni reescribir su identidad;
+3. una evidencia preservada puede originarse en una fuente auditable sin convertir la vista de auditoría en un repositorio de evidencia;
+4. un evento técnico no se presenta como hecho empresarial sin correlación suficiente;
+5. una coincidencia temporal no se presenta como causalidad;
+6. una persona con administración sobre un sistema no hereda por ello acceso a su auditoría;
+7. la capacidad de consultar no concede exportar, copiar, imprimir, compartir, preservar, liberar ni destruir.
+
+---
+
+#### 6. Contrato `INFO-AUDIT-INVESTIGATION-EXPLORER-UX-CONTRACT-001`
+
+Cada renderizado del explorador deberá resolverse conceptualmente como:
+
+```text
+actor efectivo
++ capacidad exacta
++ finalidad vigente
++ alcance autorizado
++ objeto exacto
++ clasificación efectiva
++ relación aplicable
++ proceso y territorio compatibles
++ estado vigente
++ independencia investigativa
++ política de campos
++ filtros solicitados
+→ proyección mínima autorizada
+```
+
+Si una dimensión obligatoria no puede resolverse, la interfaz no completa el dato por inferencia.
+
+El explorador opera bajo cuatro reglas:
+
+1. **fail closed de visibilidad:** lo no autorizado no se muestra;
+2. **minimización:** el permiso sobre un recurso no implica visibilidad de todos sus campos;
+3. **reautorización por profundidad:** abrir más detalle exige evaluar de nuevo la acción y el objeto;
+4. **no inferencia:** la interfaz no revela indirectamente la existencia de recursos ocultos mediante conteos, filtros, autocompletado, errores o diferencias de respuesta.
+
+---
+
+#### 7. Entrada y estado inicial
+
+La superficie no abre por defecto un feed global de auditoría ni una lista irrestricta de investigaciones.
+
+Estado inicial permitido:
+
+- contexto de alcance efectivo, cuando pueda representarse sin revelar información no autorizada;
+- selector de modo `Auditoría` / `Investigaciones`;
+- filtros disponibles derivados únicamente del universo visible;
+- casos asignados o accesos recientes solo cuando su fuente y autorización permitan presentarlos;
+- orientación breve sobre qué puede buscarse.
+
+Si no existe un alcance inicial demostrable, la experiencia solicita una intención de búsqueda o selección de contexto antes de cargar resultados.
+
+Queda prohibido:
+
+- precargar todos los eventos recientes por conveniencia;
+- mostrar conteos globales antes de autorización;
+- sugerir nombres, recursos, personas o casos ocultos;
+- recordar automáticamente un detalle sensible anterior como nuevo alcance.
+
+---
+
+#### 8. Búsqueda autorizada
+
+Toda búsqueda se evalúa antes de devolver resultados.
+
+La intención de búsqueda puede combinar, según el modo y la autorización:
+
+##### 8.1 Auditoría
+
+- identificador estable de evento;
+- proceso `VPROC-*`;
+- categoría `action_code`;
+- resultado de acción;
+- recurso o tipo de recurso;
+- intervalo temporal;
+- referencia de caso o investigación;
+- actor efectivo o principal cuando la política permita buscar por esa dimensión;
+- servicio o principal técnico cuando aplique;
+- acceso de emergencia;
+- acción de proveedor o cuenta técnica.
+
+##### 8.2 Investigaciones
+
+- `investigation_case_id`;
+- estado principal;
+- condición transversal;
+- proceso afectado;
+- referencia de caso origen;
+- propietario de investigación cuando sea visible;
+- autoridad de cierre cuando sea visible;
+- intervalo de apertura;
+- presencia de legal hold;
+- presencia de conflicto;
+- referencia de recurso cuando la relación y finalidad permitan buscar por él.
+
+Reglas comunes:
+
+1. cada filtro reduce el universo; nunca amplía autoridad;
+2. las opciones de filtro se calculan después de autorización;
+3. un valor de filtro oculto no aparece en autocompletado, chips, totales ni sugerencias;
+4. búsqueda por identificador directo no confirma si un recurso inexistente y uno no autorizado son casos distintos;
+5. una búsqueda vacía no equivale a mostrar todo;
+6. el texto libre no debe convertirse en búsqueda indiscriminada sobre payloads sensibles o logs completos;
+7. la aplicación de filtros queda separada de cualquier mutación de estado.
+
+---
+
+#### 9. Resultados de auditoría
+
+La lista inicial de auditoría presenta únicamente una proyección mínima autorizada.
+
+Columnas conceptuales:
+
+- referencia estable del evento;
+- tiempo de referencia cuando la fuente pueda aportarlo con calidad suficiente;
+- categoría auditable;
+- resultado tipado;
+- proceso;
+- tipo de recurso;
+- referencia de recurso minimizada cuando esté autorizada;
+- actor o principal con el nivel de identificación permitido;
+- vínculo con investigación cuando el actor pueda conocer el caso;
+- indicador de acceso de emergencia cuando aplique y pueda mostrarse;
+- disponibilidad de detalle adicional.
+
+No se presenta por defecto:
+
+- payload completo;
+- valores antes/después completos;
+- logs técnicos completos;
+- secretos;
+- tokens;
+- credenciales;
+- datos personales no necesarios;
+- IP, dispositivo, sede o área si la finalidad no los necesita;
+- contenido de evidencia preservada;
+- información de otros recursos solo porque compartan correlación técnica.
+
+El total de resultados se calcula únicamente sobre el universo autorizado. Si la infraestructura futura no puede garantizar un conteo no revelador, la interfaz usa paginación o continuidad sin declarar un total global.
+
+---
+
+#### 10. Catálogo de acciones auditables proyectado
+
+La experiencia conserva las diez categorías mínimas canónicas:
+
+| Código canónico                      | Etiqueta de interfaz                | Presentación mínima                                    |
+| ------------------------------------ | ----------------------------------- | ------------------------------------------------------ |
+| `AUDIT_AUTH_DECISION`                | Decisión de autorización            | resultado y referencias de decisión autorizadas        |
+| `AUDIT_SENSITIVE_ACCESS`             | Acceso o consulta sensible          | alcance y resultado minimizados                        |
+| `AUDIT_EXTRACTION`                   | Extracción, impresión o exportación | tipo de salida, alcance y resultado                    |
+| `AUDIT_CONTENT_OR_METADATA_CHANGE`   | Cambio de contenido o metadatos     | recurso, versión y existencia de cambio                |
+| `AUDIT_APPROVAL_OR_SIGNATURE`        | Aprobación o firma                  | acto, versión y resultado                              |
+| `AUDIT_SHARING`                      | Compartición o divulgación          | tipo de divulgación y resultado                        |
+| `AUDIT_CLASSIFICATION_CHANGE`        | Cambio de clasificación             | existencia del cambio y clases cuando puedan revelarse |
+| `AUDIT_RETENTION_HOLD_DISPOSITION`   | Retención, legal hold o disposición | tipo de decisión y resultado                           |
+| `AUDIT_EMERGENCY_ACCESS`             | Acceso de emergencia                | condición excepcional, alcance y vigencia autorizados  |
+| `AUDIT_TECHNICAL_OR_PROVIDER_ACTION` | Acción técnica o de proveedor       | principal técnico, alcance y resultado autorizados     |
+
+La etiqueta humana no sustituye `action_code`. Las especializaciones de dominio se muestran subordinadas a su categoría canónica cuando la fuente pueda resolver la equivalencia.
+
+
+---
+
+#### 11. Detalle de evento de auditoría
+
+Abrir un evento no implica revelar todo su registro.
+
+La vista se organiza en regiones:
+
+1. **Identidad del evento** — `audit_event_id`, versión de contrato y referencias permitidas.
+2. **Qué ocurrió** — categoría, acción y resultado.
+3. **Dónde aplica** — proceso, instancia y recurso en la medida autorizada.
+4. **Quién intervino** — principal, actor efectivo, servicio, simulación y dispositivo únicamente según necesidad.
+5. **Contexto** — finalidad, autorización, territorio, sede, área u otras dimensiones solo si son pertinentes y visibles.
+6. **Correlaciones** — eventos, caso, investigación, evidencia o fuente relacionados sin fusionar identidades.
+7. **Trazabilidad de corrección** — referencias a eventos posteriores cuando exista una corrección no destructiva.
+
+La interfaz nunca presenta la modificación del registro histórico como una acción ordinaria. Una corrección empresarial válida se representa mediante nuevas referencias o eventos vinculados conforme al contrato de dominio.
+
+---
+
+#### 12. Correlación y línea temporal de auditoría
+
+La correlación visual conserva identidades separadas.
+
+Reglas:
+
+1. cada evento mantiene su `audit_event_id`;
+2. agrupar eventos no crea un evento compuesto autoritativo;
+3. fuentes distintas muestran procedencia diferenciable;
+4. timestamps con calidad, zona o reloj no reconciliados no se ordenan como causalidad segura;
+5. cuando el orden no sea demostrable, la interfaz indica **secuencia no concluyente**;
+6. un vínculo explícito de correlación se diferencia de una proximidad temporal;
+7. el mismo recurso en dos eventos no implica que uno haya causado el otro;
+8. eventos ocultos por autorización no se representan con huecos, cantidades ni pistas que revelen su existencia;
+9. una vista gráfica, si se implementa después, deberá tener equivalente textual y no crear relaciones nuevas;
+10. la corrección no destructiva conserva el evento original y la referencia del evento posterior.
+
+---
+
+#### 13. Modo Investigaciones
+
+La lista de investigaciones muestra una proyección mínima por caso.
+
+Campos visibles cuando estén autorizados:
+
+- `investigation_case_id`;
+- estado principal;
+- condiciones transversales visibles;
+- `opened_at`;
+- `trigger_ref` minimizado;
+- `source_case_ref` cuando pueda conocerse;
+- resumen de alcance;
+- propietario de investigación;
+- autoridad de cierre;
+- presencia de conflicto;
+- presencia de legal hold;
+- señal de acción requerida derivada de los estados canónicos.
+
+No se exponen por defecto:
+
+- identidad completa del sujeto investigado;
+- contenido de denuncia o reclamo;
+- hipótesis;
+- detalles de hallazgos;
+- evidencia;
+- logs;
+- datos de testigos;
+- información disciplinaria o sensible;
+- secretos o credenciales;
+- razón de una restricción cuando esa razón revele un hecho oculto.
+
+---
+
+#### 14. Espacio de investigación
+
+Abrir un caso autorizado presenta siete regiones coherentes:
+
+1. **Resumen del caso**;
+2. **Alcance**;
+3. **Fuentes y preservación**;
+4. **Cronología**;
+5. **Hechos, hipótesis, hallazgos y limitaciones**;
+6. **Acciones y controles**;
+7. **Cierre y reapertura**.
+
+La navegación entre regiones no aumenta autoridad. Cada región aplica su propia proyección de campos.
+
+El encabezado conserva de forma persistente, si son visibles:
+
+- identificador del caso;
+- estado principal;
+- condiciones de control;
+- propietario;
+- autoridad de cierre;
+- alcance resumido;
+- indicador de conflicto;
+- indicador de legal hold;
+- referencia temporal del caso.
+
+---
+
+#### 15. Proyección del ciclo de investigación
+
+La experiencia usa los nueve estados principales canónicos sin renombrarlos como estados nuevos:
+
+| Estado canónico   | Etiqueta humana         | Significado visual                                      |
+| ----------------- | ----------------------- | ------------------------------------------------------- |
+| `TRIGGERED`       | Disparada               | existe un disparador que requiere control inicial       |
+| `TRIAGE`          | En evaluación inicial   | se delimita necesidad y tratamiento inicial             |
+| `PRESERVATION`    | Preservando fuentes     | se protege material relevante antes de cambios          |
+| `SCOPE_DEFINED`   | Alcance definido        | el alcance formal está establecido                      |
+| `INVESTIGATING`   | En investigación        | se analizan fuentes y hechos dentro del alcance         |
+| `FINDINGS`        | Hallazgos               | se consolidan conclusiones y limitaciones               |
+| `ACTION_TRACKING` | Seguimiento de acciones | se controlan contención y acciones correctivas          |
+| `CLOSURE_REVIEW`  | Revisión de cierre      | se verifica independencia y suficiencia antes de cerrar |
+| `CLOSED`          | Cerrada                 | existe cierre formal conforme al contrato               |
+
+La interfaz puede presentar una línea de progreso, pero no asume que todos los estados anteriores tuvieron la misma duración ni que el caso avanzó sin reaperturas o condiciones transversales.
+
+---
+
+#### 16. Condiciones transversales de investigación
+
+Las seis condiciones canónicas se representan separadas del estado principal:
+
+| Condición               | Etiqueta de interfaz       | Efecto visual                                                          |
+| ----------------------- | -------------------------- | ---------------------------------------------------------------------- |
+| `PRESERVATION_PENDING`  | Preservación pendiente     | alerta de bloqueo antes de correcciones que puedan alterar fuentes     |
+| `EVIDENCE_INCOMPLETE`   | Evidencia incompleta       | indica que faltan elementos materiales y evita conclusiones falsas     |
+| `CONFLICT_REASSIGNMENT` | Reasignación por conflicto | muestra que existe conflicto que exige independencia suficiente        |
+| `EXTERNAL_DEPENDENCY`   | Dependencia externa        | identifica dependencia de tercero, autoridad o fuente externa          |
+| `LEGAL_HOLD_ACTIVE`     | Legal hold activo          | indica protección frente a liberación o disposición incompatible       |
+| `REOPENED`              | Reabierta                  | muestra que existe una transición posterior vinculada al cierre previo |
+
+Estas condiciones no se convierten en filtros globales antes de aplicar autorización.
+
+---
+
+#### 17. Preservación antes de corrección
+
+Cuando el caso o evento indique `PRESERVATION_PENDING`, la interfaz debe:
+
+1. mostrar el bloqueo de forma prominente a quien esté autorizado a conocerlo;
+2. impedir que una acción local del explorador se presente como corrección segura;
+3. dirigir a la superficie o acción propietaria autorizada cuando exista;
+4. distinguir **preservar fuente** de **leer evidencia preservada**;
+5. distinguir **preservar** de **copiar**, **transferir**, **liberar** o **disponer** evidencia;
+6. mantener visible que legal hold y retención pueden prevalecer sobre disposición;
+7. no permitir que una persona implicada reduzca o libere evidencia por el solo hecho de tener acceso al caso.
+
+La ausencia de una fuente se muestra como ausencia documentada o evidencia incompleta cuando así lo determine el caso; nunca se rellena con una inferencia.
+
+---
+
+#### 18. Vista de fuentes y evidencia preservada
+
+La región de preservación lista únicamente referencias y metadatos autorizados.
+
+Puede proyectar, según disponibilidad y permiso:
+
+- `preservation_manifest_id`;
+- `investigation_case_id`;
+- `source_ref`;
+- `source_type`;
+- `source_system`;
+- `source_version`;
+- `acquired_at`;
+- estado o condición de preservación derivada de la fuente;
+- referencia de custodia o integridad cuando el contrato propietario la aporte y la política permita mostrarla.
+
+Por defecto no abre el contenido preservado.
+
+Abrir contenido, copiarlo, transferirlo, liberarlo o disponerlo son acciones distintas y requieren una decisión independiente. La existencia del manifiesto no concede acceso al contenido.
+
+Si la evidencia contiene información más sensible que el contexto visible, prevalece la protección más restrictiva aplicable.
+
+---
+
+#### 19. Logs protegidos
+
+Los logs técnicos, operativos y de seguridad no se mezclan con auditoría empresarial.
+
+La experiencia:
+
+1. etiqueta la naturaleza de la fuente;
+2. muestra únicamente el fragmento o metadato necesario para la finalidad autorizada;
+3. no incluye secretos, credenciales o tokens en la vista ordinaria;
+4. no presupone que un usuario autorizado a un evento empresarial puede leer el log técnico asociado;
+5. no presupone que administración de infraestructura concede lectura, búsqueda o exportación de logs;
+6. conserva referencia a la fuente sin copiar el log completo al expediente visual;
+7. exige una nueva evaluación antes de abrir detalle protegido;
+8. evita que el mensaje de error revele si existe un log que el actor no puede conocer.
+
+La integración física con SIEM u observabilidad queda fuera de esta tarea.
+
+---
+
+#### 20. Hechos, hipótesis, hallazgos y limitaciones
+
+La región investigativa mantiene los cuatro tipos canónicos:
+
+| Tipo         | Etiqueta   | Regla visual                                                        |
+| ------------ | ---------- | ------------------------------------------------------------------- |
+| `FACT`       | Hecho      | se presenta como hecho solo cuando existe fuente identificada       |
+| `HYPOTHESIS` | Hipótesis  | se marca siempre como explicación por comprobar                     |
+| `FINDING`    | Hallazgo   | conserva soporte, alcance y nivel de confianza que provea la fuente |
+| `LIMITATION` | Limitación | declara lo que no puede resolverse con la evidencia disponible      |
+
+Los seis estados de hallazgo se proyectan sin reinterpretación:
+
+- `SUBSTANTIATED`;
+- `NOT_SUBSTANTIATED`;
+- `INCONCLUSIVE`;
+- `CONTROL_GAP`;
+- `NO_SCOPE_MATCH`;
+- `REFERRED_TO_OTHER_CASE`.
+
+Reglas:
+
+1. color nunca es el único diferenciador;
+2. una hipótesis no puede aparecer visualmente como hecho confirmado;
+3. una limitación no se oculta para hacer parecer concluyente el caso;
+4. un hallazgo referido a otro caso mantiene la referencia sin fusionar expedientes;
+5. la interfaz no calcula un porcentaje de culpabilidad ni una puntuación de certeza no definida por la fuente.
+
+
+---
+
+#### 21. Cierre y reapertura
+
+La región de cierre presenta una comprobación explícita de los criterios canónicos sin crear una autoridad local.
+
+Debe permitir visualizar, cuando la fuente pueda resolverlo:
+
+- reconciliación del alcance y justificación de exclusiones;
+- preservación de fuentes relevantes o ausencia explícita;
+- calidad y conflictos de la cronología;
+- identificación o indeterminación explícita de actores, recursos, dispositivos y principales;
+- separación entre hechos, hipótesis, hallazgos y limitaciones;
+- seguimiento de acciones requeridas;
+- conflictos de interés;
+- autoridad independiente de cierre.
+
+La intención de cerrar solo se presenta cuando:
+
+```text
+capacidad de cierre autorizada
++ independencia suficiente
++ ausencia de conflicto bloqueante
++ criterios de cierre resolubles
++ estado compatible
+→ acción de cierre disponible
+```
+
+El explorador no convierte el botón de cierre en autoridad.
+
+Al reabrir:
+
+1. el cierre anterior permanece histórico;
+2. se crea o referencia una transición nueva y vinculada;
+3. la nueva evidencia, contradicción o fallo de acción no sobrescribe la justificación anterior;
+4. la interfaz distingue claramente **cerrada** de **reabierta**.
+
+---
+
+#### 22. Independencia y conflicto de interés
+
+La experiencia diferencia, cuando sean visibles:
+
+- sujeto o actor investigado;
+- propietario de investigación;
+- investigador;
+- custodio de evidencia;
+- revisor;
+- autoridad de cierre.
+
+Reglas:
+
+1. estar implicado en el hecho investigado no concede autoridad sobre el caso;
+2. el actor implicado no puede aprobar su propio cierre;
+3. una persona que administra el sistema origen no obtiene por ello autoridad para alterar auditoría o evidencia;
+4. `CONFLICT_REASSIGNMENT` bloquea el cierre hasta contar con independencia suficiente;
+5. una restricción de acceso por conflicto no debe revelar más detalle del conflicto del que el actor pueda conocer;
+6. la UI no ofrece controles destructivos para limpiar, ocultar o corregir la historia;
+7. revocar acceso futuro a una persona no elimina su identidad histórica del caso o de la auditoría.
+
+---
+
+#### 23. Acceso de emergencia
+
+Los eventos de acceso de emergencia se presentan como categoría excepcional, nunca como acceso ordinario.
+
+Cuando el actor pueda ver el detalle, la experiencia diferencia:
+
+- justificación;
+- actor efectivo;
+- alcance;
+- recurso;
+- ventana o duración;
+- resultado;
+- revisión posterior;
+- referencias relacionadas.
+
+Reglas:
+
+1. la emergencia no convierte todas las capacidades en disponibles;
+2. el fin de la emergencia no borra su trazabilidad;
+3. finalizar la emergencia no autoriza disposición, eliminación, cierre ni liberación de hold;
+4. una denegación absoluta por integridad, preservación o conflicto no se convierte en permiso solo por existir emergencia;
+5. credenciales, secretos, cuentas de contingencia y mecanismos físicos de break-glass no forman parte de este explorador.
+
+---
+
+#### 24. `INFO-AUDIT-INVESTIGATION-PROGRESSIVE-DISCLOSURE-MATRIX-001`
+
+La divulgación progresiva es un patrón de presentación, no una jerarquía de permisos. Cada apertura vuelve a evaluar autoridad sobre el objeto y los campos solicitados.
+
+| Etapa visual                    | Contenido permitido                                                           | Condición mínima                                            | Prohibición                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
+| **Resumen autorizado**          | existencia visible, identidad minimizada, categoría/estado y contexto mínimo  | derecho a conocer el recurso o caso dentro del alcance      | no revela payload, evidencia, log completo ni campos sensibles |
+| **Contexto autorizado**         | proceso, recurso minimizado, correlaciones, alcance, cronología resumida      | autorización sobre contexto y finalidad compatible          | no hereda acceso a identidades sensibles o contenido           |
+| **Detalle sensible autorizado** | actor, recurso exacto, valores o metadatos sensibles estrictamente necesarios | decisión específica sobre campos, finalidad y relación      | no hereda exportación, copia, evidencia ni administración      |
+| **Evidencia o log protegido**   | metadatos y contenido estrictamente permitido de la fuente preservada o log   | capacidad independiente sobre evidencia/log y objeto exacto | no concede transferencia, liberación, disposición ni cierre    |
+
+Invariantes:
+
+1. las etapas no son estados persistentes;
+2. una etapa no concede automáticamente la siguiente;
+3. el detalle puede ser parcial por campo;
+4. una región puede permanecer bloqueada aunque otra más general esté disponible;
+5. si la autorización expira, el contenido sensible deja de mostrarse y se exige una nueva evaluación;
+6. el sistema no conserva un desbloqueo global por haber abierto un detalle previamente;
+7. el motivo o finalidad, cuando el contrato lo exija, debe provenir de la decisión gobernada y no de texto libre usado como sustituto de autoridad.
+
+---
+
+#### 25. Matriz de grupos de información y exposición
+
+| Grupo                           | Por defecto                                       | Apertura adicional             | Regla                                               |
+| ------------------------------- | ------------------------------------------------- | ------------------------------ | --------------------------------------------------- |
+| identificador de evento o caso  | minimizado si la existencia es visible            | no necesariamente              | no confirma existencia a actores no autorizados     |
+| categoría auditable             | visible si el evento es visible                   | no                             | usa catálogo canónico                               |
+| estado de investigación         | visible si el caso es visible                     | no                             | no expone contenido del caso                        |
+| condiciones transversales       | visibles según política                           | no o parcial                   | no revelan motivo sensible no autorizado            |
+| proceso y tipo de recurso       | minimizados                                       | sí, para detalle exacto        | el tipo no concede acceso al recurso                |
+| `resource_id` exacto            | oculto o minimizado                               | sí                             | requiere objeto y relación autorizados              |
+| actor efectivo                  | oculto, seudonimizado o minimizado según política | sí                             | identidad no se revela solo por conocer el evento   |
+| principal técnico/servicio      | minimizado                                        | sí                             | se diferencia del actor humano                      |
+| dispositivo, sede, área         | no por defecto                                    | sí                             | solo si la finalidad investigativa lo necesita      |
+| valores antes/después           | no por defecto                                    | sí                             | mostrar solo campos necesarios; no payload completo |
+| hipótesis y hallazgos           | no en lista general                               | sí dentro del caso             | conservan tipo y estado                             |
+| evidencia preservada            | solo referencia/metadatos mínimos                 | sí mediante capacidad separada | preservar no equivale a leer                        |
+| log técnico                     | solo referencia                                   | sí mediante capacidad separada | auditoría no equivale a log                         |
+| secretos, tokens y credenciales | no                                                | no en vista ordinaria          | nunca se convierten en detalle rutinario            |
+| exportación                     | no como consecuencia de lectura                   | acción separada                | aplica protección de salida                         |
+
+---
+
+#### 26. Acciones de interfaz
+
+| Acción                                 | Resultado permitido                                               | Decisión                         |
+| -------------------------------------- | ----------------------------------------------------------------- | -------------------------------- |
+| buscar                                 | consultar un universo autorizado                                  | no muta estados                  |
+| filtrar                                | reducir resultados autorizados                                    | no amplía alcance                |
+| ordenar                                | reorganizar resultados visibles                                   | no altera cronología fuente      |
+| abrir evento                           | mostrar proyección autorizada                                     | reevalúa campos                  |
+| abrir investigación                    | mostrar espacio del caso                                          | reevalúa caso y relación         |
+| expandir contexto                      | revelar detalle adicional permitido                               | no crea autoridad                |
+| abrir evidencia                        | acceder a fuente protegida si existe capacidad independiente      | no hereda desde el caso          |
+| abrir log protegido                    | acceder a detalle mínimo si existe capacidad independiente        | no hereda desde auditoría        |
+| correlacionar visualmente              | presentar referencias ya soportadas                               | no crea causalidad               |
+| exportar                               | producir salida solo si existe autorización específica            | no hereda desde lectura          |
+| cerrar investigación                   | ejecutar únicamente mediante capacidad y autoridad independientes | no hereda desde ser investigador |
+| reabrir investigación                  | registrar transición vinculada cuando esté autorizada             | no sobrescribe cierre            |
+| eliminar u ocultar auditoría histórica | no disponible como acción ordinaria                               | prohibido                        |
+| sobrescribir evidencia preservada      | no disponible                                                     | prohibido                        |
+
+---
+
+#### 27. Estados de experiencia y recuperación
+
+La interfaz materializa los siguientes estados visuales sin crear estados de negocio:
+
+##### 27.1 Cargando alcance
+
+- no presenta datos de una sesión o consulta anterior;
+- evita placeholders que parezcan resultados reales;
+- anuncia que la autorización y el alcance están resolviéndose.
+
+##### 27.2 Sin resultados autorizados
+
+Mensaje base: **No hay resultados disponibles para los filtros y el alcance actuales.**
+
+No diferencia entre no existe y existe pero no puede conocerlo cuando esa distinción filtraría información.
+
+##### 27.3 Recurso no disponible
+
+Para enlaces directos, identificadores o referencias que no pueden resolverse de forma visible:
+
+**El recurso no está disponible para el alcance actual.**
+
+No confirma causa interna si esa causa revela existencia o clasificación.
+
+##### 27.4 Fuente parcial
+
+Cuando una fuente autorizada está temporalmente incompleta:
+
+- se muestran solo regiones verificables;
+- las regiones afectadas se marcan **No disponible**;
+- no se representa ausencia como `0`;
+- no se infieren estados a partir de una fuente faltante.
+
+##### 27.5 Autorización vencida o revocada
+
+- se retira el detalle sensible;
+- se conserva únicamente el contexto que siga autorizado;
+- una acción en curso no se ejecuta con una decisión obsoleta;
+- la persona puede reintentar la evaluación si la experiencia futura lo soporta.
+
+##### 27.6 Registro cambiado durante la consulta
+
+Si la fuente informa una versión o estado diferente al abierto:
+
+- se muestra que el registro cambió;
+- se evita ejecutar una acción sobre una representación obsoleta;
+- se solicita recargar o reconciliar antes de actuar.
+
+##### 27.7 Error de fuente
+
+El error de una fuente no se convierte en sin eventos, sin evidencia o caso limpio. La interfaz comunica indisponibilidad sin exponer detalles técnicos innecesarios.
+
+---
+
+#### 28. Navegación y deep links
+
+Reglas:
+
+1. un enlace desde el tablero de gobierno puede transportar una referencia opaca, pero abrir el destino exige nueva evaluación;
+2. una referencia desde retención o legal hold no concede lectura de investigación ni evidencia;
+3. una referencia desde una investigación a un evento no concede acceso a todos los eventos correlacionados;
+4. una URL futura no debe incluir payloads, secretos, nombres sensibles, razones investigativas ni evidencia;
+5. parámetros de filtro no son autoridad;
+6. bookmarks no congelan autorización;
+7. volver atrás no debe restaurar visualmente detalle sensible si la decisión ya no es vigente;
+8. notificaciones o alertas externas solo podrán incluir el mínimo necesario y deberán volver a autorizar al abrir.
+
+---
+
+#### 29. Exportación, copia e impresión
+
+El explorador trata toda salida como acción independiente.
+
+Una eventual exportación deberá resolver, según contrato:
+
+- actor;
+- finalidad;
+- alcance;
+- filtros;
+- periodo;
+- campos;
+- cantidad;
+- formato;
+- clasificación;
+- destino;
+- destinatario cuando aplique;
+- resultado.
+
+Reglas:
+
+1. `READ` o equivalente no implica `EXPORT`;
+2. el conjunto exportado nunca puede exceder la población y campos autorizados;
+3. una vista filtrada no convierte automáticamente ese filtro en autorización de copia;
+4. el nombre de archivo futuro no debe filtrar información sensible innecesaria;
+5. una exportación de auditoría conserva la protección de su fuente;
+6. la copia de evidencia preservada se gobierna además por la autoridad específica sobre evidencia;
+7. si la autorización de salida no puede resolverse, el control no se ofrece o produce denegación segura.
+
+---
+
+#### 30. Minimización, privacidad y no inferencia
+
+La experiencia aplica:
+
+- contenido sensible oculto por defecto;
+- identificación progresiva de actores;
+- masking o reducción de precisión cuando corresponda;
+- ausencia de secretos y credenciales en la vista ordinaria;
+- no exposición de valores no necesarios en tooltips, títulos, breadcrumbs o mensajes;
+- no exposición de casos ocultos mediante autocompletado;
+- no exposición de conteos globales antes de autorización;
+- no diferenciación observable entre inexistente y no autorizado cuando esa diferencia sea sensible;
+- no persistencia conceptual de un desbloqueo global de detalle;
+- no reutilización de una finalidad investigativa para analítica, soporte u otra finalidad;
+- no presentación de un hash, watermark, sello o canal seguro como prueba de autorización empresarial.
+
+La interfaz no debe permitir que una persona deduzca un caso sensible por la forma de un error, la longitud de una lista, una opción de filtro o una referencia correlacionada oculta.
+
+
+---
+
+#### 31. Accesibilidad y comprensión
+
+El explorador debe ser operable y comprensible sin depender de color, hover o memoria del usuario.
+
+Requisitos de experiencia:
+
+1. categorías, estados, condiciones y niveles de detalle tienen texto visible;
+2. iconos y colores son redundantes con etiquetas;
+3. controles de expansión comunican si una región está cerrada, disponible o restringida;
+4. navegación por teclado conserva orden lógico;
+5. el foco vuelve a una posición predecible al cerrar un detalle;
+6. tablas y listas conservan encabezados y relaciones semánticas;
+7. la cronología ofrece equivalente textual;
+8. timestamps muestran zona o referencia temporal cuando la fuente pueda aportarla;
+9. oculto, no disponible, parcial y sin resultados no se representan con el mismo mensaje si la distinción puede hacerse sin filtrar información;
+10. una alerta de conflicto, legal hold o preservación no depende solo del color;
+11. el detalle sensible nunca se expande automáticamente por recibir foco;
+12. lectores de pantalla no reciben texto oculto que el usuario visual no esté autorizado a conocer.
+
+---
+
+#### 32. `INFO-AUDIT-INVESTIGATION-EXPLORER-STATE-PROJECTION-001`
+
+La proyección visual queda cerrada con los siguientes universos:
+
+```text
+10 categorías auditables
++
+9 estados principales de investigación
++
+6 condiciones transversales
++
+4 tipos investigativos
++
+6 estados de hallazgo
+=
+35 valores canónicos proyectados sin crear estados de negocio nuevos
+```
+
+Reglas de proyección:
+
+1. el código canónico permanece disponible para trazabilidad cuando sea apropiado;
+2. la etiqueta humana puede simplificar lenguaje, no significado;
+3. una condición transversal no sustituye el estado principal;
+4. un tipo investigativo no sustituye el estado del hallazgo;
+5. un hallazgo `INCONCLUSIVE` no se presenta como confirmado ni descartado;
+6. `REOPENED` no borra `CLOSED`; representa una nueva transición vinculada;
+7. `LEGAL_HOLD_ACTIVE` no se interpreta como culpabilidad, incumplimiento o hallazgo;
+8. `PRESERVATION_PENDING` no se interpreta como pérdida probada de evidencia;
+9. `AUDIT_EMERGENCY_ACCESS` no implica que el acceso haya sido legítimo o ilegítimo por sí solo; el resultado y la autorización deben conservarse separados.
+
+---
+
+#### 33. `INFO-AUDIT-INVESTIGATION-EXPLORER-BOUNDARY-MATRIX-001`
+
+| Frontera               | Este explorador hace                                         | Este explorador no hace                                         |
+| ---------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| auditoría empresarial  | busca y proyecta eventos autorizados                         | no reemplaza el contrato de evento                              |
+| logs técnicos          | muestra referencia y detalle mínimo autorizado               | no se convierte en SIEM ni visor universal de logs              |
+| investigación          | explora caso, estado, alcance, evidencia, hallazgos y cierre | no inventa autoridad de investigación                           |
+| evidencia preservada   | muestra manifiesto y contenido autorizado                    | no presupone lectura, copia, liberación o disposición           |
+| retención / legal hold | proyecta bloqueos y referencias                              | no cambia políticas ni libera holds por inferencia              |
+| ciclo documental       | enlaza recursos y versiones autorizados                      | no edita el registro propietario                                |
+| autorización           | presenta el resultado de decisiones vigentes                 | no calcula permisos localmente                                  |
+| exportación            | ofrece acción solo bajo control separado                     | no deriva exportación desde lectura                             |
+| emergencia             | presenta evento y contexto autorizado                        | no administra credenciales de contingencia                      |
+| integración futura     | conserva referencias lógicas consumibles                     | no define SIEM, DLP, object storage, email ni otros adaptadores |
+| Supabase               | no aplica cambios físicos                                    | no crea tablas, RLS, RPC, funciones, triggers ni migraciones    |
+| catálogo de pantallas  | reutiliza `VSCREEN-0122`                                     | no crea ni renumera `VSCREEN-*`                                 |
+
+---
+
+#### 34. Handoff a implementación posterior
+
+Una fase de implementación podrá materializar este diseño solo después de resolver, desde sus fuentes técnicas vigentes:
+
+- rutas físicas existentes;
+- componentes y layouts reales;
+- contratos de servidor;
+- permisos canónicos concretos;
+- consultas y paginación;
+- fuentes de auditoría;
+- fuentes de investigación;
+- sistemas de logs;
+- almacenamiento de evidencia;
+- integraciones;
+- política de caché;
+- observabilidad;
+- pruebas;
+- rollback cuando aplique.
+
+Esta tarea no inventa ninguno de esos elementos.
+
+La implementación deberá preservar como mínimo:
+
+```text
+AUTH BEFORE QUERY
+AUTH BEFORE DETAIL
+AUTH BEFORE EVIDENCE
+AUTH BEFORE OUTPUT
+AUTH BEFORE CASE ACTION
+NO DESTRUCTIVE HISTORY EDIT
+NO HIDDEN-RESOURCE INFERENCE
+```
+
+---
+
+#### 35. Criterios de aceptación materializados
+
+1. [x] Existe un explorador concreto para auditoría e investigaciones dentro de VISO.
+2. [x] Se reutiliza `VSCREEN-0122` y se crean 0 pantallas y 0 rutas nuevas.
+3. [x] Auditoría e investigaciones se presentan como dos modos lógicos sin crear autoridades paralelas.
+4. [x] Los ocho contratos de dominio de auditoría e investigación se consumen sin redefinirlos.
+5. [x] Los seis contratos de autorización reforzada se consumen sin redefinirlos.
+6. [x] Las diez categorías mínimas de acciones auditables están proyectadas.
+7. [x] Los nueve estados principales de investigación están proyectados.
+8. [x] Las seis condiciones transversales están proyectadas.
+9. [x] Los cuatro tipos `FACT`, `HYPOTHESIS`, `FINDING` y `LIMITATION` permanecen diferenciados.
+10. [x] Los seis estados de hallazgo están cubiertos.
+11. [x] La vista inicial no abre un feed global irrestricto.
+12. [x] Filtros y autocompletado se calculan después de autorización.
+13. [x] Búsqueda por referencia directa no filtra la diferencia entre inexistencia y falta de autoridad cuando esa diferencia sea sensible.
+14. [x] Un evento de auditoría no se confunde con log, evidencia, comando, evento de dominio o caso investigativo.
+15. [x] La correlación conserva identidades y no inventa causalidad.
+16. [x] La cronología representa conflictos de tiempo como no concluyentes cuando corresponda.
+17. [x] Los logs completos no se exponen por defecto.
+18. [x] La evidencia preservada no se abre por el solo hecho de conocer el caso.
+19. [x] `PRESERVATION_PENDING` bloquea cualquier presentación de corrección como segura antes de preservar fuentes.
+20. [x] Legal hold y retención se respetan como restricciones independientes.
+21. [x] La persona implicada no obtiene autoridad para alterar evidencia ni cerrar su propio caso.
+22. [x] El cierre exige capacidad, independencia, criterios resolubles y estado compatible.
+23. [x] La reapertura conserva el cierre anterior y crea una transición vinculada.
+24. [x] El acceso de emergencia permanece visible y trazable sin convertirse en permiso universal.
+25. [x] La divulgación progresiva se implementa como evaluación por profundidad y campo, no como permiso acumulativo.
+26. [x] Lectura, exportación, copia, impresión y compartición permanecen capacidades distintas.
+27. [x] La interfaz no crea estados de negocio nuevos.
+28. [x] Los 69 procesos y 332 `DOCCTX-*` se consumen por referencia sin duplicar el inventario.
+29. [x] Los estados de carga, vacío, fuente parcial, autorización revocada, recurso no disponible y cambio concurrente están definidos.
+30. [x] Accesibilidad, minimización y no inferencia están incorporadas al contrato de experiencia.
+31. [x] No se define implementación física, ruta, endpoint, tabla, bucket, RLS, RPC, función, trigger, job o integración.
+32. [x] La siguiente tarea queda únicamente reservada.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya protege expresamente la administración segregada de auditorías e investigaciones en VISO, la preservación de fuentes antes de correcciones, la prohibición de cierre propio por una persona implicada y la obligación de no exponer por defecto contenido sensible, logs completos ni datos innecesarios. Esta tarea materializa esas reglas existentes como experiencia de exploración, divulgación progresiva, estados visuales y fronteras de navegación; no introduce un comportamiento verificable nuevo fuera de esa cobertura.
+
+- Requisitos creados: **0**.
+- Requisitos modificados: **0**.
+- Requisitos diferidos: **0**.
+- Requisitos descartados: **0**.
+- Requisitos obsoletos: **0**.
+- Copia adicional del registro canónico: **no corresponde**.
+
+---
+
+#### 37. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+`INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada`
+
+**TAREA ACTUAL APROBADA**
+
+`INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`INFO-INT-001 — Diseñar integración con e-signature, email, object storage, SIEM, DLP, HRIS y finance`
+
