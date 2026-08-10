@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **675** |
+| Tareas aprobadas | **676** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **919** |
+| Tareas no iniciadas | **918** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.35% (675/1594)** |
+| Porcentaje de completamiento | **42.41% (676/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica** |
-| Tarea actual | **DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación** |
+| Última tarea aprobada | **DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación** |
+| Tarea actual | **DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad** |
+| Siguiente tarea | **DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 99 de 157 aprobadas; DATA-DOM-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 100 de 157 aprobadas; DATA-DOM-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica |
-| Tarea actual | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad |
+| Última aprobada | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación |
+| Tarea actual | `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 99 DE 157 APROBADAS — ACTUAL DATA-DOM-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 100 DE 157 APROBADAS — ACTUAL DATA-DOM-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
-        ↓
-TAREA ACTUAL
 DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 99 de 157 tareas aprobadas
+CARRIL NEXO — 100 de 157 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **675** |
+| Aprobadas | **676** |
 | En propuesta | **0** |
-| No iniciadas | **919** |
+| No iniciadas | **918** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.35% (675/1594)** |
+| Porcentaje de completamiento | **42.41% (676/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1564,7 +1564,7 @@
 | ✅ APROBADA | `DATA-DOM-003` | Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-004` | Definir capa semántica y registro canónico de métricas e indicadores | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-005` | Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-006` | Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-006` | Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-007` | Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-008` | Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-009` | Definir analítica de ventas, demanda, precios, promociones y canales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |

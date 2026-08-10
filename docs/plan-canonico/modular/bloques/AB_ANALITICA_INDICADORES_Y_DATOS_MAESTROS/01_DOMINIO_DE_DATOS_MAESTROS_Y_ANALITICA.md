@@ -2270,7 +2270,817 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación`
 
 
-### [ ] DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
+### ✅ DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica` — APROBADA
+**Tarea siguiente:** `DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de recopilación, ingestión, transformación, backfill, reconciliación y linaje para fuentes internas, externas y derivados analíticos
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, replays, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato común mediante el cual Vento OS recopilará, recibirá, validará, transformará, reconstruirá y reconciliará datos sin convertir una copia, un archivo, una vista, una importación, un snapshot o un modelo analítico en una nueva fuente de verdad.
+
+La tarea cierra documentalmente la cadena:
+
+```text
+FUENTE PROPIETARIA
+→ EVENTO / API / VISTA / EXPORTACIÓN CONTROLADA
+→ RECOPILACIÓN
+→ INGESTIÓN
+→ VALIDACIÓN CONTRACTUAL
+→ TRANSFORMACIÓN DETERMINISTA
+→ CAPA HISTÓRICA O SNAPSHOT APROBADO
+→ RECONCILIACIÓN
+→ MODELO / MÉTRICA / REPORTE
+```
+
+El contrato debe permitir reconstruir qué dato entró, desde qué autoridad, con qué identidad y versión, qué transformaciones recibió, qué quedó rechazado o en cuarentena, qué corrección o backfill ocurrió y cómo se demostró que el resultado concilia con su fuente.
+
+Regla cardinal:
+
+```text
+MISMA FUENTE EVIDENCIADA
++ MISMO CORTE
++ MISMAS VERSIONES DE CONTRATO Y TRANSFORMACIÓN
++ MISMO CONTEXTO
+=
+MISMO RESULTADO DE INGESTIÓN Y TRANSFORMACIÓN
+```
+
+Una carga repetida no podrá crear nuevos hechos por el solo hecho de ejecutarse nuevamente.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda definido el contrato `DATA-DOM-006` con los siguientes resultados:
+
+- cuatro mecanismos de entrada canónicos heredados del flujo aprobado: evento, API, vista y exportación controlada;
+- separación obligatoria entre fuente propietaria, evidencia original, copia técnica, staging, transformación, proyección, snapshot y resultado analítico;
+- contrato mínimo de recopilación e ingestión con identidad de fuente, claves, versión de esquema, cobertura, corte, tiempos, procedencia, idempotencia y evidencia;
+- reglas de evolución de esquema y compatibilidad sin reinterpretación silenciosa;
+- transformación determinista, versionada, no destructiva y reproducible;
+- tratamiento explícito de duplicados, integridad referencial, valores ausentes, cuarentena y rechazos;
+- reglas no destructivas para datos tardíos, replay, backfill, corrección y reconstrucción;
+- conciliación obligatoria entre fuente, aceptados, rechazados, duplicados, cuarentena y resultado materializado;
+- linaje hasta la evidencia de origen y la versión de transformación;
+- materialización de las 15 de 15 familias de hechos, eventos y representaciones heredadas de `DATA-DOM-005`;
+- materialización de decisiones de ingestión y reconciliación para los 62 de 62 objetos maestros y de referencia heredados de `DATA-DOM-002` y `DATA-DOM-003`;
+- preservación de los tres objetos AURA en estado `BLOQUEADO` sin fingir una fuente operativa;
+- materialización del contrato observado de asistencia sobre cuatro fuentes internas y sus 14 métricas registradas;
+- materialización del contrato de importación externa controlada para la convivencia con Makos/POS externo, sin declarar una integración automática inexistente;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+FUENTE DE VERDAD
+≠
+MECANISMO DE EXTRACCIÓN
+≠
+COPIA DE INGESTIÓN
+≠
+STAGING
+≠
+MODELO TRANSFORMADO
+≠
+SNAPSHOT
+≠
+REPORTE
+```
+
+```text
+FECHA DEL HECHO
+≠
+FECHA EMPRESARIAL
+≠
+FECHA DE RECEPCIÓN
+≠
+FECHA DE PROCESAMIENTO
+≠
+FECHA DE CORRECCIÓN
+≠
+FECHA DE CORTE
+```
+
+```text
+REINTENTO
+≠
+REPLAY
+≠
+BACKFILL
+≠
+CORRECCIÓN
+≠
+RESTATEMENT
+```
+
+```text
+DUPLICADO
+≠
+NUEVA VERSIÓN
+≠
+NUEVO HECHO
+≠
+CORRECCIÓN DEL HECHO
+```
+
+```text
+CERO
+≠
+NULO
+≠
+NO APLICA
+≠
+DESCONOCIDO
+≠
+NO RECIBIDO
+≠
+DATO PENDIENTE
+```
+
+Una transformación puede derivar una nueva representación, pero no adquiere autoridad para corregir silenciosamente la fuente.
+
+---
+
+#### 4. Mecanismos canónicos de entrada
+
+El flujo aprobado admite exactamente cuatro mecanismos lógicos de entrada. Son mecanismos de transporte o lectura, no nuevas autoridades empresariales.
+
+|    # | Mecanismo              | Uso permitido                                                  | Evidencia mínima                                                                                                                                              | Regla de autoridad                                                                                   | Estado         |
+| ---: | ---------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | Evento                 | recibir un hecho o cambio producido por una fuente propietaria | identidad del evento o registro, fuente, tiempo de ocurrencia, tiempo de recepción, versión y correlación                                                     | el productor propietario conserva autoridad sobre el hecho; la cola o consumidor no se vuelve fuente | `ESPECIFICADO` |
+|    2 | API                    | consultar o recibir datos mediante contrato de servicio        | sistema/proveedor, operación, versión, parámetros materiales, respuesta o referencia verificable, timestamps y estado                                         | la API transporta la representación autorizada; no redefine el significado del objeto                | `ESPECIFICADO` |
+|    3 | Vista                  | leer una proyección gobernada de datos existentes              | fuente lógica, definición/versionado aplicable, corte, filtros y dependencias                                                                                 | una vista es proyección; no se corrige como maestro ni sustituye los hechos que agrega               | `ESPECIFICADO` |
+|    4 | Exportación controlada | ingresar archivo o exportación obtenida de una fuente aprobada | archivo/payload original cuando corresponda, fuente, periodo, versión/formato, hash o evidencia equivalente, actor/proceso de recepción y cobertura declarada | el archivo es evidencia transportada; no adquiere autoridad por haber sido importado                 | `ESPECIFICADO` |
+
+**Reconciliación:** 4 mecanismos esperados; 4 materializados; 0 faltantes; 0 duplicados.
+
+Un webhook se trata como entrega de evento o API según su contrato. Un archivo plano se trata como exportación controlada. Un backfill no constituye un quinto mecanismo: reutiliza una fuente y un mecanismo aprobados con un periodo histórico y una finalidad explícitos.
+
+---
+
+#### 5. Contrato mínimo de recopilación e ingestión
+
+Toda recopilación deberá fijar, cuando aplique al mecanismo y al dominio:
+
+- sistema, dominio y propietario de la fuente;
+- objeto, hecho o familia de datos transportada;
+- rol de la fuente: autoridad, evidencia externa, proyección o derivado;
+- identidad del registro fuente o claves que permitan correlacionarlo sin inventar identidad;
+- claves externas y crosswalk aplicable cuando exista un sistema externo;
+- versión del contrato y del esquema de entrada;
+- periodo o ventana solicitada;
+- fecha y hora de corte de la extracción;
+- fecha de ocurrencia del hecho;
+- fecha empresarial derivada conforme a `DATA-DOM-005`;
+- fecha de recepción;
+- fecha de procesamiento;
+- zona horaria y calendario cuando afecten el significado;
+- cobertura esperada y cobertura observada;
+- unidad, moneda o escala cuando correspondan;
+- estado de la fuente y evidencia de procedencia;
+- identidad de lote, corrida o solicitud cuando el mecanismo la provea o el proceso la necesite para idempotencia;
+- regla de deduplicación y correlación;
+- política de valores ausentes y estados no equivalentes;
+- política de cuarentena y rechazo;
+- versión de transformación aplicada;
+- resultado de conciliación;
+- linaje hacia el original y hacia los derivados autorizados.
+
+Ningún campo de la lista obliga a crear una columna física con ese nombre. La representación técnica se decide en la arquitectura e implementación posteriores.
+
+---
+
+#### 6. Autoridad, copia original y staging
+
+Reglas:
+
+1. la fuente propietaria conserva el dato empresarial o hecho que le corresponde;
+2. una copia de ingestión no se convierte en fuente por estar más disponible o ser más fácil de consultar;
+3. cuando la trazabilidad lo requiera, el valor externo original, archivo o payload se conserva separado de la forma canónica o derivada;
+4. una normalización, parser o mapeo nunca sobrescribe la evidencia externa necesaria para conciliación;
+5. staging puede contener datos inválidos o incompletos y por ello no es una superficie certificada;
+6. una vista, caché o modelo analítico se reconstruye desde fuentes gobernadas y no se edita para corregir el origen;
+7. una fuente no autorizada, hoja paralela o archivo informal no se promueve a autoridad por conveniencia;
+8. cuando dos fuentes reclamen autoridad sobre el mismo atributo, se aplica la frontera de propiedad aprobada; no se usa precedencia por última escritura;
+9. los crosswalks físicos y claves externas pertenecen a `DATA-INT-003` y no se inventan en esta tarea.
+
+---
+
+#### 7. Identidad, idempotencia y duplicados
+
+La ingestión deberá distinguir:
+
+- identidad empresarial o canónica del objeto;
+- clave técnica de la fuente;
+- clave externa cuando exista;
+- identidad del evento o movimiento cuando el dominio la defina;
+- identidad de la operación de ingestión o lote cuando sea necesaria para reintentos;
+- versión del contenido cuando el mismo registro admite revisiones legítimas.
+
+Reglas:
+
+1. repetir el mismo evento, archivo, página, lote o payload con la misma identidad y contenido no crea otro hecho;
+2. la misma identidad con contenido materialmente distinto genera conflicto, nueva versión o corrección según el contrato propietario; nunca se resuelve por sobrescritura silenciosa;
+3. igualdad de nombre, monto, timestamp aproximado o texto normalizado no prueba duplicidad;
+4. deduplicación no autoriza fusión de maestros; la identidad y fusión permanecen gobernadas por `DATA-DOM-003`;
+5. una clave de reintento no reemplaza la identidad empresarial;
+6. los duplicados detectados se cuentan y conservan como resultado de la corrida, no se ocultan para hacer cuadrar totales;
+7. un replay de una fuente ya procesada debe producir el mismo conjunto aceptado para las mismas versiones y contexto, salvo correcciones explícitas.
+
+---
+
+#### 8. Evolución y versión de esquema
+
+Cada fuente deberá declarar una versión o evidencia suficiente para reconocer la forma de los datos que entrega.
+
+Se distinguen:
+
+- cambio compatible que agrega información sin alterar el significado existente;
+- cambio de representación que requiere adaptador o mapeo versionado;
+- cambio incompatible que modifica tipos, claves, granularidad, semántica o población;
+- dato desconocido para la versión del consumidor.
+
+Reglas:
+
+1. un cambio incompatible no se consume usando el parser anterior por aproximación;
+2. un campo nuevo no se interpreta como equivalente a otro campo histórico por nombre parecido;
+3. los campos eliminados o renombrados requieren mapeo explícito cuando afecten continuidad histórica;
+4. el contrato preserva qué versión produjo cada carga;
+5. una transformación dependiente de un esquema no disponible queda bloqueada o en cuarentena;
+6. la compatibilidad física y despliegue se materializan en tareas de integración/arquitectura, no en esta tarea documental.
+
+---
+
+#### 9. Transformación determinista y no destructiva
+
+Toda transformación aprobada deberá ser reproducible con:
+
+```text
+ENTRADA EVIDENCIADA
++ VERSIÓN DE ESQUEMA
++ VERSIÓN DE REGLAS
++ CONTEXTO
++ CORTE
+=
+SALIDA DETERMINISTA
+```
+
+Reglas:
+
+1. la transformación no altera el valor original cuando este deba preservarse;
+2. las conversiones de unidad o moneda declaran factor, fuente, vigencia y precisión aplicables;
+3. los joins usan identidades y relaciones aprobadas, no etiquetas visibles;
+4. una dimensión histórica se resuelve con la vigencia aplicable al hecho conforme a `DATA-DOM-005`;
+5. una relación ausente no se completa con el maestro actual por defecto;
+6. una corrección de mapeo produce una nueva ejecución o reconstrucción trazable; no edita un resultado histórico publicado;
+7. las normalizaciones textuales consumen los contratos de normalización vigentes y preservan originales cuando aplique;
+8. la misma transformación aplicada dos veces a la misma entrada y versión debe ser idempotente;
+9. la transformación no convierte una compensación, reversión o corrección en una nueva operación económica o física;
+10. el propietario técnico de la transformación no adquiere propiedad funcional sobre los datos fuente.
+
+---
+
+#### 10. Integridad referencial, faltantes y cuarentena
+
+Una entrada puede ser recibida técnicamente y aun no ser apta para materialización.
+
+Debe quedar explícito si un registro:
+
+- fue aceptado;
+- fue rechazado;
+- quedó en cuarentena;
+- fue detectado como duplicado;
+- quedó pendiente de una referencia;
+- quedó pendiente de una versión de esquema o mapping;
+- no aplica al contrato;
+- fue procesado con advertencia permitida.
+
+Reglas:
+
+1. una clave externa sin crosswalk válido no se fuerza contra un maestro por similitud;
+2. una referencia inexistente no se sustituye por un registro genérico para evitar el error;
+3. un importe o cantidad inválidos no se convierten automáticamente a cero;
+4. dato no recibido, dato desconocido y dato pendiente permanecen separados;
+5. la cuarentena conserva la evidencia original y la razón de bloqueo;
+6. corregir una fila en cuarentena genera una decisión trazable y vuelve a ejecutar la validación aplicable;
+7. `DATA-DOM-007` definirá umbrales, severidad, certificación y resolución de excepciones sin cambiar estas semánticas.
+
+---
+
+#### 11. Datos tardíos
+
+Un dato tardío conserva el tiempo del hecho original.
+
+Reglas:
+
+1. la recepción posterior no mueve silenciosamente el hecho al periodo de recepción;
+2. la fecha empresarial se determina con el contrato temporal de `DATA-DOM-005`;
+3. si el periodo está abierto, la fuente o modelo puede incorporar el hecho conforme al contrato y actualizar el corte correspondiente;
+4. si el periodo o snapshot fue publicado/cerrado, la llegada tardía no reescribe la publicación anterior;
+5. la necesidad de reexpresar un resultado publicado pertenece a `DATA-DOM-017`;
+6. la corrida registra cuánto llegó tarde y qué objetos/resultados fueron afectados;
+7. un timestamp ausente no se inventa para hacer entrar el registro en una ventana.
+
+---
+
+#### 12. Replay, backfill, corrección y reconstrucción
+
+##### 12.1. Reintento
+
+Repite una solicitud que puede no haber confirmado resultado. Debe conservar la misma identidad idempotente cuando el contrato lo permita.
+
+##### 12.2. Replay
+
+Vuelve a procesar evidencia ya recibida con el mismo contrato o con una versión declarada para comprobar o reconstruir un resultado.
+
+##### 12.3. Backfill
+
+Carga o reconstruye un periodo histórico que no estaba materializado o estaba incompleto, usando una fuente aprobada y evidencia suficiente.
+
+Todo backfill deberá declarar:
+
+- fuente y autoridad;
+- periodo exacto;
+- motivo;
+- cobertura esperada y límites conocidos;
+- esquema/formato de origen;
+- mappings y crosswalks aplicables;
+- reglas de duplicidad;
+- tratamiento de datos faltantes;
+- versión de transformación;
+- criterio de conciliación;
+- objetos y consumidores potencialmente afectados;
+- mecanismo de reversión o reconstrucción lógica cuando se implemente;
+- relación con snapshots o publicaciones previas.
+
+##### 12.4. Corrección
+
+Corrige un dato o relación cuya fuente propietaria reconoce como incorrecta. Conserva procedencia, original y decisión según el dominio.
+
+##### 12.5. Reconstrucción
+
+Recalcula una proyección, modelo o snapshot a partir de fuentes gobernadas. No crea hechos que la fuente no contenga.
+
+##### 12.6. Restatement
+
+Cuando una corrección, dato tardío o backfill obliga a reexpresar un resultado publicado, el gobierno de versiones y reproducibilidad corresponde a `DATA-DOM-017`.
+
+Queda prohibido usar un backfill para inventar historia, completar huecos por promedio, mover hechos entre identidades por similitud o borrar la evidencia de que el dato llegó después.
+
+---
+
+#### 13. Conciliación
+
+Toda ingestión material deberá poder explicar:
+
+```text
+REGISTROS / UNIDADES ESPERADAS
+=
+ACEPTADOS
++ RECHAZADOS
++ CUARENTENA
++ DUPLICADOS RECONOCIDOS
++ EXCLUSIONES JUSTIFICADAS
+```
+
+La igualdad anterior aplica solo cuando la fuente permite conocer una población esperada. Si no la permite, el contrato declara expresamente que la cobertura total no es comprobable y no inventa un denominador.
+
+La conciliación podrá incluir, según el dominio:
+
+- conteo de registros, líneas, eventos o archivos;
+- suma de cantidades;
+- suma de importes por moneda;
+- documentos o folios;
+- identidades externas;
+- ventanas temporales;
+- saldos inicial/final y movimientos cuando el dominio lo permita;
+- referencias sin resolver;
+- duplicados;
+- rechazos y cuarentena;
+- registros tardíos;
+- diferencias entre origen y resultado.
+
+Reglas:
+
+1. una diferencia no se cierra cambiando el dato para que cuadre;
+2. cada diferencia conserva causa, responsable, estado y resolución cuando se implemente el workflow;
+3. conciliación técnica no sustituye conciliación empresarial, fiscal o financiera cuando estas sean distintas;
+4. una corrida puede terminar con diferencias visibles; no se declara certificada por completar el procesamiento;
+5. los criterios de certificación pertenecen a `DATA-DOM-007`.
+
+---
+
+#### 14. Linaje y trazabilidad
+
+Todo resultado materializado deberá poder recorrer, según corresponda:
+
+```text
+RESULTADO
+→ VERSIÓN DE TRANSFORMACIÓN
+→ REGISTRO O CONJUNTO DE ENTRADA
+→ LOTE / SOLICITUD / CORTE
+→ MECANISMO DE ENTRADA
+→ FUENTE PROPIETARIA O EVIDENCIA EXTERNA
+```
+
+Para métricas y reportes, el linaje se extiende además hasta:
+
+- versión de métrica;
+- dimensiones y filtros;
+- fecha de corte;
+- snapshot o modelo consultado;
+- hechos y maestros de los que proviene.
+
+El linaje no concede acceso automático al detalle. La autorización se evalúa en cada nivel conforme a `DATA-AUTH-001` y `DATA-AUTH-002`.
+
+---
+
+#### 15. Matriz materializada de las 15 familias heredadas
+
+|    # | Familia heredada                                                         | Fuente propietaria                             | Contrato de ingestión                                                                                                                  | Backfill / corrección                                                                                             | Conciliación mínima                                                                                 | Estado         |
+| ---: | ------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | SHIFT, ATTENDANCE_EVENT, ATTENDANCE_CORRECTION                           | VISO / ANIMA según proceso                     | registros internos por identidad propia, tiempo del hecho y vigencia; programación y asistencia permanecen separadas                   | replay/backfill solo desde programación y hechos evidenciados; corrección laboral no sustituye el evento original | turnos por ventana, sesiones/eventos correlacionados, descansos, correcciones y diferencias         | `ESPECIFICADO` |
+|    2 | CONSENT_RECORD, CONTACT_VERIFICATION                                     | PASS y gobierno de privacidad                  | eventos/evidencias versionados por persona, finalidad/contacto, fuente y vigencia                                                      | backfill solo con evidencia de captura/verificación; retiro o corrección preserva historia                        | eventos recibidos, evidencias válidas, referencias de persona/contacto y registros no resolubles    | `ESPECIFICADO` |
+|    3 | LOYALTY_LEDGER_ENTRY, redención, ajuste de puntos                        | PASS / PULSO según proceso                     | movimientos idempotentes vinculados a cuenta, regla/versión y evento origen                                                            | replay no duplica movimientos; ajustes y reversión son movimientos explícitos                                     | movimientos, puntos/unidades cuando aplique, duplicados y saldo derivado reconciliable              | `ESPECIFICADO` |
+|    4 | solicitud, caso, cotización, orden, recepción, devolución de compra      | ORIGO                                          | cada objeto y línea conserva identidad, fuente, versión, timestamps y claves de proveedor/producto                                     | historia externa o manual solo se incorpora con documento/archivo fuente y mapping aprobado                       | cabeceras/líneas, cantidades/importes, estados, recepciones/devoluciones y referencias sin resolver | `ESPECIFICADO` |
+|    5 | lote, LPN, existencia, movimiento, conteo, ajuste                        | NEXO / FOGO según proceso                      | movimientos, conteos y ajustes son eventos; lote/LPN conservan identidad; existencia es derivado por corte                             | backfill reconstruye desde hechos disponibles; no inventa movimientos para cuadrar existencia                     | movimientos por producto/lote/LOC, conteos, ajustes, existencia derivada y diferencias              | `ESPECIFICADO` |
+|    6 | orden, lote, ejecución, consumo, merma y resultado productivo            | FOGO                                           | eventos productivos por ejecución real, versión de receta, recurso y cantidades medidas                                                | replay/backfill conserva ejecución y versión aplicable; corrección no recrea lote como nuevo                      | órdenes/lotes, consumos, salidas, mermas, resultados y balance permitido por el dominio             | `ESPECIFICADO` |
+|    7 | pedido, comanda, venta, pago, caja, devolución, entrega                  | PULSO                                          | objetos comerciales separados, líneas/partes conservadas e identidad de origen/canal                                                   | importaciones históricas y correcciones preservan fuente, estado y efectos; no colapsan venta/pago/entrega        | pedidos, líneas, ventas, pagos, caja, devoluciones, entregas, importes y estados por fuente         | `ESPECIFICADO` |
+|    8 | precio de venta, descuento, promoción vigente                            | PULSO; AURA solo propone intención promocional | reglas/versiones por oferta, contexto y vigencia; valor aplicado se conserva con el hecho                                              | reconstrucción usa la versión vigente en el momento histórico; no aplica precio actual retroactivamente           | reglas/versiones, vigencias y snapshots aplicados a líneas/transacciones                            | `ESPECIFICADO` |
+|    9 | SERVICE_CASE, reclamo, reserva, compensación, satisfacción, comunicación | VISO, PASS o PULSO según frontera              | casos/eventos independientes con actor, tiempo, relación y estado                                                                      | backfill solo desde expedientes/evidencias; corrección no reescribe declaración original                          | casos, interacciones, decisiones, comunicaciones, compensaciones y relaciones de origen             | `ESPECIFICADO` |
+|   10 | hecho económico, obligación, pago, aplicación, conciliación              | NUMERA                                         | hechos económicos separados de obligación, pago, aplicación y conciliación; moneda y entidad explícitas                                | replay idempotente; corrección/compensación no se presenta como nuevo hecho operativo                             | importes por moneda, documentos, pagos, aplicaciones, saldos y diferencias                          | `ESPECIFICADO` |
+|   11 | presupuesto, forecast, escenario                                         | NUMERA                                         | artefactos versionados por periodo, escenario y alcance; no se ingieren como hechos reales                                             | backfill conserva versión aprobada disponible; una nueva versión no sobrescribe la anterior                       | versiones, líneas/coordenadas, periodos, totales y estado de aprobación                             | `ESPECIFICADO` |
+|   12 | campaña, pieza publicada, oportunidad, interacción, publicación          | AURA objetivo                                  | no se habilita ingestión operativa mientras AURA continúe diferida                                                                     | no se autoriza backfill ni migración de autoridad desde fuentes no confirmadas                                    | no aplica hasta habilitación de la fuente; la futura cobertura deberá evidenciarse                  | `BLOQUEADO`    |
+|   13 | ticket, incidente, problema, cambio tecnológico                          | VISO / BLOQUE Z                                | expedientes/eventos TI separados y vinculados a servicio/aplicación/endpoint/recurso                                                   | replay de eventos no duplica expediente; correcciones conservan secuencia y evidencia                             | tickets/eventos/cambios por servicio, estado, tiempos y relaciones                                  | `ESPECIFICADO` |
+|   14 | PRINTER como clase de configuración, ASSET como clase de configuración   | PRINT-ARC / NEXO                               | no se ingiere como hecho analítico autónomo; se consumen las identidades y eventos de sus dominios propietarios                        | no aplica backfill de la proyección como si fuera hecho                                                           | no aplica como familia de hechos; se concilian eventos/objetos propietarios                         | `NO_APLICA`    |
+|   15 | métrica, KPI, dashboard, reporte, exportación, snapshot                  | BLOQUE AB sobre fuentes propietarias           | derivados y representaciones se reconstruyen desde hechos/maestros gobernados; nunca se ingieren como autoridad de sus propias fuentes | backfill/reconstrucción mantiene corte y versiones; restatement se gobierna en `DATA-DOM-017`                     | resultado contra hechos, versión de métrica, dimensiones, filtros, corte y calidad                  | `ESPECIFICADO` |
+
+**Reconciliación:** 15 familias esperadas; 15 materializadas; 0 faltantes; 0 duplicadas; 13 `ESPECIFICADO`; 1 `BLOQUEADO`; 1 `NO_APLICA`.
+
+---
+
+#### 16. Matriz de ingestión y reconciliación de los 62 objetos maestros y de referencia
+
+Regla común: una capa analítica ingiere o proyecta el identificador canónico, la vigencia y los atributos autorizados desde la fuente lógica aprobada. No crea una copia editable, no fusiona por texto y no reemplaza la autoridad del dominio.
+
+|    # | Objeto                        | Fuente lógica aprobada                                       | Decisión de ingestión / reconciliación                                                                                         | Estado         |
+| ---: | ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+|    1 | `ORGANIZATION_SCOPE`          | VISO                                                         | consumir identidad y vigencia desde VISO; reconciliar referencias por identificador canónico y contexto organizacional         | `ESPECIFICADO` |
+|    2 | `LEGAL_SUBJECT`               | VISO con evidencia externa aplicable                         | conservar autoridad interna y evidencia externa por atributo; una evidencia nueva no reemplaza historia sin decisión gobernada | `ESPECIFICADO` |
+|    3 | `BRAND`                       | VISO                                                         | consumir identidad/vigencia; nombres o etiquetas externas solo se mapean, no crean otra marca                                  | `ESPECIFICADO` |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | VISO con evidencia externa aplicable                         | ingerir estado empresarial y reconciliar evidencia autorizada sin convertir registro externo en autoridad total                | `ESPECIFICADO` |
+|    5 | `BUSINESS_LINE`               | VISO                                                         | consumir identidad/vigencia; no inferir sede o titular desde etiqueta                                                          | `ESPECIFICADO` |
+|    6 | `PHYSICAL_FACILITY`           | VISO con operación NEXO                                      | preservar identidad VISO y atributos físicos NEXO conforme a autoridad por atributo; reconciliar sin fusionar con sede         | `ESPECIFICADO` |
+|    7 | `OPERATIONAL_SITE`            | VISO                                                         | consumir identidad y vigencia territorial; relaciones históricas se resuelven al tiempo del hecho                              | `ESPECIFICADO` |
+|    8 | `ORGANIZATIONAL_AREA`         | VISO                                                         | consumir identidad y vigencia funcional; no sustituir zona física o estación                                                   | `ESPECIFICADO` |
+|    9 | `PHYSICAL_ZONE`               | NEXO con referencia VISO                                     | consumir identidad NEXO y relaciones con instalación/sede vigentes; no inferir autoridad funcional                             | `ESPECIFICADO` |
+|   10 | `WORKSTATION`                 | NEXO con contratos SHELL/AUTH-DEV cuando aplique             | consumir estación y relaciones técnicas autorizadas sin fusionarla con dispositivo o actor                                     | `ESPECIFICADO` |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | VISO con custodia NEXO                                       | preservar fuente, finalidad y vigencia; un punto externo no se promueve a sede por repetición histórica                        | `ESPECIFICADO` |
+|   12 | `PERSON_IDENTITY`             | VISO                                                         | consumir identidad empresarial; datos de otras fuentes se correlacionan sin fusión automática                                  | `ESPECIFICADO` |
+|   13 | `WORKER_PROFILE`              | VISO                                                         | consumir perfil y vigencia laboral; no sustituye identidad de persona                                                          | `ESPECIFICADO` |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | VISO                                                         | conservar cada vínculo y vigencia; backfill no mueve hechos a otra relación por estado actual                                  | `ESPECIFICADO` |
+|   15 | `CONTRACTUAL_POSITION`        | VISO                                                         | consumir referencia versionada/vigente; no derivar permisos                                                                    | `ESPECIFICADO` |
+|   16 | `BASE_ROLE`                   | SHELL                                                        | consumir referencia autorizativa desde SHELL; no derivar cargo o función operativa                                             | `ESPECIFICADO` |
+|   17 | `OPERATIONAL_ROLE`            | VISO con consumo del modelo de autorización                  | consumir función operativa y vigencia; correlacionar con autorización sin fusionar conceptos                                   | `ESPECIFICADO` |
+|   18 | `WORK_ASSIGNMENT`             | VISO                                                         | consumir asignación y vigencia histórica por sede/área/función; no usar solo asignación actual                                 | `ESPECIFICADO` |
+|   19 | `CUSTOMER_PERSON`             | PASS                                                         | consumir identidad cliente autorizada; contactos coincidentes no prueban identidad ni deduplicación                            | `ESPECIFICADO` |
+|   20 | `CUSTOMER_CONTACT`            | PASS                                                         | consumir contacto con tipo, verificación, fuente y vigencia; proteger detalle y no usarlo como identidad suficiente            | `ESPECIFICADO` |
+|   21 | `CUSTOMER_RELATIONSHIP`       | PASS                                                         | conservar relación por marca/alcance y vigencia; no equiparar con consentimiento                                               | `ESPECIFICADO` |
+|   22 | `CUSTOMER_PROFILE`            | PASS                                                         | consumir proyección autorizada del perfil; no convertir copias analíticas en superficie de edición                             | `ESPECIFICADO` |
+|   23 | `CUSTOMER_PREFERENCE`         | PASS                                                         | consumir preferencia y vigencia; no inferir autorización de marketing                                                          | `ESPECIFICADO` |
+|   24 | `LOYALTY_ACCOUNT`             | PASS                                                         | consumir identidad de cuenta; saldo se deriva del ledger y no reemplaza movimientos                                            | `ESPECIFICADO` |
+|   25 | `LOYALTY_PROGRAM_RULE`        | PASS                                                         | consumir regla y versión aplicable; movimientos históricos conservan la versión usada                                          | `ESPECIFICADO` |
+|   26 | `PRODUCTO_MAESTRO`            | NEXO                                                         | consumir identidad maestra; importaciones externas mapean mediante crosswalk sin renombrar o fusionar por texto                | `ESPECIFICADO` |
+|   27 | `VARIANTE`                    | NEXO                                                         | consumir identidad diferenciada; no colapsar con producto o presentación                                                       | `ESPECIFICADO` |
+|   28 | `PRESENTACION`                | NEXO                                                         | preservar producto, cantidad, unidad, multiplicador y contexto; etiqueta externa no determina identidad                        | `ESPECIFICADO` |
+|   29 | `UNIDAD_DE_MEDIDA`            | NEXO                                                         | consumir código/dimensión controlados; conversiones requieren contrato explícito y vigente                                     | `ESPECIFICADO` |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | NEXO                                                         | consumir referencia gobernada; no reclasificar hechos históricos con la etiqueta actual por defecto                            | `ESPECIFICADO` |
+|   31 | `TAXONOMIA_INVENTARIO`        | NEXO                                                         | consumir referencia y vigencia; no sustituye identidad de producto o política física                                           | `ESPECIFICADO` |
+|   32 | `TAXONOMIA_OPERACIONAL`       | NEXO                                                         | consumir referencia para segmentación; no alterar clasificación comercial                                                      | `ESPECIFICADO` |
+|   33 | `LOC`                         | NEXO                                                         | consumir identidad de ubicación y vigencia; movimientos históricos resuelven el LOC aplicable al hecho                         | `ESPECIFICADO` |
+|   34 | `ACTIVO_FISICO`               | NEXO                                                         | consumir identidad física, ubicación/condición autorizadas y vigencia; relaciones técnicas no cambian identidad                | `ESPECIFICADO` |
+|   35 | `CLASE_DE_ACTIVO`             | NEXO                                                         | consumir referencia gobernada; no inferir mantenimiento o identidad por clase                                                  | `ESPECIFICADO` |
+|   36 | `ESPECIFICACION_PRODUCTO`     | NEXO; FOGO para especificación productiva cuando corresponda | preservar versión/vigencia y autoridad por atributo; no reescribir recepciones/lotes pasados                                   | `ESPECIFICADO` |
+|   37 | `PROVEEDOR`                   | ORIGO                                                        | consumir identidad de proveedor; datos externos originales se conservan cuando soportan conciliación                           | `ESPECIFICADO` |
+|   38 | `CONTACTO_PROVEEDOR`          | ORIGO                                                        | consumir contacto separado del proveedor; coincidencia de persona/canal no fusiona proveedores                                 | `ESPECIFICADO` |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | ORIGO                                                        | consumir relación vigente; no equiparar con contrato, precio u oferta actual                                                   | `ESPECIFICADO` |
+|   40 | `CONDICION_COMERCIAL`         | ORIGO                                                        | consumir versión y vigencia; órdenes/recepciones conservan snapshot de la condición aplicada                                   | `ESPECIFICADO` |
+|   41 | `TAXONOMIA_COMPRA`            | ORIGO                                                        | consumir referencia gobernada; no sustituir taxonomías de producto, inventario o costo                                         | `ESPECIFICADO` |
+|   42 | `RECETA`                      | FOGO                                                         | consumir identidad y versión publicada aplicable; ejecución histórica conserva la versión usada                                | `ESPECIFICADO` |
+|   43 | `FAMILIA_PRODUCTIVA`          | FOGO                                                         | consumir referencia y vigencia; no sustituir categoría comercial o de inventario                                               | `ESPECIFICADO` |
+|   44 | `RUTA_PRODUCTIVA`             | FOGO                                                         | consumir ruta/versionado reusable; ejecución permanece hecho separado                                                          | `ESPECIFICADO` |
+|   45 | `RECURSO_PRODUCTIVO`          | FOGO con referencia NEXO cuando corresponda                  | consumir recurso funcional y correlacionar activo físico sin fusionar identidades                                              | `ESPECIFICADO` |
+|   46 | `COMMERCIAL_CHANNEL`          | PULSO                                                        | consumir referencia de canal; identificadores externos se mapean sin convertir cuenta externa en canal nuevo                   | `ESPECIFICADO` |
+|   47 | `CATEGORIA_COMERCIAL`         | PULSO                                                        | consumir taxonomía vigente; no cambiar stock o clasificación operativa                                                         | `ESPECIFICADO` |
+|   48 | `OFERTA_COMERCIAL`            | PULSO                                                        | consumir configuración vendible versionada; hechos conservan precio/condición aplicados por contexto                           | `ESPECIFICADO` |
+|   49 | `CENTRO_DE_COSTO`             | NUMERA                                                       | consumir identidad y vigencia económica; no inferir equivalencia con sede, área, marca o canal                                 | `ESPECIFICADO` |
+|   50 | `MONEDA`                      | NUMERA                                                       | consumir referencia monetaria; importes siempre preservan moneda y conversiones separadas                                      | `ESPECIFICADO` |
+|   51 | `PERIODO_ECONOMICO`           | NUMERA                                                       | consumir referencia y estado; no mezclar con periodos contable, fiscal u operativo                                             | `ESPECIFICADO` |
+|   52 | `PERIODO_CONTABLE`            | NUMERA o sistema contable autorizado según alcance vigente   | consumir referencia desde la autoridad vigente y conservar fuente; no asumir equivalencia con periodo económico                | `ESPECIFICADO` |
+|   53 | `PERIODO_FISCAL`              | NUMERA con autoridad externa aplicable                       | consumir referencia interna reconciliada con autoridad externa cuando aplique; conservar procedencia                           | `ESPECIFICADO` |
+|   54 | `CLASIFICACION_ECONOMICA`     | NUMERA                                                       | consumir referencia vigente; no redefinir el hecho operativo que clasifica                                                     | `ESPECIFICADO` |
+|   55 | `PERFIL_DE_MARCA`             | AURA objetivo                                                | no habilitar ingestión, backfill ni migración de autoridad hasta que AURA sea fuente operativa autorizada                      | `BLOQUEADO`    |
+|   56 | `AUDIENCIA`                   | AURA objetivo                                                | no materializar audiencia desde listas paralelas; requiere fuente AURA habilitada, finalidad y consentimiento                  | `BLOQUEADO`    |
+|   57 | `ACTIVO_DE_MARCA`             | AURA objetivo bajo gobierno documental                       | no migrar autoridad desde carpetas/copias sin la fuente objetivo habilitada y evidencia de derechos/vigencia                   | `BLOQUEADO`    |
+|   58 | `ENDPOINT`                    | BLOQUE Z / contrato TI-DOM-002                               | consumir identidad técnica administrada; no fusionar con activo físico o dispositivo compartido                                | `ESPECIFICADO` |
+|   59 | `SHARED_DEVICE`               | SHELL / contratos AUTH-DEV consumidos por BLOQUE Z           | consumir identidad lógica empresarial y vigencia; no inferir actor o endpoint                                                  | `ESPECIFICADO` |
+|   60 | `NETWORK_RESOURCE`            | BLOQUE Z                                                     | consumir identidad del recurso; IP/MAC/SSID aislados no determinan identidad ni fusión                                         | `ESPECIFICADO` |
+|   61 | `APPLICATION`                 | SHELL                                                        | consumir `app_code` e identidad canónica; repositorio, URL, ambiente o proveedor no sustituyen la aplicación                   | `ESPECIFICADO` |
+|   62 | `TECH_SERVICE`                | BLOQUE Z / TI-DOM-001                                        | consumir referencia estable y sus identidades de servicio aprobadas; no renumerar por cambios técnicos                         | `ESPECIFICADO` |
+
+**Reconciliación:** 62 objetos esperados; 62 materializados; 62 nombres canónicos únicos; 0 faltantes; 0 duplicados; 59 `ESPECIFICADO`; 3 `BLOQUEADO`.
+
+La distribución base de `DATA-DOM-002` permanece intacta: 43 datos maestros y 19 datos de referencia. Esta tarea no reclasifica objetos ni modifica la decisión de dimensión compartida.
+
+---
+
+#### 17. Contrato observado de asistencia
+
+La implementación vigente de `attendance-report` constituye una instancia observable de recopilación interna y proyección analítica. La función consulta mediante paginación ordenada las siguientes cuatro fuentes:
+
+```text
+scheduled_shifts
+attendance_sessions
+attendance_breaks
+attendance_geofence_events
+```
+
+Decisiones:
+
+1. VISO conserva la programación laboral y ANIMA los hechos de asistencia conforme a sus fronteras aprobadas;
+2. `attendance-report` es consumidor/proyector y no nueva fuente de verdad;
+3. cada consulta conserva el periodo solicitado, zona horaria, filtros autorizados y corte de ejecución;
+4. la paginación no altera el significado y debe producir el mismo conjunto para un mismo corte estable;
+5. sesiones, descansos y eventos geográficos no se fusionan con el turno programado;
+6. una corrección de asistencia se resuelve en la fuente propietaria y luego se refleja en una nueva consulta o reconstrucción;
+7. no se declara implementado un mecanismo histórico de backfill específico por la sola existencia del reporte;
+8. la certificación de frescura, completitud y reglas DQ pertenece a `DATA-DOM-007`.
+
+##### 17.1. Dependencias de las 14 métricas registradas
+
+| `metric_key`        | Entradas mínimas del contrato de asistencia                               | Tratamiento                                                                       |
+| ------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `scheduledShifts`   | `scheduled_shifts`                                                        | derivado; no se ingiere como fuente                                               |
+| `attendedShifts`    | `scheduled_shifts` + `attendance_sessions`                                | derivado; no se ingiere como fuente                                               |
+| `restDayCount`      | `scheduled_shifts`                                                        | derivado; no se ingiere como fuente                                               |
+| `lateCount`         | `scheduled_shifts` + `attendance_sessions`                                | derivado; no se ingiere como fuente                                               |
+| `noShowCount`       | `scheduled_shifts` + `attendance_sessions`                                | derivado; no se ingiere como fuente                                               |
+| `openCount`         | `scheduled_shifts` + `attendance_sessions`                                | derivado; no se ingiere como fuente                                               |
+| `missingCloseCount` | `scheduled_shifts` + `attendance_sessions`                                | derivado; certificación permanece bloqueada según `DATA-DOM-004`                  |
+| `autoCloseCount`    | `attendance_sessions`                                                     | derivado; no se ingiere como fuente                                               |
+| `departureCount`    | `scheduled_shifts` + `attendance_sessions` + `attendance_geofence_events` | derivado; no se ingiere como fuente                                               |
+| `scheduledMinutes`  | `scheduled_shifts`                                                        | derivado; no se ingiere como fuente                                               |
+| `netMinutes`        | `attendance_sessions` + `attendance_breaks`                               | derivado; no se ingiere como fuente                                               |
+| `incidentCount`     | `scheduled_shifts` + `attendance_sessions` + `attendance_geofence_events` | derivado compuesto; no se ingiere como fuente                                     |
+| `attendanceRate`    | `scheduledShifts` + `attendedShifts`                                      | derivado de métricas base; certificación permanece bloqueada según `DATA-DOM-004` |
+| `punctualityRate`   | `attendedShifts` + `lateCount`                                            | derivado de métricas base; certificación permanece bloqueada según `DATA-DOM-004` |
+
+**Reconciliación:** 14 claves esperadas; 14 materializadas; 14 únicas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 18. Contrato de importación externa controlada — Makos/POS externo
+
+La evidencia canónica vigente describe la convivencia actual con Makos/POS externo mediante importación manual de Excel y mapeo de ítems. No existe conexión automática confirmada y esta tarea no la presume.
+
+El contrato documental aplicable queda así:
+
+```text
+POS EXTERNO
+→ EXPORTACIÓN CONTROLADA
+→ EVIDENCIA / ARCHIVO ORIGINAL
+→ INGESTIÓN O STAGING
+→ VALIDACIÓN DE FORMATO Y COBERTURA
+→ MAPEO CONTRA IDENTIDADES CANÓNICAS
+→ CUARENTENA DE NO RESUELTOS
+→ TRANSFORMACIÓN AL CONTRATO DE VENTA APLICABLE
+→ RECONCILIACIÓN
+→ CONSUMIDORES AUTORIZADOS
+```
+
+Reglas:
+
+1. se conserva la procedencia y el archivo/payload original cuando sea necesario para auditoría y conciliación;
+2. producto externo y producto canónico se relacionan mediante mapping/crosswalk aprobado; coincidencia textual no autoriza identidad;
+3. una línea sin mapping válido queda en cuarentena y no genera silenciosamente inventario, fidelización o efecto financiero;
+4. cantidades, subtotal, impuestos, descuentos y devoluciones conservan su semántica de origen antes de cualquier transformación;
+5. un reintento del mismo archivo/lote no duplica ventas ni efectos;
+6. el periodo recuperable no se inventa: `DAT-01`, `DAT-02` y `DAT-03` conservan las preguntas ya existentes sobre exportación, fecha más antigua y detalle por producto;
+7. la definición técnica del adaptador, staging, backfill y corte pertenece a las tareas `INT-POS-*` aplicables;
+8. la transición futura a PULSO deberá emitir el mismo contrato canónico de venta sin crear doble fuente activa para una misma venta;
+9. esta tarea no ejecuta importaciones, backfills, mappings ni efectos reales.
+
+---
+
+#### 19. Backfill histórico por clase de fuente
+
+| Fuente disponible                               | ¿Permite backfill?                | Condición documental                                                        | Resultado si falta evidencia                            |
+| ----------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------- |
+| hechos internos con historia persistida         | sí                                | periodo, identidad, esquema, corte, transformación y conciliación definidos | `PENDIENTE_DE_EVIDENCIA` para la porción no demostrable |
+| eventos internos con log/replay verificable     | sí                                | identidad de evento, orden/correlación y deduplicación preservados          | no se recrea el evento por inferencia                   |
+| API externa con consulta histórica              | sí, si el proveedor lo permite    | versión, límites, ventana, paginación, evidencia y reconciliación           | se declara cobertura parcial o bloqueada                |
+| exportación controlada                          | sí                                | archivo original, fuente, periodo, formato, mapping y cobertura             | lo no exportado no se inventa                           |
+| vista/proyección actual sin historia subyacente | no por sí sola                    | requiere fuente histórica propietaria adicional                             | `BLOQUEADO` para reconstrucción histórica               |
+| snapshot publicado                              | no como fuente primaria de hechos | puede servir como evidencia del resultado publicado y para comparación      | no se desagrega para inventar hechos                    |
+| fuente AURA objetivo aún no operativa           | no                                | requiere habilitación canónica de AURA                                      | `BLOQUEADO`                                             |
+
+El backfill no se considera validado hasta que la implementación posterior demuestre conteos, cobertura, idempotencia, diferencias y rollback/reconstrucción aplicables.
+
+---
+
+#### 20. Reglas de snapshots, modelos y reconstrucción
+
+1. un snapshot conserva corte, contexto, dimensiones, filtros, versión de métricas y estado de calidad;
+2. la ingestión de nueva información no modifica silenciosamente snapshots históricos publicados;
+3. un modelo puede reconstruirse desde fuentes gobernadas sin promover el modelo a autoridad;
+4. una reconstrucción conserva qué versión de transformación y qué corte fueron usados;
+5. un snapshot de existencia, saldo o estado no reemplaza movimientos o ledger;
+6. un dashboard no puede ser usado como fuente para completar la misma métrica que muestra;
+7. `DATA-DOM-008` gobierna publicación y artefactos oficiales;
+8. `DATA-DOM-017` gobierna restatements, versiones históricas y reproducibilidad de resultados reexpresados;
+9. `DATA-INT-002` gobierna materialización técnica de modelos, consultas, caché y snapshots.
+
+---
+
+#### 21. Seguridad, privacidad y minimización
+
+El contrato de ingestión no amplía acceso.
+
+Reglas:
+
+- solo se recopilan atributos necesarios para la finalidad y consumidor autorizados;
+- datos personales, financieros, laborales y técnicos sensibles conservan clasificación y alcance;
+- archivos externos no se convierten en exportaciones internas de acceso amplio;
+- secretos, tokens o credenciales no se conservan como payload analítico por conveniencia;
+- la cuarentena mantiene el mismo o mayor nivel de protección que la fuente;
+- el drill-down y la evidencia requieren autorización independiente del agregado;
+- la identidad del actor o proceso técnico se registra cuando corresponda, pero no sustituye al propietario funcional;
+- las reglas de autorización detalladas pertenecen a `DATA-AUTH-001` a `DATA-AUTH-004`.
+
+---
+
+#### 22. Propiedad y segregación
+
+```text
+PROPIETARIO DEL DATO
+≠
+PROPIETARIO DEL CONTRATO DE INGESTIÓN
+≠
+IMPLEMENTADOR
+≠
+OPERADOR DE LA CARGA
+≠
+RESOLUTOR DE CUARENTENA
+≠
+CERTIFICADOR
+≠
+CONSUMIDOR
+```
+
+Esta tarea define semántica y obligaciones, no permisos técnicos.
+
+La segregación final entre definición, administración, certificación y publicación pertenece a `DATA-AUTH-003`. La calidad y aceptación de una corrida pertenecen a `DATA-DOM-007`. La materialización técnica de ingestión e integraciones pertenece a las tareas `DATA-INT-*` y de arquitectura aplicables.
+
+---
+
+#### 23. Estados mínimos de una ejecución de ingestión
+
+Sin imponer un enum físico universal, toda implementación deberá distinguir semánticamente, cuando aplique:
+
+```text
+RECIBIDA
+VALIDANDO
+ACEPTADA
+ACEPTADA_CON_ADVERTENCIAS
+CUARENTENA
+RECHAZADA
+PROCESADA
+RECONCILIADA
+FALLIDA
+SUPERSEDIDA O RECONSTRUIDA
+```
+
+Una ejecución `PROCESADA` no implica `RECONCILIADA`. Una ejecución `RECONCILIADA` tampoco implica automáticamente `CERTIFICADA`.
+
+Los nombres técnicos finales podrán variar por dominio siempre que conserven estas diferencias y no colapsen estados materiales.
+
+---
+
+#### 24. Manejo de fallos y reintentos
+
+- una falla de red no se interpreta automáticamente como ausencia del dato;
+- una respuesta ambigua se consulta o reconcilia antes de repetir un efecto no idempotente;
+- una página repetida no duplica registros;
+- una página faltante deja cobertura incompleta visible;
+- una carga parcial no se publica como completa por haber terminado sin error técnico;
+- una transformación fallida conserva la entrada suficiente para reejecución controlada;
+- una fuente temporalmente indisponible conserva el último corte conocido con su frescura visible; no se presenta como actualización nueva;
+- la recuperación técnica y continuidad de servicios se coordinan con `CAP-SCOPE-018` y las tareas posteriores correspondientes.
+
+---
+
+#### 25. Pendientes y handoffs con propietario documental
+
+| Decisión fuera del alcance de esta tarea                                                        | Propietario documental                                               | Condición de salida                                                   |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| umbrales, dimensiones críticas, reglas DQ, severidades, certificación y workflow de excepciones | `DATA-DOM-007`                                                       | antes de certificar fuentes o modelos                                 |
+| restatements, versionado histórico y reproducibilidad de resultados publicados                  | `DATA-DOM-017`                                                       | antes de reexpresar resultados oficiales                              |
+| materialización técnica de capa semántica, modelos, consultas, caché y snapshots                | `DATA-INT-002`                                                       | antes de crear modelos físicos compartidos                            |
+| crosswalks y claves externas                                                                    | `DATA-INT-003`                                                       | antes de reconciliar identidades externas físicamente                 |
+| controles de ingestión e integración física                                                     | `DATA-INT-001` a `DATA-INT-003` y tareas de integración propietarias | antes de habilitar pipelines productivos                              |
+| protección por dominio, entidad, territorio y finalidad                                         | `DATA-AUTH-001`                                                      | antes de exponer o administrar detalle sensible                       |
+| protección de poblaciones pequeñas, comparaciones, exportaciones y drill-down                   | `DATA-AUTH-002`                                                      | antes de habilitar consumidores sensibles                             |
+| segregación entre definición, certificación, publicación y administración                       | `DATA-AUTH-003`                                                      | antes de certificar o publicar datos                                  |
+| disponibilidad histórica de Makos/POS externo                                                   | `DAT-01`, `DAT-02`, `DAT-03` y tareas `INT-POS-*` aplicables         | antes de ejecutar backfill histórico de ventas                        |
+| activación operativa de objetos AURA                                                            | AURA y su puerta canónica vigente                                    | antes de ingestión, backfill o migración de autoridad de esos objetos |
+
+No queda una decisión diferida de ingestión, backfill, reconciliación o certificación sin propietario documental explícito.
+
+---
+
+#### 26. Cobertura de prueba canónica preexistente
+
+El requisito DATA vigente ya protege directamente esta tarea: exige conservar contratos de origen, tiempo del hecho, tiempo de carga, granularidad, claves, versión de esquema, cobertura, duplicados, integridad referencial, datos tardíos, backfills, correcciones, cuarentena, reconciliación y linaje, y prohíbe presentar como certificado un reporte cuya fuente esté vencida, incompleta, degradada o sin reconciliar.
+
+También permanecen vigentes los requisitos sobre identidad de maestros y preservación de valores externos originales. La tarea materializa el contrato documental que esos requisitos ya exigen y no altera su regla, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los requisitos DATA vigentes ya cubren de forma directa recopilación, contratos de origen, esquema, tiempos, cobertura, duplicados, datos tardíos, backfills, correcciones, cuarentena, reconciliación, linaje y preservación del original externo. Esta tarea materializa y especializa esas obligaciones sin introducir una familia de comportamiento independiente ni autorizar implementación física.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 27. Criterios de aceptación
+
+1. los cuatro mecanismos de entrada aprobados —evento, API, vista y exportación controlada— tienen contrato explícito y reconciliado;
+2. fuente propietaria, evidencia original, staging, transformación, proyección, snapshot y reporte permanecen conceptos distintos;
+3. toda entrada declara identidad/claves, versión, cobertura, tiempos, procedencia, idempotencia y evidencia cuando apliquen;
+4. cero, nulo, no aplica, desconocido, no recibido y dato pendiente no se colapsan;
+5. un duplicado no se determina por similitud superficial ni autoriza fusión de maestros;
+6. un reintento idempotente no crea hechos adicionales;
+7. los cambios de esquema incompatibles requieren versión/mapping explícitos y no se interpretan por aproximación;
+8. las transformaciones son deterministas, versionadas, reproducibles y preservan el original cuando corresponda;
+9. los joins históricos usan identidad y vigencia aplicables al hecho;
+10. una referencia ausente no se completa usando el maestro actual por conveniencia;
+11. cuarentena y rechazo conservan razón, procedencia y evidencia;
+12. un dato tardío mantiene el tiempo de ocurrencia original;
+13. un backfill declara fuente, periodo, cobertura, mappings, transformación y conciliación;
+14. un backfill no inventa historia ni completa huecos por aproximación;
+15. replay, backfill, corrección, reconstrucción y restatement están semánticamente separados;
+16. la conciliación explica aceptados, rechazados, cuarentena, duplicados, exclusiones y diferencias cuando la población esperada sea comprobable;
+17. cuando la cobertura total no sea comprobable, se declara esa limitación en vez de inventar un denominador;
+18. todo resultado materializado conserva linaje hasta fuente/evidencia y versiones aplicadas;
+19. las 15 familias heredadas están materializadas: 15 esperadas, 15 presentes, 0 faltantes y 0 duplicadas;
+20. la distribución de las 15 familias conserva 13 `ESPECIFICADO`, 1 `BLOQUEADO` y 1 `NO_APLICA`;
+21. los 62 objetos maestros/referencia reciben decisión explícita de ingestión/reconciliación: 62 esperados, 62 presentes, 0 faltantes y 0 duplicados;
+22. se preservan exactamente 43 datos maestros, 19 referencias y tres objetos AURA `BLOQUEADO`;
+23. la ingestión de maestros no crea copias editables ni cambia la fuente lógica aprobada;
+24. el contrato de asistencia conserva exactamente cuatro fuentes observadas y no convierte `attendance-report` en fuente de verdad;
+25. las 14 métricas registradas quedan vinculadas a sus entradas sin ser tratadas como datos fuente;
+26. no se declara implementado un backfill de asistencia no observado;
+27. Makos/POS externo se trata como exportación controlada/manual conforme a la evidencia vigente y no como integración automática certificada;
+28. líneas externas sin mapping válido quedan bloqueadas para efectos posteriores hasta resolución;
+29. `DAT-01`, `DAT-02` y `DAT-03` continúan siendo la puerta de evidencia para cobertura histórica de Makos;
+30. snapshots y modelos se reconstruyen desde fuentes gobernadas y no se editan como autoridad;
+31. la certificación y umbrales DQ permanecen exclusivamente en `DATA-DOM-007`;
+32. los restatements y la reproducibilidad de publicaciones permanecen en `DATA-DOM-017`;
+33. la materialización física y los crosswalks permanecen en las tareas `DATA-INT-*` aplicables;
+34. no se ejecuta código, DDL, DML, migración, backfill, replay, importación ni cambio de datos;
+35. no se crea ni modifica ningún requisito de prueba;
+36. la continuidad queda exclusivamente en `DATA-DOM-007` como siguiente tarea reservada.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad`
+
+
 ### [ ] DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
 ### [ ] DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
 ### [ ] DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
