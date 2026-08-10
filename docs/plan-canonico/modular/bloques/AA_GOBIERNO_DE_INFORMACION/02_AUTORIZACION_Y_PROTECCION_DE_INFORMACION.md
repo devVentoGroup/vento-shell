@@ -2533,4 +2533,431 @@ SIGUIENTE TAREA RESERVADA
 `INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada`
 
 
-### [ ] INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada
+### ✅ INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación` — APROBADA
+**Tarea siguiente:** `INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de autorización reforzada, segregación, minimización, trazabilidad e independencia para auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada, consumiendo sin redefinir los contratos canónicos de auditoría, investigación, ciclo documental, protección de salidas y autorización
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md`
+**Fase:** exclusivamente documental
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, buckets, políticas, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, roles, grants, cuentas, credenciales, logs reales, evidencias reales, archivos, integraciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Establecer una protección transversal y fail closed para cualquier acción que permita observar, buscar, correlacionar, administrar, preservar, copiar, exportar, compartir, cerrar o reabrir información de auditoría, investigación o evidencia, así como para cualquier acceso excepcional a información autorizado por una situación de emergencia.
+
+La tarea protege la autoridad sobre esos objetos; no redefine qué constituye un evento de auditoría, cómo se investiga un hecho, qué evidencia es auténtica, cuánto debe conservarse un documento ni cómo se implementa físicamente una credencial de emergencia. Esas materias permanecen en sus contratos propietarios.
+
+El resultado debe impedir cinco atajos:
+
+1. que administrar un sistema equivalga a administrar o borrar su auditoría;
+2. que investigar un caso equivalga a poder modificar la evidencia que lo sustenta;
+3. que una emergencia produzca privilegio permanente o alcance global;
+4. que disponer de logs técnicos equivalga a tener autorización para conocer todo su contenido;
+5. que cerrar un caso, levantar una preservación o terminar una emergencia equivalga a autorizar eliminación, disposición o supresión de evidencia.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INFO-AUTH-004` materializa seis artefactos lógicos coordinados:
+
+1. `INFO-AUDIT-INVESTIGATION-AUTHORIZATION-CONTRACT-001`: decisión de autorización por acción, objeto, caso, finalidad, alcance, estado e independencia.
+2. `INFO-AUDIT-INDEPENDENCE-SEGREGATION-CONTRACT-001`: separación entre sujeto investigado, investigador, custodio de evidencia, revisor y autoridad de cierre.
+3. `INFO-EMERGENCY-INFORMATION-ACCESS-CONTRACT-001`: acceso excepcional, mínimo, temporal, justificable, revocable y sujeto a revisión independiente.
+4. `INFO-PROTECTED-LOG-AUTHORIZATION-CONTRACT-001`: protección diferenciada de logs técnicos, operativos y de seguridad frente a auditoría empresarial y evidencia formal.
+5. `INFO-PRESERVED-EVIDENCE-AUTHORIZATION-CONTRACT-001`: autoridad sobre preservación, lectura, custodia, copia, transferencia, liberación y disposición posterior de evidencia preservada.
+6. `INFO-AUDIT-INVESTIGATION-AUTH-MATRIX-001`: aplicación transversal por referencia al universo heredado de 69 procesos `VPROC-*` y 332 identidades `DOCCTX-*`, sin duplicar ni alterar sus identidades canónicas.
+
+| Control                                          | Resultado |
+| ------------------------------------------------ | --------: |
+| Procesos heredados protegidos por referencia     |    **69** |
+| Identidades `DOCCTX-*` protegidas por referencia |   **332** |
+| Roles base nuevos                                |     **0** |
+| Identidades documentales nuevas                  |     **0** |
+| Vías paralelas de autorización                   |     **0** |
+| Excepciones permanentes por emergencia           |     **0** |
+| Cambios físicos                                  |     **0** |
+
+---
+
+#### 3. Decisiones heredadas que no se redefinen
+
+La tarea consume y preserva:
+
+- `INFO-AUTH-001`, que conserva la decisión canónica por identidad, actor efectivo, capacidad exacta, clasificación, finalidad, relación, recurso, territorio, estado, contexto y denegaciones prevalentes;
+- `INFO-AUTH-002`, que exige autorización independiente para exposición, reproducción, copia, impresión, exportación, compartición, destinatarios y accesos temporales, con protección reforzada cuando exista información sensible;
+- `INFO-AUTH-003` y `INFO-INFORMATION-LIFECYCLE-SEGREGATION-CONTRACT-001`, que separan capacidades de creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación;
+- `INFO-DOM-007`, que conserva autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia;
+- `INFO-DOM-013`, incluido `INFO-AUDIT-EVENT-CONTRACT-001`, `INFO-AUDIT-TRAIL-CONTRACT-001`, `INFO-INVESTIGATION-CASE-CONTRACT-001`, `INFO-INVESTIGATION-LIFECYCLE-CONTRACT-001`, `INFO-INVESTIGATION-EVIDENCE-PRESERVATION-CONTRACT-001`, `INFO-INVESTIGATION-FINDING-ACTION-CONTRACT-001`, `INFO-INVESTIGATION-CLOSURE-REOPEN-CONTRACT-001` e `INFO-AUDIT-INVESTIGATION-MATRIX-001`;
+- la clasificación S0–S4, las 69 identidades `VPROC-*`, las 332 identidades `DOCCTX-*`, sus procesos propietarios, relaciones, finalidades, territorios y estados ya aprobados;
+- las reglas canónicas de retención, preservación, legal hold, disposición, anonimización y eliminación, sin reinterpretarlas como permisos de acceso;
+- las protecciones tecnológicas ya aprobadas que distinguen diagnóstico, logs, exportaciones, capturas, secretos y datos personales en soporte.
+
+Esta tarea no crea un rol global de auditor, investigador, custodio o administrador de evidencia. Esas palabras describen funciones de caso o responsabilidades autorizables; la autoridad efectiva continúa resolviéndose mediante identidad y capacidad exactas.
+
+---
+
+#### 4. Distinciones obligatorias
+
+```text
+EVENTO DE AUDITORÍA
+≠ LOG TÉCNICO
+≠ EVENTO DE DOMINIO
+≠ COMANDO
+≠ EVIDENCIA
+≠ EXPEDIENTE DE INVESTIGACIÓN
+```
+
+```text
+CAPACIDAD DE ADMINISTRAR UN SISTEMA
+≠ CAPACIDAD DE LEER SU AUDITORÍA
+≠ CAPACIDAD DE EXPORTARLA
+≠ CAPACIDAD DE CORREGIRLA
+≠ CAPACIDAD DE PRESERVAR EVIDENCIA
+≠ CAPACIDAD DE CERRAR UNA INVESTIGACIÓN
+```
+
+```text
+ACCESO DE EMERGENCIA
+≠ ROL
+≠ PERMISO PERMANENTE
+≠ CUENTA COMPARTIDA
+≠ CREDENCIAL MAESTRA
+≠ ALCANCE GLOBAL
+≠ EXENCIÓN DE AUDITORÍA
+```
+
+```text
+FIN DE PRESERVACIÓN
+≠ AUTORIZACIÓN DE ELIMINACIÓN
+≠ FIN DE RETENCIÓN
+≠ FIN DE LEGAL HOLD
+≠ CIERRE DE INVESTIGACIÓN
+```
+
+---
+
+#### 5. `INFO-AUDIT-INVESTIGATION-AUTHORIZATION-CONTRACT-001`
+
+Toda acción protegida deberá resolverse de forma independiente. Como mínimo, la decisión deberá poder responder:
+
+```text
+identidad humana o técnica válida
++
+actor efectivo vigente
++
+capacidad exacta
++
+objeto exacto
++
+clasificación efectiva
++
+finalidad autorizada
++
+caso / investigación / evento / incidente resoluble cuando aplique
++
+alcance de recurso, proceso y territorio compatible
++
+estado del objeto compatible
++
+ventana temporal válida cuando aplique
++
+segregación e independencia satisfechas
++
+sin denegación prevalente
+=
+ACCIÓN AUTORIZABLE
+```
+
+La ausencia, ambigüedad o conflicto de cualquiera de las dimensiones obligatorias produce `DENY`, salvo una ruta de emergencia expresamente válida bajo el contrato de esta tarea. La ruta de emergencia no elimina las dimensiones: únicamente permite resolver autoridad y tiempo mediante un contexto excepcional previamente gobernado.
+
+##### 5.1. Acciones protegidas
+
+Se consideran decisiones distintas, cuando el objeto las soporte:
+
+- localizar o buscar auditoría, logs, expedientes o evidencia;
+- leer o visualizar;
+- correlacionar con otros eventos o fuentes;
+- incorporar una fuente a una investigación;
+- preservar una fuente o representación;
+- generar una copia controlada;
+- exportar o compartir;
+- entregar a un destinatario externo autorizado;
+- anotar o clasificar un hallazgo sin alterar el original;
+- corregir un dato de auditoría mediante un nuevo evento vinculado;
+- asignar o reasignar una investigación;
+- validar evidencia;
+- registrar hallazgo o acción;
+- cerrar una investigación;
+- reabrir una investigación;
+- liberar una preservación cuando exista autoridad suficiente;
+- ejecutar acceso de emergencia;
+- extender, revocar o cerrar ese acceso.
+
+Una decisión positiva para una acción no concede ninguna de las demás.
+
+---
+
+#### 6. Protección de auditoría
+
+1. Un evento de auditoría o una entrada del trail no puede ser reescrito o eliminado como efecto ordinario de una acción administrativa.
+2. Toda corrección conserva el original y produce una nueva evidencia o evento vinculado de acuerdo con `INFO-AUDIT-TRAIL-CONTRACT-001`.
+3. Leer, buscar, filtrar, correlacionar, exportar o administrar auditoría son capacidades separadas.
+4. La administración del servicio, base, aplicación, infraestructura o proceso que origina eventos no concede administración de la auditoría correspondiente.
+5. El cierre, reversión, cancelación o eliminación válida del objeto empresarial no elimina la auditoría que demuestra lo ocurrido.
+6. La persona o actor cuya conducta esté siendo investigada no puede obtener por ese hecho autoridad para suprimir, modificar, liberar o reducir la evidencia relacionada.
+7. Una exportación o copia de auditoría hereda la protección de salida de `INFO-AUTH-002`, incluida clasificación, destinatario, finalidad, alcance y minimización.
+8. La consulta de auditoría deberá mostrar solo el contenido necesario para la finalidad autorizada; la existencia de campos adicionales técnicamente disponibles no amplía la decisión.
+9. Toda acción administrativa sobre la propia superficie de auditoría deberá producir trazabilidad independiente cuando la infraestructura futura lo permita.
+
+---
+
+#### 7. `INFO-AUDIT-INDEPENDENCE-SEGREGATION-CONTRACT-001`
+
+Las funciones de investigación son responsabilidades de caso y no roles base nuevos:
+
+- **originador o remitente:** comunica el hecho, señal o sospecha;
+- **investigador asignado:** analiza hechos dentro del alcance autorizado;
+- **custodio de evidencia:** preserva y controla evidencia cuando la separación sea requerida;
+- **revisor independiente:** valida hechos, integridad, conflicto y suficiencia cuando corresponda;
+- **autoridad de cierre:** decide el cierre cuando la criticidad, conflicto o contrato aplicable exija separación.
+
+Reglas obligatorias:
+
+1. el actor investigado no puede asignarse, revisar ni cerrar por sí mismo su investigación;
+2. quien tenga conflicto de interés material no puede ser la única autoridad final del caso;
+3. la persona que recolecta o preserva una evidencia puede participar en la investigación cuando esté autorizada, pero no puede modificar el original para sostener una conclusión;
+4. una misma persona puede acumular funciones solo cuando no exista conflicto, separación obligatoria o riesgo que requiera revisión independiente;
+5. una autoridad jerárquica no recibe por jerarquía acceso automático al contenido investigativo;
+6. el cierre requiere evidencia suficiente de decisión, fundamento, responsables, acciones y pendientes; el silencio, expiración de actividad o resolución técnica no equivalen a cierre autorizado;
+7. la reapertura conserva el cierre anterior como hecho histórico y añade causa, autoridad y nueva evidencia; no reescribe el expediente previo.
+
+---
+
+#### 8. `INFO-EMERGENCY-INFORMATION-ACCESS-CONTRACT-001`
+
+El acceso de emergencia es una concesión excepcional sobre una acción y un alcance concretos. Nunca se representa como rol permanente ni como permiso general.
+
+Toda concesión deberá resolver, como mínimo:
+
+```text
+emergency_access_ref
+actor_ref
+authority_ref
+reason_code
+justification
+incident_or_case_ref
+resource_scope
+permitted_actions[]
+classification_scope
+purpose
+started_at
+expires_at
+revoked_at
+review_required
+reviewer_ref
+review_state
+audit_refs[]
+```
+
+El modelo es semántico y no prescribe tablas ni columnas físicas.
+
+Reglas:
+
+1. debe existir una causa de emergencia concreta y un recurso o alcance resoluble;
+2. se concede el mínimo conjunto de acciones necesario para atender la situación;
+3. la concesión es temporal y expira automáticamente por decisión contractual; no se renueva por inercia;
+4. la posesión de una cuenta privilegiada, secreto, dispositivo o credencial no demuestra autoridad de emergencia;
+5. cuando la ruta aprobada permita activación inmediata sin aprobación previa, la activación queda obligatoriamente sujeta a revisión independiente posterior y conserva el motivo por el cual no fue posible la aprobación previa;
+6. una emergencia no autoriza borrar, reescribir, ocultar o reducir auditoría o evidencia preservada;
+7. toda utilización del acceso excepcional debe ser trazable y correlacionable con su concesión;
+8. revocar o expirar el acceso impide nuevas acciones bajo esa concesión, pero no elimina sus eventos ni evidencia;
+9. finalizar la emergencia no autoriza por sí mismo disposición, eliminación, cierre de investigación ni liberación de legal hold;
+10. una denegación específica por integridad, preservación, conflicto o prohibición absoluta no se transforma en permiso solo porque exista una emergencia.
+
+##### 8.1. Frontera con continuidad operativa
+
+`INFO-AUTH-004` define la autoridad sobre información durante una emergencia. No diseña credenciales de recuperación, failover, cuentas de contingencia, secretos de continuidad ni mecanismos físicos de break-glass. Esa superficie conserva su tarea propietaria en `CONT-AUTH-002` y deberá respetar este contrato cuando conceda acceso a información gobernada.
+
+---
+
+#### 9. `INFO-PROTECTED-LOG-AUTHORIZATION-CONTRACT-001`
+
+Los logs pueden contener identificadores, datos personales, secretos, payloads, metadatos, rutas, direcciones, trazas, errores o información empresarial sensible. Su disponibilidad técnica no constituye autorización de lectura.
+
+Reglas:
+
+1. un log técnico puede aportar diagnóstico, pero no sustituye un evento de auditoría empresarial;
+2. la finalidad de soporte, seguridad, investigación, cumplimiento o análisis debe resolverse de forma explícita cuando el acceso no sea ordinario;
+3. leer, buscar, correlacionar, copiar, exportar, adjuntar, compartir y preservar un log son acciones distintas;
+4. el acceso debe minimizar campos, rango temporal, recursos y registros a lo necesario para el caso o finalidad;
+5. secretos, tokens, credenciales y datos personales no necesarios deben quedar excluidos o redactados cuando la representación permita hacerlo sin destruir evidencia relevante;
+6. una copia redactada conserva vínculo con la fuente y no sustituye el original preservado cuando este sea necesario para investigación;
+7. un proveedor, técnico o soporte externo no recibe acceso a logs por su relación contractual; requiere destinatario, finalidad, alcance y autorización válidos;
+8. si un log se incorpora formalmente como evidencia, desde ese momento la copia o representación preservada queda además sujeta a `INFO-PRESERVED-EVIDENCE-AUTHORIZATION-CONTRACT-001`;
+9. publicar conocimiento, adjuntar al ticket o compartir un fragmento fuera del caso exige una decisión independiente y no hereda el permiso de diagnóstico.
+
+---
+
+#### 10. `INFO-PRESERVED-EVIDENCE-AUTHORIZATION-CONTRACT-001`
+
+La preservación protege la posibilidad de demostrar un hecho. No convierte la evidencia en contenido de libre consulta ni congela indefinidamente toda disposición relacionada.
+
+Acciones separadas:
+
+- identificar la fuente;
+- adquirir o capturar una representación preservable;
+- registrar procedencia e integridad;
+- inmovilizar frente a alteración o disposición ordinaria;
+- leer o inspeccionar;
+- generar copia de trabajo;
+- entregar a otro custodio o destinatario autorizado;
+- verificar hash, timestamp u otra referencia de integridad cuando exista;
+- documentar transferencia o cadena de custodia;
+- liberar la preservación;
+- retornar al ciclo normal de retención y disposición.
+
+Reglas obligatorias:
+
+1. preservar no concede lectura; leer no concede copia; copiar no concede exportación; exportar no concede compartición externa;
+2. el original, la copia, la representación y la evidencia derivada conservan identidades y relaciones distinguibles;
+3. ninguna acción autorizada puede alterar silenciosamente la fuente preservada;
+4. las anotaciones, conclusiones, redacciones o transformaciones producen elementos derivados vinculados, no sustituciones destructivas;
+5. la cadena de custodia registra actor, acción, tiempo, origen, destino y referencia de integridad cuando corresponda;
+6. una evidencia bajo investigación activa, preservación obligatoria o legal hold no puede avanzar a disposición o eliminación por una autorización de ciclo ordinario;
+7. liberar una preservación exige decisión explícita sobre la causa que la originó y no equivale a ordenar eliminación;
+8. una investigación cerrada puede conservar evidencia según la política de retención aplicable; cierre y retención son decisiones diferentes;
+9. la evidencia sensible conserva las restricciones de clasificación, finalidad, destinatario y minimización durante todo su ciclo;
+10. si la integridad, procedencia o autoridad no pueden resolverse, el sistema futuro debe conservar la incertidumbre y bloquear decisiones irreversibles que dependan de esa evidencia.
+
+---
+
+#### 11. Matriz de acciones críticas
+
+| Objeto / acción               | Autoridad requerida                                    | Segregación mínima                                      | Resultado si falta contexto |
+| ----------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | --------------------------- |
+| leer auditoría                | capacidad exacta + finalidad + alcance                 | independiente de mera administración técnica            | `DENY`                      |
+| exportar auditoría            | lectura + capacidad de salida + destinatario/finalidad | protección reforzada de `INFO-AUTH-002`                 | `DENY`                      |
+| corregir auditoría            | capacidad específica de corrección                     | original preservado; nuevo evento vinculado             | `DENY`                      |
+| abrir investigación           | capacidad de caso + fundamento                         | actor investigado no se autoasigna como autoridad final | `DENY`                      |
+| preservar evidencia           | capacidad de preservación + fuente/caso                | integridad y procedencia registrables                   | `DENY`                      |
+| leer evidencia preservada     | capacidad de lectura + caso/finalidad                  | preservación no implica lectura                         | `DENY`                      |
+| compartir evidencia           | capacidad de salida + destinatario autorizado          | custodio no obtiene divulgación implícita               | `DENY`                      |
+| liberar preservación          | capacidad específica + causa resuelta                  | no equivale a disposición o eliminación                 | `DENY`                      |
+| cerrar investigación          | autoridad de cierre + evidencia suficiente             | independencia cuando exista conflicto o criticidad      | `DENY`                      |
+| reabrir investigación         | autoridad de reapertura + causa nueva                  | conserva cierre anterior                                | `DENY`                      |
+| leer logs sensibles           | capacidad exacta + finalidad + mínimo alcance          | diagnóstico no concede lectura total                    | `DENY`                      |
+| exportar logs                 | lectura + capacidad de salida                          | destino y redacción/minimización resueltos              | `DENY`                      |
+| activar acceso de emergencia  | concesión excepcional válida                           | temporalidad + trazabilidad + revisión aplicable        | `DENY`                      |
+| extender acceso de emergencia | autoridad específica + justificación vigente           | no renovación automática                                | `DENY`                      |
+| revocar acceso de emergencia  | autoridad de revocación                                | conserva auditoría y evidencia de uso                   | `DENY`                      |
+
+---
+
+#### 12. Precedencia de denegación y condiciones fail closed
+
+La acción se deniega cuando no pueda resolverse de manera confiable cualquiera de estas condiciones que sea obligatoria para el caso:
+
+- identidad o actor efectivo;
+- capacidad exacta;
+- objeto, recurso o proceso;
+- clasificación efectiva;
+- finalidad;
+- caso, investigación, incidente o causa de preservación;
+- alcance territorial o empresarial;
+- estado del objeto;
+- vigencia o expiración de una concesión excepcional;
+- destinatario en una salida;
+- integridad o procedencia necesaria para una decisión irreversible;
+- independencia o segregación exigida;
+- conflicto de interés no mitigado;
+- legal hold, preservación u otra restricción que prevalezca;
+- denegación explícita aplicable.
+
+Una interfaz visible, un rol, una relación jerárquica, una cuenta privilegiada, una sesión ya abierta, una capacidad técnica, un token o una herramienta de observabilidad no reemplazan ninguna de esas condiciones.
+
+---
+
+#### 13. `INFO-AUDIT-INVESTIGATION-AUTH-MATRIX-001`
+
+La matriz de autorización no duplica las 332 identidades documentales ni redefine los 69 procesos. Consume el universo ya materializado por `INFO-AUDIT-INVESTIGATION-MATRIX-001` y aplica la protección de esta tarea a cada elemento cuando exista una acción sobre auditoría, investigación, log, evidencia preservada o acceso de emergencia asociado.
+
+| Universo heredado           | Fuente propietaria                                                      | Regla de esta tarea                                                                                                                                                       |       Balance |
+| --------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------: |
+| `VPROC-0001` a `VPROC-0069` | inventario canónico de procesos + `INFO-AUDIT-INVESTIGATION-MATRIX-001` | toda acción protegida se resuelve con `INFO-AUDIT-INVESTIGATION-AUTHORIZATION-CONTRACT-001`; ninguna fila hereda permiso por pertenecer al proceso                        |   **69 / 69** |
+| 332 identidades `DOCCTX-*`  | inventario canónico documental + `INFO-AUDIT-INVESTIGATION-MATRIX-001`  | toda identidad conserva clasificación, proceso, finalidad, retención, estado y restricciones heredadas; esta tarea solo añade la decisión de autorización correspondiente | **332 / 332** |
+
+**Balance:** 69 procesos referenciados; 332 identidades referenciadas; 0 procesos nuevos; 0 identidades nuevas; 0 procesos omitidos del universo heredado; 0 redefiniciones de propietario documental.
+
+Esta forma de materialización evita crear una segunda copia divergente del inventario. La cobertura se demuestra por referencia canónica cerrada y por el balance heredado ya aprobado.
+
+---
+
+#### 14. Evidencia documental y criterios de aceptación
+
+La tarea se considera documentalmente satisfecha cuando las siguientes afirmaciones pueden evaluarse sin inferencia:
+
+1. existe una decisión separada para leer, buscar, correlacionar, copiar, exportar, compartir, preservar, corregir, cerrar, reabrir y administrar los objetos aplicables;
+2. la administración técnica no concede administración de auditoría ni acceso ilimitado a logs;
+3. auditoría, log técnico, evidencia y expediente de investigación permanecen conceptualmente separados;
+4. el actor investigado no puede controlar por sí mismo la evidencia ni el cierre de su propio caso;
+5. la evidencia preservada no puede alterarse o eliminarse como efecto ordinario de otra acción;
+6. una copia o salida sensible mantiene clasificación, finalidad, destinatario y minimización;
+7. el acceso de emergencia es mínimo, temporal, justificable, auditable, revocable y revisable;
+8. la emergencia no crea privilegio permanente ni permite borrar auditoría o evidencia;
+9. liberar una preservación no equivale a ordenar disposición o eliminación;
+10. las 69 identidades de proceso y las 332 identidades `DOCCTX-*` quedan cubiertas por referencia a sus matrices propietarias sin duplicación;
+11. ninguna decisión exige cambios físicos durante la fase documental;
+12. cualquier implementación futura deberá materializar estas decisiones sin crear un evaluador de autorización paralelo.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La tarea no crea ni modifica TREQ porque materializa y especializa el gobierno documental de capacidades ya cubiertas por los contratos canónicos de autorización, auditoría, investigación, evidencia, ciclo documental y protección de salidas. No incorpora una superficie física nueva, un comportamiento ejecutable nuevo ni una implementación verificable adicional en esta fase.
+
+---
+
+#### 16. Límites de implementación
+
+Durante esta tarea permanecen fuera de alcance:
+
+- tablas o esquemas de auditoría;
+- almacenamiento físico de logs;
+- SIEM, observabilidad o herramientas forenses;
+- políticas RLS o grants;
+- buckets o políticas de Storage;
+- credenciales, secretos o cuentas de emergencia;
+- cuentas de contingencia o mecanismos físicos de break-glass;
+- jobs de retención o eliminación;
+- hashes, timestamps o sellos generados físicamente;
+- flujos automáticos de investigación;
+- integraciones con proveedores externos;
+- código, migraciones, despliegues o cambios de Supabase.
+
+La implementación posterior deberá consumir los contratos de esta tarea y los contratos propietarios de dominio sin reinterpretarlos.
+
+---
+
+#### 17. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación`
+
+TAREA ACTUAL APROBADA
+
+`INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas`
+
