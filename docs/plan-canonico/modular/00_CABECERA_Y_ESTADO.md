@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **656** |
+| Tareas aprobadas | **657** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **938** |
+| Tareas no iniciadas | **937** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.15% (656/1594)** |
+| Porcentaje de completamiento | **41.22% (657/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento** |
-| Tarea actual | **INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre** |
+| Última tarea aprobada | **INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre** |
+| Tarea actual | **INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado** |
+| Siguiente tarea | **INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 80 de 157 aprobadas; INFO-DOM-013 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 81 de 157 aprobadas; INFO-AUTH-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-012` — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento |
-| Tarea actual | `INFO-DOM-013` — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre — **NO INICIADA** |
-| Siguiente tarea | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado |
+| Última aprobada | `INFO-DOM-013` — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre |
+| Tarea actual | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado — **NO INICIADA** |
+| Siguiente tarea | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 80 DE 157 APROBADAS — ACTUAL INFO-DOM-013** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 81 DE 157 APROBADAS — ACTUAL INFO-AUTH-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
-        ↓
-TAREA ACTUAL
 INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 80 de 157 tareas aprobadas
+CARRIL NEXO — 81 de 157 tareas aprobadas
 ```

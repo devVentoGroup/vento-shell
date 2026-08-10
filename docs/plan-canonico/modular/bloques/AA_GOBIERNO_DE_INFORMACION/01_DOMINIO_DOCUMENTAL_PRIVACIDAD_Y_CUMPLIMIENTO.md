@@ -9219,4 +9219,961 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre`
 
 
-### [ ] INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
+### ✅ INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento` — APROBADA
+**Tarea siguiente:** `INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de auditoría empresarial, trazabilidad, investigación formal de accesos o cambios indebidos, preservación de fuentes, hallazgos, acciones, cierre independiente y reapertura
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Fase:** exclusivamente documental
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Identidades documentales cubiertas:** 332 (`DOCCTX-*`)
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir un contrato corporativo único para registrar y reconstruir acciones empresariales relevantes, distinguir la auditoría de los logs técnicos y de la evidencia, abrir investigaciones formales ante indicios suficientes de acceso o cambio indebido, preservar fuentes antes de cualquier corrección que pueda alterarlas y cerrar cada caso solo cuando alcance, evidencia, hallazgos, acciones, riesgos residuales y autoridad de cierre hayan sido reconciliados.
+
+La auditoría conserva hechos, actores, contexto, decisiones, resultados, tiempos y correlación con exposición mínima. La investigación no presume culpabilidad ni reemplaza solicitudes de titulares, brechas de cumplimiento, incidentes técnicos, incidentes de seguridad, requerimientos de autoridad o disputas de firma; los vincula cuando comparten hechos o evidencia y mantiene sus identidades separadas.
+
+La aprobación documental de esta tarea no ejecuta cambios de permisos, sesiones, datos, Storage, logs, retención, legal hold, disposición, infraestructura ni acciones correctivas.
+
+---
+
+#### 2. Resultado sustantivo
+
+El resultado queda compuesto por ocho artefactos lógicos coordinados:
+
+1. `INFO-AUDIT-EVENT-CONTRACT-001`: contrato del evento de auditoría empresarial.
+2. `INFO-AUDIT-TRAIL-CONTRACT-001`: correlación, integridad, minimización y corrección no destructiva.
+3. `INFO-INVESTIGATION-CASE-CONTRACT-001`: contrato del caso formal de investigación.
+4. `INFO-INVESTIGATION-LIFECYCLE-CONTRACT-001`: estados, transiciones, bloqueos y reapertura.
+5. `INFO-INVESTIGATION-EVIDENCE-PRESERVATION-CONTRACT-001`: preservación de fuentes, evidencia y custodia.
+6. `INFO-INVESTIGATION-FINDING-ACTION-CONTRACT-001`: hechos, hipótesis, hallazgos, contención y corrección.
+7. `INFO-INVESTIGATION-CLOSURE-REOPEN-CONTRACT-001`: autoridad, criterios de cierre y reapertura no destructiva.
+8. `INFO-AUDIT-INVESTIGATION-MATRIX-001`: decisión materializada para 69 procesos y 332 identidades documentales.
+
+| Control                                   | Resultado |
+| ----------------------------------------- | --------: |
+| Procesos esperados                        |    **69** |
+| Procesos materializados                   |    **69** |
+| Identidades `DOCCTX-*` esperadas          |   **332** |
+| Identidades materializadas                |   **332** |
+| Identificadores de proceso únicos         |    **69** |
+| Identificadores documentales únicos       |   **332** |
+| Faltantes                                 |     **0** |
+| Duplicados                                |     **0** |
+| Categorías mínimas de acciones auditables |    **10** |
+| Cambios físicos                           |     **0** |
+| Requisitos de prueba nuevos o modificados |     **0** |
+
+---
+
+#### 3. Decisiones heredadas que no se redefinen
+
+- las 69 identidades `VPROC-*`, sus propósitos y propietarias funcionales;
+- las 332 identidades `DOCCTX-*`, su clasificación, retención y fronteras heredadas;
+- las clases `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` y las reglas de minimización;
+- el ciclo documental, versiones, metadatos, localizadores, retención, legal hold, disposición, integridad, procedencia, consentimiento, solicitudes, terceros, firmas y obligaciones ya definidos por `INFO-DOM-001` a `INFO-DOM-012`;
+- los perfiles de auditoría heredados `VPROC-####.AUDIT` para los 69 procesos;
+- la separación entre principal técnico, actor efectivo, simulación, servicio, dispositivo, sede y contexto operativo;
+- la regla de corrección no destructiva: un registro histórico o evidencia preservada no se sobrescribe para aparentar corrección, cierre o reversión;
+- la prevalencia de retención y legal hold sobre cualquier destrucción de material requerido para un caso activo.
+
+---
+
+#### 4. Distinciones obligatorias
+
+```text
+EVENTO DE AUDITORIA != LOG TECNICO
+EVENTO DE AUDITORIA != EVENTO DE DOMINIO
+EVENTO DE AUDITORIA != ORDEN O COMANDO
+EVENTO DE AUDITORIA != EVIDENCIA
+EVIDENCIA != CONTENIDO OPERATIVO
+INVESTIGACION != INCIDENTE
+INVESTIGACION != RECLAMO DE PRIVACIDAD
+INVESTIGACION != BRECHA DE CUMPLIMIENTO
+HECHO != HIPOTESIS != HALLAZGO
+CONTENCION != CORRECCION != CIERRE
+CIERRE != BORRADO DE HISTORIA
+REAPERTURA != REESCRITURA DEL CIERRE ANTERIOR
+```
+
+Un log técnico puede aportar diagnóstico a una investigación, pero no adquiere por sí mismo la autoridad, contexto ni integridad de un evento de auditoría. Un evento de dominio describe un hecho empresarial; un comando describe intención; una evidencia conserva prueba. Todos pueden correlacionarse sin fusionar identidades.
+
+---
+
+#### 5. `INFO-AUDIT-EVENT-CONTRACT-001`
+
+Cada evento de auditoría deberá poder reconstruir el hecho sin convertir el registro en una copia del contenido protegido.
+
+| Campo                        | Regla                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| `audit_event_id`             | Identificador estable y no reutilizable.                                 |
+| `audit_schema_version`       | Versión del contrato interpretado.                                       |
+| `process_id`                 | Proceso `VPROC-*` aplicable.                                             |
+| `process_instance_ref`       | Instancia empresarial correlacionada.                                    |
+| `resource_type`              | Tipo de recurso afectado o consultado.                                   |
+| `resource_id`                | Identidad empresarial del recurso.                                       |
+| `resource_version`           | Versión o estado referenciado cuando aplique.                            |
+| `action_code`                | Acción tipada y vinculable al catálogo de auditoría.                     |
+| `action_result`              | Resultado tipado sin ocultar una denegación, error o efecto parcial.     |
+| `principal_ref`              | Principal técnico o de sesión.                                           |
+| `effective_actor_ref`        | Humano real que opera, administra o asume la acción.                     |
+| `service_principal_ref`      | Principal automático o integrado cuando aplique.                         |
+| `simulation_ref`             | Referencia de simulación cuando exista; no transfiere autoridad real.    |
+| `device_ref`                 | Dispositivo o endpoint cuando sea relevante.                             |
+| `site_ref`                   | Sede efectiva o contextual.                                              |
+| `area_ref`                   | Área efectiva o contextual.                                              |
+| `permission_ref`             | Capacidad evaluada cuando la acción está protegida.                      |
+| `authorization_decision_ref` | Decisión que explica allow, deny o condición equivalente.                |
+| `reason_code`                | Causa tipada del resultado.                                              |
+| `purpose_ref`                | Finalidad resoluble cuando el uso de información la requiera.            |
+| `scope_ref`                  | Alcance efectivo sobre el recurso.                                       |
+| `filter_digest_or_ref`       | Referencia o digest del filtro sin copiar consultas sensibles completas. |
+| `result_count`               | Conteo o rango seguro cuando ayude a reconstruir el alcance.             |
+| `recipient_ref`              | Destino cuando hay extracción, compartición o divulgación.               |
+| `channel`                    | Canal de ejecución, entrega o acceso.                                    |
+| `before_ref`                 | Referencia previa minimizada cuando exista mutación.                     |
+| `after_ref`                  | Referencia posterior minimizada cuando exista mutación.                  |
+| `event_time`                 | Tiempo del hecho según la fuente propietaria.                            |
+| `recorded_at`                | Tiempo en que la auditoría fue persistida.                               |
+| `received_at`                | Tiempo de recepción cuando existe frontera distribuida u offline.        |
+| `correlation_id`             | Correlación de la cadena operativa.                                      |
+| `causation_id`               | Hecho o comando causal inmediato cuando pueda resolverse.                |
+| `idempotency_key`            | Identidad idempotente cuando la acción sea reintentable.                 |
+| `classification`             | Clasificación efectiva o referencia versionada.                          |
+| `evidence_refs[]`            | Evidencia correlacionada cuando exista.                                  |
+| `integrity_ref`              | Referencia de integridad cuando aplique.                                 |
+| `source_system`              | Sistema o fuente que emitió o registró el hecho.                         |
+
+El contrato admite campos adicionales por dominio, pero no permite omitir actor, recurso, acción, resultado, contexto temporal y correlación cuando sean resolubles y necesarios para explicar un efecto protegido.
+
+---
+
+#### 6. Catálogo mínimo de acciones auditables
+
+| Código                               | Categoría                               | Decisión mínima                                                                                          |
+| ------------------------------------ | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `AUDIT_AUTH_DECISION`                | Decisión de autorización                | Correlacionar allow/deny, razones, permiso, contexto y recurso.                                          |
+| `AUDIT_SENSITIVE_ACCESS`             | Acceso o consulta sensible              | Registrar actor, finalidad, alcance, recurso, filtro minimizado y resultado.                             |
+| `AUDIT_EXTRACTION`                   | Extracción, impresión o exportación     | Registrar quién, qué, cuánto, finalidad, destino, canal y resultado.                                     |
+| `AUDIT_CONTENT_OR_METADATA_CHANGE`   | Creación, edición o cambio de metadatos | Conservar recurso, versión, actor y referencias antes/después.                                           |
+| `AUDIT_APPROVAL_OR_SIGNATURE`        | Aprobación o firma                      | Correlacionar nivel de evidencia, actor, autoridad, versión y resultado.                                 |
+| `AUDIT_SHARING`                      | Compartición o divulgación              | Registrar categorías, destinatario, finalidad, base, alcance, canal y resultado.                         |
+| `AUDIT_CLASSIFICATION_CHANGE`        | Cambio de clasificación                 | Conservar clasificación anterior/nueva, razón, actor, versión y efecto sobre acceso.                     |
+| `AUDIT_RETENTION_HOLD_DISPOSITION`   | Retención, legal hold o disposición     | Registrar política, trigger, decisión, excepción, evidencia y resultado.                                 |
+| `AUDIT_EMERGENCY_ACCESS`             | Acceso de emergencia                    | Registrar justificación, actor, alcance, duración, recurso, revisión posterior y resultado.              |
+| `AUDIT_TECHNICAL_OR_PROVIDER_ACTION` | Acción de proveedor o cuenta técnica    | Correlacionar principal, recurso, alcance, autorización, causa, ventana, resultado y responsable humano. |
+
+El catálogo es un mínimo contractual. Los dominios pueden especializar `action_code` siempre que conserven equivalencia con la categoría auditada y no creen una vía lateral sin trazabilidad.
+
+---
+
+#### 7. `INFO-AUDIT-TRAIL-CONTRACT-001`
+
+1. Los eventos se anexan o quedan protegidos contra reescritura destructiva ordinaria.
+2. Una corrección de auditoría crea un evento nuevo, versionado y vinculado; no carboniza ni sustituye el original.
+3. Cerrar, retirar, revertir o anular un caso o proceso no elimina la auditoría asociada.
+4. Leer, buscar, filtrar, exportar o administrar auditoría tiene autorización propia y se audita cuando corresponda.
+5. No se persisten secretos, tokens, credenciales completas, datos bancarios completos, diagnósticos completos ni payloads sensibles cuando una referencia, digest, categoría, conteo o resultado sea suficiente.
+6. Los tiempos de hecho, registro, recepción y procesamiento se conservan por separado; no se fuerza una sola hora.
+7. La calidad o confianza del reloj se conserva cuando influye en la reconstrucción.
+8. Una fuente técnica volátil puede apoyar una investigación, pero no se eleva a evidencia confiable sin contexto, procedencia e integridad suficientes.
+9. La auditoría correlaciona múltiples fuentes sin fusionar sus identidades.
+10. Retención, investigación activa o legal hold prevalecen sobre destrucción de auditoría requerida.
+
+---
+
+#### 8. `INFO-INVESTIGATION-CASE-CONTRACT-001`
+
+El caso formal de investigación es la unidad de control para un disparador que podría implicar acceso, cambio, divulgación, manipulación o pérdida de integridad indebidos. Conserva, como mínimo:
+
+| Campo                               | Regla                                                                 |
+| ----------------------------------- | --------------------------------------------------------------------- |
+| `investigation_case_id`             | Identificador estable del caso.                                       |
+| `trigger_ref`                       | Disparador o hecho que originó la revisión.                           |
+| `source_case_ref`                   | Caso, reclamo, brecha, incidente o alerta correlacionada.             |
+| `opened_at`                         | Tiempo de apertura.                                                   |
+| `investigation_owner_ref`           | Responsable de coordinar el caso.                                     |
+| `closure_authority_ref`             | Autoridad independiente capaz de resolver el cierre.                  |
+| `conflict_flags[]`                  | Conflictos de interés, implicación o restricciones de procesamiento.  |
+| `scope`                             | Procesos, instancias, recursos, tiempo, actores y acciones incluidas. |
+| `affected_process_refs[]`           | Procesos `VPROC-*` afectados.                                         |
+| `affected_process_instance_refs[]`  | Instancias empresariales incluidas.                                   |
+| `affected_resource_refs[]`          | Recursos incluidos.                                                   |
+| `affected_docctx_refs[]`            | Identidades `DOCCTX-*` incluidas.                                     |
+| `involved_actor_refs[]`             | Actores humanos relevantes.                                           |
+| `involved_service_principal_refs[]` | Principales técnicos o de proveedor incluidos.                        |
+| `involved_device_refs[]`            | Dispositivos o endpoints incluidos.                                   |
+| `classification`                    | Clasificación efectiva del caso.                                      |
+| `preservation_order_refs[]`         | Referencias de preservación, hold o bloqueo.                          |
+| `source_inventory[]`                | Fuentes originales, copias controladas y proyecciones identificadas.  |
+| `evidence_refs[]`                   | Evidencia incorporada o correlacionada.                               |
+| `timeline_ref`                      | Reconstrucción temporal y causal.                                     |
+| `hypotheses[]`                      | Hipótesis tipadas y comprobaciones.                                   |
+| `findings[]`                        | Hallazgos concluidos y evidencia de soporte.                          |
+| `containment_action_refs[]`         | Acciones de contención coordinadas con su propietaria.                |
+| `corrective_action_refs[]`          | Acciones correctivas con propietaria, estado y evidencia.             |
+| `notification_refs[]`               | Notificaciones aplicables sin inferir obligaciones externas.          |
+| `retention_hold_review`             | Revisión de retención, hold y disposición.                            |
+| `closure_decision`                  | Decisión final sin reescribir hallazgos o fuentes.                    |
+| `closure_reason`                    | Razón tipada del cierre.                                              |
+| `closed_at`                         | Tiempo de cierre.                                                     |
+| `reopens_case_ref`                  | Referencia de reapertura o caso sucesor cuando exista.                |
+
+---
+
+#### 9. Disparadores y fronteras de investigación
+
+Un caso formal puede abrirse cuando exista evidencia o indicio verificable de:
+- acceso no autorizado o fuera de finalidad;
+- cambio no autorizado, destructivo o irreconciliable;
+- divulgación, extracción, impresión, exportación o compartición posiblemente indebida;
+- manipulación, pérdida de integridad o destrucción de evidencia;
+- reclamo de privacidad que incluya posible acceso, cambio o uso indebido;
+- brecha de cumplimiento que revele acceso, cambio, conflicto o manipulación de evidencia;
+- acción de proveedor, cuenta técnica o actor privilegiado fuera del alcance autorizado;
+- conflicto de interés o imposibilidad de atribuir de forma confiable una acción relevante.
+
+No se convierten automáticamente en investigación:
+- una brecha de cumplimiento sin indicio de acceso o cambio indebido;
+- un ticket o incidente técnico sin impacto de autoridad, integridad o evidencia;
+- una denegación normal de autorización sin señal adicional de abuso, bypass o manipulación;
+- una solicitud de titular, requerimiento de autoridad o disputa de firma sin hechos adicionales que justifiquen investigación.
+
+Los casos paralelos conservan su propia identidad, propietaria, plazo y estado. La investigación solo mantiene referencias cruzadas y evidencia compartida de forma gobernada.
+
+---
+
+#### 10. `INFO-INVESTIGATION-LIFECYCLE-CONTRACT-001`
+
+Flujo principal:
+
+```text
+TRIGGERED -> TRIAGE -> PRESERVATION -> SCOPE_DEFINED -> INVESTIGATING -> FINDINGS -> ACTION_TRACKING -> CLOSURE_REVIEW -> CLOSED
+```
+
+Estados o condiciones de control:
+- `PRESERVATION_PENDING`: no se ha demostrado preservación suficiente de las fuentes relevantes;
+- `EVIDENCE_INCOMPLETE`: falta evidencia material que no puede inferirse;
+- `CONFLICT_REASSIGNMENT`: investigador, revisor o autoridad de cierre tiene conflicto y el caso debe reasignarse;
+- `EXTERNAL_DEPENDENCY`: existe dependencia de un tercero, autoridad o fuente externa;
+- `LEGAL_HOLD_ACTIVE`: un hold protege material del caso frente a destrucción o liberación;
+- `REOPENED`: nueva evidencia, contradicción material o fallo de acción correctiva exige reabrir de forma vinculada.
+
+Reglas de transición:
+1. No se omite `PRESERVATION` cuando una fuente es volátil, editable, sujeta a rotación o susceptible de alteración por la corrección.
+2. La contención urgente puede coordinarse antes del cierre, pero debe preservar primero lo necesario para no destruir la fuente del hecho cuando sea materialmente posible.
+3. `EVIDENCE_INCOMPLETE` impide afirmar extremos no demostrados y obliga a registrar la limitación.
+4. Una investigación activa no autoriza por sí sola acceso ilimitado; todo acceso permanece sujeto a clasificación, necesidad y alcance del caso.
+5. El cierre anterior no se modifica cuando existe reapertura; la reapertura crea una transición nueva y vinculada.
+
+---
+
+#### 11. `INFO-INVESTIGATION-EVIDENCE-PRESERVATION-CONTRACT-001`
+
+La preservación ocurre antes de un cambio que pueda alterar, reducir o destruir una fuente relevante. Cada manifiesto de preservación conserva, cuando aplique:
+- `preservation_manifest_id`;
+- `investigation_case_id`;
+- `source_ref`;
+- `source_type`;
+- `source_system`;
+- `source_version`;
+- `acquired_at`;
+- `acquired_by_ref`;
+- `acquisition_method`;
+- `integrity_ref`;
+- `clock_quality`;
+- `classification`;
+- `custody_events[]`;
+- `retention_policy_ref`;
+- `legal_hold_ref`;
+- `preservation_state`;
+- `exception_refs[]`;
+- `derived_evidence_refs[]`;
+
+Reglas:
+1. La copia preservada no adquiere autoridad sobre la fuente por ser más íntegra.
+2. Un hash aislado no sustituye el contenido cuando el contenido es necesario para reconstruir el hecho.
+3. Un hash sin metadatos, versión, procedencia y autoridad no demuestra por sí solo cadena de custodia.
+4. Cada transferencia o acceso relevante a evidencia preservada queda trazable.
+5. El acceso a evidencia queda limitado por clasificación, caso, rol y necesidad.
+6. Copias, exportaciones y traslados de evidencia quedan registrados y reconciliados.
+7. La ausencia o pérdida de una fuente se registra como hallazgo o limitación; no se completa con una inferencia presentada como hecho.
+
+---
+
+#### 12. Reconstrucción de línea de tiempo
+
+La línea de tiempo conserva simultáneamente tiempo de hecho, tiempo de registro, tiempo de recepción, tiempo de procesamiento cuando exista, zona y offset, calidad del reloj, correlación, causalidad, procedencia y conflictos temporales no resueltos.
+
+Cuando dos fuentes difieren, se conservan ambos valores y su procedencia hasta que una fuente autoritativa o evidencia suficiente permita resolver la diferencia. La proximidad de timestamps no demuestra por sí sola causalidad.
+
+---
+
+#### 13. `INFO-INVESTIGATION-FINDING-ACTION-CONTRACT-001`
+
+Cada elemento investigativo se tipa para evitar que una suposición se presente como hecho:
+
+| Tipo         | Regla                                                                      |
+| ------------ | -------------------------------------------------------------------------- |
+| `FACT`       | Dato o hecho soportado por una fuente identificada.                        |
+| `HYPOTHESIS` | Explicación por comprobar que no se presenta como hecho.                   |
+| `FINDING`    | Conclusión sobre el alcance con evidencia de soporte y nivel de confianza. |
+| `LIMITATION` | Extremo que no puede resolverse con la evidencia disponible.               |
+
+Estados de hallazgo admitidos:
+- `SUBSTANTIATED`
+- `NOT_SUBSTANTIATED`
+- `INCONCLUSIVE`
+- `CONTROL_GAP`
+- `NO_SCOPE_MATCH`
+- `REFERRED_TO_OTHER_CASE`
+
+Ninguno de estos estados declara culpabilidad legal, responsabilidad laboral, infracción administrativa ni efecto jurídico no resuelto por la fuente competente.
+
+La investigación puede vincular, pero no ejecutar por autoridad propia, acciones de:
+- contención temporal o reducción de exposición autorizada;
+- revocación de sesión, credencial, permiso o acceso a través del dominio propietario;
+- corrección de dato, documento, clasificación o metadato por la fuente autoritativa;
+- remediación de control, configuración, contrato o integración;
+- actualización de la brecha de cumplimiento original;
+- apertura o vinculación de caso de privacidad, autoridad, servicio, seguridad o tecnología;
+- verificación posterior de eficacia y monitoreo cuando una condición de cierre lo exija.
+
+Cada acción conserva propietaria, autorización, estado, evidencia y resultado; corregir el sistema no borra el hallazgo ni el evento original.
+
+---
+
+#### 14. Segregación, conflicto y autoridad de cierre
+
+1. La persona implicada en el hecho investigado no puede ser la única investigadora, revisora ni autoridad de cierre.
+2. Quien ejecutó la acción original no adquiere por ello autoridad para calificar su propia conducta.
+3. Una cuenta técnica o proveedor no puede actuar como autoridad de cierre empresarial sin responsable humano resoluble.
+4. Un conflicto de interés produce `CONFLICT_REASSIGNMENT` y bloquea el cierre hasta disponer de autoridad independiente suficiente.
+5. La revocación posterior del acceso de una persona implicada no elimina su identidad de la historia ni del caso.
+
+---
+
+#### 15. `INFO-INVESTIGATION-CLOSURE-REOPEN-CONTRACT-001`
+
+Un caso solo puede pasar a `CLOSED` cuando:
+1. el alcance está reconciliado y cada exclusión relevante tiene justificación;
+2. las fuentes originales relevantes fueron preservadas o su ausencia quedó explícita;
+3. la línea de tiempo conserva conflictos y calidad del reloj sin inventar orden causal;
+4. actores, recursos, dispositivos y principales técnicos están identificados o su indeterminación está explícita;
+5. hechos, hipótesis, hallazgos y limitaciones permanecen separados;
+6. integridad y procedencia de la evidencia son suficientes para el alcance del cierre;
+7. las acciones de contención y corrección tienen estado y propietaria resolubles;
+8. los pendientes no cerrados tienen dueño documental, tarea o caso responsable y condición de salida;
+9. los riesgos residuales y limitaciones están documentados;
+10. las obligaciones, respuestas o notificaciones externas aplicables están vinculadas sin declarar cumplimiento sin evidencia;
+11. retención y legal hold fueron revisados;
+12. la autoridad de cierre es independiente del hecho investigado y tiene autoridad suficiente.
+
+Reabren el caso de forma vinculada: nueva evidencia material, contradicción sustantiva con el cierre, descubrimiento de una fuente/actor/recurso omitido, fallo o resultado adverso de una acción correctiva que condicionó el cierre, decisión externa que altere materialmente el hecho o alcance, o hallazgo de manipulación/pérdida de integridad de la evidencia.
+
+La reapertura crea una transición nueva y conserva intactos el cierre, hallazgos y evidencia previos.
+
+---
+
+#### 16. Temporalidad y vencimiento
+
+Esta tarea no inventa un plazo numérico de investigación. Cualquier `due_at`, frecuencia de revisión, pausa, extensión o vencimiento debe resolverse desde una obligación aprobada o política empresarial aplicable, con entidad, actividad, trigger, calendario y excepciones resolubles.
+
+Cuando esa evidencia no exista, el caso conserva estrategia y prioridad operativa, pero no fabrica un vencimiento. Una investigación activa o un legal hold sí puede impedir disposición de material requerido aunque no exista un plazo numérico de cierre.
+
+---
+
+#### 17. Relación con otros casos y contratos
+
+| Caso o materia                   | Relación con la investigación                                                                                                                            |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| solicitud de titular             | Se correlaciona si existe indicio de acceso, cambio o uso indebido; el caso de privacidad conserva su estado y respuesta.                                |
+| brecha de cumplimiento           | Puede originar investigación si revela manipulación, conflicto o acceso/cambio posiblemente indebido; la brecha sigue siendo el maestro de cumplimiento. |
+| requerimiento de autoridad       | Se correlaciona cuando la revisión revela hechos sospechosos; la investigación no se convierte en respuesta a autoridad.                                 |
+| incidente técnico o de seguridad | Conserva su ciclo propio y se vincula si hay fuentes, actores, recursos o hallazgos compartidos.                                                         |
+| disputa de aprobación o firma    | Se vincula si existe posible suplantación, cambio no autorizado o manipulación de evidencia.                                                             |
+| legal hold                       | Bloquea destrucción de material protegido; no equivale a un hallazgo.                                                                                    |
+| disposición                      | Queda bloqueada para material necesario mientras exista investigación o hold aplicable.                                                                  |
+
+---
+
+#### 18. Fronteras con tareas posteriores
+
+| Materia                                                                 | Decisión de `INFO-DOM-013`                                            | Propietario posterior             |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------- |
+| políticas de lectura, búsqueda, exportación, corrección e investigación | define qué debe auditarse y cómo se investiga; no concede capacidades | `INFO-AUTH-001` a `INFO-AUTH-004` |
+| experiencia de consulta, investigación y cierre                         | define estados, datos y responsabilidades; no diseña interfaz         | `INFO-UX-001` a `INFO-UX-006`     |
+| correlación, propagación y reconciliación transversal                   | conserva identidades, estados y correlaciones; no define transporte   | `INFO-INT-001` a `INFO-INT-003`   |
+| retención, integridad y cadena de custodia                              | consume contratos aprobados sin redefinirlos                          | `INFO-DOM-006` y `INFO-DOM-007`   |
+| obligaciones, controles y vencimientos                                  | consume el registro aprobado y no inventa plazos                      | `INFO-DOM-012`                    |
+
+---
+
+#### 19. Matriz materializada para los 69 procesos
+
+| Proceso      | Perfil de auditoría heredado | Auditoría                       | Investigación            | Preservación        | Cierre          | Estado         | Bloqueo                                                          |
+| ------------ | ---------------------------- | ------------------------------- | ------------------------ | ------------------- | --------------- | -------------- | ---------------------------------------------------------------- |
+| `VPROC-0001` | `VPROC-0001.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0002` | `VPROC-0002.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0003` | `VPROC-0003.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0004` | `VPROC-0004.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0005` | `VPROC-0005.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0006` | `VPROC-0006.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0007` | `VPROC-0007.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0008` | `VPROC-0008.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0009` | `VPROC-0009.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0010` | `VPROC-0010.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0011` | `VPROC-0011.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0012` | `VPROC-0012.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0013` | `VPROC-0013.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0014` | `VPROC-0014.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0015` | `VPROC-0015.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0016` | `VPROC-0016.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0017` | `VPROC-0017.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0018` | `VPROC-0018.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0019` | `VPROC-0019.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0020` | `VPROC-0020.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0021` | `VPROC-0021.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0022` | `VPROC-0022.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0023` | `VPROC-0023.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0024` | `VPROC-0024.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0025` | `VPROC-0025.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0026` | `VPROC-0026.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0027` | `VPROC-0027.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0028` | `VPROC-0028.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0029` | `VPROC-0029.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0030` | `VPROC-0030.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0031` | `VPROC-0031.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0032` | `VPROC-0032.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0033` | `VPROC-0033.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0034` | `VPROC-0034.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0035` | `VPROC-0035.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0036` | `VPROC-0036.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0037` | `VPROC-0037.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0038` | `VPROC-0038.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0039` | `VPROC-0039.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0040` | `VPROC-0040.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0041` | `VPROC-0041.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0042` | `VPROC-0042.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0043` | `VPROC-0043.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0044` | `VPROC-0044.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0045` | `VPROC-0045.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0046` | `VPROC-0046.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0047` | `VPROC-0047.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0048` | `VPROC-0048.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0049` | `VPROC-0049.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0050` | `VPROC-0050.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0051` | `VPROC-0051.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0052` | `VPROC-0052.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0053` | `VPROC-0053.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0054` | `VPROC-0054.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0055` | `VPROC-0055.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0056` | `VPROC-0056.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0057` | `VPROC-0057.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0058` | `VPROC-0058.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0059` | `VPROC-0059.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0060` | `VPROC-0060.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0061` | `VPROC-0061.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0062` | `VPROC-0062.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0063` | `VPROC-0063.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0064` | `VPROC-0064.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0065` | `VPROC-0065.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0066` | `VPROC-0066.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0067` | `VPROC-0067.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0068` | `VPROC-0068.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+| `VPROC-0069` | `VPROC-0069.AUDIT`           | `APLICA_SEGUN_ACCION_GOBERNADA` | `CASO_FORMAL_SI_TRIGGER` | `ANTES_DE_CORREGIR` | `INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_ALCANCE_EVIDENCIA_O_CONFLICTO_NO_RESUELTOS` |
+
+---
+
+#### 20. Matriz materializada para las 332 identidades documentales
+
+| DOCCTX                 | VPROC        | Registro de auditoría        | Investigación       | Preservación                      | Cierre                 | Estado         | Bloqueo                                                          |
+| ---------------------- | ------------ | ---------------------------- | ------------------- | --------------------------------- | ---------------------- | -------------- | ---------------------------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVENTO_SI_ACCION_AUDITABLE` | `SI_TRIGGER_FORMAL` | `FUENTE_ORIGINAL_ANTES_DE_CAMBIO` | `CIERRE_INDEPENDIENTE` | `ESPECIFICADO` | `CIERRE_BLOQUEADO_SI_EVIDENCIA_ALCANCE_O_CONFLICTO_NO_RESUELTOS` |
+
+---
+
+#### 21. Reconciliación cuantitativa
+
+| Control                              | Resultado |
+| ------------------------------------ | --------: |
+| Procesos esperados                   |        69 |
+| Procesos materializados              |        69 |
+| Procesos únicos                      |        69 |
+| Procesos faltantes                   |         0 |
+| Procesos duplicados                  |         0 |
+| `DOCCTX-*` esperadas                 |       332 |
+| `DOCCTX-*` materializadas            |       332 |
+| Claves `DOCCTX-*` únicas             |       332 |
+| `DOCCTX-*` faltantes                 |         0 |
+| `DOCCTX-*` duplicadas                |         0 |
+| Renombres                            |         0 |
+| Fusiones                             |         0 |
+| Eliminaciones                        |         0 |
+| Propietarias funcionales preservadas |         9 |
+
+Distribución de sensibilidad heredada preservada:
+
+| Clase                  | Entradas |
+| ---------------------- | -------: |
+| `S0_PUBLIC`            |        1 |
+| `S1_INTERNAL`          |       33 |
+| `S2_CONFIDENTIAL`      |      166 |
+| `S3_RESTRICTED`        |      124 |
+| `S4_HIGHLY_RESTRICTED` |        8 |
+| **Total**              |  **332** |
+
+Distribución de retención heredada preservada:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+Fronteras heredadas preservadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+Ninguna decisión de auditoría o investigación cambia propietario, sensibilidad, retención o frontera de una identidad heredada. Las matrices agregan una decisión de control sin renumerar, fusionar ni eliminar identidades.
+
+---
+
+#### 22. Decisiones corporativas de cierre
+
+1. Auditoría empresarial, log técnico, evento de dominio, comando y evidencia son artefactos distintos pero correlacionables.
+2. Los diez grupos mínimos de acciones auditables quedan tipados y no admiten exclusión por conveniencia de interfaz o implementación.
+3. Actor efectivo, principal técnico, servicio, simulación, dispositivo, sede y contexto no se colapsan en una sola identidad.
+4. Los eventos de auditoría son no destructivos y sus correcciones se vinculan mediante eventos nuevos.
+5. Auditar no justifica almacenar secretos o payloads sensibles completos cuando referencias y digests son suficientes.
+6. La investigación formal exige disparador, alcance, preservación, línea de tiempo, actores/recursos, evidencia, hipótesis, comprobaciones, hallazgos, acciones, revisión de cierre y seguimiento.
+7. La preservación precede a una corrección que pueda alterar la fuente relevante.
+8. Un conflicto de interés bloquea el cierre y exige reasignación.
+9. La persona implicada no puede aprobar por sí sola su propio cierre investigativo.
+10. La reapertura conserva intactos el cierre y la evidencia anteriores.
+11. Los casos de privacidad, cumplimiento, autoridad, servicio, seguridad y firma conservan identidad propia aunque se correlacionen.
+12. No se inventa plazo numérico de investigación; los vencimientos consumen obligaciones aprobadas.
+13. Los 69 procesos y 332 `DOCCTX-*` reciben decisión explícita sin alterar sus identidades heredadas.
+14. No se ejecuta ningún cambio de código, Supabase, Storage, permisos, logs, datos, configuración o despliegue.
+
+---
+
+#### 23. Cobertura de riesgos heredados
+
+La tarea cierra documentalmente las brechas que permitían auditorías sin actor o recurso común, accesos sensibles no reconstruibles, logs mutables tratados como evidencia suficiente, investigaciones sin caso transversal, correcciones que destruyeran la fuente original o cierres aprobados por una persona implicada.
+
+Los comportamientos ejecutables ya cuentan con cobertura transversal vigente para perfiles de auditoría de los 69 procesos, actor y contexto de autorización, eventos append-only, accesos y extracciones sensibles, correlación temporal y causal, integridad de evidencia, persistencia protegida y reconciliación entre aplicaciones, base, Storage y terceros. Esta tarea materializa el contrato documental que esas coberturas deben consumir y no introduce una operación ejecutable independiente.
+
+---
+
+#### 24. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa y especializa el contrato documental de auditoría e investigación sobre comportamientos ya cubiertos por los requisitos vigentes de auditoría de proceso, autorización, gobierno VISO, persistencia e integridad y reconciliación transversal. No introduce una nueva transición física, permiso, algoritmo, mutación de base de datos, operación de Storage, API, integración o comportamiento ejecutable independiente. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 25. Criterios de aceptación
+
+- [x] `INFO-DOM-012` figura aprobada y entrega el registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas.
+- [x] los 69 `VPROC-*` aparecen exactamente una vez en la matriz de procesos y conservan su perfil `VPROC-####.AUDIT`.
+- [x] las 332 identidades `DOCCTX-*` aparecen exactamente una vez en la matriz documental.
+- [x] existen cero faltantes y cero duplicados en ambos universos.
+- [x] las diez categorías mínimas de acciones auditables quedan materializadas.
+- [x] auditoría empresarial, log técnico, evento de dominio, comando y evidencia quedan separados.
+- [x] actor efectivo, principal técnico, servicio, simulación, dispositivo y contexto permanecen distinguibles.
+- [x] el contrato de auditoría es no destructivo y toda corrección queda vinculada como evento nuevo.
+- [x] el contenido sensible se minimiza y los secretos no forman parte de la auditoría ordinaria.
+- [x] la investigación formal conserva disparador, alcance, fuentes, evidencia, línea de tiempo, hipótesis, hallazgos, acciones y cierre.
+- [x] la preservación precede a la corrección cuando esta pueda alterar la fuente.
+- [x] hechos, hipótesis, hallazgos y limitaciones permanecen tipados por separado.
+- [x] los conflictos producen reasignación y bloquean el cierre.
+- [x] la autoridad de cierre es independiente y una persona implicada no puede aprobar su propio cierre.
+- [x] la reapertura conserva el cierre anterior y crea una transición vinculada.
+- [x] no se inventa un plazo numérico de investigación.
+- [x] las distribuciones heredadas de sensibilidad 1/33/166/124/8, retención 33/184/36/66/13 y fronteras 73/245/14 permanecen intactas.
+- [x] no se realizan cambios físicos ni de Supabase.
+- [x] no se crean ni modifican requisitos de prueba.
+- [x] `INFO-AUTH-001` permanece reservada y no iniciada.
+
+---
+
+#### 26. Resultado y continuidad
+
+VENTO queda con un contrato corporativo único para registrar acciones auditables con actor, contexto, recurso, decisión, resultado y correlación; preservar fuentes antes de cambios potencialmente destructivos; investigar accesos o cambios posiblemente indebidos mediante un caso formal; distinguir hechos, hipótesis y hallazgos; gobernar acciones correctivas; y cerrar o reabrir sin destruir historia ni permitir autoaprobación de una persona implicada.
+
+La cadena resultante queda:
+
+```text
+accion gobernada
+-> evento de auditoria correlacionable y minimizado
+-> disparador investigativo cuando corresponda
+-> preservacion de fuentes
+-> alcance + linea de tiempo + actores + recursos
+-> hechos + hipotesis + comprobaciones
+-> hallazgos + limitaciones
+-> contencion y correccion por sus dominios propietarios
+-> revision independiente de cierre
+-> cierre no destructivo o reapertura vinculada
+```
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado`
+
