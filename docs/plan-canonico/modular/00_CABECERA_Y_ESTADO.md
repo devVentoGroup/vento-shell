@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **648** |
+| Tareas aprobadas | **649** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **946** |
+| Tareas no iniciadas | **945** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.65% (648/1594)** |
+| Porcentaje de completamiento | **40.72% (649/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro** |
-| Tarea actual | **INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales** |
+| Última tarea aprobada | **INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales** |
+| Tarea actual | **INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición** |
+| Siguiente tarea | **INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 72 de 157 aprobadas; INFO-DOM-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 73 de 157 aprobadas; INFO-DOM-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-004` — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro |
-| Tarea actual | `INFO-DOM-005` — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales — **NO INICIADA** |
-| Siguiente tarea | `INFO-DOM-006` — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición |
+| Última aprobada | `INFO-DOM-005` — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales |
+| Tarea actual | `INFO-DOM-006` — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición — **NO INICIADA** |
+| Siguiente tarea | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 72 DE 157 APROBADAS — ACTUAL INFO-DOM-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 73 DE 157 APROBADAS — ACTUAL INFO-DOM-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
-        ↓
-TAREA ACTUAL
 INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 72 de 157 tareas aprobadas
+CARRIL NEXO — 73 de 157 tareas aprobadas
 ```

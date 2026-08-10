@@ -2792,7 +2792,1033 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales`
 
 
-### [ ] INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
+### ✅ INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro` — APROBADA
+**Tarea siguiente:** `INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición` — RESERVADA
+**Tipo de tarea:** documental; materialización transversal del contrato corporativo de metadatos, vínculo empresarial, localización de representaciones, almacenamiento gobernado y búsqueda autorizada
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo heredado:** 69 procesos `VPROC-*` y 332 identidades contextuales `DOCCTX-*`
+**Contratos materializados:** `INFO-DOCUMENT-METADATA-CONTRACT-001`; `INFO-DOCUMENT-RESOURCE-LINK-CONTRACT-001`; `INFO-DOCUMENT-LOCATION-STORAGE-CONTRACT-001`; `INFO-DOCUMENT-AUTHORIZED-SEARCH-CONTRACT-001`; `INFO-DOCUMENT-METADATA-SEARCH-MATRIX-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Storage, buckets, objetos, migraciones, funciones, índices, jobs, datos, configuración ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir y materializar para las 332 identidades documentales un contrato corporativo que mantenga separadas la identidad lógica, la versión, las representaciones, sus localizadores y los recursos empresariales; establezca metadatos mínimos interpretables; gobierne almacenamiento sin convertir infraestructura en autoridad; y permita búsqueda y localización únicamente sobre proyecciones autorizadas, sin revelar por índices, títulos, fragmentos, rutas o metadatos la existencia de recursos fuera del alcance del actor.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+La tarea cierra la brecha transversal de metadatos, almacenamiento, búsqueda y vínculo empresarial mediante cinco resultados coordinados:
+
+1. `INFO-DOCUMENT-METADATA-CONTRACT-001`: sobre corporativo de metadatos que extiende el núcleo EVID sin fusionar identidad, versión, clasificación, estado, representación ni ubicación.
+2. `INFO-DOCUMENT-RESOURCE-LINK-CONTRACT-001`: contrato de relación entre documento, proceso, instancia y recursos empresariales, con autoridad explícita y referencias cruzadas no apropiativas.
+3. `INFO-DOCUMENT-LOCATION-STORAGE-CONTRACT-001`: modelo de representación y localización que separa documento, representación, objeto técnico, ubicación física y referencia temporal de acceso.
+4. `INFO-DOCUMENT-AUTHORIZED-SEARCH-CONTRACT-001`: contrato de búsqueda autorizada y minimizada que trata cualquier índice como proyección reconstruible y nunca como fuente de verdad.
+5. `INFO-DOCUMENT-METADATA-SEARCH-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+La tarea no crea un repositorio documental central obligatorio. Cada aplicación propietaria conserva el hecho empresarial y la autoridad sobre su recurso; los contratos transversales hacen que metadatos, representaciones, localizadores e índices puedan resolverse sin competir con esa autoridad.
+
+Resultado cuantitativo:
+
+| Control                                                  | Resultado |
+| -------------------------------------------------------- | --------: |
+| procesos `VPROC-*` recibidos                             |        69 |
+| procesos preservados                                     |        69 |
+| identidades `DOCCTX-*` recibidas                         |       332 |
+| identidades con decisión explícita                       |       332 |
+| identidades omitidas                                     |         0 |
+| identidades duplicadas                                   |         0 |
+| propietarias funcionales modificadas                     |         0 |
+| clases S0–S4 modificadas                                 |         0 |
+| clases de retención modificadas                          |         0 |
+| fronteras heredadas modificadas                          |         0 |
+| objetos de Storage promovidos a documento por inferencia |         0 |
+| cambios físicos                                          |         0 |
+| cambios en requisitos de prueba                          |         0 |
+
+---
+
+#### 2. Fuentes y decisiones heredadas
+
+Se conservan como entradas obligatorias:
+
+- `INFO-DOM-001`: inventario de 69 procesos, propiedad funcional, finalidad, huella técnica de schemas y Storage, y prohibición de inferir gobierno desde infraestructura;
+- `INFO-DOM-002`: clasificación S0–S4, minimización y propagación de sensibilidad sobre metadatos, copias, índices y derivados;
+- `INFO-DOM-003`: taxonomía que separa documento, registro, evidencia, expediente, serie, original, copia y representación;
+- `INFO-DOM-004`: identidad lógica, versión y ejes separados de preparación, vigencia, publicación y retención;
+- `CAP-SCOPE-016`: brechas de metadatos uniformes, vínculos con recursos y búsqueda transversal;
+- `EVID-ARC-004`: `EVID_META_CORE_V1`, identidad estable, versión documental, versión de esquema de metadatos, proceso, instancia y vínculo empresarial resoluble;
+- `EVID-ARC-007`: acceso temporal como decisión separada de identidad y localización persistente;
+- `EVID-ARC-008`: auditoría de consulta y modificación documental;
+- `EVID-ARC-010`: comportamiento de contingencia ante indisponibilidad de Storage;
+- registro canónico de requisitos: cobertura vigente de búsqueda autorizada, persistencia documental, reconciliación entre aplicaciones, Storage, índices, copias y cachés.
+
+Invariantes que esta tarea no modifica:
+
+- `document_id` identifica el objeto lógico y no una ruta, URL, bucket, archivo o ubicación física;
+- `document_context_id` resuelve exactamente a una identidad `DOCCTX-*` aprobada;
+- `document_version` y `metadata_schema_version` mantienen semánticas distintas;
+- `process_id` y `process_instance_id` conservan el contexto empresarial;
+- `owner_app_code` conserva la propietaria funcional heredada;
+- el vínculo con `resource_type` + `resource_id` se exige cuando existe un recurso empresarial específico y no se fabrica cuando no aplica;
+- un identificador externo complementa la identidad VENTO y no la reemplaza;
+- una URL temporal no sustituye identidad, autorización ni localización canónica;
+- las 332 identidades mantienen la distribución de retención 33/184/36/66/13;
+- las fronteras heredadas permanecen 73 `NINGUNO`, 245 `FRONTERA_OBLIGATORIA` y 14 `APLICACION_DIFERIDA`;
+- las políticas definitivas de retención permanecen reservadas a `INFO-DOM-006`.
+
+---
+
+#### 3. Distinciones obligatorias
+
+```text
+document_id
+≠ document_version
+≠ metadata_schema_version
+≠ resource_version
+≠ classification_version
+```
+
+```text
+documento lógico
+≠ representación
+≠ objeto técnico
+≠ localizador
+≠ referencia temporal de acceso
+```
+
+```text
+recurso empresarial
+≠ ubicación de Storage
+≠ carpeta
+≠ bucket
+≠ path
+≠ URL
+```
+
+```text
+índice de búsqueda
+≠ catálogo autoritativo
+≠ permiso de lectura
+≠ fuente de verdad
+```
+
+```text
+metadatos
+≠ contenido
+≠ autorización
+≠ autenticidad
+```
+
+Reglas:
+
+1. una ubicación técnica puede cambiar sin cambiar la identidad lógica ni la versión documental;
+2. una misma versión puede tener cero, una o varias representaciones válidas según su naturaleza;
+3. una representación puede cambiar de localización manteniendo identidad y relación histórica;
+4. una fila estructurada que sea registro o evidencia no deberá fabricar un archivo binario para satisfacer este contrato;
+5. una copia, réplica, caché, exportación o índice no adquiere autoridad por ser más accesible o más reciente técnicamente;
+6. conocer un nombre, identificador, ruta o localizador no concede derecho de consulta.
+
+---
+
+#### 4. Contrato `INFO-DOCUMENT-METADATA-CONTRACT-001`
+
+##### 4.1. Núcleo obligatorio de identidad e interpretación
+
+Toda instancia documental materializada deberá poder resolver, según aplicabilidad, el siguiente sobre semántico:
+
+| Campo o grupo                               | Regla corporativa                                                                                                                                                                            |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `document_id`                               | identidad lógica estable; no depende de nombre, formato, ruta o aplicación consumidora                                                                                                       |
+| `document_context_id`                       | referencia exacta a una identidad `DOCCTX-*`                                                                                                                                                 |
+| `document_version`                          | versión concreta del objeto lógico; no se reutiliza para contenido o estado material distinto                                                                                                |
+| `metadata_schema_version`                   | versión del contrato con el que se interpretan los metadatos                                                                                                                                 |
+| `process_id`                                | `VPROC-*` propietario o contextual aprobado                                                                                                                                                  |
+| `process_instance_id`                       | instancia empresarial concreta cuando se materializa el objeto                                                                                                                               |
+| `owner_app_code`                            | aplicación propietaria funcional heredada                                                                                                                                                    |
+| `legal_entity_ref`                          | referencia obligatoria de entidad legal para toda instancia persistida; si no es resoluble, la instancia no puede declararse plenamente gobernada y la operación dependiente queda bloqueada |
+| `document_function_refs[]`                  | funciones documento/registro/evidencia aplicables según `INFO-DOM-003`; pueden coexistir                                                                                                     |
+| `document_type_ref`                         | tipo documental obligatorio para toda instancia persistida; si el catálogo aplicable no es resoluble, queda `PENDIENTE_DE_EVIDENCIA` y no se infiere desde extensión o nombre                |
+| `series_ref`                                | serie cuando aplique y exista relación resoluble; no equivale a carpeta                                                                                                                      |
+| `expedient_refs[]`                          | expedientes que referencian el objeto; la pertenencia no transfiere propiedad                                                                                                                |
+| `classification` + `classification_version` | piso y versión de clasificación heredados o elevados por regla aprobada                                                                                                                      |
+| `preparation_status`                        | estado de preparación según `INFO-DOM-004` cuando aplique                                                                                                                                    |
+| `effectiveness_status`                      | estado de vigencia según `INFO-DOM-004`                                                                                                                                                      |
+| `publication_status`                        | estado de publicación separado de vigencia y clasificación                                                                                                                                   |
+| `effective_from` / `effective_to`           | ventana efectiva cuando sea aplicable y resoluble                                                                                                                                            |
+| `resource_links[]`                          | referencias empresariales tipadas conforme al contrato de vínculo de esta tarea                                                                                                              |
+| `representation_refs[]`                     | representaciones físicas, digitales o estructuradas asociadas a la versión                                                                                                                   |
+| `retention_policy_ref`                      | referencia de política cuando exista; su contenido definitivo pertenece a `INFO-DOM-006`                                                                                                     |
+| `integrity_provenance_ref`                  | referencia a evidencia de autenticidad/integridad cuando exista; su contrato pertenece a `INFO-DOM-007`                                                                                      |
+| `created_or_received_actor_ref`             | actor o sistema que materializó o recibió el objeto cuando sea resoluble                                                                                                                     |
+| `created_or_received_at`                    | timestamp empresarial o técnico aplicable sin sustituir los tiempos específicos de ciclo y auditoría                                                                                         |
+
+##### 4.2. Reglas de obligatoriedad y ausencia
+
+1. un campo obligatorio por contexto no podrá sustituirse por texto libre ambiguo;
+2. un dato no demostrado se marca `PENDIENTE_DE_EVIDENCIA` en la instancia concreta; no se inventa;
+3. `NO_APLICA` exige que la dimensión no corresponda semánticamente al objeto;
+4. la ausencia de archivo binario no vuelve incompleto a un registro estructurado válido;
+5. la ausencia de un recurso empresarial específico no elimina el vínculo obligatorio con proceso e instancia;
+6. un metadato derivado conserva referencia a su fuente o regla de cálculo cuando su interpretación dependa de ella;
+7. cambios del esquema de metadatos usan `metadata_schema_version`; no fuerzan una nueva `document_version` si el contenido documental no cambió;
+8. cambios materiales del documento no se encubren como corrección de metadatos.
+
+##### 4.3. Campos que no pueden actuar como identidad empresarial
+
+No pueden sustituir `document_id`, `process_id`, `process_instance_id` o un recurso empresarial:
+
+- nombre visible;
+- nombre de archivo;
+- extensión;
+- MIME;
+- bucket;
+- path;
+- carpeta;
+- URL;
+- clave técnica aislada de un proveedor;
+- hash;
+- timestamp aislado;
+- ubicación física;
+- posición en un índice;
+- nombre de aplicación.
+
+---
+
+#### 5. Contrato `INFO-DOCUMENT-RESOURCE-LINK-CONTRACT-001`
+
+##### 5.1. Capas de vínculo
+
+Todo documento materializado conserva primero su contexto de proceso:
+
+```text
+process_id + process_instance_id
+        ↓
+document_context_id + document_id + document_version
+        ↓
+resource_links[] cuando existan recursos empresariales específicos
+```
+
+Cada `resource_link` deberá poder distinguir como mínimo:
+
+| Dimensión                         | Regla                                                                                                            |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `resource_type`                   | tipo empresarial estable; no nombre de tabla ni bucket por defecto                                               |
+| `resource_id`                     | identidad resoluble del recurso en su fuente propietaria                                                         |
+| `resource_version`                | versión o revisión cuando el recurso la gobierne                                                                 |
+| `link_role`                       | `GOVERNING_RESOURCE`, `RELATED_RESOURCE`, `PARENT_RESOURCE` o `EXTERNAL_ORIGIN`, según evidencia y aplicabilidad |
+| `owner_app_code`                  | propietaria del recurso referenciado; una referencia no cambia esta propiedad                                    |
+| `effective_from` / `effective_to` | vigencia del vínculo cuando pueda variar en el tiempo                                                            |
+
+##### 5.2. Reglas de autoridad
+
+1. `GOVERNING_RESOURCE` identifica el recurso que gobierna el significado empresarial del documento cuando esa relación exista y esté demostrada;
+2. una instancia no recibe más de un `GOVERNING_RESOURCE` para el mismo significado y momento sin una regla explícita de composición;
+3. `RELATED_RESOURCE` permite referencias cruzadas sin absorber propiedad ni autoridad;
+4. `PARENT_RESOURCE` expresa jerarquía empresarial únicamente cuando exista en el dominio propietario;
+5. `EXTERNAL_ORIGIN` conserva referencia de origen externo sin convertir el identificador del tercero en identidad VENTO;
+6. expediente, serie, carpeta, bucket o aplicación consumidora no son por sí mismos recursos gobernantes;
+7. una referencia rota, ambigua o no resoluble bloquea la operación que dependa de ella; no se repara por similitud de nombre.
+
+##### 5.3. Cardinalidad y referencias cruzadas
+
+- un documento puede referenciar múltiples recursos relacionados;
+- un recurso puede estar representado o evidenciado por múltiples documentos;
+- un expediente puede referenciar documentos de distintos procesos sin duplicarlos ni transferir su autoridad;
+- la materialización de una copia o representación adicional no crea un nuevo recurso empresarial;
+- una relación histórica no se elimina silenciosamente cuando el documento o recurso cambia de estado.
+
+---
+
+#### 6. Contrato `INFO-DOCUMENT-LOCATION-STORAGE-CONTRACT-001`
+
+##### 6.1. Capas separadas
+
+```text
+document_id + document_version
+        ↓
+representation_id
+        ↓
+location_ref[]
+        ↓
+referencia de acceso temporal cuando corresponda
+```
+
+`representation_id` identifica una representación concreta de la versión documental. Una representación puede ser física, digital binaria, estructurada o derivada. El contrato no obliga a convertir todas las representaciones en archivos.
+
+##### 6.2. Tipos de localización
+
+| Código                      | Uso                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `VENTO_MANAGED_OBJECT`      | representación almacenada en infraestructura gobernada por VENTO                 |
+| `EXTERNAL_GOVERNED_REF`     | representación custodiada por tercero o sistema externo con referencia resoluble |
+| `PHYSICAL_LOCATION`         | original o copia física con ubicación controlada                                 |
+| `DERIVED_TECHNICAL_REPLICA` | réplica, caché, preview u otra copia técnica que no es fuente de autoridad       |
+| `NO_APLICA`                 | no existe representación que requiera localización de esta clase                 |
+
+##### 6.3. Sobre de localización
+
+Una localización persistente deberá poder conservar, según su tipo:
+
+```text
+representation_id
+location_kind
+storage_or_custody_ref
+container_ref
+object_or_item_ref
+physical_location_ref
+location_status
+observed_or_registered_at
+effective_from
+effective_to
+supersedes_location_ref
+```
+
+Reglas:
+
+1. `storage_or_custody_ref`, `container_ref` y `object_or_item_ref` son referencias técnicas o de custodia; no reemplazan identidad documental;
+2. un traslado, renombre o migración de objeto conserva historia de localización cuando sea necesario para reconstruir la representación;
+3. una ruta o URL cambiante no obliga a crear una versión documental nueva;
+4. una referencia temporal de acceso se genera desde autorización vigente y no se persiste como localizador canónico;
+5. la bandera técnica pública/privada de un contenedor no determina clasificación empresarial ni permiso de lectura;
+6. una réplica técnica conserva vínculo con su representación fuente y no se presenta como original ni autoridad;
+7. una ubicación física conocida no permite inventar custodio, contenido o correspondencia individual no comprobados;
+8. la ausencia temporal de Storage no permite presentar una representación como inexistente, eliminada o dispuesta sin reconciliación.
+
+##### 6.4. Almacenamiento y fuente de verdad
+
+La arquitectura lógica queda:
+
+```text
+fuente propietaria del hecho empresarial
+        ↓
+metadatos documentales resolubles
+        ↓
+representaciones
+        ↓
+localizaciones gobernadas
+```
+
+Por tanto:
+
+- Storage conserva representaciones, no reemplaza el hecho empresarial;
+- una tabla de metadatos transversal, si se materializa posteriormente, funciona como catálogo y vínculo, no como propietaria universal de los hechos de negocio;
+- un objeto sin vínculo resoluble no puede declararse documento gobernado únicamente por existir en un contenedor;
+- un objeto duplicado técnicamente no implica dos documentos lógicos;
+- backup, caché y réplica no son repositorios históricos de consulta ordinaria por defecto.
+
+---
+
+#### 7. Tratamiento de la huella técnica actual de Storage
+
+La línea base heredada registra 14 buckets y 1101 objetos mediante metadata y conteo, sin inspección de contenido. Esta tarea conserva esa evidencia únicamente como huella técnica.
+
+| Control                                                             | Decisión de INFO-DOM-005              |
+| ------------------------------------------------------------------- | ------------------------------------- |
+| buckets observados                                                  | 14 preservados como evidencia técnica |
+| objetos contados                                                    | 1101 preservados como conteo técnico  |
+| objetos inspeccionados por contenido en esta tarea                  | 0                                     |
+| objetos promovidos a identidad `document_id` por nombre o ubicación | 0                                     |
+| recursos empresariales inferidos desde bucket/path                  | 0                                     |
+| clasificaciones empresariales inferidas desde bandera técnica       | 0                                     |
+| correspondencias objeto ↔ `DOCCTX-*` inventadas                     | 0                                     |
+
+La huella de 1101 objetos no constituye un inventario de 1101 documentos. El universo documental canónico de esta tarea sigue siendo el conjunto de 332 identidades contextuales `DOCCTX-*`; una instancia concreta solo podrá declararse materializada cuando satisfaga identidad, proceso, vínculo y representación conforme a este contrato.
+
+---
+
+#### 8. Tratamiento de originales y ubicaciones físicas
+
+La existencia heredada de originales físicos en `Oficina 1` se conserva como evidencia de ubicación agregada. No se usa para inventar localizaciones individuales.
+
+Reglas:
+
+1. `Oficina 1` puede convertirse en `physical_location_ref` de una instancia concreta solo cuando exista evidencia que vincule el documento con esa ubicación;
+2. la ubicación física no determina por sí sola originalidad, autenticidad, custodio ni propiedad funcional;
+3. una copia digital se vincula con su representación fuente cuando la correspondencia sea resoluble;
+4. autenticidad, hash, timestamp, preservación y cadena de custodia permanecen en `INFO-DOM-007`;
+5. una instancia cuya ubicación concreta no esté demostrada conserva su identidad y marca esa dimensión `PENDIENTE_DE_EVIDENCIA`; no se completa por inferencia.
+
+---
+
+#### 9. Contrato `INFO-DOCUMENT-AUTHORIZED-SEARCH-CONTRACT-001`
+
+##### 9.1. Principio de autorización previa
+
+La búsqueda documental no es un permiso separado para conocer la existencia de información. Antes de devolver títulos, nombres, fragmentos, conteos, etiquetas, relaciones o metadatos sensibles deberá resolverse el contexto autorizado del actor.
+
+Una solicitud de búsqueda deberá poder resolver, según aplicabilidad:
+
+```text
+principal_ref
+effective_actor_ref
+purpose_code
+action = SEARCH
+process_scope
+resource_scope
+relationship_scope
+territory_scope
+classification_scope
+lifecycle_scope
+publication_scope
+query_or_filter
+requested_projection
+```
+
+La ausencia de un componente obligatorio para decidir alcance produce política restrictiva; nunca amplía resultados.
+
+##### 9.2. Pipeline lógico de búsqueda
+
+```text
+actor + finalidad + acción + alcance
+        ↓
+proyección de índice autorizable
+        ↓
+candidatos dentro del alcance permitido
+        ↓
+revalidación de autorización y estado vigente
+        ↓
+proyección mínima de metadatos
+        ↓
+acceso al contenido mediante su control propio
+```
+
+Reglas:
+
+1. un índice solo contiene o proyecta información necesaria para la finalidad aprobada;
+2. los resultados no revelan recursos no autorizados mediante título, nombre, snippet, conteo, sugerencia, autocomplete, faceta o mensaje de error;
+3. obtener un candidato por búsqueda no concede acceso a su contenido;
+4. la hidratación del resultado revalida autorización, relación, clasificación, estado y alcance aplicables;
+5. búsquedas exactas por identificador respetan las mismas reglas que búsqueda textual;
+6. ranking, filtros, facetas o búsqueda aproximada no pueden operar sobre contenido que el actor no está autorizado a conocer;
+7. información S3/S4 usa proyecciones minimizadas y no expone contenido en índices o snippets más allá de lo autorizado;
+8. una búsqueda sin resultados no debe distinguir entre inexistencia y falta de permiso de manera que filtre información protegida;
+9. una copia local o caché de índice hereda clasificación, finalidad y política de su contenido.
+
+##### 9.3. Índice como proyección reconstruible
+
+Un índice de búsqueda:
+
+- conserva referencias estables a `document_id`, `document_version` y recursos necesarios para revalidación;
+- no se convierte en fuente de verdad del estado documental;
+- no conserva una versión como vigente únicamente porque aún aparezca indexada;
+- puede reconstruirse desde fuentes autorizadas sin perder identidad empresarial;
+- no crea una versión documental nueva por actualizar tokens, ranking o estructura del índice;
+- no autoriza modificar el documento fuente;
+- debe impedir que una copia desactualizada gane autoridad frente al estado vigente.
+
+---
+
+#### 10. Localización y búsqueda por recurso empresarial
+
+La localización funcional parte del recurso, no del contenedor técnico:
+
+```text
+recurso empresarial autorizado
+→ vínculos documentales
+→ identidad y versión aplicables
+→ representación autorizada
+→ localización vigente
+```
+
+También puede partir de una identidad documental conocida:
+
+```text
+document_id autorizado
+→ versión aplicable
+→ resource_links[]
+→ representation_refs[]
+→ location_ref[]
+```
+
+Reglas:
+
+1. localizar significa resolver dónde existe una representación; no significa autorizar lectura;
+2. una relación con un recurso permite navegar solo dentro del alcance autorizado;
+3. mover un objeto entre contenedores no cambia el recurso empresarial gobernante;
+4. cambiar de aplicación consumidora no cambia la propietaria funcional;
+5. una vista transversal puede presentar referencias de múltiples dominios sin replicar sus hechos como autoridad propia;
+6. búsquedas por expediente o serie respetan la autoridad individual de cada documento miembro.
+
+---
+
+#### 11. Versionado de metadatos, vínculos y localizadores
+
+Se distinguen cuatro clases de cambio:
+
+| Cambio                                    | Efecto                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| cambia contenido o significado documental | nueva `document_version` según `INFO-DOM-004`                                        |
+| cambia únicamente contrato de metadatos   | nueva `metadata_schema_version`; no fuerza nueva versión documental                  |
+| cambia vínculo empresarial por hecho real | nueva revisión del vínculo con historia y vigencia; no reescribe el vínculo anterior |
+| cambia ubicación de una representación    | nueva revisión/localización enlazada; no fuerza nueva versión documental             |
+
+Una corrección de metadatos no puede utilizarse para alterar silenciosamente el significado empresarial de una versión. Cuando el cambio revele que la identidad o el recurso eran incorrectos, la corrección deberá preservar la asignación anterior y el motivo de la rectificación.
+
+---
+
+#### 12. Representaciones múltiples y copias
+
+Una versión documental puede tener varias representaciones, por ejemplo una estructura autoritativa y una representación PDF, un original físico y una copia digital, o una evidencia primaria y una preview técnica.
+
+Reglas:
+
+1. cada representación conserva `representation_id` estable dentro de la versión;
+2. original/copia se interpreta según `INFO-DOM-003`, no según ubicación;
+3. una representación derivada conserva relación con su fuente;
+4. una representación no autorizada para consumo puede existir sin aparecer en búsqueda ordinaria;
+5. una preview o thumbnail no hereda autoridad sobre su fuente;
+6. una impresión es copia física cuando corresponde y no se vuelve original por ubicación;
+7. un cambio de formato sin cambio de significado puede producir representación nueva sin forzar identidad lógica nueva, siempre que la relación sea trazable;
+8. si la transformación cambia significado o contenido material, deberá tratarse mediante el ciclo de versión correspondiente.
+
+---
+
+#### 13. Estados de resolución aplicables
+
+Para instancias concretas se utilizan los estados de certeza ya compatibles con el plan:
+
+- `ESPECIFICADO`: contrato o relación documental definida;
+- `PENDIENTE_DE_EVIDENCIA`: falta evidencia para resolver un valor concreto sin inferencia;
+- `BLOQUEADO`: la operación pretendida no puede continuar por vínculo, autorización, clasificación, estado o localización obligatoria no resolubles;
+- `NO_APLICA`: la dimensión no corresponde y existe razón explícita.
+
+La ausencia de evidencia no se transforma en `NO_APLICA`. La existencia técnica no se transforma en `ESPECIFICADO` empresarial sin vínculo resoluble.
+
+---
+
+#### 14. Reglas de falla segura
+
+Quedan bloqueadas, cuando dependan del dato faltante, las operaciones que intenten:
+
+- presentar un objeto técnico como documento sin `document_id` y `document_context_id` resolubles;
+- presentar un documento materializado sin `process_id` y `process_instance_id` resolubles;
+- usar un recurso específico cuando su `resource_type` o `resource_id` no pueda resolverse;
+- usar bucket, ruta o nombre como sustituto de identidad;
+- exponer resultados de búsqueda sin contexto autorizado;
+- generar acceso temporal desde un candidato que no superó revalidación;
+- tratar una réplica, caché o índice como versión vigente;
+- declarar inexistencia, eliminación o disposición únicamente porque un objeto no sea localizable temporalmente;
+- degradar clasificación porque una representación esté en un contenedor técnicamente público;
+- reparar referencias ambiguas por similitud de texto o posición técnica.
+
+---
+
+#### 15. Aplicación al universo heredado
+
+Las 332 identidades `DOCCTX-*` reciben el mismo contrato corporativo de metadatos, vínculo, representación/localización y búsqueda, preservando su proceso, propietaria, sensibilidad, retención y frontera heredada.
+
+Códigos de matriz:
+
+| Código                       | Significado                                                                                      |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| `INFO_META_LOC_SEARCH_V1`    | perfil corporativo de metadatos, vínculo, localización y búsqueda de esta tarea                  |
+| `BUSINESS_LINK_RESOLVABLE`   | proceso e instancia obligatorios; recurso específico condicional cuando exista y aplique         |
+| `LOCATION_BY_REPRESENTATION` | localización resuelta por representación, nunca por identidad documental sola                    |
+| `AUTHORIZED_SEARCH_V1`       | búsqueda con autorización previa, proyección mínima y revalidación antes del contenido           |
+| `NINGUNO`                    | no existe frontera heredada adicional                                                            |
+| `FRONTERA_OBLIGATORIA`       | referencias cruzadas no absorben autoridad ni propiedad ajena                                    |
+| `APLICACION_DIFERIDA`        | la definición documental es válida, pero no acredita disponibilidad de la aplicación propietaria |
+
+| ID contextual          | Proceso      | Perfil                    | Vínculo empresarial        | Localización                 | Búsqueda               | Retención heredada   | Estado         | Frontera heredada      |
+| ---------------------- | ------------ | ------------------------- | -------------------------- | ---------------------------- | ---------------------- | -------------------- | -------------- | ---------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ARCHIVAL`       | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_RELATIONSHIP`   | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_OBLIGATION`     | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_ACTIVE_CASE`    | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `INFO_META_LOC_SEARCH_V1` | `BUSINESS_LINK_RESOLVABLE` | `LOCATION_BY_REPRESENTATION` | `AUTHORIZED_SEARCH_V1` | `RET_BUSINESS_CYCLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 16. Reconciliación cuantitativa
+
+| Control                                   | Resultado |
+| ----------------------------------------- | --------: |
+| `DOCCTX-*` esperadas                      |       332 |
+| `DOCCTX-*` materializadas                 |       332 |
+| claves únicas                             |       332 |
+| faltantes                                 |         0 |
+| duplicados                                |         0 |
+| procesos cubiertos                        |        69 |
+| filas con `INFO_META_LOC_SEARCH_V1`       |       332 |
+| filas con vínculo empresarial resoluble   |       332 |
+| filas con localización por representación |       332 |
+| filas con búsqueda autorizada             |       332 |
+| propietarias modificadas                  |         0 |
+| clasificaciones modificadas               |         0 |
+
+Distribución de retención heredada preservada:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+Fronteras heredadas preservadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+---
+
+#### 17. Fronteras con tareas y contratos posteriores
+
+| Materia                                                                                   | Decisión de INFO-DOM-005                                                                       | Propietario posterior             |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------- |
+| plazos de retención, triggers, archivo, hold, anonimización, eliminación y certificado    | solo se conserva `retention_policy_ref`; no se inventan políticas o plazos                     | `INFO-DOM-006`                    |
+| autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | se conserva referencia cuando exista; no se certifica                                          | `INFO-DOM-007`                    |
+| avisos, fundamentos, consentimiento y datos sensibles                                     | metadatos y búsqueda respetan clasificación/finalidad; no se definen bases de tratamiento      | `INFO-DOM-008`                    |
+| solicitudes de titulares                                                                  | búsqueda y vínculo permiten localización autorizada; no se define procedimiento de atención    | `INFO-DOM-009`                    |
+| compartición, terceros y requerimientos de autoridad                                      | localizadores no conceden divulgación; no se define transferencia                              | `INFO-DOM-010`                    |
+| aprobación, aceptación y firmas                                                           | los metadatos pueden referenciar estados; no definen fuerza de firma                           | `INFO-DOM-011`                    |
+| auditoría e investigación                                                                 | búsquedas y cambios deben ser auditables según cobertura existente; no se define investigación | `INFO-DOM-013`                    |
+| autorización de búsqueda, lectura, impresión, exportación o compartición                  | esta tarea exige decisión previa; la política de permiso pertenece al dominio de autorización  | `INFO-AUTH-001` y `INFO-AUTH-002` |
+| validación física de archivos y acceso temporal                                           | se consumen los contratos EVID sin redefinirlos                                                | tareas `EVID-ARC-*` aplicables    |
+
+Ninguna frontera posterga el resultado principal: el modelo corporativo de metadatos, vínculo empresarial, localización, almacenamiento gobernado y búsqueda autorizada queda completamente definido y materializado para el universo heredado.
+
+---
+
+#### 18. Decisiones corporativas de cierre
+
+1. `document_id`, versión, representación, objeto técnico, localizador y referencia temporal de acceso quedan separados.
+2. Metadatos no sustituyen contenido, autorización, autenticidad ni fuente empresarial.
+3. El documento conserva siempre contexto de proceso; el recurso específico se vincula cuando exista y sea resoluble.
+4. Las referencias cruzadas no transfieren propiedad ni autoridad.
+5. Un documento puede tener múltiples recursos relacionados y múltiples representaciones sin duplicar identidad lógica.
+6. Bucket, path, carpeta, URL, nombre de archivo, hash o ubicación física no pueden actuar como identidad empresarial.
+7. Mover o renombrar una representación no crea una versión documental nueva por sí solo.
+8. Una referencia temporal de acceso nunca es localizador canónico.
+9. La bandera técnica pública/privada no determina clasificación ni autorización empresarial.
+10. Los 14 buckets y 1101 objetos observados se conservan como huella técnica; no se inventan correspondencias objeto-documento-recurso.
+11. Un índice de búsqueda es una proyección reconstruible, no una fuente de verdad ni permiso de lectura.
+12. La búsqueda exige autorización previa, minimización y revalidación antes de hidratar contenido.
+13. Títulos, snippets, facetas, conteos, sugerencias y mensajes de error no pueden filtrar recursos no autorizados.
+14. Una versión desactualizada en índice o caché no adquiere autoridad sobre el estado vigente.
+15. Original físico, copia digital, réplica, preview y representación estructurada conservan localizadores propios y relaciones con su fuente.
+16. La ubicación agregada `Oficina 1` no se convierte en localizador individual sin evidencia.
+17. Las 332 identidades, 69 procesos, propietarias, clasificación, retención y fronteras heredadas permanecen intactos.
+18. No se ejecuta ningún cambio de código, Supabase, Storage, datos, índices, configuración o despliegue.
+
+---
+
+#### 19. Cobertura de riesgos heredados
+
+La tarea cierra documentalmente las brechas que permitían confundir infraestructura con identidad documental, mantener archivos sin vínculo empresarial uniforme o tratar la búsqueda como vía lateral de divulgación. También fija cómo localizar representaciones físicas, digitales, externas o técnicas sin que su ubicación adquiera autoridad sobre el recurso empresarial.
+
+Los comportamientos ejecutables ya cuentan con cobertura transversal vigente: búsqueda y consulta resuelven actor, finalidad, clasificación, recurso, relación, territorio, estado y acción; la persistencia documental conserva identidad, tipo, versión, estado, vigencia y representación; y la integración impide que índices, copias, cachés o proveedores se conviertan en fuentes competidoras. Esta tarea materializa el contrato documental que esos controles deberán consumir y no introduce un comportamiento ejecutable independiente.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa y especializa metadatos, vínculo empresarial, localización, almacenamiento gobernado y búsqueda autorizada sobre comportamientos ya protegidos por la cobertura vigente de consulta/búsqueda, persistencia documental y reconciliación entre fuentes, índices, copias y cachés. No introduce una nueva transición física, permiso, algoritmo, mutación de base de datos, operación de Storage, índice ejecutable, integración o comportamiento independiente. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 21. Criterios de aceptación
+
+- [x] `INFO-DOM-004` figura aprobada y entrega ciclo, estados, versiones y vigencia.
+- [x] los 69 `VPROC-*` permanecen sin renombrar, fusionar o eliminar.
+- [x] las 332 claves `DOCCTX-*` aparecen exactamente una vez en la matriz de esta tarea.
+- [x] cada identidad recibe `INFO_META_LOC_SEARCH_V1`, vínculo empresarial resoluble, localización por representación y búsqueda autorizada.
+- [x] `document_id`, `document_version`, `metadata_schema_version`, `resource_version` y `classification_version` quedan semánticamente separados.
+- [x] documento, representación, objeto técnico, localizador y referencia temporal de acceso quedan separados.
+- [x] proceso e instancia permanecen como contexto obligatorio de materialización.
+- [x] `resource_type` y `resource_id` se exigen cuando existe recurso empresarial específico y no se inventan cuando no aplica.
+- [x] las referencias cruzadas no transfieren propiedad ni autoridad.
+- [x] una misma versión puede tener múltiples representaciones y localizaciones sin duplicar identidad lógica.
+- [x] una representación estructurada no está obligada a fabricar archivo binario.
+- [x] bucket, path, carpeta, URL, nombre de archivo, hash y ubicación física no pueden sustituir identidad o recurso.
+- [x] una referencia temporal de acceso no se usa como localizador persistente.
+- [x] la bandera técnica pública/privada no concede clasificación pública ni autorización.
+- [x] los 14 buckets y 1101 objetos se conservan únicamente como huella técnica y se crean cero correspondencias inferidas.
+- [x] `Oficina 1` se conserva como ubicación física agregada sin inventar correspondencias individuales.
+- [x] la búsqueda exige actor, finalidad, acción y alcance resolubles antes de exponer metadatos protegidos.
+- [x] resultados, conteos, facetas, sugerencias y mensajes no filtran recursos no autorizados.
+- [x] un índice no se convierte en fuente de verdad ni permiso de lectura.
+- [x] una copia, caché o índice desactualizado no puede ganar autoridad frente al estado vigente.
+- [x] cambios de metadatos, vínculo empresarial y localización conservan historia sin confundirse con nueva versión documental.
+- [x] la distribución de retención 33/184/36/66/13 permanece intacta.
+- [x] las fronteras 73/245/14 permanecen intactas.
+- [x] las políticas definitivas de retención permanecen reservadas a `INFO-DOM-006`.
+- [x] no se realizan cambios físicos ni de Supabase.
+- [x] no se crean ni modifican requisitos de prueba.
+- [x] `INFO-DOM-006` permanece reservada y no iniciada.
+
+---
+
+#### 22. Resultado y continuidad
+
+VENTO queda con un contrato corporativo único para describir una instancia documental, vincularla con su proceso y recursos empresariales, resolver sus representaciones y ubicaciones, gobernar dónde se almacena sin convertir infraestructura en autoridad y localizarla mediante búsqueda autorizada y minimizada.
+
+La cadena resultante queda:
+
+```text
+VPROC-* + instancia empresarial
+→ DOCCTX-* + document_id + document_version
+→ metadatos interpretables y versionados
+→ resource_links[]
+→ representation_refs[]
+→ location_ref[]
+→ índice autorizado como proyección reconstruible
+→ revalidación de autorización
+→ contenido o representación permitida
+```
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición`
+
+
 ### [ ] INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
 ### [ ] INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
 ### [ ] INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
