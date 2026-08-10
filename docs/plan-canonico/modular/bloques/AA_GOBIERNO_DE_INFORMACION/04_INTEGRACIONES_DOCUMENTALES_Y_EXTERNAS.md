@@ -1115,4 +1115,364 @@ La conducta observable materializada por esta tarea ya está cubierta directamen
 **SIGUIENTE TAREA RESERVADA:** BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN.
 
 
-### [ ] INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
+### ✅ INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio` — APROBADA
+**Tarea siguiente:** `BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN` — RESERVADA
+**Tipo de tarea:** Documental — definición contractual de integración externa, identidad de contraparte, alcance, intercambio, evidencia y reconciliación para encargados, asesores, autoridades, proveedores y destinatarios externos.
+
+#### 1. Propósito
+
+Definir la frontera canónica de integración entre VENTO y terceros que reciben, procesan, solicitan, producen o devuelven información gobernada, sin trasladar a la contraparte externa la propiedad funcional, la autoridad empresarial, la decisión de autorización ni la fuente de verdad que corresponden a VENTO.
+
+La tarea materializa contratos técnicos consumibles para las cinco clases solicitadas —encargados, asesores, autoridades, proveedores y destinatarios externos— y conserva las decisiones ya aprobadas sobre compartición, exportación, divulgación, transferencia, requerimientos de autoridad, retención, disposición, evidencia, autorización e integración interna.
+
+Principio rector:
+
+```text
+CONTRAPARTE EXTERNA
+= IDENTIDAD VERIFICABLE
++ ROL RESPALDADO POR EVIDENCIA
++ FINALIDAD Y ALCANCE
++ CONTRATO VERSIONADO
++ CANAL AUTORIZADO
++ TRAZABILIDAD
++ RECONCILIACIÓN
+
+CONTRAPARTE EXTERNA
+≠ PROPIETARIA FUNCIONAL
+≠ AUTORIDAD AUTOMÁTICA SOBRE LA FUENTE
+≠ PERMISO DE ESCRITURA CRUZADA
+≠ FUENTE DE VERDAD POR RECIBIR UNA COPIA
+≠ ENCARGADO POR SER PROVEEDOR
+≠ DESTINATARIO AUTORIZADO POR TENER ACCESO TÉCNICO
+```
+
+#### 2. Entradas canónicas y decisiones heredadas
+
+Se consumen sin redefinir:
+
+1. `INFO-DOM-010` y sus contratos de compartición, exportación, terceros, encargados, transferencias, territorio, requerimientos de autoridad y ciclo de evidencia.
+2. `INFO-INT-001` como frontera neutral de adaptadores externos, con correlación, idempotencia, resultados técnicos explícitos y reconciliación antes de repetir efectos inciertos.
+3. `INFO-INT-002` como contrato transversal de interacción entre propietarios y capacidades VENTO, incluida la autoridad única por hecho, la prohibición de escritura cruzada y los patrones `QUERY`, `COMMAND`, `EVENT`, `STATUS` y `PROJECTION`.
+4. La propiedad funcional aprobada para los 69 procesos `VPROC-*` y las 332 identidades `DOCCTX-*`; ninguna salida, copia, integración o tercero modifica esa propiedad.
+5. `VPROC-0064`, propiedad funcional de VISO, como expediente empresarial para requerimientos y compromisos con asesores y autoridades, con responsabilidad interna, vencimientos, evidencia y trazabilidad.
+6. La clasificación S0–S4, la minimización, la autorización separada para exportar o compartir, la retención, el legal hold, la disposición y la preservación de historia ya aprobadas.
+7. La regla de que el rol jurídico de un tercero no se infiere desde su tecnología, contrato comercial, nombre, dominio, canal o capacidad técnica; cuando falte evidencia, la instancia conserva el estado documental correspondiente hasta su resolución propietaria.
+
+#### 3. Resultado sustantivo
+
+Se materializan siete contratos lógicos coordinados:
+
+1. `INFO-EXTERNAL-PARTY-EXCHANGE-CONTRACT-001` — sobre común de toda interacción externa.
+2. `INFO-PROCESSOR-INTEGRATION-CONTRACT-001` — contrato técnico con encargados y subencargados.
+3. `INFO-ADVISOR-INTEGRATION-CONTRACT-001` — contrato técnico con asesores externos.
+4. `INFO-AUTHORITY-INTEGRATION-CONTRACT-001` — contrato técnico para requerimientos y respuestas con autoridades.
+5. `INFO-PROVIDER-INTEGRATION-CONTRACT-001` — contrato técnico con proveedores de servicios o tecnología.
+6. `INFO-EXTERNAL-RECIPIENT-INTEGRATION-CONTRACT-001` — contrato técnico con destinatarios externos que no actúan bajo otra clase específica.
+7. `INFO-EXTERNAL-PARTY-RECONCILIATION-CONTRACT-001` — contrato común de revocación, expiración, retorno, disposición, copias externas y cierre reconciliado.
+
+Las cinco clases no son mutuamente excluyentes. Una misma entidad puede ser proveedor y encargado, asesor y destinatario, o proveedor y destinatario para finalidades distintas; cada rol debe quedar resuelto con evidencia, alcance y finalidad propios antes de habilitar el intercambio correspondiente.
+
+#### 4. `INFO-EXTERNAL-PARTY-EXCHANGE-CONTRACT-001`
+
+Toda interacción externa deberá resolverse mediante un sobre lógico común. Una implementación posterior podrá expresarlo mediante tipos, mensajes o endpoints concretos sin cambiar su semántica.
+
+| Campo lógico                        | Regla canónica                                                                                                                     |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `external_exchange_ref`             | Identidad estable de la interacción externa y sus intentos relacionados.                                                           |
+| `contract_ref`                      | Contrato lógico aplicable.                                                                                                         |
+| `contract_version`                  | Versión explícita y compatible del contrato.                                                                                       |
+| `external_party_ref`                | Identidad estable de la persona, organización, sistema o autoridad externa.                                                        |
+| `external_party_class`              | Clase aplicable: encargado, asesor, autoridad, proveedor o destinatario externo; admite más de una clase respaldada por evidencia. |
+| `role_evidence_ref`                 | Evidencia verificable del rol; su ausencia nunca se sustituye por inferencia técnica o comercial.                                  |
+| `relationship_ref`                  | Servicio, caso, contrato, expediente, requerimiento o relación empresarial que justifica la interacción.                           |
+| `owner_application_ref`             | Aplicación VENTO que conserva autoridad sobre el hecho o recurso empresarial.                                                      |
+| `canonical_resource_ref`            | Recurso, expediente, documento, proceso o identidad canónica afectada.                                                             |
+| `canonical_version_or_snapshot_ref` | Versión o snapshot exactos cuando el intercambio depende de contenido determinado.                                                 |
+| `interaction_pattern`               | `QUERY`, `COMMAND`, `EVENT`, `STATUS` o `PROJECTION`; no existe `WRITE` externo directo al dominio.                                |
+| `direction`                         | `OUTBOUND`, `INBOUND` o `ROUND_TRIP`.                                                                                              |
+| `purpose_ref`                       | Finalidad concreta y compatible que justifica el intercambio.                                                                      |
+| `authority_or_basis_ref`            | Referencia a autorización, instrucción, relación, contrato o requerimiento aplicable cuando exista.                                |
+| `scope`                             | Registros, documentos, campos, periodo, cantidad y acciones máximas permitidas.                                                    |
+| `effective_classification`          | Clasificación efectiva más restrictiva aplicable al contenido intercambiado.                                                       |
+| `minimization_result`               | Exclusiones, reducción, enmascaramiento o proyección mínima aplicados antes de la salida.                                          |
+| `territory_and_destination_refs`    | Origen, destino, regiones o ubicaciones relevantes cuando deban gobernarse.                                                        |
+| `onward_destination_rules`          | Condiciones para subencargados, reenvío, nuevos destinatarios o procesamiento posterior.                                           |
+| `channel_and_environment`           | Canal y ambiente autorizados; el canal no crea autoridad empresarial.                                                              |
+| `correlation_ref`                   | Relación estable entre intención, intentos, callbacks, respuesta y conciliación.                                                   |
+| `idempotency_ref`                   | Identidad estable para evitar efectos externos duplicados cuando la operación sea reintentable.                                    |
+| `external_operation_ref`            | Referencia del proveedor o tercero cuando exista y pueda conservarse de forma segura.                                              |
+| `delivery_or_receipt_status`        | Estado técnico de envío, recepción o rechazo, separado del resultado empresarial.                                                  |
+| `evidence_refs`                     | Evidencia mínima necesaria para demostrar solicitud, autorización, intercambio, respuesta y resultado.                             |
+| `retention_hold_disposition_refs`   | Reglas aplicables a la copia, evidencia, retorno, restricción, legal hold o disposición.                                           |
+| `reconciliation_status`             | Estado de convergencia entre VENTO, contraparte, copias, accesos y resultados externos.                                            |
+
+La ausencia de identidad de contraparte, rol verificable cuando sea exigible, finalidad, alcance, autorización, clasificación efectiva o destino requerido impide tratar el intercambio como autorizado.
+
+#### 5. Reglas universales de frontera externa
+
+1. **Autoridad interna preservada.** La contraparte externa no modifica por acceso técnico el estado canónico de un dominio. Toda mutación empresarial entra como `COMMAND`, se valida por la aplicación propietaria y solo se confirma cuando el propietario acepta la transición.
+2. **Entrada externa no confiable por defecto.** Payloads, callbacks, webhooks, documentos, firmas, certificados, respuestas y estados externos se validan contra identidad de contrato, versión, correlación, recurso, actor técnico, firma o mecanismo de autenticación aplicable y semántica esperada antes de producir efectos.
+3. **Copia no equivale a fuente.** Una exportación, archivo entregado, snapshot, respuesta del proveedor o copia en infraestructura externa conserva vínculo con su fuente y no adquiere autoridad empresarial.
+4. **Rol no inferido.** Proveedor no equivale automáticamente a encargado; asesor no equivale automáticamente a encargado; receptor no equivale automáticamente a destinatario autorizado; una autoridad no se valida únicamente por nombre, correo o dominio.
+5. **Mínimo privilegio y mínima información.** La integración solo habilita capacidades, campos, periodos, recursos y ambientes necesarios para la finalidad autorizada.
+6. **Separación de credenciales y evidencia.** Secretos, tokens reutilizables, PIN, llaves y credenciales completas no se incorporan al payload documental ordinario, a tickets ni a evidencia de negocio.
+7. **Versionado obligatorio.** Cambios incompatibles del intercambio exigen versión mayor y transición controlada; una contraparte no interpreta silenciosamente payloads incompatibles.
+8. **Idempotencia obligatoria cuando exista repetición.** El mismo identificador con el mismo contenido no produce más de un efecto; reutilizarlo con contenido incompatible produce conflicto explícito.
+9. **Resultado desconocido antes que repetición ciega.** Timeout, pérdida de callback o respuesta ambigua producen reconciliación antes de repetir una operación que pudiera duplicar entrega, firma, disposición, notificación, exportación o mutación.
+10. **Éxito técnico separado.** `aceptado`, `encolado`, `enviado`, `entregado`, `recibido` o `procesado` por un tercero no equivalen automáticamente a `aprobado`, `firmado`, `cumplido`, `cerrado`, `pagado`, `dispuesto` ni a otro estado empresarial.
+11. **Destino posterior gobernado.** Un subencargado, reenvío, nueva región, nuevo destinatario o finalidad adicional no hereda silenciosamente el alcance original.
+12. **Revocación y terminación reconciliables.** Bloquear acceso futuro no demuestra por sí solo eliminación, retorno o restricción de copias ya obtenidas.
+
+#### 6. `INFO-PROCESSOR-INTEGRATION-CONTRACT-001` — encargados y subencargados
+
+Este contrato aplica únicamente cuando existe evidencia suficiente de que una contraparte trata información por cuenta del responsable y dentro de instrucciones documentadas. La integración no determina por sí sola esa calidad jurídica.
+
+Obligaciones de integración:
+
+- conservar `external_party_ref`, `role_evidence_ref`, responsable o relación de instrucción aplicable y finalidad autorizada;
+- limitar datos y operaciones al alcance instruido;
+- impedir reutilización técnica para una finalidad propia no autorizada;
+- distinguir acceso interactivo, procesamiento automatizado, almacenamiento, soporte, exportación y subprocesamiento;
+- registrar destinos, regiones y subencargados relevantes cuando sean necesarios para decidir el intercambio;
+- exigir reevaluación antes de ampliar datos, finalidad, operaciones, región o subencargados;
+- mantener trazabilidad de accesos extraordinarios, operaciones administrativas y acciones técnicas del encargado;
+- propagar bloqueos futuros que dependan de revocación, terminación o cambio de instrucción;
+- conservar estado de retorno, restricción o disposición de copias externas hasta conciliación suficiente.
+
+Estados mínimos del vínculo técnico:
+
+`ACTIVE_SCOPED`, `ROLE_PENDING_EVIDENCE`, `SCOPE_REVIEW_REQUIRED`, `SUSPENDED`, `TERMINATING`, `THIRD_PARTY_PENDING`, `CLOSED_RECONCILED`.
+
+Un proveedor técnicamente capaz de consultar más datos que los instruidos sigue limitado por el alcance contractual; la capacidad técnica nunca amplía el permiso.
+
+#### 7. `INFO-ADVISOR-INTEGRATION-CONTRACT-001` — asesores externos
+
+El asesor recibe información para una finalidad profesional o especializada y puede devolver análisis, conceptos, documentos, observaciones o recomendaciones. VISO conserva la propiedad funcional de `VPROC-0064` y la responsabilidad interna sobre vencimientos, decisiones y cierre.
+
+Reglas:
+
+1. el asesor se identifica de forma estable y se vincula al expediente, caso o relación que origina la consulta;
+2. el paquete entregado se limita a la información necesaria para el encargo y conserva clasificación, versión, procedencia y restricciones;
+3. una recomendación, concepto o documento del asesor entra como evidencia o insumo externo correlacionado; no sustituye automáticamente una decisión interna;
+4. cualquier decisión empresarial derivada del concepto se registra por el propietario mediante su transición autorizada;
+5. comentarios, borradores o entregables externos no pueden sobrescribir el original o la historia documental interna;
+6. si el asesor también actúa como encargado, proveedor o destinatario externo, se aplican adicionalmente los contratos correspondientes sin fusionar sus roles;
+7. compartir material adicional o habilitar acceso continuo requiere nueva evaluación de finalidad, alcance, autorización y vigencia;
+8. el cierre de la asesoría no prueba retorno, restricción o disposición de copias: esas condiciones se reconcilian separadamente.
+
+#### 8. `INFO-AUTHORITY-INTEGRATION-CONTRACT-001` — autoridades
+
+Este contrato materializa técnicamente el caso documental de requerimiento de autoridad sin inventar competencia, obligatoriedad, jurisdicción, alcance o plazo.
+
+Flujo canónico:
+
+```text
+REQUERIMIENTO RECIBIDO
+→ IDENTIDAD DE AUTORIDAD VERIFICADA
+→ COMPETENCIA Y ALCANCE SOPORTADOS
+→ EXPEDIENTE VPROC-0064 CORRELACIONADO
+→ REVISIÓN Y AUTORIZACIÓN INTERNA
+→ MINIMIZACIÓN
+→ PREPARACIÓN DE RESPUESTA
+→ ENTREGA O RECHAZO JUSTIFICADO
+→ EVIDENCIA DEL RESULTADO
+→ CONCILIACIÓN
+→ CIERRE INTERNO
+```
+
+Reglas:
+
+- todo requerimiento conserva identidad estable, referencia recibida, canal, fechas verificables, alcance solicitado y soporte disponible;
+- una solicitud informal, identidad no verificada o alcance no demostrable no se promueve automáticamente a requerimiento válido;
+- la contraparte autoridad no recibe credenciales persistentes ni acceso general al sistema como sustituto de una divulgación autorizada;
+- la respuesta se limita al alcance aprobado y conserva fuente, versión, clasificación, minimización, destinatario y evidencia de entrega;
+- requerimientos, preservación y legal hold permanecen correlacionados cuando correspondan;
+- una respuesta técnicamente entregada no cierra el expediente hasta que VISO pueda demostrar el resultado y la decisión interna aplicable;
+- una autoridad externa no modifica directamente registros empresariales; cualquier efecto requerido sobre un dominio se materializa mediante la acción propietaria correspondiente y conserva trazabilidad.
+
+Estados técnicos mínimos:
+
+`RECEIVED`, `IDENTITY_VERIFIED`, `SCOPE_UNDER_REVIEW`, `PENDING_EVIDENCE`, `AUTHORIZED_PARTIAL`, `AUTHORIZED_FULL`, `DENIED`, `DELIVERY_PENDING`, `DELIVERED`, `CLOSED_WITH_EVIDENCE`.
+
+#### 9. `INFO-PROVIDER-INTEGRATION-CONTRACT-001` — proveedores
+
+Este contrato aplica a proveedores de tecnología, operación, soporte, mensajería, firma, archivo, almacenamiento u otros servicios externos. Ser proveedor describe la relación de servicio; no determina automáticamente su rol de tratamiento ni autoridad sobre los datos.
+
+Reglas:
+
+1. toda integración conserva proveedor estable, servicio, ambiente, capacidades habilitadas, propietario interno y finalidad;
+2. las credenciales técnicas se limitan al servicio, ambiente y capacidades necesarias y permanecen separadas de la evidencia empresarial;
+3. los adaptadores definidos en `INFO-INT-001` normalizan resultados del proveedor sin convertirlos en estado de negocio;
+4. un proveedor no se convierte en maestro de identidad, documento, expediente, consentimiento, pago, firma, disposición o cualquier dato empresarial por almacenar o procesar una representación;
+5. callbacks y webhooks se autentican, validan y correlacionan antes de producir efectos;
+6. límites, indisponibilidad, `Retry-After`, respuestas parciales y resultados desconocidos se gestionan sin duplicar efectos;
+7. cambios de proveedor, endpoint, región, subprocesador o versión incompatible exigen transición controlada y no alteran las referencias canónicas del recurso;
+8. soporte remoto o acceso privilegiado, cuando exista, debe estar limitado al caso, ventana, recurso y responsable humano autorizados;
+9. incidentes y fallas del proveedor conservan correlación con operaciones, recursos y efectos empresariales afectados;
+10. terminación del servicio abre conciliación de accesos, credenciales, copias, exportaciones, subencargados y evidencia antes de declarar cierre completo.
+
+#### 10. `INFO-EXTERNAL-RECIPIENT-INTEGRATION-CONTRACT-001` — destinatarios externos
+
+Este contrato cubre personas, organizaciones o sistemas que reciben información gobernada para una finalidad definida sin quedar clasificados necesariamente como encargado, asesor, autoridad o proveedor.
+
+Toda entrega deberá conservar:
+
+- destinatario identificado y, cuando corresponda, evidencia de su relación o rol;
+- finalidad concreta;
+- fuente y versión exactas;
+- alcance mínimo aprobado;
+- clasificación efectiva y resultado de minimización;
+- canal, destino y vigencia aplicables;
+- restricciones de reutilización y reenvío cuando correspondan;
+- evidencia de generación, entrega, rechazo o imposibilidad;
+- estado de la copia externa cuando exista;
+- referencias de revocación, expiración, retorno, disposición o legal hold cuando apliquen.
+
+Reglas:
+
+1. un enlace, correo, dirección, número telefónico o endpoint técnicamente válido no demuestra que el destinatario esté autorizado;
+2. un acuse de transporte no equivale a aceptación empresarial ni a lectura por la persona correcta;
+3. la expiración del mecanismo de acceso no demuestra eliminación de una copia ya obtenida;
+4. una entrega posterior para otra finalidad o a otro destinatario constituye una nueva decisión de salida;
+5. el destinatario no adquiere derecho de reenvío ni de uso secundario por haber recibido válidamente una copia;
+6. cuando la contraparte devuelva una decisión o dato que deba cambiar un estado empresarial, el retorno entra como `COMMAND` o `EVENT` validado por la aplicación propietaria y nunca como escritura directa.
+
+#### 11. Flujos técnicos canónicos
+
+**Salida hacia tercero**
+
+```text
+INTENCIÓN EMPRESARIAL
+→ DECISIÓN DE AUTORIZACIÓN
+→ RESOLUCIÓN DE CONTRAPARTE Y ROL
+→ CLASIFICACIÓN Y MINIMIZACIÓN
+→ PROYECCIÓN O COPIA CONTROLADA
+→ ADAPTADOR / CANAL AUTORIZADO
+→ INTENTO CORRELACIONADO E IDEMPOTENTE
+→ ENTREGA / RECHAZO / RESULTADO DESCONOCIDO
+→ EVIDENCIA
+→ RECONCILIACIÓN
+→ RESULTADO AL PROPIETARIO
+```
+
+**Entrada desde tercero**
+
+```text
+MENSAJE / CALLBACK / DOCUMENTO EXTERNO
+→ AUTENTICACIÓN TÉCNICA Y VALIDACIÓN DE CONTRATO
+→ CORRELACIÓN E IDEMPOTENCIA
+→ RESOLUCIÓN DE CONTRAPARTE, ROL Y FINALIDAD
+→ VALIDACIÓN DE PAYLOAD, RECURSO Y VERSIÓN
+→ COMMAND / EVENT / STATUS NORMALIZADO
+→ VALIDACIÓN POR LA APLICACIÓN PROPIETARIA
+→ RESULTADO EMPRESARIAL O RECHAZO
+→ EVIDENCIA Y RESPUESTA
+```
+
+**Resultado externo incierto**
+
+```text
+UNKNOWN_RESULT
+→ CONSULTA / STATUS DEL PROVEEDOR O CONTRAPARTE
+→ RECONCILIACIÓN CON INTENTOS Y EVIDENCIA
+→ CONFIRMED_SUCCESS | CONFIRMED_FAILURE | PARTIAL_RESULT | UNKNOWN_RESULT
+→ SOLO ENTONCES DECISIÓN DE REINTENTO O ESCALAMIENTO
+```
+
+#### 12. `INFO-EXTERNAL-PARTY-RECONCILIATION-CONTRACT-001`
+
+La reconciliación externa debe distinguir al menos:
+
+| Estado                 | Significado                                                                                          |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `IN_SYNC`              | VENTO y la contraparte tienen resultado y alcance compatibles con la evidencia disponible.           |
+| `DELIVERY_PENDING`     | Existe una intención autorizada sin resultado final demostrable.                                     |
+| `EXTERNAL_COPY_ACTIVE` | Existe una copia externa vigente o no vencida bajo el alcance aprobado.                              |
+| `REVOCATION_APPLIED`   | Se bloquearon accesos futuros controlables; no prueba disposición de copias obtenidas.               |
+| `THIRD_PARTY_PENDING`  | Falta demostrar retorno, restricción, eliminación, disposición o conciliación de un destino externo. |
+| `PRESERVED_BY_HOLD`    | La disposición está suspendida por retención o legal hold válido.                                    |
+| `DISPOSED_VERIFIED`    | Existe evidencia suficiente de la disposición requerida.                                             |
+| `CLOSED_RECONCILED`    | No quedan efectos, accesos o copias pendientes dentro del alcance que deba reconciliarse.            |
+
+Un cierre interno no puede transformar `THIRD_PARTY_PENDING` en `CLOSED_RECONCILED` por ausencia de respuesta. La falta de evidencia permanece visible y conserva propietario y condición de salida.
+
+#### 13. Bloqueos y condiciones de salida
+
+| Situación                                                                       | Estado                   | Propietario / destino                        | Condición de salida                                                                |
+| ------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Rol jurídico o contractual de la contraparte no demostrable                     | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012`                               | Existe evidencia verificable que permite resolver el rol sin inferencia.           |
+| Destino, territorio o subencargado requerido no está resuelto                   | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012` + integración propietaria     | Destino y alcance quedan respaldados por fuente verificable y contrato compatible. |
+| Falta decisión positiva de autorización para exportar, compartir o divulgar     | `BLOQUEADO`              | modelo de autorización vigente               | Existe decisión válida para recurso, acción, finalidad, alcance y destinatario.    |
+| Payload o versión externa no corresponde al contrato esperado                   | `BLOQUEADO`              | integración propietaria                      | La contraparte usa una versión compatible o existe transición explícita aprobada.  |
+| Callback o respuesta externa no puede correlacionarse con una operación vigente | `BLOQUEADO`              | integración propietaria                      | La correlación se resuelve sin inferir recurso, actor ni efecto.                   |
+| Resultado externo es incierto y repetir puede duplicar efectos                  | `BLOQUEADO`              | `INFO-INT-003`                               | La reconciliación resuelve el resultado o habilita un reintento seguro.            |
+| Existe copia externa pendiente de retorno, restricción o disposición            | `PENDIENTE_DE_EVIDENCIA` | contraparte + propietario del expediente     | Se obtiene evidencia suficiente o se documenta una excepción/hold aplicable.       |
+| Requerimiento de autoridad sin identidad, competencia o alcance verificable     | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012` + propietario de `VPROC-0064` | Se incorpora evidencia suficiente para decidir sin inferencia.                     |
+
+#### 14. Casos límite obligatorios
+
+1. **Proveedor que también procesa datos personales:** se aplican simultáneamente proveedor y encargado; el contrato comercial no basta para demostrar el segundo rol.
+2. **Asesor que solicita el expediente completo:** se entrega únicamente la proyección necesaria para el encargo; la conveniencia profesional no amplía el alcance.
+3. **Autoridad solicita acceso permanente al sistema:** la solicitud se trata como caso controlado; una divulgación concreta no se transforma en credencial persistente por defecto.
+4. **Nuevo subencargado después del alta del proveedor:** el nuevo destino no hereda el alcance; la integración se bloquea para ese destino hasta reevaluación.
+5. **Webhook duplicado:** la misma operación y contenido no producen un segundo efecto empresarial.
+6. **Timeout después de una entrega potencialmente irreversible:** se reconcilia antes de reenviar.
+7. **Destinatario correcto, finalidad distinta:** la identidad válida del receptor no autoriza una finalidad nueva.
+8. **Enlace temporal expirado:** se revoca el acceso controlable, pero la copia obtenida permanece pendiente hasta la conciliación que corresponda.
+9. **Asesor devuelve un documento corregido:** se incorpora como nueva representación o insumo correlacionado; no sobrescribe la versión fuente.
+10. **Proveedor cambia de región o endpoint:** el cambio técnico exige revisar destino, contrato y compatibilidad antes de continuar el flujo cuando esas dimensiones sean relevantes.
+11. **Autoridad remite una ampliación:** se conserva como cambio de alcance del caso y exige nueva evaluación; no reescribe la solicitud original.
+12. **Receptor devuelve una aprobación o decisión:** el mensaje externo no cambia por sí solo el estado interno; el propietario valida identidad, relación, recurso, versión y autoridad antes de confirmar la transición.
+
+#### 15. Cobertura canónica existente
+
+La conducta protegida por esta tarea ya dispone de cobertura vigente para el ciclo transversal de información, documentos y evidencia, incluidos terceros, contratos versionados, idempotencia, reconciliación, autorización separada, copias externas, retención, revocación y disposición. La tarea materializa el contrato técnico que estaba pendiente para destinatario, destino, subencargados y retorno, sin introducir una identidad adicional de prueba.
+
+#### 16. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: la tarea no introduce una nueva capacidad física ni una condición ejecutable adicional; especifica la frontera técnica-documental exigida por la cobertura vigente y por las tareas de dominio ya aprobadas. El balance es 0 creados, 0 modificados, 0 diferidos, 0 descartados y 0 obsoletos.
+
+#### 17. Cambios físicos y límites de la tarea
+
+Esta tarea es exclusivamente documental. No crea ni modifica código, endpoints, tablas, esquemas, RLS, grants, Storage, buckets, Edge Functions, webhooks reales, secretos, credenciales, migraciones, datos, proveedores, contratos comerciales, despliegues ni configuración de Supabase.
+
+Tampoco asigna por inferencia entidades responsables, encargados, subencargados, asesores, autoridades, proveedores, destinatarios, territorios, jurisdicciones, fundamentos jurídicos o plazos que no estén respaldados por fuentes verificables.
+
+#### 18. Criterios de aceptación
+
+- [x] Las cinco clases solicitadas quedan materializadas: encargados, asesores, autoridades, proveedores y destinatarios externos.
+- [x] Existe un sobre común versionado con identidad de contraparte, rol, evidencia, finalidad, alcance, fuente, versión, clasificación, destino, canal, correlación, idempotencia, evidencia y reconciliación.
+- [x] Una misma contraparte puede tener varios roles sin fusionar sus finalidades ni alcances.
+- [x] Proveedor no equivale automáticamente a encargado.
+- [x] Asesor no adquiere autoridad para sobrescribir fuente ni decisión interna.
+- [x] `VPROC-0064` conserva en VISO la propiedad funcional de los expedientes de asesores y autoridades.
+- [x] Los requerimientos de autoridad conservan identidad, competencia, alcance, minimización, respuesta y cierre con evidencia sin inventar decisiones jurídicas.
+- [x] Los proveedores consumen adaptadores técnicos sin convertirse en fuente empresarial.
+- [x] Los destinatarios externos requieren finalidad, alcance y autorización separados de la validez técnica del canal.
+- [x] Los intercambios entrantes no escriben directamente dominios propietarios.
+- [x] Los intercambios salientes usan proyección mínima y conservan clasificación, versión y procedencia.
+- [x] Webhooks, callbacks y reintentos conservan correlación e idempotencia.
+- [x] Resultados inciertos se reconcilian antes de repetir efectos potencialmente duplicables.
+- [x] Revocación, expiración y terminación no se interpretan como disposición de copias externas sin evidencia.
+- [x] La tarea cierra el bloqueo documental de `INFO-DOM-010` relativo a controles técnicos de destinatario, destino, subencargados y retorno.
+- [x] No se crean cambios físicos ni de Supabase.
+- [x] Se generan cero cambios en requisitos de prueba.
+
+#### 19. Cierre y continuidad
+
+ÚLTIMA TAREA APROBADA
+`INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio`
+
+TAREA ACTUAL APROBADA
+`INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos`
+
+SIGUIENTE TAREA RESERVADA
+`BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN`
+
+La continuidad termina en `INFO-INT-003`. El bloque siguiente permanece únicamente reservado.
+
