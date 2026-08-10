@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **661** |
+| Aprobadas | **662** |
 | En propuesta | **0** |
-| No iniciadas | **933** |
+| No iniciadas | **932** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **41.47% (661/1594)** |
+| Porcentaje de completamiento | **41.53% (662/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | ✅ APROBADA |
-| Tarea actual | `INFO-UX-001` — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-UX-002` — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | ⬜ NO INICIADA |
+| Última aprobada | `INFO-UX-001` — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | ✅ APROBADA |
+| Tarea actual | `INFO-UX-002` — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-UX-003` — Diseñar creación, revisión, aprobación, publicación y firma de documentos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1550,7 +1550,7 @@
 | ✅ APROBADA | `INFO-AUTH-002` | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ✅ APROBADA | `INFO-AUTH-003` | Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ✅ APROBADA | `INFO-AUTH-004` | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
-| ⬜ NO INICIADA | `INFO-UX-001` | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
+| ✅ APROBADA | `INFO-UX-001` | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-002` | Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-003` | Diseñar creación, revisión, aprobación, publicación y firma de documentos | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
 | ⬜ NO INICIADA | `INFO-UX-004` | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |

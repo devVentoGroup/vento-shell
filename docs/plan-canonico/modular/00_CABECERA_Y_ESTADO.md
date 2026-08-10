@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **661** |
+| Tareas aprobadas | **662** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **933** |
+| Tareas no iniciadas | **932** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.47% (661/1594)** |
+| Porcentaje de completamiento | **41.53% (662/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada** |
-| Tarea actual | **INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas** |
+| Última tarea aprobada | **INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas** |
+| Tarea actual | **INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia** |
+| Siguiente tarea | **INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 85 de 157 aprobadas; INFO-UX-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 86 de 157 aprobadas; INFO-UX-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada |
-| Tarea actual | `INFO-UX-001` — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas — **NO INICIADA** |
-| Siguiente tarea | `INFO-UX-002` — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia |
+| Última aprobada | `INFO-UX-001` — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas |
+| Tarea actual | `INFO-UX-002` — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia — **NO INICIADA** |
+| Siguiente tarea | `INFO-UX-003` — Diseñar creación, revisión, aprobación, publicación y firma de documentos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 85 DE 157 APROBADAS — ACTUAL INFO-UX-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 86 DE 157 APROBADAS — ACTUAL INFO-UX-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada
-        ↓
-TAREA ACTUAL
 INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 85 de 157 tareas aprobadas
+CARRIL NEXO — 86 de 157 tareas aprobadas
 ```
