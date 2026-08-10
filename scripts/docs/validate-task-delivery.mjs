@@ -407,7 +407,7 @@ function validateTask({ taskPath, contract }) {
     const chatPatterns = [
       /sandbox:\/\//i,
       /enlace\s+de\s+descarga/i,
-      /descarg(?:a|ar|ue)/i,
+      /\b(?:descarga|descargue|descargar)\s+(?:(?:este|esta|el|la|un|una)\s+)?(?:archivo|registro|artefacto|documento|tarea|04A)\b/i,
     ];
 
     for (const pattern of chatPatterns) {
