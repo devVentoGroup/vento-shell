@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **658** |
+| Aprobadas | **659** |
 | En propuesta | **0** |
-| No iniciadas | **936** |
+| No iniciadas | **935** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **41.28% (658/1594)** |
+| Porcentaje de completamiento | **41.34% (659/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado | ✅ APROBADA |
-| Tarea actual | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación | ⬜ NO INICIADA |
+| Última aprobada | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | ✅ APROBADA |
+| Tarea actual | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1547,7 +1547,7 @@
 | ✅ APROBADA | `INFO-DOM-012` | Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-013` | Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-AUTH-001` | Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
-| ⬜ NO INICIADA | `INFO-AUTH-002` | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
+| ✅ APROBADA | `INFO-AUTH-002` | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ⬜ NO INICIADA | `INFO-AUTH-003` | Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ⬜ NO INICIADA | `INFO-AUTH-004` | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `bloques/AA_GOBIERNO_DE_INFORMACION/02_AUTORIZACION_Y_PROTECCION_DE_INFORMACION.md` |
 | ⬜ NO INICIADA | `INFO-UX-001` | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | `bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md` |
