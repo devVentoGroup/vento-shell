@@ -2894,6 +2894,680 @@ SIGUIENTE TAREA RESERVADA
 `INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes`
 
 
-### [ ] INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes
+### ✅ INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos` — APROBADA
+**Tarea siguiente:** `INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada` — RESERVADA
+**Tipo de tarea:** documental; diseño UX transversal del portal personal y del expediente administrativo para consultas, reclamos y solicitudes de privacidad de trabajadores y clientes
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md`
+**Fase:** exclusivamente documental; no crea ni modifica código, rutas, pantallas canónicas, componentes, contratos técnicos, tablas, RLS, Storage, migraciones, funciones, datos, configuración, secretos, integraciones ni despliegues
+**Contratos materializados:** `INFO-PRIVACY-REQUEST-PORTAL-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-INTAKE-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-CASE-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-VERIFICATION-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-STATUS-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-RESPONSE-UX-CONTRACT-001`; `INFO-PRIVACY-REQUEST-SURFACE-MATRIX-001`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea define la experiencia canónica para que un trabajador o cliente pueda iniciar, comprender y seguir una solicitud de privacidad sin necesitar conocer terminología técnica, estructuras internas o aplicaciones propietarias, y para que el personal autorizado gestione el mismo caso de extremo a extremo sin convertir el portal, una cuenta autenticada, una edición de perfil o una acción local sobre datos en la fuente de verdad del expediente.
+
+El diseño queda materializado en siete contratos UX consumibles y una matriz explícita de superficies. Se adoptan íntegramente la identidad, tipos, verificación, ciclo de vida, descubrimiento, ejecución, respuesta y cierre ya definidos por `INFO-DOM-009`, así como los contratos de finalidad, aviso, fundamento, consentimiento y revocación de `INFO-DOM-008` y las decisiones de autorización vigentes de `INFO-AUTH-*`.
+
+La experiencia resuelve cuatro responsabilidades diferenciadas:
+
+1. un canal personal del trabajador dentro de ANIMA para iniciar y seguir solicitudes propias;
+2. un canal personal del cliente dentro de PASS para iniciar y seguir solicitudes propias;
+3. un espacio administrativo en VISO para verificar, evaluar, coordinar, responder y cerrar el caso;
+4. una proyección resumida en el dashboard de gobierno de información para priorizar y navegar, sin sustituir el expediente.
+
+Ninguna de estas superficies crea una identidad empresarial paralela: todas proyectan el mismo `request_case_id` y el mismo estado autoritativo.
+
+---
+
+#### 2. Invariantes de experiencia
+
+Se fijan las siguientes separaciones obligatorias:
+
+```text
+portal_personal
+!= request_case
+!= cuenta_autenticada
+!= titular_verificado
+!= representante_verificado
+!= edición_autogestionable_de_perfil
+!= mutación_directa_del_dato
+!= investigación
+!= eliminación_de_cuenta
+!= disposición_documental
+```
+
+Reglas:
+
+1. Una cuenta autenticada aporta evidencia de identidad, pero no demuestra por sí sola que la persona sea titular de todos los datos o recursos incluidos en una solicitud.
+2. El solicitante no se trata automáticamente como titular; una representación requiere verificación propia.
+3. El portal es un canal de entrada y seguimiento. La fuente de verdad del trámite es el caso trazable definido por `INFO-DOM-009`.
+4. Una edición autogestionable permitida puede resolverse como acción ordinaria del perfil; no se registra falsamente como ejercicio formal de un derecho cuando no lo es.
+5. Cuando el dato no sea autogestionable, exista disputa sobre su exactitud, se requiera prueba, haya múltiples sistemas o la persona elija expresamente una solicitud formal, la experiencia crea o enlaza un caso.
+6. Solicitar supresión no equivale a borrar una cuenta, fila, archivo, historial o evidencia.
+7. Revocar una autorización no equivale a supresión general ni a cierre de cuenta.
+8. Solicitar acceso o copia no concede una exportación irrestricta de terceros, secretos, credenciales, reglas internas o información fuera de alcance.
+9. Rectificar no permite reescribir hechos históricos verdaderos, auditoría, evidencia preservada o versiones anteriores.
+10. Un reclamo de privacidad no se fusiona con soporte, servicio al cliente, devolución, compensación o investigación; los vínculos entre casos permanecen explícitos.
+11. Una notificación no constituye estado autoritativo, aceptación, respuesta ni cierre.
+12. La interfaz no mostrará `CERRADA`, `COMPLETADA` o equivalente mientras el caso no cumpla el cierre definido por el contrato de dominio.
+13. Ningún plazo se inventará a partir del tipo de solicitud, jurisdicción supuesta o texto de interfaz.
+14. Un error de verificación, consulta o integración no se presentará como ausencia de datos.
+15. La experiencia nunca convertirá una decisión visual, checkbox, filtro, URL, deep link o botón disponible en autorización material.
+
+---
+
+#### 3. `INFO-PRIVACY-REQUEST-PORTAL-UX-CONTRACT-001` — portal personal
+
+El portal personal es la experiencia de titular o solicitante. Su objetivo es permitir iniciar una solicitud comprensible, obtener un recibo trazable y consultar su estado sin exponer la complejidad interna del caso.
+
+##### 3.1 Composición mínima
+
+El portal debe ofrecer, cuando corresponda al actor y contexto:
+
+- explicación breve de para qué sirve el canal;
+- acción principal `Crear solicitud`;
+- acceso a solicitudes propias existentes;
+- identificación segura del contexto de cuenta utilizado sin afirmar titularidad no verificada;
+- catálogo comprensible de intenciones disponibles;
+- resumen de cada solicitud con tipo, fecha recibida, estado seguro, siguiente paso y referencia del caso;
+- fecha objetivo solo cuando exista `due_at` autoritativo;
+- solicitudes de aclaración o verificación pendientes;
+- respuesta disponible o estado de entrega cuando aplique;
+- acceso a la versión de respuesta autorizada para esa persona;
+- canal de ayuda cuando la persona no pueda completar la solicitud digital.
+
+##### 3.2 Información que no se muestra por defecto
+
+Las listas y resúmenes no expondrán:
+
+- texto íntegro de la declaración original;
+- documentos de identidad completos;
+- datos de terceros;
+- resultados de descubrimiento internos;
+- nombres de tablas, buckets, RPC, logs, proveedores o sistemas técnicos;
+- fundamentos internos no necesarios para comprender el resultado;
+- notas de investigación;
+- detalle de legal hold, antifraude, seguridad o controles internos cuya divulgación no corresponda;
+- archivos o metadatos que la autorización de lectura vigente no permita revelar.
+
+##### 3.3 Estado de envío
+
+Al enviar una solicitud:
+
+1. la interfaz muestra `Enviando` mientras no exista confirmación del servidor;
+2. solo después del receipt autoritativo muestra `Recibida`;
+3. el receipt visible incluye `request_case_id`, fecha de recepción confirmada, tipos solicitados y canal;
+4. un timeout o respuesta desconocida no genera una segunda intención: primero se consulta o reconcilia el resultado;
+5. un borrador local o una pantalla de éxito no sustituyen el receipt.
+
+---
+
+#### 4. Canales por audiencia
+
+##### 4.1 Trabajador — ANIMA
+
+Se define `WORKER_PRIVACY_PORTAL` como experiencia lógica dentro del canal personal de ANIMA. Esta tarea no crea un nuevo `VSCREEN-*` ni una nueva ruta canónica.
+
+La experiencia se integra con las superficies personales existentes de ANIMA bajo estas reglas:
+
+- `VSCREEN-0027 — Inicio personal del trabajador` puede presentar acceso y resumen de solicitudes propias;
+- `VSCREEN-0032 — Mi perfil laboral` conserva la autogestión permitida y ofrece entrada al caso cuando la necesidad exceda una edición ordinaria;
+- `VSCREEN-0126 — Mis documentos laborales` puede aportar referencias documentales propias cuando sean necesarias, sin convertirse en propietario del caso ni en biblioteca irrestricta de evidencia;
+- la salida desde cualquiera de estas superficies conserva el mismo `request_case_id` y vuelve al mismo caso personal;
+- no se exponen expedientes de otros trabajadores, listas de empleados, decisiones administrativas ni herramientas internas de cumplimiento;
+- terminar el vínculo laboral o revocar una cuenta no se presenta como supresión automática de historia laboral, asistencia, contratos, SST, pagos, auditoría o evidencia sujeta a conservación.
+
+Si una fase posterior decide materializar una pantalla dedicada, deberá tramitarse como cambio del catálogo de pantallas y no podrá inferirse de esta tarea.
+
+##### 4.2 Cliente — PASS
+
+Se define `CUSTOMER_PRIVACY_PORTAL` dentro de `VSCREEN-0112 — Perfil, privacidad y consentimientos`.
+
+La superficie mantiene dos carriles visibles pero separados:
+
+1. **Autogestión ordinaria:** datos de perfil, preferencias y consentimientos que el contrato de producto permita modificar directamente.
+2. **Solicitudes formales de privacidad:** creación y seguimiento del `request_case_id` para acceso, copia, actualización, rectificación, prueba, información de uso, revocación, supresión, restricción/oposición o reclamo de privacidad.
+
+Reglas:
+
+- cambiar una preferencia no cierra una solicitud formal que ya exista;
+- retirar un consentimiento aplicable puede generar o enlazar el hecho de revocación correspondiente sin afirmar supresión general;
+- eliminar o desactivar la cuenta no se comunica como eliminación integral de datos;
+- una solicitud de supresión permanece como evaluación y caso trazable hasta que todos los sistemas y excepciones aplicables alcancen estado final;
+- una cuenta cerrada no vuelve inaccesible la respuesta por una ruta insegura ni elimina evidencia necesaria del caso; la entrega posterior deberá usar un mecanismo autorizado para el titular verificado.
+
+---
+
+#### 5. `INFO-PRIVACY-REQUEST-INTAKE-UX-CONTRACT-001` — creación de solicitud
+
+La creación utiliza un flujo guiado breve y reversible. La experiencia pregunta únicamente lo necesario para entender la intención, el alcance y la identidad o representación requerida.
+
+##### 5.1 Etapas
+
+| Etapa            | Objetivo UX                                                         | Resultado                                                             |
+| ---------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `INTENT`         | Entender qué necesita la persona.                                   | Uno o más códigos canónicos de solicitud.                             |
+| `SCOPE`          | Delimitar personas, relación, datos, periodo o situación relevante. | Alcance comprensible y no técnico.                                    |
+| `REQUESTER`      | Confirmar quién está presentando la solicitud.                      | Solicitante identificado para iniciar verificación.                   |
+| `REPRESENTATION` | Capturar representación solo cuando aplique.                        | Referencia de representación pendiente o verificable.                 |
+| `DETAIL`         | Recibir explicación adicional solo cuando aporte un hecho nuevo.    | Declaración original preservable.                                     |
+| `EVIDENCE`       | Solicitar soporte proporcional únicamente cuando sea necesario.     | Referencias de evidencia; nunca requisito universal por conveniencia. |
+| `REVIEW`         | Mostrar exactamente qué se enviará.                                 | Intenciones, alcance y adjuntos revisables.                           |
+| `SUBMIT`         | Crear una única intención de caso.                                  | Receipt o resultado desconocido a reconciliar.                        |
+
+Volver a una etapa anterior no ejecuta efectos ni pierde los datos ya válidos. Si un cambio invalida información posterior, la interfaz la marca para revisión antes del envío.
+
+##### 5.2 Catálogo de intención — 10 de 10
+
+Los códigos de dominio permanecen estables; la etiqueta visible puede adaptarse al idioma y audiencia sin cambiar su significado.
+
+| Código canónico       | Etiqueta humana principal                     | Pregunta que responde                                                       | No debe interpretarse como                        |
+| --------------------- | --------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------- |
+| `DSR_QUERY_ACCESS`    | Consultar mis datos                           | ¿Qué información sobre mí puede consultarse dentro del alcance autorizado?  | Exportación irrestricta.                          |
+| `DSR_COPY`            | Solicitar una copia                           | ¿Qué representación autorizada puede entregarse de mis datos?               | Copia de secretos o datos de terceros.            |
+| `DSR_UPDATE`          | Actualizar mis datos                          | ¿Qué dato actual puede actualizarse en su fuente propietaria?               | Reescritura histórica.                            |
+| `DSR_RECTIFY`         | Corregir un dato                              | ¿Qué dato considero incorrecto y por qué?                                   | Sobrescritura de evidencia o auditoría.           |
+| `DSR_PROOF`           | Consultar prueba de autorización o fundamento | ¿Qué evidencia respalda un tratamiento concreto?                            | Declaración genérica de consentimiento.           |
+| `DSR_USE_INFO`        | Conocer cómo se usan mis datos                | ¿Para qué finalidad y bajo qué tratamiento se usa la información aplicable? | Acceso a reglas internas innecesarias.            |
+| `DSR_REVOKE`          | Retirar una autorización aplicable            | ¿Qué autorización o finalidad revocable deseo retirar?                      | Supresión automática de todos los datos.          |
+| `DSR_SUPPRESS`        | Solicitar supresión                           | ¿Qué información o tratamiento deseo que se evalúe para supresión?          | Borrado inmediato de cuenta, archivos o historia. |
+| `DSR_RESTRICT_OBJECT` | Solicitar restricción u oposición             | ¿Qué uso deseo restringir u objetar dentro del alcance aplicable?           | Bloqueo universal sin evaluación.                 |
+| `DSR_PRIVACY_CLAIM`   | Reportar un problema de privacidad            | ¿Qué hecho de privacidad necesito que sea revisado?                         | Reclamo comercial o investigación ya concluida.   |
+
+Una sola solicitud puede contener más de un código cuando la declaración de la persona incluya varias pretensiones relacionadas. La interfaz las muestra y responde por separado, pero conserva un solo caso cuando el contrato de dominio permita tratarlas conjuntamente.
+
+##### 5.3 Identificación y evidencia proporcional
+
+La experiencia no exigirá por defecto cargar un documento de identidad completo para todas las solicitudes. La verificación utilizará la evidencia necesaria según el tipo, riesgo, canal, relación y acción solicitada.
+
+Cuando se requiera información adicional:
+
+- se explica qué dimensión falta sin revelar existencia de datos;
+- se solicita el mínimo necesario;
+- se informa si la persona puede continuar por otro canal aprobado;
+- se conserva el trabajo ya enviado;
+- se evita solicitar nuevamente información que el sistema ya puede verificar de forma autorizada.
+
+---
+
+#### 6. `INFO-PRIVACY-REQUEST-VERIFICATION-UX-CONTRACT-001` — identidad y representación
+
+La interfaz proyecta exactamente los cinco estados de verificación del contrato de dominio.
+
+| Estado canónico             | Presentación humana                 | Acción permitida en la experiencia                                           |
+| --------------------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
+| `NOT_CHECKED`               | Verificación pendiente              | Mostrar recepción y siguientes pasos sin divulgar coincidencias.             |
+| `IDENTITY_VERIFIED`         | Identidad verificada                | Continuar con el alcance que esa verificación soporte.                       |
+| `REPRESENTATION_VERIFIED`   | Representación verificada           | Continuar exclusivamente respecto del sujeto y alcance representados.        |
+| `VERIFICATION_INSUFFICIENT` | Necesitamos información adicional   | Solicitar el mínimo faltante y mantener el caso abierto.                     |
+| `VERIFICATION_CONFLICT`     | No pudimos confirmar la información | Detener divulgaciones o mutaciones dependientes y ofrecer resolución segura. |
+
+Reglas:
+
+1. La pantalla no dirá `No encontramos datos` cuando la causa real sea verificación insuficiente, conflicto, indisponibilidad o falta de autorización.
+2. La sesión autenticada no autoriza automáticamente a actuar por otra persona, empresa, cliente, trabajador o relación histórica.
+3. La representación se trata como una relación verificable; el representante no obtiene acceso general al perfil del titular.
+4. Un cambio de cuenta, actor, sesión, representación o alcance revalida la capacidad antes de revelar o actuar.
+5. Los errores visibles no exponen qué dato interno no coincidió cuando esa revelación aumente el riesgo de suplantación o enumeración.
+
+---
+
+#### 7. `INFO-PRIVACY-REQUEST-STATUS-UX-CONTRACT-001` — estado comprensible del caso
+
+El portal y VISO proyectan la misma máquina de estados. Las etiquetas humanas nunca sustituyen los códigos canónicos ni crean transiciones propias.
+
+##### 7.1 Ciclo principal — 9 de 9
+
+| Estado canónico  | Etiqueta humana                        | Significado visible                                                             |
+| ---------------- | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `RECEIVED`       | Recibida                               | La solicitud fue registrada y tiene referencia de caso.                         |
+| `VERIFICATION`   | Verificando identidad o representación | Se comprueba quién solicita y qué relación puede acreditarse.                   |
+| `CLASSIFIED`     | Clasificada                            | Las intenciones y el alcance fueron identificados.                              |
+| `DISCOVERY`      | Buscando información aplicable         | Se consultan las fuentes autorizadas que podrían estar dentro del alcance.      |
+| `ASSESSMENT`     | Evaluando la solicitud                 | Se revisan resultados, reglas, restricciones y decisiones necesarias.           |
+| `EXECUTION`      | Aplicando decisiones aprobadas         | Los sistemas propietarios ejecutan las acciones autorizadas.                    |
+| `RESPONSE_READY` | Respuesta preparada                    | El resultado consolidado está listo para entrega autorizada.                    |
+| `RESPONDED`      | Respuesta enviada                      | Se registró la respuesta y su versión.                                          |
+| `CLOSED`         | Cerrada                                | Todas las pretensiones y efectos exigidos alcanzaron condición final de cierre. |
+
+##### 7.2 Condiciones transversales — 8 de 8
+
+| Condición canónica             | Presentación segura al titular                    | Comportamiento UX                                                                              |
+| ------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `CLARIFICATION_REQUIRED`       | Necesitamos una aclaración                        | Mostrar la pregunta concreta y conservar el resto del caso.                                    |
+| `IDENTITY_UNVERIFIED`          | Verificación pendiente                            | No revelar coincidencias ni ejecutar acciones dependientes.                                    |
+| `BLOCKED_BY_RETENTION`         | Existe una obligación de conservación en revisión | Explicar el efecto sobre la pretensión sin exponer detalle innecesario.                        |
+| `BLOCKED_BY_HOLD`              | Existe una preservación vigente en revisión       | Mantener el caso abierto o la decisión parcial según corresponda.                              |
+| `BLOCKED_BY_INDEPENDENT_BASIS` | Existe otro fundamento documentado en revisión    | Explicar el alcance que no puede detenerse o suprimirse sin presentar una denegación genérica. |
+| `PARTIALLY_EXECUTED`           | Aplicación parcial                                | Mostrar qué pretensiones finalizaron y cuáles siguen pendientes.                               |
+| `EXECUTION_FAILED`             | Hay una acción pendiente por resolver             | No afirmar éxito; indicar que el caso sigue en gestión.                                        |
+| `REOPENED`                     | Reabierta                                         | Conservar la respuesta y cierre anteriores como historia y mostrar el nuevo motivo.            |
+
+##### 7.3 Plazos
+
+La experiencia usa `received_at`, `verified_at`, `classified_at`, `due_at`, `responded_at` y `closed_at` con semántica diferenciada.
+
+- `received_at` se muestra cuando existe receipt confirmado.
+- `due_at` solo se muestra cuando proviene de una obligación aprobada y de un cálculo autoritativo.
+- Si `due_at` no está resuelto, la interfaz muestra `Plazo en verificación` o equivalente neutral.
+- Un caso sin `due_at` no se marca como vencido, no recibe semáforo de incumplimiento y no se ordena como si existiera una fecha inferida.
+- Cambiar una fecha calculada conserva la versión y causa; la interfaz no reescribe la historia.
+
+---
+
+#### 8. `INFO-PRIVACY-REQUEST-CASE-UX-CONTRACT-001` — espacio administrativo en VISO
+
+`PRIVACY_CASE_WORKSPACE` se materializa sobre `VSCREEN-0122 — Privacidad, cumplimiento y conservación`. VISO es la experiencia administrativa para coordinar el caso, pero no sustituye la fuente de verdad de los datos empresariales ni ejecuta mutaciones propietarias por edición local.
+
+##### 8.1 Encabezado persistente
+
+Debe mantener visibles, de forma minimizada y autorizada:
+
+- `request_case_id`;
+- tipos de solicitud;
+- fecha de recepción;
+- canal;
+- solicitante y titular diferenciados;
+- estado de representación;
+- estado de verificación;
+- ciclo de vida actual;
+- responsable del caso;
+- `due_at` únicamente cuando esté resuelto;
+- clasificación de sensibilidad aplicable;
+- alertas de bloqueo o parcialidad;
+- siguiente acción segura.
+
+La declaración original, archivos sensibles y datos completos de identidad no permanecen abiertos por defecto en el encabezado.
+
+##### 8.2 Secciones del caso
+
+| Sección             | Contenido                                                                                 | Prohibición                                                       |
+| ------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `Solicitud`         | Declaración original preservada, tipos, canal, alcance y aclaraciones.                    | Reescribir el mensaje original.                                   |
+| `Verificación`      | Evidencia mínima, identidad, representación, estado y conflictos.                         | Exponer datos de verificación fuera del rol permitido.            |
+| `Alcance y fuentes` | Sistemas, propietarios, fuentes y resultados de descubrimiento por elemento.              | Copiar información de fuentes como maestro local.                 |
+| `Evaluación`        | Pretensiones, reglas aplicables, restricciones, fundamento y decisión por pretensión.     | Fusionar decisiones distintas en un único `aprobado/rechazado`.   |
+| `Ejecución`         | Acción por sistema propietario, estado, resultado, evidencia, excepción y reconciliación. | Marcar éxito por haber enviado un comando.                        |
+| `Respuesta`         | Resultado por pretensión, versión de respuesta, anexos autorizados y canal.               | Redactar éxito manual incompatible con los estados reales.        |
+| `Evidencia`         | Referencias necesarias de receipt, decisiones, entregas, restricciones y excepciones.     | Usar adjuntos como sustituto de datos estructurados obligatorios. |
+| `Cronología`        | Eventos, actor, tiempo, razón, versión y cambios de estado.                               | Borrar o reordenar historia para simplificar el caso.             |
+
+##### 8.3 Matriz de ejecución por sistema
+
+Cada sistema o propietario en alcance se presenta como una fila independiente con:
+
+- propietario funcional;
+- referencia de fuente;
+- resultado de descubrimiento;
+- pretensión aplicable;
+- decisión;
+- acción ordenada o requerida;
+- estado de ejecución;
+- última actualización confirmada;
+- evidencia o receipt;
+- excepción o bloqueo;
+- reconciliación pendiente.
+
+VISO no ofrecerá una acción `Forzar completado`. El estado agregado se calcula desde las decisiones y resultados autoritativos.
+
+##### 8.4 Resultados de descubrimiento
+
+La interfaz conserva los resultados canónicos definidos por `INFO-DOM-009` y los agrupa para comprensión sin ocultar diferencias materiales:
+
+- coincidencia consultable;
+- coincidencia rectificable;
+- autorización revocable;
+- elemento potencialmente suprimible;
+- elemento restringido;
+- bloqueo por conservación;
+- bloqueo por preservación;
+- fundamento independiente;
+- acción externa requerida;
+- revisión requerida;
+- ausencia de coincidencia demostrada.
+
+La lista no confunde `sin coincidencia` con `sin autorización para consultar`, `verificación insuficiente`, `fuente no disponible` o `resultado desconocido`.
+
+---
+
+#### 9. Decisiones UX por tipo de solicitud
+
+##### 9.1 Acceso y copia
+
+- La persona ve qué parte del alcance puede entregarse y qué limitaciones aplicaron.
+- Datos de terceros, secretos, credenciales, información antifraude o contenido no autorizado se minimizan, separan o protegen.
+- Una copia conserva versión, periodo, fuentes y fecha de corte cuando sean materiales para entenderla.
+- El artefacto de respuesta se presenta como entrega controlada vinculada al caso, no como exportación general de la aplicación.
+
+##### 9.2 Actualización y rectificación
+
+- El portal distingue `Actualizar un dato actual` de `Corregir un dato que considero incorrecto`.
+- La interfaz muestra la fuente propietaria que resolverá la modificación cuando esa información sea segura y útil.
+- El caso conserva antes, después, razón, actor y efecto en derivados cuando corresponda.
+- Los hechos históricos preservados no se presentan como campos ordinarios editables.
+
+##### 9.3 Prueba e información de uso
+
+- La persona puede identificar la finalidad o contexto sobre el que solicita prueba.
+- La respuesta distingue evidencia de consentimiento, autorización, aviso, fundamento documentado y otros hechos; no los presenta como equivalentes.
+- Un estado `UNRESOLVED` nunca se traduce a `autorizado`.
+
+##### 9.4 Revocación
+
+- La UI pregunta qué autorización o finalidad se desea retirar cuando el alcance pueda diferenciarse.
+- Antes de confirmar, muestra el efecto conocido y qué aspectos independientes no necesariamente cambian.
+- La respuesta muestra el alcance efectivamente revocado y cualquier ejecución pendiente.
+- El portal nunca promete borrado total como consecuencia automática.
+
+##### 9.5 Supresión
+
+- La acción visible es `Solicitar supresión`, no `Borrar todos mis datos`.
+- La revisión previa explica que la solicitud será evaluada contra conservación, preservación, fundamentos independientes, obligaciones, sistemas y copias controladas aplicables.
+- La respuesta puede indicar supresión por disposición, anonimización, restricción, conservación limitada, ausencia de coincidencia o revisión requerida según el resultado autoritativo.
+- Ninguna eliminación técnica aislada se muestra como evidencia suficiente de cierre.
+
+##### 9.6 Restricción u oposición
+
+- La persona identifica el uso, finalidad o alcance al que dirige la solicitud.
+- La interfaz evita formular una prohibición universal si el contrato solo puede evaluar un tratamiento específico.
+- Si existe una restricción efectiva, se muestra su alcance y vigencia sin afirmar supresión.
+
+##### 9.7 Reclamo de privacidad
+
+- La entrada conserva el relato original antes de cualquier corrección.
+- La interfaz permite enlazar un caso de investigación cuando corresponda, sin fusionar los expedientes.
+- Quien gestiona el caso no puede presentar como resuelto un reclamo cuya investigación, acción correctiva o aprobación de cierre siga pendiente.
+- Los reclamos comerciales o de servicio permanecen en sus expedientes propietarios aunque tengan un vínculo de referencia.
+
+---
+
+#### 10. Respuesta y cierre
+
+##### 10.1 `INFO-PRIVACY-REQUEST-RESPONSE-UX-CONTRACT-001`
+
+La respuesta se construye a partir de resultados estructurados y conserva una sección por pretensión.
+
+Debe permitir comprender:
+
+- referencia del caso;
+- qué se pidió;
+- qué alcance fue evaluado;
+- resultado de cada pretensión;
+- información entregada cuando aplique;
+- actualizaciones o rectificaciones confirmadas;
+- revocaciones efectivas;
+- restricciones aplicadas;
+- resultado de supresión;
+- información conservada y explicación permitida cuando corresponda;
+- elementos no localizados cuando esa conclusión esté demostrada;
+- limitaciones o denegaciones con explicación segura;
+- acciones externas todavía pendientes;
+- fecha, canal y versión de respuesta;
+- siguiente acción disponible, incluida reapertura o aclaración cuando proceda.
+
+Una respuesta parcial se etiqueta explícitamente como parcial. La interfaz no convierte `RESPONDED` en `CLOSED` si permanecen efectos que el contrato exige resolver.
+
+##### 10.2 Puerta de cierre visible
+
+VISO solo ofrece cierre final cuando la proyección autoritativa confirma:
+
+1. todas las pretensiones tienen decisión final o excepción aprobada;
+2. cada sistema en alcance está finalizado o cubierto por excepción válida;
+3. los efectos parciales y externos fueron reconciliados;
+4. las restricciones de conservación o preservación están reflejadas correctamente;
+5. la respuesta entregada coincide con el estado agregado real;
+6. existe evidencia suficiente de la respuesta y de los efectos materiales;
+7. no queda un resultado técnico desconocido presentado como éxito.
+
+Si una condición falla, la UI muestra cuál falta y mantiene el caso abierto.
+
+---
+
+#### 11. Dashboard de gobierno — resumen, no expediente
+
+La proyección `PRIVACY_REQUEST_DASHBOARD_ENTRY` conserva el alcance ya definido por `INFO-UX-001`.
+
+Cada fila puede mostrar únicamente:
+
+- referencia del caso;
+- tipo o tipos resumidos;
+- identidad o representación minimizada;
+- responsable;
+- estado fuente;
+- `due_at` cuando esté autoritativamente resuelto;
+- siguiente paso fuente;
+- bloqueo o parcialidad;
+- acción `Abrir solicitud`.
+
+El dashboard no:
+
+- muestra por defecto el contenido enviado por la persona;
+- infiere un plazo por el tipo de solicitud;
+- decide rectificación, revocación, supresión o cierre;
+- ejecuta mutaciones sobre datos personales;
+- convierte un reclamo de privacidad en investigación;
+- marca vencido un caso con plazo no resuelto.
+
+---
+
+#### 12. Notificaciones y comunicaciones
+
+1. Una notificación informa que existe una actualización; no contiene por defecto datos sensibles, documentos, motivo completo ni resultado detallado.
+2. Abrir una notificación revalida identidad, relación, autorización y estado antes de mostrar el caso.
+3. Una notificación antigua no conserva capacidad después de revocación, cambio de cuenta, cierre o expiración de su contexto.
+4. El silencio del destinatario no se interpreta como aceptación, desistimiento, aprobación ni cierre.
+5. El estado de entrega de una comunicación se mantiene separado del estado del caso.
+6. Los mensajes usan lenguaje humano y describen la acción siguiente sin exponer códigos internos como contenido principal.
+
+---
+
+#### 13. Privacidad de la propia experiencia
+
+La experiencia de privacidad aplica minimización reforzada a sus propios metadatos:
+
+- las bandejas no se convierten en directorios de titulares;
+- búsqueda y autocompletado muestran una proyección menor que el detalle del caso;
+- badges y contadores no revelan poblaciones o identidades fuera del alcance del actor;
+- copias, impresión, exportación o entrega de información son acciones distintas de visualizar;
+- archivos y evidencia se revelan solo por finalidad y permiso;
+- el cambio de actor o contexto elimina de la superficie datos del caso que ya no puedan mostrarse;
+- la telemetría no registra el relato completo, documentos de identidad ni payloads personales por conveniencia;
+- una URL conocida, referencia de caso o nombre de archivo no concede lectura.
+
+---
+
+#### 14. Estados de error, bloqueo y recuperación
+
+| Situación                                   | Presentación obligatoria                   | Recuperación                                          |
+| ------------------------------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| Falló la creación antes de obtener receipt  | `No pudimos confirmar el envío`            | Consultar estado antes de repetir.                    |
+| Receipt existe pero la UI perdió respuesta  | `Estamos confirmando el resultado`         | Recuperar por referencia/idempotencia.                |
+| Verificación insuficiente                   | `Necesitamos información adicional`        | Solicitar solo el dato o evidencia faltante.          |
+| Verificación conflictiva                    | `No pudimos confirmar la información`      | Canal seguro alterno o revisión autorizada.           |
+| Fuente no disponible                        | `Hay una fuente pendiente de consulta`     | Mantener caso abierto; no concluir ausencia.          |
+| Resultado parcial                           | `La solicitud sigue en gestión`            | Mostrar pretensiones completadas y pendientes.        |
+| Acción externa pendiente                    | `Existe una acción externa pendiente`      | Seguir reconciliación; no cerrar por envío.           |
+| Restricción por conservación o preservación | Explicación segura del efecto              | Mostrar resultado aplicable sin prometer eliminación. |
+| Respuesta lista pero acceso no autorizado   | `Necesitamos volver a verificar tu acceso` | Revalidar sin exponer la respuesta.                   |
+
+Ningún mensaje culpabiliza a la persona por fallos de infraestructura, concurrencia, integración o política.
+
+---
+
+#### 15. Accesibilidad y lenguaje
+
+1. La acción primaria se expresa como verbo + objeto: `Crear solicitud`, `Enviar aclaración`, `Revisar respuesta`, `Solicitar supresión`.
+2. Etiquetas genéricas como `Procesar`, `Resolver` o `Continuar` no se usan cuando oculten un efecto material.
+3. Los códigos `DSR_*`, estados internos, nombres de tablas y conceptos técnicos pueden aparecer en detalle administrativo autorizado, pero nunca son el texto principal para trabajadores o clientes.
+4. Estado, bloqueo, parcialidad y siguiente acción no dependen solo de color o icono.
+5. Los flujos personales deben ser operables con teclado, tacto y lector de pantalla y conservar orden de foco comprensible.
+6. La persona puede revisar y corregir su solicitud antes de enviarla sin reescribir información que el sistema ya conoce de forma segura.
+7. Una validación tardía no exige corregir un campo oculto sin revelar previamente la condición que lo vuelve necesario.
+8. La respuesta y los estados mantienen lenguaje neutral, concreto y no punitivo.
+
+---
+
+#### 16. `INFO-PRIVACY-REQUEST-SURFACE-MATRIX-001`
+
+| Superficie lógica                 | Aplicación / superficie canónica                                                  | Actor principal                                | Alcance                                              | Fuente de verdad                                                             | Mutación permitida desde UX                                                                      | Decisión       |
+| --------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------- |
+| `WORKER_PRIVACY_PORTAL`           | ANIMA / canal personal existente (`VSCREEN-0027`, `VSCREEN-0032`, `VSCREEN-0126`) | trabajador o representante verificado          | iniciar y seguir solicitudes propias                 | `request_case_id` y contratos de dominio                                     | crear solicitud, aportar aclaración/evidencia y consumir respuesta mediante comandos autorizados | `ESPECIFICADO` |
+| `CUSTOMER_PRIVACY_PORTAL`         | PASS / `VSCREEN-0112`                                                             | cliente o representante verificado             | autogestión separada de solicitudes formales propias | perfil propietario para autogestión; `request_case_id` para solicitud formal | autogestión permitida o creación/seguimiento de caso según intención                             | `ESPECIFICADO` |
+| `PRIVACY_CASE_WORKSPACE`          | VISO / `VSCREEN-0122`                                                             | personal autorizado de privacidad/cumplimiento | verificar, evaluar, coordinar, responder y cerrar    | caso trazable y resultados propietarios por sistema                          | decisiones y órdenes autorizadas; nunca edición local como sustituto del propietario             | `ESPECIFICADO` |
+| `PRIVACY_REQUEST_DASHBOARD_ENTRY` | VISO / dashboard de gobierno de información                                       | responsable autorizado                         | resumen y priorización                               | proyección del caso                                                          | navegación al caso; sin decisión ni mutación material                                            | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+4 superficies logicas esperadas
+4 superficies logicas materializadas
+4 identidades unicas
+0 superficies duplicadas
+2 canales personales
+1 espacio administrativo de caso
+1 proyeccion resumida de dashboard
+0 nuevos VSCREEN-* creados
+0 nuevas rutas canónicas creadas
+```
+
+---
+
+#### 17. Reconciliación de contratos consumidos
+
+| Contrato o decisión heredada                                      | Uso en esta tarea                                   | Resultado UX                                                     |
+| ----------------------------------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------- |
+| Finalidad, aviso, fundamento, consentimiento y revocación         | Presentar alcance y efectos sin fusionar conceptos. | El portal no convierte términos o perfil en autorización global. |
+| Caso de solicitud de titular                                      | Identidad única del trámite.                        | Un `request_case_id` compartido entre canal personal y VISO.     |
+| Catálogo de diez tipos                                            | Intención de entrada y respuesta por pretensión.    | 10 de 10 tipos cubiertos.                                        |
+| Cinco estados de verificación                                     | Protección antes de divulgación o mutación.         | 5 de 5 estados proyectados.                                      |
+| Nueve estados principales                                         | Línea de progreso fuente.                           | 9 de 9 estados proyectados.                                      |
+| Ocho condiciones transversales                                    | Bloqueo, parcialidad y reapertura.                  | 8 de 8 condiciones proyectadas.                                  |
+| Descubrimiento y ejecución por fuente                             | Trabajo interno por sistema propietario.            | Matriz de ejecución sin copias maestras en VISO.                 |
+| Respuesta y evidencia                                             | Comunicación final reproducible.                    | Respuesta por pretensión, versión y evidencia.                   |
+| Autorización por identidad, relación, finalidad, recurso y acción | Revelado y acción mínimos.                          | La UI no concede autoridad por visibilidad o sesión.             |
+| Retención, hold, anonimización y disposición                      | Limitar promesas de supresión.                      | Solicitud de supresión nunca equivale a borrado inmediato.       |
+
+---
+
+#### 18. Casos de frontera resueltos
+
+##### 18.1 Trabajador pide corregir un dato autogestionable
+
+Si el dato pertenece a la autogestión ordinaria autorizada, ANIMA permite corregirlo mediante la capacidad propietaria y muestra su receipt. Si la persona cuestiona un hecho histórico, la fuente no es editable, existe disputa, requiere prueba o solicita tratamiento formal, la interfaz ofrece crear o enlazar `DSR_UPDATE` o `DSR_RECTIFY` sin duplicar la modificación.
+
+##### 18.2 Cliente retira marketing
+
+PASS separa la preferencia o autorización de marketing de términos, cuenta, compra y otras finalidades. Si la revocación puede ejecutarse como capacidad autogestionable autorizada, registra el hecho correspondiente; si requiere análisis transversal o ya existe un caso, lo enlaza al `request_case_id`. La interfaz no promete supresión de compras, facturación, antifraude, puntos o auditoría.
+
+##### 18.3 Persona solicita supresión y también cierre de cuenta
+
+La experiencia presenta dos efectos distintos. El cierre de cuenta gobierna acceso y relación de producto; la supresión continúa como pretensión de privacidad evaluada por categoría, sistema, retención, preservación y fundamento. Una acción puede finalizar antes que la otra sin que la UI las marque como equivalentes.
+
+##### 18.4 Representante solicita datos de otra persona
+
+El portal crea el caso con solicitante y titular separados. Hasta `REPRESENTATION_VERIFIED`, no muestra coincidencias, documentos, perfil ni resultados de búsqueda del titular. La verificación aprobada limita el alcance de la representación y no concede acceso general.
+
+##### 18.5 No se localizan datos en un sistema
+
+`NO_MATCH` solo se muestra como conclusión cuando la búsqueda autoritativa pudo ejecutarse dentro del alcance correspondiente. Si la fuente falló, el actor no estaba verificado, el sistema quedó fuera de alcance o el resultado fue desconocido, el caso conserva ese estado y no comunica `No encontramos datos`.
+
+##### 18.6 Rectificación afecta una fuente histórica
+
+La UI muestra que el dato fue revisado y, cuando aplique, que la corrección se materializa como nueva versión, anotación o hecho correctivo. No presenta como editable una evidencia inmutable ni oculta que el valor histórico usado en un evento anterior se conserva.
+
+##### 18.7 Revocación con uso todavía permitido por otro fundamento
+
+La respuesta distingue el alcance revocado del tratamiento que permanece bajo otro fundamento documentado. La interfaz no usa el término `rechazada` para ocultar esta diferencia: muestra una decisión por pretensión y una explicación segura del alcance que continúa.
+
+##### 18.8 Acción parcial en varios sistemas
+
+El portal muestra `Aplicación parcial`; VISO lista cada sistema, resultado y pendiente. Los sistemas confirmados no se repiten por reintento global y el caso no se cierra hasta reconciliar los restantes o registrar una excepción válida.
+
+---
+
+#### 19. Cobertura y cifras de diseño
+
+| Métrica                                  | Resultado |
+| ---------------------------------------- | --------: |
+| Tipos canónicos de solicitud esperados   |        10 |
+| Tipos materializados                     |        10 |
+| Tipos faltantes                          |         0 |
+| Estados principales esperados            |         9 |
+| Estados principales materializados       |         9 |
+| Condiciones transversales esperadas      |         8 |
+| Condiciones transversales materializadas |         8 |
+| Estados de verificación esperados        |         5 |
+| Estados de verificación materializados   |         5 |
+| Canales personales                       |         2 |
+| Espacios administrativos de caso         |         1 |
+| Proyecciones de dashboard                |         1 |
+| Nuevas identidades `VSCREEN-*`           |         0 |
+| Nuevas rutas canónicas                   |         0 |
+| Cambios físicos                          |         0 |
+
+No se materializa una matriz de 332 `DOCCTX-*` porque esta tarea no reclasifica documentos ni decide el contenido personal de cada identidad. El universo documental, sus clases, retención, integridad y propietarios permanecen bajo los contratos aprobados y se consultan por alcance durante el caso.
+
+---
+
+#### 20. Criterios de aceptación
+
+- [x] Existen experiencias diferenciadas para trabajador, cliente, gestor interno y dashboard resumido.
+- [x] Trabajador y cliente usan canales personales sin acceder al backoffice de privacidad.
+- [x] El diseño no crea una pantalla canónica nueva para ANIMA ni altera el catálogo `VSCREEN-*`.
+- [x] PASS conserva `VSCREEN-0112` como superficie personal de perfil, privacidad y consentimientos y separa autogestión de solicitud formal.
+- [x] VISO utiliza `VSCREEN-0122` como espacio de coordinación del caso y no como maestro alterno de datos empresariales.
+- [x] Los 10 tipos canónicos de solicitud están materializados con etiqueta humana y frontera explícita.
+- [x] Los 5 estados de verificación están proyectados sin convertir login en titularidad universal.
+- [x] Los 9 estados principales y las 8 condiciones transversales están cubiertos sin crear estados paralelos.
+- [x] El receipt autoritativo precede al mensaje `Recibida`.
+- [x] Un timeout o resultado desconocido se reconcilia antes de permitir una nueva intención equivalente.
+- [x] La UI no comunica ausencia de datos cuando existe un problema de verificación, autorización, fuente o resultado desconocido.
+- [x] Acceso y copia aplican minimización y no se presentan como exportación irrestricta.
+- [x] Actualización y rectificación no sobrescriben silenciosamente historia, auditoría o evidencia.
+- [x] Revocación, supresión, cierre de cuenta, restricción, anonimización y disposición permanecen diferenciados.
+- [x] La solicitud de supresión se presenta como evaluación y no como borrado inmediato.
+- [x] Los plazos solo se muestran cuando existe `due_at` autoritativo; no se inventan fechas ni reglas jurídicas.
+- [x] El dashboard de solicitudes no decide ni ejecuta el caso y no muestra contenido sensible por defecto.
+- [x] La matriz de ejecución conserva resultado por sistema y evita un `éxito global` opaco.
+- [x] La respuesta conserva resultado por pretensión y un estado parcial no se presenta como cierre.
+- [x] El cierre solo está disponible cuando todas las condiciones autoritativas exigidas están satisfechas o cubiertas por excepción válida.
+- [x] Las notificaciones son avisos y revalidan antes de abrir información protegida.
+- [x] La experiencia aplica minimización a búsquedas, listas, contadores, archivos, telemetría y respuestas.
+- [x] Los flujos personales y administrativos conservan lenguaje humano y accesibilidad sin depender de color, hover o códigos técnicos.
+- [x] No se crean cambios de código, Supabase, Storage, migraciones, datos, integraciones, rutas ni configuración.
+- [x] La siguiente tarea permanece reservada y no se desarrolla en este artefacto.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Justificación:** el comportamiento ejecutable necesario para esta experiencia ya está protegido por el registro canónico vigente en los dominios de trabajador, cliente, administración, autorización, almacenamiento e integración: solicitudes comprensibles, caso trazable, verificación de identidad y representación, minimización, decisiones por pretensión, cierre reconciliado, conservación, propagación y evidencia. Esta tarea materializa la experiencia UX que consume esos contratos y no introduce una mutación, permiso, transición técnica, plazo, integración, esquema de almacenamiento o comportamiento ejecutable adicional. Crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 22. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos`
+
+TAREA ACTUAL APROBADA
+
+`INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada`
+
+
 ### [ ] INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
 ### [ ] INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
