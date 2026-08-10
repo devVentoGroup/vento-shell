@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **668** |
+| Tareas aprobadas | **669** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **926** |
+| Tareas no iniciadas | **925** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.91% (668/1594)** |
+| Porcentaje de completamiento | **41.97% (669/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo** |
-| Tarea actual | **INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio** |
+| Última tarea aprobada | **INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.** |
+| Tarea actual | **INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos** |
+| Siguiente tarea | **DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 92 de 157 aprobadas; INFO-INT-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 93 de 157 aprobadas; INFO-INT-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-INT-001` — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo |
-| Tarea actual | `INFO-INT-002` — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio — **NO INICIADA** |
-| Siguiente tarea | `INFO-INT-003` — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos |
+| Última aprobada | `INFO-INT-002` — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio. |
+| Tarea actual | `INFO-INT-003` — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 92 DE 157 APROBADAS — ACTUAL INFO-INT-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 93 DE 157 APROBADAS — ACTUAL INFO-INT-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo
+INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.
         ↓
 TAREA ACTUAL
-INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio
-        ↓
-SIGUIENTE TAREA RESERVADA
 INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 92 de 157 tareas aprobadas
+CARRIL NEXO — 93 de 157 tareas aprobadas
 ```

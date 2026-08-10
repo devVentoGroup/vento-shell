@@ -851,5 +851,268 @@ SIGUIENTE TAREA RESERVADA
 `INFO-INT-002 — Diseñar integraciones con e-signature, email, object storage, SIEM/DLP, HRIS/finance cuando aplique`
 
 
-### [ ] INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio
+### ✅ INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.
+
+**Estado:** APROBADA  
+**Tarea anterior:** INFO-INT-001 — Definir modelo de integraciones con terceros.  
+**Tarea siguiente:** BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN.  
+**Tipo de tarea:** Documental — definición contractual transversal de intercambio, autoridad, persistencia, evidencia y consumo entre componentes VENTO.
+
+#### Propósito
+
+Establecer el contrato canónico de interacción entre las aplicaciones propietarias de dominio y las capacidades transversales de VENTO, de forma que cada intercambio preserve una única fuente de verdad, autoridad explícita, mínima exposición de información, trazabilidad, idempotencia, reconciliación y separación entre estado empresarial, autorización, persistencia, evidencia, notificación, analítica y seguridad.
+
+La tarea no crea una fuente de verdad transversal nueva, no traslada propiedad empresarial a SHELL, Supabase, EVID-ARC, ANIMA, VISO o PASS y no autoriza escrituras directas entre dominios.
+
+#### Entradas canónicas y decisiones heredadas
+
+1. `INFO-INT-001` conserva el modelo aprobado de integración, incluyendo contratos versionados, trazabilidad, idempotencia, clasificación de errores, reintentos controlados, reconciliación y prohibición de convertir a terceros o adaptadores en fuentes empresariales competidoras.
+2. `INT-APP-010` conserva los cinco patrones de interacción transversal: `QUERY`, `COMMAND`, `EVENT`, `STATUS` y `PROJECTION`; mantiene autoridad única del propietario, prohíbe escrituras cruzadas y exige que proyecciones y estados de entrega no sustituyan el estado canónico del dominio.
+3. El BLOQUE AA conserva la propiedad funcional: la aplicación de dominio es propietaria de su expediente y sus hechos; SHELL gobierna acceso, contexto y autorización; Supabase es sustrato compartido; ANIMA acompaña registro, activación, notificación e interacción guiada; PASS administra seguridad, credenciales, confianza y acciones administrativas de identidad; VISO expone indicadores, alertas y vistas; la arquitectura de evidencia conserva trazabilidad y prueba sin apropiarse del expediente empresarial.
+4. Las reglas de autorización conservan decisión explícita por actor, organización o dominio, función, contexto, acción, alcance, fase, finalidad y sensibilidad; fuera del contrato aplicable rige denegación por defecto.
+5. Las reglas documentales conservan propietario, procedencia, estado, finalidad, sensibilidad, retención, disposición y legal hold cuando sean aplicables; una copia, índice, proyección o evidencia no altera por sí misma la autoridad del objeto fuente.
+6. `TREQ-INTEGRATION-021` cubre de forma directa el ciclo de información, documentos y evidencia entre aplicación propietaria, SHELL, Supabase, Storage, ANIMA, VISO, PASS y terceros, y exige contratos versionados, idempotentes, reconciliables y observables sin fuentes competidoras.
+
+#### Principios obligatorios del contrato transversal
+
+1. **Autoridad única por hecho.** Todo dato, documento, estado o decisión empresarial tiene una aplicación propietaria identificable. Ningún consumidor transversal puede redefinirlo por copia, caché, proyección, evento, índice o resultado técnico.
+2. **Separación entre decisión de negocio y decisión de acceso.** La aplicación propietaria decide la validez empresarial de la transición; SHELL decide si el actor y el contexto están autorizados para iniciar, ver, continuar, corregir o supervisar la acción dentro de su alcance.
+3. **Separación entre identidad/confianza y autorización operacional.** PASS conserva hechos de identidad, credenciales, postura de seguridad, confianza y administración que le pertenezcan; SHELL consume esos hechos cuando correspondan y emite la decisión de acceso contextual. PASS no decide el estado del expediente empresarial y SHELL no se convierte en almacén de credenciales.
+4. **Sustrato no equivale a propietario.** Supabase, incluido Storage cuando aplique, persiste datos y archivos conforme al contrato de su propietario. Compartir infraestructura no habilita a una aplicación a escribir objetos de otro dominio.
+5. **Evidencia no equivale a estado empresarial.** EVID-ARC conserva prueba, trazabilidad, linaje, integridad y relaciones de evidencia; no transforma un recibo, hash, archivo o evento de auditoría en la fuente canónica del hecho empresarial demostrado.
+6. **Notificación no equivale a finalización.** ANIMA puede entregar mensajes, activaciones, recordatorios, solicitudes guiadas o estados de entrega; la recepción o lectura de un mensaje no cambia el resultado empresarial salvo que el usuario ejecute una acción que vuelva como comando al propietario y este la acepte.
+7. **Analítica no equivale a maestro.** VISO consume proyecciones, eventos y consultas autorizadas para indicadores y alertas. Sus datos derivados son reconstruibles y no pueden escribir de vuelta el estado canónico.
+8. **Sin escritura cruzada.** Una aplicación no modifica tablas, objetos, archivos o estados empresariales de otra aplicación como atajo. Toda mutación se solicita al propietario mediante un comando explícito y vuelve como resultado, estado o evento.
+9. **Mínima proyección.** Cada contrato transporta únicamente los atributos requeridos por la finalidad declarada. El consumidor recibe referencias canónicas y una proyección mínima cuando no necesita el expediente completo.
+10. **Trazabilidad de extremo a extremo.** Toda interacción relevante conserva identidad del contrato y versión, propietario, consumidor, recurso canónico, actor o principal técnico, contexto organizacional aplicable, finalidad, correlación, causalidad, tiempo, resultado y referencia a la evidencia producida cuando corresponda.
+11. **Idempotencia y reconciliación.** Comandos, eventos, trabajos, webhooks o entregas reintentables usan identidad estable de operación. Un mismo identificador y mismo contenido no puede producir más de un efecto; un identificador reutilizado con contenido incompatible genera conflicto explícito. Los resultados ambiguos se reconcilian antes de reintentar de forma que pueda duplicar efectos.
+12. **Contrato versionado.** Todo intercambio mantiene una versión explícita. Un cambio incompatible exige versión mayor, periodo de convivencia cuando sea necesario, corte controlado y posibilidad de retorno; el consumidor no interpreta silenciosamente una versión incompatible.
+13. **Resultado verdadero.** Aceptación técnica, encolamiento, entrega, proyección y finalización empresarial son estados distintos. Ningún componente presenta éxito empresarial cuando solo existe recepción, procesamiento pendiente o entrega técnica.
+14. **Evidencia después de hechos confirmados, salvo precondición explícita.** Los eventos que acreditan una mutación empresarial se emiten después de la confirmación del propietario. Cuando una evidencia sea requisito previo para confirmar el hecho, esa condición debe estar declarada en el contrato; no se presume.
+15. **Fallos visibles.** Un fallo de autorización, persistencia, evidencia, notificación, proyección, seguridad o dominio se representa con un resultado distinguible y trazable; no se oculta mediante estados optimistas o copias locales que aparenten convergencia.
+
+#### Elementos lógicos mínimos de todo contrato
+
+| Elemento                   | Regla canónica                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identidad y versión        | El contrato y su versión deben ser identificables y auditables.                                                                             |
+| Propietario y consumidor   | Debe quedar explícito qué aplicación conserva autoridad y cuál consume o solicita.                                                          |
+| Patrón de interacción      | Debe ser `QUERY`, `COMMAND`, `EVENT`, `STATUS` o `PROJECTION`; no se admite una escritura implícita fuera de estos límites.                 |
+| Recurso canónico           | Debe existir una referencia inequívoca al proceso, expediente, documento, identidad u objeto propietario afectado.                          |
+| Actor y contexto           | Cuando aplique, se conserva actor o principal técnico, organización o dominio, sede o contexto operacional y finalidad de la acción.        |
+| Alcance de información     | Se declaran los datos mínimos necesarios, su sensibilidad y las restricciones de uso relevantes.                                            |
+| Correlación y causalidad   | Las operaciones encadenadas deben poder reconstruirse entre origen, solicitud, resultado y efectos posteriores.                             |
+| Idempotencia               | Es obligatoria para toda operación que pueda repetirse o entregarse más de una vez.                                                         |
+| Consistencia               | Se declara si la respuesta es local fuerte, lectura acotada o proyección eventual; no se presume consistencia fuerte entre aplicaciones.    |
+| Resultado                  | Se distingue aceptación, procesamiento, finalización, rechazo, conflicto, indisponibilidad y resultado desconocido cuando corresponda.      |
+| Evidencia                  | Se conserva referencia suficiente para demostrar quién hizo qué, sobre qué recurso, bajo qué contrato, con qué resultado y en qué momento.  |
+| Privacidad y ciclo de vida | Cuando aplique, se conserva finalidad, minimización, retención, disposición, revocación o legal hold sin duplicar una política competidora. |
+
+#### Contrato con SHELL
+
+**Autoridad que conserva SHELL**
+
+- identidad de la aplicación y contexto compartido de navegación o sesión que le pertenezca;
+- decisión de acceso contextual para iniciar, ver, continuar, corregir o supervisar una acción;
+- reglas transversales de entrada, retorno y traspaso entre aplicaciones cuando sean responsabilidad de SHELL.
+
+**Interacciones permitidas**
+
+- una aplicación de dominio puede consultar a SHELL el contexto y la decisión de acceso aplicable;
+- SHELL puede consultar al propietario para presentar estado o referencias autorizadas;
+- SHELL puede enviar un `COMMAND` al propietario cuando el usuario solicita una mutación empresarial desde una superficie de SHELL;
+- cambios de contexto o decisiones de acceso pueden propagarse mediante `EVENT` o `STATUS` cuando el contrato concreto lo requiera.
+
+**Límites obligatorios**
+
+- una autorización positiva de SHELL habilita la acción dentro del alcance concedido, pero no reemplaza las reglas empresariales del propietario;
+- la aplicación receptora vuelve a verificar contrato, recurso, contexto y autoridad antes de ejecutar una mutación;
+- SHELL no escribe directamente el expediente empresarial ni mantiene una copia editable alternativa;
+- ante ausencia de una decisión positiva verificable para una mutación protegida, no se ejecuta la mutación.
+
+#### Contrato con Supabase y Storage
+
+**Autoridad que conserva el propietario**
+
+- la aplicación propietaria conserva la semántica, reglas, ciclo de vida y autoridad de sus registros aunque estos residan en infraestructura Supabase;
+- el propietario del documento o de la evidencia conserva también la autoridad lógica sobre los archivos que le correspondan.
+
+**Reglas de persistencia**
+
+1. Supabase es sustrato compartido, no un dominio empresarial independiente.
+2. Una aplicación solo muta objetos para los que el contrato le atribuye propiedad o una operación explícitamente autorizada; no usa acceso al sustrato como permiso de escritura cruzada.
+3. Las transacciones del propietario confirman primero su estado canónico; efectos externos posteriores usan mecanismos desacoplados, idempotentes y reconciliables cuando corresponda.
+4. Storage conserva el binario bajo una referencia gobernada; el registro empresarial, el archivo y la evidencia mantienen identidades relacionables sin convertirse en copias competidoras.
+5. Un archivo sin registro, un registro sin archivo, una versión divergente o una disposición incompleta se considera inconsistencia reconciliable y no se oculta.
+6. Este contrato no fija esquema físico, nombre de tablas, políticas RLS, grants, triggers, funciones ni rutas de Storage; esas decisiones corresponden a su fase de implementación y deben preservar estas reglas.
+
+#### Contrato con EVID-ARC
+
+**Autoridad que conserva EVID-ARC**
+
+- estructura de prueba y auditoría transversal;
+- linaje entre hecho fuente, evidencia, archivo o artefacto demostrativo;
+- integridad, procedencia, tiempo, actor, versión, hash o metadatos probatorios cuando el tipo de evidencia los requiera;
+- relación entre evidencia, retención, disposición y legal hold cuando sea parte del ciclo probatorio.
+
+**Reglas de intercambio**
+
+1. La aplicación propietaria referencia el hecho empresarial que la evidencia demuestra; EVID-ARC no reemplaza ese hecho.
+2. La evidencia se vincula al recurso canónico y al contrato que originó el intercambio.
+3. Cuando la prueba se registra después del hecho confirmado, una falla de canal de evidencia no autoriza a reescribir el estado empresarial; queda una obligación explícita de reconciliación.
+4. Cuando la evidencia sea una precondición del hecho, el propietario no confirma la transición hasta satisfacer el requisito declarado.
+5. Exportaciones, paquetes de auditoría, copias probatorias o derivados conservan procedencia, versión y relación con el objeto fuente.
+6. La evidencia no puede ser modificada desde una aplicación consumidora para alterar retroactivamente el resultado empresarial demostrado.
+
+#### Contrato con ANIMA
+
+**Autoridad que conserva ANIMA**
+
+- registro, activación y experiencia guiada que le pertenezcan;
+- entrega de notificaciones, recordatorios o solicitudes de interacción;
+- estado técnico de entrega o interacción cuando sea responsabilidad de ANIMA.
+
+**Reglas de intercambio**
+
+1. ANIMA consume `EVENT`, `STATUS` o `PROJECTION` mínimos del propietario para informar o guiar al usuario.
+2. La notificación conserva referencia al recurso canónico y no copia el expediente completo salvo necesidad y autorización explícitas.
+3. Una acción empresarial iniciada desde ANIMA se envía como `COMMAND` a la aplicación propietaria; ANIMA no ejecuta la mutación en almacenamiento ajeno.
+4. El propietario vuelve a verificar autoridad, precondiciones y estado antes de aceptar el comando.
+5. Entregado, leído, fallido o reintentado son estados de comunicación; no equivalen por sí solos a aprobado, pagado, recibido, cerrado, firmado o cualquier otro estado empresarial.
+6. Los reintentos de notificación no generan acciones empresariales duplicadas.
+
+#### Contrato con VISO
+
+**Autoridad que conserva VISO**
+
+- métricas, indicadores, alertas, comparativos y vistas derivadas que le pertenezcan;
+- estado de frescura y disponibilidad de sus propias proyecciones.
+
+**Reglas de intercambio**
+
+1. VISO consume `QUERY`, `EVENT` o `PROJECTION` autorizados; la proyección es derivada y reconstruible.
+2. La vista conserva referencia a la fuente, versión o corte temporal suficiente para interpretar su vigencia.
+3. Una proyección atrasada se identifica como tal; no se presenta como estado actual si no puede demostrarse.
+4. VISO no modifica el registro propietario desde su proyección.
+5. Una acción correctiva iniciada desde VISO se emite como `COMMAND` al propietario correspondiente y el resultado vuelve separado de la métrica o alerta que la originó.
+6. Un agregado no habilita por sí mismo acceso al detalle; el detalle vuelve a evaluarse contra autorización y finalidad.
+
+#### Contrato con PASS
+
+**Autoridad que conserva PASS**
+
+- credenciales, mecanismos de seguridad, hechos de confianza, postura o administración de identidad que sean de su dominio;
+- resultados técnicos de acciones administrativas o de seguridad que le pertenezcan.
+
+**Reglas de intercambio**
+
+1. PASS entrega únicamente hechos de identidad, confianza, seguridad o administración necesarios para la finalidad solicitada; no expone secretos como datos de integración ordinaria.
+2. SHELL puede consumir los hechos de PASS que necesite para su decisión de acceso contextual, sin trasladar a PASS la autoridad de autorización empresarial o operacional que corresponde a SHELL.
+3. Una aplicación de dominio puede consultar hechos de PASS cuando el contrato lo requiera, pero no deriva permisos más amplios que los concedidos por SHELL y sus propias reglas empresariales.
+4. Las acciones administrativas sobre seguridad se solicitan a PASS mediante su contrato; ninguna aplicación escribe directamente su almacenamiento como sustituto.
+5. Un resultado de confianza o seguridad no modifica por sí mismo el expediente empresarial; puede actuar como precondición declarada para permitir o negar una acción.
+6. Ante indisponibilidad de PASS, una operación que requiera verificar un hecho de confianza no inventa un resultado positivo ni reutiliza una autoridad fuera del contrato vigente.
+
+#### Contrato entre aplicaciones de dominio
+
+1. Cada aplicación propietaria conserva su expediente, hechos, documentos y estados empresariales.
+2. `QUERY` obtiene información sin mutar al propietario.
+3. `COMMAND` solicita una mutación al propietario; aceptación del comando no implica finalización hasta que el propietario confirme el resultado.
+4. `EVENT` comunica un hecho ya confirmado por el propietario y puede entregarse más de una vez; el consumidor debe deduplicar.
+5. `STATUS` comunica progreso técnico, de ejecución o entrega sin redefinir el estado empresarial.
+6. `PROJECTION` materializa una vista derivada, de solo lectura y reconciliable.
+7. Cuando una aplicación necesita un dato de otra, conserva la referencia canónica y solo la proyección mínima necesaria; no abre una segunda fuente editable.
+8. Ningún dominio realiza DML, modificación de archivo o transición de estado directamente sobre objetos propiedad de otro dominio.
+9. Una falla del propietario no habilita un fallback de escritura en otro componente. El comando conserva su identidad, resultado conocido o desconocido y condición de reintento o reconciliación.
+
+#### Matriz canónica de autoridad y comportamiento
+
+| Participante          | Fuente de verdad que conserva                                           | Puede solicitar o consumir                                                                       | Puede producir                                                                       | Prohibición principal                                                                          |
+| --------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| SHELL                 | contexto compartido y decisión de acceso que le pertenezca              | contexto, referencias y estado autorizado de dominios; hechos de confianza de PASS               | decisión contextual, handoff, comandos hacia propietarios, eventos o estados propios | convertirse en expediente empresarial o escribir directamente el dominio                       |
+| Supabase / Storage    | ninguna autoridad empresarial por el solo hecho de persistir            | operaciones emitidas por propietarios autorizados                                                | persistencia, disponibilidad y referencias técnicas                                  | usar infraestructura compartida como permiso de escritura cruzada o fuente de verdad adicional |
+| EVID-ARC              | evidencia, linaje e integridad probatoria                               | hechos confirmados, referencias canónicas y metadatos mínimos                                    | evidencia, relaciones probatorias, exportaciones o paquetes auditables               | redefinir el estado empresarial demostrado                                                     |
+| ANIMA                 | registro, activación, notificación e interacción guiada propia          | eventos, estados y proyecciones mínimas; resultados del propietario                              | mensajes, estados de entrega e interacción; comandos de usuario hacia propietario    | equiparar entrega de mensaje con resultado empresarial o mutar almacenamiento ajeno            |
+| VISO                  | métricas, alertas y proyecciones derivadas                              | consultas, eventos y proyecciones autorizadas                                                    | indicadores, alertas, cortes y comandos correctivos hacia propietario                | transformar proyección o agregado en maestro o escribir de vuelta el registro fuente           |
+| PASS                  | credenciales, seguridad, confianza y administración de identidad propia | solicitudes de verificación o administración autorizadas                                         | hechos y resultados de seguridad/confianza                                           | asumir autoridad sobre expediente empresarial o sustituir la decisión contextual de SHELL      |
+| Aplicación de dominio | expediente, hechos, documentos y estados empresariales de su dominio    | contexto autorizado, hechos de seguridad, evidencia, notificación y proyecciones según finalidad | consultas, resultados, eventos, estados y respuestas a comandos                      | escribir directamente el dominio de otra aplicación o delegar su autoridad en un consumidor    |
+
+#### Consistencia, reintentos y reconciliación
+
+1. Una operación local del propietario puede exigir consistencia fuerte dentro de su propia frontera; una lectura compartida declara su nivel de consistencia y una proyección transversal se trata como eventual salvo contrato más restrictivo.
+2. No se crea una transacción distribuida implícita entre aplicaciones para aparentar atomicidad empresarial.
+3. Los eventos pueden entregarse al menos una vez; todo consumidor que produzca un efecto debe deduplicar por identidad estable.
+4. Los comandos reintentables conservan identidad y semántica. Un timeout con resultado desconocido obliga a consultar o reconciliar antes de repetir una operación no segura.
+5. La entrega técnica se registra separada del hecho empresarial. Un mensaje, evento o trabajo fallido puede quedar pendiente de recuperación sin revertir un hecho ya confirmado, salvo que el contrato haya declarado esa entrega como precondición.
+6. La reconciliación compara referencia canónica, versión, propietario, consumidor, resultado y efectos derivados; nunca corrige divergencias sobrescribiendo historia sin rastro.
+7. Copias, proyecciones o índices que no puedan demostrar su relación con la fuente se marcan como inconsistentes y no se usan para decidir una mutación.
+
+#### Fallos y degradación por frontera
+
+| Frontera              | Comportamiento obligatorio ante fallo                                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SHELL                 | sin decisión positiva verificable no se ejecuta una mutación protegida; el propietario no infiere permiso a partir de una copia incompleta de roles o contexto                 |
+| Supabase / Storage    | no se reporta éxito si la confirmación necesaria no ocurrió; el reintento conserva identidad y respeta la semántica idempotente de la operación                                |
+| EVID-ARC              | si la evidencia era precondición, el hecho no se confirma; si era posterior al hecho, se conserva el hecho confirmado y una obligación reconciliable de completar la evidencia |
+| ANIMA                 | la falla de entrega no cambia el resultado empresarial; la comunicación queda reintentable o reconciliable sin duplicar acciones del usuario                                   |
+| VISO                  | la proyección se marca atrasada, no disponible o en reconciliación; no se inventa un estado actual ni se escribe al propietario para forzar convergencia                       |
+| PASS                  | una verificación de confianza requerida no se presume satisfactoria; la operación dependiente permanece negada, bloqueada o pendiente según su contrato                        |
+| Aplicación de dominio | una indisponibilidad no habilita escritura alternativa en otro componente; la solicitud conserva identidad, estado y posibilidad de recuperación controlada                    |
+
+#### Privacidad, minimización y ciclo de vida
+
+1. Cada intercambio declara finalidad y transporta únicamente la información necesaria para cumplirla.
+2. Sensibilidad, restricciones de uso, retención, disposición y legal hold acompañan la referencia o la proyección cuando sean necesarias para que el consumidor cumpla su obligación; no se crean políticas paralelas divergentes.
+3. Tokens, secretos, credenciales y material criptográfico no viajan como metadatos ordinarios de negocio, tickets, eventos o evidencias.
+4. Revocación, anonimización, eliminación, reemplazo o bloqueo de un objeto no se considera completado mientras existan copias o derivados obligatorios que deban reconciliarse conforme a su contrato y política aplicable.
+5. Las proyecciones y cachés deben poder identificar su fuente y quedar fuera de uso cuando ya no sean válidas para la finalidad o versión correspondiente.
+6. Una exportación o copia externa conserva relación con la fuente y no adquiere autoridad canónica por salir de la plataforma.
+
+#### Versionado y compatibilidad
+
+1. Todo contrato tiene versión explícita y consumidores identificables.
+2. Los cambios compatibles pueden convivir sin alterar el significado aprobado del contrato vigente.
+3. Un cambio que elimine campos requeridos, cambie autoridad, semántica, cardinalidad, comportamiento de error, idempotencia, consistencia o finalidad se trata como incompatible y requiere versión mayor.
+4. Una transición incompatible define convivencia, corte, reconciliación de trabajos pendientes y retorno seguro antes de retirar la versión anterior.
+5. Un consumidor que no soporte la versión recibida falla de forma explícita; no interpreta el payload con reglas de otra versión.
+
+#### Resultado material de INFO-INT-002
+
+Quedan definidos siete límites contractuales coordinados: SHELL, Supabase/Storage, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio. Todos comparten los cinco patrones de interacción aprobados, una única regla de autoridad por hecho, prohibición de escritura cruzada, separación entre resultado técnico y empresarial, y obligaciones comunes de versionado, minimización, trazabilidad, idempotencia y reconciliación.
+
+La definición es deliberadamente lógica y no introduce endpoints, tablas, schemas, buckets, triggers, funciones, RLS, grants, colas, topics, secretos o despliegues. La materialización física pertenece a las tareas de implementación propietarias y debe preservar este contrato.
+
+#### Cobertura canónica existente
+
+La conducta observable materializada por esta tarea ya está cubierta directamente por `TREQ-INTEGRATION-021` y transversalmente por `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-006`, `TREQ-INTEGRATION-020` y `TREQ-INTEGRATION-023`. El requisito directo ya declara a `INFO-INT-001` a `INFO-INT-003` y `EVID-ARC-001` a `EVID-ARC-010` dentro de su responsabilidad, por lo que no corresponde duplicar cobertura.
+
+#### Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+- Requisitos creados: **0**.
+- Requisitos modificados: **0**.
+- Requisitos obsoletos: **0**.
+
+#### Criterios de aceptación
+
+1. Están definidos los límites de autoridad de SHELL, Supabase/Storage, EVID-ARC, ANIMA, VISO, PASS y las aplicaciones propietarias de dominio.
+2. Cada frontera declara qué puede consumir, qué puede producir y qué comportamiento está prohibido.
+3. Los contratos usan únicamente `QUERY`, `COMMAND`, `EVENT`, `STATUS` y `PROJECTION` como patrones transversales y conservan la semántica aprobada de cada uno.
+4. Ningún contrato autoriza escritura cruzada, fuente de verdad duplicada, éxito empresarial ficticio o mutación basada en proyección no autoritativa.
+5. La frontera SHELL/PASS separa autorización contextual de identidad, credenciales y confianza.
+6. La frontera Supabase/Storage separa persistencia física de autoridad empresarial.
+7. La frontera EVID-ARC separa evidencia y auditoría de estado empresarial y declara el tratamiento de evidencia previa o posterior al hecho.
+8. ANIMA y VISO quedan definidos como consumidores transversales sin apropiarse del expediente empresarial.
+9. Están definidos versionado, compatibilidad, consistencia, idempotencia, resultado desconocido, reintento, reconciliación, minimización y ciclo de vida.
+10. La tarea no realiza cambios físicos de Supabase, código, configuración o despliegue.
+11. La cobertura TREQ queda satisfecha documentalmente por requisitos vigentes, sin crear ni modificar filas del registro canónico.
+
+#### Continuidad
+
+**ÚLTIMA TAREA APROBADA:** INFO-INT-001 — Definir modelo de integraciones con terceros.  
+**TAREA ACTUAL APROBADA:** INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.  
+**SIGUIENTE TAREA RESERVADA:** BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN.
+
+
 ### [ ] INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
