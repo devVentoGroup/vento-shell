@@ -3081,7 +3081,633 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad`
 
 
-### [ ] DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
+### ✅ DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación` — APROBADA
+**Tarea siguiente:** `DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de calidad, certificación, frescura, completitud, unicidad, validez, consistencia, integridad, cobertura y reconciliación para datos y resultados analíticos
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, replays, cambios de datos, despliegues o publicación de resultados oficiales:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato común mediante el cual Vento OS determina si un dato, una fuente, una carga, un modelo o un resultado analítico es apto para un uso empresarial concreto, sin convertir una comprobación técnica exitosa en certificación y sin ocultar ausencia, degradación, atraso, cobertura parcial o diferencias de reconciliación.
+
+La tarea cierra documentalmente la cadena de calidad que `DATA-DOM-006` dejó preparada:
+
+```text
+FUENTE / EVIDENCIA
+→ INGESTIÓN Y RECONCILIACIÓN
+→ EVALUACIÓN DE CALIDAD
+→ ESTADO DE FRESCURA Y COBERTURA
+→ DECISIÓN DE CERTIFICACIÓN POR USO + PERIODO + VERSIÓN + CORTE
+→ CONSUMO O BLOQUEO CONTROLADO
+```
+
+Regla cardinal:
+
+```text
+PROCESADO
+≠ RECONCILIADO
+≠ EVALUADO
+≠ CERTIFICADO
+≠ PUBLICADO
+```
+
+La certificación es una decisión gobernada y contextual; no es una propiedad permanente de una tabla, archivo, API, vista, fuente o métrica.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-DOM-007` con los siguientes resultados:
+
+- diez dimensiones mínimas de calidad: completitud, unicidad, validez, consistencia, integridad referencial, frescura, cobertura, volumen y forma, reconciliación y estabilidad histórica;
+- cinco estados canónicos de certificación: `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- certificación acotada obligatoriamente por uso, periodo, versión, corte, fuentes/dependencias y evidencia;
+- reglas de propagación que impiden certificar un resultado cuando una dependencia requerida está vencida, incompleta, degradada, bloqueada o sin reconciliar;
+- separación explícita entre señal de calidad, incidencia, corrección, reconciliación, certificación y publicación;
+- contrato de frescura sin inventar un SLA universal: cada fuente se evalúa contra la cadencia, ventana, vigencia o corte exigidos por su uso;
+- distinción obligatoria entre cero, nulo, no aplica, desconocido, no recibido y dato pendiente;
+- matriz de calidad para los cuatro mecanismos de entrada definidos en `DATA-DOM-006`;
+- matriz de calidad y certificación para las 15 de 15 familias heredadas;
+- matriz de calidad y certificación para los 62 de 62 objetos maestros y de referencia, preservando 43 maestros, 19 referencias y tres objetos AURA bloqueados;
+- evaluación documental de las cuatro fuentes observadas del contrato de asistencia;
+- evaluación de las 14 de 14 métricas de asistencia: 11 quedan `NO EVALUADO` y tres permanecen `BLOQUEADO`;
+- preservación de las tres divergencias técnicas ya demostradas para `missingCloseCount`, `attendanceRate` y `punctualityRate`;
+- workflow documental de excepción, degradación, bloqueo, corrección, reejecución, reconciliación y recertificación;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+REGLA DE CALIDAD
+≠ UMBRAL
+≠ RESULTADO DE CONTROL
+≠ INCIDENCIA DE CALIDAD
+≠ ESTADO DE CERTIFICACIÓN
+```
+
+```text
+FRESCO
+≠ COMPLETO
+≠ VÁLIDO
+≠ RECONCILIADO
+≠ CERTIFICADO
+```
+
+```text
+DUPLICADO TÉCNICO
+≠ DUPLICADO EMPRESARIAL
+≠ FUSIÓN DE IDENTIDADES
+```
+
+```text
+CERO MEDIDO
+≠ NULO
+≠ NO APLICA
+≠ DESCONOCIDO
+≠ NO RECIBIDO
+≠ DATO PENDIENTE
+```
+
+```text
+CERTIFICAR DEFINICIÓN
+≠ CERTIFICAR FUENTE
+≠ CERTIFICAR CORRIDA
+≠ CERTIFICAR RESULTADO
+≠ AUTORIZAR PUBLICACIÓN
+```
+
+La calidad se evalúa sobre una coordenada concreta. Una fuente puede ser apta para un uso y periodo, y no serlo para otro que requiera mayor cobertura, menor latencia, más detalle o una relación que la fuente no puede demostrar.
+
+---
+
+#### 4. Coordenada mínima de evaluación y certificación
+
+Toda evaluación material deberá poder reconstruirse con, como mínimo, los componentes aplicables siguientes:
+
+| Componente                                  | Regla canónica                                                                                  |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| objeto, fuente, corrida, modelo o resultado | identifica qué unidad se está evaluando sin convertir el nombre físico en semántica empresarial |
+| uso empresarial                             | declara qué decisión, cálculo o consumo pretende soportar                                       |
+| periodo o ventana                           | limita la población temporal evaluada                                                           |
+| fecha y hora de corte                       | fija hasta qué información debía estar incorporada                                              |
+| versión semántica                           | identifica la definición de dato o métrica aplicable                                            |
+| versión de esquema/contrato                 | identifica la forma de entrada utilizada                                                        |
+| versión de transformación                   | identifica las reglas que produjeron el derivado cuando aplica                                  |
+| población esperada                          | permite medir cobertura cuando puede conocerse sin inventar denominadores                       |
+| dimensiones críticas                        | identifica qué controles deben cumplirse para ese uso                                           |
+| fuentes y dependencias                      | permite propagar degradaciones y bloqueos                                                       |
+| resultado de reconciliación                 | demuestra diferencias frente al origen cuando corresponde                                       |
+| evidencia                                   | conserva conteos, controles, incidencias y decisión que sustentan el estado                     |
+| propietario y steward                       | conservan responsabilidad funcional y resolución                                                |
+| certificador autorizado                     | emite la decisión de certificación bajo la segregación aplicable                                |
+
+La ausencia de cualquiera de estos componentes solo es aceptable cuando el componente no aplica al contrato. No se sustituye un componente desconocido por un valor supuesto.
+
+---
+
+#### 5. Dimensiones mínimas de calidad
+
+| Dimensión              | Pregunta que debe responder                                                                               | Regla de evaluación                                                                              | Consecuencia si falla                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| completitud            | ¿están presentes los campos, relaciones o unidades exigidos por el uso?                                   | separar completitud de atributos, relaciones y población; no confundir ausencia con cero         | degradar o bloquear según criticidad del elemento faltante                                      |
+| unicidad               | ¿una identidad o coordenada que debe ser única aparece una sola vez?                                      | aplicar la clave y el alcance aprobados; similitud textual no prueba duplicidad                  | bloquear cuando comprometa identidad o doble conteo; observar/degradar en otros casos según uso |
+| validez                | ¿el valor cumple dominio, formato, estado, rango o regla empresarial aplicable?                           | validar contra contrato y versión vigentes; no corregir silenciosamente para aprobar             | degradar, bloquear o cuarentenar según impacto                                                  |
+| consistencia           | ¿valores relacionados pueden coexistir sin contradicción material?                                        | comparar reglas entre atributos, fuentes y representaciones sin convertir una copia en autoridad | degradar o bloquear cuando la contradicción afecte el uso                                       |
+| integridad referencial | ¿las referencias resuelven identidades válidas en el tiempo y contexto correctos?                         | no crear referencias genéricas ni resolver por parecido para ocultar faltantes                   | bloquear el uso dependiente o mantener el registro fuera de materialización                     |
+| frescura               | ¿el dato está actualizado hasta el corte exigido por el uso?                                              | medir contra cadencia, ventana, vigencia o expectativa del contrato concreto                     | no certificar como actual cuando el corte requerido no esté cubierto                            |
+| cobertura              | ¿la población incluida representa el universo declarado para el uso?                                      | usar denominador real solo cuando sea demostrable; declarar cobertura parcial cuando no lo sea   | degradar o bloquear comparaciones/decisiones que exijan población completa                      |
+| volumen y forma        | ¿conteos, distribución estructural y forma del lote/modelo son compatibles con lo esperado?               | detectar cambios materiales sin asumir que una variación estadística implica error por sí sola   | observar, degradar o bloquear según evidencia y contrato                                        |
+| reconciliación         | ¿origen, aceptados, rechazados, cuarentena, duplicados, exclusiones y resultado explican las diferencias? | conservar diferencias visibles; no modificar datos para forzar igualdad                          | impedir certificación cuando una diferencia material permanezca sin resolver                    |
+| estabilidad histórica  | ¿la misma versión y corte puede reproducirse sin reescritura silenciosa?                                  | preservar hechos, vigencias, versiones, correcciones y restatements                              | bloquear certificación histórica cuando no pueda explicarse la variación                        |
+
+Los invariantes exactos pueden ser de tolerancia cero cuando el contrato los exige, por ejemplo una identidad canónica duplicada dentro de su alcance. Los umbrales variables de frescura, volumen o tolerancia no se fijan universalmente sin evidencia histórica y una necesidad de uso concreta.
+
+---
+
+#### 6. Estados canónicos de certificación
+
+| Estado           | Semántica                                                                                                                               | Uso permitido                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `NO EVALUADO`    | no existe evidencia suficiente de evaluación para la coordenada solicitada                                                              | no presentar como certificado; puede existir uso operativo sujeto a sus reglas propietarias        |
+| `EN OBSERVACIÓN` | existen señales o controles bajo seguimiento que todavía no justifican degradación o bloqueo                                            | uso condicionado a la finalidad y con estado visible; no equivale a certificado                    |
+| `CERTIFICADO`    | los controles críticos aplicables están satisfechos para el uso, periodo, versión y corte declarados y existe evidencia reproducible    | puede consumirse como certificado dentro de esa coordenada; no extiende certificación a otros usos |
+| `DEGRADADO`      | existe una limitación conocida que reduce calidad, cobertura o frescura, pero el uso concreto puede continuar con advertencia explícita | uso solo si el contrato de decisión admite la degradación; no puede presentarse como certificado   |
+| `BLOQUEADO`      | una falla crítica, dependencia bloqueada o ausencia de evidencia esencial impide el uso certificado                                     | no publicar ni consumir como resultado certificado para el uso afectado                            |
+
+`NO_APLICA` permanece como decisión de alcance de objetos o familias heredadas y no se incorpora como sexto estado de certificación.
+
+Reglas:
+
+1. `CERTIFICADO` se otorga únicamente para un uso, periodo, versión y corte concretos;
+2. una certificación anterior no certifica automáticamente una corrida, periodo o versión posterior;
+3. una fuente degradada puede permanecer visible con advertencia únicamente cuando la decisión y la finalidad lo permiten;
+4. una dependencia requerida `BLOQUEADO` impide certificar el resultado dependiente;
+5. una dependencia requerida vencida, incompleta, degradada o sin reconciliar impide que el resultado sea `CERTIFICADO`;
+6. un reporte oficial no puede usar una etiqueta de certificación que contradiga el peor estado material de sus dependencias críticas;
+7. la autorización para certificar y publicar se gobierna separadamente en `DATA-AUTH-003`;
+8. la publicación de reportes, tableros, exportaciones, alertas, suscripciones y snapshots oficiales pertenece a `DATA-DOM-008`.
+
+---
+
+#### 7. Puerta canónica para `CERTIFICADO`
+
+Un resultado solo puede adoptar `CERTIFICADO` cuando existe evidencia suficiente para demostrar, en la coordenada evaluada:
+
+1. definición y versión identificadas;
+2. fuente o fuentes propietarias identificadas;
+3. corte y periodo explícitos;
+4. controles críticos de calidad definidos y ejecutables;
+5. frescura compatible con el uso;
+6. completitud y cobertura suficientes para la población declarada;
+7. unicidad, validez, consistencia e integridad referencial satisfechas en los controles críticos;
+8. reconciliación cerrada o diferencias materialmente explicadas y aceptadas bajo el contrato;
+9. linaje hacia fuente/evidencia y versiones aplicadas;
+10. ausencia de una incidencia bloqueante abierta para el uso;
+11. decisión emitida por la función autorizada para certificar;
+12. evidencia retenida de la evaluación y de cualquier excepción aceptada.
+
+Completar técnicamente una consulta, carga o job no satisface por sí mismo esta puerta.
+
+---
+
+#### 8. Frescura, vigencia y atraso
+
+La frescura se determina contra el contrato del uso, no contra un número universal de minutos u horas.
+
+| Clase de origen                 | Referencia mínima de frescura                                                                   | Regla                                                                         |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| evento                          | ocurrencia, recepción y último evento esperado dentro de la ventana                             | distinguir atraso de origen, transporte y procesamiento                       |
+| API                             | instante de consulta/corte, ventana solicitada y última información confirmada por el proveedor | una respuesta exitosa no demuestra que la fuente esté actualizada             |
+| vista                           | corte de las fuentes subyacentes y versión de la definición                                     | la vista hereda la frescura de sus dependencias; no crea frescura propia      |
+| exportación controlada          | fecha/corte cubierto por el archivo, momento de recepción y cobertura declarada                 | importar hoy un archivo antiguo no lo convierte en dato fresco                |
+| maestro o referencia versionada | vigencia efectiva y última decisión válida requerida por el uso                                 | no exigir actualización por reloj cuando no ha ocurrido un cambio empresarial |
+| snapshot                        | corte explícito de publicación                                                                  | un snapshot histórico puede ser íntegro y válido sin ser “actual”             |
+
+Se conservan por separado ocurrencia, fecha empresarial, recepción, procesamiento, corrección, reconciliación y corte. Un dato tardío no se vuelve fresco cambiando su fecha de ocurrencia.
+
+Cuando una fuente está temporalmente indisponible, el último corte conocido puede mostrarse únicamente con su antigüedad y estado real; no se presenta como actualización nueva.
+
+---
+
+#### 9. Completitud, cobertura y estados de ausencia
+
+La completitud tiene tres planos que no se sustituyen entre sí:
+
+- **atributos requeridos:** presencia de valores obligatorios para el uso;
+- **relaciones requeridas:** referencias necesarias para interpretar o unir correctamente el dato;
+- **población esperada:** unidades, registros, eventos o periodos que debían estar cubiertos.
+
+Reglas:
+
+1. no se calcula un porcentaje de cobertura cuando no existe un denominador demostrable;
+2. una población parcialmente observable se declara parcial en vez de asumir 100 %;
+3. `0` es un valor medido y no sustituye `NO RECIBIDO`;
+4. `NULO` conserva su semántica contractual y no se convierte automáticamente en `0`, cadena vacía o “no aplica”;
+5. `DESCONOCIDO` significa que el valor no puede determinarse con la evidencia disponible;
+6. `DATO PENDIENTE` indica que el proceso espera una resolución, referencia o llegada todavía abierta;
+7. `NO APLICA` excluye el dato por semántica del caso y no constituye un faltante;
+8. la calidad de un agregado no puede ocultar que parte de la población quedó fuera del cálculo.
+
+---
+
+#### 10. Unicidad, validez, consistencia e integridad referencial
+
+##### 10.1. Unicidad
+
+- se evalúa con la identidad, clave y alcance definidos por `DATA-DOM-003`;
+- dos valores visibles iguales no son automáticamente un duplicado;
+- una misma identidad recibida dos veces con el mismo contenido se trata mediante idempotencia de `DATA-DOM-006`;
+- una identidad con contenidos materialmente incompatibles abre conflicto; no se resuelve con sobrescritura silenciosa;
+- la detección de posible duplicidad no autoriza fusión de maestros.
+
+##### 10.2. Validez
+
+- se evalúan tipo, dominio, formato, estado, rango, combinación y versión conforme al contrato;
+- un valor inválido no se corrige únicamente para superar el control;
+- una transformación correctiva exige la autoridad y trazabilidad definidas por el dominio.
+
+##### 10.3. Consistencia
+
+- relaciones entre atributos, estados, tiempos y representaciones deben poder coexistir sin contradicción material;
+- una copia analítica no prevalece sobre la fuente por ser más reciente;
+- divergencias entre fuentes se resuelven según la autoridad por atributo definida en `DATA-DOM-001`.
+
+##### 10.4. Integridad referencial
+
+- toda referencia crítica debe resolver una identidad canónica válida para el tiempo y contexto del hecho;
+- una clave externa no resuelta no se fuerza por similitud textual;
+- una relación histórica no se completa usando el maestro actual por defecto;
+- las referencias pendientes pueden permanecer en cuarentena o impedir materialización según el contrato de `DATA-DOM-006`.
+
+---
+
+#### 11. Severidad material y consecuencia de uso
+
+La tarea no crea un enum técnico universal de severidad. Toda incidencia debe declarar el impacto real sobre la decisión y terminar en una consecuencia explícita:
+
+| Consecuencia | Criterio                                                                                                                        | Estado de certificación compatible                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| observación  | señal sin evidencia de que el uso declarado quede materialmente comprometido                                                    | `EN OBSERVACIÓN` o conservar `NO EVALUADO` mientras no exista evaluación completa |
+| degradación  | limitación conocida de frescura, cobertura, completitud u otra dimensión que permite un uso restringido y advertido             | `DEGRADADO`                                                                       |
+| bloqueo      | falla que compromete identidad, referencia crítica, población requerida, reconciliación, semántica, fuente o evidencia esencial | `BLOQUEADO`                                                                       |
+
+La misma incidencia puede ser bloqueante para un reporte oficial y degradante para una exploración interna si el contrato de uso lo declara y la autorización lo permite. La decisión debe conservar el uso afectado; no se asigna severidad global por comodidad.
+
+---
+
+#### 12. Propagación de calidad hacia derivados
+
+1. una métrica hereda las limitaciones materiales de sus fuentes obligatorias;
+2. una vista hereda la frescura y calidad de las fuentes subyacentes;
+3. un agregado no puede mejorar por sí solo el estado de un hecho defectuoso;
+4. excluir registros defectuosos solo es válido cuando la definición lo permite y la exclusión queda visible en cobertura;
+5. una fuente `BLOQUEADO` requerida produce un resultado no certificable;
+6. una fuente `DEGRADADO` requerida impide `CERTIFICADO` salvo que el dato degradado esté fuera de la población necesaria por definición demostrable;
+7. un resultado con reconciliación abierta no es `CERTIFICADO`;
+8. una corrección o backfill obliga a reevaluar los resultados afectados; no hereda automáticamente una certificación anterior;
+9. un restatement conserva la relación con la publicación anterior bajo `DATA-DOM-017`;
+10. `DATA-DOM-008` deberá exponer el estado real de calidad/frescura/corte en los artefactos oficiales que materialice.
+
+---
+
+#### 13. Matriz de calidad por mecanismo de entrada
+
+| Mecanismo              | Controles críticos                                                                                           | Frescura / cobertura                                                      | Estado documental                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Evento                 | identidad/correlación; versión; orden o relación temporal cuando aplique; idempotencia; referencias críticas | ventana de ocurrencia y recepción; eventos esperados o límites conocidos  | `ESPECIFICADO`; certificación de cada corrida/uso permanece `NO EVALUADO` hasta evidencia |
+| API                    | contrato/versión; parámetros; respuesta; paginación; claves; integridad; errores parciales                   | corte solicitado, cobertura del proveedor y última información confirmada | `ESPECIFICADO`; certificación contextual permanece `NO EVALUADO` hasta evidencia          |
+| Vista                  | definición/versionado; dependencias; filtros; grano; joins; integridad y reconciliación                      | hereda corte y cobertura de dependencias                                  | `ESPECIFICADO`; no puede certificarse por separado de sus fuentes                         |
+| Exportación controlada | archivo/payload original; formato; versión; hash o evidencia equivalente; mappings; duplicados; cuarentena   | periodo/corte cubierto por el archivo y población exportada               | `ESPECIFICADO`; importación no implica certificación                                      |
+
+**Reconciliación:** 4 mecanismos esperados; 4 materializados; 0 faltantes; 0 duplicados.
+
+---
+
+#### 14. Matriz de calidad y certificación de las 15 familias heredadas
+
+|    # | Familia heredada                                                         | Fuente propietaria                             | Controles DQ críticos                                                                                                | Referencia de frescura                                      | Estado heredado `DATA-DOM-006` | Resultado DQ / certificación base |
+| ---: | ------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------ | --------------------------------- |
+|    1 | SHIFT, ATTENDANCE_EVENT, ATTENDANCE_CORRECTION                           | VISO / ANIMA según proceso                     | completitud de turnos/eventos; unicidad de identidad; correspondencia turno-sesión; tiempos y correcciones trazables | corte del periodo laboral y llegada de hechos de asistencia | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    2 | CONSENT_RECORD, CONTACT_VERIFICATION                                     | PASS y gobierno de privacidad                  | evidencia/versión/finalidad; referencia a persona/contacto; vigencia y retiro                                        | vigencia de consentimiento/verificación y corte del uso     | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    3 | LOYALTY_LEDGER_ENTRY, redención, ajuste de puntos                        | PASS / PULSO según proceso                     | unicidad/idempotencia del movimiento; cuenta y regla válidas; saldo reconciliable                                    | corte del ledger y vigencia/expiración aplicable            | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    4 | solicitud, caso, cotización, orden, recepción, devolución de compra      | ORIGO                                          | identidad de cabecera/línea; referencias proveedor/producto; cantidades/importes/estados válidos; reconciliación     | corte del proceso de compra y vigencias comerciales         | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    5 | lote, LPN, existencia, movimiento, conteo, ajuste                        | NEXO / FOGO según proceso                      | identidades de lote/LPN; integridad producto-LOC; movimientos/conteos/ajustes reconciliables; existencia derivable   | corte de inventario y tiempos de movimiento/conteo          | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    6 | orden, lote, ejecución, consumo, merma y resultado productivo            | FOGO                                           | referencias a receta/versión/recursos; cantidades válidas; balance/reconciliación según contrato                     | corte de ejecución y versión realmente usada                | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    7 | pedido, comanda, venta, pago, caja, devolución, entrega                  | PULSO                                          | identidades separadas; líneas/partes monetarias; referencias; totales y estados reconciliables                       | corte comercial propio de cada hecho                        | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    8 | precio de venta, descuento, promoción vigente                            | PULSO; AURA solo propone intención promocional | versión/vigencia; contexto/oferta; valor aplicado consistente con el hecho                                           | vigencia de la regla y momento de aplicación                | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|    9 | SERVICE_CASE, reclamo, reserva, compensación, satisfacción, comunicación | VISO, PASS o PULSO según frontera              | identidad de caso/evento; actor/relación; tiempos/estados; evidencia de decisiones/comunicaciones                    | corte y vigencia del caso/reserva                           | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|   10 | hecho económico, obligación, pago, aplicación, conciliación              | NUMERA                                         | identidades y monedas; referencias; importes; aplicaciones y saldos reconciliables                                   | corte económico/contable aplicable                          | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|   11 | presupuesto, forecast, escenario                                         | NUMERA                                         | versión/periodo/escenario; coordenadas dimensionales; totales y estado de aprobación                                 | vigencia y fecha de aprobación/generación                   | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|   12 | campaña, pieza publicada, oportunidad, interacción, publicación          | AURA objetivo                                  | no existe fuente operativa AURA habilitada; no certificar desde fuentes paralelas                                    | sin fuente operativa vigente                                | `BLOQUEADO`                    | `BLOQUEADO`                       |
+|   13 | ticket, incidente, problema, cambio tecnológico                          | VISO / BLOQUE Z                                | identidades separadas; servicio/recurso válido; secuencia de estado y tiempos; evidencia de cierre                   | corte del expediente/evento TI                              | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+|   14 | PRINTER como clase de configuración, ASSET como clase de configuración   | PRINT-ARC / NEXO                               | no constituye familia de hecho autónoma; evaluar los objetos/eventos propietarios                                    | vigencia de los objetos propietarios                        | `NO_APLICA`                    | `NO_APLICA`                       |
+|   15 | métrica, KPI, dashboard, reporte, exportación, snapshot                  | BLOQUE AB sobre fuentes propietarias           | versión de métrica; fuentes; corte; dimensiones/filtros; calidad de dependencias; reconciliación y linaje            | corte analítico y versiones consumidas                      | `ESPECIFICADO`                 | `NO EVALUADO`                     |
+
+**Reconciliación:** 15 familias esperadas; 15 materializadas; 0 faltantes; 0 duplicadas. Se preserva la distribución heredada de `DATA-DOM-006`: 13 `ESPECIFICADO`, 1 `BLOQUEADO` y 1 `NO_APLICA`. En la coordenada DQ/certificación, las 13 familias especificadas quedan `NO EVALUADO`, la familia AURA permanece `BLOQUEADO` y la proyección PRINTER/ASSET conserva `NO_APLICA` porque no es una familia de hecho autónoma.
+
+---
+
+#### 15. Matriz materializada de calidad para los 62 objetos maestros y de referencia
+
+La certificación base es una coordenada distinta del estado documental `ESPECIFICADO` de las tareas anteriores. Un objeto puede estar completamente definido documentalmente y seguir `NO EVALUADO` respecto de evidencia de calidad operativa.
+
+|    # | Objeto canónico               | Clase heredada    | Controles DQ críticos                                                                       | Frescura / vigencia                               | Estado heredado `DATA-DOM-006` | Certificación base |
+| ---: | ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------ | ------------------ |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | identidad única; vigencia; alcance y relaciones organizacionales válidas                    | vigencia aplicable al uso y al corte              | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | identidad única; forma oficial y procedencia; relaciones juridicas válidas                  | vigencia registral/empresarial aplicable al corte | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | identidad única; nombre/alias gobernados; relaciones vigentes                               | vigencia de la identidad y relaciones de marca    | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | identidad única; relación con sujeto/sede; estado y evidencia autorizada                    | vigencia operativa y registral aplicable          | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | identidad única; pertenencia organizacional; jerarquía vigente                              | vigencia empresarial aplicable al corte           | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | identidad única; relación física con sede/zonas; referencias válidas                        | vigencia de la instalacion y sus relaciones       | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | identidad única; alcance territorial; relaciones organizacionales válidas                   | vigencia operativa de la sede                     | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | identidad única; jerarquía válida; relaciones sin ambigüedad temporal                       | vigencia de área y parentaje                      | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | identidad única; contención física válida; relación con instalacion/sede                    | vigencia de zona y contención                     | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | identidad única; ubicacion y relaciones técnicas válidas; no fusion con dispositivo         | vigencia de estacion y asignaciones               | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | identidad única; fuente/finalidad; relación territorial y vigencia                          | vigencia del punto externo autorizado             | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | identidad canónica única; referencias consistentes; no deduplicar por nombre/contacto       | vigencia de identidad y relaciones empresariales  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | referencia válida a persona; atributos laborales coherentes; vigencia                       | vigencia del perfil laboral                       | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | identidad de vinculo; persona válida; intervalos/vigencias coherentes                       | vigencia exacta del vinculo                       | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | código/identidad únicos en su alcance; definición y vigencia                                | vigencia de la referencia contractual             | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | identidad de rol estable; código único; relaciones autorizativas consistentes               | vigencia de la referencia de rol                  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | identidad estable; definición operacional; vigencia y relaciones válidas                    | vigencia de la función operativa                  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | referencias válidas a trabajador/sede/área/función; intervalos coherentes                   | vigencia exacta de la asignacion                  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | identidad cliente única; referencias consistentes; contacto no prueba identidad             | vigencia de identidad/relaciones cliente          | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | tipo/formato/fuente/verificación coherentes; referencia válida a cliente                    | vigencia y última verificación aplicable          | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | referencias válidas; alcance/marca; vigencia sin inferir consentimiento                     | vigencia de la relación                           | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | referencia válida a cliente; atributos autorizados; consistencia con versión/fuente         | vigencia de la proyección autorizada              | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | referencia válida; finalidad/fuente; valor y vigencia interpretables                        | vigencia de la preferencia                        | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | identidad única; cliente/programa válidos; saldo reconciliable con ledger                   | vigencia de cuenta; corte del saldo derivado      | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | identidad/versión única; reglas válidas; vigencias no ambiguas                              | vigencia de la versión de regla                   | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | identidad única; códigos gobernados; taxonomias y relaciones válidas                        | vigencia del producto y atributos maestros        | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | identidad única; referencia válida a producto; atributos diferenciadores consistentes       | vigencia de variante y configuración              | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | identidad única; producto, cantidad, unidad, multiplicador y contexto válidos               | vigencia de presentacion y equivalencias          | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | código único; dimensión/semántica válidas; conversiones gobernadas                          | vigencia de código y conversion aplicable         | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | código único; jerarquía/relaciones válidas; vigencia                                        | vigencia de clasificación                         | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | código único; jerarquía/relaciones válidas; vigencia                                        | vigencia de clasificación de inventario           | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | código único; jerarquía/relaciones válidas; vigencia                                        | vigencia de clasificación operacional             | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | identidad única; tipo/relaciones de ubicacion válidas; jerarquía consistente                | vigencia de LOC y relaciones físicas              | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | identidad única; clase/ubicacion/custodia válidas; serie no sustituye identidad             | vigencia del activo y relaciones                  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | código/identidad únicos; definición válida; vigencia                                        | vigencia de clase de activo                       | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | identidad/versión; producto válido; atributos y autoridad por atributo coherentes           | vigencia de especificacion/versión                | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | identidad única; forma oficial/procedencia; referencias comerciales válidas                 | vigencia del proveedor y estado comercial         | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | referencia válida a proveedor; canal/formato/fuente; vigencia                               | vigencia del contacto                             | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | proveedor/producto válidos; contexto y vigencia; duplicidad por coordenada                  | vigencia de la relación comercial                 | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | identidad/versión; proveedor/contexto válidos; valores y vigencia coherentes                | vigencia de la condicion aplicada                 | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | código único; jerarquía/relación válida; vigencia                                           | vigencia de clasificación de compra               | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | identidad/versión; referencias a insumos/recursos válidas; consistencia de vigencia         | vigencia de versión de receta                     | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | código/identidad únicos; definición y relaciones válidas                                    | vigencia de familia productiva                    | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | identidad/versión; secuencia/recursos referenciados válidos                                 | vigencia de versión de ruta                       | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | identidad única; relación funcional/física válida; estado/vigencia coherentes               | vigencia del recurso productivo                   | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | código/identidad únicos; definición y alcance válidos                                       | vigencia del canal                                | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | código único; jerarquía/relaciones válidas; vigencia                                        | vigencia de categoria comercial                   | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | identidad/versión; producto/canal/contexto válidos; vigencia                                | vigencia de oferta/versión                        | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | identidad/código únicos; relaciones económicas válidas; vigencia                            | vigencia del centro de costo                      | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | código único; definición monetaria válida; no mezclar conversion con identidad              | vigencia de referencia monetaria                  | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | identidad única; limites temporales válidos; estado coherente                               | vigencia y estado del periodo económico           | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | identidad única; limites/cierre/reapertura coherentes; autoridad válida                     | vigencia y estado del periodo contable            | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | identidad única; limites y autoridad fiscal coherentes                                      | vigencia y estado del periodo fiscal              | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | código único; jerarquía/relaciones válidas; vigencia                                        | vigencia de clasificación económica               | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | fuente operativa AURA no habilitada; no certificar desde copias paralelas                   | sin fuente operativa vigente                      | `BLOQUEADO`                    | `BLOQUEADO`        |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | fuente AURA, finalidad y consentimiento requeridos; no materializar listas paralelas        | sin fuente operativa vigente                      | `BLOQUEADO`                    | `BLOQUEADO`        |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | fuente AURA y evidencia de derechos/vigencia requeridas                                     | sin fuente operativa vigente                      | `BLOQUEADO`                    | `BLOQUEADO`        |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | identidad técnica estable; activo/estado/relaciones válidas; IP/MAC no sustituyen identidad | vigencia técnica del endpoint                     | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | identidad lógica estable; relaciones de sede/estacion/uso válidas                           | vigencia de dispositivo y asignaciones            | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | identidad estable; tipo/relaciones válidas; IP/MAC/SSID no prueban identidad                | vigencia de recurso y configuración               | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | identidad canónica y app_code coherentes; ambiente/repositorio no sustituyen identidad      | vigencia de aplicación/contrato                   | `ESPECIFICADO`                 | `NO EVALUADO`      |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | identidad TI-SERVICE estable; relaciones a aplicaciones/recursos válidas                    | vigencia del servicio tecnológico                 | `ESPECIFICADO`                 | `NO EVALUADO`      |
+
+**Reconciliación del inventario:**
+
+| Control                                 | Resultado |
+| --------------------------------------- | --------: |
+| Objetos esperados                       |    **62** |
+| Objetos materializados                  |    **62** |
+| Identificadores canónicos únicos        |    **62** |
+| Faltantes                               |     **0** |
+| Duplicados                              |     **0** |
+| Datos maestros preservados              |    **43** |
+| Datos de referencia preservados         |    **19** |
+| Estado heredado `ESPECIFICADO`          |    **59** |
+| Estado heredado `BLOQUEADO`             |     **3** |
+| Certificación base `NO EVALUADO`        |    **59** |
+| Certificación base `BLOQUEADO` por AURA |     **3** |
+
+Los tres objetos AURA no pueden pasar a `CERTIFICADO` mientras no exista una fuente AURA operativa, autorizada y verificable. Esta tarea no crea una fuente sustituta ni permite certificar listas, carpetas, hojas o copias paralelas.
+
+---
+
+#### 16. Calidad de las cuatro fuentes observadas de asistencia
+
+| Fuente                       | Autoridad lógica              | Controles DQ críticos                                                                                       | Referencia de frescura                                                 | Certificación base |
+| ---------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------ |
+| `scheduled_shifts`           | programacion laboral de VISO  | identidad de turno; trabajador/sede; intervalo; estado/clasificación; cobertura del periodo                 | corte del periodo solicitado; publicación/vigencia aplicable           | `NO EVALUADO`      |
+| `attendance_sessions`        | hechos de asistencia de ANIMA | identidad/correlacion de sesion; trabajador/sede; check-in/check-out; estado; duplicados                    | hasta el corte del reporte; distinguir sesion abierta de dato faltante | `NO EVALUADO`      |
+| `attendance_breaks`          | hechos de asistencia de ANIMA | trabajador/sede; inicio/fin; relación temporal con sesion; superposicion tratada deterministamente          | hasta el corte del reporte y dentro de la sesion aplicable             | `NO EVALUADO`      |
+| `attendance_geofence_events` | hechos de asistencia de ANIMA | trabajador/sede; tipo de evento; ocurrencia; correlacion con sesion/turno; valores requeridos por el evento | hasta el corte del reporte; conservar ocurrencia original              | `NO EVALUADO`      |
+
+**Reconciliación:** 4 fuentes esperadas; 4 materializadas; 4 únicas; 0 faltantes; 0 duplicadas.
+
+La función observada `attendance-report` consume estas fuentes y produce una proyección. Su existencia y ejecución no certifican automáticamente ni las fuentes ni las métricas resultantes.
+
+---
+
+#### 17. Matriz de calidad y certificación de las 14 métricas de asistencia
+
+| `metric_key`        | Entradas mínimas                                                    | Gate DQ específico                                                                                                                       | Certificación base |
+| ------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `scheduledShifts`   | scheduled_shifts                                                    | identidad de turno única; trabajador/sede válidos; intervalo y clasificación interpretables; cobertura del periodo                       | `NO EVALUADO`      |
+| `attendedShifts`    | scheduled_shifts + attendance_sessions                              | correspondencia turno-sesion válida; check-in evidenciado; sin doble efecto por duplicados                                               | `NO EVALUADO`      |
+| `restDayCount`      | scheduled_shifts                                                    | clasificación de descanso válida y separada de la poblacion computable                                                                   | `NO EVALUADO`      |
+| `lateCount`         | scheduled_shifts + attendance_sessions                              | check-in, inicio programado, gracia/versión y zona horaria disponibles y coherentes                                                      | `NO EVALUADO`      |
+| `noShowCount`       | scheduled_shifts + attendance_sessions                              | fin programado ocurrido al corte y ausencia de sesion válida; no convertir turnos futuros en ausencia                                    | `NO EVALUADO`      |
+| `openCount`         | scheduled_shifts + attendance_sessions                              | sesion abierta evaluada AS OF corte; referencias y estado interpretables                                                                 | `NO EVALUADO`      |
+| `missingCloseCount` | scheduled_shifts + attendance_sessions                              | sesion abierta y fin programado vencido al corte; implementacion actual no respeta completamente esta condicion en el resumen            | `BLOQUEADO`        |
+| `autoCloseCount`    | attendance_sessions                                                 | evidencia de autocierre y sesion válida; no confundir cierre automático con cierre normal                                                | `NO EVALUADO`      |
+| `departureCount`    | scheduled_shifts + attendance_sessions + attendance_geofence_events | evento de salida correlacionado a la sesion/turno; identidad, tiempo y contexto válidos                                                  | `NO EVALUADO`      |
+| `scheduledMinutes`  | scheduled_shifts                                                    | intervalo programado y descanso programado interpretables; resultado no negativo                                                         | `NO EVALUADO`      |
+| `netMinutes`        | attendance_sessions + attendance_breaks                             | intervalo de sesion y descansos superpuestos válidos; resultado no negativo y sin doble conteo                                           | `NO EVALUADO`      |
+| `incidentCount`     | scheduled_shifts + attendance_sessions + attendance_geofence_events | maximo una incidencia agregada por turno elegible para el conjunto de senales definido                                                   | `NO EVALUADO`      |
+| `attendanceRate`    | scheduledShifts + attendedShifts                                    | numerador/denominador reconciliados; denominador positivo o ausencia de valor numerico; implementacion actual devuelve 0 sin denominador | `BLOQUEADO`        |
+| `punctualityRate`   | attendedShifts + lateCount                                          | numerador/denominador reconciliados; denominador positivo o ausencia de valor numerico; implementacion actual devuelve 0 sin denominador | `BLOQUEADO`        |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Reglas específicas:
+
+- ninguna de las 11 métricas `NO EVALUADO` se eleva a `CERTIFICADO` por la sola existencia de la implementación;
+- `missingCloseCount` permanece bloqueada hasta que la implementación aplique también la condición de fin programado vencido al corte en el resumen;
+- `attendanceRate` permanece bloqueada hasta que la ausencia de denominador deje de representarse como un cero numérico;
+- `punctualityRate` permanece bloqueada hasta que la ausencia de denominador deje de representarse como un cero numérico;
+- la frescura de cada métrica se deriva de las fuentes requeridas y del corte solicitado; no existe un SLA universal de asistencia definido por esta tarea;
+- las tasas se certifican únicamente si numerador, denominador, población, corte y fuentes pueden reconciliarse bajo la misma versión.
+
+---
+
+#### 18. Importación externa controlada — calidad de Makos/POS externo
+
+La importación manual desde Makos/POS externo permanece una exportación controlada y no se considera una fuente automática certificada.
+
+Para que un lote o periodo pueda evaluarse para uso analítico deberá conservar, como mínimo:
+
+- archivo o evidencia original suficiente;
+- fuente y periodo cubierto;
+- versión/formato del archivo;
+- cobertura declarada y, cuando sea demostrable, población esperada;
+- mapping/crosswalk aplicable a identidades canónicas;
+- líneas aceptadas, rechazadas, en cuarentena, duplicadas y excluidas;
+- totales conciliables de cantidades e importes según el contrato;
+- diferencias y no resueltos visibles;
+- corte de la importación y transformaciones aplicadas.
+
+La cobertura histórica continúa condicionada por `DAT-01`, `DAT-02`, `DAT-03` y las tareas `INT-POS-*` aplicables ya identificadas en `DATA-DOM-006`. Sin esa evidencia, la porción histórica no demostrable permanece fuera de certificación; no se inventa cobertura ni se deduce desde archivos incompletos.
+
+---
+
+#### 19. Workflow documental de incidencias de calidad
+
+Una incidencia de calidad sigue esta secuencia lógica:
+
+```text
+DETECCIÓN
+→ IDENTIFICAR DIMENSIÓN Y COORDENADA AFECTADA
+→ DETERMINAR IMPACTO SOBRE EL USO
+→ ASIGNAR PROPIETARIO / STEWARD
+→ OBSERVAR, DEGRADAR O BLOQUEAR
+→ CORREGIR EN LA FUENTE, RELACIÓN O CONTRATO PROPIETARIO
+→ REPROCESAR O RECONSTRUIR CUANDO APLIQUE
+→ RECONCILIAR
+→ REEVALUAR CALIDAD
+→ RECERTIFICAR SOLO CON EVIDENCIA
+```
+
+Reglas de responsabilidad:
+
+- el steward mantiene metadatos, vigila calidad, completitud, consistencia y vigencia, e identifica duplicados, conflictos y anomalías;
+- el propietario funcional decide semántica, aceptación material y conflictos que exceden la delegación del steward;
+- el custodio o implementador técnico ejecuta controles y correcciones autorizadas sin adquirir autoridad empresarial;
+- el certificador se mantiene separado conforme a `DATA-AUTH-003`;
+- una incidencia no se cierra porque desaparezca de un dashboard; debe existir evidencia de corrección/reconciliación o una decisión explícita de aceptación/degradación;
+- una corrección que afecte historia publicada se coordina con `DATA-DOM-017`;
+- una incidencia de fuente no se resuelve editando el agregado para que coincida con la expectativa.
+
+---
+
+#### 20. Evidencia técnica vigente y estado de las divergencias de asistencia
+
+La implementación actual inspeccionada de `attendance-report` conserva las tres divergencias ya registradas:
+
+1. `attendanceRate` devuelve `0` cuando `scheduledShifts = 0`, mientras el contrato canónico exige ausencia de valor numérico cuando no existe denominador;
+2. `punctualityRate` devuelve `0` cuando `attendedShifts = 0`, mientras el contrato canónico exige ausencia de valor numérico cuando no existe denominador;
+3. el cálculo intermedio identifica correctamente cuándo una sesión abierta corresponde a un turno ya vencido, pero el resumen incrementa `missingCloseCount` para toda fila abierta, sin conservar esa condición temporal en el agregado.
+
+Por tanto, las tres métricas permanecen `BLOQUEADO`. Esta tarea no modifica la función, Supabase ni consumidores.
+
+La función inspeccionada tampoco materializa dentro de su contrato visible un estado explícito de certificación o frescura. La instrumentación física y su exposición pertenecen a `DATA-INT-001`, `DATA-INT-002`, `DATA-UX-003` y `DATA-UX-004` según su responsabilidad; la ausencia de esos campos no autoriza inventar un estado operativo.
+
+---
+
+#### 21. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                                                       | Propietario documental | Condición de salida                                                    |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------- |
+| publicación de reportes, tableros, exportaciones, alertas, suscripciones y snapshots oficiales con calidad visible | `DATA-DOM-008`         | antes de presentar un artefacto oficial                                |
+| restatements y reproducibilidad después de correcciones/backfills                                                  | `DATA-DOM-017`         | antes de reexpresar una publicación previa                             |
+| segregación entre definición, certificación, publicación y administración                                          | `DATA-AUTH-003`        | antes de conceder capacidades de certificación o publicación           |
+| visualización de frescura/corte y contexto en tableros                                                             | `DATA-UX-003`          | antes de exponer dashboards con estados de actualidad                  |
+| experiencia de estados de calidad, certificación, degradación y bloqueo                                            | `DATA-UX-004`          | antes de exponer workflow/estado de calidad a usuarios                 |
+| contratos físicos de lectura, eventos y controles de ingestión                                                     | `DATA-INT-001`         | antes de automatizar controles en flujos productivos                   |
+| materialización de capa semántica, modelos, consultas, caché y snapshots                                           | `DATA-INT-002`         | antes de persistir o servir estados de calidad derivados               |
+| crosswalks y reconciliación física de identidades externas                                                         | `DATA-INT-003`         | antes de certificar integridad de referencias externas                 |
+| fórmulas y controles de calidad específicos de analítica comercial                                                 | `DATA-DOM-009`         | al materializar métricas de ventas/demanda/precios/promociones/canales |
+| fórmulas y controles de calidad específicos de abastecimiento e inventario                                         | `DATA-DOM-010`         | al materializar métricas de inventario/proveedores/logística           |
+| fórmulas y controles de calidad específicos de producción                                                          | `DATA-DOM-011`         | al materializar métricas productivas                                   |
+| fórmulas y controles de calidad específicos de servicio/clientes                                                   | `DATA-DOM-012`         | al materializar métricas de servicio y experiencia                     |
+| fórmulas y controles de calidad específicos económico-financieros                                                  | `DATA-DOM-013`         | al materializar métricas económicas y financieras                      |
+
+No queda una decisión material de calidad, certificación o frescura diferida sin tarea propietaria exacta.
+
+---
+
+#### 22. Cobertura de prueba canónica preexistente
+
+El requisito vigente `TREQ-DATA-003` ya protege de forma directa recopilación, tiempos, granularidad, claves, versión de esquema, cobertura, duplicados, integridad referencial, datos tardíos, backfills, correcciones, cuarentena, reconciliación y linaje, distingue los estados de ausencia y prohíbe presentar como certificado un reporte cuya fuente esté vencida, incompleta, degradada o sin reconciliar. Además asigna expresamente `DATA-DOM-007` entre sus tareas responsables.
+
+`TREQ-DATA-001` mantiene la protección de identidad, duplicidad y calidad de maestros; `TREQ-DATA-002` mantiene la obligación de que las métricas conserven frescura, calidad y estado de certificación dentro de su definición versionada.
+
+La presente tarea materializa el contrato documental y los gates que esas reglas ya exigen. No modifica su regla protegida, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las obligaciones de calidad, frescura, cobertura, duplicidad, integridad, reconciliación y certificación materializadas en esta tarea ya están protegidas por requisitos canónicos vigentes y asignadas a esta responsabilidad documental. La tarea no introduce una familia de comportamiento ejecutable independiente ni autoriza implementación técnica, publicación o cambios de datos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 23. Criterios de aceptación
+
+1. existen exactamente diez dimensiones mínimas de calidad y cada una conserva semántica distinta;
+2. se preservan exactamente cinco estados de certificación: `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+3. `NO_APLICA` permanece una decisión de alcance y no se convierte en estado de certificación;
+4. la certificación queda acotada por uso, periodo, versión, corte, dependencias y evidencia;
+5. completar una carga o consulta no equivale a certificar el resultado;
+6. cero, nulo, no aplica, desconocido, no recibido y dato pendiente permanecen estados distintos;
+7. no existe un umbral universal inventado de frescura, volumen o tolerancia;
+8. la frescura se evalúa contra la cadencia, vigencia, ventana o corte del contrato concreto;
+9. una fuente requerida vencida, incompleta, degradada, bloqueada o sin reconciliar impide certificar el resultado dependiente;
+10. la cobertura no utiliza denominadores inventados cuando el universo esperado no puede demostrarse;
+11. unicidad se evalúa con identidad y alcance aprobados, no por similitud textual;
+12. una detección de duplicado no autoriza fusión de maestros;
+13. la integridad referencial histórica usa identidades y vigencias aplicables al hecho;
+14. una relación ausente no se completa con un maestro actual por conveniencia;
+15. los cuatro mecanismos de entrada están materializados: 4 esperados, 4 presentes, 0 faltantes y 0 duplicados;
+16. las 15 familias heredadas están materializadas: 15 esperadas, 15 presentes, 0 faltantes y 0 duplicadas;
+17. la familia AURA permanece bloqueada y la proyección PRINTER/ASSET conserva su no aplicabilidad como familia de hecho autónoma;
+18. los 62 objetos maestros/referencia reciben control DQ y estado base explícito: 62 esperados, 62 presentes, 0 faltantes y 0 duplicados;
+19. se preservan exactamente 43 datos maestros y 19 datos de referencia;
+20. los tres objetos AURA permanecen `BLOQUEADO` y los otros 59 quedan `NO EVALUADO` hasta evidencia operativa;
+21. las cuatro fuentes observadas de asistencia reciben controles críticos y referencia de frescura sin ser certificadas por inferencia;
+22. las 14 métricas de asistencia reciben gate DQ y estado explícito: 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+23. `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen bloqueadas mientras las divergencias actuales sigan presentes;
+24. ninguna métrica se eleva a `CERTIFICADO` por la mera existencia de código;
+25. la importación Makos/POS externo no se presenta como integración automática ni como fuente certificada;
+26. cada incidencia conserva coordenada, dimensión, impacto, propietario/steward, consecuencia y evidencia de resolución;
+27. la segregación de certificación permanece en `DATA-AUTH-003` y no se conceden permisos en esta tarea;
+28. la publicación oficial permanece en `DATA-DOM-008` y no se adelanta;
+29. los restatements permanecen en `DATA-DOM-017`;
+30. no se modifica código, SQL, Supabase, datos, migraciones, backfills, dashboards, reportes ni snapshots oficiales;
+31. no se crea ni modifica ningún requisito de prueba;
+32. la continuidad queda exclusivamente en `DATA-DOM-008` como siguiente tarea reservada.
+
+---
+
+#### 24. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales`
+
+
 ### [ ] DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
 ### [ ] DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
 ### [ ] DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
