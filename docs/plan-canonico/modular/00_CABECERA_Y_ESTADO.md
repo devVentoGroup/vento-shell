@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **673** |
+| Tareas aprobadas | **674** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **921** |
+| Tareas no iniciadas | **920** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.22% (673/1594)** |
+| Porcentaje de completamiento | **42.28% (674/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros** |
-| Tarea actual | **DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores** |
+| Última tarea aprobada | **DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores** |
+| Tarea actual | **DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica** |
+| Siguiente tarea | **DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 97 de 157 aprobadas; DATA-DOM-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 98 de 157 aprobadas; DATA-DOM-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros |
-| Tarea actual | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica |
+| Última aprobada | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores |
+| Tarea actual | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 97 DE 157 APROBADAS — ACTUAL DATA-DOM-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 98 DE 157 APROBADAS — ACTUAL DATA-DOM-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros
-        ↓
-TAREA ACTUAL
 DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 97 de 157 tareas aprobadas
+CARRIL NEXO — 98 de 157 tareas aprobadas
 ```

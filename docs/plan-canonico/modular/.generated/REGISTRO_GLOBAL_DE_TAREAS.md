@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **673** |
+| Aprobadas | **674** |
 | En propuesta | **0** |
-| No iniciadas | **921** |
+| No iniciadas | **920** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.22% (673/1594)** |
+| Porcentaje de completamiento | **42.28% (674/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1562,7 +1562,7 @@
 | ✅ APROBADA | `DATA-DOM-001` | Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-002` | Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-003` | Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-004` | Definir capa semántica y registro canónico de métricas e indicadores | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-004` | Definir capa semántica y registro canónico de métricas e indicadores | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-005` | Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-006` | Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-007` | Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |

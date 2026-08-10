@@ -1246,7 +1246,618 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores`
 
 
-### [ ] DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
+### ✅ DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros` — APROBADA
+**Tarea siguiente:** `DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de capa semántica, identidad y versionado de métricas e indicadores, con registro inicial materializado sobre métricas de asistencia ya implementadas
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, publicación de indicadores o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una capa semántica común para Vento OS y materializar el registro canónico inicial de métricas e indicadores de forma que una cifra conserve el mismo significado con independencia de la pantalla, aplicación, consulta o implementación técnica que la presente.
+
+La tarea fija el contrato que deberá permitir responder de forma determinista:
+
+```text
+QUÉ MÉTRICA ES
+→ QUÉ DECISIÓN APOYA
+→ QUÉ VERSIÓN DE DEFINICIÓN UTILIZA
+→ QUÉ HECHOS Y FUENTES CONSUME
+→ QUÉ INCLUYE Y QUÉ EXCLUYE
+→ CUÁL ES SU FÓRMULA
+→ QUÉ UNIDAD, PRECISIÓN, CALENDARIO Y ZONA HORARIA APLICA
+→ QUÉ DIMENSIONES ADMITE
+→ QUÉ CORTE Y CONTEXTO PRODUJERON EL RESULTADO
+→ QUÉ CALIDAD Y CERTIFICACIÓN TIENE
+→ CÓMO SE LLEGA AL DETALLE QUE LO EXPLICA
+```
+
+Regla cardinal:
+
+```text
+MISMA MÉTRICA
++ MISMA VERSIÓN
++ MISMO CONTEXTO
++ MISMO CORTE
+=
+MISMO RESULTADO
+```
+
+Una pantalla, reporte, exportación, modelo analítico o integración no podrá redefinir localmente la fórmula de una métrica registrada.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda definido el contrato semántico `DATA-DOM-004` con los siguientes resultados:
+
+- una única definición lógica de métrica, separada de su implementación SQL, RPC, vista, función, modelo BI o código de interfaz;
+- identidad estable de métrica mediante `metric_key` y versión de definición;
+- regla explícita de versionado, vigencia, deprecación y compatibilidad;
+- contrato mínimo obligatorio con propósito, fórmula, numerador, denominador, granularidad declarada, dimensiones, filtros, inclusiones, exclusiones, unidad, moneda, precisión, calendario, zona horaria, fuente, calidad, certificación y drill-down;
+- separación entre métrica, KPI, driver, guardrail, meta, umbral, alerta y visualización;
+- prohibición de fórmulas locales competidoras;
+- tratamiento explícito de cero, ausencia de denominador y dato no disponible sin convertirlos automáticamente en el mismo valor;
+- registro inicial de **14 métricas reales de asistencia** observadas en la implementación vigente de `attendance-report`;
+- reconciliación del registro inicial: **14 esperadas; 14 materializadas; 0 faltantes; 0 duplicadas**;
+- **9 conteos**, **2 sumas de minutos**, **2 tasas** y **1 conteo compuesto de turnos con incidencia**;
+- **3 divergencias semánticas actuales** entre la implementación observada y el contrato canónico que bloquean certificación oficial hasta su resolución;
+- cero fórmulas nuevas de ventas, inventario, producción, servicio o finanzas adelantadas a las tareas `DATA-DOM-009` a `DATA-DOM-013`;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+No se crea una familia artificial `METRIC-*` ni otro namespace numérico nuevo. El registro inicial adopta como `metric_key` las claves ya existentes y verificables en la implementación observada para evitar inventar identificadores paralelos.
+
+---
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+DATO MAESTRO
+≠
+HECHO O EVENTO
+≠
+MÉTRICA
+≠
+KPI
+≠
+META
+≠
+UMBRAL
+≠
+ALERTA
+≠
+REPORTE O DASHBOARD
+```
+
+```text
+DEFINICIÓN SEMÁNTICA
+≠
+IMPLEMENTACIÓN DE CÁLCULO
+≠
+RESULTADO MATERIALIZADO
+≠
+VISUALIZACIÓN
+```
+
+```text
+NUMERADOR
+≠
+DENOMINADOR
+≠
+TASA
+≠
+PORCENTAJE MOSTRADO
+≠
+PUNTOS PORCENTUALES
+```
+
+```text
+CERO MEDIDO
+≠
+SIN DENOMINADOR
+≠
+SIN DATO
+≠
+NO APLICA
+≠
+DATO PENDIENTE
+```
+
+```text
+MÉTRICA DEFINIDA
+≠
+MÉTRICA CERTIFICADA
+≠
+MÉTRICA PUBLICADA
+```
+
+Una visualización podrá cambiar formato, orden, etiqueta o tipo de gráfico sin crear otra métrica mientras preserve la misma definición, versión, contexto y corte.
+
+---
+
+#### 4. Identidad canónica de una métrica
+
+##### 4.1. `metric_key`
+
+Toda métrica deberá tener una clave estable que identifique su significado empresarial.
+
+Reglas:
+
+1. `metric_key` no depende de la ruta, pantalla, archivo, consulta SQL o componente que la muestra;
+2. una traducción o cambio de etiqueta visible no cambia `metric_key`;
+3. una refactorización técnica que conserva significado no cambia `metric_key` ni la versión semántica;
+4. un cambio de significado conserva `metric_key` únicamente si representa evolución de la misma medida y crea una nueva versión de definición;
+5. dos métricas con significados distintos no podrán compartir `metric_key` aunque actualmente produzcan el mismo número;
+6. una métrica local existente solo se incorpora al registro cuando su definición puede reconstruirse con evidencia suficiente;
+7. una clave de campo, alias de BI o nombre histórico puede conservarse como alias técnico, pero no puede competir con la definición canónica.
+
+##### 4.2. Registro inicial sin identificadores inventados
+
+Para las métricas de asistencia materializadas en esta tarea se adoptan las claves ya existentes en el contrato `ReportSummary`, `EmployeeSummary` y `SiteSummary` de la implementación observada:
+
+```text
+scheduledShifts
+attendedShifts
+restDayCount
+lateCount
+noShowCount
+openCount
+missingCloseCount
+autoCloseCount
+departureCount
+scheduledMinutes
+netMinutes
+incidentCount
+attendanceRate
+punctualityRate
+```
+
+Estas claves pasan a ser identidades semánticas estables del registro inicial. Una implementación futura podrá renombrar variables internas, pero deberá seguir resolviendo estas identidades o publicar una transición explícita compatible.
+
+##### 4.3. Versión de definición
+
+Cada entrada del registro conserva una versión semántica independiente de la versión del código.
+
+La materialización inicial queda en **versión 1**.
+
+Una nueva versión de definición será obligatoria cuando cambie cualquiera de estos elementos con efecto sobre el resultado:
+
+- fórmula;
+- numerador o denominador;
+- inclusiones o exclusiones;
+- granularidad de cálculo;
+- dimensiones admitidas cuando alteren agregabilidad o interpretación;
+- calendario, fecha empresarial o zona horaria;
+- unidad, moneda o precisión semántica;
+- tratamiento de anulaciones, correcciones, devoluciones o datos tardíos;
+- fuente lógica cuando el cambio altera el significado o cobertura;
+- regla de comparación;
+- interpretación de estados de dato.
+
+No exige nueva versión semántica:
+
+- optimizar una consulta;
+- mover el cálculo entre vista, función, servicio o modelo;
+- cambiar un índice;
+- cambiar formato visual;
+- cambiar el orden de columnas;
+- agregar observabilidad técnica;
+
+si el resultado para el mismo contexto y corte permanece idéntico.
+
+---
+
+#### 5. Contrato mínimo del registro de métricas
+
+Toda entrada canónica deberá conservar como mínimo:
+
+| Campo semántico             | Regla                                                                       |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `metric_key`                | identidad estable de la definición                                          |
+| nombre empresarial          | etiqueta comprensible y no técnica                                          |
+| descripción                 | significado y lectura correcta                                              |
+| decisión apoyada            | decisión empresarial para la cual existe la métrica                         |
+| propietario empresarial     | función que responde por el significado                                     |
+| steward                     | función que mantiene definición, metadatos y coherencia                     |
+| custodio técnico            | función responsable de operación técnica sin adquirir propiedad empresarial |
+| versión                     | versión inmutable de la definición                                          |
+| vigencia                    | inicio y fin de aplicabilidad de la versión                                 |
+| tipo                        | conteo, suma, tasa, promedio u otra operación declarada                     |
+| fórmula                     | expresión empresarial reproducible                                          |
+| numerador                   | componente explícito cuando corresponda                                     |
+| denominador                 | componente explícito cuando corresponda                                     |
+| granularidad                | nivel al que se calcula antes de agregar; se completa con `DATA-DOM-005`    |
+| dimensiones permitidas      | dimensiones gobernadas que pueden segmentar sin cambiar el significado      |
+| filtros                     | restricciones de contexto aplicadas                                         |
+| inclusiones                 | población o hechos que entran                                               |
+| exclusiones                 | población o hechos que no entran                                            |
+| unidad                      | unidad de medida del resultado                                              |
+| moneda                      | moneda cuando aplique; nunca implícita en una métrica monetaria             |
+| precisión                   | precisión semántica y regla de redondeo                                     |
+| calendario                  | calendario aplicable                                                        |
+| zona horaria                | zona usada para fechas empresariales y cortes                               |
+| fecha empresarial           | regla que asigna el hecho al periodo                                        |
+| fuente lógica               | dominios propietarios de los hechos y maestros consumidos                   |
+| implementación observada    | artefacto técnico actual cuando exista evidencia                            |
+| tratamiento de correcciones | cómo afecta una corrección o restatement                                    |
+| datos tardíos               | regla de periodo abierto/cerrado y actualización                            |
+| frecuencia                  | cadencia de actualización observada o aprobada                              |
+| calidad                     | estado de calidad de las dependencias                                       |
+| certificación               | estado de certificación de la definición/resultado                          |
+| drill-down                  | ruta lógica desde agregado hasta evidencia fuente                           |
+| privacidad                  | restricciones para detalle, personas o poblaciones pequeñas                 |
+| comparación                 | condiciones para comparar periodos o segmentos                              |
+| KPI / driver / guardrail    | rol contextual; no crea una fórmula alternativa                             |
+
+La representación física de este registro pertenece a la arquitectura aplicable y a `DATA-INT-002`. Esta tarea no prescribe tabla, schema, vista, RPC, archivo JSON, herramienta BI ni tecnología de catálogo.
+
+---
+
+#### 6. Capa semántica federada
+
+La capa semántica se organiza así:
+
+```text
+FUENTES PROPIETARIAS
+→ hechos y maestros gobernados por sus dominios
+
+CONTRATOS DE DATOS
+→ identidad, tiempo, calidad y relaciones
+
+REGISTRO CANÓNICO DE MÉTRICAS
+→ definición, versión, fórmula, contexto y propiedad
+
+IMPLEMENTACIÓN DE CÁLCULO
+→ SQL, RPC, función, modelo, vista o motor analítico
+
+ARTEFACTOS DE CONSUMO
+→ pantalla, reporte, dashboard, exportación, alerta o modelo
+```
+
+Reglas:
+
+1. el registro semántico no copia ni corrige hechos fuente;
+2. una implementación técnica referencia una versión de métrica;
+3. una pantalla no redefine fórmula ni población;
+4. una exportación conserva la versión, corte y contexto de las métricas incluidas;
+5. una métrica calculada por dos aplicaciones debe reconciliarse al mismo resultado bajo el mismo contexto;
+6. la capa semántica puede combinar fuentes propietarias sin adquirir autoridad sobre ellas;
+7. los maestros y dimensiones consumidos conservan las identidades definidas en `DATA-DOM-002` y `DATA-DOM-003`;
+8. granularidad, tiempo efectivo, snapshots y comparabilidad histórica se completan en `DATA-DOM-005` sin reabrir la identidad de la métrica;
+9. calidad, frescura y certificación se completan en `DATA-DOM-007` sin permitir fórmulas locales;
+10. `DATA-INT-002` definirá la materialización técnica de la capa semántica y sus modelos de consulta.
+
+---
+
+#### 7. Propiedad, stewardship y segregación
+
+Para el registro inicial de asistencia:
+
+- **propietario empresarial de la definición:** `RESPONSABLE_DE_PERSONAS`;
+- **steward:** `RESPONSABLE_DE_PERSONAS`, con participación de `RESPONSABLE_DE_PROGRAMACION_LABORAL` cuando la definición depende del turno programado;
+- **fuente lógica de programación:** VISO;
+- **fuente lógica de marcaciones y hechos de asistencia:** ANIMA;
+- **custodia técnica:** `RESPONSABLE_TECNOLOGICO`;
+- **implementación observada:** `vento-shell`, función Supabase `attendance-report`;
+- **certificación:** no se concede por esta tarea; su segregación pertenece a `DATA-AUTH-003` y sus criterios de calidad a `DATA-DOM-007`.
+
+Reglas transversales:
+
+```text
+PROPIETARIO DE LA DEFINICIÓN
+≠
+IMPLEMENTADOR TÉCNICO
+≠
+CERTIFICADOR
+≠
+CONSUMIDOR
+```
+
+Ninguna celda documental de esta tarea concede permisos técnicos.
+
+---
+
+#### 8. Contexto determinista de cálculo
+
+Para cumplir la regla de mismo resultado, el contexto de ejecución deberá conservar como mínimo:
+
+- `metric_key`;
+- versión de definición;
+- periodo solicitado;
+- fecha y hora de corte;
+- zona horaria;
+- filtros;
+- dimensiones o agrupaciones solicitadas;
+- alcance territorial u organizacional autorizado;
+- versión o vigencia de maestros relevantes;
+- estado de calidad de dependencias;
+- tratamiento de registros tardíos y correcciones;
+- versión de implementación cuando se requiera reproducibilidad técnica.
+
+Dos resultados no se consideran comparables automáticamente si difieren en cualquiera de estas coordenadas materiales.
+
+---
+
+#### 9. Registro canónico inicial — asistencia
+
+La implementación vigente de `attendance-report` materializa un conjunto verificable de métricas de resumen global, por trabajador y por sede. Esta tarea adopta sus claves existentes y define su significado empresarial versión 1.
+
+**Fuentes lógicas:** programación laboral de VISO + hechos de asistencia de ANIMA.
+**Zona horaria de la implementación observada:** `America/Bogota` como valor predeterminado cuando no se suministra una zona válida.
+**Dimensiones actualmente demostradas:** sede y trabajador; el eje temporal se resuelve por el periodo del reporte.
+**Dimensiones adicionales:** no se declaran habilitadas por esta tarea hasta que `DATA-DOM-005` cierre granularidad y tiempo y exista evidencia de su implementación.
+**Estado de definición de las 14 entradas:** `ESPECIFICADO`.
+
+| `metric_key`        | Nombre empresarial                                 | Tipo             | Fórmula canónica v1                                                                                                                                        | Numerador / denominador                         | Unidad                                       | Dimensiones permitidas en esta versión | Certificación |
+| ------------------- | -------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------------------- | -------------------------------------- | ------------- |
+| `scheduledShifts`   | Turnos programados computables                     | conteo           | contar turnos programados del contexto que no sean descanso                                                                                                | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `attendedShifts`    | Turnos con asistencia registrada                   | conteo           | contar turnos programados computables con `check-in` asociado                                                                                              | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `restDayCount`      | Turnos clasificados como descanso                  | conteo           | contar turnos cuya clasificación vigente corresponda a descanso                                                                                            | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `lateCount`         | Turnos con llegada tardía                          | conteo           | contar turnos computables con `check-in` posterior al inicio programado más la gracia de tardanza aplicable                                                | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `noShowCount`       | Turnos finalizados sin asistencia                  | conteo           | contar turnos computables cuyo fin programado ya ocurrió al corte y que no tienen sesión de asistencia asociada                                            | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `openCount`         | Turnos con sesión de asistencia abierta            | conteo           | contar turnos computables con sesión de asistencia aún abierta al corte                                                                                    | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `missingCloseCount` | Turnos vencidos sin cierre                         | conteo           | contar turnos computables cuyo fin programado ya ocurrió al corte y cuya sesión de asistencia continúa abierta                                             | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `BLOQUEADO`   |
+| `autoCloseCount`    | Turnos cerrados automáticamente                    | conteo           | contar turnos computables cuya sesión asociada fue cerrada mediante el mecanismo de autocierre                                                             | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `departureCount`    | Turnos con salida de sede detectada durante sesión | conteo           | contar turnos computables con evento de salida de sede correlacionado a la sesión                                                                          | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `scheduledMinutes`  | Minutos netos programados                          | suma             | sumar los minutos netos programados de los turnos computables, descontando descanso programado conforme al turno                                           | no aplica                                       | minutos                                      | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `netMinutes`        | Minutos netos registrados                          | suma             | sumar minutos de sesión registrados menos minutos de descanso superpuestos válidos, limitados a valores no negativos                                       | no aplica                                       | minutos                                      | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `incidentCount`     | Turnos con señal de incidencia de asistencia       | conteo compuesto | contar una vez cada turno computable que presente al menos una de estas señales: tardanza, ausencia, sesión abierta, autocierre o salida de sede detectada | no aplica                                       | turnos                                       | sede; trabajador autorizado; periodo   | `NO EVALUADO` |
+| `attendanceRate`    | Tasa de asistencia                                 | tasa             | `attendedShifts / scheduledShifts` cuando existe denominador positivo; con denominador cero no se emite un valor numérico de tasa                          | `attendedShifts` / `scheduledShifts`            | proporción; presentación porcentual derivada | sede; trabajador autorizado; periodo   | `BLOQUEADO`   |
+| `punctualityRate`   | Tasa de puntualidad entre turnos asistidos         | tasa             | `(attendedShifts - lateCount) / attendedShifts` cuando existe denominador positivo; con denominador cero no se emite un valor numérico de tasa             | `attendedShifts - lateCount` / `attendedShifts` | proporción; presentación porcentual derivada | sede; trabajador autorizado; periodo   | `BLOQUEADO`   |
+
+**Reconciliación:** 14 claves esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 10. Reglas de cálculo del registro inicial
+
+##### 10.1. Población computable
+
+Los turnos clasificados como descanso no forman parte del denominador de asistencia ni de los conteos operativos de asistencia. `restDayCount` los registra por separado.
+
+##### 10.2. Asistencia
+
+Un turno se considera asistido cuando existe `check-in` asociado al turno mediante el contrato de correspondencia vigente. Esta definición no afirma por sí sola puntualidad, cierre correcto ni cumplimiento completo del turno.
+
+##### 10.3. Tardanza
+
+La tardanza se determina comparando el instante de `check-in` con el inicio programado más la gracia aplicable. La gracia es contexto de cálculo y deberá conservarse para reproducir el resultado.
+
+##### 10.4. Ausencia
+
+Un turno solo cuenta como ausencia cuando ya terminó al corte y no existe asistencia asociada. Un turno futuro o todavía en curso sin `check-in` no es automáticamente una ausencia cerrada.
+
+##### 10.5. Sesión abierta y falta de cierre
+
+`openCount` expresa existencia de una sesión abierta al corte. `missingCloseCount` exige además que el fin programado del turno ya haya ocurrido. Por tanto:
+
+```text
+SESIÓN ABIERTA
+NO IMPLICA AUTOMÁTICAMENTE
+FALTA DE CIERRE
+```
+
+##### 10.6. Minutos
+
+`scheduledMinutes` y `netMinutes` se registran en minutos enteros no negativos conforme a la implementación observada. La presentación en horas es una representación derivada y no modifica la unidad canónica.
+
+##### 10.7. Tasas sin denominador
+
+Cuando el denominador sea cero:
+
+- no se registra la tasa como `0`;
+- se conserva la condición de ausencia de denominador de manera separada;
+- la interfaz podrá explicar que no existe población elegible;
+- una exportación o snapshot deberá preservar esta distinción.
+
+Esta regla evita confundir ausencia de población con desempeño igual a cero.
+
+---
+
+#### 11. Comparación y agregabilidad
+
+1. las métricas de conteo y suma solo se agregan cuando los conjuntos son disjuntos o la operación declara la deduplicación aplicable;
+2. las tasas no se promedian entre sedes, trabajadores o periodos sin recomputar numerador y denominador sobre la población combinada;
+3. `attendanceRate` se agrega mediante suma de `attendedShifts` y suma de `scheduledShifts`, no mediante promedio simple de porcentajes;
+4. `punctualityRate` se agrega mediante suma del numerador elegible y suma de `attendedShifts`, no mediante promedio simple de porcentajes;
+5. una comparación requiere la misma versión de definición o una regla explícita de compatibilidad;
+6. cambios de calendario, zona horaria, gracia de tardanza, cobertura de sedes o reglas de correspondencia deben quedar visibles en el contexto;
+7. `DATA-DOM-005` definirá el modelo temporal y de granularidad que permita reproducir comparaciones históricas sin cambiar estas fórmulas.
+
+---
+
+#### 12. KPI, drivers y guardrails
+
+Una métrica registrada no se convierte automáticamente en KPI.
+
+```text
+MÉTRICA
+→ definición cuantitativa estable
+
+KPI
+→ uso priorizado de una métrica para una decisión y objetivo
+
+DRIVER
+→ métrica relacionada que ayuda a explicar o mover un KPI
+
+GUARDRAIL
+→ métrica que limita daño no deseado
+
+META
+→ valor objetivo contextual de una métrica
+```
+
+Reglas:
+
+- la misma `metric_key` y versión puede desempeñar roles distintos en contextos distintos sin duplicar fórmula;
+- la designación de KPI, drivers, guardrails, líneas base, metas y cadencias pertenece a `DATA-DOM-015`;
+- esta tarea no fija metas definitivas;
+- un dashboard no puede declarar una métrica KPI por conveniencia visual si la decisión y el objetivo no están gobernados;
+- ningún driver o guardrail cambia la propiedad de la métrica fuente.
+
+---
+
+#### 13. Drill-down y trazabilidad
+
+Para las métricas iniciales de asistencia, la ruta lógica mínima de drill-down es:
+
+```text
+RESULTADO AGREGADO
+→ RESUMEN POR SEDE O TRABAJADOR AUTORIZADO
+→ TURNO CONSOLIDADO
+→ TURNO PROGRAMADO
++ SESIÓN DE ASISTENCIA
++ DESCANSOS RELACIONADOS
++ EVENTOS DE SALIDA CUANDO EXISTAN
+→ HECHOS Y FUENTES PROPIETARIAS
+```
+
+Reglas:
+
+1. la vista agregada no concede autorización al detalle;
+2. el detalle de trabajador requiere el alcance definido en `DATA-AUTH-001` y `DATA-AUTH-002` antes de exposición productiva;
+3. el drill-down conserva la versión de métrica, periodo, filtros y corte que originaron el agregado;
+4. una corrección del hecho fuente no reescribe silenciosamente un snapshot publicado;
+5. `DATA-DOM-017` gobierna restatements y reproducibilidad histórica.
+
+---
+
+#### 14. Divergencias actuales observadas
+
+La tarea distingue definición canónica de implementación actual y no declara certificada una fórmula únicamente porque exista código.
+
+| Elemento                                   | Implementación observada                                                                               | Definición canónica v1                                    | Estado                         | Propietario documental de salida               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------ | ---------------------------------------------- |
+| `attendanceRate` con `scheduledShifts = 0` | devuelve numéricamente `0`                                                                             | no debe emitir un valor numérico de tasa sin denominador  | `BLOQUEADO` para certificación | `DATA-DOM-005`, `DATA-DOM-007`, `DATA-INT-002` |
+| `punctualityRate` con `attendedShifts = 0` | devuelve numéricamente `0`                                                                             | no debe emitir un valor numérico de tasa sin denominador  | `BLOQUEADO` para certificación | `DATA-DOM-005`, `DATA-DOM-007`, `DATA-INT-002` |
+| `missingCloseCount`                        | el resumen incrementa por sesión abierta aunque el cálculo intermedio ya distingue si el turno terminó | solo cuenta turno vencido al corte con sesión aún abierta | `BLOQUEADO` para certificación | `DATA-DOM-005`, `DATA-DOM-007`, `DATA-INT-002` |
+
+Condición de salida común:
+
+- semántica temporal y de corte cerrada en `DATA-DOM-005`;
+- tratamiento de calidad y certificación cerrado en `DATA-DOM-007`;
+- materialización técnica de la capa semántica definida en `DATA-INT-002`;
+- implementación futura alineada y verificada antes de declarar cualquiera de estas tres métricas `CERTIFICADO` o publicarla como cifra oficial.
+
+Estas divergencias no autorizan modificar ahora `attendance-report`, Supabase ni una aplicación consumidora.
+
+---
+
+#### 15. Familias analíticas reservadas sin adelantar fórmulas
+
+El registro crecerá mediante las tareas ya existentes. No se inventan fórmulas ni identificadores antes de que la tarea propietaria materialice su dominio.
+
+| Familia                     | Contenido ya reservado por el alcance aprobado                                                                                          | Tarea propietaria de materialización |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| ventas y demanda            | ventas, pedidos, conversión, ticket, mezcla, demanda, disponibilidad, devoluciones, promociones, recurrencia y margen relacionado       | `DATA-DOM-009`                       |
+| inventario y abastecimiento | disponibilidad, cobertura, rotación, faltantes, vencimientos, diferencias, cumplimiento de remisiones/proveedores y costo de inventario | `DATA-DOM-010`                       |
+| producción y rendimiento    | plan vs producción, capacidad, adherencia, rendimiento, consumos, merma, calidad, ciclo, liberación, costo y variación                  | `DATA-DOM-011`                       |
+| servicio y clientes         | promesa, tiempos, pedidos completos, reclamos, resolución, compensaciones, satisfacción, recurrencia, fidelización y reputación         | `DATA-DOM-012`                       |
+| costos y rentabilidad       | costos, variaciones, margen, gastos, presupuesto, liquidez, cartera, obligaciones, rentabilidad y escenarios                            | `DATA-DOM-013`                       |
+| diagnóstico                 | variaciones, anomalías, factores, impacto y confianza                                                                                   | `DATA-DOM-014`                       |
+| objetivos y medición        | líneas base, metas, KPI priorizados, drivers, guardrails y cadencias                                                                    | `DATA-DOM-015`                       |
+| mejora                      | acciones, experimentos, seguimiento y comprobación                                                                                      | `DATA-DOM-016`                       |
+| reproducibilidad            | versiones históricas, correcciones y restatements                                                                                       | `DATA-DOM-017`                       |
+
+Las familias anteriores no son entradas incompletas del registro actual. Son alcance explícitamente reservado a tareas posteriores y permanecen fuera de la materialización de `DATA-DOM-004` hasta que su definición empresarial sea aprobada.
+
+---
+
+#### 16. Fronteras con las tareas siguientes y transversales
+
+| Decisión                                                                                       | Tarea propietaria |
+| ---------------------------------------------------------------------------------------------- | ----------------- |
+| hechos, eventos, granularidad, dimensiones temporales, calendarios, snapshots y comparabilidad | `DATA-DOM-005`    |
+| ingestión, transformaciones, backfill, reconciliación y linaje                                 | `DATA-DOM-006`    |
+| calidad, frescura, cobertura, cuarentena y certificación                                       | `DATA-DOM-007`    |
+| reportes, dashboards, exportaciones, suscripciones, alertas y snapshots oficiales              | `DATA-DOM-008`    |
+| protección por dominio, entidad, territorio y finalidad                                        | `DATA-AUTH-001`   |
+| protección de detalle sensible y poblaciones pequeñas                                          | `DATA-AUTH-002`   |
+| separación entre definición, certificación, publicación, metas y administración                | `DATA-AUTH-003`   |
+| catálogo y experiencia de definición                                                           | `DATA-UX-002`     |
+| tableros, filtros, comparación y drill-down                                                    | `DATA-UX-003`     |
+| eventos y contratos de lectura                                                                 | `DATA-INT-001`    |
+| materialización técnica de capa semántica, modelos, snapshots, caché y consultas               | `DATA-INT-002`    |
+| BI, hojas de cálculo, modelos externos e IA                                                    | `DATA-INT-004`    |
+
+No queda una decisión material de `DATA-DOM-004` sin propietario documental.
+
+---
+
+#### 17. Cobertura de prueba canónica preexistente
+
+El registro de pruebas vigente ya contiene `TREQ-DATA-002`, que exige que toda métrica o indicador exista en un registro canónico versionado con propósito, propietario, fórmula, numerador, denominador, granularidad, dimensiones, filtros, inclusiones, exclusiones, unidad, moneda, zona horaria, calendario, fuente, frescura, calidad, versión, certificación, drill-down y reglas de comparación, y asigna expresamente `DATA-DOM-004` entre sus tareas responsables.
+
+También permanece vigente `TREQ-DATA-003` para proteger la distinción entre cero, nulo, no aplica, desconocido, no recibido y dato pendiente, así como calidad, frescura, datos tardíos, backfills y reconciliación. Las divergencias observadas en tasas sin denominador no requieren una fila nueva: quedan dentro de reglas ya protegidas y con tareas responsables existentes.
+
+Esta tarea materializa el contrato documental y el registro inicial que esas reglas ya exigen. No cambia prioridad, modalidad, estado, relaciones ni destino de implementación de los requisitos vigentes.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa definiciones documentales y un registro inicial sobre comportamientos ya protegidos por requisitos canónicos vigentes. No introduce una familia de comportamiento independiente, no modifica el alcance protegido y no autoriza implementación técnica ni cambios de datos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 18. Criterios de aceptación
+
+1. existe una definición inequívoca de métrica, KPI, driver, guardrail, meta, umbral, alerta y visualización;
+2. la capa semántica permanece federada y no se convierte en fuente propietaria de hechos o maestros;
+3. `metric_key`, versión, contexto y corte determinan de manera suficiente la identidad semántica de un resultado;
+4. se conserva la regla `misma métrica + misma versión + mismo contexto + mismo corte = mismo resultado`;
+5. toda entrada exige propósito, propietario, fórmula, numerador, denominador cuando aplique, dimensiones, filtros, inclusiones, exclusiones, unidad, tiempo, fuente, calidad, certificación y drill-down;
+6. una refactorización técnica que no cambia significado no crea una nueva versión semántica;
+7. un cambio de significado sí exige una versión nueva;
+8. ninguna pantalla, reporte, dashboard, exportación o modelo puede redefinir localmente una fórmula registrada;
+9. se materializan exactamente **14 métricas iniciales de asistencia** con las claves técnicas existentes y sin inventar un namespace paralelo;
+10. las 14 claves son únicas y no existen faltantes ni duplicados dentro del inventario inicial declarado;
+11. el registro inicial contiene exactamente **9 conteos**, **2 sumas de minutos**, **2 tasas** y **1 conteo compuesto de turnos con incidencia**;
+12. `scheduledShifts` excluye descansos y `restDayCount` los registra por separado;
+13. `attendedShifts` exige `check-in` asociado y no implica puntualidad ni cierre completo;
+14. `lateCount` conserva la gracia de tardanza como contexto reproducible;
+15. `noShowCount` exige que el turno haya terminado al corte;
+16. `openCount` y `missingCloseCount` permanecen semánticamente separados;
+17. `scheduledMinutes` y `netMinutes` usan minutos como unidad canónica y la presentación en horas es derivada;
+18. `attendanceRate` y `punctualityRate` conservan numerador y denominador explícitos;
+19. una tasa sin denominador no se registra como cero;
+20. tasas agregadas se recomputan desde numeradores y denominadores, no mediante promedio simple de porcentajes;
+21. las fuentes lógicas de programación y asistencia permanecen VISO y ANIMA respectivamente;
+22. propietario empresarial, steward, custodio técnico y certificador permanecen funciones separadas;
+23. ninguna de las 14 métricas queda certificada por la mera existencia de código;
+24. las tres divergencias observadas tienen definición canónica, estado, tareas propietarias y condición de salida explícitos;
+25. las familias de ventas, inventario, producción, servicio y finanzas no reciben fórmulas inventadas y conservan sus tareas propietarias `DATA-DOM-009` a `DATA-DOM-013`;
+26. granularidad, tiempo, calidad, reportes, autorización, integración y restatements conservan sus tareas propietarias existentes;
+27. no se modifica código, SQL, Supabase, datos, métricas productivas, metas ni dashboards;
+28. no se crea ni modifica ningún requisito de prueba;
+29. la continuidad queda exclusivamente en `DATA-DOM-005` como siguiente tarea reservada.
+
+---
+
+#### 19. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica`
+
+
 ### [ ] DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
 ### [ ] DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
 ### [ ] DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
