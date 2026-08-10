@@ -7308,7 +7308,1183 @@ DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupues
 ```
 
 
-### [ ] DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+### ✅ DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia` — APROBADA
+**Tarea siguiente:** `DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de analítica económico-financiera, costos, rentabilidad, liquidez, presupuesto y escenarios
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues, cierres, pagos o publicación productiva de artefactos:** no autorizados
+
+#### 1. Propósito
+
+Definir la semántica analítica económico-financiera de Vento OS para que NUMERA pueda medir costos, variaciones, margen, contribución, gastos, presupuesto, liquidez, cartera, obligaciones, rentabilidad y escenarios sin reconstruir hechos operativos, sin convertir estimaciones en realidad, sin duplicar contabilidad y sin mantener fórmulas locales competidoras.
+
+La tarea materializa las diez familias reservadas por `CAP-SCOPE-017` y consume las fronteras financieras aprobadas por `CAP-SCOPE-012`.
+
+El resultado deberá permitir responder de forma reproducible:
+
+```text
+qué costo se está midiendo
+qué método y versión lo gobiernan
+qué componentes entran y cuáles quedan fuera
+qué cantidad o hecho soporta el costo
+qué variación existe frente a estándar, presupuesto o forecast
+qué ingreso económico es elegible
+qué margen o contribución resulta
+qué gasto pertenece al periodo y al centro analizado
+qué caja y bancos están realmente disponibles
+qué cartera y obligaciones permanecen abiertas
+qué rentabilidad es atribuible sin forzar asignaciones
+qué cambia bajo un escenario sin alterar datos reales
+```
+
+NUMERA continuará como capa económico-operativa y analítica. Esta tarea no declara a Vento OS como sistema contable formal completo ni transfiere a NUMERA la autoridad operativa de PULSO, ORIGO, FOGO, NEXO, PASS o VISO.
+
+#### 2. Resultado sustantivo
+
+Queda definido el contrato `DATA-DOM-013` con los siguientes resultados:
+
+- **10 de 10 familias canónicas** de analítica económico-financiera reciben definición explícita;
+- **10 de 10 familias** reciben fuente, fórmula o regla de cálculo, evidencia actual, estado de certificación y condición de salida;
+- **0 familias faltantes**;
+- **0 familias duplicadas**;
+- se separan costo de adquisición, landed, estándar, último, promedio, real, productivo, logístico, de merma e interno;
+- se separan costo técnico observado y costo económico oficial;
+- se impide convertir el promedio ponderado de compra de ORIGO en método de valoración financiera por inferencia;
+- se impide convertir `total_cost` o `unit_cost` de FOGO en costo económico oficial sin reconciliación;
+- se separan variación de costo, desviación presupuestal, saldo presupuestal y error de forecast;
+- se separan margen bruto, contribución, resultado atribuible y rentabilidad;
+- se impide usar ingreso esperado como ingreso realizado;
+- se define punto de equilibrio únicamente sobre una razón de contribución compatible o, cuando se use un margen objetivo, como simulación/planeación explícita;
+- se separan gasto capturado, gasto reconocido, costo, pago y salida de caja;
+- se preserva `CENTRO_DE_COSTO` como dimensión económica independiente de sede, marca, área y canal;
+- se exige asignación versionada y reconciliable para costos compartidos;
+- se separan presupuesto aprobado, revisión, forecast, escenario y dato real;
+- se separan caja, banco, saldo conciliado, movimiento pendiente, cartera y obligación;
+- se define liquidez real y liquidez proyectada sin convertir cartera en efectivo;
+- se define cartera abierta y obligaciones abiertas sobre aplicaciones reales, no por coincidencia de montos;
+- se define rentabilidad multidimensional con costo trazable y residuo no asignado visible;
+- se impide sumar monedas incompatibles sin conversión gobernada;
+- se preservan monto y moneda originales aunque exista una conversión de presentación;
+- se identifican cuatro divergencias semánticas actuales de NUMERA que impiden certificar sus agregados como métricas financieras oficiales;
+- no se crea un namespace nuevo de métricas ni se fabrican `metric_key` sin evidencia;
+- no se modifica ningún comportamiento físico ni requisito de prueba.
+
+#### 3. Alcance y entradas canónicas
+
+Esta tarea consume sin reabrir:
+
+- `DATA-DOM-001` a `DATA-DOM-008` para gobierno, maestros, hechos, ingestión, calidad y publicación;
+- `DATA-DOM-009` para venta bruta/neta, devoluciones, descuentos, pedidos, canal y demanda comercial;
+- `DATA-DOM-010` para existencias, compras, recepción, proveedor, remisión y costo operacional de abastecimiento;
+- `DATA-DOM-011` para producción, consumos, rendimiento, merma y costo técnico por lote/salida;
+- `DATA-DOM-012` para identidad de cliente autorizada y vínculo de valor/rentabilidad cuando corresponda;
+- `CAP-SCOPE-012` para hechos económicos, caja, bancos, cartera, obligaciones, costos, presupuestos, tesorería, impuestos, cierres y rentabilidad;
+- `CAP-SCOPE-017` para el registro canónico de métricas y sus diez familias económico-financieras;
+- `TREQ-NUMERA-001` a `TREQ-NUMERA-004` como protección vigente de conciliación, hechos económicos, tesorería, cartera, costos, presupuestos y rentabilidad;
+- `TREQ-DATA-002` a `TREQ-DATA-004` como protección transversal de semántica, calidad y publicación analítica.
+
+Esta tarea no implementa ledger, cuentas bancarias, cartera, cuentas por pagar, vistas, modelos semánticos, snapshots, escenarios, pipelines, tablas, RPC, dashboards ni integraciones.
+
+#### 4. Autoridad funcional y fronteras de dato
+
+| Dominio / aplicación          | Autoridad consumida por D013                                                                                                                           | Frontera obligatoria                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `NUMERA`                      | hecho económico, costo económico, centro de costo, moneda, periodo económico, presupuesto, conciliación, tesorería, rentabilidad y análisis financiero | no reconstruye hechos operativos ni se declara contabilidad formal por esta tarea         |
+| `PULSO`                       | pedido, venta, descuento, devolución, pago, caja y cumplimiento comercial                                                                              | venta, pago y depósito permanecen hechos distintos; PULSO no calcula rentabilidad oficial |
+| `ORIGO`                       | proveedor, orden, recepción comercial y memoria de costo de compra                                                                                     | último/promedio de compra es evidencia operacional; no define valoración oficial          |
+| `NEXO`                        | existencia, movimiento, recepción física, remisión, activo y logística interna                                                                         | cantidad física y remisión valorizada no crean por sí solas ingreso o gasto legal         |
+| `FOGO`                        | receta, consumo, lote, salida, merma y costo técnico de ejecución                                                                                      | costo técnico no sustituye costo económico reconciliado                                   |
+| `PASS`                        | identidad autorizada de cliente                                                                                                                        | rentabilidad por cliente consume vínculo autorizado; NUMERA no crea identidad paralela    |
+| sistemas/proveedores externos | extractos, pagos, documentos fiscales o contables dentro de su autoridad                                                                               | la autoridad externa se preserva; NUMERA conserva referencia y conciliación               |
+| `BLOQUE AB`                   | semántica, calidad, certificación, publicación y protección analítica                                                                                  | no adquiere propiedad sobre hechos financieros u operativos                               |
+
+Fronteras raíz:
+
+```text
+VENTA ≠ INGRESO ECONÓMICO ≠ COBRO ≠ DEPÓSITO
+COMPRA ≠ RECEPCIÓN ≠ FACTURA ≠ OBLIGACIÓN ≠ PAGO
+COSTO DE COMPRA ≠ COSTO DE INVENTARIO ≠ COSTO PRODUCTIVO ≠ COSTO ECONÓMICO OFICIAL
+GASTO ≠ COSTO ≠ PAGO ≠ SALIDA DE CAJA
+PRESUPUESTO ≠ FORECAST ≠ ESCENARIO ≠ REAL
+INGRESO ESPERADO ≠ INGRESO REALIZADO
+MARGEN BRUTO ≠ CONTRIBUCIÓN ≠ RESULTADO ≠ RENTABILIDAD
+CAJA ≠ BANCO ≠ CARTERA ≠ LIQUIDEZ
+CENTRO DE COSTO ≠ SEDE ≠ ÁREA ≠ MARCA ≠ CANAL
+TRANSFERENCIA INTERNA ≠ INGRESO FISCAL ≠ GASTO LEGAL
+```
+
+#### 5. Evidencia técnica actual observada
+
+La evidencia vigente demuestra una fundación económico-operativa parcial y suficiente para definir el contrato analítico, pero no para certificar la mayoría de resultados como verdad financiera completa.
+
+##### 5.1. NUMERA actual
+
+El `main` vigente de `vento-numera` contiene superficies para:
+
+- panel económico inicial;
+- centros de costo;
+- gastos;
+- punto de equilibrio;
+- una pantalla denominada rentabilidad;
+- autenticación y control de acceso.
+
+El panel consume `numera_current_period_summary()` y expone:
+
+- `budget_amount`;
+- `expected_revenue`;
+- `actual_expenses`;
+- `fixed_expenses`;
+- `variable_expenses`;
+- `one_time_expenses`;
+- `break_even_revenue`.
+
+La existencia de esos campos no demuestra por sí sola costo real, ingreso realizado, margen, rentabilidad, liquidez, cartera, obligaciones o escenarios certificados.
+
+##### 5.2. Fundación económica vigente en `vento-shell`
+
+La migración `numera_economic_foundation` declara expresamente que la fundación **no es contabilidad formal**.
+
+Materializa actualmente:
+
+- `numera_periods` con estados `open`, `closed`, `locked`;
+- `numera_expense_categories` con clases `fixed`, `variable`, `one_time`;
+- `numera_expenses`;
+- `numera_cost_center_budgets`;
+- `numera_cost_center_monthly_summary`;
+- `numera_current_period_summary()`.
+
+La vista mensual calcula actualmente:
+
+```text
+actual_expenses
+= suma de numera_expenses.amount
+
+budget_variance
+= budget_amount - actual_expenses
+
+break_even_revenue
+= fixed_expenses / (target_gross_margin_pct / 100)
+  cuando target_gross_margin_pct > 0
+```
+
+Estas expresiones se conservan como **evidencia técnica actual**, no como definición financiera certificada automática.
+
+##### 5.3. Gastos actuales
+
+La superficie de gastos permite captura manual de:
+
+- periodo;
+- categoría;
+- centro de costo;
+- fecha;
+- descripción;
+- monto;
+- moneda con valor de captura actual `COP` desde la interfaz;
+- `source_app = numera` para el alta realizada por esa pantalla.
+
+La captura observada no exige en la misma operación un documento fuente, aprobación, estado de reconocimiento, anulación compensatoria o clave de deduplicación completa. Por tanto, `actual_expenses` describe gastos capturados por la fundación vigente y no se certifica automáticamente como totalidad del gasto económico reconocido.
+
+##### 5.4. Presupuesto actual
+
+`numera_cost_center_budgets` conserva por periodo y centro:
+
+- `budget_amount`;
+- `expected_revenue`;
+- `target_gross_margin_pct`;
+- notas.
+
+Existe una única fila vigente por combinación `period_id + cost_center_id`, actualizada mediante `upsert`. No existe en esa tabla un historial materializado de versiones de presupuesto, revisiones, forecast y escenarios.
+
+Por tanto:
+
+```text
+fila vigente editable ≠ presupuesto aprobado histórico versionado
+expected_revenue ≠ ingreso realizado
+target_gross_margin_pct ≠ margen real
+```
+
+##### 5.5. Superficie denominada rentabilidad
+
+La pantalla actual denominada `Rentabilidad` lee:
+
+- ingreso esperado;
+- gasto real capturado;
+- presupuesto;
+- `budget_variance`.
+
+No consume en esa superficie ingreso realizado ni costo trazable de producto/servicio. Por ello es una lectura económica inicial por centro y **no constituye rentabilidad real certificada**.
+
+##### 5.6. Punto de equilibrio actual
+
+La vista vigente utiliza gastos fijos y `target_gross_margin_pct`.
+
+Ese cálculo es válido únicamente como una **simulación de ingreso requerido bajo un margen objetivo** cuando la definición de ese porcentaje y su base sean gobernadas.
+
+No se declara punto de equilibrio económico realizado mientras no exista una razón de contribución compatible y trazable.
+
+##### 5.7. Costo operacional de compra en ORIGO
+
+La evidencia actual conserva por proveedor, producto y presentación:
+
+- último costo neto;
+- último costo bruto;
+- último costo por unidad de stock;
+- costo promedio neto;
+- costo promedio bruto;
+- costo promedio por unidad de stock;
+- cantidades acumuladas;
+- costos acumulados;
+- número de muestras;
+- última recepción;
+- moneda.
+
+El promedio se actualiza ponderado por cantidades recibidas y se conservan componentes neto, bruto e impuesto.
+
+Esta memoria sirve como evidencia de costo de compra recibido. No autoriza por sí sola a elegir promedio ponderado como método oficial de valoración económica o contable de inventario.
+
+##### 5.8. Costo técnico productivo en FOGO
+
+FOGO expone actualmente por lote:
+
+- `produced_qty`;
+- `expected_qty`;
+- consumos reales;
+- `total_cost`;
+- `unit_cost`;
+- producto;
+- sede;
+- ruta/salida;
+- estado.
+
+Es evidencia técnica de costo de ejecución productiva. La oficialización económica exige conciliación con método, componentes, moneda, periodo, asignaciones y tratamiento de coproductos/subproductos aplicables.
+
+##### 5.9. Moneda actual
+
+El maestro `MONEDA` pertenece a NUMERA y las conversiones requieren tasa y vigencia separadas.
+
+Sin embargo, la UI observada de NUMERA formatea importes en `COP`, mientras `numera_expenses.currency` es un campo textual y los presupuestos actuales no contienen una coordenada de moneda propia.
+
+La vista mensual suma montos sin una conversión monetaria explícita visible en su contrato.
+
+Por tanto, una agregación multimoneda oficial permanece `BLOQUEADO` hasta que se pruebe una única moneda gobernada para la población o exista conversión versionada.
+
+#### 6. Cuatro divergencias semánticas actuales
+
+|    # | Evidencia actual                                                              | Lectura correcta en D013                                                                                                                   | Estado                                                          |
+| ---: | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+|    1 | `budget_variance = budget_amount - actual_expenses`                           | el signo representa saldo/remanente respecto del presupuesto para gasto; no se publicará como desviación genérica sin convención explícita | `NO EVALUADO`                                                   |
+|    2 | `break_even_revenue = fixed_expenses / target_gross_margin_pct`               | es ingreso requerido bajo un margen objetivo; el punto de equilibrio económico exige razón de contribución compatible                      | `NO EVALUADO` como simulación; `BLOQUEADO` como equilibrio real |
+|    3 | pantalla `Rentabilidad` usa `expected_revenue` y `actual_expenses`            | es lectura plan versus gasto; no demuestra ingreso realizado, costo de venta ni rentabilidad real                                          | `BLOQUEADO` para rentabilidad oficial                           |
+|    4 | UI y agregados actuales presentan/suman importes sin contrato de FX explícito | solo es válido si toda la población comparte una moneda gobernada; multimoneda exige conversión versionada                                 | `BLOQUEADO` para agregación multimoneda                         |
+
+Ninguna divergencia autoriza corrección física en esta tarea documental. Sus cierres permanecen en las tareas NUMERA y de integración indicadas en los handoffs.
+
+#### 7. Matriz materializada de las 10 familias
+
+|    # | Familia canónica              | Definición materializada                                                                                                                                                 | Evidencia actual                                                                                               | Certificación                                                                                   | Condición de salida / propietario exacto                                                                   |
+| ---: | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | separar bases de costo; estándar usa método/versión vigente y real usa componentes efectivamente reconocidos y trazables para el mismo objeto, unidad, moneda y periodo  | ORIGO conserva costos de compra; FOGO costo técnico; NUMERA no demuestra método económico integral             | `NO EVALUADO` para evidencias parciales; `BLOQUEADO` para costo económico oficial               | `NUMERA-DOM-002` a `NUMERA-DOM-007`, `NUMERA-DOM-014`, `OPS-CST-001`, `DATA-INT-001`, `DATA-INT-002`       |
+|    2 | variaciones                   | diferencia entre actual y base comparable; costo, presupuesto, forecast, precio y cantidad permanecen variaciones distintas                                              | existe `budget_amount - actual_expenses`; no existe descomposición económica integral                          | `NO EVALUADO` para saldo presupuestal actual; `BLOQUEADO` para variaciones económicas completas | `NUMERA-DOM-007`, `NUMERA-DOM-011`, `NUMERA-DOM-014`, `NUMERA-DOM-018`, `DATA-INT-002`                     |
+|    3 | margen y contribución         | margen usa ingreso realizado elegible menos costo trazable; contribución usa ingreso realizado menos costos variables elegibles; cada porcentaje conserva su denominador | existe margen objetivo, no margen realizado certificado                                                        | `BLOQUEADO`                                                                                     | `NUMERA-DOM-007`, `NUMERA-DOM-008`, `NUMERA-UX-022`, `DATA-INT-002`                                        |
+|    4 | gastos                        | distinguir gasto capturado, reconocido, aprobado, pagado, anulado y conciliado; agregación solo sobre estados elegibles                                                  | `numera_expenses` y categorías fixed/variable/one_time existen                                                 | `NO EVALUADO` para captura; `BLOQUEADO` para gasto reconocido integral                          | `NUMERA-DOM-005`, `NUMERA-AUTH-004`, `NUMERA-AUTH-005`, `NUMERA-UX-009`, `NUMERA-UX-010`, `NUMERA-DOM-014` |
+|    5 | centros de costo              | dimensión económica con identidad/vigencia propia; asignación directa y distribución compartida deben reconciliarse sin equiparar centro con sede/canal/marca            | centros y resumen mensual existen                                                                              | `NO EVALUADO`                                                                                   | `NUMERA-DOM-006`, `NUMERA-DOM-007`, `OPS-CST-001`, `DATA-INT-003`                                          |
+|    6 | presupuesto y forecast        | presupuesto aprobado, revisión, forecast y escenario son artefactos versionados distintos; real nunca se sobrescribe                                                     | existe presupuesto editable por periodo/centro, ingreso esperado y margen objetivo; no hay versionado integral | `NO EVALUADO` para fila actual; `BLOQUEADO` para forecast/versiones oficiales                   | `NUMERA-DOM-006`, `NUMERA-DOM-011`, `NUMERA-DOM-018`, `NUMERA-AUTH-015`, `NUMERA-UX-023`, `NUMERA-UX-028`  |
+|    7 | caja, bancos y tesorería      | posición real usa saldos reconciliados y disponibilidad; flujo realizado usa movimientos liquidados; proyección separa compromisos/forecast de efectivo real             | no se demuestra modelo integral vigente de cuentas, extractos, aplicaciones y liquidez                         | `BLOQUEADO`                                                                                     | `NUMERA-DOM-009`, `NUMERA-DOM-014`, `NUMERA-AUTH-014`, `NUMERA-UX-017`, `NUMERA-UX-021`, `DATA-INT-001`    |
+|    8 | cartera y obligaciones        | saldo abierto deriva de obligación/derecho reconocido menos aplicaciones válidas; pago o cobro sin aplicación no cierra saldo                                            | no existe evidencia de modelo canónico integral vigente de cartera/AP                                          | `BLOQUEADO`                                                                                     | `NUMERA-DOM-003`, `NUMERA-DOM-010`, `NUMERA-DOM-016`, `NUMERA-UX-018`, `NUMERA-UX-020`, `NUMERA-UX-026`    |
+|    9 | rentabilidad multidimensional | ingreso realizado menos costos trazables y asignaciones aprobadas para el mismo grano; residuo no atribuible permanece visible                                           | pantalla actual usa ingreso esperado y gasto agregado                                                          | `BLOQUEADO`                                                                                     | `NUMERA-DOM-008`, `NUMERA-DOM-014`, `NUMERA-UX-022`, `DATA-AUTH-001`, `DATA-AUTH-002`, `DATA-INT-002`      |
+|   10 | escenarios y simulaciones     | conjunto versionado de supuestos y overrides sobre una línea base inmutable; resultado simulado nunca altera real, presupuesto ni forecast publicados                    | existe margen objetivo y punto de equilibrio simple; no existe motor de escenarios integral demostrado         | `BLOQUEADO`                                                                                     | `NUMERA-DOM-018`, `NUMERA-AUTH-015`, `NUMERA-UX-028`, `DATA-INT-002`                                       |
+
+**Reconciliación:** 10 familias esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 8. Taxonomía de costo obligatoria
+
+D013 conserva como conceptos separados:
+
+| Tipo de costo        | Semántica mínima                                                                           | Autoridad / insumo                                            |
+| -------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| costo de adquisición | importe atribuible a la adquisición según componentes y tratamiento tributario aprobados   | ORIGO + NUMERA                                                |
+| costo landed         | adquisición más componentes directamente atribuibles definidos por una política versionada | NUMERA consumiendo hechos autorizados                         |
+| último costo         | último costo elegible observado bajo la coordenada declarada                               | ORIGO como evidencia operacional                              |
+| costo promedio       | promedio calculado bajo método, población y ponderación declarados                         | ORIGO como evidencia operacional; NUMERA decide uso económico |
+| costo estándar       | costo objetivo/aprobado para objeto, unidad, vigencia y versión                            | NUMERA + fuentes técnicas aplicables                          |
+| costo real           | costo efectivamente reconocido y trazable bajo método aprobado                             | NUMERA reconciliando fuentes                                  |
+| costo productivo     | costo atribuible a ejecución productiva bajo regla declarada                               | FOGO como hecho técnico + NUMERA                              |
+| costo logístico      | costo atribuible a traslado/cumplimiento bajo regla declarada                              | fuentes logísticas + NUMERA                                   |
+| costo de merma       | efecto económico de merma explícita según causa, cantidad y base de costo aprobadas        | D011/FOGO/NEXO + NUMERA                                       |
+| costo interno        | valoración gerencial de transferencias/servicios internos bajo política aprobada           | NUMERA + `OPS-CST-001`                                        |
+
+Reglas:
+
+1. dos tipos no se vuelven equivalentes porque hoy tengan el mismo importe;
+2. último costo no sustituye costo real histórico;
+3. promedio de compras no implica valoración contable promedio;
+4. precio de transferencia interno no crea automáticamente ingreso o gasto legal;
+5. impuesto recuperable, no recuperable, neto y bruto no se mezclan silenciosamente;
+6. cada valor conserva moneda, unidad, fecha de vigencia, fuente y método;
+7. un cambio de método exige nueva versión y no reescribe historia sin `DATA-DOM-017`.
+
+#### 9. Costo estándar
+
+Un estándar económico deberá declarar como mínimo:
+
+- objeto de costo;
+- versión;
+- vigencia desde/hasta;
+- unidad base;
+- moneda;
+- cantidades estándar cuando aplique;
+- costos unitarios estándar;
+- componentes incluidos/excluidos;
+- reglas de asignación;
+- tratamiento de merma y coproductos cuando corresponda;
+- fuente de cada componente;
+- autoridad que aprueba.
+
+Forma conceptual permitida cuando todas las entradas estén gobernadas:
+
+```text
+costo_estándar_total
+= suma(componentes_directos_estándar)
++ suma(asignaciones_estándar_aprobadas)
+```
+
+Para un producto o salida homogénea:
+
+```text
+costo_estándar_unitario
+= costo_estándar_total / cantidad_estándar_elegible
+```
+
+Si la cantidad elegible es cero o no existe, el costo unitario queda sin denominador; no se devuelve cero.
+
+Un costo estándar puede ser usado para planificación o comparación. No se presenta como costo real.
+
+#### 10. Costo real trazable
+
+El costo real económico deberá derivarse de hechos reconocidos y reconciliados.
+
+Forma conceptual:
+
+```text
+costo_real_total
+= suma(costos_directos_reconocidos)
++ suma(costos_compartidos_asignados_por_regla_aprobada)
+```
+
+Condiciones:
+
+- mismo objeto de costo;
+- misma población;
+- mismo periodo de reconocimiento;
+- misma moneda o conversión gobernada;
+- componentes con evidencia y fuente;
+- reversos/correcciones aplicados sin borrar el original;
+- sin doble conteo entre compra, inventario, consumo y gasto;
+- sin doble conteo entre transferencias internas y consolidado.
+
+El costo técnico de FOGO o la memoria de compra de ORIGO podrán alimentar la reconstrucción, pero no sustituyen el hecho económico reconciliado de NUMERA.
+
+#### 11. Costo unitario y producción multi-salida
+
+Un costo unitario solo se calcula cuando existe cantidad elegible compatible:
+
+```text
+costo_real_unitario
+= costo_real_total_atribuido / cantidad_buena_elegible
+```
+
+Para producción con múltiples salidas:
+
+- cada salida conserva identidad y cantidad;
+- el costo compartido del lote requiere método de asignación versionado;
+- la suma de costos asignados más residuo explícito deberá reconciliar con el costo total elegible;
+- un subproducto de valor cero no se convierte automáticamente en merma;
+- una reasignación económica no reescribe cantidades físicas de FOGO/NEXO.
+
+El método específico permanece bajo `NUMERA-DOM-007` y `OPS-CST-001`; D013 no selecciona FIFO, promedio, estándar u otro método contable por inferencia.
+
+#### 12. Variación de costo
+
+La variación económica general se define sobre bases comparables:
+
+```text
+variación_de_costo
+= costo_real_elegible - costo_estándar_elegible
+```
+
+Lectura para costo:
+
+- valor positivo: costo real superior al estándar;
+- valor negativo: costo real inferior al estándar;
+- cero: igualdad bajo la misma base, no ausencia de datos.
+
+Porcentaje, solo si el estándar es distinto de cero:
+
+```text
+variación_de_costo_pct
+= variación_de_costo / costo_estándar_elegible
+```
+
+Descomposiciones por precio, cantidad, mezcla, rendimiento, merma o asignación solo podrán publicarse cuando sus entradas permitan separar cada efecto sin residuo oculto. La suma de componentes deberá reconciliar con la variación total o mostrar explícitamente el residuo.
+
+#### 13. Gasto
+
+D013 distingue:
+
+```text
+gasto capturado
+≠ gasto aprobado
+≠ gasto reconocido
+≠ gasto pagado
+≠ gasto conciliado
+≠ gasto anulado/revertido
+```
+
+Un agregado oficial de gasto exige población de estados elegibles.
+
+La clasificación `fixed`, `variable`, `one_time` observada actualmente es una clasificación de la fundación NUMERA y no sustituye:
+
+- naturaleza económica;
+- centro de costo;
+- moneda;
+- tratamiento fiscal;
+- vigencia;
+- soporte;
+- aprobación;
+- reconocimiento.
+
+Una salida de banco puede pagar un gasto reconocido, una obligación, un anticipo u otro hecho. Por tanto, salida de caja no equivale automáticamente a gasto.
+
+#### 14. Centros de costo
+
+`CENTRO_DE_COSTO` es una dimensión maestra NUMERA.
+
+Reglas:
+
+- no se infiere desde sede;
+- no se infiere desde marca;
+- no se infiere desde canal;
+- no se infiere desde área;
+- una reorganización no recodifica historia;
+- asignaciones usan la identidad/vigencia aplicable al hecho;
+- vistas consolidadas deben conservar la jerarquía financiera aplicable al corte.
+
+Un hecho puede traer sede, canal, producto y centro de costo simultáneamente. Ninguna dimensión sustituye a otra.
+
+#### 15. Costos compartidos y drivers
+
+Todo pool compartido deberá conservar:
+
+- identidad del pool;
+- importe y moneda;
+- periodo;
+- componentes fuente;
+- driver;
+- versión del driver;
+- base total elegible;
+- destinos;
+- base por destino;
+- aprobación;
+- vigencia;
+- residuo no asignado;
+- reversión o nueva versión.
+
+Cuando exista una base válida:
+
+```text
+costo_asignado_destino
+= pool_elegible
+  × base_driver_destino
+  / base_driver_total_elegible
+```
+
+Si el denominador es cero o incompleto, la asignación no se fabrica. El costo permanece sin asignar o bloqueado según el contrato.
+
+La suma debe reconciliar:
+
+```text
+pool_elegible
+= suma(costos_asignados)
++ residuo_explícito
+```
+
+#### 16. Margen bruto
+
+El margen bruto económico requiere ingreso realizado elegible y costo trazable bajo la misma base.
+
+```text
+margen_bruto
+= ingreso_realizado_elegible
+- costo_de_venta_elegible
+```
+
+Porcentaje:
+
+```text
+margen_bruto_pct
+= margen_bruto / ingreso_realizado_elegible
+```
+
+Solo se calcula el porcentaje si el denominador es válido y distinto de cero.
+
+Reglas:
+
+- ingreso esperado no entra como ingreso realizado;
+- cobro no sustituye ingreso;
+- impuesto, devolución y descuento siguen la semántica económica/comercial aplicable;
+- costo técnico no reconciliado no entra como costo oficial;
+- dimensiones de producto, canal, sede o cliente deben reconciliar con el total económico.
+
+#### 17. Contribución
+
+La contribución separa costos variables elegibles de costos fijos y compartidos.
+
+```text
+margen_de_contribución
+= ingreso_realizado_elegible
+- costos_variables_elegibles
+```
+
+```text
+razón_de_contribución
+= margen_de_contribución / ingreso_realizado_elegible
+```
+
+La clasificación variable debe pertenecer a una política económica vigente. La etiqueta `expense_kind = variable` observada no demuestra por sí sola que todos los costos variables de una venta, producto o canal estén capturados.
+
+#### 18. Punto de equilibrio
+
+El punto de equilibrio económico usa una razón de contribución compatible:
+
+```text
+ingreso_de_equilibrio
+= costos_fijos_elegibles / razón_de_contribución
+```
+
+Condiciones:
+
+- razón de contribución mayor que cero;
+- costos fijos y variables bajo la misma población y periodo;
+- misma moneda;
+- misma definición de ingreso;
+- sin costos omitidos materialmente;
+- sin mezclar real con presupuesto o escenario sin etiqueta.
+
+El cálculo actual de NUMERA que usa `target_gross_margin_pct` se clasifica como **ingreso requerido bajo margen objetivo** hasta demostrar que esa tasa es equivalente a una razón de contribución aprobada para el contexto.
+
+No se renombra automáticamente ese valor ni se certifica como punto de equilibrio real.
+
+#### 19. Presupuesto
+
+Se separan:
+
+```text
+presupuesto original aprobado
+revisión presupuestal aprobada
+presupuesto vigente publicado
+forecast
+escenario
+real
+```
+
+Cada versión deberá conservar:
+
+- identidad;
+- versión;
+- estado;
+- periodo;
+- empresa/alcance;
+- centro de costo cuando aplique;
+- moneda;
+- valores;
+- supuestos;
+- autor;
+- aprobador;
+- fecha de publicación;
+- relación con versión previa.
+
+Un `upsert` sobre una única fila no satisface por sí solo el requisito histórico de versiones.
+
+#### 20. Variación presupuestal
+
+Para gasto, D013 adopta como diferencia analítica firmada:
+
+```text
+desviación_gasto
+= gasto_real_elegible - presupuesto_gasto_elegible
+```
+
+Lectura:
+
+- positivo: gasto por encima del presupuesto;
+- negativo: gasto por debajo;
+- cero: igualdad bajo base comparable.
+
+El saldo disponible se mantiene como métrica distinta:
+
+```text
+saldo_presupuestal
+= presupuesto_gasto_elegible - gasto_real_elegible
+```
+
+Por tanto, el campo técnico actual `budget_variance` coincide matemáticamente con **saldo presupuestal** para gastos bajo sus entradas actuales y no deberá reutilizarse silenciosamente como desviación con signo opuesto.
+
+Para ingreso:
+
+```text
+desviación_ingreso
+= ingreso_realizado_elegible - presupuesto_ingreso_elegible
+```
+
+Los estados favorable/desfavorable dependen del tipo de medida y deben declararse; no se deducen únicamente del signo para cualquier métrica.
+
+#### 21. Forecast
+
+Forecast es una mejor estimación vigente del resultado futuro y permanece separado del presupuesto aprobado.
+
+Cada forecast deberá conservar:
+
+- fecha de corte;
+- horizonte;
+- versión;
+- fuentes reales incorporadas;
+- supuestos para periodos no realizados;
+- moneda;
+- dimensiones;
+- responsable;
+- publicación.
+
+Una vez madure el periodo:
+
+```text
+error_de_forecast
+= real_elegible - forecast_publicado_comparable
+```
+
+No se compara contra una versión de forecast creada después de conocer el resultado sin declararlo expresamente.
+
+#### 22. Caja, bancos y tesorería
+
+La analítica deberá distinguir:
+
+```text
+efectivo físico
+saldo bancario
+movimiento bancario
+pago iniciado
+pago liquidado
+recaudo recibido
+recaudo aplicado
+transferencia
+saldo restringido
+saldo disponible
+```
+
+La posición real de liquidez solo usa fondos disponibles y reconciliados bajo el corte definido.
+
+Forma conceptual:
+
+```text
+liquidez_disponible
+= efectivo_elegible_disponible
++ saldos_bancarios_elegibles_disponibles
+- restricciones_explícitas_aplicables
+```
+
+Cartera, ventas esperadas, líneas de crédito no utilizadas o ingresos pronosticados no se suman como efectivo real.
+
+El modelo operativo de bancos y tesorería permanece `BLOQUEADO` hasta `NUMERA-DOM-009` y sus integraciones.
+
+#### 23. Flujo de caja
+
+Flujo realizado:
+
+```text
+flujo_neto_realizado
+= entradas_de_caja_liquidadas
+- salidas_de_caja_liquidadas
+```
+
+Flujo proyectado:
+
+```text
+saldo_proyectado_fin
+= saldo_disponible_inicio
++ entradas_proyectadas_elegibles
+- salidas_proyectadas_elegibles
+```
+
+Reglas:
+
+- real y proyectado nunca se agregan como si fueran el mismo estado;
+- compromisos y oportunidades conservan probabilidad/estado si el modelo los usa;
+- una obligación no pagada afecta proyección, no flujo realizado;
+- una cuenta por cobrar no recaudada afecta proyección, no efectivo real;
+- movimientos pendientes o no conciliados se muestran por separado.
+
+#### 24. Cartera y cuentas por cobrar
+
+Se separan:
+
+```text
+deudor
+cuenta por cobrar
+documento
+cuota
+vencimiento
+saldo abierto
+recaudo
+aplicación
+anticipo
+saldo a favor
+acuerdo
+disputa
+castigo autorizado
+```
+
+Saldo abierto conceptual:
+
+```text
+saldo_cartera_abierto
+= importe_reconocido
+- recaudos_aplicados
+- créditos_aplicados
+- castigos_o_ajustes_autorizados
+```
+
+Un recaudo sin aplicación no cierra una cuenta por simple igualdad de monto.
+
+Aging usa saldo abierto y fecha de vencimiento al corte. Las partidas no vencidas permanecen separadas de las vencidas.
+
+La familia permanece `BLOQUEADO` hasta la materialización de `NUMERA-DOM-016`.
+
+#### 25. Cuentas por pagar y obligaciones
+
+Se separan:
+
+```text
+orden de compra
+recepción
+factura o soporte
+obligación
+vencimiento
+aprobación
+pago programado
+pago ejecutado
+aplicación
+disputa
+```
+
+Saldo abierto conceptual:
+
+```text
+saldo_obligaciones_abierto
+= obligación_reconocida
+- pagos_aplicados
+- créditos_o_ajustes_autorizados
+```
+
+Orden emitida o recepción física no crean automáticamente una obligación financiera con el mismo tratamiento; la regla de reconocimiento pertenece a NUMERA y a la autoridad contable/fiscal aplicable.
+
+La familia permanece `BLOQUEADO` hasta `NUMERA-DOM-003`, `NUMERA-DOM-010` y la conciliación correspondiente.
+
+#### 26. Rentabilidad multidimensional
+
+La rentabilidad solo podrá publicarse sobre ingreso realizado y costo trazable.
+
+Forma base:
+
+```text
+resultado_atribuible
+= ingreso_realizado_atribuible
+- costos_directos_atribuibles
+- costos_compartidos_asignados_aprobados
+- gastos_atribuibles_elegibles
+```
+
+La publicación deberá mostrar además:
+
+- costos sin asignar;
+- ingresos no atribuibles a la dimensión solicitada;
+- cobertura;
+- periodo;
+- moneda;
+- versión del método de asignación.
+
+D013 admite análisis por las dimensiones gobernadas que realmente puedan reconciliarse, incluyendo cuando corresponda:
+
+- entidad legal;
+- marca;
+- sede;
+- centro de costo;
+- canal;
+- producto;
+- pedido;
+- cliente autorizado;
+- periodo.
+
+Reglas:
+
+1. una sede no sustituye centro de costo;
+2. una marca no sustituye entidad legal;
+3. un canal requiere `COMMERCIAL_CHANNEL`, no `source` por conveniencia;
+4. una venta anónima no se imputa a un cliente;
+5. costo no atribuible no se reparte por conveniencia para fabricar rentabilidad granular;
+6. todo desglose debe reconciliar con el total de su población o mostrar el residuo;
+7. un ratio de rentabilidad debe declarar su denominador; no todo resultado dividido por un importe se denomina ROI.
+
+#### 27. Rentabilidad por cliente
+
+`DATA-DOM-012` permite asociar venta elegible a identidad autorizada. D013 añade la capa económica.
+
+Solo podrá calcularse cuando:
+
+- la identidad esté autorizada;
+- el ingreso esté realmente vinculado;
+- el costo sea atribuible o la asignación tenga método aprobado;
+- se apliquen minimización y restricciones de `DATA-AUTH-001`/`DATA-AUTH-002`;
+- ventas anónimas permanezcan fuera del nivel individual.
+
+No se crea ni aprueba por esta tarea un modelo predictivo de lifetime value.
+
+#### 28. Escenarios y simulaciones
+
+Un escenario es un artefacto analítico versionado y no un hecho económico.
+
+Deberá conservar como mínimo:
+
+- identidad;
+- versión;
+- creador/responsable;
+- fecha de corte de la línea base;
+- alcance;
+- moneda;
+- métricas y versiones consumidas;
+- supuestos;
+- valores sustituidos;
+- fuentes de los valores base;
+- restricciones;
+- resultado;
+- relación con escenario base;
+- estado de aprobación/publicación cuando corresponda.
+
+Se preservan como contextos distintos:
+
+```text
+REAL
+PRESUPUESTADO
+PRONOSTICADO
+SIMULADO
+PROPUESTO
+PUBLICADO
+```
+
+Reglas:
+
+- cambiar un supuesto no cambia un hecho real;
+- publicar un escenario no lo convierte en presupuesto aprobado;
+- un escenario no crea una venta, costo, pago, obligación o asiento;
+- comparaciones usan la misma versión de métrica y dimensión o una regla de puente explícita;
+- escenarios caducados conservan historia;
+- escenarios compartidos requieren `NUMERA-AUTH-015`;
+- el motor se materializa en `NUMERA-DOM-018` y su visor en `NUMERA-UX-028`.
+
+#### 29. Moneda y conversión
+
+Todo importe conserva:
+
+- monto original;
+- moneda original;
+- fuente;
+- fecha/hora o fecha económica;
+- método de reconocimiento;
+- conversión, si existe, como valor derivado separado.
+
+Una conversión deberá declarar:
+
+- moneda origen;
+- moneda destino;
+- tasa;
+- fuente de tasa;
+- fecha/hora o vigencia;
+- método de selección;
+- precisión/redondeo;
+- versión.
+
+Reglas:
+
+1. no se suman monedas distintas por compartir símbolo o unidad visual;
+2. un `formatMoney` de interfaz no constituye conversión;
+3. si la población está gobernada como una sola moneda, esa condición deberá probarse y publicarse;
+4. presupuesto y real deben compararse en moneda compatible;
+5. conversión para presentación no reescribe el monto original.
+
+#### 30. Periodos, fechas y reconocimiento
+
+D013 conserva separados:
+
+- fecha del hecho operativo;
+- fecha económica;
+- fecha de reconocimiento;
+- fecha de pago/cobro;
+- periodo económico;
+- periodo contable;
+- periodo fiscal;
+- fecha de carga;
+- fecha de corrección.
+
+`numera_periods` actual es evidencia de periodo económico-operativo, pero sus estados `open`, `closed`, `locked` no demuestran por sí solos un cierre financiero integral.
+
+Eventos tardíos se conservan y se tratan mediante la política de cierre/restatement aplicable. No se insertan silenciosamente en un periodo cerrado para preservar un resultado publicado.
+
+#### 31. Conciliación y doble conteo
+
+Toda métrica económica oficial deberá poder descender hasta hechos reconciliados.
+
+Controles mínimos:
+
+- venta ↔ pago ↔ caja ↔ documento ↔ entrega ↔ devolución/reembolso;
+- compra ↔ recepción ↔ documento ↔ obligación ↔ devolución ↔ pago;
+- inventario ↔ consumo ↔ producción ↔ merma ↔ costo;
+- gasto ↔ soporte ↔ aprobación ↔ pago;
+- banco ↔ movimiento ↔ aplicación ↔ hecho económico;
+- transferencia interna ↔ emisor ↔ receptor ↔ tratamiento de consolidación.
+
+Un lado ausente no se fabrica para cerrar la conciliación. La diferencia se conserva como diferencia con estado, responsable y resolución en `NUMERA-DOM-014`.
+
+#### 32. Cero, nulo, negativos y denominadores
+
+D013 conserva:
+
+```text
+0
+≠ NULL
+≠ NO_APLICA
+≠ DESCONOCIDO
+≠ NO_RECIBIDO
+≠ PENDIENTE
+≠ DENOMINADOR_NO_DISPONIBLE
+≠ NO_CONCILIADO
+```
+
+Reglas:
+
+- costo cero requiere evidencia de gratuidad, subsidio, asignación cero aprobada u otra causa explícita;
+- un costo faltante no es cero;
+- ingreso cero no implica automáticamente pérdida si faltan costos o población;
+- margen porcentual no se calcula con ingreso cero;
+- variación porcentual no se calcula con estándar cero;
+- punto de equilibrio no se calcula con razón de contribución nula o negativa como un valor financiero ordinario;
+- saldo negativo se conserva con su signo y causa; no se recorta a cero para ocultar inconsistencia;
+- un presupuesto ausente no se interpreta como presupuesto cero.
+
+#### 33. Calidad y certificación
+
+Toda familia consume `DATA-DOM-007`.
+
+Como mínimo deberán verificarse:
+
+- completitud de hechos económicos;
+- unicidad e idempotencia;
+- integridad de correlaciones;
+- moneda;
+- periodo;
+- clasificación económica;
+- centro de costo;
+- vigencia del método;
+- estados elegibles;
+- reconciliación;
+- cobertura de fuentes;
+- datos tardíos;
+- reversos/correcciones;
+- duplicados;
+- linaje;
+- calidad de denominadores;
+- residuo de asignaciones;
+- consistencia entre detalle y agregado.
+
+La mera existencia de una vista, RPC o pantalla no concede estado `VALIDADO` o `VERIFICADO`.
+
+Un resultado permanece `BLOQUEADO` si falta ingreso realizado, costo trazable, moneda compatible, periodo, denominador o reconciliación esencial.
+
+#### 34. Publicación, visor y snapshots
+
+Toda publicación consume `DATA-DOM-008`.
+
+NUMERA deberá presentar explícitamente:
+
+- versión de métrica;
+- periodo;
+- fecha de corte;
+- moneda;
+- filtros;
+- dimensiones;
+- estado real/presupuestado/forecast/simulado;
+- fuente;
+- frescura;
+- cobertura;
+- calidad;
+- certificación.
+
+El visor económico objetivo de `NUMERA-UX-028` deberá permitir comparar precio, costo, margen, equilibrio, presupuesto y escenarios sin ocultar el estado de cada dato.
+
+La vista principal no debe mantener explicaciones técnicas permanentes como sustituto de una semántica clara. Fórmula, componentes, fuentes, método y linaje se exponen mediante divulgación progresiva y drill-down autorizado.
+
+#### 35. Identidad de métricas y aliases técnicos
+
+Esta tarea no crea una familia `METRIC-*` ni asigna claves nuevas por inferencia.
+
+Nombres actuales como:
+
+- `budget_amount`;
+- `expected_revenue`;
+- `actual_expenses`;
+- `budget_variance`;
+- `target_gross_margin_pct`;
+- `break_even_revenue`;
+- `total_cost`;
+- `unit_cost`;
+- `last_net_unit_cost`;
+- `avg_stock_unit_cost`;
+
+son evidencia o aliases técnicos de fuente.
+
+No se convierten automáticamente en `metric_key` hasta que `DATA-INT-002` materialice el registro semántico conforme a `DATA-DOM-004`.
+
+#### 36. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance         | Propietario documental                                                                                       | Condición de salida                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| alcance económico versus contabilidad formal         | `NUMERA-DOM-001`, `NUMERA-DOM-013`, `NUMERA-DOM-015`, `NUMERA-DOM-017`                                       | antes de presentar NUMERA como contabilidad o libro oficial        |
+| hechos económicos de venta                           | `NUMERA-DOM-002`                                                                                             | antes de certificar ingreso realizado y margen comercial           |
+| hechos económicos de compra/recepción                | `NUMERA-DOM-003`                                                                                             | antes de certificar obligaciones y costo de adquisición completo   |
+| hechos económicos de producción/inventario           | `NUMERA-DOM-004`, `NUMERA-UX-019`                                                                            | antes de certificar costo productivo y variaciones                 |
+| gasto, soporte, aprobación, corrección y anulación   | `NUMERA-DOM-005`, `NUMERA-UX-009`, `NUMERA-UX-010`                                                           | antes de certificar gasto reconocido integral                      |
+| identidad/vigencia de centros de costo               | `NUMERA-DOM-006`, `DATA-INT-003`                                                                             | antes de publicar análisis oficial por centro                      |
+| método de costo estándar, real, landed y variaciones | `NUMERA-DOM-007`, `OPS-CST-001`                                                                              | antes de publicar costo económico oficial                          |
+| rentabilidad multidimensional                        | `NUMERA-DOM-008`, `NUMERA-UX-022`                                                                            | antes de publicar margen/rentabilidad por dimensión                |
+| caja, bancos, extractos y tesorería                  | `NUMERA-DOM-009`, `NUMERA-UX-017`, `NUMERA-UX-021`                                                           | antes de publicar liquidez real                                    |
+| obligaciones y cuentas por pagar                     | `NUMERA-DOM-010`, `NUMERA-UX-020`                                                                            | antes de publicar saldos AP y vencimientos                         |
+| periodos, cierres y reapertura                       | `NUMERA-DOM-011`, `NUMERA-UX-011`, `NUMERA-UX-023`                                                           | antes de certificar periodos cerrados y comparaciones históricas   |
+| conciliación y diferencias                           | `NUMERA-DOM-014`, `NUMERA-UX-024`                                                                            | antes de certificar agregados provenientes de varias fuentes       |
+| cartera y cuentas por cobrar                         | `NUMERA-DOM-016`, `NUMERA-UX-026`                                                                            | antes de publicar cartera, aging o exposición                      |
+| extensión contable futura                            | `NUMERA-DOM-017`, `NUMERA-UX-027`                                                                            | antes de mapear hechos a plan de cuentas/comprobantes internos     |
+| escenarios, supuestos y publicación                  | `NUMERA-DOM-018`, `NUMERA-AUTH-015`, `NUMERA-UX-028`                                                         | antes de publicar escenarios o simulaciones compartidas            |
+| datos financieros sensibles, exportación y detalle   | `NUMERA-AUTH-002`, `NUMERA-AUTH-007`, `NUMERA-AUTH-008`, `NUMERA-AUTH-014`, `DATA-AUTH-001`, `DATA-AUTH-002` | antes de exponer detalle, banco, cartera o comparaciones sensibles |
+| contratos analíticos de eventos/lectura              | `DATA-INT-001`                                                                                               | antes de ingestión analítica productiva                            |
+| modelos semánticos, cálculos, snapshots y consultas  | `DATA-INT-002`                                                                                               | antes de servir métricas económico-financieras compartidas         |
+| diagnóstico causal y anomalías                       | `DATA-DOM-014`                                                                                               | antes de explicar una variación como causa                         |
+| metas, objetivos y guardrails                        | `DATA-DOM-015`                                                                                               | antes de gobernar objetivos financieros                            |
+| experimentos y acciones de mejora                    | `DATA-DOM-016`                                                                                               | antes de declarar efecto de una intervención                       |
+| restatements y reproducibilidad                      | `DATA-DOM-017`                                                                                               | antes de reexpresar resultados publicados                          |
+
+No queda un bloqueo de D013 sin propietario documental y condición de salida.
+
+#### 37. Cobertura de requisitos de prueba vigente
+
+Las reglas de esta tarea ya están protegidas por requisitos vigentes:
+
+- `TREQ-NUMERA-001` protege conciliación, trazabilidad de costos, márgenes, gastos, cierres, saldos y reportes;
+- `TREQ-NUMERA-002` protege identidad del hecho económico, periodos, correcciones compensatorias y frontera con contabilidad formal;
+- `TREQ-NUMERA-003` protege cartera, obligaciones, caja, bancos, tesorería, aplicación, conciliación y segregación;
+- `TREQ-NUMERA-004` protege métodos de costo, distribuciones, presupuesto, forecast, punto de equilibrio, rentabilidad, escenarios y visor económico;
+- `TREQ-DATA-002` protege identidad, fórmula, numerador, denominador, granularidad, dimensiones, moneda, calendario, fuente, calidad, versión y certificación de métricas;
+- `TREQ-DATA-003` protege contratos de origen, cobertura, duplicados, integridad, datos tardíos, reconciliación y linaje;
+- `TREQ-DATA-004` protege publicación, corte, moneda, filtros, calidad, snapshot, simulación, exportación, drill-down y restatements.
+
+D013 especializa semántica y fórmulas dentro de esas reglas ya identificadas. No introduce un comportamiento ejecutable adicional ni cambia el alcance de esos requisitos.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente las diez familias económico-financieras dentro de requisitos vigentes que ya protegen hechos económicos, costos, presupuesto, cartera, tesorería, rentabilidad, escenarios, moneda, calidad, conciliación y publicación. No modifica comportamiento ejecutable, contratos físicos, autorización, datos ni integración.
+
+#### 38. Criterios de aceptación
+
+1. las 10 familias de analítica económico-financiera están presentes exactamente una vez;
+2. el total esperado es 10 y el total materializado es 10;
+3. existen 0 faltantes y 0 duplicados;
+4. NUMERA permanece capa económico-operativa y no se declara contabilidad formal;
+5. venta, ingreso, cobro y depósito permanecen separados;
+6. compra, recepción, obligación y pago permanecen separados;
+7. costo de compra, costo productivo y costo económico oficial permanecen separados;
+8. último costo y promedio de ORIGO no se convierten por inferencia en método de valoración oficial;
+9. `total_cost` y `unit_cost` de FOGO permanecen evidencia técnica hasta reconciliación;
+10. costo estándar declara método, versión, vigencia, unidad, moneda y componentes;
+11. costo real exige hechos reconocidos y trazables;
+12. costo unitario no se calcula con denominador ausente o cero;
+13. producción multi-salida exige asignación versionada y reconciliación;
+14. variación de costo conserva signo y base comparable;
+15. saldo presupuestal y desviación presupuestal permanecen métricas distintas;
+16. el campo técnico actual `budget_variance` no cambia silenciosamente de signo o significado;
+17. gasto capturado no equivale automáticamente a gasto reconocido;
+18. pago o salida de caja no equivale automáticamente a gasto;
+19. centro de costo no equivale a sede, área, marca o canal;
+20. costos compartidos usan pool, driver, versión, base, destinos y residuo explícito;
+21. asignación con denominador inválido no se fabrica;
+22. ingreso esperado no se usa como ingreso realizado;
+23. margen bruto usa ingreso realizado y costo trazable;
+24. contribución usa costos variables elegibles bajo política vigente;
+25. margen porcentual no se calcula con denominador inválido;
+26. punto de equilibrio real usa razón de contribución compatible;
+27. el cálculo actual con margen objetivo se trata como simulación hasta certificación;
+28. presupuesto original, revisión, forecast, escenario y real permanecen separados;
+29. una actualización de la fila presupuestal no satisface por sí sola versionado histórico;
+30. forecast conserva corte, horizonte, supuestos y versión;
+31. error de forecast se compara contra una versión publicada anterior al resultado;
+32. liquidez real usa efectivo y bancos disponibles/reconciliados;
+33. cartera no se suma como efectivo real;
+34. obligación no pagada afecta proyección, no flujo realizado;
+35. flujo realizado y proyectado permanecen separados;
+36. recaudo sin aplicación no cierra cartera por coincidencia de monto;
+37. pago sin aplicación no cierra obligación por coincidencia de monto;
+38. aging usa saldo abierto y vencimiento al corte;
+39. rentabilidad usa ingreso realizado, costo trazable y asignaciones aprobadas;
+40. residuo no atribuible permanece visible;
+41. ventas anónimas no se imputan a clientes;
+42. no se define ROI sin denominador explícito;
+43. escenarios no alteran datos reales;
+44. publicado, simulado, forecast y presupuesto no se colapsan;
+45. monedas incompatibles no se suman sin conversión gobernada;
+46. toda conversión conserva monto/moneda originales y tasa con fuente/vigencia;
+47. un formateador COP no constituye conversión;
+48. periodos económico, contable, fiscal y operativo permanecen separados;
+49. eventos tardíos no reescriben silenciosamente periodos publicados;
+50. conciliaciones no fabrican el lado faltante;
+51. costo faltante no se transforma en cero;
+52. presupuesto ausente no se transforma en cero;
+53. saldo negativo conserva signo y causa;
+54. calidad y certificación consumen `DATA-DOM-007`;
+55. publicación consume `DATA-DOM-008`;
+56. materialización consume `DATA-INT-001` y `DATA-INT-002`;
+57. reconciliación de dimensiones/maestros externos consume `DATA-INT-003`;
+58. no se crea un namespace de métricas ni `metric_key` inventadas;
+59. cada bloqueo tiene propietario documental exacto y condición de salida;
+60. se identifican y gobiernan las cuatro divergencias semánticas actuales;
+61. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+62. no se ejecuta código, DDL, DML, migración, backfill, pago, cierre ni cambio de Supabase;
+63. `DATA-DOM-014` permanece únicamente reservada.
+
+#### 39. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+
+TAREA ACTUAL APROBADA
+DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+```
+
+
 ### [ ] DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
 ### [ ] DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
 ### [ ] DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
