@@ -6386,7 +6386,928 @@ DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputa
 ```
 
 
-### [ ] DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+### ✅ DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad` — APROBADA
+**Tarea siguiente:** `DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de analítica de servicio, clientes, fidelización, reputación y experiencia
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues o publicación productiva de artefactos:** no autorizados
+
+#### 1. Propósito
+
+Definir la semántica analítica de servicio y relación con clientes para que Vento OS pueda medir experiencia, cumplimiento, fidelización y reputación sin confundir hechos comerciales, identidad, casos de servicio, feedback, puntos, reservas, reputación pública ni efectos económicos.
+
+La tarea materializa las doce familias reservadas por `CAP-SCOPE-017` y conserva las fronteras aprobadas por `CAP-SCOPE-009`, `CAP-SCOPE-010`, `CAP-SCOPE-011` y `CAP-SCOPE-014`.
+
+El resultado deberá permitir responder de manera reproducible:
+
+```text
+qué se prometió al cliente
+qué ocurrió realmente
+cuánto tardó cada etapa
+si el pedido se cumplió íntegramente
+qué reclamo o solicitud existió
+cómo y cuándo se resolvió
+qué compensación fue decidida
+qué feedback fue recibido
+qué clientes regresan o dejan de hacerlo
+cómo se adquieren y activan relaciones identificadas
+cómo se comporta la fidelización
+qué reputación pública existe
+qué ocurre con reservas y no-show
+qué valor económico puede atribuirse de forma autorizada
+```
+
+Ninguna de esas respuestas podrá fabricarse a partir de un único estado, un nombre, un teléfono, una calificación aislada, un saldo agregado o una ausencia de eventos.
+
+#### 2. Resultado sustantivo
+
+Queda definido el contrato `DATA-DOM-012` con los siguientes resultados:
+
+- **12 de 12 familias canónicas** de analítica de servicio y clientes reciben definición explícita;
+- **12 de 12 familias** reciben fuente propietaria, semántica, fórmula o regla de cálculo, estado de evidencia y condición de salida;
+- **0 familias faltantes**;
+- **0 familias duplicadas**;
+- se separan promesa solicitada, compromiso aceptado y resultado real;
+- se separan preparación, espera de despacho, tránsito y ciclo total;
+- se impide interpretar `delivered` como prueba automática de pedido completo;
+- se separan feedback, reclamo, conversación, devolución, compensación, reserva y reputación pública;
+- se conserva identidad PASS y queda prohibida la fusión analítica de invitados por similitud;
+- se define abandono como una condición de cohorte con ventana de observación y no como una etiqueta inferida por ausencia simple;
+- se separan adquisición, registro de cuenta, activación, recurrencia y fidelización;
+- se separan puntos ganados, gastados, ajustados y redenciones por estado;
+- se impide tratar una redirección a Google Reviews como evidencia de reseña pública efectivamente publicada;
+- se bloquea cualquier índice sintético de reputación sin fuentes, población, ponderación y método gobernados;
+- se separan reserva, cancelación, asistencia, no-show y utilización de capacidad;
+- se impide recalcular margen o rentabilidad de cliente dentro de este dominio;
+- se aplican minimización, finalidad, consentimiento, segregación y protección de poblaciones pequeñas;
+- no se crea un namespace nuevo de métricas ni se fabrican `metric_key` sin evidencia;
+- se mantienen como no certificadas las familias cuya evidencia actual es parcial o cuyo contrato operativo todavía no existe.
+
+#### 3. Alcance y entradas canónicas
+
+Esta tarea consume sin reabrir:
+
+- `DATA-DOM-001` a `DATA-DOM-008` para gobierno, maestros, hechos, ingestión, calidad y publicación;
+- `DATA-DOM-009` para ventas, pedidos, demanda, recurrencia y frecuencia comercial;
+- `DATA-DOM-010` para disponibilidad, abastecimiento y cumplimiento logístico interno;
+- `DATA-DOM-011` para capacidad productiva cuando limite el servicio comercial;
+- `CAP-SCOPE-009` para pedido, preparación, entrega, venta y pago;
+- `CAP-SCOPE-010` para identidad de cliente, fidelización, reclamos, compensaciones, reservas y comunicaciones;
+- `CAP-SCOPE-011` para entrega de pedido, promesa, intento, novedad y resultado;
+- `CAP-SCOPE-014` para adquisición, oportunidades, reputación pública y atribución de Marketing;
+- el contrato PASS de identidad, fidelización y servicio;
+- el contrato PULSO de operación comercial y cumplimiento;
+- la futura autoridad AURA para reputación pública y adquisición atribuida;
+- NUMERA y `DATA-DOM-013` para cualquier interpretación económica de margen, rentabilidad o valor monetario protegido.
+
+Esta tarea no implementa modelos analíticos, vistas, caché, snapshots, pipelines, eventos, tablas, RPC ni dashboards.
+
+#### 4. Autoridad funcional y fronteras de dato
+
+| Dominio / aplicación | Autoridad consumida por D012                                                                                                 | Frontera obligatoria                                                                    |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `PULSO`              | pedido, preparación comercial, cumplimiento, despacho, entrega, intento, novedad, devolución y resultado transaccional       | PASS puede mostrar o iniciar flujos, pero no se vuelve autoridad de estados operativos  |
+| `PASS`               | identidad de cliente, relación autenticada, fidelización, ledger, redenciones, experiencia de autoservicio y feedback propio | cuenta PASS no equivale a persona ni a toda relación comercial                          |
+| `VISO`               | expediente administrativo de servicio cuando el proceso propietario corresponda a VISO                                       | no convierte feedback o chat de pedido en caso administrativo por inferencia            |
+| `AURA` objetivo      | adquisición atribuida, oportunidades, reputación pública, comentarios externos y aprendizaje de Marketing                    | permanece fuente objetivo mientras AURA siga diferida y sin fuente operativa habilitada |
+| `NEXO`               | hechos de inventario y logística que expliquen faltantes o incumplimiento físico                                             | no redefine pedido, cliente ni servicio                                                 |
+| `FOGO`               | capacidad y hechos productivos que expliquen restricciones de preparación                                                    | no redefine promesa comercial ni cierre de servicio                                     |
+| `NUMERA`             | costo, margen, rentabilidad y verdad económica                                                                               | D012 no recalcula localmente margen, contribución o rentabilidad                        |
+| `BLOQUE AB`          | semántica, calidad, certificación, publicación y protección analítica                                                        | no adquiere propiedad sobre hechos operativos                                           |
+
+Reglas raíz:
+
+```text
+IDENTIDAD DE CLIENTE ≠ CUENTA AUTENTICADA ≠ CONTACTO ≠ INVITADO
+PEDIDO ≠ SERVICIO ≠ CASO ≠ RECLAMO ≠ FEEDBACK
+PROMESA SOLICITADA ≠ PROMESA ACEPTADA ≠ RESULTADO REAL
+DEVOLUCIÓN ≠ REEMBOLSO ≠ COMPENSACIÓN ≠ CORTESÍA ≠ AJUSTE DE PUNTOS
+RATING INTERNO ≠ RESEÑA PÚBLICA
+PUNTOS ≠ DINERO ≠ MARGEN
+RESERVA ≠ PEDIDO ≠ ASISTENCIA ≠ NO-SHOW
+REPETICIÓN ≠ FIDELIZACIÓN ≠ RETENCIÓN ≠ AUSENCIA
+```
+
+#### 5. Evidencia técnica actual observada
+
+La evidencia actual demuestra superficies parciales suficientes para definir la analítica, pero no para certificar todas las familias.
+
+##### 5.1. PULSO
+
+La implementación observada expone pedidos con:
+
+- `created_at`;
+- `status`;
+- `payment_status`;
+- `fulfillment_type`;
+- `dispatch_status`;
+- `site_id`;
+- `source`;
+- importes de pedido;
+- líneas con producto, cantidad, precio y total;
+- eventos `order_status_events` con transición de estado, actor, operación y `created_at`;
+- conversaciones y mensajes relacionados con pedido.
+
+Los estados observados incluyen `pending`, `confirmed`, `preparing`, `ready_for_dispatch`, `in_transit` / `on_the_way`, `delivered` y `cancelled`.
+
+La existencia de estos estados no prueba por sí sola:
+
+- promesa aceptada;
+- pedido completo;
+- tiempo de preparación exacto;
+- reclamo formal;
+- resolución de caso;
+- compensación;
+- satisfacción;
+- reserva;
+- reputación.
+
+##### 5.2. PASS
+
+El contrato de presentación de pedidos observado incluye:
+
+- `requested_for`;
+- `schedule_mode`;
+- `delivery_window_start`;
+- `delivery_window_end`;
+- `prepare_by`;
+- `confirmed_at`;
+- `ready_for_dispatch_at`;
+- `on_the_way_at`;
+- `delivered_at`;
+- `cancelled_at`.
+
+La línea de tiempo distingue pedido realizado, confirmado, listo, en camino, entregado y cancelado, y representa explícitamente la ausencia de una hora cuando no existe timestamp.
+
+PASS también conserva evidencia actual de:
+
+- `pass.loyalty_transactions` con movimientos `earn`, `spend` y `adjust`;
+- `pass.loyalty_redemptions` con estados `pending`, `validated` y `cancelled`;
+- `user_feedback` con `rating`, texto, categoría, sede, usuario y estado;
+- flujo de rating que puede redirigir a una página externa de Google Reviews;
+- chats y seguimiento de pedido.
+
+La redirección hacia una plataforma externa no constituye evidencia de que una reseña haya sido publicada allí.
+
+##### 5.3. Servicio integral y reservas
+
+`CAP-SCOPE-010` mantiene como brechas actuales:
+
+- ausencia de expediente omnicanal único;
+- falta de categorías, severidad, propietario, SLA, escalamiento y cierre integral de casos;
+- ausencia de expediente común para devolución, reembolso, compensación, cortesía y puntos;
+- ciclo integral de reservas no confirmado;
+- reglas de capacidad, depósito, cancelación, no-show y conversión de reserva aún no cerradas.
+
+Por tanto, esas familias se definen documentalmente pero permanecen bloqueadas para certificación donde corresponda.
+
+##### 5.4. Reputación y adquisición
+
+`CAP-SCOPE-014` asigna a AURA la reputación pública, comentarios externos, oportunidades y atribución. La fuente operativa AURA permanece diferida; no se considera habilitada por la existencia de feedback interno ni por una URL de reseñas.
+
+#### 6. Reglas semánticas transversales
+
+1. Toda tasa declara numerador, denominador, población, ventana, corte y estados elegibles.
+2. Todo tiempo exige dos eventos reales y ordenables; un estado sin timestamp no inventa duración.
+3. Una ausencia de evento no se transforma automáticamente en cero.
+4. Un evento tardío conserva su tiempo de ocurrencia y su tiempo de carga.
+5. Cancelación, devolución, rechazo, compensación y no-show no se colapsan en un único estado negativo.
+6. Un pedido terminal no demuestra integridad de líneas.
+7. Una persona sin identidad autorizada no se fusiona con otra para fabricar recurrencia.
+8. La identidad analítica se resuelve mediante contratos de identidad y finalidad, no por similitud de nombre, teléfono, correo o dirección.
+9. Un agregado de puntos no sustituye el ledger.
+10. Una calificación no crea automáticamente un caso.
+11. Una respuesta pública no cierra un reclamo formal.
+12. Una métrica de cliente no puede exponer detalle personal fuera de la finalidad autorizada.
+13. Cohortes pequeñas o sensibles deberán aplicar las restricciones de `DATA-AUTH-002`.
+14. Una correlación entre servicio y recurrencia no se presentará como causa sin `DATA-DOM-014`.
+15. Metas, umbrales objetivo y guardrails pertenecerán a `DATA-DOM-015`.
+16. Experimentos de mejora pertenecerán a `DATA-DOM-016`.
+17. Correcciones históricas y restatements pertenecerán a `DATA-DOM-017`.
+
+#### 7. Matriz materializada de las 12 familias
+
+|    # | Familia canónica                                        | Definición materializada                                                                                                                                                    | Evidencia actual                                                                                     | Certificación                                                                                    | Condición de salida / propietario exacto                                                                                                                          |
+| ---: | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | comparar un compromiso aceptado y versionado contra el evento terminal aplicable; solicitud o ventana pedida no equivale a promesa aceptada                                 | existen `requested_for`, ventanas, `prepare_by` y estados de cumplimiento                            | `BLOQUEADO` para promesa oficial                                                                 | contrato de promesa y cumplimiento en `PULSO-UX-004`, `PULSO-UX-007`, `PULSO-UX-019`, `PROC-CAT-009` a `PROC-CAT-018`; binding en `DATA-INT-001` y `DATA-INT-002` |
+|    2 | tiempos de preparación, despacho y entrega              | medir cada fase entre eventos reales y compatibles; no usar un tiempo total como sustituto de todas las fases                                                               | existen varios timestamps de ciclo y eventos de estado                                               | `NO EVALUADO` para fases observables; `BLOQUEADO` donde falten hitos                             | contrato de eventos en `PULSO-UX-007`, `PULSO-UX-018`, `PULSO-UX-019`; lectura/modelo en `DATA-INT-001` y `DATA-INT-002`                                          |
+|    3 | pedidos completos                                       | un pedido es completo solo cuando todas las líneas y cantidades elegibles quedan cumplidas o sustituidas de forma aceptada; `delivered` no basta                            | pedido y líneas existen, pero no se demostró cumplimiento línea a línea integral                     | `BLOQUEADO`                                                                                      | ciclo comercial y modificaciones en `PULSO-UX-007`, `PULSO-UX-009`, `PULSO-UX-013`, `PROC-CAT-013`, `PROC-CAT-014`; modelo en `DATA-INT-002`                      |
+|    4 | reclamos y tiempo de resolución                         | reclamo es un expediente explícito; tiempo de resolución usa recepción y resolución reales, y SLA exige versión aplicable                                                   | chat y feedback existen, pero no expediente omnicanal integral                                       | `BLOQUEADO`                                                                                      | `PROC-CAT-009` a `PROC-CAT-019`, `PROC-ACTOR-001` a `PROC-ACTOR-010`, `VISO-UX-013` a `VISO-UX-020`, `PASS-UX-010`                                                |
+|    5 | compensaciones                                          | contar y valorar únicamente decisiones explícitas de compensación; devolución, reembolso, descuento, cortesía, cupón y puntos permanecen resultados distintos               | existen devoluciones, refunds, descuentos y puntos en dominios separados                             | `BLOQUEADO`                                                                                      | expediente y autoridad en `PULSO-UX-009`, `PULSO-AUTH-008`, `PASS-INT-002`, `CAP-SCOPE-012`; binding en `DATA-INT-002`                                            |
+|    6 | satisfacción y feedback                                 | medir distribución y estadísticos sobre feedback válido; respuesta a invitación requiere evento de invitación entregada; rating interno no equivale a review externo        | `user_feedback` registra rating, texto y categoría; existe prompt de rating                          | `NO EVALUADO` para feedback interno; `BLOQUEADO` para tasa de respuesta si no existe denominador | sesgo y experiencia en `PASS-UX-006`, `UX-QA-029`; modelo en `DATA-INT-002`; protección en `DATA-AUTH-002`                                                        |
+|    7 | recurrencia, frecuencia y abandono                      | reutilizar identidad y recurrencia de D009; abandono exige población elegible, ventana de inactividad y observación completa, no simple ausencia                            | pedidos identificados y ledger PASS permiten señales parciales                                       | `NO EVALUADO`                                                                                    | identidad/finalidad en `PASS-INT-004`, `PASS-INT-005`, `DATA-AUTH-002`; población/modelo en `DATA-INT-002`                                                        |
+|    8 | adquisición y activación                                | adquisición exige primer evento de relación con origen gobernado; activación exige evento objetivo versionado dentro de una ventana; crear cuenta o iniciar sesión no basta | no se demostró fuente canónica de adquisición ni evento de activación transversal                    | `BLOQUEADO`                                                                                      | oportunidades y origen en `AURA-DOM-007`, `AURA-INT-001`, `AURA-INT-002`; identidad en `PASS-INT-005`; modelo en `DATA-INT-002`                                   |
+|    9 | fidelización, puntos y redenciones                      | movimientos `earn`, `spend`, `adjust` y redenciones por estado se analizan separados; saldo es proyección reconciliable del ledger                                          | existen `loyalty_transactions` y `loyalty_redemptions`                                               | `NO EVALUADO`                                                                                    | contrato de ledger/redención en `PASS-INT-001`, `PASS-INT-002`, `PASS-QA-001`, `PASS-QA-002`; modelo en `DATA-INT-002`                                            |
+|   10 | reputación y temas recurrentes                          | reputación pública usa fuentes externas gobernadas; feedback interno permanece fuente distinta; temas requieren clasificación versionada y trazable                         | feedback interno existe; no se demuestra inbox canónico de reseñas, comentarios y menciones públicas | `BLOQUEADO` para reputación pública; `NO EVALUADO` para categorías internas                      | `AURA-DOM-009`, `AURA-UX-007`, `AURA-INT-001`; causalidad/diagnóstico en `DATA-DOM-014` cuando se interpreten drivers                                             |
+|   11 | reservas, no-show y utilización                         | reserva, cancelación, asistencia y no-show son estados distintos; utilización requiere capacidad gobernada en la misma unidad y ventana                                     | ciclo integral de reservas no confirmado                                                             | `BLOQUEADO`                                                                                      | `OPS-CAN-001`, `OPS-B2B-001`, `PULSO-UX-001`, `PROC-CAT-009` a `PROC-CAT-018`, `CAP-SCOPE-012`; modelo en `DATA-INT-002`                                          |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | valor descriptivo puede asociar ventas elegibles a identidad autorizada; margen/rentabilidad consume definición económica de D013 y nunca se recalcula localmente           | ventas identificables existen parcialmente; no se demostró rentabilidad canónica por cliente         | `NO EVALUADO` para ingreso asociado; `BLOQUEADO` para rentabilidad                               | definición económica en `DATA-DOM-013`; protección en `DATA-AUTH-001`, `DATA-AUTH-002`; binding en `DATA-INT-002`                                                 |
+
+**Reconciliación:** 12 familias esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 8. Cumplimiento de promesa
+
+Una promesa analítica requiere un **compromiso aceptado**, no únicamente una preferencia del cliente.
+
+Coordenadas mínimas:
+
+- pedido o servicio;
+- tipo de promesa;
+- versión de política;
+- inicio y fin de ventana o instante comprometido;
+- sede y modalidad;
+- zona horaria;
+- momento de aceptación;
+- evento terminal que satisface la promesa;
+- cancelaciones o exclusiones autorizadas.
+
+La tasa se define como:
+
+```text
+cumplimiento de promesa
+= compromisos elegibles cumplidos dentro de la promesa
+  / compromisos elegibles cuyo vencimiento pertenece al corte
+```
+
+Reglas:
+
+- `requested_for` no se interpreta automáticamente como compromiso aceptado;
+- `delivery_window_start` y `delivery_window_end` son evidencia técnica de ventana, no prueba suficiente de semántica contractual;
+- `prepare_by` no equivale a hora de entrega;
+- un pedido cancelado conserva la cancelación y no se convierte silenciosamente en incumplimiento;
+- una promesa renegociada conserva versión anterior, aceptación y motivo;
+- promesas de recogida, domicilio y servicio en sitio no comparten necesariamente el mismo evento terminal.
+
+La familia permanece `BLOQUEADO` para publicación oficial hasta que el contrato operativo identifique qué campo o evento representa la promesa aceptada.
+
+#### 9. Tiempos de preparación, despacho y entrega
+
+D012 prohíbe derivar todos los tiempos desde un único par de timestamps.
+
+Las fases deberán materializarse solo cuando existan sus hitos reales:
+
+```text
+confirmación → inicio de preparación
+inicio de preparación → listo
+listo → salida o recogida
+salida → entrega
+confirmación → cumplimiento terminal
+```
+
+Cuando la implementación solo disponga de `confirmed_at` y `ready_for_dispatch_at`, podrá existir una medida descriptiva **confirmación a listo**, pero no se renombrará como tiempo de preparación exacto si falta el inicio de preparación.
+
+Para entrega:
+
+- `ready_for_dispatch_at → on_the_way_at` representa espera de salida cuando ambos eventos son válidos;
+- `on_the_way_at → delivered_at` representa tránsito de entrega cuando ambos eventos son válidos;
+- `confirmed_at → delivered_at` representa ciclo confirmado a entrega;
+- `created_at → delivered_at` representa ciclo solicitud/pedido a entrega únicamente si el grano de `created_at` es el acordado para esa métrica.
+
+Valores negativos, endpoints invertidos o timestamps faltantes quedan fuera del cálculo certificado y entran al control de calidad.
+
+#### 10. Pedidos completos
+
+`delivered` significa resultado terminal del pedido, pero no demuestra automáticamente que cada línea solicitada haya sido cumplida íntegramente.
+
+Un pedido completo exige, para todas sus líneas elegibles:
+
+```text
+cantidad solicitada original
++ revisiones aprobadas
++ sustituciones aceptadas
+- cancelaciones explícitas de línea
+= cantidad final exigible
+
+cantidad final exigible
+= cantidad efectivamente cumplida y aceptada
+```
+
+Reglas:
+
+- una línea parcial hace que el pedido no sea completo salvo que exista revisión aceptada que reduzca la obligación;
+- una sustitución no cuenta como cumplimiento del producto original sin aceptación trazable;
+- una devolución posterior no reescribe la completitud histórica del momento de entrega; genera una dimensión o evento posterior;
+- un pago completo no prueba pedido completo;
+- el total monetario no sustituye cantidades de línea.
+
+La familia permanece `BLOQUEADO` porque la evidencia observada no demuestra un contrato integral de cumplimiento por línea en todos los canales.
+
+#### 11. Reclamos y tiempo de resolución
+
+Un reclamo analítico requiere expediente explícito con declaración original y no se infiere desde:
+
+- rating bajo;
+- chat de pedido;
+- comentario libre;
+- cancelación;
+- devolución;
+- mensaje negativo;
+- reseña pública.
+
+El expediente deberá conservar como mínimo:
+
+- `case_id`;
+- tipo de caso;
+- canal;
+- cliente o actor ocasional;
+- marca y sede;
+- pedido/venta relacionados cuando existan;
+- categoría y severidad;
+- recibido en;
+- primera respuesta en;
+- responsable;
+- estado;
+- resolución en;
+- reapertura;
+- decisión;
+- evidencia;
+- SLA y versión cuando aplique.
+
+Métricas permitidas cuando exista el contrato:
+
+```text
+tiempo a primera respuesta = first_response_at - received_at
+tiempo a resolución = resolved_at - received_at
+tasa de reapertura = casos reabiertos / casos resueltos elegibles
+cumplimiento SLA = casos resueltos dentro del SLA / casos elegibles con SLA
+```
+
+No se calcula SLA si falta política vigente o timestamp terminal verificable.
+
+#### 12. Compensaciones
+
+Compensación es una **decisión de servicio**, no cualquier efecto económico favorable al cliente.
+
+Se preservan por separado:
+
+- devolución de producto;
+- reembolso;
+- descuento;
+- cortesía;
+- producto de reemplazo;
+- cupón;
+- puntos;
+- ajuste de puntos;
+- crédito o saldo;
+- compensación explícita.
+
+Toda analítica de compensación debe poder vincular:
+
+```text
+caso o decisión origen
+→ tipo de compensación
+→ autoridad
+→ motivo
+→ valor o cantidad
+→ moneda/unidad cuando aplique
+→ estado
+→ efecto realizado
+→ reversión o anulación
+```
+
+La tasa de compensación utiliza como denominador la población explícitamente definida de casos o decisiones elegibles. No se divide por todos los clientes ni por todas las ventas por conveniencia.
+
+#### 13. Satisfacción y feedback
+
+El feedback interno de PASS constituye una fuente diferenciada.
+
+Sobre feedback válido podrán definirse:
+
+- distribución de ratings;
+- rating medio, mediana o percentiles cuando la escala sea compatible;
+- proporción por categoría;
+- volumen de comentarios;
+- evolución por sede y periodo;
+- recurrencia de temas una vez exista clasificación gobernada.
+
+Reglas de sesgo y cobertura:
+
+- una invitación selectiva altera la población;
+- premiar una reseña o invitar después de un evento específico puede alterar representatividad;
+- el promedio no se presenta como “satisfacción de todos los clientes” si solo responde una subpoblación;
+- una tasa de respuesta requiere contar invitaciones efectivamente elegibles y entregadas;
+- `last_review_prompt_date` no sustituye un ledger de invitaciones;
+- un registro interno con categoría `google_review` no demuestra que exista una reseña pública externa.
+
+El detalle textual y cualquier atributo personal asociado requieren finalidad y autorización.
+
+#### 14. Recurrencia, frecuencia y abandono
+
+D012 reutiliza la identidad y las reglas de recurrencia de `DATA-DOM-009`; no crea una segunda definición comercial.
+
+Recurrencia:
+
+```text
+cliente recurrente
+= identidad autorizada con al menos dos eventos elegibles
+  dentro de la población y ventana definidas
+```
+
+Frecuencia:
+
+```text
+frecuencia por cliente
+= eventos elegibles de servicio/compra
+  / identidades autorizadas elegibles
+```
+
+También podrá calcularse una frecuencia individual cuando la finalidad y autorización lo permitan.
+
+Abandono no es un hecho instantáneo. Requiere:
+
+- una identidad elegible;
+- un evento previo que la incluya en la cohorte;
+- una ventana de inactividad registrada en la versión de la métrica;
+- un periodo de observación suficiente para completar esa ventana;
+- reglas de censura para relaciones todavía no observables hasta el final.
+
+Una persona invitada no se fusiona por nombre, teléfono, correo o dirección para fabricar recurrencia o abandono.
+
+#### 15. Adquisición y activación
+
+Se separan cinco hechos:
+
+```text
+primer contacto identificable
+≠ creación de cuenta
+≠ adquisición gobernada
+≠ activación
+≠ primera compra
+```
+
+La adquisición requiere un evento de entrada con:
+
+- identidad o relación resoluble;
+- fuente;
+- canal;
+- campaña/oportunidad cuando aplique;
+- fecha;
+- finalidad;
+- evidencia;
+- regla de deduplicación.
+
+La activación requiere un **evento objetivo versionado** y una ventana desde la adquisición.
+
+Fórmula:
+
+```text
+tasa de activación
+= relaciones adquiridas que alcanzan el evento de activación dentro de la ventana
+  / relaciones adquiridas elegibles con ventana observable completa
+```
+
+No se fija por esta tarea un evento de activación artificial. La familia permanece `BLOQUEADO` hasta que el proceso propietario materialice el evento y su origen. AURA conservará atribución cuando corresponda; PASS conservará identidad y relación.
+
+#### 16. Fidelización, puntos y redenciones
+
+La analítica de fidelización se deriva de movimientos y estados, no de un saldo editable.
+
+Movimientos:
+
+- `earn` = acumulación;
+- `spend` = gasto;
+- `adjust` = ajuste;
+- reversión o compensación debe conservar relación con el evento origen cuando el contrato la materialice.
+
+Redenciones:
+
+- `pending`;
+- `validated`;
+- `cancelled`.
+
+Métricas permitidas:
+
+```text
+puntos ganados = suma de movimientos elegibles de acumulación
+puntos gastados = magnitud de movimientos elegibles de gasto
+ajustes = suma y conteo separados por signo y motivo
+redenciones validadas = conteo de redenciones con estado validated
+puntos redimidos = suma de points_spent de redenciones validadas
+```
+
+Una tasa de conversión de redención deberá declarar qué constituye intento, qué estados son terminales y qué ventana permite madurar el resultado.
+
+Reglas:
+
+- el saldo es proyección reconciliable del ledger;
+- `points_spent` no se interpreta como venta;
+- puntos otorgados por feedback se clasifican por su evento origen;
+- una redención pendiente no cuenta como beneficio consumido;
+- una cancelación no se borra del historial;
+- redención, promoción, cupón y compensación permanecen conceptos distintos.
+
+#### 17. Reputación y temas recurrentes
+
+Reputación pública y feedback interno permanecen separados.
+
+Fuentes externas elegibles podrán incluir, cuando existan adaptadores gobernados:
+
+- reseñas;
+- comentarios públicos;
+- menciones;
+- respuestas públicas;
+- estado de moderación;
+- fuente/canal;
+- fecha;
+- marca/sede;
+- vínculo con caso de servicio cuando corresponda.
+
+No se crea un “score reputacional” único por conveniencia.
+
+Cualquier índice compuesto deberá declarar:
+
+- fuentes;
+- escala;
+- cobertura;
+- ponderaciones;
+- tratamiento de duplicados;
+- idioma;
+- periodo;
+- sesgos;
+- método;
+- versión;
+- nivel de confianza.
+
+Temas recurrentes se calcularán sobre una clasificación versionada. El cambio de taxonomía no reetiqueta silenciosamente historia publicada.
+
+Una respuesta pública no convierte un reclamo formal en resuelto.
+
+#### 18. Reservas, no-show y utilización
+
+La familia exige un ciclo explícito de reservas.
+
+Estados mínimos conceptuales:
+
+```text
+solicitada
+→ aceptada o rechazada
+→ confirmada
+→ modificada o cancelada
+→ asistida o no-show
+→ cerrada
+```
+
+El contrato operativo podrá usar otra nomenclatura, pero deberá conservar equivalencia y transición verificable.
+
+Métricas:
+
+```text
+tasa de no-show
+= reservas no-show
+  / reservas elegibles cuyo momento de servicio ya ocurrió
+
+tasa de asistencia
+= reservas asistidas
+  / reservas elegibles cuyo momento de servicio ya ocurrió
+```
+
+La cancelación se reporta aparte y no entra automáticamente al numerador de no-show.
+
+Utilización exige un denominador físico u operativo gobernado:
+
+```text
+utilización
+= capacidad ocupada o consumida
+  / capacidad utilizable elegible
+```
+
+La unidad de capacidad puede ser mesa-tiempo, cupo-tiempo u otra unidad aprobada; no se mezclan unidades incompatibles.
+
+La familia permanece `BLOQUEADO` hasta que el ciclo integral, la capacidad y los estados estén materializados.
+
+#### 19. Valor y rentabilidad del cliente
+
+D012 permite asociar resultados económicos ya gobernados a una identidad de cliente autorizada, pero no crea una fórmula financiera paralela.
+
+Valor descriptivo permitido:
+
+```text
+ingreso asociado a cliente
+= suma de ventas elegibles gobernadas por D009
+  vinculadas de forma autorizada a la identidad PASS
+```
+
+Reglas:
+
+- solo se incluyen ventas donde el vínculo de identidad sea válido;
+- ventas a consumidor final no identificado permanecen fuera del nivel individual y pueden seguir formando parte de agregados comerciales;
+- no se imputan ventas anónimas a una persona por similitud;
+- devolución, descuento e impuestos siguen la semántica de D009;
+- “valor” no equivale automáticamente a margen;
+- costo de adquisición, margen, contribución, rentabilidad y escenarios consumen `DATA-DOM-013`;
+- un modelo predictivo de lifetime value no se considera aprobado por esta tarea;
+- cualquier uso individual o segmentación sensible requiere autorización y finalidad.
+
+#### 20. Privacidad, minimización y poblaciones pequeñas
+
+La analítica de cliente deberá operar bajo minimización.
+
+Queda prohibido usar por defecto en agregados:
+
+- nombre;
+- correo;
+- teléfono;
+- documento;
+- dirección;
+- texto libre;
+- fecha de nacimiento;
+- coordenadas;
+- identificadores externos de plataforma;
+
+cuando la métrica no los requiera.
+
+Reglas:
+
+1. el detalle individual solo se expone para una finalidad autorizada;
+2. cohortes pequeñas o sensibles deberán aplicar umbrales y protección definidos en `DATA-AUTH-002`;
+3. exportación y drill-down no heredan automáticamente el permiso del agregado;
+4. feedback textual puede contener datos personales y requiere tratamiento separado;
+5. segmentación no habilita contacto;
+6. consentimiento para una finalidad no habilita otra;
+7. reputación pública no elimina las obligaciones de tratamiento interno;
+8. datos de invitados no se convierten en perfiles permanentes sin contrato aplicable.
+
+#### 21. Identidad, cohortes y deduplicación
+
+La unidad cliente se resuelve desde PASS y sus contratos de identidad.
+
+Una cohorte deberá declarar:
+
+- criterio de entrada;
+- fecha de entrada;
+- marca/sede cuando aplique;
+- estado de identificación;
+- finalidad;
+- ventana de observación;
+- exclusiones;
+- tratamiento de pérdida de elegibilidad;
+- versión de definición.
+
+No se permiten cohortes construidas mediante:
+
+```text
+same(name)
+OR same(phone-like)
+OR same(address-like)
+→ same(customer)
+```
+
+Una vinculación posterior de un cliente ocasional a una identidad deberá conservar trazabilidad de la decisión y no alterar hechos históricos sin regla de restatement.
+
+#### 22. Tiempo, corte y comparabilidad
+
+Cada métrica deberá declarar el tiempo que gobierna su población.
+
+Ejemplos:
+
+- cumplimiento de promesa: vencimiento de la promesa;
+- tiempo de entrega: eventos de fase;
+- reclamo: recepción y resolución;
+- feedback: momento de captura;
+- recurrencia: momento del evento elegible;
+- adquisición: evento de entrada;
+- activación: evento objetivo;
+- fidelización: timestamp del movimiento;
+- redención: creación y validación/cancelación;
+- reputación: publicación/captura externa;
+- reserva: fecha de servicio y estado terminal;
+- valor: tiempo del hecho económico/comercial correspondiente.
+
+Dos periodos no son comparables si cambian:
+
+- definición;
+- población;
+- cobertura de canal;
+- identidad;
+- versión de métrica;
+- zona horaria;
+- calendario;
+- fuente;
+- política de promesa;
+- escala de rating;
+- taxonomía de temas.
+
+#### 23. Denominadores, cero y ausencia
+
+D012 conserva las distinciones:
+
+```text
+0
+≠ NULL
+≠ NO_APLICA
+≠ DESCONOCIDO
+≠ NO_RECIBIDO
+≠ PENDIENTE
+≠ DENOMINADOR_NO_DISPONIBLE
+```
+
+Reglas:
+
+- una tasa sin denominador válido no devuelve cero;
+- una fase sin timestamp terminal no devuelve duración cero;
+- un cliente sin segundo evento todavía observable no es automáticamente abandono;
+- una reserva futura no es no-show;
+- una ausencia de feedback no significa satisfacción neutra;
+- cero reclamos no demuestra servicio perfecto si la cobertura de captura es desconocida;
+- cero reseñas públicas no demuestra reputación neutra;
+- cero redenciones no prueba falta de fidelización sin población elegible.
+
+#### 24. Calidad y certificación
+
+Toda familia consume `DATA-DOM-007`.
+
+Como mínimo deberán verificarse:
+
+- completitud de eventos;
+- unicidad de identidad;
+- integridad de relaciones;
+- estados válidos;
+- orden temporal;
+- cobertura por canal/sede;
+- frescura;
+- población elegible;
+- datos tardíos;
+- duplicados;
+- correcciones;
+- reconciliación;
+- linaje;
+- versión de fuente;
+- sesgo de captura cuando aplique.
+
+Un resultado podrá quedar `NO EVALUADO` aunque exista código o datos.
+
+Un resultado permanecerá `BLOQUEADO` cuando falte un contrato necesario para construir su numerador, denominador, identidad o tiempo.
+
+#### 25. Publicación, drill-down y snapshots
+
+Toda publicación consume `DATA-DOM-008`.
+
+Una vista oficial deberá declarar:
+
+- versión de métrica;
+- periodo;
+- zona horaria;
+- corte;
+- cobertura;
+- filtros;
+- población;
+- dimensiones;
+- fuente;
+- frescura;
+- calidad;
+- certificación.
+
+Drill-down permitido:
+
+```text
+métrica agregada
+→ cohorte o dimensión autorizada
+→ caso/pedido/evento permitido
+→ evidencia fuente autorizada
+```
+
+El drill-down no podrá revelar automáticamente:
+
+- texto de feedback;
+- datos de contacto;
+- direcciones;
+- conversaciones;
+- identidad individual;
+- compensaciones sensibles;
+
+solo porque el usuario pueda ver un agregado.
+
+#### 26. Identidad de métricas y aliases técnicos
+
+Esta tarea no fabrica un namespace `METRIC-*` ni claves semánticas sin evidencia.
+
+Los nombres técnicos actuales, entre ellos:
+
+- `created_at`;
+- `confirmed_at`;
+- `ready_for_dispatch_at`;
+- `on_the_way_at`;
+- `delivered_at`;
+- `delivery_window_start`;
+- `delivery_window_end`;
+- `points_delta`;
+- `points_spent`;
+- `rating`;
+
+son evidencia o aliases de fuente y no se convierten automáticamente en `metric_key`.
+
+La materialización física en `DATA-INT-002` deberá registrar claves estables conforme a `DATA-DOM-004`, con fórmula, versión, dimensiones, filtros, unidad, propietario, calidad, certificación y drill-down.
+
+#### 27. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance           | Propietario documental                                                                                             | Condición de salida                                    |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| promesa, estados de cumplimiento y pedido para llevar  | `PULSO-UX-004`, `PULSO-UX-007`, `PULSO-UX-019`                                                                     | antes de certificar cumplimiento de promesa            |
+| cumplimiento línea a línea, sustituciones y revisiones | `PULSO-UX-007`, `PULSO-UX-009`, `PULSO-UX-013`, `PROC-CAT-013`, `PROC-CAT-014`                                     | antes de certificar pedidos completos                  |
+| expediente omnicanal, responsable, SLA y cierre        | `PROC-CAT-009` a `PROC-CAT-019`, `PROC-ACTOR-001` a `PROC-ACTOR-010`, `VISO-UX-013` a `VISO-UX-020`, `PASS-UX-010` | antes de certificar reclamos y resolución              |
+| decisión común de devolución/reembolso/compensación    | `PULSO-UX-009`, `PULSO-AUTH-008`, `PASS-INT-002`, `CAP-SCOPE-012`                                                  | antes de certificar compensaciones                     |
+| identidad, consentimiento y vínculo de cliente         | `PASS-UX-008`, `PASS-INT-004`, `PASS-INT-005`, `CAP-SCOPE-016`                                                     | antes de ampliar detalle o unir historias              |
+| ledger y redenciones de fidelización                   | `PASS-INT-001`, `PASS-INT-002`, `PASS-QA-001`, `PASS-QA-002`                                                       | antes de certificar puntos y redenciones               |
+| adquisición, oportunidad y origen atribuible           | `AURA-DOM-007`, `AURA-INT-001`, `AURA-INT-002`                                                                     | antes de publicar adquisición atribuida                |
+| reputación pública, clasificación y escalamiento       | `AURA-DOM-009`, `AURA-UX-007`, `AURA-INT-001`                                                                      | antes de publicar reputación externa                   |
+| reservas, capacidad, cancelación y no-show             | `OPS-CAN-001`, `OPS-B2B-001`, `PULSO-UX-001`, `PROC-CAT-009` a `PROC-CAT-018`, `CAP-SCOPE-012`                     | antes de certificar reservas/no-show/utilización       |
+| costo, margen y rentabilidad de cliente                | `DATA-DOM-013`                                                                                                     | antes de publicar rentabilidad por cliente/cohorte     |
+| diagnóstico causal o explicación de drivers            | `DATA-DOM-014`                                                                                                     | antes de presentar asociación como causa               |
+| metas, umbrales objetivo y guardrails                  | `DATA-DOM-015`                                                                                                     | antes de gobernar objetivos de servicio                |
+| experimentos y comprobación de mejora                  | `DATA-DOM-016`                                                                                                     | antes de declarar efecto experimental                  |
+| restatements y correcciones históricas                 | `DATA-DOM-017`                                                                                                     | antes de reexpresar resultados publicados              |
+| contratos de lectura y eventos                         | `DATA-INT-001`                                                                                                     | antes de ingestión analítica productiva                |
+| modelos, cálculos, snapshots y consultas               | `DATA-INT-002`                                                                                                     | antes de materializar métricas en productos analíticos |
+| reconciliación de identidades y claves externas        | `DATA-INT-003`                                                                                                     | antes de combinar fuentes de clientes o canales        |
+| protección de detalle, cohortes pequeñas y drill-down  | `DATA-AUTH-001`, `DATA-AUTH-002`                                                                                   | antes de exponer analítica sensible                    |
+
+No queda un bloqueo de D012 sin propietario documental y condición de salida.
+
+#### 28. Cobertura de requisitos de prueba vigente
+
+Las reglas de esta tarea ya están protegidas por requisitos vigentes:
+
+- `TREQ-DATA-002` protege identidad, fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, tiempo, fuente, calidad, versión y certificación de cada métrica;
+- `TREQ-DATA-003` protege ingestión, cobertura, duplicados, integridad, datos tardíos, reconciliación, estados de ausencia y linaje;
+- `TREQ-DATA-004` protege publicación, filtros, corte, frescura, snapshots, drill-down y restatements;
+- `TREQ-PASS-010` protege identidad de cliente, consentimiento, ledger, acumulación, redención, ajuste, reversión y conciliación de fidelización;
+- `TREQ-PASS-011` protege separación de preguntas, reclamos, feedback, devoluciones, compensaciones, reservas y comunicaciones, incluyendo SLA y no-show;
+- `TREQ-AURA-003` protege reputación, atribución, resultados y la frontera entre respuesta pública y reclamo formal.
+
+D012 especializa las fórmulas y fronteras analíticas dentro de esas reglas ya identificadas. No introduce un comportamiento ejecutable adicional que requiera una nueva fila del registro.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente las familias y fórmulas de servicio y clientes ya protegidas por requisitos vigentes de métricas, calidad, publicación, identidad, fidelización, servicio y reputación. No modifica comportamiento ejecutable, contratos físicos, autorización, estados operativos, datos ni integración.
+
+#### 29. Criterios de aceptación
+
+1. las 12 familias de `CAP-SCOPE-017` están presentes exactamente una vez;
+2. el total esperado es 12 y el total materializado es 12;
+3. existen 0 faltantes y 0 duplicados;
+4. promesa solicitada, aceptada y resultado real permanecen separados;
+5. cumplimiento de promesa no se calcula desde una preferencia sin aceptación;
+6. tiempos de preparación, despacho, tránsito y total no se colapsan;
+7. ninguna duración se fabrica cuando falta un endpoint real;
+8. `delivered` no prueba por sí solo pedido completo;
+9. completitud se resuelve por líneas, cantidades, revisiones y sustituciones aceptadas;
+10. feedback, reclamo, chat, devolución y reputación permanecen objetos distintos;
+11. resolución usa expediente y timestamps reales;
+12. SLA solo se calcula con política y versión aplicables;
+13. devolución, reembolso, compensación, cortesía, cupón y puntos permanecen separados;
+14. satisfacción declara población y sesgo de captura;
+15. rating interno no se presenta como review externo;
+16. la redirección a Google Reviews no se cuenta como reseña publicada;
+17. recurrencia reutiliza la identidad y semántica aprobadas en D009;
+18. invitados no se fusionan por similitud para crear recurrencia;
+19. abandono exige ventana y observación completa;
+20. adquisición, cuenta, activación y primera compra permanecen separadas;
+21. activación exige evento objetivo versionado;
+22. fidelización se deriva del ledger y no de un saldo editable;
+23. movimientos `earn`, `spend` y `adjust` permanecen separados;
+24. redenciones `pending`, `validated` y `cancelled` permanecen separadas;
+25. reputación pública requiere fuente externa gobernada;
+26. no se crea un score reputacional compuesto sin metodología;
+27. temas recurrentes requieren taxonomía/versionado;
+28. reserva, cancelación, asistencia y no-show permanecen separados;
+29. utilización requiere denominador de capacidad compatible;
+30. ventas anónimas no se imputan a una identidad;
+31. ingreso asociado no se presenta como margen;
+32. rentabilidad consume `DATA-DOM-013`;
+33. no se aprueba un modelo predictivo de lifetime value por inferencia;
+34. se aplican minimización y finalidad;
+35. poblaciones pequeñas quedan protegidas por `DATA-AUTH-002`;
+36. exportación y drill-down no heredan automáticamente permiso del agregado;
+37. cero, nulo, no aplica, desconocido y denominador ausente permanecen diferenciados;
+38. calidad y certificación consumen `DATA-DOM-007`;
+39. publicación y snapshots consumen `DATA-DOM-008`;
+40. la materialización analítica consume `DATA-INT-001` y `DATA-INT-002`;
+41. las identidades externas consumen `DATA-INT-003`;
+42. cada bloqueo tiene propietario exacto y condición de salida;
+43. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+44. no se ejecuta código, DDL, DML, migración, backfill ni cambio de Supabase;
+45. `DATA-DOM-013` permanece únicamente reservada.
+
+#### 30. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+
+TAREA ACTUAL APROBADA
+DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+```
+
+
 ### [ ] DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
 ### [ ] DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
 ### [ ] DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición

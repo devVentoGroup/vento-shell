@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **681** |
+| Tareas aprobadas | **682** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **913** |
+| Tareas no iniciadas | **912** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.72% (681/1594)** |
+| Porcentaje de completamiento | **42.79% (682/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad** |
-| Tarea actual | **DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia** |
+| Última tarea aprobada | **DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia** |
+| Tarea actual | **DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios** |
+| Siguiente tarea | **DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 105 de 157 aprobadas; DATA-DOM-012 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 106 de 157 aprobadas; DATA-DOM-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad |
-| Tarea actual | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios |
+| Última aprobada | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia |
+| Tarea actual | `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 105 DE 157 APROBADAS — ACTUAL DATA-DOM-012** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 106 DE 157 APROBADAS — ACTUAL DATA-DOM-013** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
-        ↓
-TAREA ACTUAL
 DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 105 de 157 tareas aprobadas
+CARRIL NEXO — 106 de 157 tareas aprobadas
 ```
