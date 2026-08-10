@@ -3708,7 +3708,548 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales`
 
 
-### [ ] DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
+### ✅ DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad` — APROBADA
+**Tarea siguiente:** `DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de presentación, publicación, distribución, exportación, suscripción, alerta y snapshot oficial de resultados analíticos
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues o publicación productiva de artefactos:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir el contrato común mediante el cual Vento OS presenta, publica, distribuye y conserva resultados analíticos sin convertir un tablero, reporte, exportación, suscripción, alerta o snapshot en fuente de verdad y sin ocultar la versión semántica, el corte, la frescura, la cobertura o el estado de calidad que sustentan la cifra.
+
+La tarea cierra documentalmente la cadena iniciada por las tareas anteriores:
+
+```text
+FUENTES GOBERNADAS
+→ INGESTIÓN Y RECONCILIACIÓN
+→ MÉTRICAS VERSIONADAS
+→ CALIDAD Y CERTIFICACIÓN
+→ ARTEFACTO ANALÍTICO
+→ PRESENTACIÓN / PUBLICACIÓN / DISTRIBUCIÓN
+→ DRILL-DOWN AUTORIZADO
+```
+
+Regla cardinal:
+
+```text
+MÉTRICA DEFINIDA
+≠ MÉTRICA CERTIFICADA
+≠ RESULTADO CALCULADO
+≠ ARTEFACTO PUBLICADO
+```
+
+La existencia técnica de una pantalla, respuesta JSON, archivo XLSX, consulta, vista o modelo no concede por sí sola carácter oficial ni certificación.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-DOM-008` con los siguientes resultados:
+
+- seis familias principales de artefacto definidas y reconciliadas: tablero, reporte, exportación, suscripción, alerta y snapshot oficial;
+- separación explícita entre vista viva, tablero, reporte oficial, exportación, suscripción, alerta, snapshot publicado, resultado provisional y simulación;
+- contrato mínimo común con pregunta empresarial, periodo, corte, zona horaria, filtros, dimensiones, versión de métricas, frescura, cobertura, calidad/certificación, unidad o moneda, fuente, última actualización, responsable y trazabilidad al detalle;
+- reglas de publicación que mantienen certificación y publicación como decisiones independientes;
+- prohibición de presentar como certificado un artefacto cuya dependencia necesaria esté vencida, incompleta, degradada, bloqueada o sin reconciliar;
+- prohibición de publicar como oficial un artefacto que dependa de una entrada `BLOQUEADO`;
+- reglas de exportación que conservan el mismo contexto y alcance autorizado del resultado que originó el artefacto;
+- reglas de suscripción que convierten una entrega recurrente en mecanismo de distribución y no en nueva definición analítica;
+- reglas de alerta que separan señal, diagnóstico, decisión y acción;
+- snapshots oficiales definidos como publicaciones inmutables por corte, contexto y versión;
+- tratamiento explícito de correcciones posteriores mediante reconstrucción o restatement gobernado, nunca alteración silenciosa de una publicación previa;
+- clasificación documental de la implementación observada de `attendance-report` como proyección JSON y exportación XLSX técnicamente implementadas, pero no certificadas ni oficiales por inferencia;
+- materialización de la decisión de publicación para las 14 de 14 métricas de asistencia ya registradas;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+VISTA VIVA
+≠ TABLERO
+≠ REPORTE OFICIAL
+≠ EXPORTACIÓN
+≠ SUSCRIPCIÓN
+≠ ALERTA
+≠ SNAPSHOT OFICIAL
+≠ SIMULACIÓN
+```
+
+```text
+PUBLICADO
+≠ CERTIFICADO
+```
+
+```text
+EXPORTACIÓN
+≠ FUENTE DE VERDAD
+```
+
+```text
+SUSCRIPCIÓN
+≠ AMPLIACIÓN DE AUTORIZACIÓN
+```
+
+```text
+ALERTA
+≠ DIAGNÓSTICO
+≠ DECISIÓN
+≠ ACCIÓN
+```
+
+```text
+SNAPSHOT OFICIAL
+≠ RESPALDO TÉCNICO
+≠ ESTADO VIVO
+≠ RESTATEMENT
+```
+
+```text
+CERO MEDIDO
+≠ SIN DATO
+≠ SIN DENOMINADOR
+≠ NO APLICA
+≠ DATO PENDIENTE
+```
+
+Un artefacto puede ser técnicamente válido y seguir siendo provisional, no certificado o no apto para publicación oficial según su uso y dependencias.
+
+#### 4. Matriz canónica de las seis familias principales
+
+|    # | Familia          | Finalidad canónica                                                                              | Mutabilidad                                                                  | Condición mínima antes de uso oficial                                                                     | Autoridad sobre hechos o maestros | Estado documental |
+| ---: | ---------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------- | ----------------- |
+|    1 | tablero          | presentar señales y métricas para una decisión recurrente, con contexto y drill-down progresivo | puede actualizarse con nuevos cortes; cada resultado conserva su contexto    | definición semántica vigente, calidad visible, dependencias admisibles y autorización efectiva            | ninguna                           | `ESPECIFICADO`    |
+|    2 | reporte          | comunicar un conjunto delimitado de resultados para un periodo, corte, propósito y audiencia    | una edición oficial emitida no cambia silenciosamente                        | periodo/corte, versiones, fuentes, calidad, responsable y estado de publicación explícitos                | ninguna                           | `ESPECIFICADO`    |
+|    3 | exportación      | entregar una representación portable del resultado autorizado                                   | artefacto derivado; una nueva generación es otra ejecución                   | mismo alcance, filtros, dimensiones, corte, versiones y restricciones del resultado origen                | ninguna                           | `ESPECIFICADO`    |
+|    4 | suscripción      | programar o solicitar entregas de un artefacto o resultado definido                             | la regla de entrega puede evolucionar; cada entrega conserva su propio corte | artefacto fuente gobernado, contexto de entrega, autorización vigente y política ante degradación/bloqueo | ninguna                           | `ESPECIFICADO`    |
+|    5 | alerta           | señalar una condición definida que requiere atención o evaluación                               | cada ocurrencia conserva regla, versión, contexto y tiempo de evaluación     | regla/umbral o condición versionada, dato interpretable, calidad suficiente y destinatario autorizado     | ninguna                           | `ESPECIFICADO`    |
+|    6 | snapshot oficial | conservar una publicación inmutable de un resultado para un corte y contexto concretos          | inmutable; cambios posteriores producen nueva publicación o restatement      | versiones, corte, fuentes, calidad/certificación, responsable y evidencia de publicación completos        | ninguna                           | `ESPECIFICADO`    |
+
+**Reconciliación:** 6 familias esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 5. Contrato mínimo común de un artefacto analítico
+
+Todo artefacto deberá poder declarar, cuando aplique a su clase y uso:
+
+| Componente                        | Regla canónica                                                                                             |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| pregunta empresarial              | identifica qué decisión o necesidad informativa resuelve                                                   |
+| propósito y audiencia             | delimita por qué existe y para quién fue generado o publicado                                              |
+| clase de artefacto                | distingue tablero, reporte, exportación, suscripción, alerta, snapshot, vista viva, provisional o simulada |
+| periodo                           | identifica la ventana empresarial observada                                                                |
+| fecha y hora de corte             | fija hasta qué información pudo participar en el resultado                                                 |
+| zona horaria                      | conserva la interpretación temporal efectiva                                                               |
+| filtros                           | registra restricciones materiales aplicadas                                                                |
+| dimensiones                       | registra agrupaciones y segmentos utilizados                                                               |
+| métricas y versiones              | referencia las definiciones semánticas exactas consumidas                                                  |
+| unidad y moneda                   | evita cantidades o importes implícitos o ambiguos                                                          |
+| frescura                          | declara actualidad respecto del uso y corte exigidos                                                       |
+| cobertura                         | declara población cubierta, parcialidad conocida o imposibilidad de comprobar el universo                  |
+| calidad/certificación             | conserva el estado aplicable definido en `DATA-DOM-007`                                                    |
+| fuentes y dependencias            | permite explicar qué datos y resultados sustentan el artefacto                                             |
+| última actualización o generación | distingue actualización del artefacto frente al corte de los datos                                         |
+| responsable                       | identifica propiedad empresarial de la publicación o consumo                                               |
+| trazabilidad al detalle           | permite llegar, bajo autorización, desde el agregado a evidencia o hechos explicativos                     |
+| estado de publicación             | distingue material vivo, provisional, oficial, degradado o simulado sin confundirlo con certificación      |
+| relación con publicación anterior | conserva vínculo cuando exista corrección, reconstrucción o restatement                                    |
+
+La representación técnica de estos componentes puede variar. La implementación física pertenece a las tareas de integración, autorización y experiencia ya reservadas.
+
+#### 6. Autoridad y propiedad del artefacto
+
+```text
+PROPIETARIO DEL DATO
+≠ PROPIETARIO DE LA MÉTRICA
+≠ CERTIFICADOR
+≠ PUBLICADOR
+≠ CONSUMIDOR
+```
+
+Reglas:
+
+1. publicar un artefacto no transfiere propiedad de los datos fuente;
+2. un tablero o reporte no puede corregir hechos, maestros o relaciones para lograr una cifra esperada;
+3. un exportador o generador técnico no adquiere autoridad empresarial por producir el archivo;
+4. el responsable de publicación no redefine fórmulas ya registradas;
+5. la segregación de capacidades entre definición, certificación, publicación, exportación y administración permanece en `DATA-AUTH-003`;
+6. el acceso a agregado no concede acceso automático al detalle;
+7. la protección de detalle sensible, poblaciones pequeñas, comparaciones y exportaciones permanece en `DATA-AUTH-002`;
+8. la auditoría de consultas, exportaciones, suscripciones y alertas permanece en `DATA-AUTH-004`.
+
+#### 7. Gate documental de publicación
+
+Antes de presentar un artefacto como oficial se evalúan, cuando apliquen, estas condiciones:
+
+1. la definición semántica de las métricas está identificada y versionada;
+2. periodo, corte y zona horaria están definidos;
+3. filtros, dimensiones, unidad y moneda están explícitos cuando pueden cambiar el significado;
+4. las fuentes y dependencias pueden identificarse;
+5. la frescura y cobertura son conocidas para el uso;
+6. la reconciliación requerida está completa o la diferencia ha sido tratada conforme al contrato vigente;
+7. ninguna dependencia obligatoria se encuentra `BLOQUEADO`;
+8. un artefacto presentado como `CERTIFICADO` depende únicamente de resultados y fuentes cuya certificación permita ese uso;
+9. la autorización del actor o destinatario se evalúa separadamente;
+10. existe información suficiente para reproducir o explicar el resultado sin usar el artefacto como fuente primaria.
+
+Reglas de consecuencia:
+
+- una dependencia `BLOQUEADO` impide publicación oficial del artefacto dependiente;
+- una dependencia `NO EVALUADO` no puede presentarse como `CERTIFICADO`;
+- una dependencia `DEGRADADO` puede sostener una vista o entrega explícitamente degradada cuando el uso lo permita, pero no se rotula como certificada;
+- una ausencia de datos no se convierte en valor cero para superar el gate;
+- una carga técnicamente exitosa no sustituye reconciliación, evaluación de calidad o certificación.
+
+#### 8. Tableros
+
+Un tablero es una superficie de decisión recurrente. No es un repositorio paralelo ni una colección indiscriminada de cifras.
+
+Contrato:
+
+- responde una decisión principal o un conjunto estrechamente relacionado de decisiones;
+- muestra primero señal, cambio y contexto, dejando fórmula, linaje y excepciones bajo divulgación progresiva;
+- conserva periodo, corte, filtros, versión, frescura, cobertura y calidad disponibles para consulta;
+- utiliza únicamente métricas registradas y no redefine fórmulas localmente;
+- la comparación entre periodos o segmentos conserva las condiciones de comparabilidad definidas en `DATA-DOM-005`;
+- el drill-down mantiene el mismo contexto del agregado y reevalúa autorización en el nivel de detalle;
+- los estados vacíos distinguen ausencia real de actividad, falta de datos, cobertura incompleta y población no aplicable;
+- la selección de KPI, drivers, guardrails, líneas base y metas permanece en `DATA-DOM-015`;
+- la experiencia concreta del tablero permanece en `DATA-UX-001` y `DATA-UX-003`.
+
+#### 9. Reportes oficiales
+
+Un reporte oficial representa una publicación gobernada para un periodo, corte, propósito y audiencia determinados.
+
+Debe conservar:
+
+- nombre y propósito empresarial;
+- responsable;
+- periodo y corte;
+- fecha de generación y, cuando corresponda, de publicación;
+- zona horaria;
+- métricas y versiones;
+- filtros y dimensiones;
+- unidad y moneda;
+- estado de frescura, cobertura y calidad;
+- fuentes o dependencias materiales;
+- condición oficial, provisional o degradada;
+- relación con una publicación anterior cuando exista restatement.
+
+Reglas:
+
+1. emitir nuevamente el mismo periodo con datos o versiones distintas no altera la edición anterior;
+2. un reporte oficial no se usa como entrada para reconstruir los mismos hechos que presenta;
+3. una corrección posterior se refleja mediante una nueva publicación relacionada cuando corresponda;
+4. un reporte que contiene una dependencia `BLOQUEADO` no puede publicarse como oficial;
+5. un reporte no puede presentarse como certificado si sus dependencias requeridas no satisfacen la certificación del uso;
+6. el formato visual puede cambiar sin cambiar la métrica si se preservan definición, contexto y corte.
+
+#### 10. Exportaciones
+
+Una exportación es una representación portable de datos o resultados ya autorizados. No es una fuente empresarial nueva.
+
+Contrato:
+
+- conserva el alcance efectivo del actor y no amplía población, detalle o territorio;
+- mantiene el periodo, corte, filtros y dimensiones materiales;
+- conserva versión de métricas y definición de columnas o campos cuando aplique;
+- conserva unidad, moneda y zona horaria cuando cambien la interpretación;
+- declara fecha de generación;
+- conserva o acompaña el estado de frescura, cobertura y calidad aplicable;
+- distingue una exportación ad hoc de una exportación vinculada a una publicación oficial;
+- el detalle sensible sigue sujeto a las reglas de `DATA-AUTH-001` y `DATA-AUTH-002`;
+- la auditoría y trazabilidad de la acción permanecen en `DATA-AUTH-004`.
+
+Una exportación generada desde un tablero vivo no se vuelve snapshot oficial por el solo hecho de quedar almacenada fuera de la aplicación.
+
+#### 11. Suscripciones
+
+Una suscripción define la entrega repetida o condicionada de un artefacto o resultado gobernado. No define una fórmula alternativa ni congela permanentemente la autorización del destinatario.
+
+Toda suscripción deberá poder declarar:
+
+- artefacto o conjunto de métricas al que se refiere;
+- versión o política de versión aplicable;
+- periodo o ventana entregada;
+- filtros y dimensiones materiales;
+- cadencia o condición de entrega;
+- zona horaria de evaluación y entrega cuando aplique;
+- formato de salida;
+- destinatario o audiencia bajo autorización efectiva;
+- estado mínimo de calidad requerido para emitir una entrega oficial;
+- tratamiento cuando la fuente esté degradada, bloqueada o incompleta;
+- última ejecución y resultado cuando exista implementación;
+- vínculo con el artefacto publicado cuando la entrega representa un snapshot o reporte oficial.
+
+Reglas:
+
+1. cada entrega conserva su propio corte y contexto;
+2. una suscripción no mantiene acceso cuando el contexto efectivo ya no lo autoriza;
+3. si una dependencia necesaria está `BLOQUEADO`, no se emite silenciosamente una entrega oficial como si estuviera completa;
+4. si el contrato permite una entrega degradada, esa condición queda visible;
+5. cambiar cadencia o canal no cambia por sí solo la definición de la métrica;
+6. el diseño de experiencia de suscripciones permanece en `DATA-UX-007` y su auditoría en `DATA-AUTH-004`.
+
+#### 12. Alertas
+
+Una alerta expresa que una condición gobernada fue evaluada y produjo una señal. No constituye por sí sola diagnóstico, causa, decisión o acción.
+
+Toda alerta deberá poder declarar:
+
+- métrica, dato o condición observada;
+- versión de la regla o definición aplicable;
+- periodo, instante o corte de evaluación;
+- dimensiones y alcance;
+- umbral, comparación o condición que produjo la señal cuando aplique;
+- valor observado y unidad;
+- frescura y calidad de los datos usados;
+- severidad o prioridad cuando exista contrato de dominio;
+- destinatario o audiencia autorizada;
+- vínculo con el tablero, reporte o detalle que explica la señal;
+- estado de reconocimiento o tratamiento cuando la implementación futura lo contemple.
+
+Reglas:
+
+1. una ausencia de dato no dispara una alerta de desempeño como si fuese un valor cero, salvo que la regla definida sea precisamente ausencia o incumplimiento de llegada;
+2. una alerta generada con datos degradados debe mostrar esa condición;
+3. un umbral no se inventa en esta tarea; pertenece a la definición empresarial que lo gobierne;
+4. una alerta no ejecuta automáticamente una acción empresarial;
+5. diagnóstico y recomendación permanecen en `DATA-DOM-014`; objetivos, metas y guardrails en `DATA-DOM-015`; acciones de mejora en `DATA-DOM-016`.
+
+#### 13. Snapshots oficiales
+
+Un snapshot oficial es una publicación inmutable que conserva un resultado para una coordenada concreta de periodo, corte, contexto y versiones.
+
+Debe conservar, como mínimo:
+
+- corte y periodo;
+- contexto territorial u organizacional aplicable;
+- filtros y dimensiones;
+- métricas y versiones;
+- unidad y moneda;
+- fuentes y dependencias;
+- estado de calidad/certificación al momento de publicación;
+- fecha de generación/publicación;
+- responsable de la publicación;
+- relación con una publicación previa o posterior cuando exista restatement.
+
+Reglas:
+
+1. incorporar datos tardíos no modifica silenciosamente el snapshot ya publicado;
+2. corregir una fuente no cambia retrospectivamente el contenido de la publicación anterior;
+3. una nueva reconstrucción produce un resultado distinguible y trazable;
+4. un snapshot no sustituye los hechos, movimientos o maestros que lo originan;
+5. un snapshot no se usa para inventar detalle que sus fuentes no contienen;
+6. la política de restatement, versiones históricas y reproducibilidad de reexpresiones permanece en `DATA-DOM-017`;
+7. la materialización física de modelos, cachés y snapshots permanece en `DATA-INT-002`.
+
+#### 14. Vista viva, provisional y simulación
+
+Estas clasificaciones se mantienen separadas de un artefacto oficial:
+
+| Clasificación | Semántica                                                                     | Regla principal                                                             |
+| ------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| vista viva    | proyección del estado disponible al momento de consulta                       | debe mostrar corte/frescura efectiva y no promete inmutabilidad             |
+| provisional   | resultado todavía sujeto a cierre, reconciliación, evaluación o certificación | no se rotula como oficial/certificado y hace visible la condición pendiente |
+| simulación    | resultado construido bajo supuestos o escenario                               | no se mezcla con hechos reales ni se publica como resultado observado       |
+
+El modo de presentación no altera la propiedad de las fuentes ni la versión semántica de la métrica.
+
+#### 15. Correcciones, reconstrucciones y restatements
+
+```text
+CORRECCIÓN DE FUENTE
+→ REPROCESAMIENTO O RECONSTRUCCIÓN
+→ NUEVA EVALUACIÓN DE CALIDAD
+→ NUEVA DECISIÓN DE CERTIFICACIÓN
+→ NUEVA PUBLICACIÓN, SI CORRESPONDE
+```
+
+Reglas:
+
+- una publicación previa permanece identificable;
+- una nueva ejecución con distinto corte o distinta versión no se presenta como la misma edición inmutable;
+- la relación entre versión anterior y reexpresión debe ser trazable;
+- una publicación no se edita para ocultar que existió una cifra anterior;
+- `DATA-DOM-017` define el gobierno completo de restatements, correcciones históricas y reproducibilidad sin reabrir en esta tarea la semántica de métricas.
+
+#### 16. Materialización sobre las 14 métricas de asistencia
+
+Las 14 claves de asistencia heredadas reciben una decisión explícita de presentación/publicación conforme al estado de calidad aprobado en `DATA-DOM-007`.
+
+|    # | `metric_key`        | Estado DQ heredado | Decisión de presentación actual                                                             | Decisión de publicación certificada                              |
+| ---: | ------------------- | ------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    2 | `attendedShifts`    | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    3 | `restDayCount`      | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    4 | `lateCount`         | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    5 | `noShowCount`       | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    6 | `openCount`         | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    7 | `missingCloseCount` | `BLOQUEADO`        | solo puede mostrarse como resultado no oficial con bloqueo visible cuando el uso lo permita | bloqueada hasta alinear implementación, reevaluar y certificar   |
+|    8 | `autoCloseCount`    | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|    9 | `departureCount`    | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|   10 | `scheduledMinutes`  | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|   11 | `netMinutes`        | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|   12 | `incidentCount`     | `NO EVALUADO`      | puede aparecer en superficie provisional con estado visible                                 | no elegible como `CERTIFICADO` hasta evaluación satisfactoria    |
+|   13 | `attendanceRate`    | `BLOQUEADO`        | solo puede mostrarse como resultado no oficial con bloqueo visible cuando el uso lo permita | bloqueada hasta alinear denominador cero, reevaluar y certificar |
+|   14 | `punctualityRate`   | `BLOQUEADO`        | solo puede mostrarse como resultado no oficial con bloqueo visible cuando el uso lo permita | bloqueada hasta alinear denominador cero, reevaluar y certificar |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Ninguna de las 14 métricas se eleva a `CERTIFICADO` por esta tarea.
+
+#### 17. Evaluación documental de `attendance-report`
+
+La implementación vigente inspeccionada materializa dos superficies de salida sobre el mismo cálculo:
+
+| Superficie observada    | Evidencia técnica                                                                                                                                                  | Clasificación D008                       | Estado técnico | Estado para publicación oficial                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| respuesta `format=json` | entrega periodo, zona horaria, parámetros de política, fecha de generación, resumen, principales trabajadores/sedes e incidencias                                  | vista/proyección analítica viva o ad hoc | `IMPLEMENTADO` | `BLOQUEADO` como artefacto oficial mientras incluya dependencias bloqueadas o carezca de certificación suficiente |
+| libro XLSX              | genera `REPORTE OPERATIVO DE TURNOS Y ASISTENCIA`, periodo, alcance, fecha de generación, resumen ejecutivo, detalle por turno, incidencias y hojas por trabajador | reporte/exportación operativa            | `IMPLEMENTADO` | `BLOQUEADO` como reporte oficial en su forma actual                                                               |
+
+Razones documentales del bloqueo oficial actual:
+
+1. el resumen incluye `missingCloseCount`, `attendanceRate` y `punctualityRate`, que permanecen `BLOQUEADO` en `DATA-DOM-007`;
+2. las otras métricas permanecen `NO EVALUADO`, por lo que el artefacto no puede presentarse como certificado por inferencia;
+3. el contrato visible de salida no materializa de forma explícita el estado DQ/certificación requerido por el contrato común;
+4. la existencia de periodo, alcance y fecha de generación es evidencia útil, pero no sustituye versión semántica, frescura, cobertura y certificación;
+5. la función genera un artefacto derivado y no se convierte en fuente de verdad.
+
+La tarea no modifica `attendance-report`. La alineación técnica de la capa de lectura/publicación corresponde a `DATA-INT-001` y `DATA-INT-002`, y la experiencia de reportes/exportaciones a `DATA-UX-007`.
+
+#### 18. Binding físico y nombres de fuentes
+
+La publicación se gobierna por autoridades y contratos lógicos. Los nombres físicos actuales que una implementación consulta no cambian la identidad empresarial de fuente, métrica o artefacto.
+
+La función `attendance-report` inspeccionada consulta actualmente conjuntos físicos de programación, marcación, descansos y eventos de turno, además de la política de turno. La definición y compatibilidad del binding físico entre esos objetos y los contratos lógicos permanecen en `DATA-INT-001` y `DATA-INT-002`.
+
+Esta tarea no renombra tablas, vistas, funciones, eventos ni fuentes documentales y no convierte una diferencia de nombre físico en una nueva autoridad.
+
+#### 19. Privacidad, alcance y poblaciones pequeñas
+
+El contrato de publicación no amplía acceso.
+
+Reglas:
+
+- una vista agregada no concede acceso al detalle personal o sensible;
+- el artefacto conserva el alcance territorial, organizacional y de finalidad permitido;
+- una exportación no habilita más atributos que la consulta autorizada de origen;
+- poblaciones pequeñas pueden requerir ocultamiento, agregación o enmascaramiento conforme a `DATA-AUTH-002`;
+- un destinatario de suscripción se evalúa bajo autorización efectiva;
+- la publicación de información laboral, de cliente, financiera, técnica o personal conserva sus restricciones de sensibilidad;
+- cualquier uso por proveedores, modelos externos o IA permanece bajo `DATA-AUTH-004` y `DATA-INT-004`.
+
+#### 20. Rendimiento, materialización y degradación
+
+Esta tarea no prescribe una tecnología BI, motor de caché o tipo de almacenamiento. Sí fija estas obligaciones documentales:
+
+- un artefacto no debe requerir releer indiscriminadamente tablas operativas desde el cliente para cada render;
+- un caché o materialización conserva versión y corte suficientes para evitar servir un resultado ambiguo;
+- una exportación masiva requiere control de alcance y límites conforme a autorización e implementación aplicables;
+- una degradación de fuente o modelo queda visible y no se oculta manteniendo una etiqueta de actualización nueva;
+- una reconstrucción conserva la versión de cálculo y el corte usados;
+- modelos, consultas, cachés y snapshots físicos pertenecen a `DATA-INT-002`.
+
+#### 21. Observabilidad y auditoría
+
+Cuando exista implementación, deberán quedar distinguibles al menos:
+
+- solicitud o generación del artefacto;
+- actor o proceso que la solicita;
+- clase de artefacto;
+- alcance y contexto material;
+- periodo y corte;
+- resultado de la generación;
+- estado de calidad/certificación aplicable;
+- publicación, exportación o entrega cuando corresponda;
+- fallo, degradación o bloqueo;
+- relación con una versión o restatement cuando aplique.
+
+La materialización de auditoría y permisos corresponde a `DATA-AUTH-003`, `DATA-AUTH-004` y a las tareas técnicas aplicables. Esta sección no concede capacidades ni define una tabla universal de auditoría.
+
+#### 22. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                        | Propietario documental | Condición de salida                                                  |
+| ----------------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| fórmulas y familias de analítica de ventas, demanda, precios, promociones y canales | `DATA-DOM-009`         | antes de crear artefactos oficiales de analítica comercial           |
+| selección de KPI, drivers, guardrails, líneas base, metas y cadencias               | `DATA-DOM-015`         | antes de configurar seguimiento de objetivos                         |
+| restatements, correcciones históricas y reproducibilidad de publicaciones           | `DATA-DOM-017`         | antes de reexpresar una publicación oficial previa                   |
+| protección por dominio, entidad, territorio y finalidad                             | `DATA-AUTH-001`        | antes de exponer datos o resultados restringidos                     |
+| detalle sensible, poblaciones pequeñas, comparaciones y exportaciones               | `DATA-AUTH-002`        | antes de exponer detalle o exportaciones sensibles                   |
+| segregación entre definición, certificación, publicación y administración           | `DATA-AUTH-003`        | antes de conceder capacidades de publicación o certificación         |
+| auditoría de consultas, exportaciones, suscripciones, alertas y uso externo         | `DATA-AUTH-004`        | antes de habilitar esas acciones productivas                         |
+| inicio ejecutivo y jerarquía de información                                         | `DATA-UX-001`          | antes de materializar la experiencia ejecutiva                       |
+| tableros, filtros, comparación y drill-down                                         | `DATA-UX-003`          | antes de materializar tableros productivos                           |
+| reportes, exportaciones, suscripciones y snapshots versionados                      | `DATA-UX-007`          | antes de materializar la experiencia final de estos artefactos       |
+| contratos físicos de lectura y binding con fuentes                                  | `DATA-INT-001`         | antes de publicar consumidores productivos sobre fuentes compartidas |
+| capa semántica física, modelos, consultas, caché y snapshots                        | `DATA-INT-002`         | antes de materializar persistencia o servicio analítico compartido   |
+| BI, hojas de cálculo, modelos externos e IA                                         | `DATA-INT-004`         | antes de integrar herramientas o proveedores analíticos externos     |
+
+No queda una decisión material de publicación, exportación, suscripción, alerta o snapshot diferida sin propietario documental exacto.
+
+#### 23. Cobertura de prueba canónica preexistente
+
+El requisito DATA vigente para artefactos analíticos ya exige que todo tablero, reporte, alerta, exportación o suscripción declare versión de métricas, periodo, zona horaria, filtros, dimensiones, moneda o unidad, fecha de corte, frescura, cobertura y estado de calidad; también exige simplicidad accionable, divulgación progresiva, drill-down autorizado, separación entre vista viva, snapshot publicado, reporte oficial, simulación y exportación, y preservación de publicaciones anteriores ante correcciones o restatements.
+
+Los requisitos DATA vigentes también protegen el registro versionado de métricas y prohíben presentar como certificado un reporte dependiente de fuentes vencidas, incompletas, degradadas o sin reconciliar.
+
+La presente tarea materializa estas obligaciones sin cambiar su regla protegida, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las reglas de reportes, tableros, exportaciones, suscripciones, alertas, snapshots, calidad visible, corte, versión, drill-down y preservación de publicaciones ya están cubiertas por requisitos canónicos DATA vigentes asignados a esta tarea y a sus responsables transversales. La tarea no introduce una familia ejecutable independiente ni autoriza implementación técnica o publicación productiva.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+#### 24. Criterios de aceptación
+
+1. las seis familias principales están materializadas: 6 esperadas, 6 presentes, 0 faltantes y 0 duplicadas;
+2. tablero, reporte, exportación, suscripción, alerta y snapshot oficial conservan finalidades y reglas distintas;
+3. vista viva, resultado provisional y simulación permanecen separados de publicación oficial;
+4. publicación y certificación no se tratan como el mismo estado;
+5. todo artefacto puede declarar pregunta, periodo, corte, zona horaria, filtros, dimensiones, versiones, frescura, cobertura, calidad, unidad/moneda, fuentes, actualización, responsable y trazabilidad al detalle cuando apliquen;
+6. un tablero no redefine localmente una fórmula registrada;
+7. una exportación no se convierte en fuente de verdad;
+8. una exportación conserva el alcance efectivo del actor y el contexto material del resultado;
+9. una suscripción no amplía autorización ni crea otra definición de métrica;
+10. cada entrega de suscripción conserva corte y contexto propios;
+11. una alerta conserva regla/versión, corte, contexto, calidad y valor observado cuando apliquen;
+12. una alerta no equivale a diagnóstico, decisión ni acción;
+13. ausencia de dato y cero medido permanecen separados en alertas y artefactos;
+14. un snapshot oficial es inmutable respecto de lo publicado en su corte;
+15. una corrección posterior no altera silenciosamente una publicación previa;
+16. restatements permanecen en `DATA-DOM-017`;
+17. una dependencia `BLOQUEADO` impide publicación oficial del artefacto dependiente;
+18. una dependencia `NO EVALUADO` no se presenta como `CERTIFICADO`;
+19. una dependencia `DEGRADADO` solo sostiene una presentación degradada cuando el uso lo permita y nunca se rotula como certificada;
+20. las 14 métricas de asistencia reciben decisión explícita de publicación: 14 esperadas, 14 presentes, 0 faltantes y 0 duplicadas;
+21. se preservan 11 métricas `NO EVALUADO` y 3 métricas `BLOQUEADO` conforme a `DATA-DOM-007`;
+22. `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen bloqueadas para publicación certificada;
+23. ninguna de las 14 métricas se eleva a `CERTIFICADO` por inferencia;
+24. la respuesta JSON observada de `attendance-report` queda reconocida como proyección analítica técnicamente implementada, no como artefacto oficial certificado;
+25. el XLSX observado queda reconocido como reporte/exportación técnicamente implementado, no como reporte oficial certificado en su forma actual;
+26. los metadatos actuales de periodo, alcance y generación no sustituyen versión semántica, frescura, cobertura y certificación;
+27. la tarea no cambia nombres físicos, código, SQL, Supabase, datos, migraciones, dashboards, reportes o snapshots productivos;
+28. no se crea ni modifica ningún requisito de prueba;
+29. la continuidad queda exclusivamente en `DATA-DOM-009` como siguiente tarea reservada.
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales`
+
+
 ### [ ] DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
 ### [ ] DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
 ### [ ] DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad

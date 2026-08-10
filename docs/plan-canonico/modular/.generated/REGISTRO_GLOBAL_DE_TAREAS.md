@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **677** |
+| Aprobadas | **678** |
 | En propuesta | **0** |
-| No iniciadas | **917** |
+| No iniciadas | **916** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.47% (677/1594)** |
+| Porcentaje de completamiento | **42.53% (678/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-009` — Definir analítica de ventas, demanda, precios, promociones y canales | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-009` — Definir analítica de ventas, demanda, precios, promociones y canales | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1566,7 +1566,7 @@
 | ✅ APROBADA | `DATA-DOM-005` | Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-006` | Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-007` | Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-008` | Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-008` | Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-009` | Definir analítica de ventas, demanda, precios, promociones y canales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-010` | Definir analítica de inventario, abastecimiento, proveedores y logística | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-011` | Definir analítica de producción, rendimiento, capacidad, merma y calidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
