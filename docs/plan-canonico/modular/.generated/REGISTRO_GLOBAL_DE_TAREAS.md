@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **653** |
+| Aprobadas | **654** |
 | En propuesta | **0** |
-| No iniciadas | **941** |
+| No iniciadas | **940** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.97% (653/1594)** |
+| Porcentaje de completamiento | **41.03% (654/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | ✅ APROBADA |
-| Tarea actual | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-DOM-011` — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | ⬜ NO INICIADA |
+| Última aprobada | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | ✅ APROBADA |
+| Tarea actual | `INFO-DOM-011` — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-DOM-012` — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1542,7 +1542,7 @@
 | ✅ APROBADA | `INFO-DOM-007` | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-008` | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-009` | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
-| ⬜ NO INICIADA | `INFO-DOM-010` | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
+| ✅ APROBADA | `INFO-DOM-010` | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-011` | Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-012` | Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-013` | Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |

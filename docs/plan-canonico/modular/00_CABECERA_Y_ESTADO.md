@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **653** |
+| Tareas aprobadas | **654** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **941** |
+| Tareas no iniciadas | **940** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.97% (653/1594)** |
+| Porcentaje de completamiento | **41.03% (654/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión** |
-| Tarea actual | **INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad** |
+| Última tarea aprobada | **INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad** |
+| Tarea actual | **INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia** |
+| Siguiente tarea | **INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 77 de 157 aprobadas; INFO-DOM-010 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 78 de 157 aprobadas; INFO-DOM-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión |
-| Tarea actual | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad — **NO INICIADA** |
-| Siguiente tarea | `INFO-DOM-011` — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia |
+| Última aprobada | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad |
+| Tarea actual | `INFO-DOM-011` — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia — **NO INICIADA** |
+| Siguiente tarea | `INFO-DOM-012` — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 77 DE 157 APROBADAS — ACTUAL INFO-DOM-010** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 78 DE 157 APROBADAS — ACTUAL INFO-DOM-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
-        ↓
-TAREA ACTUAL
 INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 77 de 157 tareas aprobadas
+CARRIL NEXO — 78 de 157 tareas aprobadas
 ```

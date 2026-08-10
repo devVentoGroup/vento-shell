@@ -6502,7 +6502,911 @@ SIGUIENTE TAREA RESERVADA
 La continuidad termina en `INFO-DOM-009`. No se materializa contenido de `INFO-DOM-010`.
 
 
-### [ ] INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
+### ✅ INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión` — APROBADA
+**Tarea siguiente:** `INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia` — RESERVADA
+**Tipo de tarea:** Documental — gobierno de información, privacidad, divulgación y control de salidas
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo heredado:** 69 procesos canónicos y 332 contextos `DOCCTX-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Definir un contrato corporativo único para toda salida de información desde Vento hacia otra persona, sistema, organización, ambiente o territorio cuando esa salida constituya compartición, exportación, divulgación, entrega a tercero, tratamiento por encargado, transferencia o respuesta a un requerimiento de autoridad.
+
+El resultado no concede permisos ni presume fundamento jurídico. Establece qué deberá quedar resuelto y probado antes, durante y después de una salida de información.
+
+Se materializan los siguientes contratos:
+
+1. `INFO-DATA-SHARING-DISCLOSURE-CONTRACT-001`;
+2. `INFO-DATA-EXPORT-COPY-CONTROL-CONTRACT-001`;
+3. `INFO-THIRD-PARTY-RECIPIENT-PROCESSOR-CONTRACT-001`;
+4. `INFO-DATA-TRANSFER-TERRITORY-CONTRACT-001`;
+5. `INFO-AUTHORITY-REQUEST-DISCLOSURE-CONTRACT-001`;
+6. `INFO-DISCLOSURE-EVIDENCE-LIFECYCLE-CONTRACT-001`;
+7. `INFO-DATA-SHARING-TRANSFER-PROCESS-MATRIX-001`.
+
+La tarea preserva las 69 identidades `VPROC-*`, las 332 identidades `DOCCTX-*`, las nueve propietarias funcionales y la clasificación heredada. No crea una taxonomía paralela por tabla, bucket, carpeta, enlace o proveedor.
+
+---
+
+#### 2. Entradas e invariantes heredadas
+
+Se conservan sin modificación:
+
+- `INFO-DOM-001`: inventario empresarial, finalidad primaria y propiedad funcional;
+- `INFO-DOM-002`: clasificación S0–S4, minimización, propagación y manejo;
+- `INFO-DOM-003`: identidad documental, copias, derivados y taxonomía;
+- `INFO-DOM-004`: ciclo de vida, vigencia y estado empresarial;
+- `INFO-DOM-005`: ubicación, almacenamiento y referencias de localización;
+- `INFO-DOM-006`: retención, archivo, legal hold y disposición;
+- `INFO-DOM-007`: autenticidad, integridad, procedencia, tiempo y cadena de custodia;
+- `INFO-DOM-008`: avisos, finalidades, fundamentos, consentimiento, revocación y datos sensibles;
+- `INFO-DOM-009`: solicitudes de titulares, verificación, descubrimiento, ejecución y cierre;
+- las 69 identidades `VPROC-0001` a `VPROC-0069`;
+- las 332 identidades `DOCCTX-*`;
+- las nueve propietarias funcionales;
+- la distribución de sensibilidad `S0_PUBLIC`/`S1_INTERNAL`/`S2_CONFIDENTIAL`/`S3_RESTRICTED`/`S4_HIGHLY_RESTRICTED` = **1/33/166/124/8**;
+- la distribución de reglas dominantes `BASE`/`HERENCIA_CONTENIDO`/`PUBLICACION_CONTROLADA`/`INFERENCIA`/`S4_DIRECTA` = **287/29/2/6/8**.
+
+Una salida nunca reduce por sí misma la clasificación, cambia la propietaria funcional, altera la finalidad aprobada ni extingue retención, legal hold, procedencia o custodia.
+
+---
+
+#### 3. Fronteras conceptuales obligatorias
+
+| Concepto                     | Definición de gobierno                                                                                                                              | No equivale a                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `CONSULTA_CONTROLADA`        | Visualización o acceso dentro de una superficie autorizada sin crear por ese solo hecho una copia de salida.                                        | Permiso para exportar, compartir o divulgar.                                      |
+| `COMPARTICION_CONTROLADA`    | Habilitación o entrega de información a un destinatario identificado para una finalidad y alcance definidos.                                        | Autorización general futura ni acceso indefinido.                                 |
+| `EXPORTACION_CONTROLADA`     | Generación de una copia, conjunto, reporte, archivo o proyección que sale de la vista ordinaria o del control directo de la aplicación propietaria. | Lectura ordinaria, consulta ni evidencia de autorización.                         |
+| `DIVULGACION_CONTROLADA`     | Comunicación deliberada de información a un destinatario por una finalidad o requerimiento determinado.                                             | Publicación general ni transferencia de propiedad.                                |
+| `TRANSFERENCIA_CONTROLADA`   | Movimiento gobernado de información hacia otro entorno, tercero o territorio cuando la relación y el destino requieren evaluación separada.         | Réplica técnica interna automáticamente equivalente a una transferencia jurídica. |
+| `PUBLICACION_CONTROLADA`     | Exposición pública de una proyección aprobada y vigente.                                                                                            | Degradación de borradores, fuentes, historial o metadatos a `S0_PUBLIC`.          |
+| `REQUERIMIENTO_DE_AUTORIDAD` | Caso separado originado por una solicitud de una autoridad cuya identidad, competencia, alcance y soporte deben verificarse.                        | Solicitud de titular, soporte ordinario, pedido informal o acceso administrativo. |
+| `REPLICA_TECNICA`            | Copia operativa necesaria para continuidad, sincronización, respaldo o procesamiento técnico dentro de un contrato aprobado.                        | Autorización empresarial para divulgar o reutilizar información.                  |
+
+Invariantes:
+
+1. permiso de consulta no concede permiso de exportación;
+2. permiso de exportación no concede permiso de compartición externa;
+3. una URL firmada, token, enlace temporal, archivo cifrado o canal seguro es un mecanismo de entrega, no la autoridad empresarial ni el fundamento del tratamiento;
+4. un watermark, hash, acuse o registro técnico aporta evidencia, pero no crea autorización;
+5. una exportación o derivado conserva clasificación, procedencia, retención y restricciones de su fuente, salvo regla aprobada más restrictiva;
+6. `S0_PUBLIC` solo habilita la proyección efectivamente publicada; la publicación exige autoridad y vigencia;
+7. secretos, credenciales, tokens, PIN y llaves no se incorporan a una salida ordinaria por conveniencia operativa;
+8. la existencia de un contrato comercial con un proveedor no demuestra por sí sola su rol de tratamiento, finalidad, alcance, territorios ni autorización para subcontratar.
+
+---
+
+#### 4. `INFO-DATA-SHARING-DISCLOSURE-CONTRACT-001`
+
+Toda compartición o divulgación controlada deberá resolver como mínimo:
+
+| Campo                            | Regla                                                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `disclosure_id`                  | Identidad estable e inmutable de la operación o caso.                                                |
+| `source_process_id`              | `VPROC-*` propietario del hecho o contexto empresarial.                                              |
+| `source_context_ids`             | `DOCCTX-*`, documentos, versiones o recursos incluidos.                                              |
+| `authorizer`                     | Actor o autoridad empresarial que aprueba la salida conforme al modelo de autorización vigente.      |
+| `deliverer`                      | Actor o servicio que ejecuta la entrega; no se confunde con quien autoriza.                          |
+| `recipient`                      | Persona, organización, sistema o autoridad receptora identificada.                                   |
+| `recipient_role_evidence`        | Evidencia del rol del destinatario cuando sea relevante; si falta, no se infiere.                    |
+| `purpose`                        | Finalidad concreta y compatible con el tratamiento aprobado.                                         |
+| `authority_or_basis_reference`   | Referencia verificable al permiso, fundamento, contrato o requerimiento aplicable; no se inventa.    |
+| `scope`                          | Registros, periodo, filtros, campos, documentos y cantidad aprobados.                                |
+| `effective_classification`       | Clase efectiva más restrictiva aplicable a la salida.                                                |
+| `minimization_result`            | Campos o documentos excluidos, enmascarados o reducidos antes de entregar.                           |
+| `channel_and_environment`        | Canal, ambiente y controles de protección autorizados.                                               |
+| `validity_window`                | Vigencia técnica o empresarial cuando exista; no crea un plazo jurídico.                             |
+| `reuse_restrictions`             | Restricciones de uso posterior que deban imponerse al destinatario.                                  |
+| `onward_destination_rules`       | Condiciones para subencargados, reenvío o destinos posteriores.                                      |
+| `delivery_evidence`              | Evidencia de preparación, envío, recepción o rechazo según aplique.                                  |
+| `retention_and_disposition_refs` | Reglas aplicables a la copia o evidencia generada.                                                   |
+| `correlation_and_case_refs`      | Relación con solicitud, incidente, investigación, integración o requerimiento que originó la salida. |
+
+La ausencia de finalidad, destinatario, alcance, autorización o clasificación efectiva impide tratar la salida como autorizada.
+
+---
+
+#### 5. `INFO-DATA-EXPORT-COPY-CONTROL-CONTRACT-001`
+
+Toda exportación que genere una copia fuera de la vista ordinaria deberá conservar:
+
+- `export_id` estable;
+- fuente, proceso, `DOCCTX-*`, documento, versión o snapshot exacto;
+- actor solicitante y actor autorizador cuando sean distintos;
+- finalidad;
+- filtros, periodo, columnas, cantidad y formato;
+- clasificación efectiva y sensibilidad de la copia;
+- resultado de minimización, redacción o enmascaramiento;
+- destino previsto y destinatario cuando la copia salga del control directo del sistema;
+- canal y protección aplicada;
+- fecha y hora de generación;
+- vigencia o caducidad técnica cuando exista;
+- hash, manifiesto o referencia de integridad cuando el tipo de evidencia lo requiera;
+- watermark o marca cuando sea un control aplicable, sin tratarlo como autorización;
+- estado de entrega;
+- política de almacenamiento local, obtención de copia, reenvío, retorno, eliminación o revocación aplicable;
+- evidencia de conciliación de copias controladas.
+
+Estados documentales de la copia:
+
+| Estado                 | Significado                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `GENERATED_CONTROLLED` | Copia producida dentro del alcance aprobado y todavía controlada.                                 |
+| `DELIVERED_CONTROLLED` | Entregada al destinatario autorizado con evidencia disponible.                                    |
+| `EXPIRED_ACCESS`       | El mecanismo de acceso expiró; no prueba eliminación de copias ya obtenidas.                      |
+| `REVOCATION_APPLIED`   | Se bloquearon usos o accesos futuros que podían revocarse; no reescribe entregas históricas.      |
+| `THIRD_PARTY_PENDING`  | Existe una copia o destino externo pendiente de retorno, eliminación, restricción o conciliación. |
+| `DISPOSED_VERIFIED`    | La disposición requerida cuenta con evidencia suficiente según el contrato aplicable.             |
+| `PRESERVED_BY_HOLD`    | La disposición queda suspendida por una retención o hold válido y documentado.                    |
+
+Ningún cierre interno declara eliminada una copia externa sin evidencia de conciliación.
+
+---
+
+#### 6. `INFO-THIRD-PARTY-RECIPIENT-PROCESSOR-CONTRACT-001`
+
+Cada tercero que reciba, aloje, procese o pueda acceder a información gobernada deberá resolverse mediante un registro identificable, no por nombre libre en una exportación.
+
+Campos mínimos:
+
+- `third_party_id` estable;
+- entidad o persona receptora identificada;
+- servicio o relación empresarial;
+- rol declarado y evidencia de ese rol;
+- estado `ROLE_VERIFIED`, `ROLE_PENDING_EVIDENCE` o `ROLE_NOT_APPLICABLE`;
+- finalidades autorizadas;
+- clases de información y `DOCCTX-*` potencialmente alcanzados;
+- campos o documentos máximos permitidos;
+- territorios, regiones o ubicaciones declaradas cuando sean relevantes;
+- canales y ambientes autorizados;
+- subencargados o destinos posteriores conocidos;
+- restricciones de reutilización;
+- requisitos de seguridad y evidencia asociada;
+- retención, devolución, restricción, disposición y terminación;
+- contacto de incidente o escalamiento;
+- referencias al contrato, acuerdo, instrucción o evidencia autorizante;
+- estado del vínculo y fecha de revisión.
+
+Reglas:
+
+1. `responsable`, `encargado`, `subencargado`, receptor independiente u otra calidad no se asignan por intuición técnica o comercial;
+2. si la calidad depende de evidencia jurídica o contractual ausente, la instancia queda `PENDIENTE_DE_EVIDENCIA` y el insumo corresponde al registro de obligaciones y contratos de cumplimiento;
+3. un proveedor no recibe automáticamente todos los datos que su integración técnicamente pueda leer;
+4. la minimización se evalúa para cada finalidad y operación;
+5. un nuevo subencargado, destino, finalidad o categoría de información exige reevaluación antes de ampliar el alcance;
+6. terminar el servicio no demuestra devolución o disposición de las copias existentes;
+7. incidentes, accesos extraordinarios, exportaciones y solicitudes posteriores deben permanecer correlacionados con el mismo tercero estable.
+
+---
+
+#### 7. `INFO-DATA-TRANSFER-TERRITORY-CONTRACT-001`
+
+Cuando una salida de información requiera evaluar origen, destino o tránsito territorial, deberá registrarse:
+
+- `transfer_id` estable;
+- fuente y destino;
+- identidad del receptor;
+- rol del receptor y evidencia disponible;
+- proceso, `DOCCTX-*`, documentos o clases incluidas;
+- finalidad;
+- clasificación efectiva;
+- territorio o ubicación de origen;
+- territorio o ubicación de destino;
+- rutas o destinos posteriores conocidos cuando sean relevantes;
+- fundamento o mecanismo de transferencia exigible, únicamente cuando exista evidencia autorizada;
+- medidas complementarias o restricciones documentadas cuando existan;
+- canal y protección;
+- vigencia;
+- estado de revisión;
+- evidencia de entrega, retorno, restricción o disposición.
+
+Esta tarea no declara qué jurisdicción aplica, no inventa mecanismos jurídicos de transferencia y no presume suficiencia normativa de una ubicación. Cuando una decisión dependa de una obligación legal o contractual no documentada, la instancia queda `PENDIENTE_DE_EVIDENCIA`; su resolución jurídica corresponde al registro de obligaciones de cumplimiento, y la materialización técnica de una integración externa corresponde a su tarea propietaria.
+
+---
+
+#### 8. `INFO-AUTHORITY-REQUEST-DISCLOSURE-CONTRACT-001`
+
+Todo requerimiento de autoridad se gestiona como un caso separado y trazable.
+
+Campos mínimos:
+
+- `authority_request_id` estable;
+- autoridad solicitante e identidad verificable;
+- jurisdicción, competencia o alcance declarado con evidencia disponible;
+- instrumento, oficio, expediente, orden o referencia recibida cuando exista;
+- canal de recepción;
+- `received_at`;
+- plazo o fecha límite únicamente cuando conste en una fuente verificable;
+- finalidad o objeto del requerimiento;
+- personas, recursos, documentos, campos, periodos o sistemas solicitados;
+- clasificación y sensibilidad de la información afectada;
+- responsable interno del caso;
+- revisión y decisión de divulgación separadas de la ejecución técnica cuando corresponda;
+- minimización y exclusiones aplicadas;
+- retención, preservación o legal hold vinculado cuando aplique;
+- destinatario final y canal seguro;
+- evidencia de entrega, rechazo, cumplimiento parcial o imposibilidad;
+- registro de excepciones y motivos;
+- correlación con investigación, auditoría o incidente cuando corresponda;
+- estado y cierre con evidencia.
+
+Reglas:
+
+1. una solicitud informal o identidad no verificada no se trata como requerimiento de autoridad válido;
+2. el sistema no inventa competencia, obligatoriedad, excepción, plazo ni alcance jurídico;
+3. entregar más información que la solicitada o autorizada está prohibido por diseño documental;
+4. la existencia de un requerimiento no autoriza borrar, alterar o corregir la evidencia original;
+5. cuando el requerimiento active preservación o legal hold, prevalecen las reglas de retención y preservación aprobadas;
+6. quien esté materialmente implicado en una investigación no puede convertirse por ese hecho en autoridad exclusiva para cerrar su propio caso;
+7. la respuesta a una autoridad no se fusiona con la solicitud de un titular ni con una exportación operativa ordinaria.
+
+Estados del caso:
+
+`RECEIVED`, `IDENTITY_VERIFIED`, `SCOPE_UNDER_REVIEW`, `PENDING_EVIDENCE`, `AUTHORIZED_PARTIAL`, `AUTHORIZED_FULL`, `DENIED`, `DELIVERED`, `CLOSED_WITH_EVIDENCE`.
+
+---
+
+#### 9. `INFO-DISCLOSURE-EVIDENCE-LIFECYCLE-CONTRACT-001`
+
+Toda salida gobernada conserva una línea de evidencia no destructiva:
+
+```text
+ORIGEN Y FINALIDAD
+→ SOLICITUD O DISPARADOR
+→ IDENTIDAD Y AUTORIDAD
+→ CLASIFICACIÓN EFECTIVA
+→ MINIMIZACIÓN
+→ DECISIÓN
+→ PREPARACIÓN DE COPIA O CANAL
+→ ENTREGA O RECHAZO
+→ ACUSE O RESULTADO
+→ VIGENCIA / REVOCACIÓN
+→ RETORNO / DISPOSICIÓN / HOLD
+→ CONCILIACIÓN
+→ CIERRE CON EVIDENCIA
+```
+
+La evidencia deberá poder vincular, cuando aplique:
+
+- operación, caso y correlación;
+- actor solicitante, autorizador y ejecutor;
+- fuente y versión exactas;
+- destinatario y rol;
+- finalidad y alcance;
+- decisión y motivo;
+- tiempos tipados relevantes;
+- integridad y procedencia de la copia;
+- canal y resultado;
+- copias o destinos posteriores conocidos;
+- revocación, expiración, retorno, disposición o hold;
+- excepciones y conciliación.
+
+Una corrección del registro crea una entrada enlazada; no borra la historia de una divulgación ya ejecutada.
+
+---
+
+#### 10. Reglas por sensibilidad y publicación
+
+| Clase heredada         | Regla de salida                                                                                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `S0_PUBLIC`            | Solo la proyección publicada, aprobada y vigente puede tratarse como pública. La fuente, borradores, historial y metadatos conservan su clase propia.                |
+| `S1_INTERNAL`          | Salida externa exige autorización separada, finalidad, destinatario y minimización; la condición interna no equivale a libre distribución.                           |
+| `S2_CONFIDENTIAL`      | Requiere destinatario identificado, necesidad demostrable, proyección mínima, canal controlado y evidencia de entrega cuando aplique.                                |
+| `S3_RESTRICTED`        | Aplica control reforzado de finalidad, actor, destinatario, alcance, canal, exportación y trazabilidad; no se permite obtención de copia o reenvío por conveniencia. |
+| `S4_HIGHLY_RESTRICTED` | Se conserva como piso directo; toda salida exige evidencia reforzada de autoridad, minimización, receptor, canal y necesidad. No existe degradación implícita.       |
+
+Las reglas `HERENCIA_CONTENIDO`, `PUBLICACION_CONTROLADA`, `INFERENCIA` y `S4_DIRECTA` continúan prevaleciendo en cada `DOCCTX-*` donde ya fueron aprobadas.
+
+---
+
+#### 11. Tratamiento de revocación, expiración y terminación
+
+1. revocar una autorización o consentimiento aplicable bloquea los usos futuros que dependan de esa autorización, pero no reescribe hechos históricos;
+2. expirar un enlace o token revoca el mecanismo de acceso, no demuestra eliminación de una copia ya obtenida;
+3. terminar un contrato o proveedor bloquea nuevos flujos no autorizados y abre la conciliación de copias, credenciales, subencargados, retornos y disposición;
+4. una copia conservada por otra base válida, obligación, investigación o legal hold no se elimina por simple revocación;
+5. una salida declarada eliminada internamente permanece `THIRD_PARTY_PENDING` cuando existe un destino externo aún no conciliado;
+6. `DISPOSED_VERIFIED` exige evidencia suficiente según la política aplicable;
+7. la conciliación conserva evidencia de excepciones, imposibilidades y copias que deban mantenerse.
+
+---
+
+#### 12. Bloqueos y evidencia faltante
+
+| Situación                                                                                              | Estado                   | Propietario documental de resolución | Condición de salida                                                                  |
+| ------------------------------------------------------------------------------------------------------ | ------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| No existe evidencia suficiente para calificar el rol jurídico de un tercero.                           | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012`                       | Existe fuente contractual o jurídica verificable que permite resolver el rol.        |
+| No existe fundamento o mecanismo verificable para una transferencia que lo requiera.                   | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012`                       | La obligación aplicable queda registrada y vinculada a evidencia autorizada.         |
+| La integración externa aún no materializa controles de destinatario, destino, subencargados o retorno. | `BLOQUEADO`              | `INFO-INT-003`                       | El contrato técnico demuestra los controles exigidos por este dominio.               |
+| La interfaz permite exportar o compartir sin autorización separada.                                    | `BLOQUEADO`              | `INFO-AUTH-002`                      | La autorización distingue consulta, exportación, compartición y acción externa.      |
+| La experiencia de exportación no muestra alcance, destinatario o estado de la copia.                   | `BLOQUEADO`              | `INFO-UX-006`                        | La experiencia materializa alcance, confirmación y estado sin ocultar restricciones. |
+| Un caso de autoridad carece de identidad, competencia o alcance verificable.                           | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012`                       | Se incorpora evidencia suficiente para decidir sin inferencia.                       |
+
+Estos handoffs no adelantan las tareas propietarias ni convierten una ausencia documental en una decisión jurídica.
+
+---
+
+#### 13. Matriz de aplicación por proceso — 69 de 69
+
+Cada fila declara la política aplicable si el proceso produce una salida de información. No afirma que todos los procesos exporten, transfieran o usen terceros en la operación actual.
+
+| Proceso      | Compartición/divulgación        | Exportación                    | Terceros/encargados                      | Transferencia                              | Autoridad                     | Resultado            | Estado         | Bloqueo                                                                                                                  |
+| ------------ | ------------------------------- | ------------------------------ | ---------------------------------------- | ------------------------------------------ | ----------------------------- | -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `VPROC-0001` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0002` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0003` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0004` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0005` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0006` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0007` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0008` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0009` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0010` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0011` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0012` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0013` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0014` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0015` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0016` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0017` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0018` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0019` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0020` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0021` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0022` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0023` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0024` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0025` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0026` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0027` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0028` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0029` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0030` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0031` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0032` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0033` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0034` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0035` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0036` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0037` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0038` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0039` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0040` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0041` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0042` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0043` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0044` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0045` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0046` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0047` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0048` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0049` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0050` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0051` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0052` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0053` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0054` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0055` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0056` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0057` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0058` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0059` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0060` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0061` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0062` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0063` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0064` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0065` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0066` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0067` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0068` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+| `VPROC-0069` | `CONTROL_AUTORIZACION_SEPARADA` | `CONTROL_EXPORTACION_SEPARADA` | `EVIDENCIA_DESTINATARIO_Y_ROL_SI_APLICA` | `EVIDENCIA_DESTINO_Y_TERRITORIO_SI_APLICA` | `CASO_CONTROLADO_SI_RECIBIDO` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; una instancia se bloquea si falta autoridad, finalidad, destinatario, alcance o evidencia requerida. |
+
+Reconciliación por proceso:
+
+| Control                              | Resultado |
+| ------------------------------------ | --------: |
+| Procesos esperados                   |        69 |
+| Procesos materializados              |        69 |
+| Identificadores únicos               |        69 |
+| Procesos faltantes                   |         0 |
+| Procesos duplicados                  |         0 |
+| Propietarias funcionales modificadas |         0 |
+
+Distribución heredada de propietarias funcionales, sin modificación:
+
+| Propietaria | Procesos |
+| ----------- | -------: |
+| `viso`      |       20 |
+| `nexo`      |       16 |
+| `pulso`     |       12 |
+| `numera`    |        7 |
+| `fogo`      |        6 |
+| `origo`     |        4 |
+| `aura`      |        2 |
+| `anima`     |        1 |
+| `pass`      |        1 |
+| **Total**   |   **69** |
+
+---
+
+#### 14. Matriz de aplicación por contexto — 332 de 332
+
+Cada `DOCCTX-*` conserva su identidad, clasificación, regla dominante, finalidad y propietaria aprobadas. Esta tarea añade exclusivamente la decisión de control de salida; no reclasifica el contexto.
+
+| ID contextual          | Proceso      | Clasificación heredada           | Compartición/exportación   | Copia                         | Tercero/destinatario                    | Resultado            | Estado         | Bloqueo/condición                                                                |
+| ---------------------- | ------------ | -------------------------------- | -------------------------- | ----------------------------- | --------------------------------------- | -------------------- | -------------- | -------------------------------------------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `PRESERVADA_SIN_RECLASIFICACION` | `SALIDA_MINIMA_AUTORIZADA` | `COPIA_CONTROLADA_Y_TRAZABLE` | `DESTINATARIO_Y_FINALIDAD_OBLIGATORIOS` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | Ninguno documental; prevalecen la clase efectiva y la regla dominante heredadas. |
+
+Reconciliación de contextos:
+
+| Control                  | Resultado |
+| ------------------------ | --------: |
+| Entradas esperadas       |       332 |
+| Entradas materializadas  |       332 |
+| Claves `DOCCTX-*` únicas |       332 |
+| Entradas faltantes       |         0 |
+| Entradas duplicadas      |         0 |
+| Procesos representados   |        69 |
+| Contextos renombrados    |         0 |
+| Contextos eliminados     |         0 |
+| Reclasificaciones        |         0 |
+
+Distribución de sensibilidad heredada y preservada:
+
+| Clase                  | Cantidad |
+| ---------------------- | -------: |
+| `S0_PUBLIC`            |        1 |
+| `S1_INTERNAL`          |       33 |
+| `S2_CONFIDENTIAL`      |      166 |
+| `S3_RESTRICTED`        |      124 |
+| `S4_HIGHLY_RESTRICTED` |        8 |
+| **Total**              |  **332** |
+
+Distribución de reglas dominantes heredada y preservada:
+
+| Regla                    | Cantidad |
+| ------------------------ | -------: |
+| `BASE`                   |      287 |
+| `HERENCIA_CONTENIDO`     |       29 |
+| `PUBLICACION_CONTROLADA` |        2 |
+| `INFERENCIA`             |        6 |
+| `S4_DIRECTA`             |        8 |
+| **Total**                |  **332** |
+
+---
+
+#### 15. Casos límite obligatorios
+
+1. **Usuario con permiso de lectura solicita CSV:** la lectura no habilita la exportación; debe resolverse autorización de exportación y alcance mínimo.
+2. **Enlace firmado a un archivo:** el enlace es un canal; la decisión de compartir exige destinatario, finalidad, clasificación y vigencia independientes.
+3. **Proveedor técnico con acceso amplio:** la capacidad técnica no amplía la finalidad ni los campos autorizados; el rol y alcance se prueban con evidencia.
+4. **Nuevo subencargado:** no hereda silenciosamente el alcance del proveedor principal; exige reevaluación antes de recibir información.
+5. **Copia ya obtenida cuando se revoca acceso:** se bloquean accesos futuros controlables y se conserva el estado de la copia externa hasta reconciliarla.
+6. **Publicación de contenido `S0_PUBLIC`:** solo la proyección aprobada es pública; borradores, fuentes y metadatos no se liberan por arrastre.
+7. **Solicitud de autoridad demasiado amplia o incompleta:** el sistema no inventa competencia ni alcance y mantiene el caso pendiente de evidencia o decisión.
+8. **Requerimiento que activa preservación:** el hold o retención aplicable prevalece sobre disposición hasta que exista liberación autorizada.
+9. **Exportación con campos sensibles no necesarios:** la minimización elimina o enmascara antes de generar la copia.
+10. **Entrega técnicamente exitosa sin acuse empresarial:** el éxito del canal no se interpreta como aceptación, cumplimiento ni cierre del caso sin evidencia suficiente.
+11. **Transferencia con territorio desconocido:** no se presume un destino permitido; la operación queda pendiente de evidencia si la ubicación es necesaria para decidir.
+12. **Backup o réplica interna:** no se etiqueta automáticamente como divulgación externa, pero conserva clasificación, retención, protección y trazabilidad.
+
+---
+
+#### 16. Cambios físicos y límites de esta tarea
+
+Esta tarea es exclusivamente documental. No modifica:
+
+- código;
+- base de datos;
+- migraciones;
+- RLS;
+- Storage;
+- Edge Functions;
+- buckets;
+- contratos ejecutables;
+- tipos generados;
+- datos;
+- proveedores;
+- secretos;
+- despliegues;
+- configuraciones remotas.
+
+Tampoco determina obligaciones jurídicas específicas, jurisdicciones aplicables, periodos legales, mecanismos de transferencia o competencia de autoridades que no estén respaldados por evidencia canónica vigente.
+
+---
+
+#### 17. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Justificación: el registro vigente ya protege autorización separada para accesos y salidas, minimización, auditoría de exportación y compartición, tratamiento de copias externas, conciliación de dominios, revocación, disposición, integridad y evidencia. Esta tarea materializa el contrato documental corporativo consumido por esas protecciones sin introducir un comportamiento físico adicional que requiera una nueva identidad de prueba.
+
+Balance de esta tarea:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 18. Criterios de aceptación
+
+- [x] Compartición, exportación, divulgación, transferencia, publicación, réplica técnica y requerimiento de autoridad quedan diferenciados.
+- [x] Consulta y exportación requieren autorizaciones diferenciables.
+- [x] Toda salida controlada exige finalidad, destinatario, alcance, clasificación y evidencia suficiente.
+- [x] Una URL firmada, token, watermark, hash o canal seguro no se interpreta como autoridad empresarial.
+- [x] El contrato de exportación conserva fuente, filtros, campos, clasificación, destino, vigencia y estado de copias.
+- [x] Los terceros conservan identidad estable, rol con evidencia, finalidad, clases, territorios, subencargados, retención, terminación y disposición.
+- [x] Ningún rol de tercero o encargado se infiere sin evidencia.
+- [x] Las transferencias conservan origen, destino y evidencia sin inventar jurisdicción ni mecanismo jurídico.
+- [x] Los requerimientos de autoridad usan un caso separado con verificación, minimización, decisión, entrega y cierre con evidencia.
+- [x] Revocación, expiración, terminación y disposición no reescriben hechos históricos ni ocultan copias externas pendientes.
+- [x] Los 69 procesos aparecen exactamente una vez en la matriz de proceso.
+- [x] Las 332 claves `DOCCTX-*` aparecen exactamente una vez en la matriz contextual.
+- [x] La distribución S0/S1/S2/S3/S4 permanece 1/33/166/124/8.
+- [x] La distribución BASE/HERENCIA_CONTENIDO/PUBLICACION_CONTROLADA/INFERENCIA/S4_DIRECTA permanece 287/29/2/6/8.
+- [x] Las nueve propietarias funcionales permanecen sin modificación.
+- [x] No se ejecutan cambios físicos ni se adelantan tareas posteriores.
+- [x] La evaluación de requisitos de prueba produce balance cero y justificación explícita.
+
+---
+
+#### 19. Cierre y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión`
+
+**TAREA ACTUAL APROBADA**
+`INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad`
+
+**SIGUIENTE TAREA RESERVADA**
+`INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia`
+
+La continuidad termina en `INFO-DOM-010`. `INFO-DOM-011` permanece reservada.
+
+
 ### [ ] INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
 ### [ ] INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
 ### [ ] INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
