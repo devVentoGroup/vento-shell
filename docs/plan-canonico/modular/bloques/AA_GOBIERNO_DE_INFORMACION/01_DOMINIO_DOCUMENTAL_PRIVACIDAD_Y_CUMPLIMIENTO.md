@@ -8235,5 +8235,988 @@ obsoletos: 0
 La continuidad termina en `INFO-DOM-011`. `INFO-DOM-012` permanece reservada.
 
 
-### [ ] INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
+### ✅ INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia` — APROBADA
+**Tarea siguiente:** `INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre` — RESERVADA
+**Tipo de tarea:** Documental — gobierno y materialización del registro corporativo de obligaciones, aplicabilidad, controles, evidencias, responsables, frecuencias, vencimientos, excepciones, brechas y acciones correctivas
+**Repositorio propietario:** `vento-shell`
+**Fase:** exclusivamente documental
+**Universo heredado:** 69 procesos `VPROC-*` y 332 identidades contextuales `DOCCTX-*`
+**Contratos materializados:** `INFO-COMPLIANCE-OBLIGATION-REGISTER-001`; `INFO-COMPLIANCE-APPLICABILITY-CONTRACT-001`; `INFO-COMPLIANCE-CONTROL-EVIDENCE-CONTRACT-001`; `INFO-COMPLIANCE-DEADLINE-FREQUENCY-CONTRACT-001`; `INFO-COMPLIANCE-GAP-EXCEPTION-CONTRACT-001`; `INFO-COMPLIANCE-RETENTION-BASIS-LINK-001`; `INFO-COMPLIANCE-OBLIGATION-MATRIX-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Storage, funciones, jobs, migraciones, datos, configuración, políticas de acceso ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Crear el registro corporativo que permita demostrar qué obligación existe, de dónde proviene, a quién y a qué actividad aplica, quién responde por ella, qué control la trata, qué evidencia permite evaluarla, con qué frecuencia debe revisarse o ejecutarse, qué vencimiento existe cuando la fuente lo determina y qué brecha permanece cuando falta evidencia o el control no demuestra eficacia.
+
+La tarea transforma el cumplimiento en un conjunto de hechos verificables y no en una declaración automática. La presencia de una política, un formulario, una configuración o un control documentado no equivale por sí sola a cumplimiento. La ausencia, expiración, conflicto o insuficiencia de evidencia produce una brecha explícita hasta que exista validación responsable.
+
+El registro queda preparado para obligaciones normativas, contractuales e internas. Una obligación externa solo puede aplicarse a una entidad, actividad, tratamiento, documento, relación o caso cuando su ámbito sea resoluble con evidencia; no se generaliza por semejanza ni por conveniencia operativa.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa siete contratos coordinados:
+
+1. `INFO-COMPLIANCE-OBLIGATION-REGISTER-001`: identidad y contenido mínimo de cada obligación.
+2. `INFO-COMPLIANCE-APPLICABILITY-CONTRACT-001`: decisión separada sobre aplicabilidad por entidad, actividad, territorio, rol y alcance.
+3. `INFO-COMPLIANCE-CONTROL-EVIDENCE-CONTRACT-001`: separación entre diseño, presencia, ejecución, eficacia y evidencia.
+4. `INFO-COMPLIANCE-DEADLINE-FREQUENCY-CONTRACT-001`: frecuencia, trigger, calendario, término, extensión y vencimiento sin inferencias.
+5. `INFO-COMPLIANCE-GAP-EXCEPTION-CONTRACT-001`: brechas, excepciones, acciones correctivas, responsables y condiciones de cierre.
+6. `INFO-COMPLIANCE-RETENTION-BASIS-LINK-001`: vínculo entre obligación verificable y política de retención, sin convertir una clase base en periodo legal.
+7. `INFO-COMPLIANCE-OBLIGATION-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+| Control                                             | Resultado |
+| --------------------------------------------------- | --------: |
+| Procesos `VPROC-*` preservados                      |    **69** |
+| Identidades `DOCCTX-*` preservadas                  |   **332** |
+| Identidades omitidas                                |     **0** |
+| Identidades duplicadas                              |     **0** |
+| Clases de retención base preservadas                |     **5** |
+| Políticas definitivas de retención inferidas        |     **0** |
+| Obligaciones internas materializadas                |     **6** |
+| Obligaciones externas verificadas y materializadas  |     **9** |
+| Fuentes externas tratadas como aplicación universal |     **0** |
+| Declaraciones automáticas de cumplimiento           |     **0** |
+| Cambios físicos                                     |     **0** |
+
+---
+
+#### 3. Invariantes heredadas
+
+Se preservan sin modificación:
+
+- las 69 identidades `VPROC-0001` a `VPROC-0069`;
+- las 332 identidades `DOCCTX-*` y sus propietarias funcionales;
+- la clasificación S0–S4 y sus reglas de minimización;
+- la taxonomía de documento, registro, evidencia, serie, expediente, original, copia y representación;
+- el ciclo documental no destructivo, su versionado y su vigencia por tiempo efectivo;
+- el vínculo entre identidad documental, proceso, recurso, representación y localización;
+- las cinco clases base `RET_ACTIVE_CASE`, `RET_BUSINESS_CYCLE`, `RET_RELATIONSHIP`, `RET_OBLIGATION` y `RET_ARCHIVAL`;
+- las 332 políticas ejecutables de retención en estado no resuelto mientras falte fundamento verificable aplicable;
+- el contrato de solicitudes de titulares y sus diez tipos empresariales;
+- el contrato de compartición, exportación, terceros, encargados, transferencias y requerimientos de autoridad;
+- el contrato de aprobación, aceptación y firmas;
+- la separación entre brecha de cumplimiento y una investigación formal, cuya materia permanece en `INFO-DOM-013`.
+
+---
+
+#### 4. Distinciones obligatorias
+
+```text
+OBLIGACIÓN
+≠ APLICABILIDAD
+≠ CONTROL
+≠ EVIDENCIA
+≠ REQUISITO DE PRUEBA
+≠ DECLARACIÓN DE CUMPLIMIENTO
+```
+
+```text
+FRECUENCIA
+≠ FECHA LÍMITE
+≠ PERIODO DE RETENCIÓN
+≠ FECHA DE REVISIÓN
+≠ SLA INTERNO
+```
+
+```text
+CONTROL DISEÑADO
+≠ CONTROL PRESENTE
+≠ CONTROL EJECUTADO
+≠ CONTROL EFECTIVO
+≠ CONTROL EVIDENCIADO
+```
+
+```text
+EXCEPCIÓN
+≠ INCUMPLIMIENTO
+≠ HALLAZGO
+≠ INCIDENTE
+≠ INVESTIGACIÓN
+```
+
+Reglas:
+
+1. una fuente puede existir sin ser aplicable a una entidad o actividad concreta;
+2. un control puede existir sin demostrar cumplimiento;
+3. una evidencia puede ser auténtica y aun así no demostrar la obligación completa;
+4. una fecha límite no se calcula desde un timestamp cualquiera: requiere trigger, unidad temporal, calendario y regla de extensión resolubles;
+5. una frecuencia de ejecución no sustituye el plazo de respuesta de un caso ni el periodo de conservación de un documento;
+6. un hallazgo de incumplimiento puede escalar a investigación, pero no se convierte automáticamente en investigación formal;
+7. ningún sistema puede declarar `COMPLIANT_EVIDENCED` solo porque exista una política, checkbox, registro o configuración.
+
+---
+
+#### 5. `INFO-COMPLIANCE-OBLIGATION-REGISTER-001`
+
+Cada obligación deberá poder resolver como mínimo:
+
+```text
+obligation_id
+source_type
+source_ref
+source_verification_date
+jurisdiction_or_scope
+entity_or_activity_scope
+applicability_state
+applicability_evidence_refs[]
+obligation_statement
+process_refs[]
+document_context_refs[]
+resource_or_case_refs[]
+owner_ref
+control_refs[]
+evidence_refs[]
+evidence_state
+frequency_rule
+deadline_rule
+deadline_trigger
+calendar_rule
+extension_rule
+compliance_state
+exception_refs[]
+gap_refs[]
+corrective_action_refs[]
+validated_by_ref
+validated_at
+```
+
+El modelo es semántico; no prescribe columnas físicas ni una tabla de base de datos.
+
+##### 5.1. Tipos de fuente
+
+- `NORMATIVE`: norma externa verificable.
+- `CONTRACTUAL`: obligación nacida de un contrato, anexo, acuerdo o compromiso aplicable.
+- `INTERNAL`: política, decisión o contrato corporativo aprobado por VENTO.
+
+Una fuente contractual no se presume por la existencia de un proveedor. Una fuente normativa no se presume aplicable a todas las entidades. Una regla interna no se presenta como mandato legal.
+
+---
+
+#### 6. `INFO-COMPLIANCE-APPLICABILITY-CONTRACT-001`
+
+Estados permitidos:
+
+| Estado             | Significado                                                                                                                |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `APPLIES`          | existe evidencia suficiente de que la obligación aplica al alcance declarado                                               |
+| `CONDITIONAL`      | la fuente está verificada, pero la aplicación depende de una condición empresarial o jurídica que debe resolverse por caso |
+| `NOT_APPLIES`      | existe fundamento explícito que demuestra que la obligación no aplica al alcance evaluado                                  |
+| `PENDING_EVIDENCE` | falta evidencia para decidir aplicabilidad sin inferencia                                                                  |
+
+La aplicabilidad de una obligación externa requiere, cuando corresponda:
+
+- entidad jurídica afectada;
+- actividad o tratamiento;
+- territorio o jurisdicción;
+- rol jurídico o contractual de la entidad;
+- categoría de información o documento;
+- proceso y recurso empresarial;
+- relación con titular, trabajador, cliente, proveedor, autoridad o tercero;
+- fecha o periodo de vigencia de la fuente;
+- exclusiones, excepciones o normas especiales relevantes;
+- evidencia que permita defender la decisión.
+
+`PENDING_EVIDENCE` nunca se interpreta como `NOT_APPLIES`.
+
+---
+
+#### 7. `INFO-COMPLIANCE-CONTROL-EVIDENCE-CONTRACT-001`
+
+##### 7.1. Estados del control
+
+Cada control se evalúa mediante dimensiones separadas:
+
+- `DESIGN_SPECIFIED`: existe diseño documentado.
+- `PRESENCE_VERIFIED`: el control está presente en el alcance evaluado.
+- `EXECUTION_EVIDENCED`: existe evidencia de ejecución para el evento o periodo.
+- `EFFECTIVENESS_VALIDATED`: la evidencia permite concluir que el control produjo el resultado esperado.
+
+La ausencia de una dimensión no se compensa con otra.
+
+##### 7.2. Estados de evidencia
+
+- `VALID`: evidencia vigente, resoluble y suficiente para la afirmación evaluada.
+- `MISSING`: no existe evidencia requerida.
+- `EXPIRED`: existió, pero ya no es válida para el periodo o decisión evaluados.
+- `CONFLICT`: dos o más evidencias incompatibles impiden concluir.
+- `PENDING`: la evidencia aún no ha sido validada.
+
+##### 7.3. Estados de cumplimiento
+
+- `COMPLIANT_EVIDENCED`: obligación aplicable y satisfecha con evidencia suficiente validada.
+- `PARTIALLY_EVIDENCED`: parte de la obligación está demostrada, pero falta cobertura material.
+- `NON_COMPLIANT`: existe evidencia suficiente de incumplimiento.
+- `PENDING_VALIDATION`: no existe base suficiente para declarar cumplimiento o incumplimiento.
+- `NOT_APPLICABLE`: existe decisión explícita y sustentada de no aplicabilidad.
+
+Solo una validación responsable puede producir `COMPLIANT_EVIDENCED` o `NOT_APPLICABLE`.
+
+---
+
+#### 8. `INFO-COMPLIANCE-DEADLINE-FREQUENCY-CONTRACT-001`
+
+Un plazo computable debe resolver:
+
+```text
+source_ref
+legal_or_contractual_route_ref
+trigger_event
+trigger_at
+counting_unit
+calendar_rule
+initial_term
+pause_rule
+extension_rule
+extension_authority
+extension_notice_rule
+computed_due_at
+```
+
+Reglas:
+
+1. `computed_due_at` queda sin resolver si falta cualquiera de los elementos necesarios para calcularlo sin inferencia;
+2. un término expresado en días hábiles requiere un calendario aplicable y verificable;
+3. un término expresado simplemente en días no se convierte por defecto en días hábiles;
+4. una extensión no se suma automáticamente: debe cumplirse el supuesto, la notificación y el límite que determine la fuente;
+5. el sistema conserva el término inicial, la extensión y la fecha final como hechos separados;
+6. una obligación sin fecha límite puede tener frecuencia o trigger de control sin inventar vencimiento;
+7. una frecuencia interna no puede reducir o ampliar un término normativo aplicable;
+8. la fecha de recepción, la fecha de completitud, la fecha de traslado, la fecha de respuesta y la fecha de cierre se conservan como tiempos distintos.
+
+---
+
+#### 9. Procedimientos verificados de protección de datos personales en Colombia
+
+Las fuentes oficiales consultadas el 9 de agosto de 2026 permiten materializar reglas externas concretas sin convertirlas en aplicación universal a toda actividad de VENTO.
+
+##### 9.1. Consultas — Ley 1581 de 2012, artículo 14
+
+Para una solicitud que haya sido clasificada jurídicamente como **consulta** bajo el artículo 14 y cuyo responsable o encargado aplicable esté resuelto:
+
+- la consulta se atiende en un máximo de **10 días hábiles** contados desde su recepción;
+- si no es posible atenderla dentro de ese término, debe informarse al interesado antes de su vencimiento, indicando motivos y nueva fecha;
+- la nueva fecha no puede superar **5 días hábiles** siguientes al vencimiento del término inicial;
+- el medio utilizado debe permitir conservar prueba de la consulta.
+
+Código de ruta del registro: `COL_L1581_ART14_CONSULTA`.
+
+##### 9.2. Reclamos — Ley 1581 de 2012, artículo 15
+
+Para un caso clasificado jurídicamente como **reclamo** bajo el artículo 15:
+
+- si está incompleto, se requiere al interesado dentro de los **5 días siguientes** a su recepción para que subsane;
+- transcurridos **2 meses** desde la fecha de ese requerimiento sin que se aporte la información requerida, la fuente establece desistimiento;
+- si quien recibe el reclamo no es competente, debe trasladarlo a quien corresponda en máximo **2 días hábiles** e informar al interesado;
+- una vez recibido el reclamo completo, se incorpora la indicación de reclamo en trámite y su motivo en máximo **2 días hábiles**, manteniéndola hasta la decisión;
+- el término máximo de atención es **15 días hábiles** contados desde el día siguiente a la fecha de recibo indicada por la fuente;
+- si no es posible responder dentro del término inicial, se informan motivos y nueva fecha antes del vencimiento;
+- la nueva fecha no puede superar **8 días hábiles** siguientes al vencimiento del término inicial.
+
+Código de ruta del registro: `COL_L1581_ART15_RECLAMO`.
+
+Cuando un reclamo tuvo subsanación, el registro conserva tanto `received_at` como `completed_at`; no sustituye uno por otro ni inventa una interpretación temporal adicional que la fuente o la autoridad responsable no hayan resuelto.
+
+##### 9.3. Relación con los diez tipos empresariales de solicitudes
+
+Los códigos empresariales `DSR_QUERY_ACCESS`, `DSR_COPY`, `DSR_UPDATE`, `DSR_RECTIFY`, `DSR_PROOF`, `DSR_USE_INFO`, `DSR_REVOKE`, `DSR_SUPPRESS`, `DSR_RESTRICT_OBJECT` y `DSR_PRIVACY_CLAIM` no asignan por sí solos un término legal.
+
+La regla es:
+
+```text
+request_type empresarial
++ hechos del caso
++ titular/representación
++ entidad y rol aplicables
++ fuente vigente
+→ legal_route_ref
+→ regla temporal aplicable
+```
+
+Una solicitud de acceso puede encajar en consulta; una corrección, actualización o supresión puede encajar en reclamo; pero el sistema no fuerza esa equivalencia únicamente por el nombre del código. `due_at` se calcula solo después de resolver la ruta normativa aplicable.
+
+---
+
+#### 10. Derechos del titular y deber de información
+
+La Ley 1581 de 2012, artículo 8, verificada en fuente oficial, reconoce entre los derechos del titular conocer, actualizar y rectificar datos; solicitar prueba de la autorización cuando corresponda; ser informado sobre el uso; presentar quejas ante la autoridad; revocar la autorización o solicitar supresión en los supuestos legales; y acceder gratuitamente a sus datos tratados.
+
+El artículo 12, verificado en fuente oficial, exige al responsable informar de manera clara y expresa al solicitar autorización sobre el tratamiento y su finalidad, el carácter facultativo de ciertas respuestas sensibles, los derechos del titular y la identificación y contacto del responsable; además exige conservar prueba del cumplimiento de ese deber y suministrar copia cuando el titular lo solicite.
+
+Estas reglas complementan `INFO-DOM-008` y `INFO-DOM-009`. No modifican los tipos empresariales de solicitud ni permiten declarar que toda operación concreta de VENTO cumple la norma sin evidencia de aplicabilidad y ejecución.
+
+---
+
+#### 11. Conservación de mensajes de datos — Ley 527 de 1999, artículo 12
+
+Cuando una obligación legal requiera conservar documentos, registros o información y el soporte sea un mensaje de datos, la fuente oficial verificada establece condiciones de conservación que deben poder demostrarse:
+
+1. accesibilidad para consulta posterior;
+2. conservación en el formato generado, enviado o recibido, o en otro formato que permita demostrar reproducción exacta;
+3. conservación, cuando exista, de información que permita determinar origen, destino, fecha y hora de envío o recepción del mensaje o producción del documento;
+4. la información cuya única finalidad sea facilitar el envío o recepción no queda incluida en esa obligación por esa sola función;
+5. la conservación puede realizarse directamente o mediante terceros bajo las condiciones aplicables.
+
+Esta norma aporta atributos de preservación cuando exista una obligación de conservación aplicable; no fija por sí sola una duración universal para todos los documentos de VENTO.
+
+---
+
+#### 12. Conservación de libros y papeles — Ley 962 de 2005, artículo 28
+
+La fuente oficial verificada establece un periodo de **10 años** para libros y papeles del comerciante, contado desde la fecha del último asiento, documento o comprobante; también contempla a personas no comerciantes que legalmente estén obligadas a conservar esa información y preserva la prevalencia de términos menores previstos en normas especiales.
+
+Esta regla queda en estado `CONDITIONAL` para VENTO hasta que una instancia concreta resuelva:
+
+- entidad o persona obligada;
+- calidad o supuesto que hace aplicable la regla;
+- documento, libro, papel o comprobante afectado;
+- evento exacto de inicio;
+- existencia de norma especial aplicable;
+- relación con la identidad `DOCCTX-*` correspondiente.
+
+No se asigna automáticamente el periodo de 10 años a las 332 identidades.
+
+---
+
+#### 13. `INFO-COMPLIANCE-RETENTION-BASIS-LINK-001`
+
+Una política definitiva de retención para una identidad `DOCCTX-*` solo sale del estado no resuelto cuando existe al menos una fuente aplicable que permita resolver, según corresponda:
+
+```text
+source_ref
+applicability_state = APPLIES
+entity_or_activity_scope
+information_or_document_scope
+retention_trigger
+minimum_period
+maximum_period o regla de conservación máxima cuando exista
+special_rule_precedence
+hold_interaction
+archive_rule
+disposition_rule
+evidence_refs[]
+validated_by_ref
+```
+
+Reglas:
+
+1. una clase base de retención orienta el tipo de ciclo, pero no es un plazo;
+2. una obligación normativa general no se aplica por parecido semántico a una identidad documental;
+3. un contrato puede imponer conservación adicional solo cuando el contrato y su alcance estén verificados;
+4. varias fuentes aplicables se conservan como fundamentos separados y se resuelve la política conforme a su alcance y prioridad demostrables;
+5. una política no se reduce porque una copia técnica haya desaparecido ni se extiende porque una copia permanezca accesible;
+6. toda disposición automática permanece bloqueada mientras el fundamento ejecutable no sea resoluble;
+7. las fuentes verificadas en esta tarea permiten resolver reglas concretas cuando su aplicabilidad sea demostrada, pero no convierten las 332 políticas pendientes en 332 periodos inventados.
+
+---
+
+#### 14. Terceros, transferencias, requerimientos de autoridad y firmas
+
+El registro consume las decisiones aprobadas de `INFO-DOM-010` y `INFO-DOM-011` mediante las siguientes reglas:
+
+- una relación con tercero o encargado conserva fuente contractual y normativa aplicable, finalidad, datos, territorios, controles, evidencias, vigencia y brechas;
+- una transferencia o divulgación no se declara conforme por existir un canal técnico o contrato genérico;
+- un requerimiento de autoridad conserva autoridad solicitante, fundamento, alcance, autenticidad, revisión, decisión, entrega, evidencia y tiempos aplicables;
+- una firma electrónica, firma digital, aceptación o aprobación conserva su método y evidencia, pero su fuerza jurídica externa no se presume sin fuente y aplicabilidad resolubles;
+- una copia controlada afectada por revocación, supresión o restricción conserva el vínculo con el caso de titular hasta que la acción externa requerida quede reconciliada;
+- cualquier incumplimiento detectado en estas materias entra al registro como brecha; una investigación formal se deriva a `INFO-DOM-013` cuando exista causal de investigación.
+
+---
+
+#### 15. `INFO-COMPLIANCE-GAP-EXCEPTION-CONTRACT-001`
+
+##### 15.1. Brecha
+
+Toda brecha deberá poder resolver:
+
+```text
+gap_id
+obligation_id
+scope_refs[]
+gap_type
+detected_at
+evidence_state
+risk_or_impact
+owner_ref
+interim_control_ref
+corrective_action_ref
+target_condition
+evidence_required_for_closure
+closure_authority_ref
+closed_at
+```
+
+Tipos mínimos:
+
+- `SOURCE_MISSING`
+- `APPLICABILITY_UNRESOLVED`
+- `CONTROL_MISSING`
+- `CONTROL_NOT_EVIDENCED`
+- `EVIDENCE_MISSING`
+- `EVIDENCE_EXPIRED`
+- `EVIDENCE_CONFLICT`
+- `DEADLINE_AT_RISK`
+- `DEADLINE_BREACHED`
+- `RETENTION_BASIS_UNRESOLVED`
+- `EXTERNAL_RECONCILIATION_PENDING`
+- `NON_COMPLIANCE_CONFIRMED`
+
+##### 15.2. Excepción
+
+Una excepción válida conserva como mínimo:
+
+- obligación y control afectados;
+- alcance exacto;
+- motivo;
+- autoridad que la aprueba;
+- límite temporal o condición de terminación;
+- control compensatorio cuando aplique;
+- riesgo residual;
+- tratamiento;
+- evidencia;
+- revisión y cierre.
+
+Una excepción no convierte la obligación en `NOT_APPLIES` ni borra el incumplimiento previo.
+
+##### 15.3. Cierre
+
+Una brecha no se cierra porque exista una acción correctiva planificada. Se cierra cuando la condición de salida esté satisfecha y exista evidencia validada. Si la brecha implica acceso indebido, cambio indebido, posible manipulación de evidencia o necesidad de investigación formal, el caso se deriva a `INFO-DOM-013` sin destruir el registro de cumplimiento original.
+
+---
+
+#### 16. Registro materializado de obligaciones internas
+
+| ID                 | Fuente                          | Entidad / actividad                           | Obligación                                                                                                                                                                          | Responsable                                                                             | Control y evidencia                                                                      | Frecuencia / plazo                                                          | Aplicabilidad | Estado de cumplimiento | Brecha y condición de salida                                                                                                                     |
+| ------------------ | ------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `OBL-INFO-012-001` | Contrato interno CAP-SCOPE-016  | Gobierno de cumplimiento VENTO                | Mantener registro con entidad/actividad, fuente, obligación, responsable, control, evidencia, frecuencia, plazo si aplica, estado y excepción/incumplimiento con acción correctiva. | VISO como superficie de gobierno; responsable nominal por instancia debe ser resoluble. | Registro versionado y evidencia vinculada; auditoría de cambios según cobertura vigente. | `PER_EVENT` y revisión según fuente; no se inventa una periodicidad global. | `APPLIES`     | `PENDING_VALIDATION`   | Evidencia operacional de uso aún debe producirse en implementación; salida: registro operativo que demuestre los campos y decisiones por caso.   |
+| `OBL-INFO-012-002` | Contrato interno CAP-SCOPE-016  | Toda evaluación de cumplimiento               | No autodeclarar cumplimiento; diferenciar diseño, presencia, ejecución, eficacia y evidencia.                                                                                       | Propietaria funcional + VISO.                                                           | Estados separados de control/evidencia y validación responsable.                         | `PER_ASSESSMENT`                                                            | `APPLIES`     | `PENDING_VALIDATION`   | Salida: evidencia de una evaluación real donde ausencia/expiración produzca brecha y no resultado positivo.                                      |
+| `OBL-INFO-012-003` | `INFO-DOM-006`                  | Retención y disposición                       | Bloquear disposición automática cuando la política definitiva o su fundamento no sean resolubles.                                                                                   | Propietaria funcional + gobierno documental VISO.                                       | `RETENTION_BASIS_UNRESOLVED` y gate de elegibilidad.                                     | `BEFORE_DISPOSITION`                                                        | `APPLIES`     | `PENDING_VALIDATION`   | 332/332 fundamentos definitivos permanecen por resolver; salida por identidad: fuente aplicable, trigger, periodo/regla, evidencia y validación. |
+| `OBL-INFO-012-004` | `INFO-DOM-009`                  | Solicitudes de titulares                      | Resolver plazo únicamente desde fuente, ruta, trigger, calendario y extensión aplicables; no inventar `due_at`.                                                                     | Propietaria funcional del tratamiento + VISO para el caso.                              | Clasificación de ruta y cálculo parametrizado por obligación.                            | `PER_REQUEST`                                                               | `APPLIES`     | `PENDING_VALIDATION`   | Salida: caso real con ruta legal explícita y tiempos calculados desde una fuente vigente aplicable.                                              |
+| `OBL-INFO-012-005` | `INFO-DOM-009` + `INFO-DOM-010` | Solicitudes con terceros o copias controladas | No cerrar como ejecución total una solicitud que requiera acción externa mientras la reconciliación aplicable siga pendiente.                                                       | Propietaria funcional + responsable del caso.                                           | Manifestación por sistema/tercero, evidencia de ejecución y estado reconciliado.         | `PER_REQUEST`                                                               | `APPLIES`     | `PENDING_VALIDATION`   | Salida: evidencia por cada destino afectado o excepción válida documentada.                                                                      |
+| `OBL-INFO-012-006` | `INFO-DOM-011`                  | Aprobación, aceptación y firma                | No inferir fuerza jurídica externa desde método técnico, imagen, checkbox, certificado o nombre de mecanismo; resolver fuente y aplicabilidad.                                      | Propietaria funcional + VISO.                                                           | Perfil de evidencia de firma/aceptación y referencia a obligación aplicable.             | `PER_ACT`                                                                   | `APPLIES`     | `PENDING_VALIDATION`   | Salida: fuente jurídica/contractual aplicable y evidencia del método concreto cuando se pretenda afirmar un efecto externo.                      |
+
+---
+
+#### 17. Registro materializado de obligaciones externas verificadas
+
+Las filas siguientes registran la fuente y la regla verificadas; el estado de aplicabilidad a una entidad o caso concreto se mantiene separado.
+
+| ID                | Fuente oficial verificada                          | Entidad / actividad condicionante                                                                                | Obligación materializada                                                                                                                                                                                           | Responsable por caso                                           | Control / evidencia mínima                                                                                         | Frecuencia / término                                                                                                                    | Aplicabilidad | Estado de cumplimiento | Brecha / condición de salida                                                                                                                         |
+| ----------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OBL-COL-DP-001`  | Ley 1581 de 2012, art. 8; Secretaría del Senado    | Tratamiento de datos personales sujeto a la ley                                                                  | Preservar el ejercicio de conocer, actualizar, rectificar, solicitar prueba de autorización cuando corresponda, conocer uso, reclamar, revocar/suprimir bajo supuestos legales y acceder gratuitamente.            | Responsable o Encargado aplicable, resoluble por entidad/caso. | Caso de titular, identidad/representación, decisión, respuesta y evidencia.                                        | `PER_REQUEST`; término específico depende de la ruta procedimental aplicable.                                                           | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver entidad/rol y ruta por caso; no basta el código empresarial de solicitud.                                                                   |
+| `OBL-COL-DP-002`  | Ley 1581 de 2012, art. 12; Función Pública         | Solicitud de autorización al titular cuando la norma sea aplicable                                               | Informar tratamiento/finalidad, facultatividad de ciertas respuestas sensibles, derechos e identificación/contacto del Responsable; conservar prueba y suministrar copia cuando sea solicitada.                    | Responsable del Tratamiento aplicable.                         | Aviso/versiones, evidencia presentada, autorización/base, timestamp y prueba de entrega/información.               | `PER_AUTHORIZATION_EVENT`; sin término numérico adicional fijado aquí.                                                                  | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver entidad Responsable, contexto de autorización y evidencia real.                                                                             |
+| `OBL-COL-DP-003`  | Ley 1581 de 2012, art. 14; Secretaría del Senado   | Caso jurídicamente clasificado como consulta                                                                     | Atender consulta en máximo 10 días hábiles desde recepción; si aplica extensión, informar motivos y nueva fecha sin superar 5 días hábiles adicionales.                                                            | Responsable o Encargado aplicable.                             | Recepción, prueba del medio, calendario, respuesta; si hay extensión, motivo, aviso previo y nueva fecha.          | `PER_REQUEST`; `10 BUSINESS_DAYS` + extensión máxima `5 BUSINESS_DAYS` bajo condición.                                                  | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver entidad/rol, `legal_route_ref` y calendario hábil aplicable; salida: caso trazable con cálculo verificable.                                 |
+| `OBL-COL-DP-004`  | Ley 1581 de 2012, art. 15.1; Secretaría del Senado | Reclamo incompleto                                                                                               | Requerir subsanación dentro de 5 días siguientes a la recepción; si pasan 2 meses desde el requerimiento sin subsanación, registrar el efecto procedimental previsto por la fuente.                                | Responsable o Encargado aplicable.                             | Recepción, requerimiento, entrega, completitud y decisión sobre desistimiento.                                     | `PER_CLAIM`; `5 DAYS` para requerimiento; `2 MONTHS` desde el requerimiento para el supuesto descrito.                                  | `CONDITIONAL` | `PENDING_VALIDATION`   | No convertir `5 DAYS` a hábiles sin fuente; resolver ruta y hechos del caso.                                                                         |
+| `OBL-COL-DP-005`  | Ley 1581 de 2012, art. 15.1; Secretaría del Senado | Reclamo recibido por quien no es competente                                                                      | Trasladar a quien corresponda en máximo 2 días hábiles e informar al interesado.                                                                                                                                   | Receptor inicial y competente aplicables.                      | Recepción, decisión de competencia, traslado e información al interesado.                                          | `PER_CLAIM`; `2 BUSINESS_DAYS`.                                                                                                         | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver competencia y entidad receptora; salida: trazabilidad del traslado y aviso.                                                                 |
+| `OBL-COL-DP-006`  | Ley 1581 de 2012, art. 15.2; Secretaría del Senado | Reclamo completo                                                                                                 | Incorporar la indicación de reclamo en trámite y motivo en máximo 2 días hábiles y mantenerla hasta decisión.                                                                                                      | Responsable o Encargado aplicable.                             | `completed_at`, marca/estado, motivo, permanencia y decisión.                                                      | `PER_CLAIM`; `2 BUSINESS_DAYS`.                                                                                                         | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver entidad, base afectada y capacidad de marcar el dato/caso sin exposición indebida.                                                          |
+| `OBL-COL-DP-007`  | Ley 1581 de 2012, art. 15.3; Secretaría del Senado | Reclamo sujeto al artículo 15                                                                                    | Atender en máximo 15 días hábiles desde el día siguiente al recibo indicado por la fuente; si aplica extensión, informar motivos y nueva fecha sin superar 8 días hábiles adicionales.                             | Responsable o Encargado aplicable.                             | Recepción, completitud cuando exista, calendario, respuesta; extensión con motivo, aviso y nueva fecha.            | `PER_CLAIM`; `15 BUSINESS_DAYS` + extensión máxima `8 BUSINESS_DAYS` bajo condición.                                                    | `CONDITIONAL` | `PENDING_VALIDATION`   | Si hubo subsanación, conservar todos los tiempos y no inventar trigger alternativo; salida: interpretación aplicable y cálculo verificable por caso. |
+| `OBL-COL-MSG-001` | Ley 527 de 1999, art. 12; Función Pública          | Documento/registro/información cuya conservación sea exigida por ley y se materialice como mensaje de datos      | Conservar accesibilidad, formato original o reproducción exacta y, cuando exista, información de origen, destino, fecha y hora; no confundir datos meramente técnicos de transmisión con la obligación sustantiva. | Obligado aplicable + custodio de la representación.            | Documento/mensaje preservado, procedencia, acceso posterior y evidencia de exactitud.                              | `CONTINUOUS_WHILE_RETENTION_APPLIES`; la duración proviene de la obligación de conservación aplicable, no de este artículo por sí solo. | `CONDITIONAL` | `PENDING_VALIDATION`   | Resolver obligación primaria de conservación y su alcance; salida: política de retención vinculada y evidencia de preservación.                      |
+| `OBL-COL-COM-001` | Ley 962 de 2005, art. 28; Función Pública          | Libros y papeles del comerciante, y otros sujetos legalmente obligados dentro del alcance descrito por la fuente | Conservar por 10 años desde el último asiento, documento o comprobante, admitiendo soportes que garanticen reproducción exacta y respetando términos especiales que correspondan.                                  | Entidad/persona obligada, resoluble por caso.                  | Calidad del obligado, documento afectado, último asiento/documento/comprobante, soporte y regla especial evaluada. | `CONTINUOUS_RETENTION`; `10 YEARS` condicionado al ámbito y a reglas especiales aplicables.                                             | `CONDITIONAL` | `PENDING_VALIDATION`   | No asignar globalmente a `DOCCTX-*`; salida: entidad, documento, trigger y análisis de regla especial verificados.                                   |
+
+---
+
+#### 18. Brechas de evidencia actualmente materializadas
+
+| Brecha             | Alcance                                          | Propietario documental | Estado                                                          | Condición de salida                                                                                                                                             |
+| ------------------ | ------------------------------------------------ | ---------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GAP-INFO-012-001` | 332 identidades `DOCCTX-*`                       | `INFO-DOM-012`         | `RETENTION_BASIS_UNRESOLVED`                                    | Cada identidad obtiene fuente aplicable, entidad/actividad, trigger, periodo o regla, prioridad frente a normas especiales, evidencia y validación responsable. |
+| `GAP-INFO-012-002` | Casos de titulares                               | `INFO-DOM-012`         | `APPLICABILITY_UNRESOLVED` por instancia                        | Cada caso resuelve entidad y rol, hechos, `legal_route_ref`, calendario temporal y fuente vigente antes de computar término normativo.                          |
+| `GAP-INFO-012-003` | Relaciones contractuales con terceros/encargados | `INFO-DOM-012`         | `SOURCE_MISSING` cuando no exista contrato o anexo verificable  | Contrato/anexo aplicable, partes, vigencia, alcance, obligaciones y evidencia quedan vinculados al registro.                                                    |
+| `GAP-INFO-012-004` | Efectos jurídicos externos de firma/aceptación   | `INFO-DOM-012`         | `APPLICABILITY_UNRESOLVED` cuando solo exista evidencia técnica | Fuente jurídica/contractual aplicable y perfil probatorio del acto quedan verificados antes de afirmar fuerza externa.                                          |
+| `GAP-INFO-012-005` | Validación de cumplimiento real                  | `INFO-DOM-012`         | `CONTROL_NOT_EVIDENCED` hasta ejecución verificable             | Evidencia operacional demuestra presencia, ejecución y eficacia del control en el periodo evaluado; solo entonces puede cambiar el estado de cumplimiento.      |
+
+Estas brechas son contenido propio del registro vivo de cumplimiento. No abren por sí solas una investigación. Si una brecha revela acceso o cambio indebido, manipulación de evidencia, conflicto de interés o necesidad de preservación investigativa, la derivación corresponde a `INFO-DOM-013`.
+
+---
+
+#### 19. Matriz materializada por identidad contextual — 332 de 332
+
+Cada identidad conserva su clase de retención base y su frontera heredada. `INFO-DOM-012` no asigna un periodo definitivo sin fuente aplicable. La decisión explícita de todas las filas es:
+
+- perfil `INFO_COMPLIANCE_V1`;
+- aplicabilidad `MATCH_SOURCE_ENTITY_ACTIVITY`;
+- fundamento definitivo de retención `RET_BASIS_PENDING`;
+- disposición `DISPOSITION_BLOCKED_UNTIL_BASIS`;
+- estado `PENDIENTE_DE_EVIDENCIA` para la dimensión de fundamento ejecutable;
+- identidad, proceso, clase base y frontera sin modificaciones.
+
+| ID contextual          | Proceso      | Retención base       | Perfil               | Aplicabilidad                  | Fundamento definitivo | Disposición                       | Estado                   | Frontera heredada      |
+| ---------------------- | ------------ | -------------------- | -------------------- | ------------------------------ | --------------------- | --------------------------------- | ------------------------ | ---------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `RET_ARCHIVAL`       | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `RET_RELATIONSHIP`   | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `RET_OBLIGATION`     | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `NINGUNO`              |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `INFO_COMPLIANCE_V1` | `MATCH_SOURCE_ENTITY_ACTIVITY` | `RET_BASIS_PENDING`   | `DISPOSITION_BLOCKED_UNTIL_BASIS` | `PENDIENTE_DE_EVIDENCIA` | `FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 20. Reconciliación cuantitativa
+
+| Control                                          | Resultado |
+| ------------------------------------------------ | --------: |
+| `DOCCTX-*` esperadas                             |   **332** |
+| `DOCCTX-*` materializadas                        |   **332** |
+| Claves únicas                                    |   **332** |
+| Faltantes                                        |     **0** |
+| Duplicados                                       |     **0** |
+| Procesos cubiertos                               |    **69** |
+| Filas con `INFO_COMPLIANCE_V1`                   |   **332** |
+| Filas con `RET_BASIS_PENDING`                    |   **332** |
+| Filas con disposición bloqueada hasta fundamento |   **332** |
+| Identidades renombradas                          |     **0** |
+| Identidades fusionadas                           |     **0** |
+| Identidades eliminadas                           |     **0** |
+
+Distribución de retención base preservada:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |   **33** |
+| `RET_BUSINESS_CYCLE` |  **184** |
+| `RET_RELATIONSHIP`   |   **36** |
+| `RET_OBLIGATION`     |   **66** |
+| `RET_ARCHIVAL`       |   **13** |
+| **Total**            |  **332** |
+
+Fronteras heredadas preservadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |   **73** |
+| `FRONTERA_OBLIGATORIA` |  **245** |
+| `APLICACION_DIFERIDA`  |   **14** |
+| **Total**              |  **332** |
+
+---
+
+#### 21. Reglas de operación del registro
+
+1. una nueva fuente se incorpora con referencia y fecha de verificación antes de usarla para una decisión;
+2. una modificación normativa o contractual no sobrescribe la versión de fuente usada históricamente por un caso cerrado;
+3. cambiar aplicabilidad exige motivo, evidencia y responsable;
+4. un control se vincula a una o más obligaciones, pero no absorbe su identidad;
+5. una evidencia puede soportar varias obligaciones solo cuando su alcance realmente lo permita;
+6. evidencia faltante o expirada genera brecha y nunca cumplimiento por defecto;
+7. una obligación con plazo próximo puede generar alerta, pero la alerta no cambia el término ni sustituye la obligación;
+8. una obligación vencida permanece visible y conserva sus acciones correctivas;
+9. una excepción expirada vuelve a exponer la obligación original si no existe otra decisión válida;
+10. el registro conserva historia suficiente para reconstruir qué fuente, versión, aplicabilidad, control y evidencia sustentaban una decisión en una fecha determinada;
+11. las decisiones de retención consumen únicamente fuentes aplicables, no el catálogo completo de normas;
+12. una nueva evidencia puede cerrar una brecha, pero no borra el hecho de que la brecha existió;
+13. la revisión investigativa, preservación de fuentes y cierre de investigaciones permanecen bajo `INFO-DOM-013`.
+
+---
+
+#### 22. Cobertura ejecutable heredada
+
+La tarea introduce datos y contratos de gobierno, no un motor nuevo. La cobertura vigente ya exige que VISO administre de forma segregada obligaciones y solicitudes, conserve plazos, decisiones, excepciones, evidencias y cierre, y que los procesos temporizados sean trazables e idempotentes.
+
+Los valores normativos verificados en esta tarea se registran como parámetros de obligación y rutas de caso. No se hardcodean como comportamiento aislado ni sustituyen la validación de aplicabilidad. La implementación posterior deberá consumir el registro y demostrar, mediante la cobertura existente, cálculo, alertamiento, bloqueo, evidencia y trazabilidad correctos.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa el registro y aporta fuentes, parámetros de plazo, aplicabilidad, estados de evidencia y fundamentos de retención que serán consumidos por comportamientos ejecutables ya protegidos por la cobertura vigente de VISO, procesos temporizados, solicitudes de titulares, documentos, integración y auditoría. No introduce un motor de cómputo, transición física, permiso, mutación, integración o mecanismo de persistencia independiente. Los términos verificados son datos gobernados por obligación y no una nueva capacidad ejecutable autónoma. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 24. Criterios de aceptación
+
+- [x] `INFO-DOM-011` figura aprobada y entrega el contrato de aprobación, aceptación y firmas.
+- [x] se materializa un registro de obligaciones normativas, contractuales e internas con identidad y fuente.
+- [x] entidad/actividad, fuente, obligación, responsable, control, evidencia, frecuencia, plazo, estado y brecha/acción correctiva quedan representados explícitamente.
+- [x] aplicabilidad y cumplimiento quedan separados.
+- [x] diseño, presencia, ejecución y eficacia del control quedan separados.
+- [x] evidencia válida, faltante, expirada, conflictiva y pendiente quedan diferenciadas.
+- [x] el sistema no puede autodeclarar cumplimiento por existencia documental o técnica.
+- [x] frecuencia, fecha límite y periodo de retención quedan separados.
+- [x] un plazo solo puede calcularse con trigger, unidad, calendario y extensión resolubles.
+- [x] se registran los términos verificados de consultas y reclamos de la Ley 1581 de 2012 sin asignarlos automáticamente a los diez tipos empresariales de solicitud.
+- [x] se preservan recepción, completitud, traslado, respuesta y cierre como tiempos distintos.
+- [x] se registra el deber de información al titular y la conservación de prueba verificados en la Ley 1581 de 2012.
+- [x] se registran las condiciones de conservación de mensajes de datos de la Ley 527 de 1999 sin inventar una duración universal.
+- [x] se registra la regla de diez años de la Ley 962 de 2005 como obligación condicional y no como periodo global de las 332 identidades.
+- [x] las 332 identidades `DOCCTX-*` aparecen exactamente una vez.
+- [x] los 69 procesos aparecen cubiertos por la matriz.
+- [x] la distribución 33/184/36/66/13 de retención base permanece intacta.
+- [x] las fronteras 73/245/14 permanecen intactas.
+- [x] las 332 políticas definitivas de retención continúan bloqueadas hasta que una fuente aplicable permita resolver cada fundamento sin inferencia.
+- [x] cada brecha materializada tiene propietario y condición de salida.
+- [x] terceros, requerimientos de autoridad y firmas conservan su fuente y aplicabilidad sin declaraciones jurídicas automáticas.
+- [x] una brecha que requiera investigación formal se deriva a `INFO-DOM-013` sin alterar la evidencia original.
+- [x] no se realizan cambios físicos ni de Supabase.
+- [x] no se crean ni modifican requisitos de prueba.
+- [x] `INFO-DOM-013` permanece reservada y no iniciada.
+
+---
+
+#### 25. Resultado y continuidad
+
+VENTO queda con un registro corporativo capaz de separar fuente, aplicabilidad, obligación, control, evidencia, frecuencia, término, cumplimiento, excepción y brecha. Las obligaciones externas verificadas se incorporan con alcance condicional cuando la entidad o actividad concreta aún debe demostrarse; las obligaciones internas quedan aplicables por diseño corporativo; y ninguna política de retención o fecha legal se extiende a un caso que no haya resuelto su fuente y su ámbito.
+
+La cadena resultante queda:
+
+```text
+fuente normativa / contractual / interna
+→ obligación identificada
+→ entidad + actividad + ámbito
+→ decisión de aplicabilidad
+→ control
+→ evidencia
+→ frecuencia / término / retención cuando corresponda
+→ validación de cumplimiento o brecha
+→ acción correctiva / excepción
+→ investigación formal solo cuando corresponda
+```
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre`
+
+
 ### [ ] INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
