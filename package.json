@@ -1,6 +1,11 @@
 {
   "name": "vento-shell",
   "version": "0.1.0",
+  "packageManager": "npm@11.17.0",
+  "engines": {
+    "node": "24.19.0",
+    "npm": "11.17.0"
+  },
   "private": true,
   "workspaces": [
     "packages/*"

@@ -26,8 +26,12 @@
     {
       "label": "Plan canónico: compilar automáticamente",
       "type": "process",
-      "command": "node",
+      "command": "fnm",
       "args": [
+        "exec",
+        "--using",
+        "${workspaceFolder}/.node-version",
+        "node",
         "${workspaceFolder}/scripts/docs/watch-plan-canonico.mjs"
       ],
       "options": {

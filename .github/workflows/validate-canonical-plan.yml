@@ -5,7 +5,10 @@ on:
     paths:
       - "docs/plan-canonico/modular/**"
       - "scripts/docs/**"
+      - ".node-version"
+      - ".vscode/tasks.json"
       - "package.json"
+      - "package-lock.json"
       - ".github/workflows/validate-canonical-plan.yml"
   push:
     branches:
@@ -13,7 +16,10 @@ on:
     paths:
       - "docs/plan-canonico/modular/**"
       - "scripts/docs/**"
+      - ".node-version"
+      - ".vscode/tasks.json"
       - "package.json"
+      - "package-lock.json"
       - ".github/workflows/validate-canonical-plan.yml"
 
 permissions:
@@ -31,7 +37,11 @@ jobs:
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".node-version"
+          cache: npm
+
+      - name: Instalar dependencias bloqueadas
+        run: npm ci
 
       - name: Compilar plan canónico
         run: npm run docs:plan:build

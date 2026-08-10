@@ -3569,5 +3569,817 @@ SIGUIENTE TAREA RESERVADA
 `INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada`
 
 
-### [ ] INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
+### ✅ INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes` — APROBADA
+**Tarea siguiente:** `INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva` — RESERVADA
+**Tipo de tarea:** documental
+
+#### 1. Propósito
+
+Materializar la experiencia documental para administrar retención, legal hold, archivo y disposición controlada sin convertir estados incompletos, ausencia de evidencia o capacidad técnica en autorización de negocio. La experiencia conserva la separación entre política, trigger, cómputo temporal, archivo, preservación, hold, elegibilidad, método de disposición, verificación y certificado.
+
+El diseño se apoya exclusivamente en contratos documentales aprobados. No fija periodos numéricos, no presume jurisdicción, no habilita acciones destructivas y no crea implementación física.
+
+#### 2. Resultado sustantivo
+
+Quedan definidos cuatro artefactos lógicos de experiencia:
+
+1. `INFO-RETENTION-LIFECYCLE-UX-CONTRACT-001` — experiencia del ciclo de retención y archivo.
+2. `INFO-LEGAL-HOLD-UX-CONTRACT-001` — experiencia para imponer, revisar, modificar y liberar legal hold.
+3. `INFO-DISPOSITION-UX-CONTRACT-001` — experiencia para elegibilidad, manifiesto, aprobación, ejecución, verificación y certificación de disposición.
+4. `INFO-RETENTION-DISPOSITION-UX-MATRIX-001` — decisión explícita para 69 procesos y 332 identidades `DOCCTX-*`.
+
+La superficie administrativa se resuelve en `VSCREEN-0122`, ya existente y propietaria de gobierno de información en VISO. Esta tarea crea **0 VSCREEN** y **0 rutas**.
+
+#### 3. Entradas canónicas consumidas
+
+- `INFO-DOM-006` aporta los contratos de política de retención, schedule, eventos de cómputo, archivo, legal hold, disposición, certificado y matriz por identidad.
+- `INFO-DOM-012` conserva pendiente la evidencia material de periodos o criterios temporales cuando no existe soporte verificable; por ello no se infieren duraciones.
+- `INFO-AUTH-003` mantiene separadas las funciones de crear, revisar, aprobar, firmar, retener, imponer hold, disponer y eliminar; la capacidad técnica no constituye autoridad de negocio.
+- `INFO-UX-004` conserva la regla de que una solicitud de supresión no equivale por sí sola a eliminación inmediata cuando existe retención, preservación o hold aplicable.
+- `INFO-RETENTION-DISPOSITION-MATRIX-001` conserva 69 procesos y 332 identidades documentales, sin reidentificación ni reclasificación por esta tarea.
+
+#### 4. Decisiones rectoras de experiencia
+
+1. La ausencia de una política ejecutable se representa como `POLICY_UNRESOLVED`; nunca como retención indefinida aprobada.
+2. `RET_UNRESOLVED` bloquea disposición, anonimización destructiva y eliminación hasta resolver base, versión, trigger y condiciones temporales exigibles.
+3. Un `HOLD_ACTIVE` prevalece sobre cualquier acción destructiva incompatible y no amplía visibilidad, permisos, finalidad ni clasificación.
+4. Archivo, backup, retención, legal hold, disposición y eliminación técnica permanecen conceptos distintos en interfaz, estado y autoridad.
+5. La elegibilidad no equivale a ejecución; `ELIGIBLE_FOR_DISPOSITION` solo habilita el siguiente control cuando todas las precondiciones se encuentran verificadas.
+6. Solicitar, aprobar, ejecutar, verificar y certificar son funciones distintas. La interfaz no las colapsa en una sola acción.
+7. La liberación de un hold recalcula elegibilidad; nunca dispara eliminación automática.
+8. Una falla parcial de disposición permanece visible como `DISPOSITION_FAILED`; no puede mostrarse como éxito ni cerrarse con un certificado completo.
+9. Copias, representaciones, índices, cachés, exportes, terceros y backups se tratan como alcance gobernado cuando el contrato aplicable los incluye.
+10. Una restauración no puede resucitar material ya dispuesto: debe reaplicar decisiones, revocaciones, tombstones, políticas y holds antes de volver a exponer contenido.
+11. La experiencia nunca revela a una persona no autorizada el motivo sensible de una investigación, preservación o hold; comunica solo el estado permitido y la consecuencia operativa necesaria.
+12. Toda acción sensible se niega cuando identidad, autoridad, propósito, recurso, alcance o contexto obligatorio no pueden resolverse.
+
+#### 5. `INFO-RETENTION-LIFECYCLE-UX-CONTRACT-001`
+
+##### 5.1. Vista de detalle de retención
+
+Para una identidad autorizada, la experiencia debe poder presentar, según permiso:
+
+- identidad `DOCCTX-*`, proceso y recurso;
+- tipo documental, clasificación y propietario/custodio vigentes;
+- clase de retención heredada;
+- identificador y versión de política, cuando estén resueltos;
+- trigger autorizado y evento material que lo satisface;
+- mínimo, máximo o criterio temporal solo cuando exista evidencia verificable;
+- estado de ciclo de vida;
+- estado de archivo;
+- hold y preservación aplicables;
+- bloqueos por investigación, obligación, excepción o evidencia faltante;
+- estado de copias, representaciones, terceros y backups cuando sea relevante;
+- motivos de elegibilidad o de bloqueo;
+- referencias a manifiesto y certificado cuando existan.
+
+Los valores pendientes deben mostrarse como evidencia no resuelta y no como `0`, vacío, inexistente o periodo ilimitado.
+
+##### 5.2. Estados principales
+
+La experiencia representa el flujo canónico:
+
+`ACTIVE -> INACTIVE -> ARCHIVE_PENDING -> ARCHIVED -> ELIGIBLE_FOR_DISPOSITION -> DISPOSITION_PENDING -> DISPOSED | ANONYMIZED | TRANSFERRED`
+
+Estados transversales visibles cuando apliquen:
+
+- `HOLD_ACTIVE`
+- `PRESERVATION_REQUIRED`
+- `DISPOSITION_BLOCKED`
+- `DISPOSITION_FAILED`
+- `POLICY_UNRESOLVED`
+
+Los estados transversales no sustituyen el estado principal; explican por qué una transición está permitida, bloqueada o incompleta.
+
+##### 5.3. Cómputo temporal
+
+La interfaz no usa como sustituto de trigger autorizado:
+
+- `created_at`;
+- `updated_at`;
+- último acceso;
+- sincronización;
+- cambio de ubicación;
+- movimiento de bucket o prefijo;
+- timestamp de backup.
+
+Solo un evento aprobado por la política aplicable puede iniciar o modificar el cómputo. Un cambio de versión de política no reescribe retroactivamente el historial.
+
+#### 6. Archivo controlado
+
+La experiencia de archivo representa una conservación gobernada posterior al uso operativo ordinario. Archivar conserva:
+
+- identidad, versión y relación con `DOCCTX-*`;
+- proceso y recurso;
+- clasificación y reglas de acceso;
+- metadatos y representaciones necesarias;
+- integridad, legibilidad y trazabilidad;
+- política de retención y versión aplicable;
+- trigger y evidencia temporal permitida;
+- procedencia y custodia;
+- capacidad de búsqueda autorizada;
+- migrabilidad;
+- futura elegibilidad y disposición.
+
+No se presenta como archivo, por sí solo, un backup, una carpeta personal, un cambio de almacenamiento, un exporte manual sin custodia, una tabla abandonada, correo personal, dispositivo local o almacenamiento frío sin gobierno.
+
+Archivar no reduce automáticamente clasificación, permisos ni obligaciones de disposición futura.
+
+#### 7. `INFO-LEGAL-HOLD-UX-CONTRACT-001`
+
+##### 7.1. Acciones separadas
+
+La interfaz trata como intenciones distintas:
+
+- imponer hold;
+- revisar hold;
+- modificar alcance o condiciones autorizadas;
+- liberar hold.
+
+No existe un interruptor binario que combine estas funciones.
+
+##### 7.2. Datos mínimos de trabajo
+
+La experiencia solicita o presenta, según permiso:
+
+- `hold_id`;
+- tipo de hold;
+- alcance mediante consulta gobernada o manifiesto;
+- código de razón;
+- referencia de autoridad;
+- solicitante;
+- aprobador;
+- fecha de emisión y efectividad;
+- fecha de revisión;
+- condición de liberación;
+- fecha de liberación cuando corresponda;
+- custodio;
+- estado de notificación;
+- acciones de preservación;
+- excepciones autorizadas.
+
+##### 7.3. Previsualización y alcance
+
+Antes de imponer o modificar un hold, la experiencia muestra el alcance que el actor está autorizado a conocer. El conteo, la muestra y los detalles se reautorizan y no pueden usarse como canal lateral para descubrir contenido restringido.
+
+Un hold debe tener alcance explícito. No se ofrece una opción de hold global por conveniencia.
+
+##### 7.4. Efectos
+
+Con `HOLD_ACTIVE`:
+
+- se bloquea anonimización destructiva, eliminación y disposición incompatible;
+- se conserva la clasificación y el modelo de acceso vigentes;
+- no se amplía propósito ni visibilidad;
+- la preservación se propaga a copias y derivados gobernados cuando el manifiesto o política los incluyen;
+- cualquier modificación o liberación queda como hecho separado y auditable.
+
+Liberar el hold conserva su historia y ordena recalcular elegibilidad; la interfaz no encadena una acción destructiva automática.
+
+#### 8. `INFO-DISPOSITION-UX-CONTRACT-001`
+
+##### 8.1. Evaluación de elegibilidad
+
+La experiencia solo puede mostrar `ELIGIBLE_FOR_DISPOSITION` cuando todas las siguientes condiciones están resueltas:
+
+1. política y versión aplicables;
+2. trigger autorizado;
+3. mínimo satisfecho cuando aplique;
+4. máximo o acción evaluable cuando aplique;
+5. estado del recurso compatible;
+6. ausencia de hold incompatible;
+7. ausencia de preservación, investigación, obligación o excepción pendiente que bloquee;
+8. inventario suficiente de copias y derivados;
+9. estado conocido de terceros y backups;
+10. ausencia de fallas previas sin reconciliar;
+11. autoridad verificable para aprobar el método.
+
+Si cualquiera falla, la experiencia muestra `DISPOSITION_BLOCKED` o `POLICY_UNRESOLVED` con razones autorizadas y no habilita ejecución.
+
+##### 8.2. Manifiesto previo
+
+Antes de aprobar una disposición, la interfaz presenta un manifiesto controlado con:
+
+- política y versión;
+- alcance exacto;
+- proceso y recurso;
+- trigger y fecha de elegibilidad;
+- método;
+- filas, objetos o representaciones incluidas;
+- adjuntos, miniaturas, cachés, índices y superficies de búsqueda aplicables;
+- exportes y copias temporales gobernadas;
+- derivados o agregados alcanzados;
+- estado de terceros;
+- estado de backups;
+- holds y excepciones;
+- segregación de aprobador y ejecutor cuando corresponda;
+- criterio de reintento idempotente;
+- criterio de éxito, resultado parcial y residual;
+- evidencia esperada.
+
+##### 8.3. Funciones y autoridad
+
+La experiencia conserva la separación:
+
+`SOLICITAR != APROBAR != EJECUTAR != VERIFICAR != CERTIFICAR`
+
+Ninguna capacidad administrativa o técnica reemplaza la autoridad de negocio. Cada paso revalida actor, función, propósito, alcance, estado, política y bloqueos aplicables.
+
+##### 8.4. Anonimización
+
+La interfaz solo puede tratar una operación como anonimización cuando el contrato aplicable resuelve método y versión, cobertura de atributos y derivados, riesgo de reidentificación, irreversibilidad o desvinculación razonable, conflictos de hold/preservación y tratamiento de copias, índices, exportes y derivados.
+
+Enmascarado, tokenización, pseudonimización o truncamiento no se presentan como anonimización definitiva por sí solos.
+
+##### 8.5. Eliminación controlada
+
+La experiencia no considera completada una eliminación por la desaparición de una fila u objeto principal. Debe existir verificación del alcance gobernado, dependencias, representaciones, cachés, índices, exportes, derivados, terceros y backups según contrato.
+
+Una ejecución parcial permanece en `DISPOSITION_FAILED` o estado pendiente compatible. Los reintentos deben reconciliar resultados anteriores y no repetir efectos destructivos de forma ciega.
+
+##### 8.6. Certificación
+
+El certificado solo puede emitirse después de un resultado verificado. Como mínimo representa:
+
+- identificador de manifiesto;
+- versión de política;
+- alcance, proceso y recurso;
+- trigger y tiempo de elegibilidad;
+- verificación de hold;
+- método;
+- tiempos de ejecución;
+- solicitante, aprobador, ejecutor y verificador;
+- componentes esperados, exitosos y fallidos;
+- estado de terceros, backups y residuales;
+- resultado;
+- referencias de evidencia;
+- fecha de emisión;
+- referencia de integridad.
+
+No se muestra certificado completo de éxito si existe falla material, resultado desconocido, política no resuelta o evidencia insuficiente.
+
+#### 9. Integración con solicitudes de privacidad
+
+Cuando una solicitud de privacidad pida supresión o eliminación:
+
+1. la solicitud no salta la evaluación de retención, obligación, preservación, investigación o hold;
+2. la experiencia puede informar que parte del material permanece conservado por una base o bloqueo aplicable sin exponer detalles restringidos;
+3. puede completarse parcialmente una solicitud cuando el contrato permita separar material elegible de material preservado;
+4. el usuario externo no recibe controles administrativos de hold, archivo o disposición;
+5. una liberación posterior de un bloqueo no promete eliminación inmediata: se reevalúa elegibilidad bajo la política vigente.
+
+#### 10. Superficie, navegación y divulgación
+
+- Superficie administrativa principal: `VSCREEN-0122` en VISO.
+- Nuevas pantallas: **0**.
+- Nuevas rutas: **0**.
+- Los accesos desde tablero, alertas o casos son enlaces contextuales; abrir el destino exige reautorización.
+- Una alerta no transporta en su texto información sensible innecesaria sobre hold, investigación o evidencia.
+- La interfaz aplica divulgación progresiva: primero estado y bloqueo; luego detalle solo para actores autorizados.
+- Búsqueda, filtrado, vista de manifiesto y vista de certificado respetan clasificación, propósito, relación, territorio y estado vigentes.
+
+#### 11. Lenguaje de estados y acciones
+
+La interfaz usa acciones verbo + objeto, por ejemplo:
+
+- `Revisar política`
+- `Revisar elegibilidad`
+- `Imponer hold`
+- `Revisar hold`
+- `Liberar hold`
+- `Preparar manifiesto`
+- `Solicitar disposición`
+- `Aprobar disposición`
+- `Verificar resultado`
+- `Consultar certificado`
+
+No usa etiquetas ambiguas como `Procesar`, `Resolver`, `Limpiar` o `Eliminar todo` cuando oculten el alcance real.
+
+Toda acción destructiva requiere confirmación con objeto, alcance, método, efecto, bloqueos resueltos y consecuencia no reversible aplicable.
+
+#### 12. Accesibilidad y estados operativos
+
+La experiencia debe:
+
+- funcionar con teclado y lector de pantalla;
+- no depender exclusivamente de color para diferenciar `HOLD_ACTIVE`, `DISPOSITION_BLOCKED`, `DISPOSITION_FAILED` o éxito;
+- asociar razones de bloqueo a texto legible y controles correspondientes;
+- mantener foco y contexto después de validaciones;
+- anunciar cambios de estado relevantes;
+- distinguir carga, estado vacío, falta de autorización, ausencia real de resultados y error de servicio;
+- impedir que un error de consulta parezca ausencia de hold o elegibilidad positiva.
+
+#### 13. Matriz por proceso — 69 de 69
+
+| Proceso      | DOCCTX esperados | Estado heredado                                                           | Decisión de experiencia                                                                                                          |
+| ------------ | ---------------: | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` |                2 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0002` |                2 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0003` |                1 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0004` |                1 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0005` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0006` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0007` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0008` |                1 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0009` |                1 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0010` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0011` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0012` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0013` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0014` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0015` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0016` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0017` |                1 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0018` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0019` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0020` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0021` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0022` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0023` |                2 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0024` |                3 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0025` |                2 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0026` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0027` |                2 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0028` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0029` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0030` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0031` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0032` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0033` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0034` |                8 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0035` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0036` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0037` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0038` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0039` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0040` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0041` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0042` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0043` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0044` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0045` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0046` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0047` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0048` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0049` |                8 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0050` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0051` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0052` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0053` |                4 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0054` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0055` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0056` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0057` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0058` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0059` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0060` |                8 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0061` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0062` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0063` |                5 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0064` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0065` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0066` |                7 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0067` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0068` |                6 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+| `VPROC-0069` |                9 | Retención y frontera heredadas de `INFO-RETENTION-DISPOSITION-MATRIX-001` | ESPECIFICADO: mantener control fail-closed, sin inferir periodos ni habilitar disposición mientras exista evidencia no resuelta. |
+
+#### 14. `INFO-RETENTION-DISPOSITION-UX-MATRIX-001` — 332 de 332
+
+Cada fila conserva identidad y proceso. Esta tarea no altera la clase de retención, el trigger ni la frontera heredados; materializa la decisión de experiencia aplicable a cada identidad.
+
+| Identidad              | Proceso      | Política         | Hold                  | Archivo                               | Disposición           | Decisión de experiencia                                                                                                                                           |
+| ---------------------- | ------------ | ---------------- | --------------------- | ------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | Solo bajo contrato de archivo vigente | `DISPOSITION_BLOCKED` | ESPECIFICADO: conservar clase, trigger y frontera heredados; no habilitar acción destructiva hasta resolver política, evidencia, autoridad y bloqueos aplicables. |
+
+#### 15. Reconciliación cuantitativa
+
+- Procesos esperados: **69**.
+- Procesos materializados: **69**.
+- Identidades `DOCCTX-*` esperadas: **332**.
+- Identidades materializadas: **332**.
+- Identificadores únicos: **332**.
+- Faltantes: **0**.
+- Duplicados: **0**.
+- Políticas ejecutables con periodo numérico y base verificable materializadas por esta tarea: **0**.
+- Identidades en `RET_UNRESOLVED`: **332**.
+- Disposición automática habilitada: **0**.
+
+Distribución heredada de clases de retención, sin modificación:
+
+| Clase                |   Total |
+| -------------------- | ------: |
+| `RET_ACTIVE_CASE`    |      33 |
+| `RET_BUSINESS_CYCLE` |     184 |
+| `RET_RELATIONSHIP`   |      36 |
+| `RET_OBLIGATION`     |      66 |
+| `RET_ARCHIVAL`       |      13 |
+| **TOTAL**            | **332** |
+
+Distribución heredada de frontera de evidencia, sin modificación:
+
+| Frontera               |   Total |
+| ---------------------- | ------: |
+| `NINGUNO`              |      73 |
+| `FRONTERA_OBLIGATORIA` |     245 |
+| `APLICACION_DIFERIDA`  |      14 |
+| **TOTAL**              | **332** |
+
+#### 16. Bloqueos documentales vigentes
+
+Para las 332 identidades, los periodos mínimos, máximos o criterios temporales no se completan por inferencia cuando falta evidencia autoritativa. El estado documental es:
+
+- política ejecutable: `PENDIENTE_DE_EVIDENCIA` cuando la fuente material no resuelve base o duración;
+- disposición automática: `BLOQUEADO`;
+- preservación de incertidumbre: obligatoria hasta resolver evidencia;
+- tarea responsable de resolver periodos o bases: la tarea canónica que incorpore evidencia normativa o contractual suficiente, sin que `INFO-UX-005` la sustituya.
+
+Este bloqueo no impide cerrar el diseño de experiencia: la interfaz queda definida para representar el estado pendiente y negar acciones incompatibles.
+
+#### 17. Criterios de aceptación materializados
+
+1. Existe una superficie administrativa concreta y heredada: `VSCREEN-0122`.
+2. Se distinguen retención, archivo, legal hold, elegibilidad, disposición, anonimización, eliminación, backup y certificado.
+3. La experiencia implementable conoce los estados principales y transversales exactos.
+4. `RET_UNRESOLVED` y `POLICY_UNRESOLVED` bloquean acciones destructivas.
+5. Un hold activo bloquea disposición incompatible sin ampliar acceso.
+6. Imponer, revisar, modificar y liberar hold son intenciones separadas.
+7. Solicitar, aprobar, ejecutar, verificar y certificar disposición son funciones separadas.
+8. Liberar un hold no produce eliminación automática.
+9. El manifiesto hace visible el alcance gobernado antes de una decisión destructiva.
+10. Falla parcial, terceros pendientes y backups no reconciliados impiden representar éxito completo.
+11. Una solicitud de privacidad no omite retención, preservación, obligaciones ni hold.
+12. Los detalles sensibles se divulgan progresivamente y solo tras autorización.
+13. No se crean pantallas ni rutas nuevas.
+14. Se preservan las 69 identidades de proceso y las 332 identidades documentales.
+15. La matriz contiene 332 decisiones explícitas, sin faltantes ni duplicados.
+16. No se inventan periodos numéricos ni bases legales ausentes.
+17. No se materializan cambios físicos en datos, servicios, almacenamiento, permisos o infraestructura.
+
+#### 18. Frontera documental
+
+`INFO-UX-005` especifica la experiencia y sus decisiones, pero no ejecuta:
+
+- jobs de retención;
+- DDL o DML;
+- migraciones;
+- cambios de RLS;
+- movimientos de objetos;
+- archivado físico;
+- imposición real de holds;
+- anonimización o eliminación;
+- emisión real de certificados;
+- integraciones con terceros;
+- purga o tratamiento de backups.
+
+Resultado de fase: `ESPECIFICADO`. No se declara `IMPLEMENTADO` ni `VALIDADO` operativamente.
+
+#### 19. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea materializa una experiencia documental sobre contratos canónicos ya aprobados y no introduce un comportamiento técnico nuevo, persistencia, ejecución de disposición, jobs, RLS, servicios, integraciones ni superficies nuevas. La evidencia de implementación y ejecución permanece bajo los requisitos vigentes de los componentes responsables.
+
+#### 20. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes`
+
+**TAREA ACTUAL APROBADA:** `INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada`
+
+**SIGUIENTE TAREA RESERVADA:** `INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva`
+
+
 ### [ ] INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
