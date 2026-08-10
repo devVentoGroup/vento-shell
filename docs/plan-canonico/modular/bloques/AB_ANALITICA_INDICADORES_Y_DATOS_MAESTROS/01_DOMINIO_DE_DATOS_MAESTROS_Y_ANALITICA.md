@@ -1858,7 +1858,418 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica`
 
 
-### [ ] DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
+### ✅ DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores` — APROBADA
+**Tarea siguiente:** `DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de hechos, eventos, granularidad, dimensión histórica, tiempo empresarial, snapshots y comparabilidad para la capa analítica del BLOQUE AB
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, publicación de snapshots o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato temporal y dimensional que permite convertir hechos y eventos de los dominios propietarios en resultados analíticos reproducibles sin cambiar la fuente, mezclar granos incompatibles, aplicar dimensiones actuales a hechos pasados ni sustituir historia mediante snapshots o agregados.
+
+La tarea fija de forma explícita:
+
+- qué clases de hechos, eventos, casos, intervalos, estados observados y artefactos versionados quedan reconocidas;
+- cuál es el grano natural que debe conservarse antes de agregar;
+- qué instantes y fechas participan en la interpretación temporal;
+- cómo se resuelve una dimensión compartida conforme a la vigencia aplicable al hecho;
+- cómo se usan los periodos operativo, económico, contable y fiscal sin tratarlos como equivalentes;
+- qué representa un snapshot y por qué no puede reemplazar silenciosamente un resultado ya publicado;
+- bajo qué condiciones dos periodos, segmentos o resultados pueden compararse;
+- cómo se completa el grano y la semántica temporal de las 14 métricas de asistencia aprobadas en `DATA-DOM-004`.
+
+Esta tarea no define contratos de ingestión o backfill, no certifica calidad, no crea dashboards, no fija nuevas fórmulas de dominio y no materializa modelos físicos.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-DOM-005` con estos resultados:
+
+- **15 de 15 familias** heredadas de la matriz de exclusión de `DATA-DOM-002` reciben clasificación temporal y decisión explícita de grano;
+- los **62 de 62 objetos** del catálogo de maestros/referencias reciben una decisión explícita de uso como dimensión histórica;
+- se preservan **58 objetos habilitados** como dimensión compartida, **4 no habilitados** y **3 objetos AURA bloqueados** que forman parte de los 58 habilitados conceptualmente;
+- los **14 de 14 `metric_key`** de asistencia reciben grano base, semántica temporal, dimensiones admitidas y estado;
+- se distinguen ocurrencia, fecha empresarial, recepción, procesamiento, última corrección y corte analítico;
+- se establece resolución temporal de jerarquías y atributos mediante la vigencia aplicable al hecho, nunca mediante el estado actual por defecto;
+- se separan periodo operativo, económico, contable y fiscal;
+- se define snapshot como resultado derivado e inmutable para un corte y contexto concretos, sin autoridad para corregir la fuente;
+- se definen reglas de comparabilidad para versión de métrica, grano, calendario, zona horaria, población, dimensiones, unidad/moneda, cobertura y restatements;
+- las tres divergencias de asistencia ya detectadas permanecen bloqueantes para certificación; esta tarea precisa su semántica temporal sin modificar la implementación;
+- se crean **0** requisitos de prueba y se modifican **0**, porque la conducta queda cubierta por requisitos DATA vigentes ya asignados a esta tarea.
+
+---
+
+#### 3. Taxonomía temporal y analítica
+
+| Categoría            | Definición canónica                                                                                              | Regla de autoridad                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| HECHO / TRANSACCIÓN  | Registro empresarial de algo ocurrido o reconocido con identidad, contexto y cantidades/valores cuando apliquen. | La fuente propietaria conserva el hecho original; la analítica solo lo consume.                             |
+| EVENTO               | Ocurrencia puntual o transición observada con instante y procedencia.                                            | El evento original no se sobrescribe para corregir historia.                                                |
+| INTERVALO            | Periodo con inicio y fin, real o programado, como turno, sesión, vigencia o ejecución.                           | Sus límites y zona horaria pertenecen al contrato propietario.                                              |
+| CASO / EXPEDIENTE    | Identidad que agrupa interacciones, decisiones y estados sin convertirlos en un único evento.                    | Las interacciones internas conservan sus propios tiempos y evidencia.                                       |
+| ESTADO OBSERVADO     | Condición derivada de hechos válidos en un instante de corte.                                                    | No es un hecho autónomo ni autoriza modificar la fuente.                                                    |
+| SNAPSHOT             | Captura inmutable de un estado o resultado analítico para un corte, contexto y versión definidos.                | Es derivado; una corrección posterior produce una nueva publicación/restatement según su tarea propietaria. |
+| ARTEFACTO VERSIONADO | Regla, presupuesto, forecast, escenario, precio u otra definición con versión y vigencia.                        | Se identifica la versión realmente aplicada; la versión actual no reemplaza la histórica.                   |
+| MÉTRICA / KPI        | Definición semántica y resultado derivado sobre hechos/dimensiones.                                              | Nunca es fuente de verdad del hecho ni de los maestros consumidos.                                          |
+
+No se crea un enum técnico universal. Estas categorías establecen semántica documental y fronteras de modelado.
+
+---
+
+#### 4. Contrato canónico de tiempo
+
+| Coordenada temporal | Semántica obligatoria                                                            | Regla                                                                                                         |
+| ------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| ocurrencia          | Instante o intervalo en que el hecho sucedió en el dominio propietario.          | No se sustituye por hora de carga o procesamiento.                                                            |
+| fecha empresarial   | Fecha asignada por el proceso propietario para operación y agrupación.           | Debe conservar regla y zona horaria; no se recalcula automáticamente desde UTC ni desde la fecha de consulta. |
+| recepción           | Momento en que el sistema receptor obtuvo el hecho o evento.                     | Permite distinguir atraso de origen frente a atraso de procesamiento.                                         |
+| procesamiento       | Momento en que una transformación o modelo incorporó el registro.                | No cambia la ocurrencia ni la fecha empresarial.                                                              |
+| última corrección   | Momento de la corrección válida más reciente del hecho o de su relación.         | La corrección debe ser trazable; no elimina el estado previo.                                                 |
+| corte analítico     | Instante hasta el cual un resultado observa hechos, correcciones y dimensiones.  | Todo estado derivado o snapshot debe declarar este corte.                                                     |
+| zona horaria        | Zona utilizada para interpretar instantes locales, fecha empresarial y ventanas. | Debe formar parte del contexto de cálculo cuando pueda cambiar el resultado.                                  |
+
+Reglas obligatorias:
+
+1. `fecha del hecho ≠ fecha empresarial ≠ fecha de recepción ≠ fecha de procesamiento ≠ fecha de corrección`;
+2. un hecho tardío conserva su ocurrencia original aunque sea recibido o procesado después;
+3. un periodo cerrado no autoriza mover silenciosamente un hecho a otro periodo; el tratamiento corresponde al contrato de dominio y, cuando aplique, a restatement o reapertura;
+4. un evento sin instante confiable no adquiere uno inventado para hacerlo comparable; su tratamiento de calidad pertenece a `DATA-DOM-007`;
+5. la analítica nunca corrige el hecho fuente para hacer coincidir un reporte; la corrección vuelve al propietario o se representa como restatement según `DATA-DOM-017`.
+
+---
+
+#### 5. Contrato de granularidad
+
+Cada hecho o modelo analítico deberá declarar una unidad mínima antes de cualquier agregación. El grano responde a “qué representa exactamente una fila lógica o una observación”.
+
+Reglas:
+
+1. cabecera y línea se mantienen separadas cuando cantidades, productos, impuestos, precios, movimientos o resultados pertenecen a la línea;
+2. una sesión, un evento puntual, un caso y un snapshot no comparten grano aunque se relacionen;
+3. un agregado no se une directamente con otro grano si esa unión multiplica o pierde hechos;
+4. toda combinación entre granos distintos exige una agregación, relación o puente declarado por el modelo propietario;
+5. las tasas se agregan recomputando numerador y denominador sobre el nuevo conjunto comparable; no se promedian porcentajes salvo que exista una definición distinta aprobada;
+6. una dimensión puede segmentar un hecho solo cuando existe una relación válida para el tiempo del hecho;
+7. una fila de snapshot no se usa como si fuera el hecho atómico que la produjo;
+8. la materialización física de estos granos pertenece a E3 y `DATA-INT-002`.
+
+---
+
+#### 6. Matriz materializada de hechos, eventos y representaciones heredadas
+
+| Familia heredada                                                         | Clasificación                             | Grano natural / regla de separación                                                                                                                                                                       | Tiempo principal                                                                                                             | Fuente propietaria                             | Estado       |
+| ------------------------------------------------------------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------ |
+| SHIFT, ATTENDANCE_EVENT, ATTENDANCE_CORRECTION                           | HECHO / EVENTO LABORAL                    | SHIFT: un periodo de trabajo programado por trabajador y contexto; ATTENDANCE_EVENT: un evento original inmutable; ATTENDANCE_CORRECTION: una decisión auditada vinculada al original.                    | Inicio/fin programado para SHIFT; instante de ocurrencia para evento; instante de decisión para corrección.                  | VISO / ANIMA según proceso                     | ESPECIFICADO |
+| CONSENT_RECORD, CONTACT_VERIFICATION                                     | EVENTO / EVIDENCIA DE AUTORIZACIÓN        | Una declaración o retiro de autorización por persona/finalidad/versión/alcance; una verificación por contacto o evidencia verificada.                                                                     | Instante de captura/verificación/retiro y vigencia del texto o evidencia.                                                    | PASS y gobierno de privacidad                  | ESPECIFICADO |
+| LOYALTY_LEDGER_ENTRY, redención, ajuste de puntos                        | HECHO TRANSACCIONAL                       | Un movimiento del ledger por cuenta, regla/versión y evento origen; redención y ajuste permanecen movimientos o decisiones distinguibles.                                                                 | Timestamp del movimiento y vigencia/expiración cuando aplique.                                                               | PASS / PULSO según proceso                     | ESPECIFICADO |
+| solicitud, caso, cotización, orden, recepción, devolución de compra      | CASO / TRANSACCIÓN                        | Cada objeto conserva su propia identidad natural; cabecera y líneas no se mezclan cuando existen cantidades, precios o productos por línea.                                                               | Instante de creación/decisión/recepción/devolución según el hecho; vigencia de oferta o condición aplicada.                  | ORIGO                                          | ESPECIFICADO |
+| lote, LPN, existencia, movimiento, conteo, ajuste                        | HECHO / ENTIDAD OPERATIVA DE TRAZABILIDAD | Lote y LPN conservan identidad propia; movimiento y ajuste son eventos; conteo es observación; existencia es estado derivado para un producto/presentación/lote/LOC en un corte.                          | Instante del movimiento/conteo/ajuste; corte explícito para existencia; fechas propias del lote.                             | NEXO / FOGO según proceso                      | ESPECIFICADO |
+| orden, lote, ejecución, consumo, merma y resultado productivo            | HECHO PRODUCTIVO                          | Orden, lote y ejecución permanecen instancias distintas; consumos, salidas, mermas y resultados se registran al nivel de la cantidad/objeto efectivamente medido.                                         | Inicio/fin de ejecución y timestamp del consumo, salida, merma o resultado; versión de receta realmente usada.               | FOGO                                           | ESPECIFICADO |
+| pedido, comanda, venta, pago, caja, devolución, entrega                  | HECHO COMERCIAL                           | Pedido, comanda, venta, pago, movimiento/sesión de caja, devolución y entrega son granos distintos; líneas y partes monetarias se conservan cuando el hecho se descompone.                                | Creación/confirmación/ejecución de cada objeto; venta y pago conservan su propio momento; el corte comercial no los colapsa. | PULSO                                          | ESPECIFICADO |
+| precio de venta, descuento, promoción vigente                            | REGLA / CONFIGURACIÓN VERSIONADA          | Una versión por oferta, contexto y vigencia; el valor aplicado se conserva como snapshot de la línea o transacción que lo consumió.                                                                       | Inicio/fin de vigencia de la regla y momento de aplicación al hecho.                                                         | PULSO; AURA solo propone intención promocional | ESPECIFICADO |
+| SERVICE_CASE, reclamo, reserva, compensación, satisfacción, comunicación | CASO / EVENTO DE SERVICIO                 | Caso, interacción, investigación, respuesta, reserva, decisión de compensación y comunicación conservan identidades/granos separados.                                                                     | Instante del contacto, decisión, respuesta o comunicación y vigencia del caso/reserva cuando aplique.                        | VISO, PASS o PULSO según frontera              | ESPECIFICADO |
+| hecho económico, obligación, pago, aplicación, conciliación              | HECHO / REGISTRO ECONÓMICO                | Hecho económico, obligación, pago y aplicación no son equivalentes; cada uno conserva identidad y una conciliación relaciona registros sin fusionarlos.                                                   | Fecha de ocurrencia y, cuando aplique, fecha de reconocimiento, vencimiento, aplicación o conciliación.                      | NUMERA                                         | ESPECIFICADO |
+| presupuesto, forecast, escenario                                         | ARTEFACTO ECONÓMICO VERSIONADO            | Una versión por periodo, escenario y alcance; sus líneas o coordenadas dimensionales no se confunden con hechos reales.                                                                                   | Vigencia/periodo de la versión y fecha de aprobación o generación según contrato.                                            | NUMERA                                         | ESPECIFICADO |
+| campaña, pieza publicada, oportunidad, interacción, publicación          | CASO / ACTIVIDAD / EVENTO DE MARKETING    | Cada actividad conserva identidad y grano propio; interacción, conversión y venta no se colapsan. No se materializa operación analítica actual mientras AURA siga diferida.                               | Timestamp y vigencia del evento/actividad cuando exista una fuente AURA habilitada.                                          | AURA objetivo                                  | BLOQUEADO    |
+| ticket, incidente, problema, cambio tecnológico                          | CASO / EVENTO TI                          | Ticket, incidente, problema y cambio son expedientes/eventos distintos y se relacionan con servicio, aplicación, endpoint o recurso sin crear maestros nuevos.                                            | Instante de reporte, afectación, cambio, restauración y cierre según cada objeto.                                            | VISO / BLOQUE Z                                | ESPECIFICADO |
+| PRINTER como clase de configuración, ASSET como clase de configuración   | PROYECCIÓN REFERENCIAL                    | No constituye hecho ni grano analítico autónomo; referencia identidades propietarias de PRINT-ARC/NEXO.                                                                                                   | NO APLICA como hecho; cualquier evento pertenece al activo, impresión o servicio correspondiente.                            | PRINT-ARC / NEXO                               | NO_APLICA    |
+| métrica, KPI, dashboard, reporte, exportación, snapshot                  | DERIVADO ANALÍTICO / REPRESENTACIÓN       | La definición de métrica conserva identidad/versionado; el resultado se materializa por contexto y corte; dashboard/reporte/exportación son superficies; snapshot es una observación inmutable por corte. | Corte analítico explícito, versión de métrica y contexto; publicación/restatement se gobiernan por tareas propietarias.      | BLOQUE AB sobre fuentes propietarias           | ESPECIFICADO |
+
+**Reconciliación:** 15 familias esperadas; 15 materializadas; 0 faltantes; 0 duplicadas por familia heredada.
+
+---
+
+#### 7. Dimensiones históricas compartidas
+
+Una dimensión compartida conserva la identidad gobernada por `DATA-DOM-002` y `DATA-DOM-003`. Para análisis histórico se resuelve con la versión, relación, jerarquía o vigencia aplicable al hecho o a su fecha empresarial; el valor actual no reemplaza silenciosamente el contexto anterior.
+
+Principios:
+
+- identidad canónica y atributos descriptivos son conceptos distintos;
+- reparenting conserva la identidad del hijo y la vigencia de la relación anterior;
+- una identidad retirada continúa resolviendo hechos históricos;
+- una fusión o separación no redistribuye hechos pasados por aproximación;
+- una dimensión derivada no adquiere autoridad sobre el maestro;
+- cuando la relación histórica no puede demostrarse, el modelo no la reconstruye por semejanza textual; el caso se remite a calidad/reconciliación;
+- los objetos con `Dimensión compartida = NO` no se promueven a ejes analíticos transversales;
+- los objetos AURA mantienen su rol conceptual, pero continúan bloqueados mientras no exista fuente operativa vigente.
+
+|    # | Objeto canónico               | Rol de dimensión | Resolución histórica aprobada                                                                                                                             | Estado         |
+| ---: | ----------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `SI`             | Resolver el alcance organizacional vigente para la fecha empresarial del hecho; una reorganización posterior no recodifica hechos anteriores.             | `ESPECIFICADO` |
+|    2 | `LEGAL_SUBJECT`               | `SI`             | Resolver el sujeto jurídico vigente del hecho o documento; cambios registrales posteriores no sustituyen la atribución histórica.                         | `ESPECIFICADO` |
+|    3 | `BRAND`                       | `SI`             | Resolver la marca vigente asociada al hecho; cambios de nombre o titularidad conservan la identidad y vigencia aplicables.                                | `ESPECIFICADO` |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `SI`             | Resolver el establecimiento vigente cuando el hecho lo requiera; cierres o cambios registrales posteriores no reescriben historia.                        | `ESPECIFICADO` |
+|    5 | `BUSINESS_LINE`               | `SI`             | Resolver la línea de negocio vigente en el contexto del hecho; reorganizaciones posteriores se tratan por vigencia.                                       | `ESPECIFICADO` |
+|    6 | `PHYSICAL_FACILITY`           | `SI`             | Resolver la instalación física vinculada durante la ocurrencia; un traslado posterior no cambia la instalación histórica.                                 | `ESPECIFICADO` |
+|    7 | `OPERATIONAL_SITE`            | `SI`             | Resolver la sede operativa vigente al hecho; aperturas, cierres o traslados posteriores no alteran la sede histórica.                                     | `ESPECIFICADO` |
+|    8 | `ORGANIZATIONAL_AREA`         | `SI`             | Resolver el área vigente y su relación efectiva en la fecha empresarial; reparenting posterior conserva la relación anterior.                             | `ESPECIFICADO` |
+|    9 | `PHYSICAL_ZONE`               | `SI`             | Resolver la zona física y contención vigentes durante el hecho; remodelaciones posteriores no sustituyen el contexto histórico.                           | `ESPECIFICADO` |
+|   10 | `WORKSTATION`                 | `SI`             | Resolver el punto de ejecución vigente al hecho; reasignar dispositivo o área después no cambia el punto histórico.                                       | `ESPECIFICADO` |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `SI`             | Resolver el punto externo vigente durante la operación; expiración posterior no elimina hechos ya vinculados.                                             | `ESPECIFICADO` |
+|   12 | `PERSON_IDENTITY`             | `SI`             | Usar la identidad empresarial canónica vinculada al hecho; nunca reconstruirla por nombre, correo o teléfono actuales.                                    | `ESPECIFICADO` |
+|   13 | `WORKER_PROFILE`              | `SI`             | Resolver el perfil laboral vigente durante el hecho; cambios posteriores de vínculo o perfil no recodifican asistencia u operación pasada.                | `ESPECIFICADO` |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `SI`             | Resolver el vínculo cuya vigencia cubre el hecho; reingresos o vínculos posteriores permanecen identidades separadas.                                     | `ESPECIFICADO` |
+|   15 | `CONTRACTUAL_POSITION`        | `SI`             | Resolver la posición contractual vigente al hecho cuando sea una dimensión autorizada; denominaciones posteriores no sustituyen la histórica.             | `ESPECIFICADO` |
+|   16 | `BASE_ROLE`                   | `NO`             | NO_DIMENSION_COMPARTIDA: no usar como eje analítico compartido; conservarlo únicamente dentro de contratos de autorización cuando corresponda.            | `ESPECIFICADO` |
+|   17 | `OPERATIONAL_ROLE`            | `SI`             | Resolver la función operativa vigente en el contexto del hecho; no inferirla desde cargo o permisos actuales.                                             | `ESPECIFICADO` |
+|   18 | `WORK_ASSIGNMENT`             | `SI`             | Resolver la asignación con vigencia aplicable al hecho; cambios de sede, área o función posteriores no reatribuyen el pasado.                             | `ESPECIFICADO` |
+|   19 | `CUSTOMER_PERSON`             | `SI`             | Usar la identidad cliente canónica vinculada al hecho; fusiones o correcciones posteriores requieren trazabilidad y no reasignación silenciosa.           | `ESPECIFICADO` |
+|   20 | `CUSTOMER_CONTACT`            | `NO`             | NO_DIMENSION_COMPARTIDA: correo o teléfono no segmentan transversalmente como identidad; solo pueden intervenir bajo finalidad y autorización explícitas. | `ESPECIFICADO` |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `SI`             | Resolver la relación cliente-marca/alcance vigente al hecho; no asumir que una relación actual existía históricamente.                                    | `ESPECIFICADO` |
+|   22 | `CUSTOMER_PROFILE`            | `SI`             | Resolver únicamente el perfil vigente y autorizado para el hecho; no reconstruir datos sensibles desde el perfil actual.                                  | `ESPECIFICADO` |
+|   23 | `CUSTOMER_PREFERENCE`         | `SI`             | Resolver la preferencia vigente cuando el análisis la requiera y esté autorizado; nunca convertir preferencia actual en hecho histórico.                  | `ESPECIFICADO` |
+|   24 | `LOYALTY_ACCOUNT`             | `SI`             | Resolver la cuenta de fidelización vinculada al movimiento; el saldo actual no sustituye el ledger histórico.                                             | `ESPECIFICADO` |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `SI`             | Resolver la versión de regla vigente aplicada al movimiento; reglas posteriores no recalculan movimientos históricos sin restatement.                     | `ESPECIFICADO` |
+|   26 | `PRODUCTO_MAESTRO`            | `SI`             | Usar la identidad de producto referenciada por el hecho; renombres o reclasificaciones posteriores no reemplazan su identidad histórica.                  | `ESPECIFICADO` |
+|   27 | `VARIANTE`                    | `SI`             | Resolver la variante referenciada por la línea o ejecución; cambios posteriores de configuración no colapsan variantes históricas.                        | `ESPECIFICADO` |
+|   28 | `PRESENTACION`                | `SI`             | Resolver la presentación realmente aplicada en compra, stock, remisión, producción o venta; una etiqueta actual no sustituye la histórica.                | `ESPECIFICADO` |
+|   29 | `UNIDAD_DE_MEDIDA`            | `SI`             | Resolver la unidad efectiva del hecho y su versión/convención aplicable; no convertir cantidades históricas por inferencia.                               | `ESPECIFICADO` |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `SI`             | Resolver la clasificación vigente del maestro al corte histórico cuando sea necesaria; cambios posteriores deben quedar distinguibles.                    | `ESPECIFICADO` |
+|   31 | `TAXONOMIA_INVENTARIO`        | `SI`             | Resolver la clasificación de inventario vigente en el hecho o corte; cambios posteriores no reetiquetan movimientos pasados silenciosamente.              | `ESPECIFICADO` |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `SI`             | Resolver la taxonomía operacional vigente cuando segmenta un hecho; no usar la clasificación actual como sustituto automático.                            | `ESPECIFICADO` |
+|   33 | `LOC`                         | `SI`             | Resolver el LOC origen/destino/observado del hecho con su identidad histórica; reubicaciones posteriores no cambian movimientos anteriores.               | `ESPECIFICADO` |
+|   34 | `ACTIVO_FISICO`               | `SI`             | Resolver el activo canónico y su relación vigente durante el hecho; cambios posteriores de custodia o ubicación no reatribuyen eventos previos.           | `ESPECIFICADO` |
+|   35 | `CLASE_DE_ACTIVO`             | `SI`             | Resolver la clase vigente cuando sea necesaria para análisis histórico; reclasificaciones posteriores deben conservar vigencia.                           | `ESPECIFICADO` |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `NO`             | NO_DIMENSION_COMPARTIDA: conservar la versión de especificación como contexto/evidencia del hecho cuando aplique, sin promoverla a eje compartido.        | `ESPECIFICADO` |
+|   37 | `PROVEEDOR`                   | `SI`             | Resolver el proveedor canónico del hecho contractual o transaccional; cambios posteriores de nombre o condición no alteran compras pasadas.               | `ESPECIFICADO` |
+|   38 | `CONTACTO_PROVEEDOR`          | `NO`             | NO_DIMENSION_COMPARTIDA: el contacto permanece relación operativa y no identidad analítica del proveedor.                                                 | `ESPECIFICADO` |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `SI`             | Resolver la relación vigente al hecho de abastecimiento cuando sea necesaria; no inferir disponibilidad histórica desde la relación actual.               | `ESPECIFICADO` |
+|   40 | `CONDICION_COMERCIAL`         | `SI`             | Resolver la versión de condición comercial aplicada al hecho; la condición vigente hoy no modifica órdenes o recepciones anteriores.                      | `ESPECIFICADO` |
+|   41 | `TAXONOMIA_COMPRA`            | `SI`             | Resolver la clasificación de compra vigente cuando segmenta el hecho; cambios posteriores se manejan por vigencia.                                        | `ESPECIFICADO` |
+|   42 | `RECETA`                      | `SI`             | Resolver la identidad de receta y la versión realmente usada por la ejecución; una versión actual no recalcula lotes históricos.                          | `ESPECIFICADO` |
+|   43 | `FAMILIA_PRODUCTIVA`          | `SI`             | Resolver la familia productiva vigente para el contexto histórico cuando sea usada como dimensión.                                                        | `ESPECIFICADO` |
+|   44 | `RUTA_PRODUCTIVA`             | `SI`             | Resolver la ruta productiva y versión aplicables a la ejecución; cambios posteriores no sustituyen la ruta histórica.                                     | `ESPECIFICADO` |
+|   45 | `RECURSO_PRODUCTIVO`          | `SI`             | Resolver el recurso funcional utilizado en la ejecución; cambios posteriores de activo asociado no reatribuyen el hecho.                                  | `ESPECIFICADO` |
+|   46 | `COMMERCIAL_CHANNEL`          | `SI`             | Resolver el canal comercial registrado en el hecho; cambios posteriores de catálogo no recodifican ventas pasadas.                                        | `ESPECIFICADO` |
+|   47 | `CATEGORIA_COMERCIAL`         | `SI`             | Resolver la categoría comercial vigente cuando se requiera comparación histórica; no sustituirla por la clasificación actual sin vigencia.                | `ESPECIFICADO` |
+|   48 | `OFERTA_COMERCIAL`            | `SI`             | Resolver la oferta/versionado aplicado al pedido o venta; precio y disponibilidad actuales no sustituyen el snapshot aplicado.                            | `ESPECIFICADO` |
+|   49 | `CENTRO_DE_COSTO`             | `SI`             | Resolver el centro de costo atribuido al hecho económico y su vigencia; reorganizaciones posteriores no redistribuyen automáticamente historia.           | `ESPECIFICADO` |
+|   50 | `MONEDA`                      | `SI`             | Resolver la moneda registrada por el hecho; conversiones requieren regla/tasa explícita y no sustituyen el monto original.                                | `ESPECIFICADO` |
+|   51 | `PERIODO_ECONOMICO`           | `SI`             | Resolver el periodo económico al que pertenece el hecho según su regla de reconocimiento; no inferirlo solo desde fecha de carga.                         | `ESPECIFICADO` |
+|   52 | `PERIODO_CONTABLE`            | `SI`             | Resolver el periodo contable aplicable cuando corresponda; cierres o reaperturas posteriores conservan su historia.                                       | `ESPECIFICADO` |
+|   53 | `PERIODO_FISCAL`              | `SI`             | Resolver el periodo fiscal aplicable según autoridad vigente; no equipararlo al periodo económico o contable.                                             | `ESPECIFICADO` |
+|   54 | `CLASIFICACION_ECONOMICA`     | `SI`             | Resolver la clasificación económica vigente del hecho; reclasificaciones posteriores requieren trazabilidad explícita.                                    | `ESPECIFICADO` |
+|   55 | `PERFIL_DE_MARCA`             | `SI`             | BLOQUEADO_AURA: rol de dimensión permitido por catálogo, pero sin materialización analítica operativa mientras AURA no sea fuente vigente.                | `BLOQUEADO`    |
+|   56 | `AUDIENCIA`                   | `SI`             | BLOQUEADO_AURA: rol analítico permitido conceptualmente, sujeto a finalidad/consentimiento; no materializar mientras AURA permanezca bloqueada.           | `BLOQUEADO`    |
+|   57 | `ACTIVO_DE_MARCA`             | `SI`             | BLOQUEADO_AURA: puede segmentar actividad futura por identidad/vigencia, pero no se declara fuente operativa vigente.                                     | `BLOQUEADO`    |
+|   58 | `ENDPOINT`                    | `SI`             | Resolver el endpoint técnico vigente durante el evento TI; cambios posteriores de activo, custodio o configuración no sustituyen el contexto histórico.   | `ESPECIFICADO` |
+|   59 | `SHARED_DEVICE`               | `SI`             | Resolver el dispositivo compartido vigente en el evento autorizado; cambio de actor o asignación posterior no reescribe hechos.                           | `ESPECIFICADO` |
+|   60 | `NETWORK_RESOURCE`            | `SI`             | Resolver el recurso de red canónico relacionado al evento; IP, MAC o SSID actuales no sustituyen identidad histórica.                                     | `ESPECIFICADO` |
+|   61 | `APPLICATION`                 | `SI`             | Resolver la aplicación canónica y contexto vigente del evento; repositorio, URL o despliegue posterior no cambian la identidad analítica.                 | `ESPECIFICADO` |
+|   62 | `TECH_SERVICE`                | `SI`             | Resolver la identidad TI-SERVICE vigente asociada al evento; cambios de implementación no renumeran ni reatribuyen hechos históricos.                     | `ESPECIFICADO` |
+
+**Reconciliación del inventario dimensional:**
+
+| Control                                                              | Resultado |
+| -------------------------------------------------------------------- | --------: |
+| Objetos esperados                                                    |    **62** |
+| Objetos materializados                                               |    **62** |
+| Identificadores canónicos únicos                                     |    **62** |
+| Faltantes                                                            |     **0** |
+| Duplicados                                                           |     **0** |
+| Dimensión compartida = SI                                            |    **58** |
+| Dimensión compartida = NO                                            |     **4** |
+| Objetos AURA bloqueados dentro de los 58 habilitados conceptualmente |     **3** |
+
+---
+
+#### 8. Calendarios y periodos
+
+El modelo no usa un calendario universal para todos los hechos. Cada hecho declara la regla temporal que le corresponde y conserva las referencias de periodo necesarias.
+
+| Coordenada                      | Tratamiento                                                                                                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| periodo operativo               | Coordenada del proceso que agrupa trabajo o servicio según su propia fecha empresarial, ventana o jornada. No crea un nuevo maestro en esta tarea.          |
+| `PERIODO_ECONOMICO`             | Referencia NUMERA para reconocimiento y análisis económico. No equivale a jornada operativa.                                                                |
+| `PERIODO_CONTABLE`              | Referencia contable aplicable cuando exista autoridad y alcance; puede tener cierre/reapertura propios.                                                     |
+| `PERIODO_FISCAL`                | Referencia fiscal bajo autoridad aplicable; no se deduce del periodo económico.                                                                             |
+| calendario de turno             | La fecha empresarial del turno y su zona horaria gobiernan la asignación laboral; un turno que cruza medianoche no se parte por inferencia analítica.       |
+| calendario comercial            | Pedido, venta, pago y caja conservan sus propios instantes y pueden compartir una jornada sin convertirse en el mismo hecho.                                |
+| calendario logístico/productivo | Producción, viaje, parada, recepción y movimiento conservan sus instantes e intervalos naturales; el cierre de una operación no refecha eventos anteriores. |
+
+Una comparación que use periodos diferentes deberá declarar el mapeo de periodo y justificar por qué son comparables.
+
+---
+
+#### 9. Snapshots y estados observados
+
+Se separan obligatoriamente:
+
+```text
+VISTA EN VIVO
+≠ ESTADO OBSERVADO A UN CORTE
+≠ SNAPSHOT ANALÍTICO
+≠ SNAPSHOT PUBLICADO / REPORTE OFICIAL
+≠ RESTATEMENT
+```
+
+Reglas:
+
+1. un snapshot declara corte, contexto, versión de métricas, dimensiones, filtros, unidad/moneda y estado de calidad disponible;
+2. el snapshot es inmutable respecto de lo que fue publicado u observado en ese corte;
+3. una corrección posterior de la fuente no modifica silenciosamente un snapshot anterior;
+4. `DATA-DOM-008` gobierna publicación, reporte oficial, exportación, suscripción y snapshot oficial;
+5. `DATA-DOM-017` gobierna restatements, correcciones históricas y reproducibilidad;
+6. `DATA-DOM-006` gobierna llegada tardía, backfill y reconciliación de datos que pueden producir una nueva versión/reconstrucción;
+7. un snapshot de existencia, saldo o estado no reemplaza el ledger, movimiento o evento fuente;
+8. un dashboard o exportación conserva referencia al corte y a la versión semántica, pero no se convierte en fuente de verdad.
+
+---
+
+#### 10. Contrato de comparabilidad histórica
+
+Dos resultados solo son comparables directamente cuando las coordenadas materiales siguientes son iguales o existe una transformación explícita, trazable y aprobada para hacerlas equivalentes.
+
+| Coordenada                     | Condición mínima de comparabilidad                                                     | Tratamiento cuando difiere                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| definición de métrica          | misma `metric_key` y misma versión semántica                                           | usar versiones separadas o regla de puente aprobada; nunca ocultar cambio de significado        |
+| grano                          | misma unidad analítica antes de agregar                                                | agregar a un grano común declarado; no unir detalle con agregado multiplicando filas            |
+| población                      | mismas inclusiones, exclusiones y estados computables                                  | declarar cambio de cobertura o recalcular población comparable                                  |
+| corte                          | cortes equivalentes para el objetivo de comparación                                    | señalar parcialidad o usar un corte comparable                                                  |
+| calendario y fecha empresarial | misma regla de asignación temporal                                                     | mapear periodos de forma explícita; no desplazar eventos por fecha de carga                     |
+| zona horaria                   | misma zona o conversión inequívoca                                                     | convertir instantes preservando la zona original y documentar el cambio                         |
+| dimensiones                    | mismas identidades y relaciones históricas aplicables                                  | resolver dimensiones AS OF hecho; no usar jerarquía actual para periodos anteriores por defecto |
+| catálogo y jerarquía           | vigencias comparables o reexpresión explícita                                          | mantener clasificación histórica o declarar una vista reexpresada separada                      |
+| unidad                         | misma unidad o conversión gobernada                                                    | conservar unidad original y conversión explícita                                                |
+| moneda                         | misma moneda o tasa/regla explícita                                                    | conservar monto/moneda original y declarar tasa, fecha y método de conversión                   |
+| completitud del periodo        | ambos completos o ambos comparables en avance                                          | marcar periodo parcial y no equipararlo a cierre completo                                       |
+| sedes/alcances activos         | población territorial comparable                                                       | declarar aperturas/cierres/cambios de alcance y, si procede, usar conjunto comparable           |
+| datos tardíos/correcciones     | mismo estado de incorporación/restatement                                              | señalar versión o restatement; no sustituir el resultado previo en silencio                     |
+| modo económico                 | real, presupuestado, pronosticado, simulado, propuesto o publicado claramente separado | no comparar como si fueran hechos del mismo tipo sin declarar el modo                           |
+
+Comparar no significa forzar equivalencia. Cuando una diferencia material no puede resolverse sin alterar el significado, los resultados se presentan como no directamente comparables y se conserva la causa.
+
+---
+
+#### 11. Materialización temporal de las 14 métricas de asistencia
+
+El grano atómico de la versión 1 del registro inicial se fija en **trabajador × turno programado** para la consolidación principal. Sesiones, marcaciones, descansos y eventos de salida conservan granos propios y se correlacionan con el turno; no se convierten en filas de turno por simple coincidencia de nombre o fecha.
+
+La implementación observada primero vincula una sesión por `shift_id` y, cuando no existe vínculo explícito, utiliza una ventana temporal controlada. Esta tarea define la semántica analítica y no cambia ese mecanismo técnico.
+
+| `metric_key`        | Grano de cálculo v1                                     | Semántica temporal / corte                                                                                                | Dimensiones permitidas v1            | Estado         |
+| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | -------------- |
+| `scheduledShifts`   | trabajador × turno programado                           | fecha empresarial del turno; intervalo programado; corte del reporte                                                      | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `attendedShifts`    | trabajador × turno programado                           | mismo turno base; presencia determinada por check-in asociado antes/dentro del corte                                      | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `restDayCount`      | trabajador × turno programado clasificado como descanso | fecha empresarial y clasificación vigente del turno                                                                       | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `lateCount`         | trabajador × turno programado                           | check-in comparado con inicio programado + gracia aplicable en la zona horaria del contexto                               | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `noShowCount`       | trabajador × turno programado                           | estado evaluado al corte: solo computa cuando el fin programado ya ocurrió y no existe sesión asociada                    | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `openCount`         | trabajador × turno programado                           | estado de sesión AS OF corte; una sesión abierta hoy no se proyecta retrospectivamente a otro corte                       | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `missingCloseCount` | trabajador × turno programado                           | estado AS OF corte + condición de fin programado vencido; esta semántica permanece bloqueada hasta alinear implementación | sede; trabajador autorizado; periodo | `BLOQUEADO`    |
+| `autoCloseCount`    | trabajador × turno programado                           | cierre de sesión asociado al turno y mecanismo de autocierre observado en el intervalo/corte                              | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `departureCount`    | trabajador × turno programado                           | evento de salida correlacionado dentro de la sesión temporal asociada al turno                                            | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `scheduledMinutes`  | trabajador × turno programado                           | duración programada neta del turno en zona horaria aplicable, descontando descanso programado                             | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `netMinutes`        | trabajador × turno programado                           | intervalo de sesión observado menos descansos superpuestos válidos; no se reconstruye con estados actuales                | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `incidentCount`     | trabajador × turno programado                           | evaluación al corte de las señales tardanza/ausencia/abierto/autocierre/salida; máximo una incidencia agregada por turno  | sede; trabajador autorizado; periodo | `ESPECIFICADO` |
+| `attendanceRate`    | agregado de turnos programados computables              | AS OF corte; recomputar numerador y denominador sobre la población comparable; no promediar tasas                         | sede; trabajador autorizado; periodo | `BLOQUEADO`    |
+| `punctualityRate`   | agregado de turnos asistidos                            | AS OF corte; recomputar numerador y denominador sobre la población comparable; no promediar tasas                         | sede; trabajador autorizado; periodo | `BLOQUEADO`    |
+
+**Reconciliación del registro inicial:** 14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas.
+
+Reglas específicas:
+
+- `attendanceRate` y `punctualityRate` se recalculan a partir de sus numeradores y denominadores sobre la población del nuevo contexto; no se promedian tasas de trabajador o sede;
+- `noShowCount`, `openCount` y `missingCloseCount` son estados dependientes del corte; consultar otro corte puede producir un estado distinto sin que el hecho original haya sido reescrito;
+- `lateCount` conserva la gracia aplicable al turno/contexto para reproducibilidad;
+- `netMinutes` usa el intervalo observado de sesión y los descansos superpuestos válidos, no el estado actual del trabajador;
+- la zona horaria predeterminada observada en la implementación es `America/Bogota`, pero el contexto debe conservar la zona efectiva usada;
+- `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen `BLOQUEADO` para certificación por divergencias ya identificadas en `DATA-DOM-004`; esta tarea no altera el código ni cambia ese estado.
+
+---
+
+#### 12. Fronteras con tareas posteriores y responsables exactos
+
+| Decisión o implementación fuera de esta tarea                                                  | Tarea propietaria               | Condición de salida                                                  |
+| ---------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------- |
+| contratos de recopilación, ingestión, transformación, datos tardíos, backfill y reconciliación | `DATA-DOM-006`                  | antes de mover o reconstruir datos analíticos                        |
+| calidad, completitud, unicidad, frescura, validez, integridad y certificación                  | `DATA-DOM-007`                  | antes de declarar un resultado certificado                           |
+| publicación de reportes, tableros, exportaciones, alertas, suscripciones y snapshots oficiales | `DATA-DOM-008`                  | antes de publicar artefactos oficiales                               |
+| fórmulas y familias analíticas de ventas/demanda/precios/promociones/canales                   | `DATA-DOM-009`                  | antes de certificar analítica comercial                              |
+| fórmulas y familias analíticas de inventario/abastecimiento/proveedores/logística              | `DATA-DOM-010`                  | antes de certificar analítica de abastecimiento                      |
+| fórmulas y familias analíticas de producción/rendimiento/capacidad/merma/calidad               | `DATA-DOM-011`                  | antes de certificar analítica productiva                             |
+| fórmulas y familias analíticas de servicio/clientes/fidelización/reputación/experiencia        | `DATA-DOM-012`                  | antes de certificar analítica de servicio                            |
+| fórmulas y familias analíticas de costos/rentabilidad/liquidez/presupuesto/escenarios          | `DATA-DOM-013`                  | antes de certificar analítica económico-financiera                   |
+| objetivos, líneas base, metas, drivers y guardrails                                            | `DATA-DOM-015`                  | antes de activar seguimiento de objetivos                            |
+| restatements, correcciones históricas y reproducibilidad                                       | `DATA-DOM-017`                  | antes de reexpresar resultados publicados                            |
+| protección de datos/analítica por dominio, entidad, territorio y finalidad                     | `DATA-AUTH-001`                 | antes de exponer detalle sensible                                    |
+| protección de poblaciones pequeñas, comparaciones, exportaciones y drill-down                  | `DATA-AUTH-002`                 | antes de habilitar detalle o comparación sensible                    |
+| segregación entre definición, certificación, publicación y administración                      | `DATA-AUTH-003`                 | antes de certificar/publicar métricas                                |
+| materialización técnica de capa semántica, modelos, consultas, caché y snapshots               | `DATA-INT-002`                  | antes de crear modelos físicos o integraciones BI                    |
+| crosswalks y reconciliación de identidades externas                                            | `DATA-INT-003`                  | antes de reconciliar claves externas con dimensiones históricas      |
+| activación de hechos/dimensiones AURA                                                          | `AURA-AUD-010` y `AURA-AUD-011` | solo si la continuidad/reemplazo de AURA queda aprobada y registrada |
+
+No queda una decisión temporal o dimensional diferida sin tarea propietaria exacta.
+
+---
+
+#### 13. Cobertura de prueba canónica preexistente
+
+El requisito vigente `TREQ-DATA-002` ya protege el registro de métricas con granularidad, dimensiones, unidad, moneda, zona horaria, calendario, versión, reglas de comparación y determinismo de resultado. El requisito vigente `TREQ-DATA-003` ya protege tiempo del hecho, tiempo de carga, granularidad, datos tardíos, backfills, correcciones, reconciliación y linaje, y asigna `DATA-DOM-005` entre sus tareas responsables.
+
+La presente tarea materializa la semántica documental prevista por esos requisitos sin cambiar su regla, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las reglas de granularidad, tiempo, dimensiones históricas, snapshots y comparabilidad materializadas aquí ya están cubiertas por requisitos canónicos DATA vigentes que asignan esta tarea entre sus responsables. La tarea no introduce comportamiento ejecutable nuevo ni modifica fórmula, ingestión, calidad, autorización, migración, publicación o integración física.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 14. Criterios de aceptación
+
+1. las 15 familias heredadas de hechos/eventos/representaciones reciben clasificación, grano natural, tiempo principal, fuente y estado;
+2. se materializan 15 de 15 familias, con 0 faltantes y 0 duplicadas;
+3. los 62 objetos del catálogo maestro tienen decisión explícita de uso histórico como dimensión;
+4. se preservan exactamente 58 objetos habilitados como dimensión compartida y 4 no habilitados;
+5. los tres objetos AURA permanecen `BLOQUEADO` y no adquieren fuente operativa;
+6. identidad actual, etiqueta actual o jerarquía actual no sustituyen automáticamente la identidad/relación vigente cuando ocurrió el hecho;
+7. reparenting, retiro, fusión y separación conservan historia y no redistribuyen hechos por aproximación;
+8. ocurrencia, fecha empresarial, recepción, procesamiento, última corrección y corte analítico quedan separados;
+9. periodo operativo, `PERIODO_ECONOMICO`, `PERIODO_CONTABLE` y `PERIODO_FISCAL` no se tratan como equivalentes;
+10. un hecho tardío conserva su ocurrencia original y no se mueve de periodo silenciosamente;
+11. cada snapshot queda definido como derivado inmutable por corte/contexto y no como fuente de verdad;
+12. una corrección posterior no reemplaza silenciosamente un snapshot publicado;
+13. la comparabilidad exige coherencia de versión, grano, población, corte, calendario, zona horaria, dimensiones, unidad/moneda, cobertura y estado de restatement;
+14. los 14 `metric_key` de asistencia conservan identidad v1 y reciben grano/semántica temporal explícitos;
+15. el grano base de consolidación de asistencia queda definido como trabajador × turno programado, manteniendo sesiones/eventos como granos relacionados separados;
+16. `noShowCount`, `openCount` y `missingCloseCount` quedan explícitamente definidos AS OF corte;
+17. `attendanceRate` y `punctualityRate` se agregan recomputando numerador y denominador, no promediando tasas;
+18. las tres métricas bloqueadas en `DATA-DOM-004` permanecen bloqueadas y no se declara certificación;
+19. no se crean fórmulas nuevas de ventas, inventario, producción, servicio o finanzas;
+20. no se modifica código, Supabase, datos, migraciones, backfills, dashboards, reportes ni snapshots oficiales;
+21. se crean 0 requisitos de prueba y se modifican 0;
+22. la continuidad queda exclusivamente en `DATA-DOM-006` como siguiente tarea reservada.
+
+---
+
+#### 15. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación`
+
+
 ### [ ] DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
 ### [ ] DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
 ### [ ] DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
