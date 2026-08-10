@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **657** |
+| Tareas aprobadas | **658** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **937** |
+| Tareas no iniciadas | **936** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.22% (657/1594)** |
+| Porcentaje de completamiento | **41.28% (658/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre** |
-| Tarea actual | **INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado** |
+| Última tarea aprobada | **INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado** |
+| Tarea actual | **INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas** |
+| Siguiente tarea | **INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 81 de 157 aprobadas; INFO-AUTH-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 82 de 157 aprobadas; INFO-AUTH-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-013` — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre |
-| Tarea actual | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado — **NO INICIADA** |
-| Siguiente tarea | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas |
+| Última aprobada | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado |
+| Tarea actual | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas — **NO INICIADA** |
+| Siguiente tarea | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 81 DE 157 APROBADAS — ACTUAL INFO-AUTH-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 82 DE 157 APROBADAS — ACTUAL INFO-AUTH-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
-        ↓
-TAREA ACTUAL
 INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 81 de 157 tareas aprobadas
+CARRIL NEXO — 82 de 157 tareas aprobadas
 ```
