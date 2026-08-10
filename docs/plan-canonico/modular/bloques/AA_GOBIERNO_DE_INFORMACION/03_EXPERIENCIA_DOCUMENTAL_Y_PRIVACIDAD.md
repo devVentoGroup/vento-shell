@@ -733,7 +733,870 @@ SIGUIENTE TAREA RESERVADA
 `INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia`
 
 
-### [ ] INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia
+### ✅ INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas` — APROBADA
+**Tarea siguiente:** `INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de biblioteca documental transversal, búsqueda autorizada, navegación por expediente, consulta de versiones y lectura inequívoca de vigencia sobre fuentes propietarias federadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md`
+**Fase:** exclusivamente documental
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, rutas, componentes, tablas, índices, buckets, objetos, Storage, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, permisos, contratos técnicos publicados ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar la experiencia documental que permite a un actor autorizado localizar información de VENTO, reconocer a qué proceso y expediente pertenece, distinguir identidad lógica de representación física, consultar la versión aplicable y comprender su vigencia sin crear una biblioteca maestra paralela a las aplicaciones propietarias.
+
+La experiencia consume los contratos aprobados de taxonomía, ciclo documental, metadatos, localización, búsqueda y autorización. La interfaz no decide autoridad, no reclasifica documentos y no convierte un índice, una ruta, una carpeta, un bucket, una copia o una representación técnica en fuente de verdad empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa cinco contratos de experiencia coordinados:
+
+1. `INFO-DOCUMENT-LIBRARY-UX-CONTRACT-001`: composición y comportamiento de la biblioteca documental transversal.
+2. `INFO-DOCUMENT-AUTHORIZED-SEARCH-UX-CONTRACT-001`: interacción de búsqueda, filtros, resultados, conteos y estados sin revelar recursos fuera del alcance autorizado.
+3. `INFO-DOCUMENT-DOSSIER-UX-CONTRACT-001`: navegación por expediente y relaciones documentales sin transferir propiedad funcional.
+4. `INFO-DOCUMENT-VERSION-VIGENCY-UX-CONTRACT-001`: presentación conjunta pero no fusionada de versión, estado documental, publicación y vigencia.
+5. `INFO-DOCUMENT-LIBRARY-DOCCTX-MATRIX-001`: decisión explícita para las 332 identidades documentales heredadas.
+
+Balance materializado:
+
+| Control                                           | Resultado |
+| ------------------------------------------------- | --------: |
+| Procesos `VPROC-*` heredados                      |    **69** |
+| Identidades `DOCCTX-*` esperadas                  |   **332** |
+| Identidades `DOCCTX-*` materializadas             |   **332** |
+| Identidades faltantes                             |     **0** |
+| Identidades duplicadas                            |     **0** |
+| Aplicaciones propietarias funcionales preservadas |     **9** |
+| Reclasificaciones                                 |     **0** |
+| Cambios de propietaria funcional                  |     **0** |
+| Cambios físicos                                   |     **0** |
+| Requisitos de prueba nuevos o modificados         |     **0** |
+
+---
+
+#### 3. Decisión de arquitectura de experiencia
+
+La biblioteca se define como una **proyección autorizada y reconstruible** sobre fuentes propietarias, no como un repositorio documental central.
+
+```text
+FUENTE PROPIETARIA
+→ identidad documental y recurso empresarial
+→ metadatos gobernados
+→ proyección de búsqueda autorizable
+→ biblioteca documental
+→ expediente / detalle / versión / vigencia
+→ apertura controlada de la representación cuando la acción esté autorizada
+```
+
+Fronteras obligatorias:
+
+```text
+BIBLIOTECA ≠ REPOSITORIO MAESTRO
+BIBLIOTECA ≠ BUCKET
+BIBLIOTECA ≠ CARPETA
+BIBLIOTECA ≠ ÍNDICE COMO FUENTE DE VERDAD
+EXPEDIENTE ≠ PROPIETARIA FUNCIONAL
+DOCUMENTO ≠ REPRESENTACIÓN
+VERSIÓN ≠ VIGENCIA
+APROBACIÓN ≠ VIGENCIA
+PUBLICACIÓN ≠ VIGENCIA
+LOCALIZAR ≠ AUTORIZAR CONTENIDO
+VER METADATOS ≠ OBTENER ARCHIVO
+```
+
+Las aplicaciones propietarias conservan significado, corrección y autoridad sobre sus hechos empresariales. Supabase/Storage conserva persistencia técnica cuando corresponda. VISO puede actuar como superficie administrativa de convergencia para gobierno y cumplimiento, mientras ANIMA, PASS y las demás aplicaciones mantienen las entradas contextuales que ya les correspondan. Ninguna superficie adquiere propiedad sobre el documento por presentarlo.
+
+---
+
+#### 4. Universo y entradas heredadas
+
+Se preservan sin redefinición:
+
+- las 69 identidades de proceso `VPROC-*`;
+- las 332 identidades contextuales `DOCCTX-*`;
+- las nueve aplicaciones propietarias funcionales;
+- la taxonomía de documento, registro, evidencia, serie, expediente, original, copia y representación;
+- la escala `S0_PUBLIC`, `S1_INTERNAL`, `S2_CONFIDENTIAL`, `S3_RESTRICTED`, `S4_HIGHLY_RESTRICTED`;
+- `INFO_DOCUMENT_LIFECYCLE_V1`, con versionado `NON_DESTRUCTIVE` y vigencia `EFFECTIVE_TIME` para las 332 identidades;
+- los estados de preparación `RECEIVED`, `RECORDED`, `DRAFT`, `IN_REVIEW`, `REJECTED`, `APPROVED`;
+- los estados de vigencia `NOT_EFFECTIVE`, `CURRENT`, `SUPERSEDED`, `EXPIRED`, `WITHDRAWN`, `ANNULLED`;
+- los estados de publicación `NOT_PUBLISHED`, `PUBLISHED`, `UNPUBLISHED`;
+- los contratos de metadatos, vínculo de recurso, localización, almacenamiento y búsqueda autorizada de INFO-DOM;
+- la autorización fail closed por clasificación, finalidad, identidad, relación, recurso, territorio, estado, permiso, política de campos y denegaciones;
+- la independencia de las capacidades de consulta, revelación, obtención de archivo, impresión, exportación y compartición.
+
+La tarea no modifica ninguna de estas decisiones; define cómo se presentan y navegan de manera comprensible.
+
+---
+
+#### 5. Contrato `INFO-DOCUMENT-LIBRARY-UX-CONTRACT-001`
+
+La biblioteca tendrá cinco regiones lógicas persistentes en la experiencia:
+
+| Región                 | Objetivo                                              | Contenido mínimo                                                                                                                                   |
+| ---------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| contexto               | dejar claro desde qué autoridad y alcance se consulta | actor efectivo cuando proceda, alcance autorizado, aplicación o proceso, fecha de corte y estado de actualización                                  |
+| búsqueda               | localizar sin ampliar autoridad                       | término, filtros autorizados, orden estable y limpieza explícita                                                                                   |
+| resultados             | comparar candidatos autorizados                       | identidad legible, tipo documental, proceso, relación de expediente, versión aplicable, vigencia y propietaria funcional cuando sea visible        |
+| detalle                | interpretar un elemento sin perder contexto           | identidad lógica, clasificación proyectable, fuente propietaria, estado, versión, vigencia, publicación, relaciones y representaciones autorizadas |
+| navegación relacionada | recorrer expediente, versiones y recursos             | expediente, serie, documento relacionado, historial de versiones y salto a fuente propietaria según autorización                                   |
+
+La biblioteca debe permitir volver del detalle a los mismos resultados sin perder consulta, filtros, orden ni selección. Abrir un elemento no cambia el alcance autorizado ni transporta una decisión de autorización a otro recurso.
+
+---
+
+#### 6. Entrada y contexto visible
+
+Antes de mostrar resultados, la superficie deberá poder presentar el contexto efectivo que resulte seguro revelar. Como mínimo deberá existir una indicación inequívoca cuando la consulta esté limitada por proceso, expediente, recurso, territorio, periodo o finalidad.
+
+Reglas:
+
+1. un selector visual no fabrica contexto ni autorización;
+2. cambiar un filtro que afecte recurso, finalidad, relación o territorio obliga a una nueva resolución de alcance;
+3. una consulta guardada conserva criterios, no autoridad;
+4. restaurar una sesión o volver desde historial revalida autorización y estado antes de reconstruir resultados;
+5. una fecha de corte visible distingue una proyección actual de una respuesta desactualizada o parcial.
+
+---
+
+#### 7. Contrato `INFO-DOCUMENT-AUTHORIZED-SEARCH-UX-CONTRACT-001`
+
+La experiencia conserva el pipeline canónico de búsqueda:
+
+```text
+actor + finalidad + acción + alcance
+→ proyección de índice autorizable
+→ candidatos dentro del alcance permitido
+→ revalidación de autorización y estado vigente
+→ proyección mínima de metadatos
+→ acceso al contenido mediante su control propio
+```
+
+La interfaz nunca implementará el patrón inverso de buscar globalmente y ocultar después en el cliente.
+
+---
+
+#### 8. Campo de búsqueda
+
+El campo de búsqueda:
+
+- acepta únicamente criterios que la proyección autorizable pueda evaluar;
+- no promete búsqueda de contenido completo cuando la fuente o índice autorizado no lo soporte;
+- no muestra sugerencias, autocompletados, fragmentos o historial que revelen nombres o términos de recursos no autorizados;
+- conserva el término visible al cambiar filtros compatibles;
+- comunica cuándo una consulta se limita a metadatos gobernados;
+- evita interpretar un identificador conocido, una ruta o un localizador como permiso para abrir el recurso.
+
+Los términos de búsqueda no se convierten en finalidad empresarial ni en justificación de acceso.
+
+---
+
+#### 9. Filtros y facetas
+
+La biblioteca puede proyectar, cuando estén autorizados y disponibles, filtros por:
+
+- proceso;
+- aplicación propietaria;
+- tipo documental o categoría taxonómica;
+- expediente o serie;
+- estado de preparación;
+- estado de vigencia;
+- estado de publicación;
+- periodo o fecha efectiva;
+- relación empresarial resoluble;
+- clasificación únicamente cuando revelar esa clasificación no exponga información fuera del alcance.
+
+Reglas de facetas:
+
+1. un valor de filtro solo aparece si su existencia es autorizable para el actor dentro del universo consultado;
+2. los conteos se calculan después de aplicar autorización y minimización;
+3. cero resultados no permite inferir si existen elementos fuera del alcance;
+4. combinar filtros nunca amplía el universo base;
+5. limpiar filtros restaura únicamente el alcance autorizado inicial, no un universo global.
+
+---
+
+#### 10. Resultado de búsqueda
+
+Cada fila o tarjeta de resultado debe poder diferenciar, según disponibilidad y autorización:
+
+| Campo                 | Regla de experiencia                                                              |
+| --------------------- | --------------------------------------------------------------------------------- |
+| identidad legible     | nombre o título mínimo permitido; nunca una ruta técnica como identidad principal |
+| tipo                  | taxonomía documental vigente                                                      |
+| proceso               | `VPROC-*` o denominación legible asociada                                         |
+| expediente/serie      | relación, no carpeta física                                                       |
+| propietaria funcional | aplicación que conserva autoridad empresarial                                     |
+| versión               | versión concreta presentada                                                       |
+| vigencia              | estado efectivo de esa versión                                                    |
+| publicación           | estado separado de vigencia                                                       |
+| fecha efectiva        | fecha o intervalo que explica aplicabilidad cuando exista                         |
+| clasificación         | solo la proyección autorizada                                                     |
+| actualización         | fecha de corte o evidencia de frescura cuando aplique                             |
+
+Un resultado no mostrará iconos ambiguos para mezclar aprobado, publicado y vigente. Las tres dimensiones se presentan separadas cuando sean relevantes.
+
+---
+
+#### 11. Orden de resultados
+
+El orden predeterminado debe ser estable y explicable. Cuando la consulta mezcle múltiples procesos o aplicaciones, la relevancia no podrá promover una versión histórica sobre la versión `CURRENT` sin una señal explícita.
+
+Se permiten órdenes alternativos por fecha, título, proceso, tipo o vigencia cuando la fuente los soporte. El criterio activo siempre será visible y no altera autorización.
+
+---
+
+#### 12. Contrato `INFO-DOCUMENT-DOSSIER-UX-CONTRACT-001`
+
+El expediente es una relación empresarial navegable entre documentos y recursos; no es una carpeta que absorbe propiedad.
+
+```text
+EXPEDIENTE
+→ identifica caso, proceso o conjunto empresarial
+→ referencia documentos y registros
+→ cada referencia conserva identidad y propietaria
+→ cada documento conserva sus propias versiones y vigencia
+→ cada acceso se reautoriza según recurso y acción
+```
+
+La vista de expediente deberá poder mostrar:
+
+- identidad y estado del expediente cuando exista fuente canónica;
+- proceso o caso relacionado;
+- documentos relacionados autorizados;
+- papel o relación de cada documento dentro del expediente;
+- versión aplicable de cada referencia;
+- indicadores de faltante, no vigente o bloqueado únicamente cuando su revelación esté autorizada;
+- enlaces a otros recursos empresariales sin copiar sus hechos al expediente.
+
+Si un documento relacionado no es visible para el actor, la interfaz no mostrará un hueco, contador o etiqueta que revele su existencia salvo que otro contrato canónico autorice explícitamente esa señal.
+
+---
+
+#### 13. Documento, original, copia y representación
+
+El detalle separa identidad lógica de sus representaciones:
+
+```text
+DOCUMENTO LÓGICO
+→ VERSIONES
+→ REPRESENTACIONES
+→ LOCALIZADORES
+```
+
+Cuando los metadatos estén disponibles y autorizados, la experiencia puede indicar si una representación corresponde a original, copia controlada, representación digital, soporte físico u otra categoría canónica. La ubicación física o técnica se muestra como localización, nunca como propietaria ni como autorización.
+
+Una representación no demostrada se presenta como información no disponible; no se inventa a partir de bucket, extensión, ruta, nombre de archivo o convención local.
+
+---
+
+#### 14. Contrato `INFO-DOCUMENT-VERSION-VIGENCY-UX-CONTRACT-001`
+
+La experiencia separa cuatro dimensiones:
+
+| Dimensión   | Pregunta que responde                                          |
+| ----------- | -------------------------------------------------------------- |
+| versión     | ¿qué revisión inmutable estoy viendo?                          |
+| preparación | ¿en qué estado del ciclo de preparación quedó esa versión?     |
+| publicación | ¿fue publicada o retirada de publicación?                      |
+| vigencia    | ¿es la versión aplicable para la fecha y contexto consultados? |
+
+La interfaz no usa “última” como sinónimo de vigente. Una versión creada más recientemente puede no estar aprobada, publicada o vigente; una versión aprobada puede permanecer `NOT_EFFECTIVE` hasta su fecha efectiva.
+
+---
+
+#### 15. Presentación de la versión vigente
+
+Cuando exista una versión `CURRENT`, el detalle la identifica como **Vigente** y conserva su identificador de versión. Si no existe una versión vigente para la fecha consultada, la interfaz no selecciona automáticamente la versión cronológicamente más reciente para aparentar continuidad.
+
+Estados mínimos de presentación:
+
+| Estado canónico | Etiqueta legible | Tratamiento visual/funcional                                                |
+| --------------- | ---------------- | --------------------------------------------------------------------------- |
+| `NOT_EFFECTIVE` | Aún no vigente   | mostrar fecha efectiva cuando exista; no confundir con actual               |
+| `CURRENT`       | Vigente          | destacar como aplicable al contexto temporal consultado                     |
+| `SUPERSEDED`    | Sustituida       | mostrar sucesora cuando sea autorizable; evitar uso accidental como vigente |
+| `EXPIRED`       | Vencida          | indicar fin de vigencia cuando exista                                       |
+| `WITHDRAWN`     | Retirada         | impedir que se presente como versión activa                                 |
+| `ANNULLED`      | Anulada          | dejar inequívoco que no es aplicable; conservar historial autorizado        |
+
+---
+
+#### 16. Historial de versiones
+
+El historial, cuando la acción esté autorizada, muestra de forma no destructiva:
+
+- identificador de versión;
+- estado de preparación;
+- estado de publicación;
+- estado de vigencia;
+- inicio y fin efectivos cuando existan;
+- relación de sustitución o anulación cuando esté resuelta;
+- fecha de creación o registro cuando forme parte del metadato autorizado;
+- propietaria funcional y fuente de verdad.
+
+Seleccionar una versión histórica activa un contexto explícito **Versión histórica**. Mientras ese contexto esté activo, la superficie no ofrece acciones que puedan tratarla como versión vigente por simple selección.
+
+---
+
+#### 17. Fecha de consulta y vigencia temporal
+
+Cuando el caso de uso exija responder “qué documento aplicaba en una fecha”, la biblioteca puede recibir una fecha de consulta autorizada. Esa fecha modifica la proyección de vigencia, no el contenido histórico.
+
+Reglas:
+
+1. la fecha de consulta siempre queda visible mientras afecte resultados;
+2. volver a “hoy” es una acción explícita;
+3. una comparación temporal no modifica fechas efectivas;
+4. si la fuente no puede resolver vigencia para la fecha solicitada, la experiencia muestra estado no resoluble y no elige una versión por proximidad;
+5. el tiempo de consulta no sustituye territorio, finalidad, relación ni autorización.
+
+---
+
+#### 18. Acciones documentales desde la biblioteca
+
+La biblioteca distingue navegación de acciones con efecto o salida:
+
+| Acción                   | Regla                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| consultar metadatos      | requiere proyección autorizada del recurso y campos                            |
+| abrir contenido          | revalida autorización para contenido de la versión concreta                    |
+| obtener representación   | capacidad independiente de consulta                                            |
+| imprimir                 | capacidad independiente y controles de salida aplicables                       |
+| exportar                 | capacidad independiente, alcance y minimización propios                        |
+| compartir                | capacidad independiente, destinatario/finalidad/expiración cuando correspondan |
+| abrir fuente propietaria | navega al recurso canónico sin transferir autoridad                            |
+
+La visibilidad de un botón nunca se considera control suficiente. Toda acción real deberá revalidarse en la frontera autoritativa correspondiente.
+
+---
+
+#### 19. Datos sensibles y minimización
+
+La superficie aplica minimización antes de representar campos. Para S2, S3 y S4, o cuando una política de campo lo exija:
+
+- títulos, sujetos, fragmentos, etiquetas, relaciones y localizadores pueden requerir masking u omisión;
+- el resultado puede mostrar una identidad funcional mínima sin exponer contenido;
+- revelar un campo no concede copiarlo, obtener una representación, imprimirlo, exportarlo o compartirlo;
+- las vistas de expediente y de historial aplican la misma política de campos que la búsqueda;
+- los mensajes de error y telemetría no incorporan contenido sensible para explicar una denegación.
+
+---
+
+#### 20. Estados de interfaz
+
+| Estado UX                    | Comportamiento obligatorio                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| inicial                      | explica el alcance de consulta disponible sin revelar recursos                                                           |
+| cargando                     | conserva término y filtros; no muestra resultados obsoletos como actuales                                                |
+| sin coincidencias            | informa que no hay resultados visibles para los criterios actuales, sin inferir existencia externa                       |
+| acceso insuficiente          | no revela nombre, cantidad ni metadatos del recurso denegado                                                             |
+| parcial                      | identifica que la respuesta es incompleta y qué dimensión autorizada no pudo resolverse, sin convertir faltantes en cero |
+| desactualizado               | muestra fecha de corte y exige revalidación antes de una acción sensible                                                 |
+| error                        | conserva criterios y permite reintento seguro sin ampliar alcance                                                        |
+| versión no vigente           | mantiene etiqueta persistente mientras la versión histórica esté abierta                                                 |
+| representación no disponible | conserva identidad lógica si está autorizada y evita fabricar ubicación o archivo                                        |
+
+---
+
+#### 21. Accesibilidad y comprensión
+
+La experiencia deberá:
+
+- mantener búsqueda, filtros, resultados y detalle operables por teclado;
+- asociar etiquetas textuales a estados de vigencia y no depender solo de color;
+- anunciar cambios relevantes de resultados y errores sin mover foco de forma destructiva;
+- conservar orden de foco al abrir y cerrar detalle;
+- usar lenguaje humano para vigente, sustituida, vencida, retirada y anulada, conservando el estado canónico como dato estructurado;
+- evitar iconografía sin texto para clasificación, versión o estado;
+- mantener contraste y densidad compatibles con una superficie administrativa de consulta.
+
+---
+
+#### 22. Wireframe lógico
+
+```text
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Biblioteca documental                      Alcance autorizado · fecha de corte │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ Buscar documentos, registros o expedientes                                  │
+│ [ término ............................................................... ]   │
+│ Filtros: Proceso · Tipo · Expediente · Vigencia · Periodo                    │
+├───────────────────────────────────────────────┬──────────────────────────────┤
+│ Resultados autorizados                        │ Detalle                       │
+│                                               │ Documento / expediente        │
+│ Título mínimo                                 │ Fuente propietaria            │
+│ Tipo · Proceso · Expediente                   │ Versión seleccionada          │
+│ Versión · Vigencia · Publicación              │ Vigencia · Publicación        │
+│ Fecha efectiva                                │ Relaciones autorizadas        │
+│                                               │ Representaciones autorizadas  │
+│                                               │ Historial de versiones        │
+├───────────────────────────────────────────────┴──────────────────────────────┤
+│ Estado de consulta · criterios activos · fecha de corte                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
+
+El wireframe expresa jerarquía y comportamiento; no fija una ruta, componente, framework ni implementación física.
+
+---
+
+#### 23. Navegación y handoff entre aplicaciones
+
+La biblioteca puede actuar como punto de descubrimiento transversal, pero cada mutación o acción propietaria se entrega a la aplicación que conserva autoridad.
+
+Un handoff deberá conservar, cuando aplique:
+
+- referencia estable al recurso;
+- versión seleccionada;
+- expediente o proceso de origen;
+- intención de navegación;
+- retorno seguro a la consulta;
+- correlación suficiente para auditoría.
+
+El handoff no transporta permisos ni sustituye la nueva evaluación de autorización en la aplicación destino.
+
+---
+
+#### 24. Fronteras con tareas siguientes
+
+| Capacidad                                             | Decisión en INFO-UX-002                                        | Tarea propietaria                      |
+| ----------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------- |
+| creación y edición de documentos                      | solo referencia/navegación; no se diseña flujo de mutación     | `INFO-UX-003`                          |
+| revisión, aprobación, publicación y firma             | solo estado visible cuando ya existe; no se diseña ejecución   | `INFO-UX-003`                          |
+| portal de derechos de privacidad                      | fuera de la biblioteca general                                 | `INFO-UX-004`                          |
+| retención, legal hold, archivo y disposición          | puede mostrar estado autorizado; no ejecuta ni diseña el flujo | `INFO-UX-005`                          |
+| exploración de auditoría e investigación              | no se incorpora como pestaña oculta de la biblioteca           | `INFO-UX-006`                          |
+| implementación de índices, Storage, OCR o adaptadores | fuera de fase documental                                       | tareas técnicas posteriores aplicables |
+
+Ninguna frontera difiere el resultado principal de INFO-UX-002: búsqueda autorizada, expediente, versión y vigencia quedan diseñados completamente.
+
+---
+
+#### 25. Matriz `INFO-DOCUMENT-LIBRARY-DOCCTX-MATRIX-001` — 332 de 332
+
+Cada identidad heredada recibe una decisión explícita. `INCLUIDA` significa que forma parte del universo lógico de la biblioteca cuando exista una instancia materializada; no significa que cualquier actor pueda conocer su existencia. `PREAUTORIZADA` significa que la búsqueda aplica autorización antes de la proyección del resultado. `REFERENCIAL_NO_APROPIATIVO` preserva la autoridad de la aplicación propietaria. Versionado y vigencia se heredan sin modificación de INFO-DOM.
+
+| ID contextual          | Proceso      | Biblioteca | Búsqueda        | Expediente                   | Versionado        | Vigencia         | Estado         |
+| ---------------------- | ------------ | ---------- | --------------- | ---------------------------- | ----------------- | ---------------- | -------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `INCLUIDA` | `PREAUTORIZADA` | `REFERENCIAL_NO_APROPIATIVO` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `ESPECIFICADO` |
+
+---
+
+#### 26. Reconciliación cuantitativa
+
+| Control                                 | Resultado |
+| --------------------------------------- | --------: |
+| `DOCCTX-*` esperadas                    |   **332** |
+| `DOCCTX-*` materializadas               |   **332** |
+| identificadores únicos                  |   **332** |
+| faltantes                               |     **0** |
+| duplicados                              |     **0** |
+| decisiones `INCLUIDA`                   |   **332** |
+| decisiones `PREAUTORIZADA`              |   **332** |
+| expediente `REFERENCIAL_NO_APROPIATIVO` |   **332** |
+| versionado `NON_DESTRUCTIVE` preservado |   **332** |
+| vigencia `EFFECTIVE_TIME` preservada    |   **332** |
+| propietarias funcionales modificadas    |     **0** |
+
+---
+
+#### 27. Criterios de aceptación
+
+- [x] la biblioteca se define como proyección autorizada sobre fuentes propietarias y no como repositorio maestro paralelo;
+- [x] los 69 procesos se conservan sin renombrar, fusionar o eliminar;
+- [x] las 332 identidades `DOCCTX-*` aparecen exactamente una vez en la matriz de experiencia;
+- [x] cada identidad recibe decisión explícita de biblioteca, búsqueda, expediente, versionado y vigencia;
+- [x] búsqueda, sugerencias, filtros, facetas, conteos y fragmentos quedan sometidos a autorización previa;
+- [x] no se revela existencia de recursos fuera del alcance mediante cero, conteos, huecos, etiquetas o relaciones;
+- [x] expediente se modela como relación no apropiativa y no como carpeta que absorbe autoridad;
+- [x] identidad lógica, versión, representación y localización permanecen separadas;
+- [x] `CURRENT` no se confunde con “última versión creada”;
+- [x] aprobación, publicación y vigencia permanecen dimensiones distintas;
+- [x] una versión histórica conserva señal persistente que evita uso accidental como vigente;
+- [x] las acciones de salida conservan autorización independiente de la consulta;
+- [x] la experiencia define estados inicial, cargando, vacío, denegado, parcial, desactualizado y error;
+- [x] se preservan accesibilidad, foco y lenguaje humano para estados documentales;
+- [x] no se crean rutas, código, índices, Storage, migraciones ni cambios de Supabase;
+- [x] INFO-UX-003 permanece reservada y no se inicia.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+La tarea materializa en experiencia reglas ya protegidas por el registro vigente: autorización previa de resultados y metadatos, minimización y no revelación de información fuera de alcance, separación entre fuente y proyección, versionado no destructivo, vigencia por tiempo efectivo y autorización independiente para acciones de salida. No introduce una transición, permiso, estado ejecutable o comportamiento técnico adicional que requiera un requisito nuevo.
+
+Balance: **0 creados · 0 modificados · 0 diferidos · 0 descartados · 0 obsoletos**.
+
+---
+
+#### 29. Estado de materialización
+
+| Resultado                                 | Estado                                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| arquitectura de experiencia de biblioteca | `ESPECIFICADO`                                                                        |
+| búsqueda autorizada                       | `ESPECIFICADO`                                                                        |
+| navegación por expediente                 | `ESPECIFICADO`                                                                        |
+| lectura de versión y vigencia             | `ESPECIFICADO`                                                                        |
+| matriz 332/332                            | `ESPECIFICADO`                                                                        |
+| implementación física                     | `FUERA_DE_ALCANCE`                                                                    |
+| evidencia operativa                       | `PENDIENTE_DE_EVIDENCIA` hasta la fase de implementación y validación correspondiente |
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas`
+
+TAREA ACTUAL APROBADA
+
+`INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos`
+
+
 ### [ ] INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos
 ### [ ] INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes
 ### [ ] INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
