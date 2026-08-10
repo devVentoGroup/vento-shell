@@ -1904,7 +1904,894 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro`
 
 
-### [ ] INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
+### ✅ INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias` — APROBADA
+**Tarea siguiente:** `INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales` — RESERVADA
+**Tipo de tarea:** documental; materialización transversal del contrato corporativo de ciclo documental, estados, versionado, vigencia, sustitución, anulación y retiro
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo heredado:** 69 procesos `VPROC-*` y 332 identidades contextuales `DOCCTX-*`
+**Contrato materializado:** `INFO-DOCUMENT-LIFECYCLE-CONTRACT-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Storage, buckets, objetos, migraciones, funciones, jobs, datos, configuración ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** convertir la taxonomía documental aprobada y el ciclo operativo EVID ya materializado en un contrato corporativo único que permita saber qué versión existe, qué estado de preparación tiene, desde cuándo produce efecto, si está publicada, cuál versión sustituyó a otra y por qué una versión dejó de ser utilizable, sin sobrescribir historia ni confundir retiro, vencimiento, anulación, archivo o disposición.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+La tarea cierra la brecha transversal de ciclo documental mediante cuatro resultados coordinados:
+
+1. `INFO-DOCUMENT-LIFECYCLE-CONTRACT-001`: sobre corporativo de estado documental con ejes independientes de preparación, vigencia, publicación y referencia de retención.
+2. `INFO-DOCUMENT-VERSIONING-RULES-001`: reglas no destructivas de identidad, versión, corrección, sustitución y reconstrucción histórica.
+3. `INFO-DOCUMENT-STATE-TRANSITION-CATALOG-001`: catálogo de transiciones permitidas y sus efectos documentales.
+4. `INFO-DOCUMENT-LIFECYCLE-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+La tarea no crea un repositorio central ni un ciclo físico de Storage. Cada aplicación propietaria conserva el hecho empresarial; el contrato transversal determina cómo interpretar el estado documental y su historia.
+
+Resultado cuantitativo:
+
+| Control                              | Resultado |
+| ------------------------------------ | --------: |
+| procesos `VPROC-*` recibidos         |        69 |
+| procesos preservados                 |        69 |
+| identidades `DOCCTX-*` recibidas     |       332 |
+| identidades con contrato de ciclo    |       332 |
+| identidades omitidas                 |         0 |
+| identidades duplicadas               |         0 |
+| propietarias funcionales modificadas |         0 |
+| clases S0–S4 modificadas             |         0 |
+| cambios físicos                      |         0 |
+| cambios en requisitos de prueba      |         0 |
+
+---
+
+#### 2. Fuentes y decisiones heredadas
+
+Se conservan como entradas obligatorias:
+
+- `INFO-DOM-001`: propiedad funcional, finalidad y frontera de gobierno por proceso;
+- `INFO-DOM-002`: clasificación S0–S4, minimización, manejo y publicación controlada;
+- `INFO-DOM-003`: taxonomía corporativa de documento, registro, evidencia, serie, expediente, original, copia y representación;
+- `CAP-SCOPE-016`: secuencia documental desde recepción o plantilla hasta disposición y las brechas de versionado, vigencia y operación offline;
+- `NFR-REQ-006`: historia no destructiva, tiempo efectivo, trazabilidad, retención y distinción entre archivo, hold y disposición;
+- `EVID-ARC-004`: identidad lógica, versión documental, metadatos mínimos y vínculo resoluble con proceso/recurso;
+- `EVID-ARC-005`: `LOAD_V1`, `SUBSTITUTE_V1`, `ANNUL_V1`, retención base, `RET_UNRESOLVED` y matriz explícita de 332 identidades;
+- registro canónico de requisitos de prueba: cobertura vigente del ciclo documental y de la persistencia no destructiva.
+
+Invariantes que esta tarea no cambia:
+
+- `document_id` identifica el objeto lógico y no una ruta, archivo o representación;
+- una versión aprobada o preservada no se sobrescribe para representar contenido o estado distinto;
+- la sustitución conserva la versión anterior;
+- la anulación conserva el hecho original;
+- la recepción técnica no equivale a vigencia, aprobación o publicación;
+- las 332 identidades mantienen la distribución de retención base 33/184/36/66/13;
+- las fronteras EVID heredadas permanecen 73 `NINGUNO`, 245 `FRONTERA_OBLIGATORIA` y 14 `APLICACION_DIFERIDA`;
+- las 332 políticas definitivas de retención permanecen `RET_UNRESOLVED` bajo `INFO-DOM-006`;
+- AURA conserva su condición de aplicación diferida donde ya fue aprobada.
+
+---
+
+#### 3. Distinciones obligatorias del ciclo documental
+
+```text
+documento lógico
+≠ versión documental
+≠ representación física o digital
+≠ estado de preparación
+≠ estado de vigencia
+≠ estado de publicación
+≠ estado de retención
+```
+
+```text
+BORRADOR
+≠ APROBADO
+≠ PUBLICADO
+≠ VIGENTE
+```
+
+```text
+SUSTITUIDO
+≠ VENCIDO
+≠ RETIRADO
+≠ ANULADO
+≠ ARCHIVADO
+≠ ELIMINADO
+```
+
+```text
+CARGADO O RECIBIDO
+≠ VALIDADO TÉCNICAMENTE
+≠ APROBADO
+≠ VIGENTE
+```
+
+Reglas:
+
+1. un único campo de estado no puede representar correctamente todos estos ejes;
+2. la publicación es una condición de exposición, no prueba de vigencia ni de aprobación;
+3. el archivo pertenece al ciclo de retención y no significa que la versión haya sido anulada;
+4. la eliminación o disposición no es un estado documental de esta tarea;
+5. la aprobación documental no define por sí sola la fuerza de una firma, aceptación o evidencia; esa materia permanece en `INFO-DOM-011`;
+6. la ubicación técnica no determina ninguno de los estados anteriores.
+
+---
+
+#### 4. Sobre corporativo de estado `INFO-DOCUMENT-LIFECYCLE-CONTRACT-001`
+
+Toda versión materializada deberá poder resolver conceptualmente:
+
+```text
+document_id
+document_version_id
+version_sequence
+version_created_at
+preparation_state
+validity_state
+effective_from
+effective_until
+publication_state
+supersedes_version_ref
+corrects_version_ref
+annuls_version_ref
+state_reason_code
+state_effective_at
+state_authority_ref
+retention_class_ref
+retention_policy_ref
+retention_state_ref
+```
+
+Esta lista define semántica corporativa, no columnas físicas. El esquema de metadatos, persistencia y búsqueda corresponde a `INFO-DOM-005`.
+
+##### 4.1. Estado de preparación
+
+| Código      | Significado                                                              | Regla                                                                                                    |
+| ----------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `RECEIVED`  | versión recibida desde un tercero, canal o fuente externa                | recepción no demuestra aprobación, vigencia ni integridad                                                |
+| `RECORDED`  | registro o evidencia materializados como resultado de un hecho o captura | no se fuerza un borrador ficticio cuando el objeto nace como registro                                    |
+| `DRAFT`     | contenido en preparación que todavía no superó el control aplicable      | no puede presentarse como versión aprobada o vigente                                                     |
+| `IN_REVIEW` | versión candidata sometida al control de revisión aplicable              | el contenido candidato queda identificable y cualquier cambio material produce otra candidata trazable   |
+| `REJECTED`  | candidata que no superó el control de revisión                           | permanece en historia y nunca adquiere vigencia por sí sola                                              |
+| `APPROVED`  | candidata que superó el control de aprobación aplicable                  | puede seguir sin vigencia o sin publicación; la semántica de la aprobación se completa en `INFO-DOM-011` |
+
+`RECEIVED`, `RECORDED` y `DRAFT` son entradas alternativas según la naturaleza del objeto; no todos los documentos deben atravesar artificialmente todos los estados.
+
+##### 4.2. Estado de vigencia
+
+| Código          | Significado                                                            | Regla                                                             |
+| --------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `NOT_EFFECTIVE` | versión materializada que todavía no produce efecto empresarial        | una aprobación futura o una recepción no la convierte en vigente  |
+| `CURRENT`       | versión aplicable al alcance y tiempo resueltos                        | debe poder reconstruirse por alcance y fecha efectiva             |
+| `SUPERSEDED`    | dejó de ser vigente porque una sucesora válida asumió el mismo alcance | conserva historia y vínculo con la sucesora                       |
+| `EXPIRED`       | dejó de ser vigente por vencimiento temporal o condición tipada        | no implica anulación ni eliminación                               |
+| `WITHDRAWN`     | fue retirada deliberadamente del uso futuro por autoridad aplicable    | no declara falso o inexistente su uso histórico válido            |
+| `ANNULLED`      | fue invalidada mediante un hecho explícito de anulación                | conserva la versión, el motivo, la autoridad y la historia previa |
+
+##### 4.3. Estado de publicación
+
+| Código          | Significado                                           | Regla                                                                            |
+| --------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `NOT_PUBLISHED` | no existe proyección publicada activa                 | no implica que la versión sea borrador o no vigente                              |
+| `PUBLISHED`     | existe una proyección publicada autorizada            | solo puede exponerse conforme a clasificación, finalidad y autorización vigentes |
+| `UNPUBLISHED`   | una proyección antes publicada fue retirada del canal | no cambia por sí sola la historia, vigencia o retención de la versión fuente     |
+
+##### 4.4. Estado de retención
+
+Los estados de retención permanecen bajo el contrato heredado y se referencian sin fusionarlos con el ciclo documental:
+
+```text
+ACTIVE
+INACTIVE
+ARCHIVE_PENDING
+ARCHIVED
+ELIGIBLE_FOR_DISPOSITION
+```
+
+Y sus condiciones transversales, entre otras:
+
+```text
+HOLD_ACTIVE
+PRESERVATION_REQUIRED
+DISPOSITION_BLOCKED
+POLICY_UNRESOLVED
+```
+
+`INFO-DOM-004` no fija plazos, triggers definitivos, legal hold, anonimización, eliminación ni certificado; esas decisiones pertenecen a `INFO-DOM-006`.
+
+---
+
+#### 5. Perfiles de entrada al ciclo
+
+| Perfil                | Entrada documental típica                                                                 | Estado de preparación inicial | Aplicación                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `AUTHORED_CONTROLLED` | política, procedimiento, plantilla, informe, contrato o contenido elaborado internamente  | `DRAFT`                       | usa revisión/aprobación cuando el proceso lo exija                                      |
+| `RECEIVED_CONTROLLED` | documento de tercero, soporte recibido, certificado externo o comunicación formal         | `RECEIVED`                    | conserva origen; su aceptación o uso empresarial se resuelve sin fingir autoría interna |
+| `RECORDED_FACT`       | registro transaccional, evento, log gobernado, captura o evidencia producida por un hecho | `RECORDED`                    | preserva el hecho fuente y no inventa una etapa de borrador                             |
+
+El perfil no altera taxonomía, propietaria ni sensibilidad. Una misma identidad `DOCCTX-*` puede contener instancias de perfiles distintos cuando su descripción agrupe más de un artefacto; cada instancia concreta deberá resolver su perfil sin partir ni renombrar la identidad contextual.
+
+---
+
+#### 6. Catálogo de transiciones documentales
+
+| Transición             | Entrada                                                   | Resultado                                    | Invariante                                                           |
+| ---------------------- | --------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| `CREATE_DRAFT`         | nuevo objeto elaborado internamente                       | `DRAFT`                                      | crea identidad o versión candidata conforme al vínculo empresarial   |
+| `RECEIVE_VERSION`      | versión externa recibida                                  | `RECEIVED`                                   | conserva referencia de origen y no concede vigencia automática       |
+| `RECORD_FACT`          | hecho o evidencia materializados                          | `RECORDED`                                   | conserva causalidad y no se presenta como borrador                   |
+| `SUBMIT_REVIEW`        | `DRAFT`                                                   | `IN_REVIEW`                                  | identifica la candidata sometida a revisión                          |
+| `REJECT_VERSION`       | `IN_REVIEW`                                               | `REJECTED`                                   | conserva candidata y motivo; no reescribe la historia                |
+| `APPROVE_VERSION`      | `IN_REVIEW`                                               | `APPROVED`                                   | no equivale todavía a publicación ni a vigencia                      |
+| `MAKE_EFFECTIVE`       | versión apta según su perfil                              | `CURRENT`                                    | fija `effective_from` y alcance resolubles                           |
+| `PUBLISH_PROJECTION`   | versión autorizada para el canal                          | `PUBLISHED`                                  | publicación y vigencia permanecen ejes separados                     |
+| `UNPUBLISH_PROJECTION` | proyección publicada                                      | `UNPUBLISHED`                                | retira la exposición sin borrar la fuente                            |
+| `SUPERSEDE_VERSION`    | versión `CURRENT` + sucesora apta                         | predecesora `SUPERSEDED`; sucesora `CURRENT` | el cambio ocurre en el instante efectivo de la sucesora              |
+| `EXPIRE_VERSION`       | versión `CURRENT` que alcanza su límite aplicable         | `EXPIRED`                                    | vencimiento no borra ni anula                                        |
+| `WITHDRAW_VERSION`     | versión utilizable retirada por decisión                  | `WITHDRAWN`                                  | preserva uso histórico y autoridad de la decisión                    |
+| `ANNUL_VERSION`        | versión materializada con autoridad y motivo de anulación | `ANNULLED`                                   | crea un hecho nuevo; no elimina la versión afectada                  |
+| `CORRECT_BY_SUCCESSOR` | versión que requiere corrección material                  | nueva versión enlazada                       | la corrección material no muta silenciosamente una versión histórica |
+
+No se define una transición de eliminación física en este catálogo.
+
+---
+
+#### 7. Contrato de versionado no destructivo
+
+1. `document_id` permanece estable mientras continúen la misma identidad lógica y el mismo recurso empresarial gobernante.
+2. Cada contenido materializado que deba conservarse como versión recibe un `document_version_id` inequívoco dentro de la identidad lógica.
+3. El formato visible de numeración de versión no se fija aquí; deberá poder ordenarse e interpretarse sin depender del nombre de archivo.
+4. `document_version_id`, versión del recurso empresarial, versión de clasificación, versión de esquema de metadatos y versión de representación son conceptos distintos.
+5. Una candidata sometida a revisión debe quedar identificable. Un cambio material posterior produce otra candidata o sucesora trazable; no altera silenciosamente la candidata ya revisada.
+6. Una versión aprobada, vigente, sustituida, vencida, retirada, anulada o preservada no se sobrescribe para representar contenido diferente.
+7. Una corrección material genera una nueva versión o un acto de corrección enlazado. Una corrección puramente administrativa de metadatos no puede alterar el contenido ni su significado y debe conservar auditoría; el detalle de metadatos pertenece a `INFO-DOM-005`.
+8. Versiones rechazadas permanecen reconstruibles cuando constituyan historia necesaria del control; rechazo no autoriza su eliminación.
+9. Una nueva representación del mismo contenido no crea automáticamente una nueva versión documental; la relación entre representaciones y equivalencia técnica se completa en `INFO-DOM-007`.
+10. Un cambio de significado empresarial, recurso gobernante o identidad documental exige un nuevo `document_id`, aunque el archivo se parezca o provenga de una versión anterior.
+
+---
+
+#### 8. Vigencia y reconstrucción temporal
+
+La vigencia se resuelve por tiempo efectivo y alcance empresarial, no por orden de carga.
+
+Una versión puede ser `CURRENT` para un instante y alcance únicamente cuando:
+
+- la versión existe y su perfil permite entrada en vigencia;
+- `effective_from` ya ocurrió;
+- `effective_until`, cuando exista, no ha sido superado;
+- no existe una anulación o retiro efectivo que la invalide para ese instante;
+- no ha sido sustituida por una sucesora efectiva para el mismo alcance;
+- clasificación, finalidad, recurso y autoridad aplicables continúan resolubles.
+
+Reglas:
+
+1. una versión aprobada con fecha futura permanece `NOT_EFFECTIVE` hasta su fecha efectiva;
+2. la versión aplicable a una fecha histórica debe ser reconstruible sin usar como sustituto `created_at`, fecha de carga o último archivo disponible;
+3. la sustitución programada no retira a la predecesora antes de que la sucesora sea efectivamente aplicable;
+4. intervalos superpuestos para la misma identidad, mismo alcance y misma finalidad quedan `BLOQUEADO` hasta resolver la autoridad de vigencia, salvo que el propio dominio demuestre alcances distintos y compatibles;
+5. una fecha retroactiva requiere autoridad y motivo explícitos y no reescribe eventos históricos ya ocurridos;
+6. `effective_from`, `effective_until`, recepción, registro, persistencia y sincronización no se confunden entre sí;
+7. acceder con frecuencia a una versión no extiende su vigencia ni su retención.
+
+---
+
+#### 9. Sustitución
+
+La sustitución corporativa mantiene la regla `SUBSTITUTE_V1` y la refina:
+
+1. solo existe sustitución cuando predecesora y sucesora representan la misma identidad lógica y el mismo recurso empresarial gobernante;
+2. la sucesora recibe una versión nueva y enlaza de forma resoluble a la versión sustituida;
+3. la predecesora permanece vigente hasta el `effective_from` válido de la sucesora;
+4. si la candidata sucesora es rechazada, anulada antes de entrar en vigencia o no supera los controles aplicables, la versión vigente previa no se retira por la sola existencia de la candidata;
+5. al entrar la sucesora en vigencia, la predecesora pasa a `SUPERSEDED` para el alcance correspondiente;
+6. una sustitución no reescribe copias, derivados, exportaciones, impresiones o registros históricos; estos conservan su referencia a la versión que realmente utilizaron;
+7. una sustitución no rebaja clasificación ni amplía autoridad;
+8. cuando el nuevo objeto cambia de significado o recurso gobernante se crea otra identidad, no una falsa sustitución.
+
+---
+
+#### 10. Anulación
+
+La anulación corporativa mantiene `ANNUL_V1` y fija estas reglas:
+
+1. anular es registrar un hecho nuevo y trazable sobre una versión existente;
+2. la versión anulada conserva identidad, contenido, clasificación, relaciones, procedencia e historia que deban preservarse;
+3. toda anulación requiere versión afectada, motivo tipado, autoridad aplicable y momento efectivo;
+4. una anulación no se representa como si la versión nunca hubiese existido;
+5. la anulación no ejecuta eliminación física, anonimización, purga ni disposición;
+6. la anulación no vence un hold ni modifica por sí sola la política de retención;
+7. una anulación retroactiva, cuando el dominio la permita, debe conservar explícitamente la diferencia entre momento de decisión y momento de efecto;
+8. si una anulación fue ordenada por error, la corrección se registra mediante un nuevo hecho o versión autorizados; no se borra la anulación del historial.
+
+---
+
+#### 11. Vencimiento, retiro, anulación y despublicación
+
+| Condición     | Qué significa                                                            | Qué no significa                                                 |
+| ------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| `SUPERSEDED`  | otra versión asumió el mismo alcance                                     | que la versión anterior fuese inválida durante su vigencia       |
+| `EXPIRED`     | terminó su vigencia por tiempo o condición definida                      | anulación, retiro deliberado o eliminación                       |
+| `WITHDRAWN`   | una autoridad decidió detener su uso futuro                              | que el hecho histórico nunca hubiera sido válido                 |
+| `ANNULLED`    | existe un acto que invalida la versión en el alcance y tiempo declarados | borrado de historia o disposición                                |
+| `UNPUBLISHED` | se retiró la proyección de un canal de publicación                       | que la versión fuente haya dejado automáticamente de ser vigente |
+| `ARCHIVED`    | el objeto se encuentra en estado de archivo según retención              | vencimiento, retiro, anulación o falta de autoridad              |
+
+El estado de una copia o representación no cambia la verdad histórica de la versión fuente.
+
+---
+
+#### 12. Publicación, vigencia y clasificación
+
+1. `PUBLISHED` no concede por sí solo clasificación pública.
+2. Una proyección abierta solo puede operar como `S0_PUBLIC` cuando la versión publicada, aprobada cuando aplique y vigente esté expresamente autorizada para divulgación abierta por la política de clasificación.
+3. Borradores, candidatas en revisión, fuentes, comentarios, historial y metadatos no heredan `S0_PUBLIC` de una proyección publicada.
+4. Despublicar o retirar una versión detiene la proyección futura correspondiente, pero no elimina la historia de publicación.
+5. Una versión sustituida puede seguir siendo consultable históricamente bajo autorización sin continuar como proyección vigente.
+6. Publicar una nueva versión no modifica retroactivamente exportaciones, impresiones o evidencias emitidas con versiones anteriores.
+
+---
+
+#### 13. Plantillas e instancias emitidas
+
+1. Plantilla e instancia emitida son objetos distintos conforme a la taxonomía aprobada.
+2. Cada instancia debe poder referenciar la versión de plantilla o fuente utilizada cuando esa relación sea necesaria para interpretación histórica.
+3. Aprobar o publicar una nueva versión de plantilla no modifica instancias ya emitidas.
+4. Retirar una plantilla impide su uso futuro cuando así lo determine el proceso, pero no vuelve inválidas automáticamente las instancias históricas creadas correctamente.
+5. La vigencia de la plantilla y la vigencia de cada instancia son independientes.
+6. Una corrección material de una instancia sigue su propio ciclo; no se resuelve cambiando la plantilla de origen.
+
+---
+
+#### 14. Registros, evidencia, originales y copias
+
+1. Un registro o evidencia puede nacer como `RECORDED` sin atravesar `DRAFT` o `IN_REVIEW`.
+2. Un documento recibido puede nacer como `RECEIVED`; su recepción no equivale a aceptación, aprobación, integridad técnica o vigencia.
+3. Una evidencia preservada no se muta para reflejar una corrección del hecho; se agrega evidencia o un hecho de corrección enlazado.
+4. Original y copia conservan su relación de procedencia durante todo el ciclo; una copia actualizada no se convierte en original por ser más reciente.
+5. Duplicar una representación sin cambiar significado no crea una nueva versión empresarial por sí solo.
+6. Editar materialmente una copia no puede presentarse como si fuese la misma representación fuente; deberá resolverse como nueva versión, derivado o documento distinto según la taxonomía y la procedencia aplicables.
+7. El retiro, vencimiento o anulación de la fuente no destruye automáticamente copias que deban conservarse por evidencia o retención; su tratamiento posterior deberá reconciliarse bajo las tareas propietarias.
+
+---
+
+#### 15. Series y expedientes
+
+La serie y el expediente son agrupaciones y no sustituyen el ciclo individual de sus miembros.
+
+Para expedientes se fija un ciclo mínimo de agrupación:
+
+```text
+OPEN
+→ CLOSED
+```
+
+`REOPEN` es un evento auditable que lleva un expediente `CLOSED` nuevamente a `OPEN` sin borrar el cierre anterior.
+
+Reglas:
+
+1. cerrar un expediente no vuelve automáticamente vencidos, retirados o anulados sus documentos;
+2. el cierre puede convertirse después en trigger de retención cuando `INFO-DOM-006` así lo materialice, pero esta tarea no fija ese trigger;
+3. un documento añadido después del cierre exige reapertura o un mecanismo explícito de incorporación tardía que preserve autor, fecha, motivo y relación con el cierre;
+4. reabrir el expediente no reactiva automáticamente versiones documentales vencidas, retiradas o anuladas;
+5. la pertenencia a una serie conserva identidad y versión de cada objeto; la serie no crea una versión colectiva ficticia;
+6. el retiro de una serie de uso operativo no determina disposición de sus miembros.
+
+---
+
+#### 16. Concurrencia, operación offline e idempotencia
+
+1. Repetir la misma intención identificada de carga, sustitución o anulación no puede crear dos versiones o dos efectos documentales equivalentes.
+2. Dos candidatas concurrentes que pretendan sustituir la misma versión vigente no se resuelven por “última escritura”; la autoridad debe quedar determinada y el conflicto conservarse.
+3. Una operación offline no puede presentarse como `CURRENT`, `SUPERSEDED`, `WITHDRAWN` o `ANNULLED` hasta que el resultado autoritativo correspondiente sea resoluble.
+4. La reconciliación conserva instante del hecho, instante local, recepción, commit y sincronización; no sustituye todos esos tiempos por el momento de reconexión.
+5. Ante respuesta perdida o resultado desconocido, el consumidor consulta el estado autoritativo antes de crear una nueva intención con efecto distinto.
+6. Cambiar actor, dispositivo, área o sesión no transfiere automáticamente una candidata documental pendiente a otro contexto.
+7. Un conflicto no resuelto queda `BLOQUEADO`; no se oculta el estado intermedio para aparentar una única versión vigente.
+
+---
+
+#### 17. Fronteras con tareas posteriores
+
+| Materia                                                                                   | Decisión de INFO-DOM-004                                                          | Tarea propietaria posterior       |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------- |
+| metadatos físicos, persistencia, localización, búsqueda y vínculo técnico                 | se define la semántica que deben conservar; no se crea esquema físico             | `INFO-DOM-005`                    |
+| retención definitiva, trigger, mínimos/máximos, archivo, legal hold y disposición         | se preservan las referencias y estados heredados; no se fijan plazos ni ejecución | `INFO-DOM-006`                    |
+| autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | no se certifica equivalencia o autenticidad de versiones/representaciones         | `INFO-DOM-007`                    |
+| avisos, fundamento, consentimiento y revocación                                           | no se determina fundamento jurídico de vigencia o tratamiento                     | `INFO-DOM-008`                    |
+| compartición y terceros                                                                   | no se concede autoridad ni se propaga físicamente un cambio de versión            | `INFO-DOM-010`                    |
+| aprobación, aceptación y firmas                                                           | solo se define su efecto dentro del ciclo; no su nivel de evidencia ni método     | `INFO-DOM-011`                    |
+| permisos para crear, revisar, aprobar, retirar o anular                                   | no se asignan roles o permisos                                                    | `INFO-AUTH-001` a `INFO-AUTH-004` |
+| implementación de sincronización documental                                               | se fija el resultado idempotente y reconciliable; no se crea integración          | `INFO-INT-001` y `INFO-INT-002`   |
+
+Ninguna frontera posterga el resultado principal: el ciclo corporativo, sus estados, versionado, vigencia, sustitución, anulación y retiro quedan definidos completamente en esta tarea.
+
+---
+
+#### 18. Matriz corporativa de ciclo — 332 de 332
+
+Todas las identidades reciben el contrato `INFO_DOCUMENT_LIFECYCLE_V1`. La fila no impone un estado actual a objetos que todavía no existen; materializa las reglas que debe resolver cualquier instancia concreta del contexto.
+
+| ID contextual          | Proceso      | Contrato de ciclo            | Versionado        | Vigencia         | Retención heredada   | Frontera heredada      | Estado         |
+| ---------------------- | ------------ | ---------------------------- | ----------------- | ---------------- | -------------------- | ---------------------- | -------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `APLICACION_DIFERIDA`  | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ARCHIVAL`       | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_RELATIONSHIP`   | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_OBLIGATION`     | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `NINGUNO`              | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_ACTIVE_CASE`    | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `INFO_DOCUMENT_LIFECYCLE_V1` | `NON_DESTRUCTIVE` | `EFFECTIVE_TIME` | `RET_BUSINESS_CYCLE` | `FRONTERA_OBLIGATORIA` | `ESPECIFICADO` |
+
+---
+
+#### 19. Reconciliación cuantitativa
+
+| Control                                       | Resultado |
+| --------------------------------------------- | --------: |
+| `DOCCTX-*` esperadas                          |       332 |
+| `DOCCTX-*` materializadas                     |       332 |
+| claves únicas                                 |       332 |
+| faltantes                                     |         0 |
+| duplicados                                    |         0 |
+| perfiles `INFO_DOCUMENT_LIFECYCLE_V1`         |       332 |
+| versionado `NON_DESTRUCTIVE`                  |       332 |
+| vigencia `EFFECTIVE_TIME`                     |       332 |
+| retención base heredada                       |       332 |
+| políticas definitivas de retención inventadas |         0 |
+| propietarias funcionales modificadas          |         0 |
+| clasificaciones mínimas modificadas           |         0 |
+
+Distribución de retención base preservada:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+Fronteras preservadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+---
+
+#### 20. Estados de resolución
+
+- `ESPECIFICADO`: la identidad contextual recibe el contrato corporativo y las reglas son suficientes para diseñar consumidores posteriores.
+- `PENDIENTE_DE_EVIDENCIA`: una instancia real no puede resolver aún autoridad, fecha efectiva, correspondencia de versión u otra dimensión exigida por el contrato.
+- `BLOQUEADO`: existe conflicto de vigencia, identidad, sucesión, autoridad o resultado y no puede declararse una versión vigente hasta resolverlo.
+- `NO_APLICA`: una dimensión concreta no corresponde a la instancia y existe razón explícita; la ausencia de evidencia no se convierte en `NO_APLICA`.
+
+El `RET_POLICY_PENDING` heredado no bloquea la definición documental de esta tarea; bloquea la disposición automática y la certificación de retención hasta `INFO-DOM-006`.
+
+---
+
+#### 21. Decisiones corporativas de cierre
+
+1. El estado documental queda modelado como un sobre de ejes independientes y no como una enumeración única que mezcle aprobación, vigencia, publicación y retención.
+2. `APPROVED` no equivale a `CURRENT`; una versión puede aprobarse antes de su fecha efectiva.
+3. `PUBLISHED` no equivale a `CURRENT` ni convierte por sí solo la información en pública.
+4. La versión aplicable se resuelve por identidad, alcance y tiempo efectivo, no por último archivo o último timestamp técnico.
+5. Sustituir crea una sucesora y preserva la predecesora; no se sobrescribe historia.
+6. Una candidata no retira la versión vigente antes de convertirse efectivamente en sucesora.
+7. Anular crea un hecho trazable y conserva la versión afectada; no equivale a eliminación.
+8. Vencimiento, retiro, anulación, despublicación y archivo quedan explícitamente separados.
+9. Una corrección material crea una nueva versión o acto de corrección enlazado.
+10. Plantilla e instancia tienen ciclos separados; cambiar una plantilla no altera documentos ya emitidos.
+11. Registros y evidencia pueden nacer como `RECORDED`; documentos externos pueden nacer como `RECEIVED` sin forzar un borrador ficticio.
+12. Series y expedientes no absorben el ciclo ni la autoridad de sus miembros.
+13. Cerrar o reabrir un expediente no cambia automáticamente vigencia de sus documentos.
+14. Conflictos concurrentes u offline no se resuelven mediante última escritura ni se presentan como éxito mientras el resultado sea indeterminado.
+15. Las 332 identidades, 69 procesos, 9 propietarias y cinco clases S0–S4 permanecen intactos.
+16. No se ejecuta ningún cambio físico, Supabase, Storage, código, configuración o dato.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa y materializa documentalmente estados, versionado, vigencia, sustitución, anulación, retiro y reconstrucción temporal sobre comportamientos que ya están protegidos por la cobertura transversal vigente de documentos, persistencia no destructiva, trazabilidad, sincronización y ciclo de información. No introduce una transición física nueva, permiso, mutación de base de datos, operación de Storage, algoritmo de disposición, integración o comportamiento independiente que requiera una fila adicional. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 23. Criterios de aceptación
+
+- [x] `INFO-DOM-003` permanece aprobada y entrega la taxonomía corporativa recibida.
+- [x] los 69 `VPROC-*` permanecen sin renombrar, fusionar o eliminar.
+- [x] las 332 claves `DOCCTX-*` aparecen exactamente una vez en la matriz de ciclo.
+- [x] cada identidad recibe `INFO_DOCUMENT_LIFECYCLE_V1`, versionado no destructivo y vigencia por tiempo efectivo.
+- [x] se distinguen estado de preparación, estado de vigencia, estado de publicación y estado de retención.
+- [x] `RECEIVED`, `RECORDED`, `DRAFT`, `IN_REVIEW`, `REJECTED` y `APPROVED` tienen semántica explícita.
+- [x] `NOT_EFFECTIVE`, `CURRENT`, `SUPERSEDED`, `EXPIRED`, `WITHDRAWN` y `ANNULLED` tienen semántica explícita.
+- [x] `NOT_PUBLISHED`, `PUBLISHED` y `UNPUBLISHED` permanecen separados de vigencia y clasificación.
+- [x] una versión aprobada puede permanecer no vigente hasta su fecha efectiva.
+- [x] la versión aplicable a una fecha histórica puede reconstruirse conceptualmente por identidad, alcance y tiempo efectivo.
+- [x] una sustitución no sobrescribe la predecesora y solo toma efecto cuando la sucesora es aplicable.
+- [x] una anulación conserva la versión y no ejecuta disposición.
+- [x] vencimiento, retiro, anulación, despublicación y archivo no se presentan como sinónimos.
+- [x] la publicación controlada preserva la frontera S0–S4 aprobada.
+- [x] plantilla e instancia mantienen versiones y vigencias independientes.
+- [x] registros/evidencia no requieren un borrador ficticio y conservan historia no destructiva.
+- [x] cierre/reapertura de expediente no muta silenciosamente sus miembros.
+- [x] concurrencia y operación offline no pueden resolver conflictos mediante última escritura.
+- [x] la distribución de retención 33/184/36/66/13 permanece intacta.
+- [x] las fronteras 73/245/14 permanecen intactas.
+- [x] las 332 políticas definitivas de retención permanecen reservadas a `INFO-DOM-006`.
+- [x] `INFO-DOM-005` permanece reservada y no iniciada.
+- [x] no se realizan cambios físicos ni de Supabase.
+- [x] no se crean ni modifican requisitos de prueba.
+
+---
+
+#### 24. Resultado y continuidad
+
+VENTO queda con un contrato corporativo único para interpretar la vida de un documento o evidencia sin confundir estado de preparación, vigencia, publicación y retención, y con una historia explícita de versiones, correcciones, sustituciones, anulaciones y retiros.
+
+La cadena documental queda:
+
+```text
+identidad `DOCCTX-*`
+→ objeto lógico y versión
+→ preparación o recepción/registro
+→ revisión/aprobación cuando aplique
+→ vigencia por alcance y tiempo efectivo
+→ publicación separada cuando aplique
+→ sustitución / vencimiento / retiro / anulación
+→ retención y disposición en sus tareas propietarias
+```
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales`
+
+
 ### [ ] INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
 ### [ ] INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
 ### [ ] INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
