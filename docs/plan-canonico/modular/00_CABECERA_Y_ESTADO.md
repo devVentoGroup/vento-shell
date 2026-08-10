@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **659** |
+| Tareas aprobadas | **660** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **935** |
+| Tareas no iniciadas | **934** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **41.34% (659/1594)** |
+| Porcentaje de completamiento | **41.41% (660/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas** |
-| Tarea actual | **INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación** |
+| Última tarea aprobada | **INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación** |
+| Tarea actual | **INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada** |
+| Siguiente tarea | **INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 83 de 157 aprobadas; INFO-AUTH-003 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 84 de 157 aprobadas; INFO-AUTH-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-AUTH-002` — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas |
-| Tarea actual | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación — **NO INICIADA** |
-| Siguiente tarea | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada |
+| Última aprobada | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación |
+| Tarea actual | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada — **NO INICIADA** |
+| Siguiente tarea | `INFO-UX-001` — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 83 DE 157 APROBADAS — ACTUAL INFO-AUTH-003** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 84 DE 157 APROBADAS — ACTUAL INFO-AUTH-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas
-        ↓
-TAREA ACTUAL
 INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 83 de 157 tareas aprobadas
+CARRIL NEXO — 84 de 157 tareas aprobadas
 ```
