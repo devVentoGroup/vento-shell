@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **649** |
+| Aprobadas | **650** |
 | En propuesta | **0** |
-| No iniciadas | **945** |
+| No iniciadas | **944** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.72% (649/1594)** |
+| Porcentaje de completamiento | **40.78% (650/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-DOM-005` — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | ✅ APROBADA |
-| Tarea actual | `INFO-DOM-006` — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | ⬜ NO INICIADA |
+| Última aprobada | `INFO-DOM-006` — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | ✅ APROBADA |
+| Tarea actual | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1538,7 +1538,7 @@
 | ✅ APROBADA | `INFO-DOM-003` | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-004` | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-005` | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
-| ⬜ NO INICIADA | `INFO-DOM-006` | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
+| ✅ APROBADA | `INFO-DOM-006` | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-007` | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-008` | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-009` | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |

@@ -3819,7 +3819,983 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición`
 
 
-### [ ] INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
+### ✅ INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales` — APROBADA
+**Tarea siguiente:** `INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de retención, cómputo temporal, archivo, legal hold, elegibilidad, disposición, anonimización, eliminación controlada y certificado de disposición para las identidades documentales aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Fase:** exclusivamente documental
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Identidades documentales cubiertas:** 332 (`DOCCTX-*`)
+**Cambios físicos autorizados:** ninguno; no crea ni modifica tablas, buckets, objetos de Storage, RLS, RPC, funciones, triggers, jobs, Edge Functions, migraciones, datos, archivos empresariales, backups, índices, tombstones ni ejecuciones de disposición
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir un gobierno único y no destructivo para decidir cuánto tiempo puede conservarse una identidad documental, desde qué hecho autoritativo comienza el cómputo, cuándo debe archivarse o quedar elegible para disposición, cómo prevalece un legal hold, qué condiciones permiten anonimización o eliminación y qué evidencia mínima deberá conservar un certificado de disposición.
+
+La tarea no convierte una clase de retención en un plazo jurídico inventado. Las fuentes canónicas consumidas definen el contrato, los estados, los controles y las clases de retención, pero no contienen una tabla aprobada de duraciones numéricas y fundamentos aplicables a las 332 identidades. Por ello, la decisión canónica actual es conservar `RET_UNRESOLVED` para la política ejecutable de cada identidad y bloquear toda disposición automática hasta que exista fundamento verificable, periodo mínimo, periodo máximo y versión de política resolubles.
+
+La aprobación documental de esta tarea especifica el modelo y materializa la decisión por las 332 identidades; no certifica implementación física, elegibilidad real ni disposición ejecutada.
+
+---
+
+#### 2. Resultado sustantivo
+
+El resultado queda compuesto por ocho artefactos lógicos coordinados:
+
+1. `INFO-RETENTION-POLICY-CONTRACT-001`: contrato de política versionada de retención.
+2. `INFO-RETENTION-SCHEDULE-001`: tabla corporativa de clases y reglas de cómputo.
+3. `INFO-RETENTION-COMPUTATION-EVENT-CATALOG-001`: catálogo de eventos autoritativos que pueden iniciar o recalcular el cómputo.
+4. `INFO-ARCHIVE-CONTRACT-001`: reglas de archivo gobernado y preservación de identidad.
+5. `INFO-LEGAL-HOLD-CONTRACT-001`: imposición, revisión, propagación y liberación de hold.
+6. `INFO-DISPOSITION-CONTRACT-001`: elegibilidad, manifiesto, segregación, ejecución idempotente, anonimización, eliminación y tratamiento de residuales.
+7. `INFO-DISPOSITION-CERTIFICATE-CONTRACT-001`: evidencia mínima de una disposición realmente verificada.
+8. `INFO-RETENTION-DISPOSITION-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+| Control                                                   | Resultado |
+| --------------------------------------------------------- | --------: |
+| Procesos esperados                                        |    **69** |
+| Procesos materializados                                   |    **69** |
+| Identidades `DOCCTX-*` esperadas                          |   **332** |
+| Identidades materializadas                                |   **332** |
+| Identificadores únicos                                    |   **332** |
+| Faltantes                                                 |     **0** |
+| Duplicados                                                |     **0** |
+| Políticas ejecutables con plazo y fundamento verificables |     **0** |
+| Identidades con `RET_UNRESOLVED`                          |   **332** |
+| Identidades con disposición automática habilitada         |     **0** |
+| Cambios físicos                                           |     **0** |
+| Requisitos de prueba nuevos o modificados                 |     **0** |
+
+---
+
+#### 3. Decisiones heredadas que no se redefinen
+
+Se preservan sin alteración:
+
+- las 69 identidades de proceso `VPROC-*` y sus propósitos empresariales;
+- las 332 identidades `DOCCTX-*` y su propiedad funcional;
+- las clases `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` y sus reglas de minimización;
+- la identidad lógica, versión, representación, localización, recurso empresarial y búsqueda definidos en `INFO-DOM-003` a `INFO-DOM-005`;
+- la historia no destructiva, los estados de ciclo documental y las relaciones de sustitución, anulación, vencimiento y retiro definidas en `INFO-DOM-004`;
+- las clases base heredadas `RET_ACTIVE_CASE`, `RET_BUSINESS_CYCLE`, `RET_RELATIONSHIP`, `RET_OBLIGATION` y `RET_ARCHIVAL`;
+- el bloqueo `RET_UNRESOLVED` heredado de EVID-ARC mientras no exista política ejecutable resoluble;
+- `HOLD_CHECK_REQUIRED`, `DISPOSITION_ELIGIBILITY_REQUIRED`, `DISPOSITION_BY_POLICY_ONLY`, `DISPOSITION_EVIDENCE_REQUIRED` y `NO_RESURRECTION_REQUIRED` para las 332 identidades;
+- la separación entre backup, archivo, retención, legal hold, disposición y borrado técnico;
+- la regla de que una versión aprobada o evidencia preservada no se sobrescribe ni se elimina directamente para aparentar disposición.
+
+---
+
+#### 4. Distinciones obligatorias
+
+```text
+CLASE DE RETENCIÓN
+≠ POLÍTICA DE RETENCIÓN
+≠ TRIGGER DE CÓMPUTO
+≠ PERIODO MÍNIMO
+≠ PERIODO MÁXIMO
+≠ ESTADO DE CICLO
+≠ ARCHIVO
+≠ LEGAL HOLD
+≠ ELEGIBILIDAD
+≠ MÉTODO DE DISPOSICIÓN
+≠ BACKUP
+≠ CERTIFICADO DE DISPOSICIÓN
+```
+
+Además:
+
+```text
+BORRADO LÓGICO ≠ ELIMINACIÓN VERIFICADA
+ANULACIÓN ≠ DISPOSICIÓN
+RETIRO ≠ ARCHIVO
+ARCHIVO ≠ BACKUP
+SEUDONIMIZACIÓN ≠ ANONIMIZACIÓN
+COPIA INACCESIBLE ≠ COPIA ELIMINADA
+CERTIFICADO ≠ CONTENIDO DISPUESTO
+```
+
+Una ubicación, bucket, path, ausencia en interfaz, timestamp técnico o cambio de visibilidad no determina por sí mismo ningún estado de retención o disposición.
+
+---
+
+#### 5. `INFO-RETENTION-POLICY-CONTRACT-001`
+
+Una política será ejecutable únicamente cuando pueda resolver de forma versionada y verificable, como mínimo:
+
+| Campo                           | Regla                                                                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `retention_policy_id`           | Identificador estable de la política; no se deriva del nombre del documento ni de la ubicación. |
+| `retention_policy_version`      | Versión exacta aplicable; una versión publicada no cambia silenciosamente de significado.       |
+| `information_category`          | Categoría o alcance documental al que aplica.                                                   |
+| `record_or_event_scope`         | Objeto, evento, documento, expediente o conjunto gobernado.                                     |
+| `process_scope`                 | `VPROC-*` aplicable.                                                                            |
+| `classification`                | Clase de sensibilidad efectiva o regla para resolverla.                                         |
+| `information_owner`             | Propietaria funcional o autoridad empresarial correspondiente.                                  |
+| `custodian`                     | Custodia aplicable a la representación o archivo gobernado.                                     |
+| `purpose`                       | Finalidad que justifica la conservación.                                                        |
+| `obligation_refs[]`             | Fundamentos verificables que justifican mínimo, máximo, hold, archivo o método de disposición.  |
+| `retention_trigger`             | Evento tipado, autoritativo y verificable que inicia el cómputo.                                |
+| `active_retention_rule`         | Regla mientras el recurso permanece activo.                                                     |
+| `inactive_retention_rule`       | Regla tras cierre, vencimiento, sustitución u otro evento aplicable.                            |
+| `archive_rule`                  | Condición y tratamiento de archivo.                                                             |
+| `minimum_period`                | Duración mínima con unidad, inicio y fundamento explícitos.                                     |
+| `maximum_period`                | Duración máxima con unidad, inicio, excepción y fundamento explícitos.                          |
+| `review_frequency`              | Frecuencia de revisión cuando la política lo requiera.                                          |
+| `disposition_method`            | Archivo, transferencia, anonimización, eliminación controlada u otra opción aprobada.           |
+| `anonymization_rule`            | Método/versionado y condición de aceptación cuando aplique.                                     |
+| `hold_eligibility`              | Regla para evaluar suspensión de disposición.                                                   |
+| `backup_treatment`              | Tratamiento del objeto cuando permanezca temporalmente dentro de backups vigentes.              |
+| `copy_and_derivative_treatment` | Tratamiento de copias, exportaciones, índices, cachés, thumbnails y derivados.                  |
+| `third_party_treatment`         | Tratamiento de copias externas y evidencia de cierre.                                           |
+| `jurisdiction_or_territory`     | Dimensión territorial relevante para la obligación.                                             |
+| `exception_route`               | Ruta autorizada cuando exista conflicto, investigación o excepción.                             |
+| `effective_at`                  | Inicio de vigencia de la versión de política.                                                   |
+| `superseded_at`                 | Momento en que deja de ser la versión gobernante.                                               |
+| `approval_refs[]`               | Evidencia de autoridad para aprobar la política y sus cambios.                                  |
+
+Reglas obligatorias:
+
+1. la clase base orienta el comportamiento, pero nunca rellena automáticamente un periodo;
+2. una duración sin evento inicial verificable es inválida;
+3. `minimum_period` y `maximum_period` son conceptos distintos;
+4. el acceso frecuente, la última consulta, `updated_at`, una sincronización o un cambio de ubicación no reinician el reloj salvo política explícita y fundada;
+5. una nueva versión de política no reinterpreta silenciosamente historia anterior;
+6. una copia o exportación no adquiere por defecto un plazo independiente que permita eludir el de su fuente;
+7. si falta cualquier fundamento o campo material para decidir disposición, la política permanece `RET_UNRESOLVED` y la disposición queda bloqueada;
+8. conservar indefinidamente por inercia no es una política válida, aunque el bloqueo preventivo siga impidiendo eliminar hasta resolver la obligación.
+
+---
+
+#### 6. Estado actual de los plazos y fundamentos
+
+Las fuentes canónicas disponibles no aportan una tabla aprobada que asigne duraciones numéricas y fundamentos verificables a las 332 identidades. No se inventan años, meses, días, máximos, mínimos, prescripciones, obligaciones tributarias, laborales, comerciales, sanitarias, contractuales, de privacidad o probatorias.
+
+Por tanto:
+
+- `retention_policy_id`: `RET_UNRESOLVED` para 332/332;
+- `minimum_period`: `PENDIENTE_DE_EVIDENCIA` para 332/332;
+- `maximum_period`: `PENDIENTE_DE_EVIDENCIA` para 332/332;
+- `obligation_refs[]`: `PENDIENTE_DE_EVIDENCIA` cuando deba justificar el periodo o la disposición;
+- estado ejecutable: `BLOQUEADO` para 332/332;
+- disposición automática: prohibida para 332/332.
+
+El insumo documental pendiente tiene como propietario `INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento`. La condición de salida es disponer de una obligación o fundamento verificable y aprobado que permita fijar `obligation_refs[]`, evento inicial, mínimo, máximo, método, excepciones y aprobaciones sin inferencia. La existencia de esa tarea futura no autoriza anticipar sus resultados ni modifica la continuidad de la tarea actual.
+
+---
+
+#### 7. `INFO-RETENTION-SCHEDULE-001`
+
+La tabla corporativa actual conserva las cinco clases heredadas y les asigna una regla de cómputo estructural, no un periodo jurídico:
+
+| Clase heredada       | Identidades | Perfil de evento                              | Regla de cómputo                                                                                                                                                       | Periodos actuales        | Disposición |
+| -------------------- | ----------: | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------- |
+| `RET_ACTIVE_CASE`    |      **33** | `RET_EVT_CASE_CLOSED`                         | El reloj solo puede iniciar desde el cierre autoritativo del caso o expediente aplicable.                                                                              | `PENDIENTE_DE_EVIDENCIA` | `BLOQUEADA` |
+| `RET_BUSINESS_CYCLE` |     **184** | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | El reloj solo puede iniciar desde el cierre autoritativo del ciclo empresarial que gobierna el recurso.                                                                | `PENDIENTE_DE_EVIDENCIA` | `BLOQUEADA` |
+| `RET_RELATIONSHIP`   |      **36** | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | El cómputo exige terminación autoritativa de la relación y resolución de las obligaciones que la política declare necesarias; no se presume que ambos hitos coincidan. | `PENDIENTE_DE_EVIDENCIA` | `BLOQUEADA` |
+| `RET_OBLIGATION`     |      **66** | `RET_EVT_LAST_OBLIGATION_CLOSED`              | El reloj solo puede iniciar desde el cierre o extinción autoritativa de la última obligación aplicable declarada por la política.                                      | `PENDIENTE_DE_EVIDENCIA` | `BLOQUEADA` |
+| `RET_ARCHIVAL`       |      **13** | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | La clase no permite inferir un plazo de disposición; requiere evento y autoridad archivística o legal expresamente resolubles.                                         | `PENDIENTE_DE_EVIDENCIA` | `BLOQUEADA` |
+| **Total**            |     **332** |                                               |                                                                                                                                                                        |                          |             |
+
+---
+
+#### 8. `INFO-RETENTION-COMPUTATION-EVENT-CATALOG-001`
+
+Catálogo cerrado de eventos utilizables por una política:
+
+| Código                                        | Significado                                 | Condición mínima                                                       |
+| --------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
+| `RET_EVT_CREATED_OR_RECEIVED`                 | Creación o recepción controlada.            | Identidad, versión, proceso y tiempo autoritativo resolubles.          |
+| `RET_EVT_EFFECTIVE`                           | Inicio de vigencia empresarial.             | `effective_at` autoritativo y política que lo seleccione.              |
+| `RET_EVT_PUBLISHED`                           | Publicación controlada.                     | Publicación empresarial válida, no simple carga técnica.               |
+| `RET_EVT_SUPERSEDED`                          | Sustitución efectiva.                       | Sucesor efectivo y relación de supersesión preservada.                 |
+| `RET_EVT_WITHDRAWN`                           | Retiro controlado.                          | Evento de retiro autoritativo.                                         |
+| `RET_EVT_EXPIRED`                             | Vencimiento empresarial.                    | Expiración autoritativa, no ausencia de uso.                           |
+| `RET_EVT_CASE_CLOSED`                         | Cierre del caso o expediente.               | Estado de cierre autoritativo y no solo ocultamiento o archivo físico. |
+| `RET_EVT_BUSINESS_CYCLE_CLOSED`               | Cierre del ciclo empresarial gobernante.    | Evento de cierre del recurso propietario.                              |
+| `RET_EVT_RELATIONSHIP_TERMINATED`             | Fin de relación.                            | Terminación autoritativa de la relación.                               |
+| `RET_EVT_LAST_OBLIGATION_CLOSED`              | Cierre de la última obligación aplicable.   | Obligaciones y cierre verificables.                                    |
+| `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | Regla compuesta de relación y obligaciones. | Política explícita que determine el hito gobernante sin inferencia.    |
+| `RET_EVT_PURPOSE_ENDED`                       | Fin de finalidad aplicable.                 | Finalidad y evento de terminación aprobados.                           |
+| `RET_EVT_PHYSICAL_DISPOSITION`                | Disposición física de un soporte gobernado. | Evidencia del evento y relación con la identidad correspondiente.      |
+| `RET_EVT_HOLD_RELEASED`                       | Liberación aprobada de hold.                | Evento de liberación; no reinicia el plazo por defecto.                |
+| `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | Evento archivístico aún no resoluble.       | Autoridad y evento explícitos antes de computar disposición.           |
+
+No se autoriza usar `created_at`, `updated_at`, última consulta, última exposición, última sincronización, nombre de archivo, fecha de movimiento de bucket o fecha de backup como sustitutos del evento empresarial requerido.
+
+---
+
+#### 9. Regla de cómputo temporal
+
+La evaluación canónica se expresa así:
+
+```text
+POLICY_VERSION_APPLICABLE
++
+AUTHORITATIVE_TRIGGER_EVENT
++
+TRIGGER_TIME_ALLOWED_BY_POLICY
++
+MINIMUM_PERIOD
++
+MAXIMUM_PERIOD
++
+CURRENT_RESOURCE_STATE
++
+ACTIVE_HOLDS_OR_PRESERVATION
++
+PENDING_OBLIGATIONS
++
+THIRD_PARTY_AND_BACKUP_STATUS
++
+DISPOSITION_ERRORS_OR_RESIDUALS
+→ RETENTION / ELIGIBILITY DECISION
+```
+
+Reglas:
+
+1. `trigger_at` debe provenir del evento tipado y de la dimensión temporal que la política declare autoritativa; no se elige el timestamp más conveniente;
+2. si el evento dispone de `effective_at`, `occurred_at`, `recorded_at`, `received_at`, `committed_at` o `synchronized_at`, cada uno conserva su significado y la política debe declarar cuál gobierna el cómputo;
+3. un reloj local ambiguo, una zona horaria desconocida o una corrección temporal no se resuelven por orden de llegada;
+4. una corrección del evento de origen crea un hecho nuevo enlazado; no reescribe el evento histórico;
+5. un hold activo bloquea disposición, pero no borra ni reinicia silenciosamente el trigger ni la política;
+6. al liberar un hold se recalcula elegibilidad con la política aplicable y los hechos conservados; la liberación no ejecuta disposición automáticamente;
+7. si el periodo, trigger, obligación o política no son resolubles, el resultado es `POLICY_UNRESOLVED` o `DISPOSITION_BLOCKED` y no una fecha aproximada;
+8. un máximo vencido con hold, investigación, obligación o fallo pendiente queda bloqueado con causa explícita; no se presenta como cumplimiento.
+
+---
+
+#### 10. Estados de retención y disposición
+
+Se adopta el ciclo heredado:
+
+```text
+ACTIVE
+→ INACTIVE
+→ ARCHIVE_PENDING
+→ ARCHIVED
+→ ELIGIBLE_FOR_DISPOSITION
+→ DISPOSITION_PENDING
+→ DISPOSED | ANONYMIZED | TRANSFERRED
+```
+
+Estados transversales:
+
+- `HOLD_ACTIVE`;
+- `PRESERVATION_REQUIRED`;
+- `DISPOSITION_BLOCKED`;
+- `DISPOSITION_FAILED`;
+- `POLICY_UNRESOLVED`.
+
+Cada transición futura deberá conservar política y versión, actor o sistema, razón, fecha, alcance, estado anterior, estado nuevo y evidencia de soporte. Ningún estado se infiere desde un bucket, carpeta, borrado lógico, ausencia en interfaz o movimiento técnico.
+
+---
+
+#### 11. `INFO-ARCHIVE-CONTRACT-001`
+
+Archivo significa conservación gobernada de un objeto que deja de ser de uso operativo ordinario pero debe permanecer interpretable y localizable bajo política.
+
+El archivo deberá preservar:
+
+- `document_id`, versión y `document_context_id`;
+- proceso, instancia y recurso empresarial;
+- clasificación y reglas de acceso;
+- metadatos y vínculo con representaciones;
+- integridad y legibilidad;
+- política y versión de retención;
+- trigger y tiempos relevantes;
+- procedencia y custodia;
+- índice o mecanismo de búsqueda autorizado;
+- posibilidad de migración futura sin perder significado;
+- elegibilidad y disposición futura cuando la política lo permita.
+
+No constituyen archivo por sí solos:
+
+- un backup;
+- una carpeta personal;
+- un bucket o prefijo técnico;
+- una exportación manual sin custodia;
+- una tabla legacy abandonada;
+- un dispositivo o correo electrónico;
+- un objeto movido a almacenamiento frío sin metadatos y política resolubles.
+
+Archivar no cambia automáticamente la clasificación, no concede acceso, no sustituye la política y no elimina el deber de disposición futura cuando corresponda.
+
+---
+
+#### 12. `INFO-LEGAL-HOLD-CONTRACT-001`
+
+Todo hold deberá materializar, como mínimo:
+
+```text
+hold_id
+hold_type
+scope_query_or_manifest
+reason_code
+authority_ref
+requested_by
+approved_by
+issued_at
+effective_at
+review_at
+release_condition
+released_at
+custodian
+notification_status
+preservation_actions[]
+exceptions[]
+```
+
+Reglas:
+
+1. un hold tiene alcance explícito; no existe un hold global por conveniencia;
+2. un hold activo prevalece sobre anonimización destructiva, eliminación y disposición incompatible;
+3. imponer hold no amplía permisos, visibilidad, finalidad ni clasificación;
+4. el alcance se propaga a copias, derivados, índices, archivos y representaciones gobernadas cuando formen parte del manifiesto o de la política aplicable;
+5. el hold conserva propietario, revisión y condición de salida; no puede permanecer indefinidamente sin revisión;
+6. modificar o liberar hold es un hecho separado, autorizado y auditable;
+7. la liberación conserva historia y recalcula elegibilidad; no elimina automáticamente;
+8. una solicitud informal, comentario o mensaje sin autoridad no se transforma en hold ejecutable;
+9. si la autoridad, el alcance o la relación con los objetos no son resolubles, se bloquea la disposición conservando la incertidumbre.
+
+---
+
+#### 13. Elegibilidad de disposición
+
+Una identidad solo podrá llegar a `ELIGIBLE_FOR_DISPOSITION` cuando simultáneamente:
+
+- exista política y versión resolubles;
+- exista trigger autoritativo verificable;
+- el mínimo haya sido satisfecho;
+- el máximo y la regla de acción sean evaluables;
+- el estado del recurso permita disposición;
+- no exista hold activo incompatible;
+- no exista preservación requerida, investigación, obligación o excepción pendiente;
+- copias y derivados estén inventariados suficientemente;
+- tratamiento de terceros sea conocido cuando aplique;
+- tratamiento de backups sea conocido;
+- no existan fallos de disposición anteriores sin reconciliar;
+- exista autoridad para aprobar el método.
+
+`RET_UNRESOLVED` bloquea tanto la ejecución automática como cualquier certificado que pretenda afirmar disposición completa.
+
+---
+
+#### 14. Manifiesto de disposición
+
+Antes de una ejecución futura deberá existir un manifiesto versionado que fije:
+
+- política y versión;
+- identidad o conjunto exacto de identidades;
+- proceso, instancia y recurso;
+- trigger y fecha de elegibilidad;
+- método autorizado;
+- filas, archivos y representaciones;
+- adjuntos, thumbnails, cachés, índices y búsquedas;
+- exportaciones controladas y copias temporales;
+- derivados y agregados identificables cuando sigan sujetos a la política;
+- terceros y estado de su copia;
+- backups y tratamiento pendiente;
+- hold y excepciones evaluados;
+- aprobador, ejecutor y segregación aplicable;
+- mecanismo de reintento idempotente;
+- criterios de éxito, fallo parcial y residual;
+- evidencia esperada de verificación.
+
+No se certifica un conjunto si algún componente requerido queda desconocido, pendiente o fallido sin tratamiento explícito.
+
+---
+
+#### 15. Segregación de funciones para disposición
+
+Las funciones lógicas se mantienen separadas:
+
+```text
+SOLICITAR
+≠ APROBAR
+≠ EJECUTAR
+≠ VERIFICAR
+≠ CERTIFICAR
+```
+
+La política de autorización definitiva corresponde al dominio de autorización aplicable. Esta tarea establece que una disposición sensible no puede asumir que la misma identidad solicita, aprueba, ejecuta y certifica sin una excepción explícita y auditable.
+
+---
+
+#### 16. Anonimización
+
+La anonimización solo puede ser un método de disposición cuando:
+
+- la política la autoriza;
+- existe método y versión documentados;
+- se conoce el conjunto de atributos, claves, derivados y fuentes correlacionables relevantes;
+- se evalúa el riesgo de reidentificación con el contexto razonablemente disponible;
+- el resultado deja de poder vincularse razonablemente con la persona o sujeto bajo el contrato aprobado;
+- no existe hold o preservación incompatible;
+- se tratan copias, índices, exportaciones y derivados gobernados;
+- se conserva evidencia mínima del método y resultado sin conservar por esa vía los datos dispuestos.
+
+Ocultar identificadores directos, tokenizar, seudonimizar, truncar, enmascarar o retirar columnas no demuestra por sí solo anonimización. Si la transformación es reversible o el sujeto sigue razonablemente reidentificable, el resultado continúa sujeto al gobierno correspondiente.
+
+El método criptográfico, hash o prueba de integridad del resultado queda fuera del alcance de esta tarea y corresponde a `INFO-DOM-007` cuando aplique.
+
+---
+
+#### 17. Eliminación controlada
+
+Una eliminación completa no equivale a ejecutar `DELETE` sobre una fila ni a retirar un objeto principal de Storage.
+
+La ejecución futura deberá:
+
+1. fijar el manifiesto;
+2. verificar política, trigger, mínimo, máximo, estado y autoridad;
+3. verificar hold, investigación, obligación y excepción;
+4. tratar referencias y dependencias sin crear huérfanos silenciosos;
+5. tratar representaciones, adjuntos, thumbnails, índices, cachés, colas, exportaciones y derivados gobernados;
+6. distinguir copias de terceros pendientes y verificadas;
+7. tratar backups conforme a su ciclo sin permitir uso ordinario de información ya dispuesta;
+8. ejecutar de forma idempotente y registrar resultado por componente;
+9. conservar `DISPOSITION_FAILED` ante cualquier fallo parcial material;
+10. verificar residuales antes de cerrar;
+11. crear evidencia o certificado solo después del resultado verificado;
+12. impedir resurrección ordinaria después de restauraciones futuras.
+
+Un componente ya dispuesto no se destruye de nuevo por un reintento; el sistema debe consultar el resultado previo y reconciliar el estado.
+
+---
+
+#### 18. Backups y no resurrección
+
+Backup conserva finalidad de recuperación y ciclo propio; no es archivo ni mecanismo para evadir disposición.
+
+Si una copia de backup no puede purgarse inmediatamente sin comprometer el contrato de recuperación, la política deberá declarar su expiración y el tratamiento del dato dispuesto. Durante ese intervalo:
+
+- la copia no se vuelve fuente de consulta ordinaria;
+- una restauración debe reaplicar disposiciones, tombstones, revocaciones, políticas y holds posteriores al punto recuperado antes de habilitar acceso;
+- el dato no puede reaparecer como vigente por el solo hecho de existir en un punto de recuperación;
+- la expiración del backup no sustituye la verificación de la disposición en los sistemas ordinarios.
+
+---
+
+#### 19. Terceros y copias externas
+
+Cuando exista una copia gobernada en un tercero, la disposición interna no permite afirmar eliminación global mientras su tratamiento permanezca pendiente.
+
+Estados lógicos permitidos para el seguimiento:
+
+- `DISPOSED_INTERNAL`;
+- `THIRD_PARTY_PENDING`;
+- `DISPOSED_VERIFIED`.
+
+El detalle contractual de terceros, destinatarios, subencargados y transferencias corresponde a `INFO-DOM-010` e `INFO-INT-003`. Esta tarea exige conservar el estado y la evidencia necesarios para no certificar más alcance del realmente verificado.
+
+---
+
+#### 20. `INFO-DISPOSITION-CERTIFICATE-CONTRACT-001`
+
+Un certificado podrá existir únicamente después de una ejecución real y verificada. Esta tarea define el contrato; no emite certificados de objetos reales.
+
+Contenido mínimo:
+
+```text
+disposition_certificate_id
+disposition_manifest_id
+retention_policy_id
+retention_policy_version
+scope_ref
+process_ref
+resource_ref
+trigger_event_ref
+eligibility_evaluated_at
+hold_check_ref
+approved_method
+execution_started_at
+execution_completed_at
+requested_by
+approved_by
+executed_by
+verified_by
+components_expected
+components_succeeded
+components_failed
+third_party_status
+backup_status
+residual_status
+result_status
+verification_refs[]
+exception_refs[]
+issued_at
+integrity_evidence_ref
+```
+
+Reglas:
+
+1. el certificado no contiene el contenido eliminado o anonimizado;
+2. `result_status` no puede ser exitoso si existen componentes materiales fallidos o desconocidos;
+3. `THIRD_PARTY_PENDING`, backups vigentes o residuales se declaran expresamente y limitan el alcance del certificado;
+4. el certificado conserva segregación entre aprobación, ejecución y verificación según riesgo;
+5. una política `RET_UNRESOLVED` no puede producir certificado de disposición completa;
+6. una evidencia de eliminación técnica parcial no equivale a certificado empresarial;
+7. la prueba criptográfica o mecanismo exacto de integridad se completará bajo `INFO-DOM-007` sin reescribir el contenido del certificado.
+
+---
+
+#### 21. Tratamiento de cambios de política
+
+- una política nueva requiere versión nueva;
+- la versión anterior permanece interpretable para historia;
+- el cambio de mínimo, máximo, trigger, método, alcance, obligación, excepción o tratamiento de backup es material;
+- no se aplica retroactivamente una política más corta o más larga sin fundamento, autoridad y regla explícita;
+- una política sustituida conserva `superseded_at` y sus referencias históricas;
+- una política retirada no borra certificados, holds ni decisiones emitidas bajo ella;
+- si una versión nueva deja una identidad sin regla resoluble, el estado vuelve a `POLICY_UNRESOLVED` y bloquea disposición.
+
+---
+
+#### 22. Fronteras con tareas posteriores
+
+- `INFO-DOM-007` define autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia; esta tarea solo exige referencias de integridad donde correspondan.
+- `INFO-DOM-008` gobierna fundamentos, consentimientos y condiciones de tratamiento de datos personales sin reemplazar la política de retención.
+- `INFO-DOM-010` gobierna terceros, encargados, destinatarios y transferencias; esta tarea conserva el estado de disposición externa.
+- `INFO-DOM-012` es el propietario documental del registro de obligaciones, controles, evidencias, responsables y brechas que deberá aportar fundamentos verificables para resolver periodos todavía pendientes.
+- `INFO-DOM-013` gobierna investigación de accesos o cambios indebidos, preservación y cierre; un caso activo puede imponer preservación o hold sin alterar silenciosamente la política normal.
+- los bloques E3/R y paquetes E5 materializarán tablas, jobs, migraciones, autorizaciones y ejecuciones físicas cuando sean autorizados; esta tarea no los implementa.
+
+---
+
+#### 23. Matriz materializada `INFO-RETENTION-DISPOSITION-MATRIX-001` — 332 de 332
+
+Cada identidad conserva su clase base heredada. La estructura de política, perfil de evento, archivo, hold, disposición y certificado queda especificada; la política ejecutable permanece bloqueada porque mínimo, máximo y fundamento verificable no están disponibles en las fuentes actuales.
+
+| ID contextual          | Proceso      | Clase base           | Política         | Evento de cómputo                             | Mínimo                   | Máximo                   | Archivo                  | Hold                  | Disposición           | Certificado                                 | Estado      | Bloqueo / frontera                                         |
+| ---------------------- | ------------ | -------------------- | ---------------- | --------------------------------------------- | ------------------------ | ------------------------ | ------------------------ | --------------------- | --------------------- | ------------------------------------------- | ----------- | ---------------------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `RET_EVT_ARCHIVAL_AUTHORITY_REQUIRED`         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `RET_EVT_RELATIONSHIP_AND_OBLIGATIONS_CLOSED` | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `RET_EVT_LAST_OBLIGATION_CLOSED`              | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING`                      |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `RET_EVT_CASE_CLOSED`                         | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `RET_EVT_BUSINESS_CYCLE_CLOSED`               | `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | `ARCHIVE_BY_POLICY_ONLY` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_BLOCKED` | `CERTIFICATE_AFTER_VERIFIED_EXECUTION_ONLY` | `BLOQUEADO` | `RET_POLICY_PERIOD_AND_BASIS_PENDING+FRONTERA_OBLIGATORIA` |
+
+
+---
+
+#### 24. Reconciliación cuantitativa
+
+| Clase                | Esperado | Materializado |
+| -------------------- | -------: | ------------: |
+| `RET_ACTIVE_CASE`    |   **33** |        **33** |
+| `RET_BUSINESS_CYCLE` |  **184** |       **184** |
+| `RET_RELATIONSHIP`   |   **36** |        **36** |
+| `RET_OBLIGATION`     |   **66** |        **66** |
+| `RET_ARCHIVAL`       |   **13** |        **13** |
+| **Total**            |  **332** |       **332** |
+
+| Frontera heredada      | Esperado | Materializado |
+| ---------------------- | -------: | ------------: |
+| `NINGUNO`              |   **73** |        **73** |
+| `FRONTERA_OBLIGATORIA` |  **245** |       **245** |
+| `APLICACION_DIFERIDA`  |   **14** |        **14** |
+| **Total**              |  **332** |       **332** |
+
+Resultado de integridad documental:
+
+- 332 identificadores esperados;
+- 332 filas materializadas;
+- 332 claves `DOCCTX-*` únicas;
+- 69 procesos representados;
+- 0 faltantes;
+- 0 duplicados;
+- 332 políticas ejecutables todavía `RET_UNRESOLVED`;
+- 332 identidades con disposición bloqueada por falta de periodo y fundamento verificable;
+- 0 identidades habilitadas para disposición automática.
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+La tarea materializa decisiones dentro de comportamientos ya protegidos por el registro canónico vigente: política versionada, triggers autoritativos, mínimo/máximo, estados de retención, legal hold, archivo, elegibilidad, segregación, disposición idempotente, anonimización, copias, terceros, backups, no resurrección y certificado. No amplía el comportamiento protegido ni retira una protección existente.
+
+Balance:
+
+- creados: 0;
+- modificados: 0;
+- diferidos: 0;
+- descartados: 0;
+- obsoletos: 0.
+
+---
+
+#### 26. Criterios de aceptación
+
+- [x] Se preservan 69/69 procesos y 332/332 identidades `DOCCTX-*`.
+- [x] Cada identidad tiene decisión explícita de clase, política, evento, mínimo, máximo, archivo, hold, disposición, certificado, estado y bloqueo.
+- [x] Se preservan exactamente las distribuciones heredadas de clases y fronteras.
+- [x] Se define el contrato completo de política versionada de retención.
+- [x] Se define un catálogo cerrado de eventos de cómputo y se impide usar timestamps técnicos ambiguos como sustituto.
+- [x] Se distinguen periodo mínimo y periodo máximo.
+- [x] No se inventa ningún plazo numérico ni fundamento ausente.
+- [x] Las 332 políticas continúan bloqueadas mientras no exista fundamento, mínimo y máximo verificables.
+- [x] Se define archivo sin confundirlo con backup ni ubicación técnica.
+- [x] Se define imposición, revisión y liberación de legal hold sin ampliar permisos.
+- [x] Se define elegibilidad y manifiesto de disposición con tratamiento de copias, derivados, terceros y backups.
+- [x] Se define anonimización sin equipararla a masking, tokenización o seudonimización.
+- [x] Se define eliminación idempotente con estado de fallo parcial y no resurrección.
+- [x] Se define el certificado de disposición sin emitir evidencia ficticia.
+- [x] Se preservan las fronteras con autenticidad, privacidad, terceros, obligaciones, investigación e implementación física.
+- [x] No se realizan cambios físicos ni se habilita disposición automática.
+- [x] El balance de requisitos de prueba es cero cambios.
+
+---
+
+#### 27. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia`
+
+
 ### [ ] INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
 ### [ ] INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
 ### [ ] INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
