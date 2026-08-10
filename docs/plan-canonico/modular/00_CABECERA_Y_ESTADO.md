@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **650** |
+| Tareas aprobadas | **651** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **944** |
+| Tareas no iniciadas | **943** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **40.78% (650/1594)** |
+| Porcentaje de completamiento | **40.84% (651/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición** |
-| Tarea actual | **INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia** |
+| Última tarea aprobada | **INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia** |
+| Tarea actual | **INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles** |
+| Siguiente tarea | **INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 74 de 157 aprobadas; INFO-DOM-007 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 75 de 157 aprobadas; INFO-DOM-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INFO-DOM-006` — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición |
-| Tarea actual | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia — **NO INICIADA** |
-| Siguiente tarea | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles |
+| Última aprobada | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia |
+| Tarea actual | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles — **NO INICIADA** |
+| Siguiente tarea | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 74 DE 157 APROBADAS — ACTUAL INFO-DOM-007** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 75 DE 157 APROBADAS — ACTUAL INFO-DOM-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
-        ↓
-TAREA ACTUAL
 INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
         ↓
+SIGUIENTE TAREA RESERVADA
+INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 74 de 157 tareas aprobadas
+CARRIL NEXO — 75 de 157 tareas aprobadas
 ```

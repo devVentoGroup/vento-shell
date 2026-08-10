@@ -4796,7 +4796,599 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia`
 
 
-### [ ] INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
+### ✅ INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición` — APROBADA
+**Tarea siguiente:** `INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles` — RESERVADA
+**Tipo de tarea:** documental; materialización transversal del contrato corporativo de autenticidad, integridad, procedencia, evidencia temporal, preservación y cadena de custodia
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo heredado:** 69 procesos `VPROC-*` y 332 identidades contextuales `DOCCTX-*`
+**Contratos materializados:** `INFO-DOCUMENT-AUTHENTICITY-CONTRACT-001`; `INFO-DOCUMENT-INTEGRITY-CONTRACT-001`; `INFO-DOCUMENT-PROVENANCE-CONTRACT-001`; `INFO-DOCUMENT-TRUSTED-TIME-CONTRACT-001`; `INFO-DOCUMENT-PRESERVATION-CONTRACT-001`; `INFO-DOCUMENT-CHAIN-OF-CUSTODY-CONTRACT-001`; `INFO-DOCUMENT-AUTHENTICITY-CUSTODY-MATRIX-001`
+**Cambios físicos autorizados:** ninguno; esta tarea no crea ni modifica esquema, datos, Storage, proveedores de tiempo, mecanismos de firma ni infraestructura de preservación
+
+#### 1. Propósito y resultado material
+
+Esta tarea materializa, para el universo documental corporativo ya identificado, el contrato que permite distinguir y conservar evidencia verificable de autenticidad, integridad, procedencia, tiempo, preservación y custodia sin convertir una señal técnica aislada en prueba de hechos que no demuestra.
+
+El resultado establece reglas consumibles para documentos, registros y evidencias, y las aplica explícitamente a las 332 identidades `DOCCTX-*`. La materialización es normativa y no afirma que las instancias físicas o digitales actualmente existentes ya dispongan de toda la evidencia requerida.
+
+#### 2. Principios de separación obligatoria
+
+1. Autenticidad, integridad, procedencia, temporalidad, preservación y custodia son dimensiones relacionadas pero no intercambiables.
+2. Un hash de contenido prueba fijación de bytes bajo un algoritmo y contrato determinados; por sí solo no prueba autoría, identidad del emisor, intención, aceptación, firma, fecha jurídica, validez empresarial ni cumplimiento.
+3. Antivirus, validación de formato, legibilidad técnica o ausencia de corrupción no equivalen a autenticidad.
+4. Firma electrónica, firma digital, aceptación y niveles de evidencia de firma permanecen bajo `INFO-DOM-011`; esta tarea solo conserva las referencias y evidencias que existan sin atribuirles un nivel no aprobado.
+5. Vigencia documental y fechas de efecto definidas en `INFO-DOM-004` son distintas de los tiempos técnicos o probatorios de creación, recepción, registro, confirmación y sincronización.
+6. Localización y almacenamiento definidos en `INFO-DOM-005` no prueban autenticidad ni custodia por sí solos.
+7. Retención, legal hold, archivo y disposición definidos en `INFO-DOM-006` gobiernan cuánto debe conservarse la evidencia; preservación no significa retención indefinida.
+8. Una copia, derivado o representación técnica no adquiere autoridad empresarial por existir, tener el mismo hash o estar alojada en una infraestructura corporativa.
+
+#### 3. `INFO-DOCUMENT-AUTHENTICITY-CONTRACT-001`
+
+La autenticidad se evalúa respecto de una identidad documental y una versión concretas. Debe poder resolverse un conjunto suficiente de evidencia que conecte el objeto con su origen, contexto empresarial, procedencia y hechos de incorporación o emisión.
+
+El contrato mínimo de autenticidad conserva, cuando sean aplicables y estén respaldados por evidencia:
+
+- `document_id`, `document_context_id`, `document_version` y `representation_id`;
+- proceso, instancia de proceso y recurso empresarial relacionado;
+- origen o fuente declarada y evidencia que permita sostener esa declaración;
+- creador, emisor, sistema productor o fuente técnica solo cuando pueda atribuirse de forma verificable;
+- evento de creación, emisión, recepción, incorporación, aprobación o registro que corresponda;
+- referencias de integridad de la versión y representación exactas;
+- referencias de procedencia, custodia y evidencia temporal pertinentes;
+- estado de resolución de la afirmación de autenticidad y sus bloqueos.
+
+Reglas obligatorias:
+
+- `AUTHENTICITY_EVIDENCE_REQUIRED` exige evidencia positiva; nombre de archivo, ruta, bucket, URL, usuario visible, metadato libre o hash aislado no bastan.
+- `AUTHENTICITY_NO_HASH_SHORTCUT` impide concluir autenticidad a partir de igualdad de digest.
+- `AUTHENTICITY_NO_SIGNATURE_INFERENCE` impide concluir firma o aceptación por presencia de una imagen, certificado, nombre, sello o campo técnico no validado por el contrato propietario.
+- `AUTHENTICITY_VERSION_SCOPED` vincula la afirmación a la versión y representación exactas; una versión posterior requiere su propia evidencia.
+- `AUTHENTICITY_FAIL_CLOSED` impide afirmar autenticidad verificable cuando la evidencia esencial no sea resoluble.
+
+Cuando una instancia concreta no tenga evidencia suficiente, el estado aplicable será `PENDIENTE_DE_EVIDENCIA`, con el insumo faltante identificado. La condición de salida es que la fuente autoritativa correspondiente sea resoluble y satisfaga este contrato; no se suple con inferencias.
+
+#### 4. `INFO-DOCUMENT-INTEGRITY-CONTRACT-001`
+
+La integridad de contenido se controla mediante registros de fijación vinculados a los bytes exactos de una representación concreta. El registro de integridad es evidencia técnica versionada, no identidad documental ni firma.
+
+Cada registro de fijación deberá poder conservar:
+
+- `integrity_record_id`;
+- `document_id`, `document_version` y `representation_id`;
+- algoritmo o perfil criptográfico identificado y versionado;
+- digest calculado;
+- longitud exacta en bytes;
+- momento de cálculo y actor o servicio que lo produjo;
+- resultado de verificación;
+- momento, actor o servicio de verificación;
+- referencia a la verificación previa cuando exista;
+- evidencia técnica de lectura, cálculo o comparación suficiente para auditoría.
+
+Reglas obligatorias:
+
+- `INTEGRITY_EXACT_BYTES` vincula el digest a una secuencia exacta de bytes, no a una interpretación visual o nombre lógico.
+- `INTEGRITY_ALGORITHM_VERSIONED` exige algoritmo y versión resolubles; esta tarea no impone un algoritmo global no sustentado por una fuente canónica.
+- `INTEGRITY_NO_IDENTITY_MERGE` establece que dos representaciones con el mismo digest no se fusionan ni comparten identidad automáticamente.
+- `INTEGRITY_CHANGED_BYTES_NEW_EVIDENCE` obliga a generar nueva evidencia de fijación cuando cambien los bytes; el tratamiento como nueva versión, representación o derivado sigue el ciclo documental aprobado.
+- `INTEGRITY_DERIVATIVE_OWN_DIGEST` exige digest propio para derivados y mantiene vínculo con su fuente.
+- `INTEGRITY_REVERIFY` permite y exige, cuando la política de preservación lo requiera, verificaciones periódicas sin sobrescribir el historial previo.
+- `INTEGRITY_FAILURE_FAIL_CLOSED` trata una discrepancia no explicada como incidente de integridad y evita presentar el objeto como verificado hasta su resolución.
+
+#### 5. `INFO-DOCUMENT-PROVENANCE-CONTRACT-001`
+
+La procedencia describe de dónde proviene una versión o representación, cómo ingresó al dominio gobernado y qué transformaciones verificables la conectan con su origen. Se conserva como historia append-only.
+
+Cada evento de procedencia deberá poder registrar:
+
+- `provenance_event_id`;
+- documento, versión y representación exactos;
+- proceso, instancia y recurso empresarial aplicables;
+- tipo de origen: producción interna, recepción externa, importación, migración, captura física, derivación o mecanismo equivalente explícitamente gobernado;
+- identificador de fuente o referencia autoritativa cuando exista;
+- actor, servicio, emisor o sistema fuente verificable;
+- evento que explica incorporación, transformación o derivación;
+- representación o versión fuente cuando exista una relación de linaje;
+- método, regla o versión de transformación cuando aplique;
+- tiempos tipados;
+- `correlation_id` y `causation_id` cuando existan en la cadena causal;
+- resultado y referencias de evidencia.
+
+Una corrección de procedencia crea un nuevo evento que explica la rectificación y enlaza el hecho previo; no reescribe silenciosamente la procedencia histórica.
+
+#### 6. `INFO-DOCUMENT-TRUSTED-TIME-CONTRACT-001`
+
+El modelo temporal conserva significados distintos para los momentos relevantes. Para cada hecho se utilizará únicamente el campo cuyo significado pueda sostenerse por la fuente y el mecanismo observados.
+
+Tiempos tipados mínimos, cuando apliquen:
+
+- `occurred_at`: momento en que ocurrió el hecho empresarial o técnico;
+- `recorded_at`: momento en que el hecho fue registrado por el productor;
+- `received_at`: momento en que un receptor verificable recibió el hecho u objeto;
+- `committed_at`: momento en que la persistencia autoritativa confirmó el commit;
+- `synchronized_at`: momento en que una operación diferida u offline fue sincronizada;
+- zona horaria, fuente de reloj y evidencia de deriva o sincronización cuando sean relevantes.
+
+Reglas obligatorias:
+
+- `TIME_NO_UPDATED_AT_PROXY` prohíbe usar un timestamp genérico de modificación como sustituto de un hecho tipado.
+- `TIME_NO_PERSISTENCE_ORDER_INFERENCE` prohíbe ordenar hechos únicamente por el momento de persistencia cuando exista creación offline, recepción tardía, reintento o sincronización.
+- `TIME_EFFECTIVE_DATE_SEPARATE` mantiene separadas las fechas de vigencia empresarial de los timestamps técnicos y probatorios.
+- `TIME_TRUST_CLAIM_EVIDENCED` permite declarar sello o timestamp confiable, cualificado o equivalente únicamente cuando exista evidencia del mecanismo y de su autoridad aplicable; su ausencia impide esa afirmación.
+- `TIME_SOURCE_EXPLICIT` exige fuente de reloj o mecanismo temporal cuando la precisión o el orden formen parte de la prueba.
+
+#### 7. `INFO-DOCUMENT-PRESERVATION-CONTRACT-001`
+
+La preservación conserva la capacidad de demostrar identidad, contenido, contexto, integridad, procedencia y lectura de una versión durante el periodo en que su política obliga a mantenerla.
+
+El contrato exige:
+
+- preservar identidad lógica, versión y representaciones gobernadas;
+- mantener metadatos y vínculos empresariales necesarios para interpretar el objeto;
+- mantener procedencia y cadena de custodia;
+- conservar evidencia de integridad y resultados de verificaciones periódicas;
+- preservar legibilidad o capacidad controlada de interpretación cuando el formato o soporte envejezca;
+- documentar toda migración, conversión, reparación o restauración que cambie representación;
+- mantener el original o la referencia autoritativa requerida mientras la política aplicable lo exija;
+- tratar cada derivado como representación identificable con digest y linaje propios;
+- mantener los controles de clasificación, autorización, retención y hold durante preservación.
+
+Una copia de recuperación no se convierte por ello en archivo permanente ni en nueva fuente empresarial. Una conversión de formato no puede destruir el vínculo con la representación fuente ni ocultar diferencias de contenido.
+
+#### 8. `INFO-DOCUMENT-CHAIN-OF-CUSTODY-CONTRACT-001`
+
+La cadena de custodia registra cambios verificables de posesión, control, custodia o responsabilidad material sobre una representación, sin confundirlos con propiedad empresarial, autorización de acceso ni titularidad jurídica.
+
+Cada evento de custodia deberá poder conservar:
+
+- `custody_event_id`;
+- documento, versión y representación exactos;
+- custodio anterior y custodio posterior cuando exista transferencia;
+- actor o servicio que ejecuta o registra la acción;
+- autoridad y finalidad de la acción;
+- tipo de evento: recepción, entrega, traslado, depósito, retiro, préstamo, devolución, transferencia técnica, recuperación, preservación o equivalente gobernado;
+- `occurred_at` y `recorded_at`, y otros tiempos tipados cuando apliquen;
+- localización anterior y posterior mediante las referencias gobernadas por `INFO-DOM-005`;
+- evidencia de integridad previa y posterior cuando la naturaleza del evento lo requiera;
+- `correlation_id`, `causation_id` y referencia de evidencia cuando existan;
+- resultado, excepción y estado de reconciliación.
+
+Reglas obligatorias:
+
+- `CUSTODY_NO_AUTHORITY_TRANSFER` establece que transferir custodia no transfiere por sí mismo autoridad empresarial, propiedad, clasificación ni permisos.
+- `CUSTODY_PHYSICAL_DIGITAL_SEPARATE` mantiene eventos físicos y digitales diferenciados aunque pertenezcan al mismo documento lógico.
+- `CUSTODY_ACCESS_NOT_TRANSFER` impide registrar una consulta o lectura como transferencia de custodia si no cambia el control o posesión de la representación.
+- `CUSTODY_APPEND_ONLY` conserva eventos previos y registra correcciones como nuevos hechos enlazados.
+- `CUSTODY_GAP_VISIBLE` obliga a marcar un intervalo no demostrable como brecha de custodia; no se rellena con actores, fechas o ubicaciones inferidos.
+
+#### 9. Relación entre autenticidad, integridad y cadena probatoria
+
+Una afirmación fuerte sobre un documento debe poder reconstruirse desde referencias estables: identidad y versión → procedencia → evidencia temporal → integridad de la representación → eventos de custodia → preservación → estado de retención y disponibilidad. La ausencia de una dimensión no se compensa silenciosamente con otra.
+
+El contrato permite resultados parciales explícitos: una representación puede tener integridad verificada y procedencia pendiente; puede tener procedencia conocida y una brecha de custodia; puede conservar cadena de custodia sin existir evidencia suficiente para atribuir autoría. Cada estado se expresa de forma independiente.
+
+#### 10. Estados de resolución y tratamiento de faltantes
+
+| Estado                   | Uso en esta tarea                                                                                                                 |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | El contrato normativo y su aplicabilidad a la identidad `DOCCTX-*` están materializados.                                          |
+| `PENDIENTE_DE_EVIDENCIA` | Una instancia concreta necesita evidencia autoritativa que todavía no puede resolverse.                                           |
+| `BLOQUEADO`              | Una operación dependiente no puede continuar porque falta evidencia requerida o existe una discrepancia material no reconciliada. |
+| `NO_APLICA`              | La dimensión no corresponde a una representación o evento concreto y existe justificación explícita.                              |
+| `FUERA_DE_ALCANCE`       | La decisión pertenece a otra tarea canónica y se mantiene separada.                                                               |
+
+Todo pendiente deberá registrar el insumo faltante, el propietario de la fuente o proceso, la tarea responsable cuando exista y la condición de salida. Esta tarea no inventa actores, emisores, custodios, timestamps, hashes, firmas, ubicaciones ni eventos ausentes.
+
+#### 11. Fronteras de responsabilidad
+
+- `INFO-DOM-005` conserva metadatos, vínculo empresarial, localización, almacenamiento y búsqueda autorizada.
+- `INFO-DOM-006` conserva política de retención, eventos de cómputo, archivo, hold, disposición, anonimización y certificado.
+- `INFO-DOM-008` definirá fundamentos, finalidades, autorizaciones, consentimiento, revocación y tratamiento de datos sensibles.
+- `INFO-DOM-010` definirá compartición, divulgación, terceros, encargados, transferencias y requerimientos de autoridad.
+- `INFO-DOM-011` definirá aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia.
+- `INFO-DOM-013` definirá monitoreo, auditorías, investigaciones, hallazgos, acciones correctivas y evidencia de cumplimiento.
+- `EVID-ARC-006` mantiene la validación técnica de integridad, hash y archivos; esta tarea la integra en el gobierno documental sin redefinir sus controles físicos.
+- Los servicios de auditoría y evidencia conservan eventos y trazabilidad; esta tarea no implementa almacenamiento, funciones, jobs ni políticas técnicas.
+
+#### 12. `INFO-DOCUMENT-AUTHENTICITY-CUSTODY-MATRIX-001`
+
+La matriz aplica el contrato a cada identidad contextual heredada. `ESPECIFICADO` expresa cobertura normativa, no evidencia de que todas las instancias existentes ya hayan sido verificadas.
+
+| DOCCTX                 | VPROC        | Autenticidad                     | Integridad                  | Procedencia           | Tiempo                | Preservación            | Custodia                 | Retención base       | Resultado            | Estado         | Bloqueo / frontera     |
+| ---------------------- | ------------ | -------------------------------- | --------------------------- | --------------------- | --------------------- | ----------------------- | ------------------------ | -------------------- | -------------------- | -------------- | ---------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ARCHIVAL`       | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_RELATIONSHIP`   | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_OBLIGATION`     | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_ACTIVE_CASE`    | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `AUTHENTICITY_EVIDENCE_REQUIRED` | `INTEGRITY_FIXITY_REQUIRED` | `PROVENANCE_REQUIRED` | `TYPED_TIME_REQUIRED` | `PRESERVATION_REQUIRED` | `CUSTODY_CHAIN_REQUIRED` | `RET_BUSINESS_CYCLE` | `CONTRATO_APLICABLE` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+
+#### 13. Reconciliación de cobertura
+
+| Métrica                          | Resultado |
+| -------------------------------- | --------: |
+| Procesos esperados               |        69 |
+| Procesos materializados          |        69 |
+| Identidades `DOCCTX-*` esperadas |       332 |
+| Identidades materializadas       |       332 |
+| Identidades únicas               |       332 |
+| Faltantes                        |         0 |
+| Duplicados                       |         0 |
+| `RET_ACTIVE_CASE`                |        33 |
+| `RET_BUSINESS_CYCLE`             |       184 |
+| `RET_RELATIONSHIP`               |        36 |
+| `RET_OBLIGATION`                 |        66 |
+| `RET_ARCHIVAL`                   |        13 |
+| `FRONTERA_OBLIGATORIA`           |       245 |
+| `NINGUNO`                        |        73 |
+| `APLICACION_DIFERIDA`            |        14 |
+
+Las distribuciones heredadas se conservan sin reclasificación. Esta tarea no cambia identidad, retención, frontera, clasificación, propietario empresarial ni estado de implementación de ninguna entrada.
+
+#### 14. Criterios de aceptación
+
+- [x] Las 69 identidades de proceso y las 332 identidades `DOCCTX-*` quedan cubiertas explícitamente.
+- [x] Autenticidad queda separada de hash, antivirus, firma, publicación y ubicación.
+- [x] La integridad se vincula a bytes exactos, algoritmo versionado, versión documental y representación.
+- [x] Igualdad de digest no fusiona identidades ni prueba autoría o aceptación.
+- [x] Procedencia conserva origen, fuente, transformación y causalidad como historia no destructiva.
+- [x] Los tiempos de hecho, registro, recepción, commit y sincronización quedan diferenciados.
+- [x] La preservación conserva fijación, legibilidad, linaje y controles sin convertirse en retención indefinida.
+- [x] La cadena de custodia registra transferencias y brechas sin transferir silenciosamente propiedad, autoridad o permisos.
+- [x] Custodia física y digital permanecen diferenciadas.
+- [x] Las faltas de evidencia se representan explícitamente y no se rellenan con inferencias.
+- [x] Se preservan las distribuciones heredadas de retención y frontera.
+- [x] No se ejecutan cambios físicos ni se adelantan decisiones de firma, privacidad, terceros o auditoría pertenecientes a tareas posteriores.
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+La tarea materializa y aplica contratos documentales sobre comportamientos que ya están protegidos por el registro canónico vigente de requisitos de prueba: sobre auditable versionado, temporalidad tipada, historia no destructiva, causalidad, procedencia, custodios, integridad documental y conservación de evidencia. No introduce un comportamiento probatorio nuevo ni modifica uno existente.
+
+#### 16. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles`
+
+
 ### [ ] INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
 ### [ ] INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
 ### [ ] INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
