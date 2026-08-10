@@ -18,7 +18,7 @@ Esta sección organiza **integraciones documentales y externas** dentro de **AA 
 
 **Estado:** APROBADA
 **Tarea anterior:** `INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva` — APROBADA
-**Tarea siguiente:** `INFO-INT-002 — Diseñar integraciones con e-signature, email, object storage, SIEM/DLP, HRIS/finance cuando aplique` — RESERVADA
+**Tarea siguiente:** `INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio` — RESERVADA
 **Tipo de tarea:** documental; definición normativa y materializada de adaptadores neutrales para almacenamiento de objetos, captura por escaneo, OCR, firma, certificación, preservación y archivo externo, con contratos comunes de correlación, autoridad, evidencia, resultados parciales y reconciliación
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md`
@@ -617,7 +617,6 @@ Antes de una operación que implique un tercero o territorio externo deberá pod
 Si una dimensión obligatoria permanece no resoluble, el adaptador no convierte la ausencia de evidencia en autorización.
 
 ---
-
 #### 19. Evidencia y auditoría del adaptador
 
 Toda operación protegida debe ser correlacionable sin convertir la auditoría en una réplica del contenido tratado.
@@ -767,7 +766,7 @@ El handoff exige que cada binding futuro documente, como mínimo:
 13. compatibilidad con las decisiones de autorización;
 14. condiciones de rollback o compensación cuando exista una operación reversible.
 
-La tarea siguiente podrá definir integraciones concretas con e-signature, email, object storage, SIEM/DLP, HRIS/finance cuando aplique. No se anticipan aquí prestadores, endpoints, credenciales, regiones, esquemas físicos ni configuración.
+La tarea siguiente define contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio, consumiendo estos adaptadores neutrales sin seleccionar prestadores concretos. No se anticipan aquí prestadores, endpoints, credenciales, regiones, esquemas físicos ni configuración.
 
 ---
 
@@ -787,7 +786,7 @@ La tarea siguiente podrá definir integraciones concretas con e-signature, email
 | código y configuración              | `FUERA_DE_ALCANCE` | fase actual exclusivamente documental                                                 |
 | ejecución remota                    | `FUERA_DE_ALCANCE` | no existe operación física autorizada en esta tarea                                   |
 
-No quedan pendientes documentales sin dueño dentro del resultado actual: las decisiones que dependen de prestadores concretos están asignadas al siguiente paso de integración y no bloquean el contrato neutral.
+No quedan pendientes documentales sin dueño dentro del resultado actual: las decisiones que dependen de prestadores concretos permanecen asignadas a `INFO-INT-003` y a las fases de binding/implementación propietarias; no bloquean el contrato neutral.
 
 ---
 
@@ -848,14 +847,14 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 
-`INFO-INT-002 — Diseñar integraciones con e-signature, email, object storage, SIEM/DLP, HRIS/finance cuando aplique`
+`INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio`
 
 
-### ✅ INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.
+### ✅ INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio
 
-**Estado:** APROBADA  
-**Tarea anterior:** INFO-INT-001 — Definir modelo de integraciones con terceros.  
-**Tarea siguiente:** BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN.  
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo` — APROBADA
+**Tarea siguiente:** `INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos` — RESERVADA
 **Tipo de tarea:** Documental — definición contractual transversal de intercambio, autoridad, persistencia, evidencia y consumo entre componentes VENTO.
 
 #### Propósito
@@ -1110,16 +1109,16 @@ La conducta observable materializada por esta tarea ya está cubierta directamen
 
 #### Continuidad
 
-**ÚLTIMA TAREA APROBADA:** INFO-INT-001 — Definir modelo de integraciones con terceros.  
+**ÚLTIMA TAREA APROBADA:** INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo.  
 **TAREA ACTUAL APROBADA:** INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio.  
-**SIGUIENTE TAREA RESERVADA:** BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN.
+**SIGUIENTE TAREA RESERVADA:** INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos.
 
 
 ### ✅ INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
 
 **Estado:** APROBADA
 **Tarea anterior:** `INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio` — APROBADA
-**Tarea siguiente:** `BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN` — RESERVADA
+**Tarea siguiente:** `DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad` — RESERVADA
 **Tipo de tarea:** Documental — definición contractual de integración externa, identidad de contraparte, alcance, intercambio, evidencia y reconciliación para encargados, asesores, autoridades, proveedores y destinatarios externos.
 
 #### 1. Propósito
@@ -1472,7 +1471,6 @@ TAREA ACTUAL APROBADA
 `INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos`
 
 SIGUIENTE TAREA RESERVADA
-`BLOQUE AA COMPLETO — GOBIERNO DE INFORMACIÓN`
+`DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad`
 
-La continuidad termina en `INFO-INT-003`. El bloque siguiente permanece únicamente reservado.
-
+El bloque AA queda cerrado documentalmente en `INFO-INT-003`; la continuidad inmediata pasa a `DATA-DOM-001` conforme a la secuencia canónica vigente.
