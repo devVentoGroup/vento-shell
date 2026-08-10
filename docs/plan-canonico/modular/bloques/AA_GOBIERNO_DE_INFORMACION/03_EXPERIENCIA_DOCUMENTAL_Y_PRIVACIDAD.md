@@ -103,7 +103,7 @@ No se crea un modelo de autorización local del tablero. Toda visibilidad, conte
 
 El diseño debe poder proyectar el universo heredado completo sin duplicarlo. La aplicación propietaria es un filtro y una dimensión de agrupación, no una fuente nueva de propiedad.
 
-| Aplicación propietaria | Identidades `DOCCTX-*` heredadas |
+| Aplicación propietaria | Procesos `VPROC-*` heredados |
 | ---------------------- | -------------------------------: |
 | `ANIMA`                |                            **1** |
 | `VISO`                 |                           **20** |
@@ -115,7 +115,7 @@ El diseño debe poder proyectar el universo heredado completo sin duplicarlo. La
 | `AURA`                 |                            **2** |
 | `PASS`                 |                            **1** |
 
-Estas cantidades representan aplicaciones propietarias dentro del universo documental heredado y no sustituyen las 332 identidades contextuales ni sus relaciones canónicas.
+Estas cantidades representan procesos `VPROC-*` por aplicación propietaria dentro del universo documental heredado y no sustituyen las 332 identidades contextuales ni sus relaciones canónicas.
 
 Reglas:
 
@@ -4386,7 +4386,7 @@ Justificación: esta tarea materializa una experiencia documental sobre contrato
 
 **Estado:** APROBADA
 **Tarea anterior:** `INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada` — APROBADA
-**Tarea siguiente:** `INFO-INT-001 — Diseñar integración con e-signature, email, object storage, SIEM, DLP, HRIS y finance` — RESERVADA
+**Tarea siguiente:** `INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo` — RESERVADA
 **Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de exploración de auditoría e investigación en VISO, con búsqueda autorizada, correlación no destructiva, segregación investigativa y divulgación progresiva de información sensible, logs y evidencia preservada
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/03_EXPERIENCIA_DOCUMENTAL_Y_PRIVACIDAD.md`
@@ -5387,5 +5387,5 @@ NO HIDDEN-RESOURCE INFERENCE
 
 **SIGUIENTE TAREA RESERVADA**
 
-`INFO-INT-001 — Diseñar integración con e-signature, email, object storage, SIEM, DLP, HRIS y finance`
+`INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo`
 
