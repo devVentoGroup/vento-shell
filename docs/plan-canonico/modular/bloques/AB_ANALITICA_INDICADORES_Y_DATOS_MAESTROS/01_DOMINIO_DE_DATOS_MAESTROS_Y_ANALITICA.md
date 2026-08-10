@@ -798,7 +798,454 @@ DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida
 ```
 
 
-### [ ] DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros
+### ✅ DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas` — APROBADA
+**Tarea siguiente:** `DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de identidad, claves, códigos, jerarquías, ciclo de vida y resolución no destructiva de duplicados para los datos maestros y de referencia del BLOQUE AB
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato común mediante el cual los **62 objetos** materializados en `DATA-DOM-002` conservarán una identidad estable y podrán usar claves empresariales, códigos, aliases, jerarquías, vigencias y decisiones de fusión o separación sin perder historia, romper consumidores ni convertir coincidencias textuales en identidad.
+
+La tarea responde, para cada objeto, a estas preguntas:
+
+```text
+qué permanece estable aunque cambie el nombre o la presentación
+qué datos pueden actuar como claves de negocio o conciliación
+qué función cumple un código y en qué alcance es único
+qué valores son aliases o claves externas y no autoridad de identidad
+qué relaciones forman jerarquía y cómo se conserva su vigencia
+qué ocurre cuando un maestro se activa, cambia, se inactiva o se retira
+cuándo dos registros pueden considerarse la misma identidad
+cómo se revierte una fusión incorrecta o se separa un registro conflado
+cómo se evita reescribir hechos y dimensiones históricas
+```
+
+El resultado no define nombres de columnas, tipos SQL, secuencias, UUID, constraints, índices, tablas, schemas, procedimientos de migración ni crosswalks físicos.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda definido un contrato único de identidad maestra con las siguientes decisiones:
+
+- los **62 de 62** objetos del catálogo reciben una decisión explícita de identidad y claves;
+- los **43 datos maestros** y **19 datos de referencia** conservan identidad estable independiente de nombre visible o normalización textual;
+- los **3 objetos AURA** mantienen su estado `BLOQUEADO` y no adquieren una fuente operativa por esta tarea;
+- las **11 identidades `TI-SERVICE-001` a `TI-SERVICE-011`** se conservan sin renumeración ni alias alterno;
+- `ENDPOINT` conserva `endpoint_id`;
+- `SHARED_DEVICE` conserva `device_id` y `device_code`;
+- `APPLICATION` conserva su identidad canónica y `app_code`;
+- ningún correo, teléfono, nombre, dirección, serial, IP, MAC, SSID, URL, código de barras, código externo o valor normalizado puede producir por sí solo una fusión;
+- ninguna relación padre-hijo se deriva de coincidencia de nombre o de un código que codifique el camino;
+- toda fusión y separación es no destructiva y conserva procedencia, vigencia e historia;
+- se crean **0** requisitos de prueba y se modifican **0**, porque `TREQ-DATA-001` ya protege expresamente estas reglas y asigna `DATA-DOM-003` entre sus tareas responsables.
+
+---
+
+#### 3. Contrato común de identidad
+
+##### 3.1. Identificador canónico estable
+
+Cada objeto maestro o de referencia tendrá una identidad canónica que no cambia por:
+
+- renombrado;
+- corrección ortográfica;
+- normalización de texto;
+- cambio de etiqueta o descripción;
+- cambio de sede, área, padre o clasificación;
+- cambio de proveedor, URL, IP, serial observado o dato de contacto;
+- nueva versión de una configuración cuando la identidad raíz continúa siendo la misma;
+- cambio de consumidor o aplicación que presenta el dato.
+
+La representación física de ese identificador se decidirá en la arquitectura de datos aplicable. Esta tarea define la semántica, no el tipo técnico.
+
+##### 3.2. Identidad no reutilizable
+
+Una identidad retirada no se reasigna a otro objeto. Si un registro deja de existir para usos nuevos, sus referencias históricas continúan resolviendo el objeto que representaba durante su vigencia.
+
+##### 3.3. Clave empresarial
+
+Una clave empresarial sirve para detectar, buscar, conciliar o imponer una regla de unicidad dentro de un alcance explícito. Puede componerse de varios atributos.
+
+La clave empresarial:
+
+- no sustituye el identificador canónico;
+- declara su alcance de unicidad;
+- conserva vigencia cuando puede cambiar;
+- no se deduce únicamente de una etiqueta visible;
+- puede iniciar una revisión de duplicado, pero no autoriza una fusión automática.
+
+##### 3.4. Clave técnica
+
+Una clave técnica pertenece a un contrato técnico concreto y conserva su propia autoridad. `endpoint_id`, `device_id`, `device_code` y `app_code` se mantienen conforme a sus contratos vigentes y no se reinterpretan para identificar objetos distintos.
+
+##### 3.5. Clave externa y alias
+
+Un identificador de proveedor, autoridad, canal, sistema externo, archivo importado o plataforma conectada se considera clave externa o alias de conciliación.
+
+Toda clave externa deberá conservar conceptualmente:
+
+- sistema o autoridad de origen;
+- valor original;
+- objeto canónico relacionado;
+- alcance cuando aplique;
+- vigencia;
+- estado de conciliación;
+- evidencia o procedencia suficiente.
+
+El modelo físico de crosswalks pertenece a `DATA-INT-003`. Esta tarea establece que una clave externa nunca desplaza por sí sola la identidad interna.
+
+##### 3.6. Nombre y valor normalizado
+
+Nombre, descripción, texto normalizado, transliteración, mayúsculas/minúsculas, espacios, signos y corrección ortográfica son representaciones.
+
+```text
+REPRESENTACIÓN NORMALIZADA
+≠
+IDENTIDAD CANÓNICA
+```
+
+Una coincidencia normalizada puede producir una alerta de calidad o un candidato de revisión. No puede fusionar registros ni cambiar relaciones por sí sola.
+
+---
+
+#### 4. Política de códigos
+
+1. un código identifica de forma legible un objeto dentro del alcance definido por su propietario;
+2. el código permanece separado del identificador canónico salvo cuando un contrato aprobado ya haya establecido la misma identidad, como `TI-SERVICE-*`;
+3. un código deberá tener unicidad explícita dentro de su alcance;
+4. un código no incorporará obligatoriamente el camino completo de una jerarquía, porque un cambio de padre no debe obligar a cambiar identidad;
+5. un código retirado no se reutilizará para otro significado dentro de su alcance histórico;
+6. un cambio de código conserva el código anterior como alias o referencia histórica cuando existan consumidores;
+7. códigos externos conservan su fuente y no se elevan a código canónico sin decisión del propietario;
+8. documentos, teléfonos, correos y otros datos personales no se usarán como códigos empresariales por conveniencia;
+9. serial, MAC, IP, SSID, URL, barcode, SKU externo o identificador de proveedor no sustituyen el identificador interno salvo que un contrato canónico específico ya lo haya decidido;
+10. el formato físico, longitud y constraint de cada código se resolverán en la arquitectura propietaria sin alterar estas reglas.
+
+---
+
+#### 5. Jerarquías y relaciones
+
+##### 5.1. Jerarquía explícita
+
+Una relación jerárquica solo existe cuando el propietario del dominio declara explícitamente:
+
+- objeto padre;
+- objeto hijo;
+- tipo de relación;
+- alcance;
+- vigencia;
+- fuente;
+- autoridad para modificarla.
+
+Compartir nombre, código, dirección, categoría o ubicación no crea jerarquía.
+
+##### 5.2. Acyclicidad y profundidad
+
+Cuando una relación sea una jerarquía estricta, no podrá contener ciclos. No se fija una profundidad universal: cada dominio puede conservar la profundidad que su modelo empresarial requiera.
+
+##### 5.3. Reparenting
+
+Mover un objeto a otro padre no cambia su identidad. La relación anterior conserva vigencia y la nueva comienza en su fecha efectiva.
+
+##### 5.4. Historia efectiva
+
+Los hechos históricos deberán poder resolver la jerarquía que era válida en su momento. `DATA-DOM-005` definirá el uso analítico de estas vigencias y snapshots sin modificar las identidades aquí aprobadas.
+
+##### 5.5. Relación no equivale a jerarquía
+
+Muchos vínculos son relaciones tipadas y no árboles: persona–vínculo, producto–proveedor, producto–presentación, servicio–aplicación, activo–endpoint, cliente–marca o recurso–activo. No se forzarán dentro de una jerarquía universal.
+
+---
+
+#### 6. Ciclo de vida común
+
+No se crea un enum universal que reemplace los estados propios de cada dominio. Se fijan semánticas transversales que cada propietario deberá poder representar:
+
+1. **alta o registro:** nace una identidad nueva cuando existe un objeto empresarial distinto;
+2. **vigencia:** la identidad puede utilizarse para nuevas relaciones y operaciones dentro de su contrato;
+3. **suspensión o inactividad:** cuando el dominio lo permita, se bloquean usos nuevos sin perder identidad ni historia;
+4. **corrección:** se modifica un atributo sin cambiar identidad cuando el objeto sigue siendo el mismo;
+5. **sucesión:** un objeto puede quedar sucedido por otro sin borrar el anterior;
+6. **retiro:** deja de admitirse para usos nuevos, pero continúa resolviendo referencias históricas;
+7. **fusión:** dos registros que realmente representaban una misma identidad se consolidan mediante decisión explícita y no destructiva;
+8. **separación:** se revierte una fusión o se divide un registro conflado, restaurando identidades y relaciones con evidencia.
+
+Reglas:
+
+- cambiar un nombre no crea una identidad nueva;
+- cambiar de padre jerárquico no crea una identidad nueva;
+- cambiar un atributo que redefine materialmente qué objeto es puede exigir una identidad nueva según el propietario;
+- un objeto ya referenciado por hechos no se elimina destructivamente para resolver un problema de catálogo;
+- reactivar un objeto utiliza la misma identidad solo cuando se demuestra que sigue siendo el mismo objeto y el dominio permite la reactivación;
+- una versión nueva de una regla o configuración no reutiliza la versión anterior como si nada hubiera cambiado.
+
+---
+
+#### 7. Fusión de identidades
+
+Una fusión de maestros o referencias solo podrá ejecutarse cuando se demuestre que los registros candidatos representan la misma identidad dentro de la misma clase canónica.
+
+Secuencia documental obligatoria:
+
+```text
+DETECTAR CANDIDATO
+→ PRESERVAR AMBOS REGISTROS Y SU PROCEDENCIA
+→ COMPARAR CLAVES, RELACIONES, VIGENCIAS Y EVIDENCIA
+→ REVISIÓN DEL STEWARD
+→ DECISIÓN DEL PROPIETARIO CUANDO EXCEDA SU DELEGACIÓN
+→ DESIGNAR IDENTIDAD SUPERVIVIENTE O RESOLVER LA EQUIVALENCIA
+→ CONSERVAR IDENTIFICADORES, CÓDIGOS Y ALIASES ANTERIORES
+→ CERRAR USOS NUEVOS DE LA IDENTIDAD DUPLICADA
+→ PROPAGAR LA DECISIÓN MEDIANTE LOS CONTRATOS PROPIETARIOS
+→ CONSERVAR TRAZA PARA POSIBLE SEPARACIÓN
+```
+
+Queda prohibido fusionar automáticamente por:
+
+- mismo nombre;
+- mismo nombre normalizado;
+- mismo correo;
+- mismo teléfono;
+- mismo código visible;
+- mismo serial;
+- misma IP o MAC;
+- mismo código de barras;
+- mismo proveedor;
+- mismo padre jerárquico;
+- misma dirección;
+- similitud estadística o recomendación de IA sin decisión de stewardship.
+
+Una fusión solo ocurre dentro de la misma clase canónica. `PERSON_IDENTITY` y `CUSTOMER_PERSON`, `PRODUCTO_MAESTRO` y `VARIANTE`, `OPERATIONAL_SITE` y `PHYSICAL_FACILITY`, `ACTIVO_FISICO` y `ENDPOINT`, o cualquier par de clases distintas no se fusionan entre sí; se relacionan mediante contratos explícitos.
+
+---
+
+#### 8. Separación y reversibilidad
+
+La separación se utiliza cuando:
+
+- una fusión anterior fue incorrecta;
+- un registro contenía dos identidades empresariales distintas;
+- una fuente externa confló sujetos u objetos;
+- una clave o alias fue atribuido al maestro equivocado.
+
+La separación deberá:
+
+1. conservar el registro y la decisión que originaron la fusión;
+2. restaurar identificadores anteriores cuando continúen siendo válidos o crear identidades nuevas únicamente para objetos realmente nuevos;
+3. redistribuir aliases y claves externas según evidencia;
+4. reconstruir relaciones actuales con propietario y steward;
+5. no mover hechos históricos por aproximación;
+6. reatribuir un hecho histórico solo cuando exista evidencia de que estaba vinculado a la identidad equivocada y el contrato propietario permita esa corrección;
+7. conservar la relación entre identidad anterior, identidades resultantes y vigencias;
+8. permitir que modelos analíticos posteriores expliquen restatements sin ocultar el contexto original.
+
+`DATA-DOM-017` gobierna la reproducibilidad y los restatements analíticos derivados de correcciones históricas. `DATA-DOM-006` gobierna los procesos de transformación y reconciliación. `DATA-INT-003` gobierna crosswalks y claves externas.
+
+---
+
+#### 9. Matriz materializada por objeto
+
+La siguiente matriz decide identidad, claves/códigos, jerarquía y tratamiento de fusión/separación para los **62 objetos** heredados de `DATA-DOM-002`.
+
+|    # | Objeto canónico               | Clase             | Identidad y clave                                                                                                                                                                   | Código / alias                                                                                                                                  | Jerarquía                                                                                                                                               | Fusión y separación                                                                                                                                                                                             | Estado         |
+| ---: | ----------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | Identidad interna estable del alcance organizacional; nombre visible y denominaciones administrativas no son identidad.                                                             | Código empresarial separado cuando exista; los nombres anteriores permanecen como alias históricos y no se reutilizan como clave.               | No se infiere una jerarquía por nombre; cualquier agrupación entre alcances debe ser explícita, tipada y vigente.                                       | Fusión solo entre duplicados de la misma clase con evidencia; una reorganización empresarial se representa mediante relaciones y vigencia. La separación crea o restituye identidades sin borrar historia.      | `ESPECIFICADO` |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | Identidad interna estable de la persona jurídica o natural obligada; identificadores registrales o tributarios son claves externas con fuente y vigencia.                           | Código interno separado si el dominio lo usa; razón social, nombre legal e identificadores externos nunca sustituyen la identidad canónica.     | Sin jerarquía implícita; propiedad, control o pertenencia se expresan como relaciones tipadas, no como parentesco por nombre.                           | Fusión únicamente si evidencia autorizada demuestra que dos registros representan el mismo sujeto. Una fusión, escisión o cambio societario real no se convierte automáticamente en fusión de registros.        | `ESPECIFICADO` |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | Identidad estable de marca independiente de nombre visible, titular, sede, establecimiento y piezas publicadas.                                                                     | Código empresarial separado; nombres comerciales anteriores o alternos son alias con vigencia.                                                  | Sin jerarquía implícita; portafolios o agrupaciones requieren relación explícita.                                                                       | Cambio de nombre conserva identidad. Fusión solo para duplicados de la misma marca con evidencia; separación crea identidades distintas y conserva relaciones históricas con titulares y activos.               | `ESPECIFICADO` |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | Identidad estable del establecimiento; registro o matrícula externa actúa como clave externa, no como identidad interna.                                                            | Código interno separado si aplica; denominación pública y códigos externos conservan fuente y vigencia.                                         | Se relaciona de forma tipada con LEGAL_SUBJECT, BRAND y OPERATIONAL_SITE; no se deriva una jerarquía por coincidencia de nombres.                       | Fusión solo ante duplicado probado del mismo establecimiento. Cierre o cambio registral retira o versiona la relación sin borrar historia.                                                                      | `ESPECIFICADO` |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | Identidad estable de la línea de negocio, separada de marca, sede y canal.                                                                                                          | Código empresarial separado cuando exista; el nombre comercial no es clave.                                                                     | Agrupación organizacional solo mediante relación explícita; no se infiere árbol por nomenclatura.                                                       | Consolidación o división empresarial no reescribe hechos: la fusión exige decisión de propietario y la separación crea nuevas identidades con vigencia y sucesión.                                              | `ESPECIFICADO` |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | Identidad estable del inmueble o espacio físico; dirección y coordenadas son atributos, no identidad.                                                                               | Código interno separado cuando se administre; referencias catastrales, contractuales o de proveedor son claves externas con procedencia.        | Relaciones de ocupación con OPERATIONAL_SITE y contención de zonas se versionan; no existe jerarquía por texto de dirección.                            | Fusión solo si dos registros representan el mismo espacio físico. Una mudanza a otro inmueble crea otra identidad física aunque el OPERATIONAL_SITE pueda continuar.                                            | `ESPECIFICADO` |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | Identidad estable de la sede operativa; instalación, marca, dirección y tipo no sustituyen el identificador.                                                                        | Código canónico separado del nombre visible y de códigos externos; el código retirado no se reutiliza dentro de su alcance histórico.           | Pertenece mediante relaciones tipadas a organización e instalación; áreas se relacionan con la sede con vigencia.                                       | Fusión solo para duplicado comprobado de la misma sede. Traslado físico modifica la relación con PHYSICAL_FACILITY sin cambiar identidad cuando la sede empresarial continúa siendo la misma.                   | `ESPECIFICADO` |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | Identidad estable del área funcional; su nombre puede repetirse en sedes distintas.                                                                                                 | Código empresarial con unicidad en el alcance que defina el propietario; nunca se usa el nombre como clave global.                              | Puede depender de OPERATIONAL_SITE y, si el dominio lo define, de otra área; toda relación padre-hijo es explícita, acíclica y con vigencia.            | Fusión solo de áreas duplicadas equivalentes en el mismo alcance. Reorganizar o mover un área conserva historia; una división crea nuevas identidades.                                                          | `ESPECIFICADO` |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | Identidad estable de la zona física; etiqueta, piso o ubicación textual no bastan como identidad.                                                                                   | Código o etiqueta de operación queda separado y scoped a la instalación o sede que corresponda.                                                 | Contención explícita bajo PHYSICAL_FACILITY, OPERATIONAL_SITE u ORGANIZATIONAL_AREA según el contrato propietario; cambios de padre conservan vigencia. | Fusión solo si se demuestra que dos registros representan la misma zona. Una remodelación que cambia materialmente el espacio puede retirar la identidad anterior y crear otra.                                 | `ESPECIFICADO` |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | Identidad estable del punto de ejecución; no equivale a equipo, endpoint, dispositivo compartido, actor ni área.                                                                    | Código operativo separado y scoped al contexto correspondiente; nombre o número visible no es identidad.                                        | Se vincula de forma explícita con área o zona; el dispositivo asignado es relación independiente.                                                       | Fusión solo para duplicados del mismo punto operativo. Reubicación o cambio de dispositivo actualiza relaciones con vigencia sin fusión automática.                                                             | `ESPECIFICADO` |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | Identidad estable del punto externo controlado; dirección privada, custodio o tercero no son identidad.                                                                             | Código interno solo cuando sea necesario; referencias externas tienen fuente, vigencia y finalidad.                                             | Se relaciona con línea, operación, custodia y territorio de forma tipada; no se promueve a sede mediante jerarquía implícita.                           | Fusión solo ante coincidencia probada del mismo punto. Al expirar la finalidad se retira para usos nuevos sin eliminar operaciones históricas.                                                                  | `ESPECIFICADO` |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | Identidad empresarial estable de la persona. Documento, correo, teléfono, nombre y usuario autenticado son evidencias o claves candidatas, nunca identidad suficiente por sí solas. | No se exige código humano basado en PII. Identificadores documentales y de autenticación se mantienen separados, con fuente y vigencia.         | No aplica jerarquía de identidad; relaciones laborales, de cliente y de acceso permanecen separadas.                                                    | Fusión solo tras revisión de steward y evidencia múltiple. Debe ser reversible: una separación restituye identidades y relaciones sin borrar trazas ni hechos históricos.                                       | `ESPECIFICADO` |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | Identidad estable del perfil laboral operativo, enlazada con PERSON_IDENTITY y el vínculo vigente sin sustituirlos.                                                                 | No usa nombre, correo, cargo o número de turno como código de identidad.                                                                        | No forma jerarquía; asignaciones, cargos y roles son relaciones o referencias independientes.                                                           | No se fusionan perfiles para resolver cambios de vínculo. Un duplicado se corrige contra la misma PERSON_IDENTITY conservando la historia; separación sigue la evidencia del vínculo.                           | `ESPECIFICADO` |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | Identidad estable de cada vínculo laboral o contractual; persona, empleador y vigencia forman clave empresarial de control, no la identidad canónica.                               | No requiere código reutilizable; números contractuales externos, cuando existan, son referencias con procedencia.                               | No aplica jerarquía; relaciona persona, sujeto jurídico, posición y vigencia.                                                                           | No se fusionan vínculos distintos. Prórrogas o cambios se versionan según el dominio; reingreso que constituye un vínculo nuevo recibe identidad nueva.                                                         | `ESPECIFICADO` |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | Identidad estable de la denominación contractual o administrativa del cargo.                                                                                                        | Código de referencia separado del nombre; códigos retirados no se reasignan a otro significado.                                                 | Jerarquía solo si VISO define una clasificación explícita de posiciones; nunca se deriva autorización o rango por el nombre.                            | Duplicados pueden consolidarse con steward y mapeo de historia; una posición obsoleta se retira o sucede, no se elimina de relaciones históricas.                                                               | `ESPECIFICADO` |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | Conserva la identidad y clave vigentes del catálogo canónico de autorización; cargo y persona no sustituyen esa identidad.                                                          | La clave de rol existente es estable; etiquetas o traducciones son presentación.                                                                | No se introduce herencia de roles por esta tarea; cualquier relación entre roles debe provenir del modelo de autorización aprobado.                     | No se fusionan roles por similitud de nombre o permisos. Renumerar o reutilizar una clave existente queda prohibido; retiro conserva asignaciones históricas.                                                   | `ESPECIFICADO` |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | Identidad estable de la función operativa, separada de BASE_ROLE, cargo, persona y asignación.                                                                                      | Código canónico del catálogo operativo cuando exista; nombre visible no es clave.                                                               | No se infiere jerarquía ni herencia de permisos. Relaciones con procesos, áreas o funciones deben ser explícitas.                                       | Fusión solo ante duplicado semántico probado y con impacto revisado; asignaciones históricas conservan el identificador que era vigente.                                                                        | `ESPECIFICADO` |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | Identidad estable de la asignación; persona, sede, área, función, tipo y vigencia forman una clave empresarial de control.                                                          | No requiere código humano; cualquier referencia externa se conserva separada.                                                                   | No forma jerarquía; vincula identidades ya gobernadas y puede coexistir con otras asignaciones cuando la regla del dominio lo permita.                  | No se fusionan asignaciones distintas. Solapamientos o duplicados se corrigen con vigencia y evidencia, sin reescribir turnos o hechos históricos.                                                              | `ESPECIFICADO` |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | Identidad estable de persona cliente. Nombre, documento, teléfono, correo, QR o cuenta autenticada no son identidad suficiente.                                                     | No se construye código desde PII; identificadores de cuenta y contactos son referencias separadas.                                              | No aplica jerarquía; relaciones por marca, perfil, contactos, fidelización y consentimientos permanecen separadas.                                      | Fusión manual y reversible solo con evidencia suficiente. La separación debe preservar pedidos, movimientos de fidelización, casos y autorizaciones con su procedencia original.                                | `ESPECIFICADO` |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | Identidad estable del dato de contacto vinculado a CUSTOMER_PERSON; el valor normalizado es clave de búsqueda y conciliación, no identidad absoluta.                                | Correo o teléfono se conserva con tipo, fuente, verificación y vigencia; no se convierte en código empresarial global.                          | No aplica jerarquía.                                                                                                                                    | Consolidación solo si se prueba que dos registros representan el mismo contacto de la misma persona y alcance. Mover un contacto entre personas exige evidencia y no provoca fusión de personas.                | `ESPECIFICADO` |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | Identidad estable de la relación entre CUSTOMER_PERSON y una marca, alcance o contexto, con vigencia propia.                                                                        | La combinación de extremos, tipo y vigencia sirve como clave empresarial de control; no sustituye el identificador.                             | No aplica jerarquía; múltiples relaciones pueden coexistir sin convertirse en una sola.                                                                 | No se fusionan relaciones materialmente distintas. Duplicados exactos pueden consolidarse con evidencia; cierre y reapertura conservan historia.                                                                | `ESPECIFICADO` |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | Identidad estable del perfil de autoservicio ligado a la persona y relación permitida; no sustituye CUSTOMER_PERSON.                                                                | No usa nombre, correo ni cuenta de autenticación como código.                                                                                   | No aplica jerarquía.                                                                                                                                    | No se fusiona con la identidad de persona ni con perfiles administrativos. Duplicados se corrigen conservando la procedencia de atributos y cambios.                                                            | `ESPECIFICADO` |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | Identidad estable de la preferencia gobernada; persona, tipo, alcance y vigencia son coordenadas de negocio.                                                                        | No requiere código humano; el tipo de preferencia proviene del contrato propietario y no de texto libre cuando exista catálogo.                 | No aplica jerarquía salvo una taxonomía explícita propietaria; una preferencia no hereda otra por nombre.                                               | No se fusionan versiones o alcances distintos. Un cambio conserva vigencia y sucede al valor anterior sin convertirlo en consentimiento.                                                                        | `ESPECIFICADO` |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | Identidad estable de la cuenta de fidelización, separada de CUSTOMER_PERSON, cuenta autenticada, saldo y movimientos.                                                               | Número visible, QR u otro token son referencias rotables o de presentación, no identidad canónica.                                              | No aplica jerarquía.                                                                                                                                    | Una fusión solo puede seguir una decisión aprobada sobre identidad del cliente y debe conservar el ledger original. Una separación no redistribuye movimientos sin evidencia.                                   | `ESPECIFICADO` |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | Identidad estable de la regla de programa y versiones diferenciadas por vigencia.                                                                                                   | Código de regla separado de su versión y descripción; códigos retirados no se reutilizan con otro significado.                                  | No aplica jerarquía por defecto; agrupaciones funcionales son metadatos, no herencia.                                                                   | Las versiones no se fusionan. Una regla cambia mediante nueva versión o retiro; duplicados semánticos requieren revisión antes de consolidación.                                                                | `ESPECIFICADO` |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | Identidad estable del elemento empresarial; nombre, marca, código de barras, proveedor, presentación y receta no son identidad.                                                     | Código empresarial separado de etiquetas y códigos externos; códigos de proveedor o canal quedan como aliases/crosswalks con fuente y vigencia. | Se clasifica mediante taxonomías y relaciones; variante y presentación son identidades subordinadas, no niveles que cambien la identidad del producto.  | Fusión solo de duplicados comprobados con revisión de impacto en inventario, recetas, compras, ventas y finanzas. La separación conserva todas las referencias históricas y exige evidencia para reatribuirlas. | `ESPECIFICADO` |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | Identidad estable de una configuración diferenciada vinculada a PRODUCTO_MAESTRO.                                                                                                   | Código scoped al producto cuando exista; atributos diferenciadores no se convierten por sí solos en identificador.                              | Pertenece explícitamente a PRODUCTO_MAESTRO; no se infiere por nombre o presentación.                                                                   | Fusión solo cuando las configuraciones son realmente equivalentes. Una separación crea identidades distintas y conserva hechos referidos a la variante original.                                                | `ESPECIFICADO` |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | Identidad estable de la forma física de compra, recepción, almacenamiento, remisión o venta.                                                                                        | Código o etiqueta separado de cantidad, unidad, multiplicador y empaque; códigos externos se gestionan con procedencia.                         | Pertenece a producto o variante mediante relación explícita; no se confunde con UNIDAD_DE_MEDIDA.                                                       | Solo pueden fusionarse presentaciones si cantidad, unidad, multiplicador, empaque y contexto equivalen de forma demostrada. Separación corrige perfiles conflados sin alterar factores históricos.              | `ESPECIFICADO` |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | Identidad estable de la unidad y su dimensión semántica.                                                                                                                            | Código canónico independiente de etiqueta visible; códigos alternos son aliases con fuente.                                                     | No usa jerarquía de identidad; conversiones o compatibilidades son relaciones controladas y no parentesco.                                              | No se fusionan unidades por abreviatura o texto parecido. Corrección o retiro conserva conversiones e historia utilizadas por hechos anteriores.                                                                | `ESPECIFICADO` |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | Identidad estable de cada valor del tipo maestro.                                                                                                                                   | Código canónico separado de etiqueta; nunca se reutiliza para otro significado.                                                                 | Plana salvo que el propietario apruebe explícitamente una relación padre-hijo; cualquier jerarquía será acíclica y efectiva.                            | Duplicados pueden consolidarse solo con steward y mapeo histórico. Un valor retirado sigue resolviendo hechos anteriores.                                                                                       | `ESPECIFICADO` |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | Identidad estable de cada clasificación de inventario.                                                                                                                              | Código canónico separado del nombre y de reglas operativas.                                                                                     | Jerarquía solo si NEXO la declara explícitamente; no se infiere desde comportamiento de stock.                                                          | Fusión de duplicados requiere equivalencia semántica y revisión de consumidores; retiro conserva clasificación histórica.                                                                                       | `ESPECIFICADO` |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | Identidad estable de la clasificación operacional.                                                                                                                                  | Código canónico separado de etiquetas y nombres de pantalla.                                                                                    | Jerarquía explícita y acíclica solo cuando sea necesaria; no controla por sí sola menú ni permisos.                                                     | Consolidación únicamente de duplicados semánticos; reparenting o retiro conserva vigencia histórica.                                                                                                            | `ESPECIFICADO` |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | Identidad estable de ubicación lógica o física de inventario; nombre, código visible, sede o área no son identidad suficiente.                                                      | Código scoped al contexto locativo; no codifica el camino completo de la jerarquía para evitar cambio de identidad al reubicar.                 | Jerarquía de contención explícita, acíclica y con vigencia; cada cambio de padre conserva el contexto histórico.                                        | Fusión solo ante duplicado real de la misma ubicación. Reubicación o cierre no borra movimientos ni hechos que referenciaron la LOC anterior.                                                                   | `ESPECIFICADO` |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | Conserva la identidad física estable gobernada por NEXO; serial, placa, marca, modelo o etiqueta son claves auxiliares, no identidad absoluta.                                      | Código patrimonial o etiqueta se mantiene separado; identificadores de fabricante son externos con procedencia.                                 | Clase, ubicación, custodia y componentes se expresan mediante relaciones; no se infiere jerarquía desde seriales o categorías.                          | Fusión solo si se demuestra que dos registros representan el mismo objeto físico. Sustitución de un activo crea otra identidad y enlaza la sucesión sin reutilizar el ID.                                       | `ESPECIFICADO` |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | Identidad estable de la clasificación de activo.                                                                                                                                    | Código canónico separado de nombre y reglas de mantenimiento.                                                                                   | Puede tener jerarquía explícita y acíclica si NEXO la requiere; no se deriva de atributos físicos.                                                      | Duplicados semánticos pueden consolidarse con historia; retiro no cambia la clase que aplicaba a activos históricos.                                                                                            | `ESPECIFICADO` |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | Identidad raíz estable de la especificación; cada cambio material se conserva como versión con vigencia.                                                                            | Clave empresarial de control por objeto, alcance y versión; no usa el texto completo de la especificación como identidad.                       | No forma jerarquía; puede aplicar a producto, presentación, proveedor, receta u otro objeto mediante relaciones tipadas.                                | Las versiones no se fusionan ni sobrescriben. Duplicados de identidad raíz se consolidan solo con evidencia; una separación conserva versiones y objetos afectados.                                             | `ESPECIFICADO` |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | Identidad estable del proveedor. Razón social, documento tributario, cuenta bancaria, correo o contacto son atributos o claves externas, no identidad por sí solos.                 | Código interno separado cuando exista; identificadores legales y de plataformas externas conservan fuente y vigencia.                           | No existe jerarquía implícita; grupos empresariales, sedes o contactos se relacionan explícitamente.                                                    | Fusión solo si evidencia suficiente confirma el mismo proveedor. Una fusión societaria real se modela con sucesión y vigencia, no como deduplicación automática.                                                | `ESPECIFICADO` |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | Identidad estable del contacto o canal relacionado con PROVEEDOR; correo y teléfono no son identidad universal.                                                                     | No requiere código empresarial; valores de contacto conservan tipo, verificación, fuente y vigencia.                                            | No aplica jerarquía.                                                                                                                                    | Consolidación solo del mismo contacto con evidencia. Un cambio de proveedor o función modifica la relación y vigencia sin fusionar proveedores.                                                                 | `ESPECIFICADO` |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | Identidad estable de la relación de suministro; producto, proveedor, presentación, alcance y vigencia forman clave empresarial de control.                                          | No requiere código independiente salvo contrato propietario; identificadores externos se mantienen como crosswalks.                             | No aplica jerarquía; relaciona identidades gobernadas.                                                                                                  | No se fusionan relaciones materialmente distintas. Duplicados exactos pueden consolidarse, pero precio, oferta, contrato y condición permanecen objetos separados.                                              | `ESPECIFICADO` |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | Identidad raíz estable de la condición comercial con versiones por vigencia y contexto.                                                                                             | Clave empresarial de control por proveedor/relación, tipo de condición, alcance y vigencia; el valor monetario no es identidad.                 | No aplica jerarquía; escalas y dependencias se representan como reglas versionadas.                                                                     | Versiones no se fusionan. Una nueva condición sucede a la anterior; consolidar duplicados exige igualdad de alcance, fuente y vigencia.                                                                         | `ESPECIFICADO` |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | Identidad estable de la clasificación de abastecimiento.                                                                                                                            | Código canónico separado de etiquetas y condiciones de proveedor.                                                                               | Jerarquía explícita y acíclica solo si ORIGO la define; no se hereda desde taxonomías de producto o inventario.                                         | Fusión de duplicados requiere equivalencia semántica y conservación de compras históricas; retiro conserva vigencia.                                                                                            | `ESPECIFICADO` |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | Identidad raíz estable del conocimiento de receta; la versión publicada y la ejecución son identidades/artefactos distintos.                                                        | Código de receta separado de nombre, producto de salida y versión cuando exista; no se deriva de ingredientes.                                  | Se relaciona con FAMILIA_PRODUCTIVA, productos de salida e ingredientes; esas relaciones no crean una jerarquía de identidad implícita.                 | Fusión solo de duplicados comprobados de la misma receta raíz. Las versiones nunca se fusionan; separación crea recetas distintas sin cambiar lotes o ejecuciones históricas.                                   | `ESPECIFICADO` |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | Identidad estable de la taxonomía productiva.                                                                                                                                       | Código canónico separado del nombre.                                                                                                            | Jerarquía explícita y acíclica solo si FOGO la necesita; no se confunde con categoría de producto o compra.                                             | Duplicados semánticos pueden consolidarse con trazabilidad; reparenting y retiro conservan vigencia.                                                                                                            | `ESPECIFICADO` |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | Identidad estable de la ruta productiva reutilizable; ejecución concreta no comparte esa identidad.                                                                                 | Código empresarial separado cuando exista; secuencia o nombre de pasos no constituyen clave de identidad.                                       | No se modela como jerarquía por secuencia; relaciones con recursos, familias y productos son tipadas y versionadas.                                     | Fusión solo de rutas realmente duplicadas. Un cambio material de definición conserva historia mediante versión o sucesión según contrato FOGO; no reescribe ejecuciones previas.                                | `ESPECIFICADO` |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | Identidad estable del recurso funcional productivo; cuando exista ACTIVO_FISICO relacionado, ambas identidades permanecen separadas.                                                | Código operativo separado de placa, serial o nombre del activo relacionado.                                                                     | Puede agruparse de forma explícita por área o familia; no se deriva una jerarquía desde el activo físico.                                               | Fusión solo ante duplicado del mismo recurso funcional. Sustitución del activo relacionado cambia la relación, no obliga a reutilizar ni fusionar identidades.                                                  | `ESPECIFICADO` |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | Identidad estable del canal comercial, separada de cuenta externa, sede, marca y pedido.                                                                                            | Código canónico interno; identificadores de Rappi, web, mensajería u otros proveedores son claves externas con fuente.                          | Plana por defecto; agrupaciones de canales son relaciones o clasificación explícitas.                                                                   | No se fusionan canales por usar el mismo proveedor o nombre. Duplicados semánticos requieren revisión; retiro conserva ventas históricas.                                                                       | `ESPECIFICADO` |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | Identidad estable de la categoría de navegación u oferta.                                                                                                                           | Código canónico separado de etiqueta visible y orden de presentación.                                                                           | Jerarquía explícita, acíclica y efectiva cuando PULSO la use; reparenting conserva historia.                                                            | Fusión solo de categorías duplicadas semánticamente y con revisión de publicaciones; retiro no cambia la categoría histórica de una oferta o venta.                                                             | `ESPECIFICADO` |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | Identidad raíz estable de la configuración vendible; producto/variante, sede, canal y vigencia son coordenadas de negocio, no identidad única por sí solas.                         | Código de oferta separado cuando exista; precio, disponibilidad y nombre comercial no son código de identidad.                                  | Se relaciona con CATEGORIA_COMERCIAL y dimensiones de contexto; no forma jerarquía propia.                                                              | Ofertas vigentes distintas no se fusionan. Cambios materiales se versionan o suceden; duplicados exactos requieren revisión antes de consolidar.                                                                | `ESPECIFICADO` |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | Identidad estable del centro económico, independiente de sede, área, marca y canal.                                                                                                 | Código financiero separado del nombre; no se reutiliza para otro centro dentro del alcance histórico.                                           | Jerarquía financiera explícita, acíclica y con vigencia; el código no codifica el camino jerárquico.                                                    | Consolidación administrativa conserva identidades históricas y relación de sucesión; una división crea nuevos centros y no reescribe hechos económicos anteriores.                                              | `ESPECIFICADO` |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | Identidad estable de la unidad monetaria reconocida por la fuente financiera autorizada.                                                                                            | Código monetario gobernado por la fuente aplicable; etiquetas y símbolos son presentación.                                                      | No aplica jerarquía.                                                                                                                                    | No se fusionan monedas por símbolo o nombre parecido. Cambio de código o retiro conserva vigencia y referencias históricas.                                                                                     | `ESPECIFICADO` |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | Identidad estable del periodo económico; calendario, inicio, fin y alcance forman clave empresarial de control.                                                                     | Código de periodo separado si NUMERA lo usa; fechas visibles no son identidad canónica.                                                         | No aplica jerarquía de identidad; pertenencia a año u otro calendario se modela como relación temporal.                                                 | Periodos distintos no se fusionan. Correcciones conservan versión o sucesión y no cambian hechos ya registrados sin proceso de restatement.                                                                     | `ESPECIFICADO` |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | Identidad estable del periodo contable gobernado por NUMERA o sistema contable autorizado.                                                                                          | Código o referencia externa conserva fuente y vigencia; no se confunde con PERIODO_ECONOMICO.                                                   | No aplica jerarquía de identidad.                                                                                                                       | No se fusionan periodos por compartir fechas. Correcciones o cierres se gestionan por vigencia/estado del dominio y preservan historia.                                                                         | `ESPECIFICADO` |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | Identidad estable del periodo fiscal dentro del marco y autoridad aplicables.                                                                                                       | Código o referencia de la autoridad externa se conserva como clave externa con procedencia.                                                     | No aplica jerarquía de identidad.                                                                                                                       | No se fusionan periodos fiscales por equivalencia de fechas. Cambios oficiales conservan la versión y fuente que eran aplicables.                                                                               | `ESPECIFICADO` |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | Identidad estable de la clasificación económica.                                                                                                                                    | Código financiero canónico separado de nombre, importe y hecho económico.                                                                       | Jerarquía explícita y acíclica solo si NUMERA la define; reparenting conserva vigencia.                                                                 | Fusión de duplicados requiere equivalencia semántica y análisis de reportes; retiro no reclasifica hechos históricos por defecto.                                                                               | `ESPECIFICADO` |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | Identidad raíz estable del perfil de marca y versiones de contenido/reglas; conserva el bloqueo operativo heredado mientras AURA no esté habilitada.                                | Código o vínculo con BRAND separado de la versión; nombres y prompts no son identidad.                                                          | Se relaciona con BRAND; no crea jerarquía adicional por texto o plantilla.                                                                              | No se ejecutan fusiones operativas mientras la fuente permanezca BLOQUEADO. Cuando se habilite, las versiones se suceden sin sobrescritura y duplicados requieren revisión de propietario.                      | `BLOQUEADO`    |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | Identidad estable de la definición de audiencia; la membresía calculada no forma parte de la identidad y la fuente operativa continúa bloqueada.                                    | Código de audiencia separado de nombre, consulta, segmento externo o lista exportada.                                                           | No se asume jerarquía porque audiencias pueden solaparse; cualquier relación de inclusión debe ser explícita y versionada.                              | No se fusionan audiencias por superposición de miembros. Cambios de definición se versionan o suceden; no hay fusión operativa mientras AURA permanezca BLOQUEADO.                                              | `BLOQUEADO`    |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | Identidad estable del activo de marca; archivo físico, hash, URL, tamaño y derivado no sustituyen la identidad gobernada. La fuente operativa continúa bloqueada.                   | Código interno separado cuando exista; identificadores de Storage o proveedor son referencias técnicas.                                         | Original, versión y derivados se relacionan explícitamente; no forman una jerarquía de autoridad por carpeta o nombre.                                  | No se fusionan activos por archivo parecido. Duplicados solo con evidencia de contenido, derechos y procedencia; no hay fusión operativa mientras AURA permanezca BLOQUEADO.                                    | `BLOQUEADO`    |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | Conserva `endpoint_id` como identidad técnica estable de la instalación administrada; hostname, IP, MAC, serial, user agent y fingerprint no son identidad.                         | No se introduce código alternativo. Etiquetas técnicas son atributos observables con vigencia.                                                  | Relaciones con ACTIVO_FISICO, SHARED_DEVICE, red y aplicaciones provienen del contrato TI; no constituyen jerarquía de identidad.                       | No se fusionan generaciones de endpoint. Una reinstalación que crea nueva generación conserva identidad distinta conforme a TI-DOM-002; duplicados técnicos requieren reconciliación, no unión por huella.      | `ESPECIFICADO` |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | Conserva `device_id` como identidad y `device_code` como código empresarial del dispositivo compartido; actor, endpoint y activo permanecen separados.                              | `device_code` es estable en su contrato; etiquetas de sede, área o estación no sustituyen el código.                                            | Relaciones con endpoint, sede, área y aplicaciones son explícitas; no crean herencia de permisos.                                                       | Fusión solo ante registro duplicado del mismo dispositivo lógico con evidencia. Cambio de endpoint puede conservar el mismo dispositivo lógico y se registra como cambio de relación.                           | `ESPECIFICADO` |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | Identidad interna estable del recurso de red; IP, MAC, SSID, hostname, puerto o proveedor no constituyen identidad por sí solos.                                                    | Código técnico separado cuando el dominio lo requiera; direcciones y nombres operativos conservan vigencia.                                     | Topología y dependencia se expresan mediante relaciones tipadas y versionadas; no se infiere jerarquía por prefijo de red o nombre.                     | Fusión solo si dos registros representan el mismo recurso técnico. Cambio de dirección o configuración conserva identidad; sustitución física o lógica material puede crear sucesor.                            | `ESPECIFICADO` |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | Conserva la identidad canónica de aplicación gobernada por SHELL y su `app_code`; repositorio, URL, ambiente, despliegue y proveedor no son identidad.                              | `app_code` permanece estable y no se renumera por cambios técnicos o de branding.                                                               | Sin jerarquía implícita; dependencias, ambientes y servicios se modelan por relaciones específicas.                                                     | No se fusionan aplicaciones por compartir repositorio, dominio o proveedor. Renombrar interfaz conserva identidad; una aplicación distinta requiere identidad distinta.                                         | `ESPECIFICADO` |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | Conserva exactamente las once identidades `TI-SERVICE-001` a `TI-SERVICE-011`; servicio, aplicación, proveedor y componente permanecen separados.                                   | Los códigos `TI-SERVICE-*` son estables; no se crean aliases numéricos ni se reutiliza una identidad retirada.                                  | Las dependencias de servicios no se tratan como jerarquía de identidad; permanecen relaciones tipadas del BLOQUE Z.                                     | No se fusionan ni renumeran familias por similitud operativa. Cualquier retiro conserva código e historia; una nueva familia requiere decisión canónica separada.                                               | `ESPECIFICADO` |
+
+---
+
+#### 10. Instancias `TECH_SERVICE` heredadas
+
+Las once identidades aprobadas en `TI-DOM-001` y preservadas por `DATA-DOM-002` mantienen decisión individual. Ninguna se renumera, se fusiona o cambia de significado en esta tarea.
+
+| Identidad        | Servicio                                                                | Decisión de identidad                                                                      | Jerarquía                                                               | Ciclo de vida y fusión                                                                                            | Estado         |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------- |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | El identificador existente es la identidad canónica de la familia; no se crea otro código. | Sus dependencias son relaciones tipadas, no una jerarquía de identidad. | Puede retirarse para usos nuevos conservando historia; no se fusiona ni renumera por similitud con otro servicio. | `ESPECIFICADO` |
+
+**Reconciliación:** 11 esperadas; 11 materializadas; 0 faltantes; 0 duplicadas; 0 renumeradas.
+
+---
+
+#### 11. Reconciliación de cobertura
+
+| Control                                               | Resultado |
+| ----------------------------------------------------- | --------: |
+| Objetos heredados de `DATA-DOM-002`                   |    **62** |
+| Objetos con decisión materializada en esta tarea      |    **62** |
+| Objetos faltantes                                     |     **0** |
+| Objetos duplicados por nombre canónico                |     **0** |
+| Datos maestros                                        |    **43** |
+| Datos de referencia                                   |    **19** |
+| Objetos `ESPECIFICADO`                                |    **59** |
+| Objetos `BLOQUEADO` heredados de AURA                 |     **3** |
+| Familias `TI-SERVICE-*` esperadas                     |    **11** |
+| Familias `TI-SERVICE-*` preservadas                   |    **11** |
+| Fusiones automáticas autorizadas                      |     **0** |
+| Fusiones entre clases canónicas distintas autorizadas |     **0** |
+
+Los tres objetos AURA conservan exactamente el bloqueo aprobado en `DATA-DOM-002`. Esta tarea define su política futura de identidad, pero no cambia su fuente lógica ni declara materialización operativa.
+
+---
+
+#### 12. Fronteras y handoffs
+
+| Decisión                                                                   | Tarea propietaria |
+| -------------------------------------------------------------------------- | ----------------- |
+| Gobierno federado, propietario, steward y fuente de verdad                 | `DATA-DOM-001`    |
+| Catálogo de 62 maestros y referencias                                      | `DATA-DOM-002`    |
+| Granularidad de hechos, vigencia dimensional y comparabilidad histórica    | `DATA-DOM-005`    |
+| Ingestión, backfill, transformación y reconciliación física                | `DATA-DOM-006`    |
+| Calidad, detección de duplicados y certificación                           | `DATA-DOM-007`    |
+| Protección y acceso a maestros por dominio, entidad y finalidad            | `DATA-AUTH-001`   |
+| Separación de definición, certificación, publicación y administración      | `DATA-AUTH-003`   |
+| Crosswalks, claves externas y reconciliación de identidades entre sistemas | `DATA-INT-003`    |
+| Restatements, correcciones históricas y reproducibilidad analítica         | `DATA-DOM-017`    |
+
+Estas fronteras no difieren el resultado principal: la identidad, las claves, los códigos, la semántica jerárquica, el ciclo de vida y las reglas no destructivas de fusión/separación quedan cerradas documentalmente aquí.
+
+---
+
+#### 13. Cobertura de prueba canónica preexistente
+
+`TREQ-DATA-001` ya exige que todo dato maestro o de referencia compartido tenga identificador estable, propietario funcional, steward, fuente de verdad, claves empresariales y externas, jerarquías, atributos por dominio, estados, vigencia y reglas de alta, corrección, fusión, separación, desactivación y retiro. También prohíbe la fusión automática por coincidencia superficial y exige conservar historia efectiva y crosswalks sin alterar hechos pasados.
+
+La tarea actual especializa documentalmente esas reglas para los 62 objetos ya catalogados. No cambia el contenido, prioridad, modalidad, estado, relaciones ni destino del requisito vigente.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el requisito DATA vigente ya cubre directamente el comportamiento que esta tarea materializa y asigna esta tarea entre sus responsables. Las decisiones aquí establecidas no introducen una familia de comportamiento independiente del requisito existente y no autorizan implementación técnica, migración, backfill o cambio de datos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 14. Criterios de aceptación
+
+1. los 62 objetos de `DATA-DOM-002` tienen una decisión explícita de identidad, claves/códigos, jerarquía y fusión/separación;
+2. se conservan exactamente 43 datos maestros y 19 datos de referencia;
+3. ningún nombre, valor normalizado, correo, teléfono, documento, dirección, serial, IP, MAC, SSID, URL, código de barras o código externo se trata como identidad suficiente por sí solo;
+4. identificador canónico, clave empresarial, clave técnica, código, alias y clave externa quedan semánticamente separados;
+5. los códigos declaran alcance de unicidad y no se reutilizan para otro significado histórico;
+6. un cambio de nombre, etiqueta, padre jerárquico o consumidor no modifica por sí mismo la identidad;
+7. una jerarquía estricta es explícita, acíclica y conserva vigencia;
+8. reparenting conserva la identidad del hijo y la historia de la relación anterior;
+9. no se fuerza dentro de una jerarquía universal ninguna relación que sea naturalmente muchos-a-muchos o entre clases distintas;
+10. alta, vigencia, inactividad, corrección, sucesión, retiro, fusión y separación quedan definidos como semánticas comunes sin crear un enum universal que reemplace estados de dominio;
+11. una identidad retirada no se reutiliza y continúa resolviendo referencias históricas;
+12. una fusión solo puede ocurrir dentro de la misma clase y exige evidencia, stewardship y autoridad correspondiente;
+13. se autorizan cero fusiones automáticas por coincidencia superficial;
+14. una separación es reversible, conserva procedencia y no redistribuye hechos históricos por aproximación;
+15. `PERSON_IDENTITY` y `CUSTOMER_PERSON` permanecen separadas y solo pueden relacionarse mediante contratos explícitos;
+16. `PRODUCTO_MAESTRO`, `VARIANTE`, `PRESENTACION` y `UNIDAD_DE_MEDIDA` permanecen identidades distintas;
+17. `OPERATIONAL_SITE`, `PHYSICAL_FACILITY`, `ORGANIZATIONAL_AREA`, `PHYSICAL_ZONE` y `WORKSTATION` permanecen conceptos distintos con relaciones efectivas;
+18. `ACTIVO_FISICO`, `ENDPOINT` y `SHARED_DEVICE` permanecen separados y se conservan `endpoint_id`, `device_id` y `device_code`;
+19. `APPLICATION` conserva `app_code` y no se identifica por repositorio, URL, ambiente o proveedor;
+20. `TECH_SERVICE` conserva exactamente `TI-SERVICE-001` a `TI-SERVICE-011` sin renumeración;
+21. los tres objetos AURA continúan `BLOQUEADO` y no se presenta una fuente operativa inexistente;
+22. crosswalks físicos permanecen en `DATA-INT-003` y no se adelanta su implementación;
+23. la reconstrucción física, deduplicación, backfill o migración de datos no se ejecuta en esta tarea;
+24. no se crea ni modifica ningún requisito de prueba;
+25. la continuidad queda exclusivamente en `DATA-DOM-004` como siguiente tarea reservada.
+
+---
+
+#### 15. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores`
+
+
 ### [ ] DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
 ### [ ] DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
 ### [ ] DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
