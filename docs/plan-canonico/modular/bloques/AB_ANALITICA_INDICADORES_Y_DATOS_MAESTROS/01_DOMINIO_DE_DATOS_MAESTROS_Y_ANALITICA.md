@@ -4250,7 +4250,657 @@ SIGUIENTE TAREA RESERVADA
 `DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales`
 
 
-### [ ] DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
+### ✅ DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales` — APROBADA
+**Tarea siguiente:** `DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística` — RESERVADA
+**Tipo de tarea:** documental; definición y materialización del contrato analítico comercial para ventas, pedidos, demanda, precios, promociones y canales, con decisión explícita por familia y evidencia vigente
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues, publicación productiva o activación de modelos analíticos:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir la analítica comercial común de Vento OS para que ventas, pedidos, demanda, precios, descuentos, promociones y canales puedan analizarse con una semántica reproducible, sin convertir una pantalla operativa, una importación, un catálogo vigente o una agregación local en una nueva fuente de verdad.
+
+La tarea materializa las once familias comerciales reservadas por `CAP-SCOPE-017` y fija qué puede calcularse con la evidencia actual, qué permanece pendiente de evidencia y qué queda bloqueado hasta disponer de una fuente o denominador gobernado.
+
+La cadena documental queda así:
+
+```text
+HECHO COMERCIAL / REGLA DE OFERTA
+→ FUENTE Y CONTEXTO GOBERNADOS
+→ CALIDAD Y RECONCILIACIÓN
+→ DEFINICIÓN ANALÍTICA COMERCIAL
+→ RESULTADO VERSIONADO
+→ PUBLICACIÓN BAJO DATA-DOM-008
+```
+
+Regla cardinal:
+
+```text
+VENTA OBSERVADA
+≠ DEMANDA TOTAL
+≠ DEMANDA PERDIDA
+≠ EFECTO DE PROMOCIÓN
+≠ MARGEN
+≠ CAPACIDAD COMERCIAL
+```
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-DOM-009` con los siguientes resultados:
+
+- las **11 de 11 familias** comerciales reservadas por `CAP-SCOPE-017` reciben definición, evidencia, estado y condición de salida explícitos;
+- se preservan como familias comerciales de origen `pedido, comanda, venta, pago, caja, devolución, entrega` y `precio de venta, descuento, promoción vigente`;
+- se consumen como dimensiones gobernadas `COMMERCIAL_CHANNEL`, `CATEGORIA_COMERCIAL`, `OFERTA_COMERCIAL`, producto, sede, cliente autorizado, moneda y tiempo;
+- se separan pedido, venta, pago, entrega, devolución, descuento y promoción;
+- se separan `source`, modalidad de cumplimiento y `COMMERCIAL_CHANNEL`; ninguna de las dos primeras sustituye al canal canónico;
+- se define la semántica de ventas observadas con impuestos, descuentos y devoluciones explícitos;
+- se define el tratamiento de pedidos, cancelaciones, unidades, ticket, mezcla, demanda observada, recurrencia y frecuencia;
+- se bloquea la conversión oficial mientras no exista un denominador gobernado de oportunidades o intenciones elegibles;
+- se bloquea la demanda perdida mientras no exista evidencia temporal de intención de compra y disponibilidad aplicable;
+- se bloquea el efecto incremental de promociones mientras no exista exposición/versionado de promoción y contrafactual o comparable válido;
+- se bloquea el margen comercial local hasta consumir una definición económica gobernada por `DATA-DOM-013`;
+- se bloquea la capacidad comercial no utilizada mientras no exista un denominador de capacidad compatible con la unidad analizada;
+- se reconoce la importación diaria Makos/POS como evidencia comercial controlada, no como cobertura histórica completa ni integración automática certificada;
+- se reconoce la operación de pedidos PULSO como evidencia actual de pedidos, líneas, importes, estados, origen y modalidad, no como registro analítico certificado;
+- no se crea por inferencia una nueva familia de identificadores de métricas; las claves técnicas observadas se conservan únicamente como evidencia y alias de implementación hasta su binding físico en `DATA-INT-002`;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Fronteras conceptuales obligatorias
+
+```text
+PEDIDO
+≠ COMANDA
+≠ VENTA
+≠ PAGO
+≠ ENTREGA
+≠ DEVOLUCIÓN
+```
+
+```text
+ORIGEN TÉCNICO DEL PEDIDO
+≠ MODALIDAD DE CUMPLIMIENTO
+≠ COMMERCIAL_CHANNEL
+```
+
+```text
+PRECIO DE CATÁLOGO ACTUAL
+≠ PRECIO APLICADO A LA TRANSACCIÓN
+≠ DESCUENTO
+≠ PROMOCIÓN
+```
+
+```text
+DESCUENTO OBSERVADO
+≠ EXPOSICIÓN A PROMOCIÓN
+≠ EFECTO INCREMENTAL DE PROMOCIÓN
+```
+
+```text
+VENTAS REALIZADAS
+≠ DEMANDA OBSERVADA COMPLETA
+≠ DEMANDA LATENTE
+≠ DEMANDA PERDIDA
+```
+
+```text
+CERO VENTAS
+≠ CERO DEMANDA
+≠ PRODUCTO NO DISPONIBLE
+≠ CANAL CERRADO
+≠ DATO FALTANTE
+```
+
+```text
+TICKET
+≠ PRECIO UNITARIO
+≠ INGRESO POR CLIENTE
+≠ MARGEN
+```
+
+```text
+VENTA
+≠ INGRESO ECONÓMICO RECONOCIDO
+≠ MARGEN
+≠ RENTABILIDAD
+```
+
+```text
+VARIACIÓN DESCRIPTIVA
+≠ EFECTO CAUSAL
+```
+
+Una cifra solo puede compararse con otra cuando comparten definición, población, periodo, corte, moneda/unidad, tratamiento fiscal, dimensiones, cobertura y versión o existe un puente explícito y trazable.
+
+#### 4. Autoridad y fuentes consumidas
+
+La analítica comercial conserva el gobierno federado aprobado.
+
+| Elemento                                                 | Autoridad funcional                            | Uso en esta tarea                        | Regla de frontera                                                            |
+| -------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------- |
+| pedido, comanda, venta, pago, caja, devolución y entrega | PULSO                                          | hechos comerciales                       | cada hecho conserva identidad, estado, tiempo y grano propios                |
+| precio de venta, descuento y promoción vigente           | PULSO; AURA solo propone intención promocional | reglas y valores aplicados               | la regla vigente no reescribe el valor histórico aplicado                    |
+| `COMMERCIAL_CHANNEL`                                     | PULSO                                          | dimensión canónica de canal              | no equivale a sede, `source`, proveedor externo ni modalidad de cumplimiento |
+| `CATEGORIA_COMERCIAL`                                    | PULSO                                          | dimensión comercial                      | no sustituye taxonomía de inventario o producto                              |
+| `OFERTA_COMERCIAL`                                       | PULSO                                          | configuración vendible versionada        | producto, precio, disponibilidad y oferta permanecen conceptos distintos     |
+| producto maestro                                         | NEXO                                           | identidad de producto                    | PULSO consume la identidad; no la redefine desde nombres externos            |
+| cliente e identidad autorizada                           | PASS                                           | recurrencia y frecuencia cuando aplique  | no fusionar invitados por similitud ni ampliar finalidad                     |
+| moneda y resultado económico                             | NUMERA                                         | moneda, margen y conciliación económica  | PULSO no redefine margen ni reconocimiento económico                         |
+| campañas e intención promocional AURA                    | AURA objetivo                                  | insumo futuro para exposición/atribución | permanece bloqueado mientras no exista fuente operativa habilitada           |
+
+#### 5. Evidencia técnica actual observada
+
+La evidencia técnica actual demuestra superficies comerciales reales, pero no certifica por sí misma las familias analíticas.
+
+| Superficie observada                  | Evidencia material                                                                                                                                                   | Qué sí demuestra                                                                    | Qué no demuestra                                                                                                              |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| importación diaria Makos/POS en PULSO | lote por sede/fecha, archivo y hash; filas por artículo; cantidad; subtotal; impuestos; descuentos; devoluciones; importes neto y bruto; mapping a catálogo/producto | existencia de una captura comercial controlada y auditable para ventas por artículo | cobertura histórica completa, transacción individual, canal canónico, ticket completo, causalidad promocional o certificación |
+| publicación del lote diario PULSO     | solo lotes `validated` pueden pasar a `posted`; posting conserva efectos de inventario y evidencia                                                                   | control operativo previo al efecto posterior del lote                               | que `posted` equivalga a `CERTIFICADO` o a reporte oficial                                                                    |
+| pedidos PULSO                         | `orders` con fecha, estado, pago, subtotal, total, sede, `source`, modalidad y despacho                                                                              | existencia de pedidos y estados operativos segmentables                             | denominador de conversión, canal canónico o demanda no atendida                                                               |
+| líneas de pedido                      | producto, cantidad, precio unitario y total de línea                                                                                                                 | unidades y precio aplicado al pedido observado                                      | precio histórico completo de todas las ventas/canales                                                                         |
+| catálogo comercial                    | `price_amount`, `compare_at_amount`, categoría y modalidades vigentes                                                                                                | precio/configuración actualmente visible en el catálogo                             | historia de precios, promoción aplicada, exposición o efecto incremental                                                      |
+| NUMERA                                | resumen mensual por centro de costo con ingreso esperado, gasto real, presupuesto y variación                                                                        | existencia de una superficie económica separada                                     | margen por producto, canal o promoción requerido por esta tarea                                                               |
+
+La ausencia de una evidencia en esta tabla no se interpreta como inexistencia global. Solo significa que no se usa como hecho demostrado para cerrar una definición oficial en `DATA-DOM-009`.
+
+#### 6. Coordenada mínima del análisis comercial
+
+Todo resultado comercial deberá conservar, cuando aplique:
+
+| Coordenada                | Regla canónica                                                                      |
+| ------------------------- | ----------------------------------------------------------------------------------- |
+| definición analítica      | significado, fórmula o regla de agregación y versión                                |
+| hecho base                | pedido, venta, pago, devolución, entrega u otro hecho explícito                     |
+| periodo                   | ventana empresarial analizada                                                       |
+| corte                     | instante hasta el cual se incorporan hechos y correcciones                          |
+| sede                      | identidad canónica aplicable al hecho                                               |
+| producto/oferta           | identidad y versión históricamente aplicables                                       |
+| categoría comercial       | categoría vigente para el hecho o regla de reexpresión explícita                    |
+| canal                     | `COMMERCIAL_CHANNEL` resuelto; nunca inferido silenciosamente desde `source`        |
+| modalidad                 | delivery, pickup, on-premise u otra modalidad gobernada, separada del canal         |
+| moneda                    | moneda original; conversiones quedan separadas y versionadas                        |
+| tratamiento fiscal        | declara si la medida incluye o excluye impuestos                                    |
+| descuentos y devoluciones | se muestran como componentes, no se absorben silenciosamente                        |
+| estado del pedido/venta   | define población incluida y excluida                                                |
+| estado del pago           | impide tratar un intento o rechazo como cobro confirmado                            |
+| cliente                   | solo cuando exista identidad autorizada y finalidad compatible                      |
+| cobertura                 | declara qué fuentes/canales están incluidos y qué queda fuera                       |
+| calidad/certificación     | consume el estado definido por `DATA-DOM-007`                                       |
+| versión de publicación    | consume `DATA-DOM-008` y `DATA-DOM-017` cuando el resultado se publique o reexprese |
+
+#### 7. Matriz de las 11 familias comerciales
+
+|    # | Familia canónica                             | Definición materializada                                                                                                                                          | Evidencia actual                                                                                                        | Estado para certificación                                                                  | Condición de salida / propietario exacto                                                                                                                                                                       |
+| ---: | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | separar subtotal/base comercial, impuesto, descuento, devolución, venta neta y monto bruto reportado; declarar siempre base fiscal                                | Makos/POS conserva todos esos componentes; pedidos PULSO conservan subtotal y total                                     | `NO EVALUADO`                                                                              | modelo semántico y reconciliación en `DATA-INT-002`; calidad bajo `DATA-DOM-007`                                                                                                                               |
+|    2 | pedidos y conversión                         | contar pedidos por población/estado; conversión requiere numerador y denominador de oportunidades elegibles en el mismo contexto                                  | pedidos PULSO observados; no se observó denominador gobernado de intención/oportunidad                                  | `BLOQUEADO` para conversión; `NO EVALUADO` para conteos de pedidos                         | captura/contrato del denominador en `DATA-INT-001`; materialización en `DATA-INT-002`                                                                                                                          |
+|    3 | ticket y unidades                            | unidades = suma de cantidades compatibles; ticket = importe comercial definido dividido por transacciones elegibles, nunca por filas de producto                  | cantidades en Makos y líneas PULSO; pedidos PULSO permiten conteo parcial de transacciones                              | `NO EVALUADO`                                                                              | `DATA-INT-002` debe materializar población y base monetaria; cobertura externa sigue `DAT-01`, `DAT-02`, `DAT-03` y `INT-POS-001`, `INT-POS-002`, `INT-POS-005` a `INT-POS-009`, `INT-POS-020` y `INT-POS-023` |
+|    4 | mezcla por producto, categoría, canal y sede | distribuir ventas/unidades sobre dimensiones gobernadas y reconciliar al total antes de comparar participaciones                                                  | producto, categoría y sede parciales; `source` y modalidad existen en pedidos                                           | `BLOQUEADO` para mezcla oficial por canal; `NO EVALUADO` para ejes con identidad resuelta  | mapping físico hacia `COMMERCIAL_CHANNEL` en `DATA-INT-003`; modelo en `DATA-INT-002`                                                                                                                          |
+|    5 | demanda por franja, día y temporada          | distinguir demanda observada/satisfecha de demanda total; usar tiempo del hecho y calendario comparable                                                           | `sales_date` Makos y `created_at` de pedidos permiten serie observada                                                   | `NO EVALUADO` para demanda observada; `PENDIENTE_DE_EVIDENCIA` para estacionalidad robusta | cobertura histórica en `DAT-01`, `DAT-02`, `DAT-03` e `INT-POS-001`, `INT-POS-002`, `INT-POS-005` a `INT-POS-009`, `INT-POS-020` y `INT-POS-023`; calendario/modelo en `DATA-INT-002`                          |
+|    6 | disponibilidad perdida                       | solo existe cuando una intención u oportunidad de compra coincide con indisponibilidad demostrada en el mismo producto/oferta, sede, canal y ventana              | no existe evidencia suficiente de intención perdida + disponibilidad histórica reconciliada                             | `BLOQUEADO`                                                                                | disponibilidad e inventario en `DATA-DOM-010`; unión semántica en `DATA-INT-002`                                                                                                                               |
+|    7 | cancelaciones, devoluciones y descuentos     | separar cancelación de pedido, devolución monetaria/unidades y descuento; cada uno usa su propio denominador y corte                                              | estado `cancelled` en pedidos; `return_amount` y `discount_amount` en Makos; pagos admiten `refunded`                   | `NO EVALUADO`                                                                              | reconciliación de hechos en `DATA-INT-001`/`DATA-INT-002`; reexpresión histórica en `DATA-DOM-017` cuando aplique                                                                                              |
+|    8 | promociones y efecto incremental             | descuento no prueba promoción; una promoción requiere versión/exposición; efecto incremental exige comparable o contrafactual gobernado y nivel de confianza      | no se observó una fuente operativa AURA habilitada; catálogo actual no prueba exposición promocional                    | `BLOQUEADO`                                                                                | exposición/promoción materializada en `DATA-INT-002`; causalidad/confianza en `DATA-DOM-014`; experimento cuando aplique en `DATA-DOM-016`                                                                     |
+|    9 | recurrencia y frecuencia                     | medir repetición únicamente sobre identidad de cliente válida, finalidad autorizada y población explícita; invitados no se fusionan por similitud                 | pedidos soportan identidad de cliente en su contrato; cobertura de invitados/canales no está demostrada como completa   | `NO EVALUADO`                                                                              | protección de detalle en `DATA-AUTH-002`; modelo de población en `DATA-INT-002`                                                                                                                                |
+|   10 | margen relacionado                           | consumir una métrica económica gobernada y asociarla a ventas/dimensiones sin recalcular costo o margen localmente                                                | NUMERA tiene superficie económica por centro de costo, pero no se demostró margen canónico por producto/canal/promoción | `BLOQUEADO`                                                                                | fórmula económica en `DATA-DOM-013`; binding semántico en `DATA-INT-002`                                                                                                                                       |
+|   11 | capacidad comercial no utilizada             | comparar demanda/ventas contra una capacidad disponible definida en la misma unidad, sede, canal y ventana; ventas bajas por sí solas no prueban capacidad ociosa | no se observó denominador comercial gobernado y reconciliado                                                            | `BLOQUEADO`                                                                                | insumos de disponibilidad/capacidad en `DATA-DOM-010` y `DATA-DOM-011`; combinación en `DATA-INT-002`                                                                                                          |
+
+**Reconciliación:** 11 familias esperadas; 11 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 8. Componentes monetarios observados en la importación Makos/POS
+
+La implementación actual conserva los siguientes nombres técnicos como evidencia. Esta tarea no los transforma automáticamente en nuevas identidades de métrica.
+
+| Campo técnico observado       | Semántica de la implementación actual                                      | Regla canónica de uso                                                                                          |
+| ----------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `subtotal_amount`             | subtotal recibido del archivo fuente                                       | conservar semántica de origen; no asumir inclusión de impuestos o descuentos distinta de la fuente             |
+| `tax_amount`                  | impuestos recibidos del archivo fuente                                     | reportar por separado o declarar inclusión explícita                                                           |
+| `discount_amount`             | descuentos recibidos del archivo fuente                                    | no atribuir a promoción sin regla/exposición identificada                                                      |
+| `return_amount`               | devoluciones recibidas del archivo fuente                                  | no confundir devolución con cancelación de pedido                                                              |
+| `net_sales_amount`            | implementación actual: `subtotal_amount - discount_amount - return_amount` | puede consumirse solo bajo la misma base y fuente reconciliada                                                 |
+| `gross_sales_amount`          | implementación actual por fila: `subtotal_amount + tax_amount`             | se considera monto bruto con impuesto de esa implementación; no es intercambiable silenciosamente con subtotal |
+| `total_quantity` / `quantity` | cantidad reportada en lote o línea                                         | su unidad comercial debe permanecer explícita; no equivale automáticamente a unidad de stock                   |
+
+Regla de reconciliación para la fuente actual:
+
+```text
+NETO TÉCNICO MAKOS
+=
+SUBTOTAL
+- DESCUENTOS
+- DEVOLUCIONES
+```
+
+```text
+BRUTO TÉCNICO MAKOS
+=
+SUBTOTAL
++ IMPUESTOS
+```
+
+Por tanto, `gross_sales_amount - net_sales_amount` no se interpretará como una única categoría de ajuste: mezcla impuestos, descuentos y devoluciones. Los reportes oficiales mostrarán la base fiscal o los componentes necesarios para evitar una lectura falsa.
+
+#### 9. Contrato de ventas netas y brutas
+
+La analítica de ventas deberá presentar los componentes y no una cifra ambigua denominada únicamente “ventas”.
+
+Reglas:
+
+1. el resultado declara si incluye o excluye impuestos;
+2. descuentos y devoluciones se conservan como componentes separados;
+3. una devolución tardía puede afectar un periodo ya publicado y deberá seguir `DATA-DOM-017`;
+4. un pedido no se convierte automáticamente en venta por haber sido creado;
+5. un pago aprobado no prueba por sí solo entrega o cierre de servicio;
+6. una importación `draft` o con filas no resueltas no se presentará como una población comercial certificada;
+7. un lote `posted` indica efecto operativo de publicación del lote, no certificación analítica;
+8. ventas de fuentes distintas solo se suman cuando no representan el mismo hecho y comparten contrato de moneda, impuestos, ajustes y corte;
+9. una venta externa conservará fuente y evidencia original suficiente para evitar doble conteo al migrar a PULSO nativo.
+
+#### 10. Pedidos y conversión
+
+Los conteos de pedidos se definen sobre identidades de pedido distintas y estados explícitos.
+
+Poblaciones mínimas distinguibles:
+
+```text
+PEDIDOS CREADOS
+PEDIDOS CONFIRMADOS
+PEDIDOS ENTREGADOS
+PEDIDOS CANCELADOS
+PEDIDOS CON PAGO APROBADO
+PEDIDOS REEMBOLSADOS
+```
+
+Estas poblaciones no son equivalentes y no se sustituyen entre sí por conveniencia de interfaz.
+
+La conversión se define estructuralmente como:
+
+```text
+CONVERSIÓN
+=
+RESULTADOS ELEGIBLES COMPLETADOS
+/
+OPORTUNIDADES O INTENCIONES ELEGIBLES
+```
+
+Condiciones:
+
+- numerador y denominador pertenecen al mismo canal, sede, periodo, población y corte;
+- el denominador no se sustituye por pedidos creados si la pregunta es conversión desde visita, intención, sesión, oportunidad o carrito;
+- si el denominador no existe o no está reconciliado, no se devuelve un porcentaje numérico;
+- el contrato actual de pedidos demuestra hechos de pedido, pero no demuestra por sí mismo la población previa elegible; por eso la conversión oficial permanece `BLOQUEADO`.
+
+#### 11. Ticket y unidades
+
+Las unidades se agregan únicamente cuando la unidad comercial es compatible. Cantidad de líneas, cantidad de artículos y unidad de inventario son conceptos distintos.
+
+El ticket se define mediante una base explícita:
+
+```text
+TICKET
+=
+IMPORTE COMERCIAL ELEGIBLE
+/
+TRANSACCIONES ELEGIBLES DISTINTAS
+```
+
+El artefacto que lo muestre deberá declarar:
+
+- qué importe usa: subtotal, neto, total cobrado u otra base gobernada;
+- si incluye impuestos;
+- si incluye tarifa de entrega;
+- si incorpora descuentos y devoluciones;
+- qué estado convierte un pedido en transacción elegible;
+- cómo trata devoluciones posteriores al corte.
+
+Las filas de la importación Makos son filas por artículo y no constituyen evidencia de cantidad de tickets. Por tanto, no se calculará ticket total de esa fuente dividiendo ventas por `row_count`.
+
+#### 12. Mezcla comercial
+
+La mezcla puede expresarse en importe, unidades o transacciones, pero el denominador debe corresponder a la misma medida.
+
+Dimensiones aprobadas para el contrato comercial:
+
+- producto canónico;
+- `CATEGORIA_COMERCIAL`;
+- `COMMERCIAL_CHANNEL`;
+- sede;
+- `OFERTA_COMERCIAL` y versión cuando aplique;
+- periodo y franja temporal;
+- modalidad de cumplimiento como eje independiente cuando sea útil.
+
+Reglas:
+
+1. `orders.source` es procedencia técnica/operativa y no sustituye `COMMERCIAL_CHANNEL`;
+2. `fulfillment_type` describe modalidad de cumplimiento y no sustituye `COMMERCIAL_CHANNEL`;
+3. identificadores de Rappi, web, mensajería u otros proveedores se resuelven como claves externas o mappings del canal gobernado;
+4. una categoría externa Makos no se convierte automáticamente en `CATEGORIA_COMERCIAL`;
+5. toda mezcla debe reconciliar al total de su misma población antes de publicarse;
+6. cambios posteriores de categoría, canal u oferta no recodifican historia sin restatement explícito.
+
+#### 13. Demanda por franja, día y temporada
+
+Se distinguen tres conceptos:
+
+```text
+DEMANDA OBSERVADA / SATISFECHA
+→ pedidos o unidades efectivamente registradas bajo una fuente y cobertura conocidas
+
+DEMANDA NO ATENDIDA DEMOSTRADA
+→ intención elegible que no pudo convertirse por una restricción identificada y trazable
+
+DEMANDA TOTAL O ESTIMADA
+→ combinación o estimación que requiere metodología, cobertura y confianza explícitas
+```
+
+Reglas:
+
+- una serie de ventas puede describir demanda observada, no demostrar demanda total;
+- cero ventas durante una franja no demuestra cero demanda;
+- producto fuera de catálogo, canal cerrado, falta de inventario, límite productivo, fallo técnico y dato faltante son causas distintas;
+- franja, día, semana y temporada usan calendario y zona horaria gobernados;
+- comparar temporadas exige cobertura comparable, días completos, sedes/canales equivalentes, catálogo y definición compatibles;
+- la disponibilidad histórica de Makos/POS permanece condicionada por `DAT-01`, `DAT-02`, `DAT-03` y las tareas `INT-POS-001`, `INT-POS-002`, `INT-POS-005` a `INT-POS-009`, `INT-POS-020` y `INT-POS-023` aplicables.
+
+#### 14. Disponibilidad perdida
+
+La disponibilidad perdida no se calcula como “venta esperada menos venta real” sin evidencia.
+
+Para declarar una oportunidad perdida deberán existir, en la misma coordenada:
+
+- producto u oferta;
+- sede;
+- canal o contexto comercial;
+- ventana temporal;
+- evidencia de intención/oportunidad elegible o un método de estimación aprobado;
+- evidencia de indisponibilidad o restricción;
+- causa diferenciada cuando sea posible;
+- cobertura y nivel de confianza.
+
+No se inferirá falta de disponibilidad únicamente porque una referencia tenga cero ventas. Los datos de inventario y abastecimiento requeridos se definen en `DATA-DOM-010`; la unión analítica corresponde a `DATA-INT-002`.
+
+#### 15. Precios y precio aplicado
+
+La analítica de precios usa el valor efectivamente aplicado al hecho y preserva la configuración vigente como una referencia distinta.
+
+Evidencia actual:
+
+- el catálogo comercial conserva `price_amount` y `compare_at_amount` actuales;
+- las líneas de pedido conservan `unit_price` y `total_amount`;
+- la importación Makos conserva importes por artículo y cantidad.
+
+Reglas:
+
+1. `price_amount` actual no reescribe el precio histórico de una línea;
+2. `compare_at_amount` no prueba por sí solo una promoción ni el descuento efectivamente aplicado;
+3. un precio histórico se reconstruye desde la línea/hecho o desde una versión de `OFERTA_COMERCIAL` válida en ese instante;
+4. comparar precios exige producto/oferta, sede, canal, moneda, unidad y vigencia compatibles;
+5. un precio derivado como importe/cantidad se etiqueta como precio realizado de la fuente y no como tarifa oficial si no existe evidencia de la regla aplicada;
+6. cambios materiales de definición, precio o tratamiento histórico se coordinan con `DATA-DOM-017`.
+
+#### 16. Cancelaciones, devoluciones y descuentos
+
+Las tres familias permanecen separadas:
+
+```text
+CANCELACIÓN
+→ estado o transición del pedido/venta
+
+DEVOLUCIÓN
+→ reversión total o parcial de unidades o importe
+
+DESCUENTO
+→ reducción de precio o importe bajo una regla o condición
+```
+
+Reglas:
+
+- una cancelación no se convierte automáticamente en devolución;
+- un reembolso de pago no se trata como descuento;
+- una devolución puede ocurrir en un periodo posterior a la venta original;
+- una tasa de cancelación usa una cohorte de pedidos elegibles y un corte que permita observar el resultado;
+- una tasa de devolución usa una base de ventas/unidades compatible;
+- una tasa de descuento usa una base predescuento compatible;
+- sin denominador positivo y reconciliado no se devuelve porcentaje numérico;
+- los importes Makos observados pueden describir descuentos/devoluciones de esa fuente, pero no demuestran cobertura completa de todos los canales.
+
+#### 17. Promociones y efecto incremental
+
+Una promoción requiere, como mínimo:
+
+- identidad o versión de la regla/promoción;
+- oferta/productos elegibles;
+- sede/canal/población;
+- inicio y fin de vigencia;
+- condición de elegibilidad;
+- beneficio o mecánica;
+- evidencia de exposición o aplicación;
+- resultado observado;
+- comparable, baseline o contrafactual cuando se pretenda medir incremento.
+
+Reglas:
+
+1. `discount_amount` no prueba qué promoción causó el descuento;
+2. `compare_at_amount` no prueba exposición ni aplicación;
+3. una diferencia antes/después puede ser un **lift descriptivo**, pero no se presenta como causal sin controlar cambios materiales;
+4. un **efecto incremental causal** exige diseño y nivel de confianza suficientes;
+5. estacionalidad, disponibilidad, precio, canal, catálogo y mezcla pueden explicar variaciones y deben controlarse según la metodología;
+6. AURA permanece como fuente objetivo de campaña/intención promocional y no se sustituye con hojas, etiquetas o descuentos aislados mientras su fuente operativa siga bloqueada;
+7. `DATA-DOM-014` gobierna causalidad/confianza del diagnóstico y `DATA-DOM-016` gobierna experimentos y comprobación cuando corresponda.
+
+#### 18. Recurrencia y frecuencia
+
+La recurrencia y frecuencia comercial se calculan únicamente sobre una identidad autorizada y una población definida.
+
+Reglas:
+
+- una persona identificada conserva identidad PASS; PULSO no crea una identidad analítica paralela;
+- pedidos invitados no se fusionan por nombre, teléfono, dirección o similitud sin contrato de identidad y autorización;
+- frecuencia cuenta transacciones elegibles por cliente y ventana;
+- recurrencia declara la condición de retorno y la ventana de observación;
+- la población excluye o separa clientes sin historial suficiente cuando el indicador lo requiera;
+- una compra en una fuente no vinculable no se adjudica silenciosamente a un cliente existente;
+- el detalle de cliente, cohortes pequeñas y comparaciones aplica `DATA-AUTH-002`.
+
+La cobertura actual permite definir la semántica, pero no certificar que toda venta histórica esté vinculada a una identidad cliente.
+
+#### 19. Margen relacionado
+
+`DATA-DOM-009` no crea una fórmula financiera competidora.
+
+El análisis comercial podrá consumir margen únicamente cuando `DATA-DOM-013` defina y gobierne la medida económica aplicable, incluyendo costo, moneda, reconocimiento, devoluciones y periodo.
+
+Reglas:
+
+- venta neta no equivale a margen;
+- descuento no equivale a costo;
+- ingreso esperado de un centro de costo no equivale a margen por producto o canal;
+- una pantalla PULSO no recalcula margen localmente;
+- cualquier desglose por producto, categoría, canal, sede o promoción debe reconciliar con la métrica económica fuente y conservar sus restricciones de granularidad.
+
+Hasta esa dependencia, la familia permanece `BLOQUEADO` para publicación como margen oficial.
+
+#### 20. Capacidad comercial no utilizada
+
+La capacidad no utilizada requiere un denominador real y compatible.
+
+Ejemplos de capacidades que no pueden mezclarse sin contrato:
+
+- capacidad de inventario disponible para venta;
+- capacidad productiva;
+- capacidad de atención/servicio;
+- capacidad logística de entrega;
+- disponibilidad temporal del canal u oferta.
+
+Reglas:
+
+- ventas menores que un periodo previo no prueban capacidad ociosa;
+- capacidad física y capacidad comercial se relacionan, pero no son la misma métrica;
+- numerador y denominador deben compartir unidad, ventana, sede y alcance;
+- restricciones múltiples deben conservar causa para evitar atribuir toda pérdida a una sola;
+- `DATA-DOM-010` y `DATA-DOM-011` proveerán las definiciones de disponibilidad/capacidad de sus dominios cuando apliquen; `DATA-INT-002` materializará la combinación analítica.
+
+La familia permanece `BLOQUEADO` hasta disponer del denominador gobernado.
+
+#### 21. Tratamiento de canales
+
+`COMMERCIAL_CHANNEL` es la única dimensión canónica de canal comercial definida para esta capa.
+
+Los valores técnicos observados en pedidos como `vento_pass`, `pulso`, `pos` o `web` son procedencias registradas por la implementación y no se elevan automáticamente a identidades de canal.
+
+La modalidad `delivery`, `pickup` u `on_premise` también permanece separada.
+
+Todo binding físico de fuente/cuenta/proveedor/modalidad hacia `COMMERCIAL_CHANNEL` deberá:
+
+- usar un código canónico del canal;
+- preservar la clave externa y su fuente;
+- conservar vigencia;
+- evitar fusionar canales por nombre o proveedor compartido;
+- mantener historia cuando el canal se retire o reconfigure;
+- materializarse mediante `DATA-INT-003` antes de una mezcla oficial por canal.
+
+#### 22. Tratamiento de cobertura Makos/POS externo
+
+La fuente Makos/POS conserva el tratamiento de exportación controlada aprobado en `DATA-DOM-006` y `DATA-DOM-007`.
+
+Reglas para análisis comercial:
+
+- el archivo y hash permiten identificar el lote y evitar asumir que dos cargas son distintas por nombre;
+- sede y fecha del lote no sustituyen la fecha propia del hecho cuando el archivo contenga más granularidad;
+- filas sin mapping válido no se mezclan con producto canónico por similitud textual;
+- `row_count` es cantidad de filas importadas, no cantidad de ventas o tickets;
+- `matched_row_count` y `warning_count` son controles de ingestión, no KPI comerciales;
+- un lote `validated` permite el siguiente paso operativo, pero no recibe por ello estado `CERTIFICADO`;
+- la cobertura histórica no se extrapola más allá de la evidencia de `DAT-01`, `DAT-02` y `DAT-03`;
+- una transición futura desde Makos a una fuente PULSO nativa deberá evitar doble conteo por fuente y vigencia.
+
+#### 23. Tratamiento de pedidos PULSO
+
+La superficie actual de pedidos permite observar, entre otros, estado, pago, importe, sede, fuente, modalidad, despacho y líneas de producto.
+
+Para análisis:
+
+- `created_at` es tiempo de creación del pedido, no necesariamente tiempo de venta, pago o entrega;
+- `status = delivered` identifica un estado operativo de entrega, no sustituye el estado de pago;
+- `payment_status` se analiza separadamente;
+- `subtotal_amount`, `delivery_fee_amount` y `total_amount` no se colapsan;
+- `order_items.unit_price` es evidencia del precio aplicado a esa línea observada;
+- `source` conserva procedencia, no canal canónico;
+- `fulfillment_type` conserva modalidad, no canal;
+- cancelaciones tardías y reembolsos pueden cambiar la lectura de una cohorte y requieren corte reproducible.
+
+#### 24. Calidad, certificación y publicación
+
+Toda familia de esta tarea consume las reglas de `DATA-DOM-007` y `DATA-DOM-008`.
+
+Reglas:
+
+1. una definición `ESPECIFICADO` no equivale a resultado `CERTIFICADO`;
+2. una fuente `NO EVALUADO` no se eleva por existir código o datos;
+3. una dependencia `BLOQUEADO` impide publicar como certificado el resultado dependiente;
+4. un resultado comercial declara versión, periodo, zona horaria, filtros, dimensiones, moneda/unidad, corte, frescura, cobertura y calidad;
+5. una vista operativa en vivo no es un snapshot ni reporte oficial;
+6. una exportación no amplía alcance de autorización;
+7. las correcciones y restatements preservan versiones anteriores bajo `DATA-DOM-017`;
+8. una cifra parcial puede mostrarse solo si su cobertura y limitación son explícitas y la política de publicación lo permite.
+
+#### 25. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                      | Propietario documental                                                                                                               | Condición de salida                                                            |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| disponibilidad, faltantes y cobertura de inventario que alimenten demanda perdida | `DATA-DOM-010`                                                                                                                       | antes de calcular pérdida atribuida a inventario                               |
+| capacidad productiva que limite venta                                             | `DATA-DOM-011`                                                                                                                       | antes de atribuir capacidad comercial ociosa a producción                      |
+| margen, costo y rentabilidad económica                                            | `DATA-DOM-013`                                                                                                                       | antes de publicar margen por producto/canal/promoción                          |
+| causalidad, anomalías y nivel de confianza                                        | `DATA-DOM-014`                                                                                                                       | antes de presentar asociación como explicación causal                          |
+| experimentos y comprobación de efecto                                             | `DATA-DOM-016`                                                                                                                       | antes de declarar efecto experimental comprobado                               |
+| restatements, correcciones históricas y reproducibilidad                          | `DATA-DOM-017`                                                                                                                       | antes de reexpresar una publicación comercial previa                           |
+| captura/contrato de fuentes comerciales y denominadores de conversión             | `DATA-INT-001`                                                                                                                       | antes de calcular conversión oficial con nueva fuente                          |
+| capa semántica, agregaciones, joins, caché y snapshots                            | `DATA-INT-002`                                                                                                                       | antes de servir resultados comerciales compartidos                             |
+| mapping físico de canales, productos y claves externas                            | `DATA-INT-003`                                                                                                                       | antes de segmentar oficialmente por `COMMERCIAL_CHANNEL` o consolidar externos |
+| protección de detalle sensible, cliente y grupos pequeños                         | `DATA-AUTH-002`                                                                                                                      | antes de habilitar drill-down o cohortes sensibles                             |
+| segregación de definición, certificación, publicación y administración            | `DATA-AUTH-003`                                                                                                                      | antes de conceder capacidades administrativas sobre métricas comerciales       |
+| experiencia de tableros comerciales                                               | `DATA-UX-003`                                                                                                                        | antes de exponer filtros, comparación y drill-down de dominio                  |
+| cobertura histórica de Makos/POS                                                  | `DAT-01`, `DAT-02`, `DAT-03` y `INT-POS-001`, `INT-POS-002`, `INT-POS-005` a `INT-POS-009`, `INT-POS-020` y `INT-POS-023` aplicables | antes de afirmar cobertura histórica más amplia o ejecutar backfill            |
+
+No queda un bloqueo analítico material identificado por esta tarea sin propietario documental y condición de salida explícitos.
+
+#### 26. Cobertura de prueba canónica preexistente
+
+La protección requerida por esta tarea ya está contenida en requisitos DATA vigentes:
+
+- `TREQ-DATA-002` exige que toda métrica o indicador tenga definición canónica versionada, fórmula, numerador/denominador, granularidad, dimensiones, filtros, unidad/moneda, tiempo, fuente, frescura, calidad, certificación, drill-down y comparabilidad; además asigna expresamente `DATA-DOM-009` dentro de sus tareas responsables;
+- `TREQ-DATA-003` protege contratos de origen, cobertura, duplicados, integridad, datos tardíos, backfills, correcciones, reconciliación, linaje y prohíbe certificar reportes sobre fuentes vencidas, incompletas, degradadas o sin reconciliar;
+- `TREQ-DATA-004` protege tableros/reportes/alertas/exportaciones/suscripciones, sus coordenadas de publicación y la separación entre vista viva, snapshot, reporte oficial, simulación y exportación; también asigna `DATA-DOM-009` dentro de sus responsables.
+
+Las reglas comerciales materializadas aquí especializan esas obligaciones para ventas, demanda, precio, promociones y canal. No alteran la regla protegida, prioridad, modalidad, estado, relaciones ni destino de implementación de esos requisitos.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los requisitos DATA vigentes ya protegen de forma directa la definición reproducible de métricas comerciales, sus fuentes, denominadores, granularidad, calidad, reconciliación, publicación, cobertura y comparabilidad, y asignan esta familia de tareas como responsabilidad documental. `DATA-DOM-009` materializa la especialización comercial sin introducir comportamiento ejecutable, integración física, migración, cálculo productivo o publicación nueva.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+#### 27. Criterios de aceptación
+
+1. las 11 familias reservadas por `CAP-SCOPE-017` están materializadas exactamente una vez;
+2. no se confunden pedido, venta, pago, entrega, devolución, descuento y promoción;
+3. `source`, modalidad de cumplimiento y `COMMERCIAL_CHANNEL` permanecen dimensiones distintas;
+4. `COMMERCIAL_CHANNEL` conserva su identidad gobernada por PULSO y no se infiere desde etiquetas técnicas;
+5. `CATEGORIA_COMERCIAL` y `OFERTA_COMERCIAL` se usan con vigencia histórica y no desde el estado actual por defecto;
+6. producto, oferta, precio y disponibilidad permanecen conceptos distintos;
+7. la semántica actual de `subtotal_amount`, `tax_amount`, `discount_amount`, `return_amount`, `net_sales_amount` y `gross_sales_amount` queda explícita;
+8. el importe bruto con impuesto no se compara silenciosamente con un neto que excluye impuesto;
+9. una importación Makos `validated` o `posted` no se presenta automáticamente como certificada;
+10. `row_count` no se usa como número de tickets o ventas;
+11. filas sin mapping válido no se mezclan con productos canónicos por similitud;
+12. pedidos creados, confirmados, entregados, cancelados, pagados y reembolsados permanecen poblaciones distintas;
+13. conversión no se calcula sin denominador elegible gobernado;
+14. ausencia de denominador no se convierte en cero porcentual;
+15. ticket declara base monetaria, tratamiento fiscal, tarifa de entrega, ajustes y población;
+16. unidades no mezclan cantidad comercial, líneas e inventario sin contrato;
+17. una mezcla por canal requiere mapping hacia `COMMERCIAL_CHANNEL`;
+18. toda mezcla reconcilia al total de la misma población;
+19. ventas observadas no se presentan como demanda total;
+20. cero ventas no se interpreta como cero demanda;
+21. demanda perdida requiere intención/oportunidad y evidencia de indisponibilidad en la misma coordenada;
+22. disponibilidad histórica e inventario para demanda perdida permanecen en `DATA-DOM-010`;
+23. `price_amount` actual no reescribe `order_items.unit_price` histórico;
+24. `compare_at_amount` no prueba promoción aplicada;
+25. un descuento no se atribuye a promoción sin identidad/exposición;
+26. lift descriptivo y efecto causal permanecen separados;
+27. efecto incremental causal consume causalidad/confianza de `DATA-DOM-014` y experimentación de `DATA-DOM-016` cuando aplique;
+28. clientes invitados no se fusionan por similitud para fabricar recurrencia;
+29. recurrencia y frecuencia aplican identidad/finalidad autorizadas y protección de `DATA-AUTH-002`;
+30. venta neta no se presenta como margen;
+31. margen comercial consume la definición económica de `DATA-DOM-013`;
+32. capacidad comercial no utilizada no se calcula sin denominador compatible;
+33. restricciones de inventario y capacidad se conservan por causa y propietario;
+34. la cobertura histórica Makos no excede evidencia de `DAT-01`, `DAT-02`, `DAT-03` e `INT-POS-001`, `INT-POS-002`, `INT-POS-005` a `INT-POS-009`, `INT-POS-020` y `INT-POS-023`;
+35. toda publicación conserva versión, periodo, corte, filtros, dimensiones, unidad/moneda, frescura, cobertura y calidad;
+36. ninguna fuente o familia `BLOQUEADO` produce un resultado oficial certificado;
+37. las correcciones históricas quedan gobernadas por `DATA-DOM-017`;
+38. no se modifica código, SQL, Supabase, datos, migraciones, backfills, catálogos, pedidos ni importaciones;
+39. no se crea ni modifica ningún requisito de prueba;
+40. la continuidad queda exclusivamente en `DATA-DOM-010` como siguiente tarea reservada.
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales`
+
+TAREA ACTUAL APROBADA
+`DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística`
+
+
 ### [ ] DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
 ### [ ] DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
 ### [ ] DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
