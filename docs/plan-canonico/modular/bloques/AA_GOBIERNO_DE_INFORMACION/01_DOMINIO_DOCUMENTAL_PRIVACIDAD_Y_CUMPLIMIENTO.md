@@ -1406,7 +1406,504 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias`
 
 
-### [ ] INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias
+### ✅ INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información` — APROBADA
+**Tarea siguiente:** `INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de la taxonomía corporativa para distinguir documentos, registros, evidencia, series documentales, expedientes, originales, copias y sus relaciones sin convertir carpetas, archivos, buckets, rutas o representaciones técnicas en categorías empresariales
+**Repositorio propietario:** `vento-shell`
+**Fase:** exclusivamente documental
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, Storage, RLS, RPC, funciones, triggers, Edge Functions, migraciones, datos, archivos operativos, permisos ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una taxonomía documental corporativa única para VENTO que permita identificar qué es cada objeto informacional y cómo se relaciona con su proceso, recurso, evidencia, agrupación y representación, sin confundir significado empresarial con formato, ubicación física, ruta técnica o mecanismo de almacenamiento.
+
+La taxonomía resuelve la brecha ya identificada entre información, documento, registro, evidencia, archivo, serie, expediente, original y copia. Su resultado es semántico y normativo: establece categorías, relaciones y reglas de resolución que deberán consumir las tareas posteriores de ciclo documental, metadatos, almacenamiento, retención, autenticidad, firma, autorización e integración.
+
+---
+
+#### 2. Resultado sustantivo
+
+La taxonomía queda materializada en cuatro ejes ortogonales:
+
+```text
+OBJETO INFORMACIONAL GOBERNADO
+        │
+        ├── FUNCIÓN DOCUMENTAL
+        │     ├── DOCUMENTO
+        │     ├── REGISTRO
+        │     └── EVIDENCIA
+        │
+        ├── AGRUPACIÓN DOCUMENTAL
+        │     ├── SERIE DOCUMENTAL
+        │     └── EXPEDIENTE
+        │
+        ├── ORIGINALIDAD Y DERIVACIÓN
+        │     ├── ORIGINAL
+        │     └── COPIA
+        │
+        └── REPRESENTACIÓN
+              ├── física
+              └── digital
+```
+
+Las nociones del título no son siete valores mutuamente excluyentes. Un mismo objeto puede ser simultáneamente documento y registro, servir como evidencia, pertenecer a una serie, estar referenciado por un expediente y tener representaciones originales y copias.
+
+La taxonomía se resuelve sobre el objeto y sus representaciones reales. No se asigna por aplicación, tabla, schema, bucket, carpeta, ruta, extensión, nombre de archivo o tecnología de almacenamiento.
+
+---
+
+#### 3. Invariantes heredadas
+
+Se conservan sin modificación:
+
+- los **69** contextos de proceso `VPROC-0001` a `VPROC-0069`;
+- las **332** entradas contextualizadas `DOCCTX-*`;
+- las **9** aplicaciones propietarias funcionales ya asignadas;
+- la escala de sensibilidad de cinco clases `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED`;
+- la regla de que la propietaria funcional sigue al proceso y al hecho empresarial, no al lugar de persistencia;
+- la regla de que una copia, exportación, snapshot, índice, caché, preview, thumbnail o representación derivada no adquiere autoridad sobre su fuente;
+- la regla de que la clasificación efectiva de una copia o derivado no puede degradar silenciosamente la clasificación de su fuente;
+- la separación entre propiedad funcional, custodia, responsabilidad, encargo, infraestructura, territorio y autorización;
+- la regla de que `VPROC-0060` gobierna el ciclo documental transversal sin apropiarse de los hechos empresariales originados en otros procesos;
+- la evidencia existente de originales físicos en `Oficina 1`, sin inventar custodios nominales ni correspondencias digitales no verificadas;
+- la frontera documental de Storage: la bandera técnica, el nombre del bucket o la ruta no determinan tipo documental, clasificación, autoridad ni permiso.
+
+---
+
+#### 4. Regla de no equivalencia
+
+La taxonomía adopta expresamente estas separaciones:
+
+```text
+información
+≠ dato personal
+≠ documento
+≠ registro
+≠ evidencia
+≠ archivo o blob
+```
+
+```text
+tipo documental
+≠ serie documental
+≠ expediente
+≠ carpeta
+≠ ubicación física
+≠ ubicación de Storage
+```
+
+```text
+objeto lógico
+≠ representación
+≠ versión
+≠ copia
+≠ archivo
+```
+
+```text
+propietaria funcional
+≠ custodio
+≠ autor
+≠ emisor
+≠ aprobador
+≠ firmante
+≠ repositorio
+≠ proveedor
+```
+
+La coincidencia de nombre, formato, carpeta, ruta o contenido aparente no autoriza fusionar identidades documentales ni inferir que dos representaciones son el mismo original.
+
+---
+
+#### 5. Documento
+
+Un **documento** es un objeto informacional estructurado cuya función es expresar, comunicar, declarar, instruir, solicitar, autorizar, acordar, informar, documentar o presentar contenido dentro de un contexto empresarial.
+
+Reglas:
+
+1. un documento existe por su significado y función, no por ser PDF, imagen, hoja de cálculo, archivo de texto o fila de base de datos;
+2. una plantilla en blanco puede ser un documento sin ser todavía un registro de una actuación concreta;
+3. al completarse, emitirse, aprobarse, aceptarse o usarse dentro de un proceso, el mismo objeto o una instancia derivada puede adquirir además función de registro o evidencia;
+4. una política, procedimiento, contrato, informe, acta, formulario, certificado, comunicación formal o instrucción puede ser documento aunque tenga múltiples representaciones;
+5. la existencia de un archivo no demuestra por sí sola la existencia de un documento gobernado: debe existir contexto, recurso y significado empresarial resolubles;
+6. el documento conserva la propietaria funcional del proceso que le da autoridad, aunque una representación sea almacenada o servida por otra aplicación o proveedor.
+
+---
+
+#### 6. Registro
+
+Un **registro** es la captura persistente de un hecho, transacción, actuación, decisión, aceptación, estado, medición, movimiento, comunicación o resultado ocurrido dentro de un proceso empresarial.
+
+Reglas:
+
+1. el registro representa que algo ocurrió, fue recibido, fue decidido, fue medido o quedó en determinado estado;
+2. una fila, evento o entrada de log puede ser registro sin ser un documento destinado a lectura humana;
+3. un formulario completado, una marcación, una recepción, una inspección ejecutada, una venta, una decisión o una entrega pueden producir registros;
+4. una plantilla o formulario vacío no se convierte en registro hasta que exista un hecho o instancia concreta que registrar;
+5. una representación legible del registro no sustituye al hecho fuente ni adquiere autoridad por ser más fácil de consultar;
+6. una corrección, sustitución o cambio de vigencia no se interpreta como permiso para sobrescribir silenciosamente la historia; el contrato de estados y versiones corresponde a la tarea siguiente.
+
+---
+
+#### 7. Evidencia
+
+La **evidencia** es la función probatoria de un objeto o conjunto de objetos utilizados para demostrar un hecho, decisión, estado, cumplimiento, recepción, autorización, ejecución, integridad, comunicación o cierre.
+
+La evidencia no es sinónimo de archivo ni de documento. Puede estar materializada como:
+
+- documento;
+- registro;
+- fotografía o video;
+- firma o constancia de aceptación;
+- evento o log preservado;
+- comprobante;
+- certificado;
+- medición;
+- snapshot;
+- representación física;
+- representación digital;
+- conjunto correlacionado de objetos.
+
+Reglas:
+
+1. un documento o registro puede cumplir además función de evidencia sin perder su naturaleza original;
+2. una evidencia puede probar un hecho sin convertirse en la fuente empresarial de ese hecho;
+3. una captura, fotografía, screenshot, exportación o copia puede servir como evidencia de una observación o transmisión, pero no adquiere por ello autoridad sobre el objeto fuente;
+4. la fuerza, autenticidad, integridad, procedencia, hash, timestamp y cadena de custodia no se presumen por la etiqueta `evidencia`; esos controles pertenecen a la tarea propietaria posterior;
+5. la evidencia preservada conserva clasificación, finalidad y restricciones aplicables al contenido que demuestra;
+6. cuando varios elementos forman conjuntamente la prueba, la relación entre ellos debe conservarse sin fusionarlos en un único objeto ficticio.
+
+---
+
+#### 8. Serie documental
+
+Una **serie documental** es una agrupación lógica y estable de documentos o registros producidos o recibidos por una misma función o proceso y que comparten una razón empresarial de gestión continua.
+
+Reglas:
+
+1. la serie agrupa por función documental y contexto empresarial, no por carpeta, ruta, bucket, extensión o aplicación;
+2. una serie puede atravesar múltiples periodos, versiones y representaciones sin convertir esos elementos en un único documento;
+3. pertenecer a una serie no transfiere propiedad funcional entre procesos;
+4. una serie puede contener elementos con distinta clasificación efectiva cuando el contenido o contexto lo exija;
+5. la serie no determina por sí sola retención, disposición o legal hold; esos controles se materializan en la tarea propietaria de retención;
+6. el nombre de una carpeta o biblioteca puede coincidir con una serie solo cuando exista una relación explícita, nunca por inferencia técnica.
+
+---
+
+#### 9. Expediente
+
+Un **expediente** es una agrupación lógica delimitada por un caso, recurso, sujeto, operación, contrato, investigación, trámite, relación o ciclo empresarial concreto.
+
+Reglas:
+
+1. el expediente conecta los documentos, registros y evidencias necesarios para comprender y probar un caso o ciclo específico;
+2. puede referenciar objetos originados en distintos procesos sin absorber su propiedad funcional ni convertirlos en copias;
+3. un mismo objeto fuente puede ser referenciado por más de un expediente cuando la relación empresarial sea legítima y explícita;
+4. incorporar una referencia a un expediente no duplica el objeto fuente;
+5. duplicar físicamente un archivo para formar un expediente sí crea una copia y debe conservar relación con su fuente;
+6. expediente no equivale a carpeta, directorio, bucket, tabla, conversación, ticket genérico ni conjunto de archivos con nombres parecidos;
+7. la apertura, estados, cierre, reapertura, vigencia y sustitución del expediente se mantienen bajo el contrato de ciclo documental posterior.
+
+---
+
+#### 10. Original
+
+Un **original** es la representación reconocida por el proceso propietario como manifestación fuente o autoritativa de un objeto documental, sujeta a las reglas posteriores de autenticidad, integridad y procedencia.
+
+Reglas:
+
+1. originalidad es una condición de autoridad y procedencia, no una propiedad del formato;
+2. no se infiere que un archivo sea original por ser el más antiguo, estar en determinada carpeta, tener un nombre particular o residir en Storage;
+3. un original puede ser físico o digital;
+4. la digitalización de un original físico produce una representación vinculada, pero no convierte automáticamente la digitalización en original;
+5. la impresión de un objeto digital produce una representación física, pero no convierte automáticamente esa impresión en original;
+6. cuando el proceso aplicable admita más de una representación con autoridad, esa condición deberá quedar explícita y no deducida;
+7. cuando la evidencia disponible no permita demostrar la relación fuente, el objeto no se declarará original por defecto y permanecerá `PENDIENTE_DE_EVIDENCIA` para la dimensión de originalidad;
+8. la determinación técnica de autenticidad, hash, timestamp, preservación y cadena de custodia queda reservada a la tarea propietaria correspondiente.
+
+---
+
+#### 11. Copia
+
+Una **copia** es una representación creada a partir de un objeto o representación fuente y que no adquiere autoridad empresarial sobre esa fuente por el solo hecho de existir.
+
+Toda copia deberá poder conservar o resolver su relación con la fuente cuando esa relación sea relevante para gobierno, auditoría, acceso, retención, reconciliación o disposición.
+
+Subtipos funcionales admitidos por esta taxonomía:
+
+| Subtipo                | Uso documental                                                                      | Regla de autoridad                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| copia controlada       | distribución deliberada para una finalidad y destinatario conocidos                 | no sustituye la fuente; queda sujeta a control y reconciliación                        |
+| copia de trabajo       | uso temporal para preparación, revisión o ejecución                                 | no se trata como fuente vigente ni como original                                       |
+| copia derivada         | transformación de formato, resolución, contenido visible o presentación             | conserva vínculo con la fuente y puede elevar restricciones por contenido o inferencia |
+| copia de transferencia | entrega a otra persona, aplicación, tercero o autoridad                             | no transfiere propiedad funcional; exige gobierno de destinatario y finalidad          |
+| copia de contingencia  | uso temporal cuando el canal o sistema primario no está disponible                  | no crea una fuente paralela y debe reconciliarse al restablecer operación              |
+| réplica técnica        | caché, sincronización, backup, preview, thumbnail u otra réplica de infraestructura | no se convierte en registro empresarial autónomo ni en fuente de verdad                |
+
+Estos subtipos describen la función de la copia; no establecen todavía plazos, permisos, retención, eliminación, acceso externo ni equivalencia jurídica.
+
+---
+
+#### 12. Reglas para representaciones frecuentes
+
+| Representación o caso                       | Decisión taxonómica                                                                                                              |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| plantilla vacía                             | documento; no es registro de una actuación concreta por sí sola                                                                  |
+| formulario completado                       | documento y registro; puede cumplir además función de evidencia                                                                  |
+| acta de decisión                            | documento y registro; normalmente sirve como evidencia de la decisión y compromisos                                              |
+| política o procedimiento                    | documento; la versión aplicable puede servir como evidencia de la regla vigente sin convertir cada consulta en un nuevo original |
+| contrato u orden formal                     | documento; puede cumplir función de evidencia del acuerdo o autorización; los hechos de ejecución permanecen registros separados |
+| fila transaccional o evento empresarial     | registro; puede ser evidencia si se preserva para demostrar el hecho                                                             |
+| log técnico o de auditoría                  | registro; puede cumplir función de evidencia cuando se preserve bajo controles aplicables                                        |
+| fotografía o video de una condición         | evidencia cuando su finalidad sea probar la condición; el archivo es su representación digital                                   |
+| archivo PDF, imagen, hoja de cálculo o JSON | representación o formato; no determina por sí solo si el objeto es documento, registro o evidencia                               |
+| carpeta o directorio                        | mecanismo de organización o localización; no es serie ni expediente por sí mismo                                                 |
+| bucket de Storage                           | contenedor técnico; no es tipo documental, serie, expediente, propietaria ni clasificación                                       |
+| snapshot o exportación                      | copia derivada o representación congelada; no se convierte en fuente por ser portable                                            |
+| screenshot                                  | copia derivada; puede servir como evidencia de una observación, sin sustituir la fuente                                          |
+| impresión                                   | copia física de una fuente digital salvo decisión explícita y verificable del proceso propietario                                |
+| escaneo o fotografía de original físico     | copia digital vinculada al original físico; la autenticidad de la correspondencia se gobierna posteriormente                     |
+| OCR o extracción de texto                   | derivado de una representación; no sustituye el contenido fuente ni adquiere autoridad por facilitar búsqueda                    |
+| preview o thumbnail                         | réplica técnica o copia derivada; hereda restricciones del contenido mostrado                                                    |
+| cache o sincronización offline              | réplica técnica; no constituye una fuente competidora y debe reconciliarse con la fuente autorizada                              |
+| backup                                      | réplica técnica de preservación; no es biblioteca operativa ni registro empresarial adicional                                    |
+| expediente                                  | agrupación lógica de objetos relacionados con un caso o ciclo; no equivale al archivo físico que pueda representarlo             |
+| serie documental                            | agrupación lógica por función; no equivale a una carpeta, tabla o bucket                                                         |
+
+---
+
+#### 13. Regla de autoridad y referencias
+
+La autoridad documental se conserva mediante referencia, no mediante apropiación.
+
+```text
+HECHO EMPRESARIAL
+→ permanece bajo su proceso y propietaria funcional
+
+DOCUMENTO O REGISTRO
+→ representa, formaliza o captura el hecho
+
+EVIDENCIA
+→ demuestra el hecho o una condición relacionada
+
+EXPEDIENTE
+→ referencia los objetos necesarios para un caso
+
+SERIE
+→ agrupa objetos por función documental
+
+COPIA
+→ representa una fuente sin adquirir su autoridad
+```
+
+Por tanto:
+
+- un expediente no absorbe la autoridad de los registros que referencia;
+- una serie no se convierte en propietaria de sus miembros;
+- una copia no reemplaza una fuente solo por ser la más reciente o accesible;
+- un archivo externo no se convierte en fuente de verdad al ser importado;
+- un índice de búsqueda no se convierte en repositorio autoritativo;
+- un evento, caché, exportación o snapshot no reemplaza al objeto que representa;
+- una aplicación consumidora no adquiere propiedad funcional por obtener, presentar o transformar un objeto.
+
+---
+
+#### 14. Resolución taxonómica obligatoria
+
+Para cualquier objeto documental gobernado se seguirá esta secuencia conceptual:
+
+```text
+1. resolver VPROC-* y recurso empresarial
+2. resolver propietaria funcional y finalidad heredadas
+3. identificar el objeto informacional real
+4. declarar funciones aplicables: documento, registro y/o evidencia
+5. resolver pertenencia a serie cuando exista
+6. resolver referencias de expediente cuando existan
+7. resolver cada representación como original o copia cuando exista evidencia suficiente
+8. conservar relación fuente → copia o fuente → derivado
+9. aplicar clasificación y manejo heredados de INFO-DOM-002
+10. entregar a las tareas propietarias posteriores ciclo, metadatos, retención, autenticidad y autorización
+```
+
+No se permite usar como atajo taxonómico:
+
+- nombre de archivo;
+- extensión;
+- tabla;
+- schema;
+- bucket;
+- ruta;
+- carpeta;
+- aplicación que presenta el contenido;
+- bandera técnica pública o privada;
+- fecha de creación aislada;
+- orden de subida;
+- similitud de nombre;
+- ubicación física aislada.
+
+Cuando falte evidencia para resolver una dimensión, se conserva la identidad conocida y esa dimensión queda `PENDIENTE_DE_EVIDENCIA`; no se crea una categoría ficticia ni se fuerza una equivalencia.
+
+---
+
+#### 15. Aplicación al universo heredado
+
+Las 332 claves `DOCCTX-*` representan contextos documentales o de información, no 332 objetos físicos o digitales individuales. Algunos contextos contienen más de un artefacto o función; por tanto, asignar por fuerza una única clase documental a cada `DOCCTX-*` destruiría información y contradice la granularidad aprobada.
+
+La decisión material para el universo heredado es:
+
+| Control                                       |         Universo heredado |         Resultado de INFO-DOM-003 |
+| --------------------------------------------- | ------------------------: | --------------------------------: |
+| procesos `VPROC-*`                            |                        69 |                    69 preservados |
+| contextos `DOCCTX-*`                          |                       332 |                   332 preservados |
+| contextos fusionados                          |                         0 |                                 0 |
+| contextos renombrados                         |                         0 |                                 0 |
+| contextos eliminados                          |                         0 |                                 0 |
+| aplicaciones propietarias                     |                         9 |                     9 preservadas |
+| clases de sensibilidad                        |                         5 | 5 preservadas sin reclasificación |
+| ejes taxonómicos corporativos                 | no existía contrato único |                       4 definidos |
+| taxonomías inferidas desde buckets o carpetas |            no autorizadas |                                 0 |
+| cambios físicos                               |                         0 |                                 0 |
+| cambios en requisitos de prueba               |                         0 |                                 0 |
+
+Cada objeto o representación concreta que se materialice dentro de un `DOCCTX-*` deberá resolver los ejes de esta taxonomía sin modificar el identificador, la finalidad, la propietaria funcional ni el piso de sensibilidad del contexto.
+
+---
+
+#### 16. Correspondencia entre original físico y copia digital
+
+La evidencia actual confirma existencia de originales físicos en `Oficina 1`, pero no demuestra una correspondencia completa entre cada original físico y sus representaciones digitales.
+
+Esta tarea fija únicamente las reglas taxonómicas:
+
+1. el original físico conserva su condición cuando exista evidencia suficiente de que es la representación fuente;
+2. un escaneo, fotografía o transcripción es copia o derivado hasta que exista una regla posterior que determine otra condición;
+3. la copia digital deberá conservar una relación resoluble con su fuente cuando la correspondencia sea necesaria;
+4. la ubicación de la copia no demuestra autenticidad;
+5. la presencia de hash no demuestra por sí sola que una copia corresponda al original físico;
+6. el custodio de la copia puede ser distinto del custodio del original sin transferir propiedad funcional;
+7. las comprobaciones de autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia pertenecen a `INFO-DOM-007`.
+
+---
+
+#### 17. Fronteras con tareas posteriores
+
+| Materia                                                                                          | Decisión de INFO-DOM-003                                                                                 | Tarea propietaria de desarrollo posterior       |
+| ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| estados, borrador, aprobación, publicación, vigencia, sustitución, anulación, retiro y versiones | no se redefinen; la taxonomía solo identifica el objeto y sus relaciones                                 | `INFO-DOM-004`                                  |
+| metadatos obligatorios, almacenamiento, búsqueda, localización y vínculo físico con recursos     | no se materializa esquema de persistencia; solo se fijan las dimensiones semánticas que deberá conservar | `INFO-DOM-005`                                  |
+| retención, evento de cómputo, archivo, legal hold, anonimización, eliminación y certificado      | no se fijan plazos ni operaciones de disposición                                                         | `INFO-DOM-006`                                  |
+| autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia        | no se certifica originalidad ni equivalencia técnica                                                     | `INFO-DOM-007`                                  |
+| aprobación, aceptación, firma electrónica y firma digital                                        | no se equiparan firma, imagen, aceptación ni aprobación                                                  | `INFO-DOM-011`                                  |
+| permisos de consulta, obtención de archivo, impresión, exportación o compartición                | la taxonomía no concede autoridad                                                                        | `INFO-AUTH-001` y `INFO-AUTH-002`               |
+| objetos actuales de Storage y su mapeo a recurso/contexto                                        | no se infiere taxonomía desde bucket o ruta                                                              | `INFO-DOM-005` y las tareas EVID-ARC aplicables |
+
+Ninguna frontera posterga el resultado principal: la taxonomía corporativa y las reglas de relación quedan definidas completamente en esta tarea.
+
+---
+
+#### 18. Estados de resolución documental
+
+Para aplicar la taxonomía a evidencia real se utilizan únicamente estados de certeza ya compatibles con el plan:
+
+- `ESPECIFICADO`: la regla taxonómica está definida documentalmente;
+- `PENDIENTE_DE_EVIDENCIA`: falta evidencia para resolver una dimensión concreta de un objeto real, por ejemplo la condición de original o la correspondencia fuente-copia;
+- `BLOQUEADO`: un objeto no puede declararse gobernado cuando carece de recurso, contexto o fuente suficientemente resolubles para la operación que se pretende;
+- `NO_APLICA`: una dimensión no corresponde al objeto y existe razón explícita para ello.
+
+La ausencia de evidencia no se interpreta como `NO_APLICA`, y una clasificación técnica no reemplaza la decisión documental.
+
+---
+
+#### 19. Decisiones corporativas de cierre
+
+1. Documento, registro y evidencia quedan como funciones distintas y combinables, no como sinónimos.
+2. Serie documental y expediente quedan como agrupaciones lógicas distintas; ninguna equivale a carpeta o Storage.
+3. Original y copia se resuelven por representación y procedencia, no por formato, ubicación, fecha o nombre.
+4. Archivo o blob es una representación técnica y no una categoría empresarial suficiente.
+5. Una copia no adquiere propiedad funcional ni autoridad sobre su fuente.
+6. Exportaciones, snapshots, screenshots, previews, thumbnails, caches, backups y sincronizaciones se tratan como copias o réplicas derivadas según su función, nunca como fuente automática.
+7. Un escaneo de original físico es una copia digital vinculada hasta que una regla posterior demuestre otra condición.
+8. Un expediente referencia objetos de otros procesos sin apropiarlos ni duplicarlos por defecto.
+9. Una serie agrupa por función empresarial, no por estructura técnica.
+10. Los 69 `VPROC-*`, 332 `DOCCTX-*`, 9 propietarias funcionales y 5 clases de sensibilidad permanecen intactos.
+11. No se infiere taxonomía desde los 14 buckets ni desde sus banderas técnicas.
+12. No se ejecuta ningún cambio de código, Supabase, Storage, datos, RLS, migraciones o configuración.
+
+---
+
+#### 20. Cobertura de riesgos heredados
+
+La taxonomía cierra documentalmente las brechas de confusión entre información, documento, registro, evidencia, archivo y expediente; también establece la regla necesaria para diferenciar originales físicos de copias digitales y para impedir que una representación técnica adquiera autoridad sobre su fuente.
+
+Los comportamientos ejecutables de persistencia, acceso, protección, reconciliación, ciclo de vida, copias, integridad y disposición ya se encuentran protegidos por el registro canónico vigente. Esta tarea no introduce un comportamiento ejecutable nuevo; define el vocabulario y las relaciones que esos controles deberán consumir.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea define una taxonomía semántica y documental sobre objetos, agrupaciones y representaciones ya cubiertos por controles existentes. No introduce una nueva transición ejecutable, cálculo, autorización, mutación, integración física, política de Storage, operación de retención, mecanismo de firma ni comportamiento de aplicación distinto. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 22. Criterios de aceptación
+
+- [x] Información, dato personal, documento, registro, evidencia y archivo/blob quedan explícitamente separados.
+- [x] Tipo documental, serie documental, expediente, carpeta y ubicación de Storage quedan explícitamente separados.
+- [x] Documento, registro y evidencia se modelan como funciones combinables y no como categorías forzosamente excluyentes.
+- [x] Serie y expediente tienen reglas distintas de agrupación y ninguna transfiere propiedad funcional.
+- [x] Original y copia se resuelven por representación y procedencia, sin inferencia por ruta, bucket, formato, fecha o nombre.
+- [x] Se define el tratamiento taxonómico de plantilla, formulario completado, acta, política, contrato, fila transaccional, log, fotografía, archivo, carpeta, bucket, snapshot, exportación, screenshot, impresión, escaneo, OCR, preview, thumbnail, caché, sincronización offline y backup.
+- [x] Las copias controladas, de trabajo, derivadas, de transferencia, de contingencia y réplicas técnicas conservan relación con su fuente sin adquirir autoridad automática.
+- [x] La correspondencia original físico ↔ copia digital queda definida taxonómicamente sin inventar cadena de custodia o autenticidad no comprobadas.
+- [x] Los 69 procesos `VPROC-*` permanecen sin renombrar, fusionar o eliminar.
+- [x] Las 332 claves `DOCCTX-*` permanecen sin renombrar, fusionar o eliminar.
+- [x] Las 9 aplicaciones propietarias funcionales permanecen sin modificación.
+- [x] Las cinco clases S0–S4 permanecen sin reclasificación.
+- [x] Ningún bucket, carpeta, ruta, tabla, schema, extensión o nombre de archivo se usa como taxonomía empresarial automática.
+- [x] Las fronteras de `INFO-DOM-004`, `INFO-DOM-005`, `INFO-DOM-006`, `INFO-DOM-007`, `INFO-DOM-011`, `INFO-AUTH-001` e `INFO-AUTH-002` permanecen reservadas.
+- [x] No se realizan cambios físicos ni de Supabase.
+- [x] No se crean ni modifican requisitos de prueba.
+- [x] `INFO-DOM-004` permanece reservada y no iniciada.
+
+---
+
+#### 23. Resultado y continuidad
+
+VENTO queda con una taxonomía documental corporativa única capaz de distinguir función, agrupación, originalidad y representación sin crear una fuente paralela, sin degradar clasificación y sin convertir infraestructura técnica en identidad documental.
+
+La cadena documental resultante queda definida así:
+
+```text
+VPROC-* + recurso empresarial
+→ objeto informacional
+→ documento / registro / evidencia
+→ serie y/o expediente cuando corresponda
+→ original o copia por representación
+→ clasificación y manejo heredados
+→ ciclo, metadatos, retención, autenticidad y autorización en sus tareas propietarias
+```
+
+ÚLTIMA TAREA APROBADA
+
+`INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información`
+
+TAREA ACTUAL APROBADA
+
+`INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias`
+
+SIGUIENTE TAREA RESERVADA
+
+`INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro`
+
+
 ### [ ] INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
 ### [ ] INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
 ### [ ] INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
