@@ -7407,6 +7407,833 @@ Balance de esta tarea:
 La continuidad termina en `INFO-DOM-010`. `INFO-DOM-011` permanece reservada.
 
 
-### [ ] INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
+### ✅ INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad` — APROBADA
+**Tarea siguiente:** `INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento` — RESERVADA
+**Tipo de tarea:** Documental — gobierno de aprobación, aceptación, firma y fuerza evidencial corporativa
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo heredado:** 69 procesos canónicos, 332 contextos `DOCCTX-*`, 9 aplicaciones propietarias funcionales y cinco clases S0–S4
+**Cambios físicos autorizados:** ninguno; no modifica código, tablas, RLS, Storage, buckets, migraciones, configuración, datos, certificados, proveedores ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea define el contrato corporativo que permite distinguir y demostrar qué acto ocurrió cuando una persona aprueba, acepta, reconoce, firma electrónicamente o utiliza una firma digital certificada sobre un objeto empresarial. La existencia de identidad, autenticación, permiso, hash, imagen de firma, correo, clic, pago, archivo, acuse técnico o certificado aislado no se convierte por sí sola en aprobación, aceptación o firma válida para el efecto empresarial pretendido.
+
+El resultado material queda compuesto por ocho artefactos canónicos:
+
+1. `INFO-APPROVAL-ACCEPTANCE-CONTRACT-001` — separación semántica y sobre común del acto.
+2. `INFO-INTERNAL-APPROVAL-CONTRACT-001` — decisión interna autorizada sobre un objeto y versión exactos.
+3. `INFO-ACCEPTANCE-ACKNOWLEDGEMENT-CONTRACT-001` — aceptación, rechazo y mero reconocimiento o recepción sin equivalencias implícitas.
+4. `INFO-ELECTRONIC-SIGNATURE-EVIDENCE-CONTRACT-001` — vínculo fiable entre identidad, intención, contenido, integridad y trazabilidad.
+5. `INFO-CERTIFIED-DIGITAL-SIGNATURE-CONTRACT-001` — evidencia adicional de certificado, validación, vigencia y proveedor cuando una fuente aprobada exija esta modalidad.
+6. `INFO-EVIDENCE-LEVEL-CONTRACT-001` — selección y no sustitución de clases de acto/evidencia.
+7. `INFO-APPROVAL-SIGNATURE-PROCESS-MATRIX-001` — decisión explícita para los 69 procesos `VPROC-*`.
+8. `INFO-APPROVAL-SIGNATURE-DOCCTX-MATRIX-001` — decisión explícita para los 332 contextos `DOCCTX-*`.
+
+La tarea no selecciona proveedor de firma, no emite certificados, no firma documentos reales y no determina por intuición qué proceso requiere firma digital certificada. Esas exigencias solo pueden provenir de una fuente aprobada de obligación, riesgo o contrato.
+
+---
+
+#### 2. Decisiones heredadas que permanecen vigentes
+
+Se preservan sin modificación:
+
+- los 69 procesos `VPROC-0001` a `VPROC-0069`;
+- las 332 identidades `DOCCTX-*`;
+- las 9 aplicaciones propietarias funcionales;
+- la distribución de sensibilidad `S0/S1/S2/S3/S4 = 1/33/166/124/8`;
+- la separación entre estado documental, vigencia, publicación, retención, autenticidad, privacidad, compartición y autorización;
+- la regla de que `APPROVED` no equivale por sí mismo a vigente, publicado, firmado o aceptado;
+- la regla de que un hash demuestra fijación de contenido bajo su contrato técnico, pero no demuestra por sí solo autoría, identidad, intención, aceptación, firma ni validez empresarial;
+- la regla de que consentimiento o autorización de tratamiento de datos pertenece al contrato de privacidad y no se fusiona con aprobación o firma empresarial;
+- la regla de que lectura, obtención de archivo, exportación, compartición o entrega técnica no conceden autoridad para aprobar o firmar;
+- la regla de que una copia o representación no adquiere autoridad sobre su fuente por existir en infraestructura corporativa.
+
+---
+
+#### 3. Separaciones obligatorias
+
+Las siguientes identidades semánticas permanecen distintas:
+
+```text
+internal_approval != acceptance != electronic_signature != certified_digital_signature
+acknowledgement_only != acceptance
+authentication != business_authority
+permission_to_view != permission_to_approve_or_sign
+privacy_consent != business_acceptance_or_approval
+hash_or_integrity_evidence != signer_identity_or_intent
+signature_image != electronic_signature_evidence
+technical_acknowledgement != business_acceptance
+approval != publication_or_effectiveness
+```
+
+Una misma instancia puede requerir más de un acto, por ejemplo aprobación interna y aceptación de una contraparte. En ese caso se registran eventos independientes y correlacionados; no se comprimen en una marca única de "firmado" o "aprobado".
+
+---
+
+#### 4. Clases corporativas de acto y evidencia
+
+| Clase                         | Semántica                                                                                           | Evidencia mínima obligatoria                                                                                                   | No demuestra por sí sola                                                                                     |
+| ----------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `INTERNAL_APPROVAL`           | decisión operativa o administrativa emitida por actor interno con autoridad para el objeto y acción | actor autenticado, actor efectivo, permiso/autoridad, objeto, versión o snapshot, fecha/hora, decisión y motivo cuando aplique | publicación, vigencia, aceptación de tercero, firma electrónica, consentimiento de privacidad                |
+| `ACCEPTANCE`                  | manifestación intencional de aceptación o conformidad sobre contenido presentado                    | identidad o relación verificable, contenido y versión presentados, acción inequívoca, canal y timestamp                        | aprobación interna, permiso empresarial, firma electrónica, consentimiento para finalidades distintas        |
+| `ELECTRONIC_SIGNATURE`        | acto de firma con vínculo fiable entre firmante, intención y contenido                              | método apropiado, identidad, intención de firmar, objeto/versionado exacto, integridad y trazabilidad                          | autoridad empresarial que el firmante no posee, publicación, vigencia, obligación legal no documentada       |
+| `CERTIFIED_DIGITAL_SIGNATURE` | modalidad especializada de firma cuya evidencia incorpora certificado y validación del proveedor    | identidad, intención, objeto/versionado exacto, integridad, certificado, validación, vigencia y evidencia de proveedor         | autoridad empresarial ausente, suficiencia universal para cualquier caso, obligación jurídica no documentada |
+
+Estas clases no forman una escalera automática en la que una clase técnicamente más fuerte sustituye todas las anteriores. La pregunta primaria es qué acto debe probarse; después se determina la evidencia suficiente para ese acto.
+
+---
+
+#### 5. `INFO-APPROVAL-ACCEPTANCE-CONTRACT-001`
+
+Todo acto gobernado por esta tarea deberá poder resolverse mediante un sobre común con, como mínimo:
+
+- `evidence_event_id` estable;
+- `act_class`;
+- `process_id`;
+- `process_instance_ref` cuando exista instancia;
+- `resource_ref` y tipo de objeto;
+- `version_or_snapshot_ref` exacto;
+- `purpose_ref` o finalidad del acto;
+- `principal_ref` autenticado;
+- `effective_actor_ref` cuando difiera del principal técnico;
+- `subject_or_counterparty_ref` cuando el acto corresponda a otra relación;
+- `authority_or_relationship_ref` cuando sea necesaria facultad o relación específica;
+- `permission_decision_ref` cuando exista decisión de autorización empresarial;
+- `presentation_ref` cuando deba demostrarse qué contenido fue mostrado;
+- `decision_or_action` ejecutada;
+- `reason_ref_or_text` cuando el proceso exija motivación;
+- `method`, `channel` y `device_ref` cuando sean relevantes;
+- `occurred_at` y `recorded_at` diferenciados;
+- `integrity_ref` del objeto o snapshot;
+- `evidence_refs`;
+- `provider_ref`, `certificate_ref` y `validation_result` únicamente cuando apliquen;
+- `supersedes_event_ref` cuando exista reemplazo o rectificación del acto;
+- `retention_policy_ref`;
+- `resolution_status`.
+
+`resolution_status` utiliza únicamente `ESPECIFICADO`, `PENDIENTE_DE_EVIDENCIA`, `BLOQUEADO`, `NO_APLICA` o `FUERA_DE_ALCANCE`. El estado describe la resolución del contrato, no sustituye la decisión del actor.
+
+---
+
+#### 6. `INFO-INTERNAL-APPROVAL-CONTRACT-001`
+
+Una aprobación interna existe únicamente cuando una identidad autenticada y un actor efectivo con autoridad aplicable emiten una decisión sobre un objeto y versión exactos.
+
+Reglas obligatorias:
+
+1. La autenticación prueba quién controla una sesión o credencial bajo su contrato; no concede el permiso de aprobar.
+2. El rol, cargo, aplicación, sede o visibilidad del objeto no sustituyen la autorización exacta.
+3. La decisión de aprobación debe preservar `APPROVED` o `REJECTED` como resultado explícito; ausencia de registro, silencio o mera visualización no son aprobación.
+4. Cuando exista segregación de funciones, la misma persona no puede crear la excepción y autoaprobarla salvo excepción canónica explícita y auditada.
+5. Una aprobación puede ser condición para vigencia o publicación, pero no las produce automáticamente.
+6. Un cambio material posterior del contenido produce una nueva versión o snapshot; la aprobación anterior permanece histórica y no se traslada silenciosamente.
+7. Una aprobación interna no se convierte en firma electrónica por añadir una imagen de firma, un PIN o un hash.
+
+---
+
+#### 7. `INFO-ACCEPTANCE-ACKNOWLEDGEMENT-CONTRACT-001`
+
+La aceptación se refiere a conformidad o acuerdo sobre contenido presentado. El mero reconocimiento de recepción o lectura se conserva separado.
+
+Resultados semánticos permitidos:
+
+- `ACCEPTED` — existe acción inequívoca de aceptación sobre contenido y versión presentados;
+- `DECLINED` — existe rechazo explícito;
+- `ACKNOWLEDGED_ONLY` — se demuestra recepción, lectura o reconocimiento, pero no conformidad;
+- `UNRESOLVED` — la evidencia disponible no permite atribuir uno de los resultados anteriores.
+
+Reglas obligatorias:
+
+1. El contenido presentado debe ser identificable y versionado; aceptar "lo que estaba en pantalla" sin referencia reproducible es evidencia insuficiente.
+2. Una casilla preseleccionada, navegación, permanencia en pantalla, obtención o apertura de archivo o silencio no se elevan a aceptación.
+3. Correo, mensaje, orden de compra, comprobante de pago, clic o acuse externo pueden ser evidencia auxiliar, pero no se consideran aceptación suficiente por sí solos cuando falta identidad, contenido, intención o relación.
+4. Confirmar lectura no implica aceptar condiciones, renunciar a derechos, aprobar internamente o consentir otras finalidades.
+5. Si el actor actúa por una contraparte, la identidad y la facultad o relación se conservan separadas.
+
+---
+
+#### 8. `INFO-ELECTRONIC-SIGNATURE-EVIDENCE-CONTRACT-001`
+
+La firma electrónica exige un vínculo fiable entre una identidad, una intención de firmar y un contenido exacto cuya integridad pueda demostrarse.
+
+Evidencia mínima:
+
+- método de firma o confirmación reforzada identificado;
+- identidad del firmante y, si aplica, actor efectivo;
+- intención inequívoca de firmar ese objeto;
+- `resource_ref` y `version_or_snapshot_ref` exactos;
+- evidencia de presentación del contenido cuando sea necesaria;
+- `integrity_ref` que permita detectar alteración del objeto firmado;
+- timestamp del acto y del registro;
+- canal y dispositivo cuando formen parte de la evidencia;
+- correlación con proceso, instancia, transición o propósito;
+- evidencia de validación del método utilizado;
+- política de retención aplicable a la evidencia.
+
+Una rúbrica dibujada, una imagen pegada, un archivo que contiene una firma escaneada o un nombre escrito no constituye por sí mismo esta clase de evidencia. Puede ser una representación auxiliar únicamente si el resto del contrato demuestra identidad, intención, objeto, integridad y trazabilidad.
+
+---
+
+#### 9. `INFO-CERTIFIED-DIGITAL-SIGNATURE-CONTRACT-001`
+
+La firma digital certificada se usa únicamente cuando una fuente aprobada de obligación, riesgo o contrato determine que el caso requiere esa modalidad especializada. Esta tarea no presume que todo documento sensible, financiero, laboral o contractual la necesite.
+
+Además de los elementos de firma electrónica, deberá conservar:
+
+- `certificate_ref`;
+- identidad o sujeto asociado al certificado según evidencia disponible;
+- `provider_ref` verificable;
+- resultado y momento de validación;
+- estado de vigencia aplicable al momento de la validación;
+- evidencia del proveedor suficiente para reconstruir la operación;
+- relación entre certificado, firmante, documento/versionado y resultado;
+- evidencia de integridad posterior al acto;
+- cualquier condición de validación exigida por la fuente aprobada aplicable.
+
+Un identificador de sobre, pantalla de éxito, correo del proveedor o certificado aislado no sustituye la reconstrucción completa del acto. El proveedor técnico tampoco se convierte en aprobador empresarial ni en propietario del documento.
+
+---
+
+#### 10. `INFO-EVIDENCE-LEVEL-CONTRACT-001`
+
+La selección del nivel se resuelve por acto y riesgo, no por extensión del archivo, aplicación, bucket, nombre del documento ni clase S0–S4 aislada.
+
+Reglas de selección:
+
+1. Si debe probarse una decisión interna autorizada, corresponde `INTERNAL_APPROVAL`.
+2. Si debe probarse conformidad con contenido presentado sin requerir una firma, corresponde `ACCEPTANCE`.
+3. Si debe probarse la intención de firmar y el vínculo fiable firmante-documento, corresponde `ELECTRONIC_SIGNATURE`.
+4. Si una fuente aprobada exige certificado, validación especializada o evidencia de proveedor, corresponde `CERTIFIED_DIGITAL_SIGNATURE`.
+5. Si solo debe probarse recepción o lectura, se usa `ACKNOWLEDGED_ONLY` dentro del contrato de aceptación y no se infiere conformidad.
+6. Si la fuente que determina el acto obligatorio no está disponible, el caso queda `PENDIENTE_DE_EVIDENCIA`; no se elige una modalidad por intuición.
+7. Una clase de evidencia no concede autoridad empresarial ausente.
+8. Un acto puede requerir evidencia adicional por sensibilidad, segregación, dispositivo, contexto o riesgo sin cambiar su semántica.
+
+---
+
+#### 11. Vínculo obligatorio con objeto, versión e integridad
+
+Todo acto que dependa del contenido debe apuntar a una versión o snapshot exacto. La referencia debe ser suficiente para demostrar qué se presentó y qué se decidió o firmó.
+
+- Un cambio material posterior no hereda aprobación, aceptación o firma previa.
+- La evidencia anterior permanece histórica y enlazada a la versión anterior.
+- Una transformación técnica, copia, exportación o representación no conserva automáticamente la fuerza del acto original; debe existir relación de procedencia e integridad demostrable bajo los contratos documentales aplicables.
+- El hash puede participar en `integrity_ref`, pero no reemplaza identidad, intención, autoridad o presentación.
+- Un documento con versión desconocida bloquea cualquier efecto que requiera demostrar aprobación, aceptación o firma sobre contenido exacto.
+
+---
+
+#### 12. Identidad, relación, autoridad y segregación
+
+Los siguientes conceptos se registran de forma independiente:
+
+- principal autenticado;
+- actor humano efectivo;
+- sujeto o contraparte;
+- relación con el recurso;
+- facultad de representación cuando corresponda;
+- permiso de aprobar o ejecutar una acción;
+- rol o función empresarial;
+- dispositivo o principal técnico;
+- proveedor externo de firma o validación.
+
+Reglas obligatorias:
+
+1. Identificar correctamente al firmante no prueba que tenga facultad para aprobar en nombre de una empresa o tercero.
+2. Tener permiso para aprobar no prueba aceptación de la contraparte.
+3. Un sistema, webhook, servicio o proveedor no puede ser tratado como aprobador humano; conserva procedencia técnica.
+4. La firma o aceptación de una persona no autoriza al sistema a ejecutar efectos que requieran permisos, segregación o guards adicionales.
+5. Cuando el proceso exija dos actores, la identidad del entregador, receptor, preparador, aprobador o firmante debe permanecer diferenciada según el hecho.
+
+---
+
+#### 13. Ciclo del acto, reemplazo y corrección
+
+Los eventos de aprobación, aceptación y firma son hechos históricos; no se sobrescriben para aparentar que una decisión anterior nunca existió.
+
+- Una rectificación crea un nuevo evento enlazado mediante `supersedes_event_ref` cuando corresponda.
+- Una nueva versión del documento puede requerir un nuevo acto; no se reutiliza evidencia anterior sin una regla canónica que demuestre equivalencia aplicable.
+- Rechazo, expiración, revocación de autoridad, cambio de actor o invalidación del método no borran el evento original.
+- El efecto empresarial vigente se calcula desde la secuencia de hechos y las reglas del proceso, no desde el último texto libre.
+- Retención y disposición de la evidencia siguen sus contratos propios; esta tarea no fija plazos.
+
+---
+
+#### 14. Dispositivos compartidos, operación offline y reintentos
+
+Una captura local u offline no se presenta como aprobación o firma confirmada mientras falte validación autoritativa requerida.
+
+1. Toda intención pendiente conserva actor, principal técnico, dispositivo, contexto, recurso, versión, método, timestamp e idempotencia.
+2. Al sincronizar se revalidan identidad, relación, autoridad, permiso, versión y estado cuando el efecto dependa de ellos.
+3. Si cambia actor, sesión, objeto, contenido o versión, una confirmación pendiente no se traslada al nuevo contexto.
+4. Los reintentos de la misma intención conservan identificador idempotente; no producen dos aprobaciones, aceptaciones o firmas.
+5. Un dispositivo compartido no conserva imagen de firma, PIN, credenciales, datos sensibles ni pendientes del actor anterior fuera del contrato autorizado.
+6. Cuando la política del proceso exija operación en línea, una captura offline permanece bloqueada y no se eleva por sincronización automática.
+
+---
+
+#### 15. Proveedores, certificados y evidencia externa
+
+Los proveedores de firma o validación son fuentes técnicas de evidencia, no fuentes de autoridad empresarial.
+
+- Toda operación externa conserva correlación interna y externa.
+- El resultado del proveedor se valida y se enlaza al objeto/versionado exacto.
+- Reintentos, callbacks y webhooks se concilian de forma idempotente; un evento duplicado no crea un segundo acto.
+- La falta de respuesta después del envío se conserva como resultado no resuelto hasta reconciliación; no se infiere éxito o fracaso.
+- La evidencia del proveedor se preserva de acuerdo con clasificación, retención y minimización aplicables.
+- La selección de proveedor o de requisitos jurídicos concretos no se decide en esta tarea sin una fuente aprobada que lo exija.
+
+---
+
+#### 16. Regla de materialización sobre el universo heredado
+
+El universo heredado se consume sin inferir que todos los procesos o documentos requieren firma. La decisión material es que cada identidad debe resolver el acto aplicable en el momento en que una transición, contrato, obligación o interacción lo exija.
+
+Para `VPROC-*`:
+
+- no se asigna por intuición una clase de firma al proceso completo;
+- cada acto se resuelve en el contexto de transición, recurso, actor, relación y versión;
+- el efecto dependiente queda bloqueado si el acto requerido no es demostrable.
+
+Para `DOCCTX-*`:
+
+- la existencia del documento no prueba aprobación, aceptación o firma;
+- la clase S0–S4 no determina por sí sola el nivel de evidencia;
+- el acto, cuando aplique, se vincula a una representación/versionado exactos;
+- no se reclasifica ninguna identidad documental.
+
+---
+
+#### 17. `INFO-APPROVAL-SIGNATURE-PROCESS-MATRIX-001` — 69 de 69
+
+| Proceso      | Aplicabilidad del acto               | Objeto                      | Autoridad                         | Evidencia                   | Estado         | Bloqueo                                               |
+| ------------ | ------------------------------------ | --------------------------- | --------------------------------- | --------------------------- | -------------- | ----------------------------------------------------- |
+| `VPROC-0001` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0002` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0003` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0004` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0005` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0006` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0007` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0008` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0009` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0010` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0011` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0012` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0013` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0014` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0015` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0016` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0017` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0018` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0019` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0020` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0021` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0022` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0023` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0024` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0025` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0026` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0027` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0028` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0029` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0030` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0031` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0032` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0033` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0034` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0035` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0036` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0037` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0038` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0039` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0040` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0041` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0042` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0043` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0044` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0045` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0046` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0047` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0048` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0049` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0050` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0051` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0052` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0053` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0054` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0055` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0056` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0057` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0058` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0059` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0060` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0061` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0062` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0063` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0064` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0065` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0066` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0067` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0068` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+| `VPROC-0069` | `RESOLVER_ACTO_APLICABLE_POR_EVENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `AUTORIDAD_SEPARADA_DE_IDENTIDAD` | `NIVEL_SEGUN_CLASE_DE_ACTO` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_SI_ACTO_REQUERIDO_NO_ES_DEMOSTRABLE` |
+Reconciliación de procesos:
+
+```text
+69 procesos esperados
+69 procesos materializados
+69 identificadores únicos
+0 procesos faltantes
+0 procesos duplicados
+0 procesos renombrados
+0 procesos fusionados
+0 procesos eliminados
+```
+
+La matriz no declara que los 69 procesos requieran firma. Declara que ninguno puede inferir, omitir o sustituir el acto y nivel de evidencia cuando una fuente canónica lo exija.
+
+---
+
+#### 18. `INFO-APPROVAL-SIGNATURE-DOCCTX-MATRIX-001` — 332 de 332
+
+| DOCCTX                 | Proceso      | Decisión del contexto           | Objeto del acto             | Evidencia                      | Estado         | Bloqueo                                                    |
+| ---------------------- | ------------ | ------------------------------- | --------------------------- | ------------------------------ | -------------- | ---------------------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `NO_INFERIR_ACTO_POR_DOCUMENTO` | `VERSION_O_SNAPSHOT_EXACTO` | `SOLO_SI_ACTO_CANONICO_APLICA` | `ESPECIFICADO` | `BLOQUEAR_EFECTO_DEPENDIENTE_SI_FALTA_EVIDENCIA_REQUERIDA` |
+Reconciliación del universo documental:
+
+| Control                               |       Resultado |
+| ------------------------------------- | --------------: |
+| Contextos esperados                   |             332 |
+| Contextos materializados              |             332 |
+| Identificadores `DOCCTX-*` únicos     |             332 |
+| Contextos faltantes                   |               0 |
+| Contextos duplicados                  |               0 |
+| Contextos renombrados                 |               0 |
+| Contextos fusionados                  |               0 |
+| Contextos eliminados                  |               0 |
+| Aplicaciones propietarias funcionales |   9 preservadas |
+| `S0_PUBLIC`                           |    1 preservada |
+| `S1_INTERNAL`                         |  33 preservadas |
+| `S2_CONFIDENTIAL`                     | 166 preservadas |
+| `S3_RESTRICTED`                       | 124 preservadas |
+| `S4_HIGHLY_RESTRICTED`                |   8 preservadas |
+| Reclasificaciones                     |               0 |
+
+---
+
+#### 19. Relación con sensibilidad, privacidad y estado documental
+
+La fuerza evidencial no se deriva automáticamente de la sensibilidad:
+
+- `S4_HIGHLY_RESTRICTED` no implica por sí sola `CERTIFIED_DIGITAL_SIGNATURE`;
+- `S0_PUBLIC` no elimina una aprobación interna si el proceso la exige antes de publicar;
+- la clasificación gobierna manejo y exposición, no la semántica del acto;
+- el consentimiento de privacidad mantiene sus finalidades, versiones y revocaciones propias;
+- `APPROVED` en el ciclo documental no significa `SIGNED`, `ACCEPTED`, `PUBLISHED` o `EFFECTIVE`;
+- una firma puede existir sobre una versión que todavía no sea vigente o publicada;
+- una versión puede estar aprobada internamente sin requerir firma de tercero.
+
+---
+
+#### 20. Pendientes de evidencia y fronteras
+
+| Materia                                                                                                                    | Estado                   | Propietario                       | Condición de salida                                                                                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| casos concretos en los que una obligación, riesgo o contrato exija firma digital certificada o una modalidad especializada | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-012`                    | registro aprobado de obligación/control identifica el caso, responsable, evidencia requerida y criterio que obliga la modalidad                                           |
+| selección e integración física de proveedor, certificados, callbacks, almacenamiento o validadores                         | `FUERA_DE_ALCANCE`       | `INFO-INT-001` + `INFO-INT-003`   | una fuente aprobada exige la capacidad y los contratos de adaptador/proveedor materializan identidad, seguridad, validación, correlación, evidencia y rollback aplicables |
+| permisos para aprobar, aceptar, firmar o ejecutar el efecto posterior                                                      | `FUERA_DE_ALCANCE`       | `INFO-AUTH-001` a `INFO-AUTH-004` | la política de autorización materializa permiso, alcance, segregación, contexto y decisión sin cambiar este contrato de evidencia                                         |
+| auditoría e investigación formal de actos inválidos o disputados                                                           | `FUERA_DE_ALCANCE`       | `INFO-DOM-013`                    | el expediente de auditoría/investigación consume los eventos y evidencia preservados por esta tarea                                                                       |
+
+La primera fila no difiere el contrato principal: `INFO-DOM-011` ya define cómo deberá representarse y demostrarse cada clase de acto. Únicamente evita inventar una obligación concreta todavía no registrada por su tarea propietaria.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+La cobertura vigente del registro canónico ya protege, con requisitos específicos, la separación entre aprobación y aceptación, el vínculo de firma con actor, proceso, objeto, versión, dispositivo e integridad, la prohibición de reutilizar firmas o confirmaciones, la trazabilidad de evidencia persistida, la verificación de firma dentro del ciclo documental y la propagación reconciliable de operaciones de firma. Esta tarea completa el contrato documental consumido por esa cobertura sin introducir un comportamiento protegido nuevo ni cambiar la identidad de los requisitos existentes.
+
+Balance de esta tarea:
+
+```text
+creados: 0
+modificados: 0
+diferidos: 0
+descartados: 0
+obsoletos: 0
+```
+
+---
+
+#### 22. Criterios de aceptación documental
+
+- Existen cuatro clases corporativas diferenciadas: aprobación interna, aceptación, firma electrónica y firma digital certificada.
+- El mero reconocimiento o lectura permanece separado de aceptación.
+- Identidad, autenticación, relación, autoridad, permiso y firma permanecen dimensiones separadas.
+- Toda decisión o firma sobre contenido mutable se vincula a versión o snapshot exacto.
+- Hash, imagen de firma, correo, clic, pago, acuse técnico y certificado aislados no se convierten en evidencia suficiente por inferencia.
+- Un cambio material de contenido no reutiliza silenciosamente evidencia previa.
+- La firma digital certificada solo se exige cuando una fuente aprobada lo determine; no se asigna por clase de sensibilidad o intuición.
+- Operación offline, dispositivo compartido y reintentos conservan actor, versión, idempotencia y revalidación.
+- Los 69 procesos tienen decisión explícita, sin faltantes ni duplicados.
+- Los 332 contextos `DOCCTX-*` tienen decisión explícita, sin faltantes ni duplicados.
+- Las 9 propietarias funcionales y la distribución S0/S1/S2/S3/S4 = 1/33/166/124/8 permanecen intactas.
+- No se ejecutan cambios físicos, Supabase, certificados, proveedores ni despliegues.
+- Se generan cero cambios en requisitos de prueba.
+
+---
+
+#### 23. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad`
+
+**TAREA ACTUAL APROBADA**
+`INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia`
+
+**SIGUIENTE TAREA RESERVADA**
+`INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento`
+
+La continuidad termina en `INFO-DOM-011`. `INFO-DOM-012` permanece reservada.
+
+
 ### [ ] INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
 ### [ ] INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
