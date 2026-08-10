@@ -5911,7 +5911,597 @@ Esta tarea no:
 La continuidad termina en `INFO-DOM-008`. No se materializa contenido de `INFO-DOM-009`.
 
 
-### [ ] INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
+### ✅ INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles` — APROBADA
+**Tarea siguiente:** `INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad` — RESERVADA
+**Tipo de tarea:** documental; materialización transversal del contrato corporativo de consultas, reclamos y solicitudes de derechos sobre información y datos personales
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo empresarial cubierto:** 69 procesos `VPROC-0001` a `VPROC-0069`
+**Universo documental heredado preservado:** 332 identidades `DOCCTX-*`
+**Contratos materializados:** `INFO-DATA-SUBJECT-REQUEST-CONTRACT-001`; `INFO-DATA-SUBJECT-REQUEST-TYPE-CATALOG-001`; `INFO-DATA-SUBJECT-REQUEST-LIFECYCLE-CONTRACT-001`; `INFO-DATA-SUBJECT-REQUEST-VERIFICATION-CONTRACT-001`; `INFO-DATA-SUBJECT-REQUEST-DISCOVERY-EXECUTION-CONTRACT-001`; `INFO-DATA-SUBJECT-REQUEST-RESPONSE-EVIDENCE-CONTRACT-001`; `INFO-DATA-SUBJECT-REQUEST-PROCESS-MATRIX-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Storage, objetos, migraciones, funciones, jobs, datos, configuración ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Definir un contrato corporativo único para recibir, verificar, clasificar, localizar, decidir, ejecutar, responder y cerrar consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión, sin confundir identidad con cuenta, corrección con sobrescritura, revocación con borrado, supresión con disposición física ni respuesta con ejecución parcial.
+
+La tarea materializa el resultado mediante siete artefactos lógicos:
+
+1. `INFO-DATA-SUBJECT-REQUEST-CONTRACT-001`: sobre mínimo de caso y reglas transversales.
+2. `INFO-DATA-SUBJECT-REQUEST-TYPE-CATALOG-001`: catálogo cerrado de tipos de solicitud y semántica.
+3. `INFO-DATA-SUBJECT-REQUEST-LIFECYCLE-CONTRACT-001`: estados, transiciones, bloqueos, reapertura e idempotencia.
+4. `INFO-DATA-SUBJECT-REQUEST-VERIFICATION-CONTRACT-001`: identidad, representación, legitimación y minimización de la verificación.
+5. `INFO-DATA-SUBJECT-REQUEST-DISCOVERY-EXECUTION-CONTRACT-001`: localización, evaluación por sistema, rectificación, revocación, restricción y supresión.
+6. `INFO-DATA-SUBJECT-REQUEST-RESPONSE-EVIDENCE-CONTRACT-001`: respuesta comprensible, reconciliación, evidencia y cierre.
+7. `INFO-DATA-SUBJECT-REQUEST-PROCESS-MATRIX-001`: decisión explícita para los 69 procesos canónicos.
+
+El resultado es documental. No acredita que las superficies, casos, integraciones o controles físicos ya estén implementados.
+
+---
+
+#### 2. Decisiones heredadas que permanecen invariantes
+
+- `INFO-DOM-002`: se preserva la escala `S0_PUBLIC`, `S1_INTERNAL`, `S2_CONFIDENTIAL`, `S3_RESTRICTED`, `S4_HIGHLY_RESTRICTED` y la minimización por finalidad; esta tarea no reclasifica información.
+- `INFO-DOM-003` a `INFO-DOM-005`: identidad documental, original/copia, ciclo, versión, metadatos, representación, localización y vínculo empresarial continúan vigentes.
+- `INFO-DOM-006`: retención, archivo, legal hold, anonimización, disposición y certificado siguen siendo controles independientes; una solicitud no los omite.
+- `INFO-DOM-007`: autenticidad, integridad, procedencia, tiempo, preservación y custodia de evidencia permanecen obligatorios cuando apliquen.
+- `INFO-DOM-008`: finalidad, fundamento, aviso, consentimiento/autorización, revocación y tratamiento de datos sensibles conservan su semántica; esta tarea consume esos resultados y no inventa fundamentos jurídicos.
+- Los 69 procesos `VPROC-*`, las 332 identidades `DOCCTX-*`, las 9 propietarias funcionales y la distribución de sensibilidad heredada permanecen sin renombrar, fusionar, eliminar o reclasificar.
+- Desactivar o eliminar una cuenta revoca acceso a la cuenta, pero no equivale a borrar la persona, el titular, el expediente, la transacción, la evidencia o la historia sujeta a conservación.
+
+---
+
+#### 3. Distinciones conceptuales obligatorias
+
+| Concepto              | Significado canónico                                                               | No equivale a                                                                     |
+| --------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `REQUEST_CASE`        | caso trazable que representa una petición, consulta o reclamo                      | mensaje suelto, ticket técnico genérico o mutación directa                        |
+| titular               | persona a quien se refiere el tratamiento cuando esa relación esté verificada      | cuenta autenticada, correo, usuario técnico o empleado por inferencia             |
+| solicitante           | persona que presenta el caso                                                       | titular automáticamente                                                           |
+| representante         | persona que actúa por otra con autoridad verificable                               | solicitante con acceso ampliado por defecto                                       |
+| consulta/acceso       | conocimiento de información aplicable y autorizada                                 | exportación irrestricta de bases, logs o secretos                                 |
+| prueba                | evidencia comprensible de autorización, consentimiento o fundamento aplicable      | exposición de evidencia ajena, secretos internos o material no necesario          |
+| rectificación         | corrección autorizada del dato o declaración inexacta en la fuente competente      | sobrescritura de historia, auditoría o evidencia original                         |
+| revocación            | retiro prospectivo de una autorización revocable para una finalidad determinada    | eliminación automática de información o cancelación de fundamentos independientes |
+| supresión             | solicitud de dejar de tratar, restringir, anonimizar o disponer cuando corresponda | eliminación inmediata de fila, archivo, cuenta o evidencia                        |
+| reclamo de privacidad | caso por tratamiento, uso, acceso, corrección o respuesta presuntamente indebidos  | reclamo comercial, devolución, soporte técnico o inconformidad operativa          |
+| cierre                | resultado reconciliado y comunicado con evidencia suficiente                       | estado local exitoso en un único sistema                                          |
+
+---
+
+#### 4. Catálogo canónico de tipos de solicitud
+
+`INFO-DATA-SUBJECT-REQUEST-TYPE-CATALOG-001` define los tipos mínimos siguientes:
+
+| Código                | Tipo                                | Resultado mínimo exigido                                                                                                                                           |
+| --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DSR_QUERY_ACCESS`    | consulta o acceso                   | localizar el tratamiento aplicable y responder qué información puede conocerse bajo identidad, relación, finalidad y clasificación verificadas                     |
+| `DSR_COPY`            | copia controlada                    | producir una representación autorizada y minimizada de la información entregable sin ampliar autoridad ni exponer terceros                                         |
+| `DSR_UPDATE`          | actualización                       | registrar un cambio vigente cuando la fuente autoritativa permita actualizar un dato sin borrar historia necesaria                                                 |
+| `DSR_RECTIFY`         | rectificación                       | corregir una inexactitud mediante fuente competente, motivo, valores anterior/nuevo y propagación reconciliable                                                    |
+| `DSR_PROOF`           | prueba de autorización o fundamento | resolver y presentar evidencia suficiente de la autorización, consentimiento o fundamento aplicable y su versión                                                   |
+| `DSR_USE_INFO`        | información sobre uso               | explicar finalidades, categorías, sistemas o receptores aplicables con base en evidencia resoluble                                                                 |
+| `DSR_REVOKE`          | revocación                          | retirar usos futuros que dependan de una autorización revocable y conservar la evidencia histórica del retiro                                                      |
+| `DSR_SUPPRESS`        | supresión                           | evaluar elegibilidad por categoría y ejecutar únicamente las acciones permitidas después de revisar fundamento, retención, hold, obligaciones y copias controladas |
+| `DSR_RESTRICT_OBJECT` | oposición o restricción             | registrar y aplicar la limitación cuando el fundamento y la obligación aplicables la permitan                                                                      |
+| `DSR_PRIVACY_CLAIM`   | reclamo por tratamiento o acceso    | investigar el hecho reclamado, preservar evidencia, decidir, corregir cuando proceda y comunicar el resultado                                                      |
+
+Una única entrada podrá contener más de una pretensión. El caso conserva cada pretensión como componente identificable para evitar que una respuesta parcial cierre silenciosamente las demás.
+
+---
+
+#### 5. Contrato mínimo del caso
+
+Todo `REQUEST_CASE` deberá conservar como mínimo:
+
+| Campo                    | Regla                                                                                              |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `request_case_id`        | identificador estable e idempotente del caso                                                       |
+| `request_type[]`         | uno o más códigos del catálogo aprobado                                                            |
+| `received_at`            | instante de recepción del caso, separado de verificación, decisión y cierre                        |
+| `channel`                | canal real de recepción, sin usarlo como prueba de identidad                                       |
+| `original_statement_ref` | declaración original preservada o referencia íntegra a ella                                        |
+| `requester_ref`          | identidad del solicitante cuando pueda verificarse                                                 |
+| `subject_ref`            | titular o persona afectada cuando sea resoluble                                                    |
+| `representation_ref`     | prueba de representación, tutoría, autorización u otra capacidad cuando aplique                    |
+| `verification_status`    | estado de validación de identidad y representación                                                 |
+| `scope`                  | datos, finalidades, periodos, recursos o hechos solicitados de forma estructurada                  |
+| `classification`         | sensibilidad del propio caso y sus anexos                                                          |
+| `systems_in_scope[]`     | sistemas o dominios localizados durante descubrimiento                                             |
+| `owners_in_scope[]`      | propietarias funcionales responsables de decidir o ejecutar cada efecto                            |
+| `basis_refs[]`           | fundamento, consentimiento/autorización, aviso o decisión aplicable proveniente de `INFO-DOM-008`  |
+| `retention_hold_review`  | resultado de evaluación de retención, preservación y legal hold cuando exista mutación o supresión |
+| `decision_items[]`       | decisión individual por pretensión, sistema y categoría                                            |
+| `execution_items[]`      | resultado por sistema, fuente, derivado o copia controlada                                         |
+| `exception_refs[]`       | fundamento y evidencia de toda limitación, denegación o imposibilidad parcial                      |
+| `response_version_id`    | versión exacta de la respuesta preparada y comunicada                                              |
+| `responded_at`           | instante verificable de la respuesta                                                               |
+| `evidence_refs[]`        | evidencias del caso, decisiones, ejecución, comunicaciones y cierre                                |
+| `closed_at`              | instante de cierre únicamente después de reconciliación suficiente                                 |
+
+El caso no deberá almacenar de nuevo contenido personal completo cuando una referencia protegida permita cumplir el mismo propósito.
+
+---
+
+#### 6. Verificación de identidad y representación
+
+`INFO-DATA-SUBJECT-REQUEST-VERIFICATION-CONTRACT-001` fija las reglas siguientes:
+
+1. Recibir una solicitud no autoriza todavía a revelar o modificar información.
+2. La identidad se valida con un nivel proporcional al riesgo de la acción y a la sensibilidad de la información; no se recolectará evidencia adicional innecesaria.
+3. Una sesión autenticada puede aportar evidencia de identidad, pero no demuestra por sí sola la relación con todos los recursos solicitados.
+4. Correo, teléfono, nombre, documento, dirección, identificador externo o coincidencia textual no autorizan por sí solos una fusión de identidades ni acceso a recursos.
+5. La representación debe conservar sujeto representado, representante, alcance, evidencia, vigencia y resultado de validación.
+6. Cuando la identidad o representación no pueda verificarse, el caso permanece abierto con estado explícito y sin divulgar ni mutar contenido sensible.
+7. La verificación fallida o insuficiente se registra sin revelar si existen recursos de otra persona.
+8. La evidencia de identidad/representación se clasifica y retiene conforme a su propia política; no se convierte en un nuevo repositorio innecesario de documentos personales.
+
+Estados de verificación permitidos:
+
+```text
+NOT_CHECKED
+IDENTITY_VERIFIED
+REPRESENTATION_VERIFIED
+VERIFICATION_INSUFFICIENT
+VERIFICATION_CONFLICT
+```
+
+`VERIFICATION_INSUFFICIENT` o `VERIFICATION_CONFLICT` impiden exposición o mutación hasta resolución; no permiten inferir inexistencia de información.
+
+---
+
+#### 7. Ciclo de vida del caso
+
+`INFO-DATA-SUBJECT-REQUEST-LIFECYCLE-CONTRACT-001` adopta el flujo empresarial:
+
+```text
+RECEIVED
+→ VERIFICATION
+→ CLASSIFIED
+→ DISCOVERY
+→ ASSESSMENT
+→ EXECUTION
+→ RESPONSE_READY
+→ RESPONDED
+→ CLOSED
+```
+
+Estados o condiciones transversales:
+
+- `CLARIFICATION_REQUIRED`: el alcance no permite localizar o decidir sin una precisión material.
+- `IDENTITY_UNVERIFIED`: falta evidencia suficiente de identidad o representación.
+- `BLOCKED_BY_RETENTION`: una parte de la pretensión no puede destruirse por conservación aplicable.
+- `BLOCKED_BY_HOLD`: existe preservación o legal hold que impide disposición o modificación incompatible.
+- `BLOCKED_BY_INDEPENDENT_BASIS`: una finalidad o conservación continúa bajo fundamento independiente de la autorización revocada.
+- `PARTIALLY_EXECUTED`: al menos un sistema produjo efecto y otro permanece sin reconciliar.
+- `EXECUTION_FAILED`: existe error verificable que impide declarar éxito.
+- `REOPENED`: evento que reactiva un caso cerrado por nueva evidencia, ejecución incompleta o corrección autorizada, sin borrar el cierre anterior.
+
+Reglas:
+
+1. Ningún paso técnico aislado constituye cierre.
+2. El cambio de estado conserva actor, momento, motivo, versión y evidencia.
+3. Reintentos usan el mismo identificador de intención y no duplican rectificaciones, revocaciones, restricciones o acciones de supresión ya confirmadas.
+4. Un resultado desconocido se consulta y reconcilia antes de emitir otra intención con efecto distinto.
+5. La respuesta puede informar una limitación legítima, pero no representar como ejecutada una acción pendiente o fallida.
+6. La reapertura conserva toda la línea temporal y la respuesta anterior.
+
+---
+
+#### 8. Localización y manifiesto de alcance
+
+`INFO-DATA-SUBJECT-REQUEST-DISCOVERY-EXECUTION-CONTRACT-001` exige un manifiesto de alcance antes de cualquier respuesta material o mutación sensible.
+
+El descubrimiento evalúa, cuando sean aplicables al caso:
+
+- fuente empresarial autoritativa;
+- documentos y registros vinculados;
+- representaciones y copias controladas;
+- índices y proyecciones de búsqueda autorizadas;
+- cachés o materializaciones controladas;
+- colas y trabajos pendientes;
+- sincronización u operación desconectada;
+- exportaciones gobernadas;
+- terceros o encargados identificados;
+- respaldos bajo ciclo separado;
+- auditoría y evidencia cuya conservación sea independiente.
+
+Cada elemento localizado debe terminar con uno de estos resultados:
+
+```text
+NO_MATCH
+MATCH_READABLE
+MATCH_RECTIFIABLE
+MATCH_REVOCABLE
+MATCH_SUPPRESSIBLE
+MATCH_RESTRICTED
+MATCH_RETENTION_BLOCKED
+MATCH_HOLD_BLOCKED
+MATCH_INDEPENDENT_BASIS
+MATCH_EXTERNAL_ACTION_REQUIRED
+MATCH_REVIEW_REQUIRED
+```
+
+La búsqueda interna del caso no amplía autorización. Los operadores solo reciben la proyección necesaria para localizar y decidir, y una coincidencia no se comunica al solicitante hasta superar identidad, relación, clasificación y reglas de divulgación.
+
+---
+
+#### 9. Consulta, acceso, copia e información sobre uso
+
+1. La respuesta se construye desde fuentes autoritativas y referencias reconciliadas, no desde una sola pantalla, caché o índice.
+2. El solicitante recibe únicamente información que pueda conocer bajo su relación y el alcance de la solicitud.
+3. Datos de terceros se separan, minimizan o redactan cuando su exposición no esté autorizada.
+4. La respuesta de acceso no incluye secretos, credenciales, tokens, reglas de seguridad o material cuyo acceso requiera autoridad independiente.
+5. Una representación entregable conserva versión, periodo, fuente, contexto y fecha de generación cuando sean necesarios para interpretarla.
+6. La información sobre uso distingue finalidad declarada, fundamento resoluble, categoría de datos, sistema/propietaria y estado de la autorización cuando aplique.
+7. Si una fuente no puede localizarse o reconciliarse, se registra la limitación y no se completa falsamente el caso.
+
+---
+
+#### 10. Rectificación y actualización
+
+La rectificación se gobierna por estas reglas:
+
+1. Se identifica la fuente empresarial competente antes de cambiar un dato.
+2. La declaración original del solicitante y el valor anterior se preservan cuando sean necesarios para auditoría o evidencia.
+3. La corrección conserva motivo, solicitante, autoridad, actor ejecutor, instante, valor anterior, valor resultante y efecto derivado.
+4. Un dato histórico correcto para su momento no se reescribe solo porque hoy exista un valor distinto; se modela vigencia o una nueva versión cuando corresponda.
+5. Evidencia, auditoría y registros inmutables no se sobrescriben; se añade una corrección enlazada cuando proceda.
+6. Derivados y copias controladas deben reconciliar la corrección sin convertirlos en fuente competidora.
+7. Si un sistema no puede aplicar la corrección, el caso queda parcial o fallido hasta registrar la resolución correspondiente.
+
+---
+
+#### 11. Prueba de autorización, consentimiento o fundamento
+
+La respuesta de prueba deberá:
+
+- identificar la finalidad aplicable;
+- identificar la versión de aviso o información presentada cuando exista;
+- resolver el tipo de fundamento aprobado en `INFO-DOM-008`;
+- cuando dependa de consentimiento o autorización, enlazar la evidencia de otorgamiento, alcance, canal, versión, instante y estado;
+- cuando exista revocación, conservar la secuencia otorgamiento → cambios → revocación sin borrar evidencia histórica;
+- explicar cuando una finalidad continúe por un fundamento independiente, sin presentarla como dependiente de un consentimiento revocado;
+- minimizar evidencia interna o de terceros no necesaria para demostrar el resultado.
+
+Un fundamento marcado `UNRESOLVED` no se presenta como fundamento válido. Cuando la resolución requiera una obligación jurídica o corporativa todavía no materializada, el caso se bloquea para esa afirmación y se vincula con `INFO-DOM-012`.
+
+---
+
+#### 12. Revocación
+
+1. La revocación es un hecho nuevo, versionado y trazable.
+2. Solo afecta usos futuros que dependan de la autorización revocable alcanzada por la solicitud.
+3. No invalida retroactivamente tratamientos legítimamente efectuados ni borra evidencia del consentimiento, autorización o revocación.
+4. No cancela fundamentos independientes que deban continuar y estén verificados.
+5. El caso identifica finalidades, canales, sistemas y copias controladas afectadas; cada efecto se confirma por separado.
+6. Una preferencia de comunicación y un consentimiento de tratamiento se mantienen separados cuando tengan semánticas diferentes.
+7. Ningún sistema puede continuar una finalidad dependiente de autorización revocada por conservar una copia, caché, perfil o preferencia desactualizada.
+8. El caso no se cierra como completo mientras permanezca un efecto controlado pendiente de reconciliación.
+
+---
+
+#### 13. Supresión, restricción, anonimización y disposición
+
+Una solicitud de supresión inicia una evaluación, no una eliminación directa.
+
+Para cada categoría o recurso se resuelve:
+
+```text
+fundamento vigente
++ finalidad
++ relación con el titular
++ política de retención
++ legal hold o preservación
++ obligación o investigación aplicable
++ estado empresarial del recurso
++ copias y derivados controlados
++ terceros identificados
++ respaldo y residual técnico
+→ decisión de tratamiento
+```
+
+Resultados posibles por elemento:
+
+- `SUPPRESS_BY_DISPOSITION`: elegible para disposición bajo el contrato aprobado de `INFO-DOM-006`.
+- `SUPPRESS_BY_ANONYMIZATION`: la finalidad puede satisfacerse mediante anonimización aprobada y verificable.
+- `RESTRICT_PROCESSING`: se limita el uso futuro sin destruir el objeto que debe conservarse.
+- `RETAIN_WITH_LIMITATION`: debe conservarse por fundamento, retención, hold, obligación, investigación o evidencia, con acceso reducido a la finalidad permitida.
+- `NO_PERSONAL_MATCH`: no se localizó información atribuible después de descubrimiento suficiente.
+- `REVIEW_REQUIRED`: no existe evidencia suficiente para una decisión final.
+
+Reglas obligatorias:
+
+1. Desactivar una cuenta no demuestra supresión de datos.
+2. Eliminar una fila o archivo no demuestra disposición completa.
+3. Anonimización, seudonimización, restricción, archivo, bloqueo y eliminación son resultados distintos.
+4. Retención o hold bloquean la destrucción incompatible, pero no autorizan nuevos usos fuera de finalidad.
+5. El resultado comunicado debe distinguir lo suprimido, anonimizado, restringido, conservado y no localizado.
+6. La ejecución física futura será idempotente, reconciliable y certificable conforme a `INFO-DOM-006`; esta tarea no ejecuta disposición.
+
+---
+
+#### 14. Reclamos de privacidad y preservación de evidencia
+
+Un `DSR_PRIVACY_CLAIM` aplica cuando se reclama uso, acceso, divulgación, modificación, negativa, respuesta o tratamiento presuntamente indebido.
+
+El caso deberá:
+
+1. preservar la declaración original y la evidencia disponible antes de correcciones que puedan alterarla;
+2. marcar el recurso o tratamiento reclamado cuando el control aplicable exija evitar cambios que destruyan evidencia;
+3. identificar actores, sistemas, finalidades, eventos y decisiones relacionados sin exponer contenido innecesario;
+4. separar investigación de la ejecución de una rectificación o supresión;
+5. impedir que una persona directamente implicada apruebe su propio cierre cuando exista conflicto de interés;
+6. registrar decisión, fundamento, medidas, correcciones, comunicación y evidencia de cierre;
+7. escalar a `INFO-DOM-013` cuando el reclamo requiera investigación formal de acceso o cambio indebido.
+
+Los reclamos comerciales, soporte, devoluciones, garantías y compensaciones conservan sus propios expedientes empresariales; solo se vinculan cuando exista además una cuestión de tratamiento de información.
+
+---
+
+#### 15. Plazos, vencimientos y obligaciones
+
+El caso conserva `received_at`, `verified_at`, `classified_at`, `due_at`, `responded_at`, `closed_at` y, cuando exista, el periodo de una extensión autorizada.
+
+Esta tarea no inventa plazos legales, días hábiles, jurisdicciones, causales de extensión ni fórmulas de cómputo que no estén respaldadas por una obligación canónica verificable.
+
+Cuando un plazo sea obligatorio, `due_at` solo se considera resoluble si existe una regla aprobada que identifique:
+
+- obligación y alcance;
+- tipo de solicitud;
+- territorio o jurisdicción aplicable cuando corresponda;
+- evento que inicia el cómputo;
+- unidad y regla de calendario;
+- pausas o aclaraciones permitidas;
+- extensión, autoridad y motivo cuando aplique;
+- responsable;
+- evidencia de cumplimiento.
+
+**Propietario documental de la evidencia faltante:** `INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento`.
+**Condición de salida:** existencia de una obligación aprobada y verificable que permita calcular el vencimiento sin inferencia.
+
+Hasta entonces, cualquier vencimiento normativo específico se marca `PENDIENTE_DE_EVIDENCIA`; el sistema futuro no podrá afirmar cumplimiento temporal basándose en un número inventado.
+
+---
+
+#### 16. Respuesta, reconciliación y evidencia de cierre
+
+`INFO-DATA-SUBJECT-REQUEST-RESPONSE-EVIDENCE-CONTRACT-001` exige que la respuesta final sea comprensible y reproducible desde el caso.
+
+Contenido mínimo de la respuesta cuando aplique:
+
+- identificador del caso;
+- pretensiones recibidas;
+- alcance evaluado;
+- resultado por pretensión;
+- información o representación entregada cuando proceda;
+- cambios ejecutados y fecha efectiva;
+- usos revocados o restringidos;
+- información suprimida, anonimizada o conservada por limitación aplicable;
+- elementos no localizados después de descubrimiento suficiente;
+- limitaciones o denegaciones con fundamento resoluble;
+- efectos externos o copias controladas pendientes, cuando existan;
+- canal e instante de respuesta;
+- versión de la respuesta y evidencia de entrega o intento.
+
+Condiciones de cierre:
+
+1. todas las pretensiones tienen una decisión explícita;
+2. todos los sistemas en alcance tienen resultado final o excepción documentada;
+3. los efectos mutantes confirmados son reconciliables e idempotentes;
+4. una ejecución parcial no se presenta como total;
+5. las excepciones de conservación o hold están registradas;
+6. la respuesta comunicada coincide con el estado real agregado;
+7. la evidencia mínima del caso está preservada;
+8. cualquier acción externa pendiente impide declarar cumplimiento total hasta obtener resultado o una excepción aprobada.
+
+---
+
+#### 17. Fronteras con tareas posteriores
+
+| Materia                                                                                                    | Decisión de INFO-DOM-009                                                                                                          | Tarea propietaria                               |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | el caso registra dependencias externas y no puede ocultar una acción pendiente; no define todavía el contrato completo de tercero | `INFO-DOM-010`                                  |
+| modalidad de aprobación, aceptación o firma                                                                | el caso conserva evidencia referenciada; no define nivel de firma                                                                 | `INFO-DOM-011`                                  |
+| obligaciones, plazos jurídicos, responsables y evidencia normativa                                         | no inventa reglas ausentes; conserva bloqueo y handoff                                                                            | `INFO-DOM-012`                                  |
+| investigación formal de acceso o cambio indebido                                                           | preserva el reclamo y deriva investigación sin borrar evidencia                                                                   | `INFO-DOM-013`                                  |
+| permisos para leer, localizar, corregir, ejecutar o cerrar                                                 | define la decisión que debe protegerse, no concede permisos                                                                       | `INFO-AUTH-001` a `INFO-AUTH-004`               |
+| experiencia de solicitud y seguimiento                                                                     | fija estados y contenido que debe mostrar una superficie futura                                                                   | `INFO-UX-004`; tareas de experiencia aplicables |
+| propagación entre sistemas                                                                                 | exige resultado reconciliable, no crea integraciones                                                                              | `INFO-INT-002`                                  |
+
+Estas fronteras no difieren el resultado principal: el contrato corporativo del caso y sus decisiones quedan completos en esta tarea.
+
+---
+
+#### 18. Matriz corporativa por proceso — 69 de 69
+
+Cada proceso recibe una decisión explícita. La inclusión en descubrimiento no declara que el proceso trate datos personales: significa que, si una solicitud verificada lo referencia o el índice autorizado encuentra una relación, el proceso debe producir un resultado explícito y no desaparecer del caso.
+
+| Proceso      | Perfil                | Entrada al caso                      | Acceso                | Rectificación           | Prueba                | Revocación            | Supresión                 | Reclamo                    | Estado         | Condición / bloqueo                                                                                                                 |
+| ------------ | --------------------- | ------------------------------------ | --------------------- | ----------------------- | --------------------- | --------------------- | ------------------------- | -------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0002` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0003` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0004` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0005` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0006` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0007` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0008` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0009` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0010` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0011` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0012` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0013` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0014` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0015` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0016` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0017` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0018` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0019` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0020` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0021` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0022` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0023` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0024` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0025` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0026` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0027` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0028` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0029` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0030` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0031` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0032` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0033` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0034` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0035` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0036` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0037` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0038` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0039` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0040` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0041` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0042` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0043` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0044` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0045` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0046` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0047` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0048` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0049` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0050` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0051` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0052` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0053` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0054` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0055` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0056` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0057` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0058` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0059` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0060` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0061` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0062` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0063` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0064` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0065` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0066` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0067` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0068` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+| `VPROC-0069` | `INFO_RIGHTS_CASE_V1` | `DISCOVERY_IF_REFERENCED_OR_MATCHED` | `VERIFY_AND_MINIMIZE` | `SOURCE_AUTHORITY_ONLY` | `BASIS_EVIDENCE_ONLY` | `PURPOSE_SCOPED_ONLY` | `ELIGIBILITY_REVIEW_ONLY` | `PRESERVE_AND_INVESTIGATE` | `ESPECIFICADO` | ejecución condicionada a identidad/representación, relación y tratamiento aplicable; ausencia de coincidencia debe quedar explícita |
+
+Reconciliación de la matriz:
+
+```text
+69 procesos esperados
+69 procesos materializados
+69 identificadores únicos
+0 procesos faltantes
+0 procesos duplicados
+0 procesos renombrados
+0 procesos fusionados
+0 procesos eliminados
+```
+
+---
+
+#### 19. Reconciliación con el universo documental heredado
+
+Esta tarea no redefine las 332 identidades `DOCCTX-*`. Las preserva como universo documental que puede ser localizado por un caso cuando exista relación verificable con el titular, el recurso y la finalidad.
+
+| Control heredado         | Resultado                                                  |
+| ------------------------ | ---------------------------------------------------------- |
+| identidades `DOCCTX-*`   | 332 preservadas; 0 renombradas, 0 fusionadas, 0 eliminadas |
+| `S0_PUBLIC`              | 1 preservada                                               |
+| `S1_INTERNAL`            | 33 preservadas                                             |
+| `S2_CONFIDENTIAL`        | 166 preservadas                                            |
+| `S3_RESTRICTED`          | 124 preservadas                                            |
+| `S4_HIGHLY_RESTRICTED`   | 8 preservadas                                              |
+| total de clases          | 332 de 332                                                 |
+| propietarias funcionales | 9 preservadas                                              |
+| reclasificaciones        | 0                                                          |
+
+Una solicitud no rebaja clasificación. El acceso del titular sigue requiriendo identidad, relación, finalidad, minimización y tratamiento de datos de terceros; S0–S4 gobierna la forma de localizar, revisar y entregar cada elemento.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los comportamientos ejecutables materializados por esta tarea ya están protegidos por requisitos vigentes que cubren casos administrativos versionados, solicitudes comprensibles de trabajadores y clientes, acceso y rectificación personal, conservación frente a eliminación de cuenta, revocación, supresión condicionada, reconciliación de dominios y copias controladas, no sobrescritura de evidencia, retención/hold y cierre únicamente con ejecución reconciliada. Esta tarea consolida esas reglas en un contrato documental corporativo y una matriz de 69 procesos sin introducir una nueva mutación, autorización, integración, algoritmo físico o condición ejecutable distinta.
+
+Balance: 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 21. Criterios de aceptación
+
+- [x] Existe un contrato único de caso para consultas, reclamos y solicitudes de derechos.
+- [x] El catálogo distingue consulta/acceso, copia, actualización, rectificación, prueba, información sobre uso, revocación, supresión, restricción/oposición y reclamo de privacidad.
+- [x] Solicitante, titular, cuenta y representante permanecen separados.
+- [x] La recepción de un caso no concede acceso ni mutación antes de verificar identidad, representación y relación.
+- [x] La verificación aplica minimización y no convierte el caso en un repositorio innecesario de documentos personales.
+- [x] El ciclo del caso distingue recepción, verificación, clasificación, descubrimiento, evaluación, ejecución, respuesta y cierre.
+- [x] Los estados parciales, bloqueados, fallidos o reabiertos no se ocultan como éxito.
+- [x] La localización considera fuentes, documentos, representaciones, derivados, índices, colas, sincronización, terceros, respaldos y auditoría cuando sean aplicables.
+- [x] Consultar o copiar no expone automáticamente terceros, secretos, credenciales ni contenido fuera del alcance.
+- [x] Rectificar conserva historia y corrige en la fuente competente sin sobrescribir evidencia o auditoría.
+- [x] La prueba de autorización o fundamento se basa en evidencia resoluble y no presenta `UNRESOLVED` como válido.
+- [x] La revocación afecta únicamente usos futuros dependientes de una autorización revocable y conserva historia.
+- [x] La supresión se evalúa por categoría y no equivale a eliminar cuenta, fila o archivo.
+- [x] Retención, legal hold, obligaciones e investigaciones bloquean la destrucción incompatible sin ampliar finalidades.
+- [x] Anonimización, restricción, archivo, seudonimización y disposición permanecen como resultados distintos.
+- [x] Un reclamo de privacidad preserva evidencia antes de correcciones y escala a investigación cuando corresponda.
+- [x] No se inventan plazos jurídicos; la evidencia faltante queda asignada a `INFO-DOM-012` con condición de salida.
+- [x] El cierre exige decisión por pretensión, resultado por sistema, reconciliación, respuesta coherente y evidencia.
+- [x] Los 69 procesos aparecen exactamente una vez y reciben `INFO_RIGHTS_CASE_V1`.
+- [x] La matriz reporta 69 esperados, 69 materializados, 0 faltantes y 0 duplicados.
+- [x] Las 332 identidades documentales y la distribución S0–S4 1/33/166/124/8 permanecen intactas.
+- [x] Las 9 propietarias funcionales permanecen sin modificación.
+- [x] No se ejecuta ningún cambio físico en código, Supabase, Storage, configuración o datos.
+- [x] La tarea genera cero cambios de requisitos de prueba y documenta la justificación.
+
+---
+
+#### 22. Impacto contractual y estado de materialización
+
+| Dimensión                        | Resultado                                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| gobierno de privacidad           | `ESPECIFICADO` mediante los siete contratos de esta tarea                                        |
+| casos de titulares               | `ESPECIFICADO` documentalmente; implementación física no acreditada                              |
+| identidad y representación       | reglas definidas; mecanismos técnicos reservados a autorización/experiencia                      |
+| acceso y copia                   | contrato definido; no concede autoridad por sí mismo                                             |
+| rectificación                    | contrato no destructivo definido; ejecución física no realizada                                  |
+| revocación                       | propagación esperada definida; integración física no realizada                                   |
+| supresión                        | elegibilidad y resultados definidos; disposición física no realizada                             |
+| reclamos                         | preservación, decisión y escalamiento definidos; investigación formal pertenece a `INFO-DOM-013` |
+| plazos normativos específicos    | `PENDIENTE_DE_EVIDENCIA`; propietario `INFO-DOM-012`; salida: obligación aprobada y calculable   |
+| terceros y transferencias        | frontera preservada para `INFO-DOM-010`                                                          |
+| código / base de datos / Storage | sin cambios                                                                                      |
+| requisitos de prueba             | sin cambios                                                                                      |
+
+---
+
+#### 23. Cierre y continuidad
+
+ÚLTIMA TAREA APROBADA
+`INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles`
+
+TAREA ACTUAL APROBADA
+`INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión`
+
+SIGUIENTE TAREA RESERVADA
+`INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad`
+
+La continuidad termina en `INFO-DOM-009`. No se materializa contenido de `INFO-DOM-010`.
+
+
 ### [ ] INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
 ### [ ] INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
 ### [ ] INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
