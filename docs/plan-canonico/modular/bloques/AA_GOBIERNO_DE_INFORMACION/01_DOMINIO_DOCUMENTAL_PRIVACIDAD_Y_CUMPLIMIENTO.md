@@ -5389,7 +5389,528 @@ SIGUIENTE TAREA RESERVADA
 `INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles`
 
 
-### [ ] INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
+### ✅ INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** `INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia` — APROBADA
+**Tarea siguiente:** `INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión` — RESERVADA
+**Tipo de tarea:** documental; definición y materialización transversal del contrato corporativo de tratamiento de datos personales, aviso, finalidad, fundamento documentado, autorización, consentimiento, revocación y tratamiento reforzado de datos sensibles
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md`
+**Universo empresarial preservado:** 69 procesos `VPROC-0001` a `VPROC-0069`, 332 identidades contextuales `DOCCTX-*`, 9 aplicaciones propietarias funcionales y escala corporativa `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED`
+**Contratos materializados:** `INFO-PRIVACY-TREATMENT-CONTRACT-001`; `INFO-PRIVACY-NOTICE-CONTRACT-001`; `INFO-PRIVACY-PURPOSE-BASIS-CONTRACT-001`; `INFO-PRIVACY-CONSENT-AUTHORIZATION-CONTRACT-001`; `INFO-PRIVACY-REVOCATION-RESTRICTION-CONTRACT-001`; `INFO-PRIVACY-SENSITIVE-DATA-CONTRACT-001`; `INFO-PRIVACY-PURPOSE-TREATMENT-MATRIX-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Storage, buckets, objetos, migraciones, funciones, jobs, datos, configuración, secretos, proveedores ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea establece el contrato corporativo que determina cómo debe declararse y demostrarse un tratamiento de datos personales cuando exista dentro de un proceso VENTO. La definición evita convertir el propósito empresarial, la clasificación S0–S4, la aceptación de términos, una relación contractual, una pantalla, un formulario o la mera persistencia técnica en una autorización de tratamiento implícita.
+
+El resultado queda materializado en siete contratos consumibles y en una matriz de 69 procesos. La matriz fija una decisión explícita de gobierno por proceso sin afirmar, donde la evidencia actual no lo demuestra, que exista o no exista tratamiento personal, consentimiento, fundamento jurídico, responsable de tratamiento concreto o categoría sensible concreta.
+
+La tarea conserva además las 332 identidades documentales heredadas sin reclasificarlas: un `DOCCTX-*` puede contener o relacionarse con datos personales solo cuando el contenido o contexto verificable lo demuestre. La clase de seguridad no sustituye esa determinación.
+
+---
+
+#### 2. Decisiones heredadas que permanecen vigentes
+
+1. Los 69 propósitos empresariales aprobados permanecen como finalidad empresarial primaria; no se reinterpretan como fundamento de privacidad.
+2. La propiedad funcional sigue al proceso y al hecho empresarial; no se deriva de tabla, esquema, bucket, aplicación o proveedor.
+3. La escala `S0_PUBLIC`, `S1_INTERNAL`, `S2_CONFIDENTIAL`, `S3_RESTRICTED`, `S4_HIGHLY_RESTRICTED` continúa gobernando sensibilidad operativa y minimización.
+4. Las 332 identidades `DOCCTX-*` conservan exactamente su identidad y clasificación heredadas; esta tarea no crea una clasificación jurídica paralela por documento.
+5. El ciclo, retención, legal hold, disposición, autenticidad, integridad, procedencia y custodia permanecen bajo sus contratos ya aprobados.
+6. El marco jurisdiccional empresarial observado se mantiene como referencia de contexto; esta tarea no emite una opinión jurídica ni inventa bases normativas no respaldadas por evidencia vigente.
+7. Roles de responsable, encargado, destinatario, transferencia y requerimiento de autoridad se coordinan con sus tareas propietarias; infraestructura y región técnica no asignan esos roles.
+8. La ausencia de evidencia no se convierte en consentimiento, autorización, fundamento ni declaración de `NO_APLICA`.
+
+---
+
+#### 3. Separaciones normativas obligatorias
+
+Se fija la siguiente separación semántica:
+
+```text
+business_purpose_ref
+!= privacy_purpose_id
+!= documented_basis_id
+!= notice_version_id
+!= consent_or_authorization_record_id
+!= terms_acceptance_ref
+!= marketing_authorization_ref
+!= sensitive_data_authorization_ref
+!= access_authorization_ref
+```
+
+Reglas:
+
+1. La finalidad empresarial explica por qué existe el proceso; no demuestra por sí sola por qué puede tratarse un dato personal.
+2. La finalidad de privacidad declara el uso específico del dato dentro de un tratamiento identificado.
+3. El fundamento documentado explica la base aplicada al tratamiento; no se registra como consentimiento cuando no lo es.
+4. El aviso demuestra qué información fue presentada; no demuestra aceptación por sí solo.
+5. La aceptación de términos de servicio no concede automáticamente marketing, datos sensibles ni finalidades futuras.
+6. Una autorización de acceso a una aplicación o recurso no equivale a autorización de tratamiento.
+7. La clasificación `S4_HIGHLY_RESTRICTED` exige manejo reforzado, pero no constituye por sí misma prueba de que la categoría sea legalmente sensible. Una clase inferior tampoco demuestra ausencia de datos sensibles.
+8. Revocar una finalidad revocable no borra el hecho histórico de la autorización ni elimina automáticamente registros que deban conservarse por otro fundamento documentado y por la política de retención aplicable.
+
+---
+
+#### 4. `INFO-PRIVACY-TREATMENT-CONTRACT-001` — identidad del tratamiento
+
+Un tratamiento gobernado se identifica independientemente de su aplicación, tabla, formulario, archivo o proveedor. La unidad documental mínima es una combinación resoluble de finalidad de privacidad, población o titular aplicable, categorías de datos, fuente, entidad responsable y contexto empresarial.
+
+| Campo                                | Regla                                                                                                                 |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `treatment_id`                       | Identificador estable del tratamiento; no se deriva de nombre de tabla, ruta o pantalla.                              |
+| `process_id`                         | `VPROC-*` que aporta el contexto empresarial.                                                                         |
+| `business_purpose_ref`               | Referencia al propósito empresarial aprobado; no sustituye `privacy_purpose_id`.                                      |
+| `privacy_purpose_id`                 | Finalidad específica y versionada del tratamiento.                                                                    |
+| `subject_scope_ref`                  | Titular, población o colectivo al que aplica, sin ampliar el alcance por inferencia.                                  |
+| `data_category_refs`                 | Categorías de datos realmente necesarias para la finalidad.                                                           |
+| `source_refs`                        | Fuentes de los datos y, cuando corresponda, referencia de procedencia.                                                |
+| `controller_ref`                     | Entidad responsable documentada; si es obligatoria y no existe evidencia, el tratamiento dependiente queda bloqueado. |
+| `processor_refs`                     | Encargados documentados cuando existan; su alcance no se infiere del proveedor técnico.                               |
+| `documented_basis_id`                | Fundamento aplicable, resoluble mediante el contrato de la sección 6.                                                 |
+| `notice_version_id`                  | Aviso presentado cuando corresponda.                                                                                  |
+| `authorization_record_refs`          | Evidencia de decisiones de autorización o consentimiento cuando correspondan.                                         |
+| `sensitivity_assessment_ref`         | Evaluación de sensibilidad y riesgo del tratamiento.                                                                  |
+| `rights_channel_ref`                 | Canal aplicable para derechos o solicitudes, sin definir aquí el flujo de atención.                                   |
+| `retention_policy_ref`               | Referencia al contrato de retención; no se fija un plazo nuevo.                                                       |
+| `treatment_status`                   | Estado documental del tratamiento y su evidencia.                                                                     |
+| `effective_from` / `effective_until` | Vigencia efectiva de la definición, sin confundirla con la fecha de captura.                                          |
+
+Estados de resolución:
+
+| Estado                   | Uso                                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | La regla de gobierno está definida y los campos obligatorios de la instancia están respaldados.       |
+| `PENDIENTE_DE_EVIDENCIA` | Falta evidencia para resolver un dato de gobierno sin inventarlo.                                     |
+| `BLOQUEADO`              | La operación dependiente no puede continuar porque falta un requisito obligatorio o existe conflicto. |
+| `NO_APLICA`              | La materia no aplica a la instancia y existe base verificable para esa conclusión.                    |
+
+Una fila de proceso de la matriz no crea por sí sola un `treatment_id`: la instancia se materializa cuando existe evidencia de un tratamiento concreto.
+
+---
+
+#### 5. `INFO-PRIVACY-NOTICE-CONTRACT-001` — avisos y versiones presentadas
+
+El aviso de privacidad es un artefacto versionado que permite reconstruir exactamente qué información se presentó, a quién, por qué canal y bajo qué versión. No se modela como un booleano global.
+
+Campos mínimos:
+
+- `notice_id` y `notice_version_id`;
+- `controller_ref` aplicable;
+- `privacy_purpose_ids` presentadas;
+- categorías de datos o alcance informado cuando corresponda;
+- `mandatory_optional_profile` por finalidad;
+- `rights_channel_ref`;
+- `language`;
+- `channel`;
+- `effective_from` y, cuando proceda, `effective_until`;
+- `presented_at`;
+- sujeto o contexto al que se presentó;
+- `content_integrity_ref` o referencia de versión preservada;
+- relaciones con versiones predecesoras o sucesoras.
+
+Reglas:
+
+1. Una nueva versión no altera qué aviso fue presentado históricamente.
+2. Un cambio material de finalidad, alcance informado, entidad responsable o condición de autorización obliga a versionar y reevaluar la aplicabilidad de autorizaciones previas.
+3. Idioma y canal forman parte de la evidencia; no se reconstruyen desde preferencias actuales.
+4. La mera disponibilidad de una política estática no demuestra presentación ni decisión del titular.
+5. Una versión retirada conserva trazabilidad histórica y no se presenta como vigente.
+
+---
+
+#### 6. `INFO-PRIVACY-PURPOSE-BASIS-CONTRACT-001` — finalidades y fundamentos documentados
+
+Cada tratamiento debe resolver una finalidad de privacidad específica y un fundamento documentado. Las clases siguientes son estados de gobierno interno para impedir ambigüedad; no constituyen una taxonomía jurídica exhaustiva.
+
+| Clase                            | Decisión                                                                                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `CONSENT_OR_AUTHORIZATION`       | El tratamiento depende de una decisión verificable del titular o sujeto autorizado y requiere evidencia de esa decisión.           |
+| `LEGAL_OR_REGULATORY_OBLIGATION` | Existe un fundamento normativo documentado; requiere `basis_ref` verificable y no se registra como consentimiento.                 |
+| `CONTRACTUAL_OBLIGATION`         | Existe un fundamento contractual documentado vinculado al alcance correspondiente; no concede finalidades accesorias.              |
+| `OTHER_DOCUMENTED_BASIS`         | Existe otro fundamento documentado y versionado que debe quedar identificado de forma concreta.                                    |
+| `NO_APLICA_NO_PERSONAL_DATA`     | La instancia no trata datos personales y existe evidencia suficiente para sostener esa conclusión.                                 |
+| `UNRESOLVED`                     | La fuente actual no permite determinar el fundamento sin una decisión adicional; bloquea el tratamiento que dependa de resolverlo. |
+
+Reglas de finalidad:
+
+1. Cada `privacy_purpose_id` debe ser específico, interpretable, versionado y enlazado al proceso y tratamiento.
+2. Dos finalidades independientes no se fusionan para obtener una decisión única si una puede aceptarse o rechazarse sin la otra.
+3. Una finalidad secundaria o nueva exige evaluación propia; una autorización previa no se extiende por semejanza.
+4. Cambiar la finalidad empresarial del proceso no reescribe automáticamente finalidades de privacidad históricas.
+5. El fundamento se conserva con versión, evidencia, vigencia y alcance. `UNRESOLVED` nunca se trata como autorización implícita.
+6. El registro de un fundamento distinto de consentimiento debe mostrar explícitamente que el tratamiento no depende de una decisión de consentimiento para ese alcance, sin fabricar una aceptación ficticia.
+
+---
+
+#### 7. `INFO-PRIVACY-CONSENT-AUTHORIZATION-CONTRACT-001` — consentimiento y autorizaciones
+
+La evidencia de autorización se registra por finalidad y alcance. Se preservan tanto decisiones afirmativas como negativas para evitar que la ausencia de una marca se interprete a favor del tratamiento.
+
+| Campo                         | Regla                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `authorization_record_id`     | Identidad estable del registro de decisión.                               |
+| `treatment_id`                | Tratamiento al que se aplica.                                             |
+| `privacy_purpose_id`          | Finalidad concreta; no una aceptación global.                             |
+| `subject_ref`                 | Titular o sujeto aplicable.                                               |
+| `controller_ref`              | Entidad responsable aplicable.                                            |
+| `decision`                    | `ACCEPTED`, `REJECTED`, `NOT_REQUIRED` o `UNRESOLVED`.                    |
+| `requirement_profile`         | `MANDATORY` u `OPTIONAL` según la definición documentada del tratamiento. |
+| `notice_version_id`           | Versión informada asociada cuando corresponda.                            |
+| `language` / `channel`        | Contexto en que se obtuvo o registró la decisión.                         |
+| `occurred_at` / `recorded_at` | Momento de la decisión y momento de su registro, sin fusionarlos.         |
+| `actor_ref`                   | Actor que expresó o registró la decisión según corresponda.               |
+| `evidence_ref`                | Evidencia preservada con integridad y procedencia resolubles.             |
+| `scope_ref`                   | Datos, canal, producto, relación o población a la que aplica.             |
+| `supersedes_ref`              | Registro anterior sustituido por una nueva decisión, sin borrar historia. |
+
+Reglas:
+
+1. `ACCEPTED` solo existe con evidencia positiva resoluble; el silencio o la ausencia de fila no equivalen a aceptación.
+2. `REJECTED` se conserva y debe impedir el uso dependiente de esa finalidad cuando no exista otro fundamento documentado aplicable.
+3. `NOT_REQUIRED` exige que el fundamento aplicable esté resuelto y documentado; no es un atajo para omitir evidencia.
+4. Marketing, datos sensibles y otras finalidades opcionales se registran separadamente de términos de servicio o condiciones necesarias del servicio.
+5. Una finalidad opcional rechazada no bloquea automáticamente una operación independiente que tenga fundamento propio documentado.
+6. Una decisión posterior se enlaza con la anterior y conserva la historia completa.
+7. El contrato de evidencia de `INFO-DOM-007` gobierna integridad, procedencia, tiempo y preservación de la prueba de autorización.
+
+---
+
+#### 8. `INFO-PRIVACY-REVOCATION-RESTRICTION-CONTRACT-001` — revocación y restricciones
+
+Una revocación es un nuevo hecho trazable y acotado. No destruye el registro anterior ni se interpreta como si la autorización nunca hubiera existido.
+
+Campos mínimos: `revocation_id`, `authorization_record_id`, `treatment_id`, `privacy_purpose_id`, `scope_ref`, `occurred_at`, `recorded_at`, `effective_at`, `actor_ref`, `reason_ref` cuando aplique, `evidence_ref`, `propagation_status` y `restriction_refs`.
+
+Reglas:
+
+1. La revocación opera sobre el alcance revocable identificado y desde su momento efectivo; no se propaga a finalidades independientes por semejanza.
+2. El uso futuro dependiente de la autorización revocada debe detenerse o quedar bloqueado cuando no exista otro fundamento documentado aplicable.
+3. El hecho de revocación y la evidencia de autorización previa se preservan bajo las reglas de historia, retención e integridad aplicables.
+4. La revocación no equivale a eliminación de cuenta, supresión de todos los datos, anulación contractual ni vencimiento de obligaciones independientes.
+5. Cuando existan proyecciones, copias controladas o terceros, la revocación genera una obligación de reconciliación y propagación; la identificación de destinatarios y transferencias pertenece a `INFO-DOM-010`.
+6. El flujo formal de solicitud del titular, sus plazos y cierre pertenecen a `INFO-DOM-009`; este contrato define el efecto documental que ese flujo debe poder producir.
+7. Si una copia debe conservarse bajo otro fundamento o retención, se restringe o desvincula según corresponda sin destruir el hecho empresarial ni falsear la historia.
+
+---
+
+#### 9. `INFO-PRIVACY-SENSITIVE-DATA-CONTRACT-001` — datos sensibles y contextos de alto riesgo
+
+La determinación de sensibilidad personal se resuelve por categoría y contexto con evidencia. La clase corporativa S0–S4 continúa siendo una protección operativa independiente.
+
+| Estado de evaluación            | Regla                                                                                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NOT_ASSESSED`                  | La sensibilidad personal no ha sido evaluada; no puede interpretarse como ausencia de sensibilidad.                                              |
+| `NON_SENSITIVE_PERSONAL`        | Existe evidencia suficiente para tratar la categoría como personal no sensible dentro del alcance evaluado.                                      |
+| `SENSITIVE_OR_SPECIAL_CATEGORY` | Existe evidencia documentada de que la categoría requiere tratamiento reforzado por su naturaleza o regla aplicable.                             |
+| `HIGH_RISK_CONTEXT`             | La combinación de datos, población, precisión, canal o finalidad exige controles reforzados aunque la etiqueta legal concreta no se afirme aquí. |
+| `UNRESOLVED`                    | La evidencia no permite resolver la categoría; el uso que requiera esa determinación queda bloqueado.                                            |
+
+Reglas:
+
+1. Toda declaración `SENSITIVE_OR_SPECIAL_CATEGORY` requiere `sensitivity_basis_ref`; no se deriva solo de `S4_HIGHLY_RESTRICTED`.
+2. `S4_HIGHLY_RESTRICTED` conserva sus controles reforzados aunque la categoría personal permanezca `NOT_ASSESSED` o `UNRESOLVED`.
+3. Categorías médicas, biométricas, geolocalización precisa, documentos de identidad, información financiera, laboral, SST y otras categorías de alto riesgo requieren minimización estricta y evaluación explícita antes de usos secundarios, exportaciones, analítica, logs o proveedores.
+4. Datos sensibles o de alto riesgo no se incorporan a eventos, telemetría, logs, exports o datasets generales solo por conveniencia técnica.
+5. La necesidad de una autorización especial o de otro fundamento se resuelve mediante referencia documentada; no se presume desde la categoría.
+6. La proyección autorizada expone el mínimo de campos, precisión, población y ventana temporal necesarios para la finalidad.
+7. El cambio de categoría o contexto conserva la evaluación anterior, motivo, evidencia, vigencia y efecto sobre tratamientos activos.
+
+---
+
+#### 10. Cambios de finalidad, aviso o fundamento
+
+1. Un cambio material de finalidad crea una nueva versión de finalidad o un nuevo tratamiento cuando el alcance deja de ser equivalente.
+2. Un aviso nuevo no vuelve válida una autorización antigua para una finalidad materialmente distinta.
+3. Un fundamento nuevo no reescribe el fundamento histórico utilizado por eventos anteriores.
+4. Un cambio de entidad responsable requiere nueva evaluación del tratamiento y de la información presentada; no se deriva del cambio de aplicación o infraestructura.
+5. Cambiar proveedor o encargado no crea por sí solo una nueva finalidad, pero exige mantener alcance, autoridad, minimización, evidencia y obligaciones de tercero resolubles.
+6. Una finalidad futura no informada permanece fuera del alcance de autorizaciones anteriores hasta que su fundamento quede resuelto.
+
+---
+
+#### 11. Aplicación fail-closed
+
+| Condición                                                 | Resultado obligatorio                                                                        |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Falta `process_id` o contexto empresarial                 | `BLOQUEADO` para tratamiento dependiente de contexto.                                        |
+| Falta `privacy_purpose_id`                                | `BLOQUEADO`; no se admite finalidad implícita.                                               |
+| Fundamento obligatorio `UNRESOLVED`                       | `BLOQUEADO`.                                                                                 |
+| Se exige consentimiento y no existe evidencia positiva    | `BLOQUEADO` para esa finalidad.                                                              |
+| Decisión `REJECTED` vigente                               | Uso dependiente de esa finalidad denegado.                                                   |
+| Autorización revocada y sin otro fundamento aplicable     | Uso futuro dependiente bloqueado.                                                            |
+| Sensibilidad necesaria para decidir y estado `UNRESOLVED` | `BLOQUEADO` para el uso que dependa de esa resolución.                                       |
+| Aviso requerido sin versión presentada verificable        | `BLOQUEADO` para el acto que dependa de esa presentación.                                    |
+| Entidad responsable obligatoria sin evidencia             | `PENDIENTE_DE_EVIDENCIA` y operación dependiente bloqueada.                                  |
+| Tratamiento no personal demostrado                        | `NO_APLICA` al contrato de fundamento personal, conservando las demás reglas de información. |
+
+Los mensajes y resultados de autorización no deben revelar información sensible adicional para explicar el bloqueo.
+
+---
+
+#### 12. Evidencia, auditoría y reconstrucción temporal
+
+Para cualquier tratamiento, aviso, autorización o revocación materializado debe ser posible reconstruir:
+
+- qué finalidad estaba vigente;
+- qué fundamento documentado se aplicó;
+- qué aviso y versión se presentaron;
+- qué decisión fue registrada y para qué alcance;
+- quién o qué sistema registró el hecho;
+- cuándo ocurrió y cuándo fue registrado;
+- qué evidencia preserva integridad y procedencia;
+- qué cambio posterior sustituyó, restringió o revocó la decisión;
+- qué usos dependían de esa decisión;
+- qué condición bloqueó la operación cuando faltaba evidencia.
+
+La reconstrucción usa tiempos tipados y evidencia no destructiva; no sustituye el hecho histórico por la preferencia o política vigente en el presente.
+
+---
+
+#### 13. Relación con las 332 identidades `DOCCTX-*`
+
+La tarea preserva el universo documental completo y fija una decisión de aplicabilidad sin inventar contenido personal por identidad:
+
+| Elemento                                                                                   | Resultado |
+| ------------------------------------------------------------------------------------------ | --------: |
+| Identidades `DOCCTX-*` esperadas                                                           |       332 |
+| Identidades preservadas                                                                    |       332 |
+| Identidades renombradas                                                                    |         0 |
+| Identidades fusionadas                                                                     |         0 |
+| Identidades eliminadas                                                                     |         0 |
+| Reclasificaciones S0–S4 producidas por esta tarea                                          |         0 |
+| Conclusiones de dato personal inferidas solo por nombre de documento, bucket, ruta o clase |         0 |
+
+Distribución de sensibilidad corporativa preservada:
+
+| Clase                  | Total heredado |
+| ---------------------- | -------------: |
+| `S0_PUBLIC`            |              1 |
+| `S1_INTERNAL`          |             33 |
+| `S2_CONFIDENTIAL`      |            166 |
+| `S3_RESTRICTED`        |            124 |
+| `S4_HIGHLY_RESTRICTED` |              8 |
+| **Total**              |        **332** |
+
+Para cada `DOCCTX-*`, la regla es: resolver el tratamiento desde el contenido y contexto empresarial real; heredar o elevar la clasificación operativa ya vigente; aplicar el contrato de privacidad solo a los campos o representaciones que efectivamente contengan datos personales; mantener `PENDIENTE_DE_EVIDENCIA` cuando esa condición no pueda demostrarse.
+
+---
+
+#### 14. `INFO-PRIVACY-PURPOSE-TREATMENT-MATRIX-001` — 69 de 69 procesos
+
+Cada proceso conserva la finalidad empresarial aprobada mediante referencia estable. La columna de conclusión evita que la matriz se convierta en una lista inventada de tratamientos: ninguna fila declara tratamiento personal existente solo por el nombre o propósito del proceso.
+
+| VPROC        | Finalidad empresarial                            | Conclusión sobre tratamiento personal                          | Regla de finalidad/fundamento                     | Aviso                       | Autorización                                    | Sensibilidad                       | Estado de regla | Condición de bloqueo                      |
+| ------------ | ------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------- | --------------------------- | ----------------------------------------------- | ---------------------------------- | --------------- | ----------------------------------------- |
+| `VPROC-0001` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0001` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0002` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0002` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0003` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0003` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0004` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0004` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0005` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0005` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0006` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0006` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0007` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0007` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0008` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0008` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0009` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0009` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0010` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0010` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0011` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0011` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0012` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0012` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0013` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0013` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0014` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0014` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0015` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0015` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0016` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0016` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0017` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0017` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0018` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0018` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0019` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0019` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0020` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0020` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0021` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0021` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0022` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0022` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0023` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0023` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0024` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0024` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0025` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0025` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0026` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0026` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0027` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0027` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0028` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0028` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0029` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0029` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0030` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0030` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0031` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0031` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0032` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0032` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0033` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0033` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0034` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0034` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0035` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0035` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0036` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0036` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0037` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0037` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0038` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0038` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0039` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0039` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0040` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0040` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0041` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0041` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0042` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0042` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0043` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0043` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0044` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0044` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0045` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0045` | `SENAL_EXPLICITA_CONSENTIMIENTOS_EN_PROPOSITO`                 | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0046` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0046` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0047` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0047` | `SENAL_EXPLICITA_COMUNICACIONES_CONSENTIDAS_EN_PROPOSITO`      | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0048` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0048` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0049` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0049` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0050` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0050` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0051` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0051` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0052` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0052` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0053` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0053` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0054` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0054` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0055` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0055` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0056` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0056` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0057` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0057` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0058` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0058` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0059` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0059` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0060` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0060` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0061` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0061` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0062` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0062` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0063` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0063` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0064` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0064` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0065` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0065` | `SENAL_EXPLICITA_PRIVACIDAD_Y_PROPOSITO_LEGITIMO_EN_PROPOSITO` | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0066` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0066` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0067` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0067` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0068` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0068` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+| `VPROC-0069` | `PROC-BUSINESS-PURPOSE-REGISTRY-001::VPROC-0069` | `NO_INFERIR_TRATAMIENTO_DESDE_PROPOSITO`                       | `RESOLVER_SI_SE_MATERIALIZA_TRATAMIENTO_PERSONAL` | `VERSION_VIGENTE_SI_APLICA` | `DECISION_O_BASE_DOCUMENTADA_SEGUN_CORRESPONDA` | `EVALUAR_POR_CATEGORIA_Y_CONTEXTO` | `ESPECIFICADO`  | `BLOQUEAR_SI_FALTA_EVIDENCIA_OBLIGATORIA` |
+
+Reconciliación de la matriz:
+
+```text
+69 procesos esperados
+69 procesos materializados
+69 process_id unicos
+0 procesos faltantes
+0 procesos duplicados
+0 process_id renombrados
+0 finalidades empresariales reescritas
+0 tratamientos personales inventados por inferencia
+```
+
+Las tres señales explícitas de la matriz describen solo texto ya presente en el propósito empresarial de `VPROC-0045`, `VPROC-0047` y `VPROC-0065`; no constituyen por sí mismas una determinación de fundamento, consentimiento vigente, entidad responsable ni categoría sensible.
+
+---
+
+#### 15. Tratamiento de marketing, comunicaciones y finalidades opcionales
+
+1. Una autorización de marketing se registra separada de términos, servicio principal, fidelización, soporte, reclamos y obligaciones contractuales.
+2. Canal, idioma, finalidad, población y alcance forman parte de la decisión; una autorización de un canal no se extiende automáticamente a otro.
+3. Una revocación de marketing debe impedir comunicaciones futuras dependientes de esa autorización y conservar evidencia del cambio.
+4. El origen externo de un lead no demuestra autorización para contacto posterior; la decisión aplicable debe ser resoluble antes del uso que dependa de ella.
+5. Una interacción comercial no autoriza finalidades analíticas, perfilamiento, terceros o IA que no hayan sido resueltas bajo un fundamento documentado propio.
+
+---
+
+#### 16. Datos laborales, SST, financieros e identidad
+
+Los contextos laborales, SST, financieros, de identidad y otros de alto impacto mantienen el piso de clasificación y minimización ya aprobado. Esta tarea agrega las siguientes reglas de privacidad sin reclasificar:
+
+1. separar la finalidad empresarial de cada uso concreto de datos personales;
+2. resolver fundamento y entidad responsable antes del tratamiento que dependa de ellos;
+3. evaluar sensibilidad por categoría y contexto;
+4. impedir que logs, exportaciones, analítica o integraciones absorban campos personales no necesarios;
+5. conservar evidencia de autorización o de otro fundamento documentado sin mezclar ambos conceptos;
+6. mantener la retención y disposición bajo `INFO-DOM-006`; una revocación no autoriza destrucción anticipada de evidencia.
+
+---
+
+#### 17. Fronteras propietarias
+
+| Materia                                                                          | Decisión de esta tarea                                                                                  | Propietario de continuidad        |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Retención, hold, anonimización, eliminación y certificado                        | Conserva referencias y efectos; no fija plazos ni ejecuta disposición.                                  | `INFO-DOM-006`                    |
+| Integridad, procedencia, tiempos y custodia de evidencia                         | Requiere evidencia resoluble; no redefine su fuerza técnica.                                            | `INFO-DOM-007`                    |
+| Consultas, reclamos, acceso, rectificación, prueba, revocación y supresión       | Define los efectos documentales que debe poder producir una solicitud; no diseña el caso ni sus plazos. | `INFO-DOM-009`                    |
+| Compartición, terceros, encargados, transferencias y requerimientos de autoridad | Conserva referencias y obliga a reconciliar; no materializa destinatarios ni transferencias.            | `INFO-DOM-010`                    |
+| Aceptación, aprobación y firmas                                                  | Distingue estos hechos de consentimiento; no define método de firma ni nivel probatorio.                | `INFO-DOM-011`                    |
+| Auditoría e investigación                                                        | Preserva hechos y evidencia necesarios; no diseña el expediente investigativo.                          | `INFO-DOM-013`                    |
+| Roles y permisos de acceso                                                       | Un permiso de aplicación no equivale a fundamento de tratamiento.                                       | `INFO-AUTH-001` a `INFO-AUTH-004` |
+| Sincronización y propagación física                                              | Fija el efecto idempotente y reconciliable esperado; no implementa integraciones.                       | tareas `INFO-INT-*` aplicables    |
+
+Ninguna frontera difiere el resultado principal de `INFO-DOM-008`: aviso, finalidad, fundamento documentado, autorización, consentimiento, revocación y tratamiento sensible quedan definidos como contrato de gobierno.
+
+---
+
+#### 18. Decisiones no autorizadas por esta tarea
+
+Esta tarea no:
+
+- asigna una entidad responsable concreta a cada tratamiento sin evidencia;
+- inventa encargados, destinatarios, transferencias ni bases normativas;
+- determina que un proceso necesariamente trata o no trata datos personales por su nombre;
+- convierte `S4_HIGHLY_RESTRICTED` en una etiqueta jurídica automática de dato sensible;
+- define plazos de retención o supresión;
+- diseña pantallas, banners, formularios, cookies o componentes UX;
+- crea tablas, columnas, RLS, RPC, Storage, jobs, triggers o migraciones;
+- ejecuta cambios remotos o productivos;
+- modifica las 332 identidades `DOCCTX-*`, los 69 `VPROC-*` o las 9 propietarias funcionales;
+- aprueba firmas ni confunde consentimiento con aceptación contractual.
+
+---
+
+#### 19. Estado AS-IS y resultado TO-BE documental
+
+| Elemento                                | Estado verificable recibido                                                | Resultado de esta tarea                                                                                           |
+| --------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Propósitos empresariales                | 69 propósitos aprobados                                                    | Referenciados sin convertirlos en fundamento de privacidad.                                                       |
+| Clasificación y minimización            | 332 `DOCCTX-*` con S0–S4 y perfiles por proceso                            | Preservados; se agrega regla de evaluación personal/sensible sin inferencia.                                      |
+| Avisos estáticos existentes             | Evidencia parcial de políticas en superficies concretas                    | Se define contrato versionado de presentación; no se declara cobertura transversal implementada.                  |
+| Evidencia transversal de consentimiento | Cobertura funcional parcial y requisitos de prueba ya registrados          | Se define contrato canónico de decisión y revocación; implementación permanece pendiente de sus bloques técnicos. |
+| Fundamentos por tratamiento             | No existe evidencia suficiente para asignarlos exhaustivamente por proceso | Se define taxonomía de resolución y `UNRESOLVED` bloqueante; no se inventan asignaciones.                         |
+| Tratamientos sensibles                  | No existe inventario jurídico exhaustivo demostrado por proceso            | Se define evaluación separada de S0–S4 y manejo fail-closed.                                                      |
+| Cambios físicos                         | No forman parte de esta fase documental                                    | 0 cambios físicos.                                                                                                |
+
+---
+
+#### 20. Criterios de aceptación
+
+- [x] Se preservan los 69 `VPROC-*` y sus finalidades empresariales sin reescritura.
+- [x] La matriz contiene exactamente 69 filas de proceso, sin faltantes ni duplicados.
+- [x] Se preservan las 332 identidades `DOCCTX-*` y la distribución S0/S1/S2/S3/S4 de 1/33/166/124/8.
+- [x] Finalidad empresarial, finalidad de privacidad, fundamento, aviso, consentimiento, términos, marketing, datos sensibles y acceso quedan semánticamente separados.
+- [x] El aviso es versionado y conserva idioma, canal, vigencia, contenido y evidencia de presentación.
+- [x] Los fundamentos no basados en consentimiento nunca se registran como consentimientos ficticios.
+- [x] El consentimiento o autorización conserva finalidad, alcance, aviso presentado, decisión, actor, tiempos y evidencia.
+- [x] Las decisiones `ACCEPTED`, `REJECTED`, `NOT_REQUIRED` y `UNRESOLVED` quedan diferenciadas.
+- [x] Marketing y datos sensibles no se absorben dentro de una aceptación general de términos.
+- [x] La revocación es prospectiva para su alcance efectivo y conserva la historia previa.
+- [x] Revocación, eliminación de cuenta, supresión, retención y disposición permanecen como conceptos distintos.
+- [x] La sensibilidad personal se evalúa separadamente de la clasificación S0–S4.
+- [x] S4 no se usa como prueba automática de categoría personal sensible y una clase inferior no prueba ausencia.
+- [x] Un fundamento o entidad responsable obligatorios sin evidencia producen `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` según el efecto.
+- [x] La ausencia de fila o de respuesta nunca se interpreta como consentimiento positivo.
+- [x] Una finalidad nueva o materialmente distinta exige reevaluación de aviso, fundamento y autorización aplicables.
+- [x] Los registros de consentimiento y revocación conservan integridad, procedencia y tiempos tipados mediante los contratos ya aprobados.
+- [x] La tarea no asigna por inferencia responsable, encargado, destinatario, transferencia, base legal o tratamiento personal.
+- [x] No se crean cambios físicos, Supabase, Storage, código, datos ni configuración.
+- [x] La siguiente tarea permanece reservada y no se materializa en este artefacto.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa y normaliza en contratos de gobierno las reglas de finalidad, consentimiento, revocación, minimización, privacidad, evidencia, autorización, reconciliación y uso sensible ya protegidas por el registro canónico vigente. No introduce una nueva mutación, transición física, cálculo, permiso, integración o conducta verificable distinta; crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. La implementación futura deberá satisfacer la cobertura ya registrada sin duplicar identidades de prueba.
+
+---
+
+#### 22. Cierre y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia`
+
+**TAREA ACTUAL APROBADA**
+`INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión`
+
+La continuidad termina en `INFO-DOM-008`. No se materializa contenido de `INFO-DOM-009`.
+
+
 ### [ ] INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
 ### [ ] INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
 ### [ ] INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia

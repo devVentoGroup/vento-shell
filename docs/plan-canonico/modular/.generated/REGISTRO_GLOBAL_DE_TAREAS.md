@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **651** |
+| Aprobadas | **652** |
 | En propuesta | **0** |
-| No iniciadas | **943** |
+| No iniciadas | **942** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **40.84% (651/1594)** |
+| Porcentaje de completamiento | **40.90% (652/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | ✅ APROBADA |
-| Tarea actual | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | ⬜ NO INICIADA |
-| Siguiente reservada | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | ⬜ NO INICIADA |
+| Última aprobada | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | ✅ APROBADA |
+| Tarea actual | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | ⬜ NO INICIADA |
+| Siguiente reservada | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1540,7 +1540,7 @@
 | ✅ APROBADA | `INFO-DOM-005` | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-006` | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ✅ APROBADA | `INFO-DOM-007` | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
-| ⬜ NO INICIADA | `INFO-DOM-008` | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
+| ✅ APROBADA | `INFO-DOM-008` | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-009` | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-010` | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
 | ⬜ NO INICIADA | `INFO-DOM-011` | Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | `bloques/AA_GOBIERNO_DE_INFORMACION/01_DOMINIO_DOCUMENTAL_PRIVACIDAD_Y_CUMPLIMIENTO.md` |
