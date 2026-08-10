@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **671** |
+| Tareas aprobadas | **672** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **923** |
+| Tareas no iniciadas | **922** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.10% (671/1594)** |
+| Porcentaje de completamiento | **42.16% (672/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad** |
-| Tarea actual | **DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas** |
+| Última tarea aprobada | **DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas** |
+| Tarea actual | **DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros** |
+| Siguiente tarea | **DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 95 de 157 aprobadas; DATA-DOM-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 96 de 157 aprobadas; DATA-DOM-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad |
-| Tarea actual | `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros |
+| Última aprobada | `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas |
+| Tarea actual | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 95 DE 157 APROBADAS — ACTUAL DATA-DOM-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 96 DE 157 APROBADAS — ACTUAL DATA-DOM-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad
-        ↓
-TAREA ACTUAL
 DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 95 de 157 tareas aprobadas
+CARRIL NEXO — 96 de 157 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **671** |
+| Aprobadas | **672** |
 | En propuesta | **0** |
-| No iniciadas | **923** |
+| No iniciadas | **922** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.10% (671/1594)** |
+| Porcentaje de completamiento | **42.16% (672/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1560,7 +1560,7 @@
 | ✅ APROBADA | `INFO-INT-002` | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ✅ APROBADA | `INFO-INT-003` | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos | `bloques/AA_GOBIERNO_DE_INFORMACION/04_INTEGRACIONES_DOCUMENTALES_Y_EXTERNAS.md` |
 | ✅ APROBADA | `DATA-DOM-001` | Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-002` | Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-002` | Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-003` | Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-004` | Definir capa semántica y registro canónico de métricas e indicadores | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-005` | Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
