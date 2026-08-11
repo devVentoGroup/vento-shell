@@ -10542,5 +10542,2314 @@ DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimi
 ```
 
 
-### [ ] DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
-### [ ] DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+### ✅ DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición` — APROBADA
+**Tarea siguiente:** `DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de acciones de mejora, intervenciones, experimentos, responsabilidades, seguimiento, evaluación, aprendizaje y decisión de cierre
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, despliegues, automatizaciones, experimentos reales, cambios de proceso, cambios de configuración o acciones empresariales:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir cómo Vento OS convierte un objetivo medible de D015 en una intervención controlada y evaluable, sin confundir una recomendación con una acción aprobada, una acción con un experimento, una ejecución con exposición efectiva, una mejora observada con efecto atribuible ni el cierre administrativo con la comprobación del resultado.
+
+La tarea completa documentalmente el ciclo de `CAP-17.11 — Definir y seguir acciones de mejora` y `CAP-17.12 — Comprobar resultados` y deberá permitir responder, como mínimo:
+
+```text
+qué objetivo se pretende mover o proteger
+qué hipótesis o mecanismo justifica intervenir
+qué acción se propone
+si la intervención requiere experimento y por qué
+quién posee el resultado empresarial
+quién autoriza la intervención
+quién ejecuta
+quién mide y revisa la evidencia
+qué población será elegible
+qué población quedó realmente expuesta
+cuándo empieza y termina la intervención
+qué baseline, meta, drivers y guardrails se conservan
+qué diseño permite evaluar el resultado
+qué cambios concurrentes pueden confundir la evaluación
+qué ocurrió realmente durante la ejecución
+qué efectos deseados y no deseados se observaron
+qué nivel de confianza permite la evidencia
+qué aprendizaje queda registrado
+si corresponde adoptar, ampliar, iterar, pausar, revertir o cerrar
+qué debe preservarse para reproducibilidad y restatement
+```
+
+D016 no ejecuta ninguna intervención real. Las fuentes vigentes no aportan una instancia concreta de objetivo con acción aprobada, población de exposición y autorización operativa que permita iniciar un cambio sin inventar decisiones. El resultado de esta tarea es el contrato empresarial completo que deberá gobernar esas instancias cuando existan.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato canónico de mejora y comprobación con los siguientes resultados:
+
+- cadena obligatoria desde objetivo medible hasta decisión de cierre;
+- separación entre acción, intervención, experimento, ejecución, exposición, seguimiento, resultado y decisión;
+- puerta de elegibilidad previa que impide ejecutar intervenciones sin objetivo, medición, propietario, responsable, guardrails y evidencia suficientes;
+- matriz de seis clases de intervención con decisión explícita sobre cuándo la identificación causal es necesaria;
+- matriz de seis diseños de evaluación o experimento con el máximo lenguaje causal que cada diseño puede sostener por sí solo;
+- responsabilidades separadas para resultado, aprobación, ejecución, medición, calidad, análisis, guardrails y decisión final;
+- contrato de población elegible, asignación, exposición real, contaminación, interferencia y abandono de intervención;
+- ventanas diferenciadas de baseline, preparación, exposición, estabilización, evaluación y seguimiento posterior;
+- reglas de seguimiento de fidelidad de implementación y de cambios concurrentes;
+- comprobación obligatoria del KPI principal, meta, drivers, guardrails, segmentos, calidad, efectos no deseados y confianza D014;
+- siete decisiones de cierre materializadas y mutuamente distinguibles;
+- reglas de pausa y reversa que no convierten una alerta en ejecución automática;
+- aprendizaje estructurado y límites de generalización;
+- integración explícita con `EFECTO_COMPROBADO` de D014 sin crear una escala causal paralela;
+- preservación de los contratos de objetivo y medición definidos por D015;
+- cero acciones empresariales ejecutadas;
+- cero experimentos ejecutados;
+- cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+#### 3. Decisión principal
+
+Vento OS adopta un modelo de **intervención gobernada por expediente y evidencia**.
+
+```text
+DIAGNÓSTICO / OPORTUNIDAD D014
+→ explica qué merece atención y con qué confianza
+
+OBJETIVO Y PLAN DE MEDICIÓN D015
+→ fija KPI, baseline, meta, drivers, guardrails, población y regla de evaluación
+
+DECISIÓN DE INTERVENIR
+→ selecciona una acción y declara su mecanismo esperado
+
+DISEÑO DE EVALUACIÓN
+→ decide si basta seguimiento descriptivo o si se requiere identificación causal
+
+RESPONSABILIDAD
+→ separa propietario del resultado, aprobador, ejecutor, medición y decisión final
+
+EJECUCIÓN
+→ registra qué cambio fue realmente aplicado
+
+EXPOSICIÓN
+→ registra quién o qué quedó realmente sujeto a la intervención
+
+SEGUIMIENTO
+→ conserva fidelidad, cambios concurrentes, calidad y guardrails
+
+COMPROBACIÓN
+→ compara resultado con baseline, meta, población y diseño predefinidos
+
+CONFIANZA D014
+→ limita el lenguaje sobre asociación, causalidad y efecto
+
+DECISIÓN DE CIERRE
+→ adoptar, ampliar, iterar, pausar, revertir, investigar o cerrar sin adopción
+
+DATA-DOM-017
+→ conserva versiones, correcciones históricas, restatements y reproducibilidad
+```
+
+Una recomendación, un modelo, una alerta, un dashboard o una herramienta de inteligencia artificial no ejecutan acciones empresariales por sí mismos.
+
+#### 4. Fuentes y decisiones heredadas
+
+D016 consume sin redefinir:
+
+- `DATA-DOM-001` a `DATA-DOM-003` para autoridad funcional, stewardship, identidad, dimensiones, jerarquías, vigencias y fuentes de verdad;
+- `DATA-DOM-004` para identidad, fórmula, propósito y versión de métricas;
+- `DATA-DOM-005` para granularidad, tiempo, comparabilidad y snapshots;
+- `DATA-DOM-006` para ingestión, datos tardíos, backfills, reconciliación y linaje;
+- `DATA-DOM-007` para calidad y los estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para publicación, alertas, reportes y snapshots;
+- `DATA-DOM-009` a `DATA-DOM-013` para las familias analíticas que puedan actuar como KPI, drivers, guardrails o métricas secundarias conforme a su estado real;
+- `DATA-DOM-014` para diagnóstico, oportunidades, causalidad, seis niveles de confianza y `EFECTO_COMPROBADO`;
+- `DATA-DOM-015` para objetivo, indicador principal, baseline, meta, drivers, guardrails, población, segmentos, ventanas, calidad y plan de medición;
+- `CAP-SCOPE-017`, especialmente `CAP-17.11` y `CAP-17.12`, para el ciclo de acción, seguimiento y comprobación;
+- el requisito vigente que protege el ciclo completo de mejora basada en datos;
+- `DATA-AUTH-003` para futura segregación entre definición, certificación, publicación, fijación de metas, anotación y administración;
+- `DATA-AUTH-004` para futura auditoría de consultas, modelos y recomendaciones;
+- `DATA-UX-006` para la futura experiencia de objetivos y acciones;
+- `DATA-UX-008` para validación de comprensión, tiempos y decisiones con usuarios reales;
+- `DATA-INT-002` para la futura materialización de modelos, cálculos, snapshots y consultas;
+- `DATA-INT-004` para integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial.
+
+D016 no mejora el estado de una fuente, no modifica una meta, no reinterpreta un diagnóstico y no sustituye la autorización del proceso propietario.
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+recomendación ≠ decisión ≠ acción
+```
+
+```text
+acción ≠ experimento
+```
+
+```text
+intervención diseñada ≠ intervención ejecutada
+```
+
+```text
+ejecución ≠ exposición efectiva
+```
+
+```text
+asignación ≠ exposición ≠ cumplimiento de intervención
+```
+
+```text
+seguimiento ≠ comprobación causal
+```
+
+```text
+mejora observada ≠ efecto atribuible
+```
+
+```text
+cumplimiento de meta ≠ efecto causado por la intervención
+```
+
+```text
+KPI mejorado ≠ éxito si un guardrail material se deteriora
+```
+
+```text
+before/after ≠ experimento controlado
+```
+
+```text
+p-value ≠ causalidad ≠ importancia empresarial
+```
+
+```text
+significancia estadística ≠ relevancia operativa
+```
+
+```text
+pausa ≠ reversa ≠ fracaso definitivo
+```
+
+```text
+acción completada ≠ objetivo comprobado
+```
+
+```text
+cierre administrativo ≠ aprendizaje validado
+```
+
+```text
+EFECTO_COMPROBADO ≠ verdad universal
+```
+
+#### 6. Autoridad y segregación de responsabilidades
+
+| Responsabilidad          | Autoridad lógica                                                  | Regla                                                                                |
+| ------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| resultado empresarial    | propietario funcional del objetivo D015                           | responde por el resultado, prioridad y aceptación empresarial                        |
+| decisión de intervenir   | propietario funcional + autoridad aplicable                       | una oportunidad no autoriza la acción por sí sola                                    |
+| aprobación de cambio     | función autorizada por el dominio y futuros contratos `DATA-AUTH` | la aprobación documental de D016 no concede permiso operativo                        |
+| responsable de ejecución | función designada para la intervención concreta                   | ejecutar no concede propiedad sobre la métrica ni sobre el resultado                 |
+| diseño de medición       | BLOQUE AB + propietario funcional                                 | consume D015; no redefine KPI, baseline ni meta                                      |
+| diseño de experimento    | BLOQUE AB + propietario funcional + especialistas aplicables      | el diseño debe ser proporcional al riesgo y a la afirmación causal buscada           |
+| calidad de datos         | steward/certificador conforme a D007                              | el equipo de intervención no certifica sus propios datos por conveniencia            |
+| guardrail                | propietario del riesgo o resultado protegido                      | puede bloquear una declaración de éxito según la regla predefinida                   |
+| análisis de resultados   | función analítica autorizada                                      | distingue observación, asociación y atribución causal                                |
+| decisión final           | propietario funcional y autoridad aplicable                       | adopción, ampliación, iteración, pausa o reversa permanecen decisiones empresariales |
+| publicación              | rol futuro gobernado por `DATA-AUTH-003`                          | cerrar una intervención no autoriza publicar resultados sensibles                    |
+| auditoría técnica        | `DATA-AUTH-004` y tareas técnicas aplicables                      | consultas, modelos y recomendaciones deberán conservar trazabilidad                  |
+
+Ninguna fila concede permisos técnicos o empresariales. La capacidad efectiva se resolverá mediante los contratos de autorización aplicables.
+
+#### 7. Unidad mínima: expediente de intervención
+
+La unidad mínima de D016 es un **expediente de intervención evaluable**.
+
+Cada expediente deberá declarar como mínimo:
+
+| Coordenada               | Contenido obligatorio                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| objetivo                 | referencia al objetivo D015 y su versión                                                   |
+| origen                   | diagnóstico, oportunidad, obligación, riesgo o prioridad que justifica intervenir          |
+| propietario funcional    | función responsable del resultado                                                          |
+| hipótesis o mecanismo    | por qué la acción podría mover el KPI o proteger un guardrail                              |
+| acción propuesta         | cambio empresarial concreto que se pretende aplicar                                        |
+| tipo de intervención     | clasificación D016 aplicable                                                               |
+| necesidad de experimento | sí, no o no evaluable, con justificación                                                   |
+| diseño de evaluación     | diseño predefinido antes de observar resultados                                            |
+| responsable de ejecución | función que materializa la acción                                                          |
+| aprobador                | autoridad que permite iniciar dentro del alcance aplicable                                 |
+| unidad de intervención   | objeto, sede, turno, canal, producto, cliente/cohorte u otra unidad gobernada              |
+| población elegible       | universo que puede recibir la intervención                                                 |
+| asignación               | regla por la cual unidades reciben o no reciben intervención                               |
+| exposición prevista      | qué significa estar expuesto según el diseño                                               |
+| indicador principal      | KPI D015 y versión                                                                         |
+| baseline                 | valor/distribución y evidencia D015                                                        |
+| meta                     | meta D015 y su vigencia                                                                    |
+| drivers                  | drivers D015 relevantes al mecanismo                                                       |
+| guardrails               | guardrails D015 y regla de tratamiento                                                     |
+| segmentos                | grupos predefinidos para heterogeneidad                                                    |
+| ventana                  | baseline, preparación, exposición, evaluación y seguimiento                                |
+| calidad mínima           | condición D007 requerida                                                                   |
+| confianza de origen      | nivel D014 de la hipótesis o diagnóstico inicial                                           |
+| riesgos                  | riesgos de actuar, no actuar y ejecutar parcialmente                                       |
+| cambios concurrentes     | eventos o intervenciones que podrían confundir el resultado                                |
+| criterio de pausa        | condición predefinida que exige revisión                                                   |
+| criterio de reversa      | condición y autoridad para deshacer una intervención reversible                            |
+| evidencia de ejecución   | prueba de qué se hizo, cuándo, dónde y con qué versión                                     |
+| evidencia de exposición  | prueba de quién o qué recibió realmente la intervención                                    |
+| regla de análisis        | método para evaluar KPI, guardrails y atribución                                           |
+| decisión de cierre       | catálogo de decisión D016 con justificación                                                |
+| aprendizaje              | conclusión, límites y transferibilidad permitida                                           |
+| reproducibilidad         | versiones, cortes, consultas, datos y artefactos necesarios para reconstruir la evaluación |
+
+Dos expedientes con la misma acción narrativa no son equivalentes si difieren en objetivo, población, versión, exposición, ventana, guardrails o diseño de evaluación.
+
+#### 8. Puerta previa a cualquier intervención
+
+Una intervención solo podrá declararse documentalmente **lista para ejecución futura** cuando existan, como mínimo:
+
+1. objetivo D015 identificado;
+2. propietario funcional identificado;
+3. indicador principal versionado;
+4. baseline reproducible o limitación aceptada que impida declarar efecto;
+5. meta vigente o propósito de aprendizaje explícito;
+6. guardrails materiales definidos;
+7. población elegible y unidad de intervención definidas;
+8. acción concreta descrita;
+9. mecanismo o hipótesis explicitado;
+10. responsable de ejecución identificado;
+11. autoridad de aprobación identificada;
+12. riesgos de actuar y no actuar evaluados;
+13. decisión sobre necesidad de experimento;
+14. diseño de evaluación definido antes de la exposición;
+15. criterios de pausa/reversa cuando apliquen;
+16. ventana y cortes definidos;
+17. calidad mínima compatible con el análisis;
+18. restricciones de autorización, privacidad, seguridad, inocuidad, cumplimiento o capacidad identificadas;
+19. evidencia que deberá demostrar ejecución y exposición;
+20. regla de cierre y aprendizaje definida.
+
+Si una condición crítica falta, el expediente permanece `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO`; no se completa con supuestos.
+
+Esta puerta documental no equivale a autorización operativa, despliegue ni cambio físico.
+
+#### 9. Seis clases de intervención
+
+D016 materializa seis clases documentales. Una intervención concreta deberá seleccionar una y declarar si combina elementos de otra.
+
+|    # | Clase                                                 | Propósito                                                                          | Necesidad típica de identificación causal                                                       | Restricción principal                                                                      |
+| ---: | ----------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+|    1 | corrección obligatoria                                | eliminar incumplimiento, riesgo crítico o defecto cuya remediación es obligatoria  | puede no requerir experimento para decidir actuar; sí requiere comprobar resultado y guardrails | no usar experimento para aplazar una obligación de seguridad, legal o integridad           |
+|    2 | ajuste operativo reversible                           | modificar una regla, secuencia, nivel, asignación o práctica que puede restaurarse | depende de incertidumbre causal y riesgo                                                        | reversibilidad debe ser real y documentada                                                 |
+|    3 | cambio de proceso o política                          | modificar una forma gobernada de operar                                            | alta cuando se pretende atribuir impacto al cambio                                              | requiere versión, vigencia y control de cambios concurrentes                               |
+|    4 | intervención de comunicación, capacitación o adopción | cambiar conocimiento, comportamiento o adopción                                    | depende de si se necesita demostrar efecto sobre resultado final                                | actividad realizada no equivale a adopción ni a resultado                                  |
+|    5 | piloto controlado                                     | limitar alcance para comprobar operación, riesgo y señal de resultado              | puede usar comparación; no implica causalidad automáticamente                                   | piloto sin comparador no se presenta como experimento causal                               |
+|    6 | experimento deliberado                                | crear variación controlada para estimar efecto de una intervención                 | sí; el diseño existe precisamente para identificación causal                                    | requiere ética, autorización, elegibilidad, asignación, exposición y guardrails gobernados |
+
+La clasificación no asigna automáticamente una técnica estadística ni una herramienta.
+
+#### 10. Decisión: acción directa o experimento
+
+D016 no obliga a experimentar toda mejora.
+
+La decisión deberá considerar por separado:
+
+- obligación de actuar;
+- incertidumbre sobre el mecanismo;
+- necesidad de atribución causal;
+- reversibilidad;
+- severidad del riesgo;
+- posibilidad de limitar exposición;
+- interferencia entre unidades;
+- tiempo hasta observar resultado;
+- disponibilidad de comparador;
+- suficiencia de población;
+- costo y carga operativa;
+- privacidad, equidad, seguridad, inocuidad o cumplimiento;
+- posibilidad de medir ejecución y exposición;
+- impacto potencial de una decisión equivocada.
+
+Reglas:
+
+1. una corrección obligatoria no se retrasa para construir un experimento si la obligación exige actuar;
+2. si la decisión futura depende de saber **si la acción causó el efecto**, deberá usarse un diseño capaz de identificación causal o mantenerse un lenguaje no causal;
+3. si no puede existir comparador válido, el resultado puede evaluarse descriptivamente sin inventar causalidad;
+4. bajo riesgo elevado, un piloto puede reducir exposición sin convertirse automáticamente en experimento;
+5. una intervención irreversible exige mayor evidencia y autoridad antes de ejecución;
+6. una intervención en poblaciones sensibles exige controles de autorización y protección aplicables;
+7. la ausencia de capacidad experimental no convierte un before/after en evidencia causal.
+
+#### 11. Seis diseños de evaluación y su techo de interpretación
+
+D016 reconoce seis diseños documentales. El nivel D014 final depende de la evidencia completa, no solo del nombre del diseño.
+
+|    # | Diseño                                      | Estructura mínima                                                           | Techo de interpretación por diseño aislado                                                                    | Condición crítica                                                                    |
+| ---: | ------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+|    1 | seguimiento pre/post de una sola población  | baseline y periodo posterior bajo misma definición                          | `ASOCIACION` como máximo para atribución causal                                                               | cambios concurrentes y tendencia permanecen alternativas                             |
+|    2 | comparación contemporánea no aleatoria      | intervención y comparador elegible en la misma ventana                      | hasta `HIPOTESIS_RESPALDADA` salvo estrategia de identificación adicional                                     | diferencias basales y selección deben medirse y tratarse                             |
+|    3 | diseño cuasi-experimental gobernado         | comparador/contrafactual y supuestos explícitos                             | puede alcanzar `EVIDENCIA_CAUSAL`                                                                             | supuestos, sensibilidad y tendencias deben quedar documentados                       |
+|    4 | despliegue escalonado controlado            | unidades reciben intervención en momentos predefinidos con comparabilidad   | puede alcanzar `EVIDENCIA_CAUSAL` o `EFECTO_COMPROBADO` si la asignación y el diseño experimental lo soportan | calendario, contaminación y cambios simultáneos deben controlarse                    |
+|    5 | switchback o alternancia temporal gobernada | periodos de intervención/control predefinidos sobre unidades aptas          | puede alcanzar `EFECTO_COMPROBADO` cuando controla carryover, temporalidad y exposición                       | efectos persistentes o estacionalidad pueden invalidar la comparación                |
+|    6 | experimento aleatorizado controlado         | asignación aleatoria gobernada, control, exposición y análisis predefinidos | puede alcanzar `EFECTO_COMPROBADO`                                                                            | aleatorización, cumplimiento, interferencia, pérdidas y guardrails deben verificarse |
+
+Un diseño con fallas materiales puede quedar en un nivel inferior. Ningún diseño garantiza por nombre un nivel de confianza.
+
+#### 12. Diseño preespecificado
+
+Antes de iniciar una exposición deberán quedar definidos:
+
+- pregunta de decisión;
+- objetivo e hipótesis;
+- intervención;
+- unidad de asignación;
+- unidad de análisis;
+- población elegible;
+- criterios de inclusión y exclusión;
+- comparador/control cuando exista;
+- método de asignación;
+- KPI principal;
+- meta o efecto de interés;
+- guardrails;
+- segmentos predefinidos;
+- baseline;
+- duración prevista;
+- periodo de estabilización si aplica;
+- tratamiento de faltantes;
+- tratamiento de no adherencia/exposición parcial;
+- tratamiento de contaminación e interferencia;
+- cambios concurrentes prohibidos o registrados;
+- regla analítica;
+- criterio de suficiencia de evidencia;
+- criterio de pausa;
+- criterio de reversa;
+- regla de cierre;
+- versión del diseño.
+
+Modificar el diseño después de observar resultados deberá quedar registrado como cambio de versión y no podrá presentarse como si hubiese sido preespecificado desde el inicio.
+
+#### 13. Asignación, exposición y cumplimiento
+
+D016 separa tres conceptos:
+
+```text
+ASIGNADO
+→ la unidad fue seleccionada para una condición
+
+EXPUESTO
+→ la intervención realmente alcanzó a la unidad bajo la definición aprobada
+
+CUMPLIÓ INTERVENCIÓN
+→ la unidad recibió o siguió el tratamiento con la intensidad o condición definida
+```
+
+Reglas:
+
+1. asignación sin exposición no se registra como exposición plena;
+2. exposición sin evidencia suficiente queda `PENDIENTE_DE_EVIDENCIA`;
+3. abandono, cruce de condición y exposición parcial permanecen visibles;
+4. el análisis deberá declarar si usa asignación, exposición o cumplimiento como base y qué sesgo introduce;
+5. una intervención técnica desplegada no prueba que el usuario, sede o proceso la haya utilizado;
+6. una capacitación enviada no prueba asistencia, comprensión, adopción ni efecto;
+7. un cambio de política comunicado no prueba que haya entrado en práctica en toda la población.
+
+#### 14. Interferencia, contaminación y spillover
+
+La evaluación deberá considerar si la intervención de una unidad puede afectar a otra.
+
+Ejemplos:
+
+- trabajadores que comparten turno o estación;
+- sedes que comparten inventario o producción;
+- clientes expuestos a múltiples canales;
+- productos sustitutos;
+- proveedores que atienden varias sedes;
+- campañas que alcanzan controles;
+- configuraciones compartidas entre dispositivos;
+- cambios de proceso que afectan toda una cola o ruta.
+
+Reglas:
+
+1. un control contaminado no se trata como no expuesto;
+2. el diseño deberá declarar la unidad en la que la interferencia es plausible;
+3. cuando la interferencia impida separar condiciones, se reduce el lenguaje causal o se rediseña la unidad de intervención;
+4. efectos indirectos pueden medirse, pero no se atribuyen sin diseño compatible.
+
+#### 15. Ventanas de una intervención
+
+D016 distingue como mínimo:
+
+```text
+BASELINE
+→ periodo observado previo definido en D015
+
+PREPARACIÓN
+→ configuración, capacitación, asignación o readiness sin contabilizar efecto
+
+EXPOSICIÓN
+→ periodo en que la intervención puede afectar la población
+
+ESTABILIZACIÓN
+→ tiempo necesario antes de interpretar resultado cuando exista latencia o adaptación
+
+EVALUACIÓN
+→ ventana predefinida para medir KPI y guardrails
+
+SEGUIMIENTO POSTERIOR
+→ persistencia, reversión tardía o efectos no deseados posteriores cuando aplique
+```
+
+No existe una duración universal. Cada ventana deberá justificarse por la dinámica del proceso, la latencia de datos y el mecanismo esperado.
+
+#### 16. Responsable de ejecución
+
+Toda intervención concreta deberá tener un responsable de ejecución identificable.
+
+El responsable de ejecución deberá poder responder por:
+
+- preparación de la intervención;
+- versión aplicada;
+- alcance autorizado;
+- fecha/hora de inicio;
+- evidencia de ejecución;
+- incidencias durante ejecución;
+- desviaciones del diseño;
+- pausa o reversa cuando esté autorizado;
+- fecha/hora de finalización;
+- entrega de evidencia al responsable de medición.
+
+El responsable de ejecución no puede:
+
+- redefinir la meta;
+- cambiar el KPI por conveniencia;
+- ocultar una desviación;
+- certificar datos por el solo hecho de haber ejecutado;
+- ampliar población sin nueva decisión aplicable;
+- declarar efecto causal por observación operativa.
+
+#### 17. Responsable de medición y análisis
+
+La función responsable de medición deberá:
+
+- fijar el corte de evaluación conforme al plan aprobado;
+- verificar versiones de KPI, baseline, meta y guardrails;
+- comprobar calidad y cobertura;
+- reconstruir población elegible, asignada y expuesta;
+- conservar cambios concurrentes;
+- ejecutar o revisar el método analítico predefinido;
+- reportar resultados favorables, desfavorables y no concluyentes;
+- mostrar segmentos predefinidos;
+- separar resultado observado de efecto atribuible;
+- proponer el nivel D014 sustentable;
+- conservar consultas, modelos, versiones y evidencia.
+
+Medir no concede autoridad para adoptar o revertir la acción.
+
+#### 18. Seguimiento de fidelidad de implementación
+
+Antes de interpretar resultados se deberá responder si la intervención ocurrió como fue diseñada.
+
+La fidelidad deberá considerar:
+
+- porcentaje o conteo de unidades asignadas con exposición verificable cuando la métrica sea válida;
+- intensidad o dosis definida cuando aplique;
+- cumplimiento de secuencia;
+- versión aplicada;
+- retrasos;
+- exclusiones no previstas;
+- interrupciones;
+- errores de configuración;
+- cambios concurrentes;
+- desviaciones aprobadas y no aprobadas;
+- incidencias que alteren medición.
+
+Una intervención mal ejecutada puede producir un resultado no concluyente. No se interpreta automáticamente como prueba de que el mecanismo empresarial no funciona.
+
+#### 19. Seguimiento de guardrails
+
+Los guardrails definidos en D015 deberán observarse durante la intervención con la cadencia compatible con el riesgo.
+
+Reglas:
+
+1. un guardrail material no se oculta porque el KPI mejore;
+2. un límite de guardrail no crea por sí solo una pausa automática;
+3. la acción ante un guardrail debe estar predefinida como revisar, pausar, reducir exposición, revertir o escalar, según autoridad y riesgo;
+4. riesgos de seguridad, legalidad, privacidad, inocuidad o integridad pueden exigir tratamiento inmediato por sus contratos propietarios;
+5. un guardrail con fuente `BLOQUEADO` impide declarar que el riesgo estuvo adecuadamente controlado;
+6. si el guardrail se redefine durante la intervención, la evaluación conserva ambas versiones y remite a D017 cuando corresponda.
+
+#### 20. Criterios de pausa
+
+Una pausa es una suspensión controlada para revisar evidencia o riesgo.
+
+Podrá activarse documentalmente cuando exista una condición predefinida como:
+
+- deterioro de guardrail material;
+- incidente de seguridad, privacidad, inocuidad o cumplimiento;
+- calidad de datos insuficiente para continuar con seguridad;
+- ejecución fuera del alcance autorizado;
+- contaminación que invalida el diseño;
+- exposición no controlada;
+- falla técnica que cambia materialmente la intervención;
+- evidencia nueva que altera el balance de riesgo.
+
+La pausa conserva el expediente, exposición acumulada, decisiones y evidencia. No elimina resultados previos ni implica automáticamente reversa.
+
+#### 21. Reversa
+
+La reversa es una acción empresarial o técnica distinta de la evaluación estadística.
+
+Toda intervención reversible deberá declarar, antes de ejecución cuando sea material:
+
+- qué puede revertirse;
+- quién está autorizado;
+- condición de reversa;
+- procedimiento propietario aplicable;
+- efecto esperado de la reversa;
+- datos o estado que no pueden retroceder;
+- evidencia de reversa;
+- impacto sobre la medición.
+
+Una reversa no borra exposición ya ocurrida ni reescribe el resultado observado.
+
+Intervenciones irreversibles deberán declarar expresamente esa condición en la evaluación de riesgo previa.
+
+#### 22. Cambios concurrentes
+
+Durante la intervención deberán registrarse cambios que puedan afectar KPI, drivers o guardrails.
+
+Según el caso pueden incluir:
+
+- precio o promoción;
+- disponibilidad de inventario;
+- proveedor o lead time;
+- receta o proceso productivo;
+- capacidad;
+- dotación o programación;
+- política de servicio;
+- canal;
+- cobertura de datos;
+- definición de métrica;
+- incidente operacional;
+- cambio tecnológico;
+- otra intervención simultánea;
+- evento externo documentado.
+
+Un cambio concurrente no invalida automáticamente la evaluación, pero deberá analizarse como explicación alternativa conforme a D014.
+
+#### 23. Comprobación del resultado
+
+La comprobación deberá evaluar en conjunto:
+
+1. si la intervención se ejecutó como fue definida;
+2. qué población fue realmente asignada y expuesta;
+3. si KPI, baseline y meta siguen siendo comparables;
+4. si la calidad de datos es suficiente;
+5. resultado del KPI principal;
+6. distancia o cumplimiento respecto de la meta cuando sea evaluable;
+7. comportamiento de drivers;
+8. comportamiento de guardrails;
+9. segmentos predefinidos;
+10. efectos no deseados;
+11. cambios concurrentes;
+12. pérdidas, contaminación o interferencia;
+13. incertidumbre del método;
+14. resultado observado frente a efecto atribuible;
+15. nivel de confianza D014 sustentable;
+16. límites de generalización;
+17. persistencia cuando exista seguimiento posterior;
+18. decisión empresarial de cierre.
+
+Un único valor favorable del KPI no satisface por sí solo la comprobación.
+
+#### 24. Resultado observado y efecto atribuible
+
+D016 mantiene dos capas separadas:
+
+```text
+RESULTADO OBSERVADO
+→ qué ocurrió en KPI, drivers y guardrails durante la ventana
+
+EFECTO ATRIBUIBLE
+→ cuánto del cambio puede atribuirse razonablemente a la intervención bajo el diseño y supuestos
+```
+
+Reglas:
+
+1. el resultado observado puede existir sin efecto atribuible identificable;
+2. cumplir la meta no demuestra que la intervención la causó;
+3. no cumplir la meta no demuestra ausencia de efecto si la meta y el efecto esperado son conceptos distintos;
+4. una acción puede producir efecto favorable sin alcanzar todavía la meta;
+5. una mejora de KPI con daño material en guardrails no se presenta como éxito pleno;
+6. un experimento puede concluir sin efecto detectable y aun así producir aprendizaje útil;
+7. la atribución conserva residuo no explicado.
+
+#### 25. EFECTO_COMPROBADO
+
+El nivel `EFECTO_COMPROBADO` pertenece a D014 y D016 produce la evidencia que puede permitir alcanzarlo.
+
+Para proponer ese nivel deberán cumplirse, como mínimo:
+
+- intervención real y versionada;
+- población y ventana definidas antes del análisis;
+- asignación/exposición reconstruibles;
+- indicador principal gobernado;
+- baseline o comparador válido según diseño;
+- guardrails medidos;
+- calidad compatible con el uso;
+- diseño capaz de identificar efecto;
+- desviaciones e interferencias evaluadas;
+- cambios concurrentes tratados;
+- resultado reproducible;
+- limitaciones declaradas;
+- evidencia suficiente para el alcance de la afirmación.
+
+`EFECTO_COMPROBADO` sigue limitado a la población, periodo, condiciones y versión observados. No autoriza generalización automática.
+
+#### 26. Significancia, tamaño de efecto y relevancia empresarial
+
+Cuando un diseño produzca inferencia estadística deberán conservarse por separado:
+
+- estimación de efecto;
+- unidad;
+- intervalo o incertidumbre cuando aplique;
+- criterio estadístico utilizado;
+- tamaño de población;
+- pérdidas y exclusiones;
+- relevancia empresarial;
+- resultado frente a meta;
+- guardrails;
+- supuestos del diseño.
+
+Reglas:
+
+1. significancia estadística no sustituye tamaño de efecto;
+2. tamaño de efecto no sustituye relevancia empresarial;
+3. p-value no es probabilidad de que la hipótesis causal sea verdadera;
+4. ausencia de significancia no prueba efecto exactamente cero;
+5. múltiples segmentos o comparaciones posteriores deben declararse y no presentarse como hipótesis preespecificadas;
+6. la decisión empresarial considera efecto, riesgo, costo, guardrails, confianza y transferibilidad, no un único estadístico.
+
+#### 27. Segmentos y heterogeneidad de efecto
+
+Los segmentos principales deberán predefinirse cuando sean materiales para la decisión.
+
+Reglas:
+
+- una mejora agregada puede ocultar daño en una sede, canal, producto o población;
+- un hallazgo de subgrupo exploratorio se presenta como exploratorio;
+- grupos pequeños consumen las protecciones de `DATA-AUTH-002`;
+- un efecto observado en un segmento no se generaliza a otro sin evidencia;
+- segmentar después de observar resultados puede generar hipótesis para una iteración, no reescribir el diseño inicial;
+- heterogeneidad material deberá influir en la decisión de adopción o ampliación.
+
+#### 28. Efectos no deseados
+
+D016 obliga a conservar efectos no deseados aunque no hayan sido definidos como guardrail si aparecen durante ejecución.
+
+Pueden incluir:
+
+- deterioro de calidad;
+- aumento de merma;
+- reducción de servicio;
+- desplazamiento de demanda;
+- aumento de gasto o riesgo financiero;
+- inequidad entre poblaciones;
+- carga operativa;
+- incidentes de privacidad o seguridad;
+- fallas de adopción;
+- desplazamiento del problema a otra sede, canal, producto o periodo.
+
+Un efecto no deseado material puede justificar pausa, reversa, rediseño o no adopción aunque el KPI principal mejore.
+
+#### 29. Siete decisiones de cierre
+
+D016 materializa siete decisiones empresariales de cierre. Solo una deberá representar la decisión vigente de una evaluación cerrada, sin borrar decisiones anteriores.
+
+|    # | Decisión                | Semántica                                                      | Condición mínima                                                                                            |
+| ---: | ----------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+|    1 | `ADOPTAR`               | mantener la intervención dentro del alcance comprobado         | beneficio/resultado suficiente, riesgos aceptables y guardrails compatibles                                 |
+|    2 | `AMPLIAR`               | extender a una población o alcance adicional                   | resultado suficiente y justificación de transferibilidad; la ampliación crea nueva coordenada de exposición |
+|    3 | `ITERAR`                | modificar hipótesis, acción o diseño y volver a evaluar        | aprendizaje concreto y nueva versión del expediente                                                         |
+|    4 | `PAUSAR`                | suspender antes de una nueva decisión                          | riesgo, evidencia insuficiente o condición predefinida de pausa                                             |
+|    5 | `REVERTIR`              | deshacer una intervención reversible                           | balance de riesgo/resultado o condición de reversa satisfecha y autoridad aplicable                         |
+|    6 | `ESCALAR_INVESTIGACION` | regresar a diagnóstico/medición antes de intervenir nuevamente | resultado no concluyente, explicación alternativa o calidad insuficiente                                    |
+|    7 | `CERRAR_SIN_ADOPCION`   | terminar la iniciativa sin mantener la intervención            | ausencia de beneficio suficiente, riesgo no aceptable, inviabilidad o decisión empresarial documentada      |
+
+`AMPLIAR` no significa que el efecto esté demostrado en la nueva población. La ampliación requiere su propio seguimiento y evaluación.
+
+#### 30. Adopción no equivale a causalidad universal
+
+Una organización puede adoptar una acción por obligación, reducción de riesgo o balance empresarial aun cuando la evidencia causal sea limitada.
+
+La decisión deberá declarar:
+
+- resultado observado;
+- efecto atribuible, si existe;
+- nivel D014;
+- cumplimiento de meta;
+- guardrails;
+- costo, esfuerzo o restricción material conocida cuando corresponda;
+- riesgo de adoptar;
+- riesgo de no adoptar;
+- alcance exacto de adopción;
+- limitaciones;
+- razón empresarial final.
+
+La decisión empresarial no cambia retrospectivamente el nivel de confianza de la evidencia.
+
+#### 31. Iteración
+
+Una iteración crea una nueva versión de la intervención o del diseño.
+
+Deberá conservar:
+
+- qué aprendizaje motivó el cambio;
+- qué componente cambia;
+- qué componentes permanecen;
+- nueva hipótesis cuando aplique;
+- nueva población o ventana cuando aplique;
+- nueva versión de acción/diseño;
+- baseline aplicable;
+- meta y guardrails vigentes;
+- impacto sobre comparabilidad;
+- nueva decisión de aprobación antes de ejecución.
+
+La iteración no sobrescribe resultados previos.
+
+#### 32. Aprendizaje
+
+Todo cierre deberá producir una síntesis de aprendizaje aun cuando el efecto sea nulo o no concluyente.
+
+El aprendizaje deberá separar:
+
+```text
+QUÉ SE HIZO
+QUÉ SE OBSERVÓ
+QUÉ PUEDE ATRIBUIRSE
+QUÉ NO PUDO DETERMINARSE
+QUÉ GUARDRAILS O EFECTOS NO DESEADOS APARECIERON
+QUÉ LIMITACIONES EXISTIERON
+QUÉ DECISIÓN SE TOMÓ
+DÓNDE PUEDE Y NO PUEDE GENERALIZARSE
+```
+
+Un resultado desfavorable no se elimina del registro. Un resultado nulo puede evitar una inversión futura y constituye aprendizaje válido.
+
+#### 33. Calidad y datos durante la evaluación
+
+D016 consume D007.
+
+Reglas:
+
+1. una fuente crítica `BLOQUEADO` impide una conclusión oficial dependiente de ella;
+2. una fuente `DEGRADADO` conserva la limitación en el resultado;
+3. un backfill o corrección posterior exige evaluar si cambia la conclusión;
+4. un dato tardío no se descarta solo por llegar después de la primera lectura;
+5. una pérdida diferencial entre condiciones puede sesgar el resultado y deberá analizarse;
+6. un cambio de cobertura durante la intervención se registra como evento material;
+7. calidad insuficiente puede producir `ESCALAR_INVESTIGACION` en vez de una conclusión artificial.
+
+#### 34. Cambios de definición y D017
+
+Si durante o después de una intervención cambia:
+
+- fórmula del KPI;
+- población;
+- dimensión;
+- calendario;
+- moneda o unidad;
+- definición de exposición;
+- baseline;
+- meta;
+- guardrail;
+- fuente crítica;
+- regla de inclusión/exclusión;
+
+no se reescribe silenciosamente la evaluación original.
+
+D017 deberá gobernar versión, reconstrucción, corrección histórica, restatement y relación entre resultados originales y reexpresados.
+
+#### 35. Privacidad, seguridad, equidad y cumplimiento
+
+Una intervención o experimento no puede utilizar la analítica como autorización implícita para modificar personas, clientes, permisos, precios, condiciones laborales, seguridad, datos personales o decisiones reguladas.
+
+Antes de ejecución futura deberán aplicarse los contratos propietarios de autorización y cumplimiento.
+
+Reglas:
+
+- minimizar datos personales en diseño y análisis;
+- proteger poblaciones pequeñas;
+- no asignar condiciones sensibles por inferencia no autorizada;
+- registrar exclusiones obligatorias;
+- no degradar controles de seguridad para facilitar un experimento;
+- no retener una corrección obligatoria para conservar un grupo control;
+- no ocultar efectos inequitativos bajo un promedio agregado;
+- separar finalidad analítica de facultad para actuar sobre una persona.
+
+#### 36. Automatización, BI e inteligencia artificial
+
+Una herramienta puede asistir en:
+
+- generar candidatos de acción;
+- preparar asignaciones bajo reglas aprobadas;
+- monitorear métricas;
+- detectar desviaciones;
+- ejecutar análisis reproducible;
+- resumir evidencia;
+- proponer hipótesis de iteración.
+
+No puede por sí sola:
+
+- aprobar una acción;
+- fijar o cambiar meta;
+- ampliar población;
+- omitir guardrails;
+- ejecutar un cambio empresarial sin contrato y autorización;
+- declarar `EFECTO_COMPROBADO`;
+- ocultar resultados negativos;
+- decidir adopción o reversa;
+- alterar fuentes de verdad.
+
+La integración física corresponde a `DATA-INT-004`; la auditoría futura a `DATA-AUTH-004`.
+
+#### 37. Publicación y comunicación de resultados
+
+Una comunicación de cierre deberá mostrar, según la finalidad y autorización:
+
+- objetivo;
+- acción o intervención;
+- población y alcance;
+- diseño de evaluación;
+- baseline y meta;
+- resultado del KPI;
+- guardrails;
+- exposición real;
+- calidad de datos;
+- nivel D014;
+- efecto atribuible cuando exista;
+- efectos no deseados;
+- segmentos relevantes;
+- limitaciones;
+- decisión de cierre;
+- aprendizaje;
+- corte y versión.
+
+No se comunica un resultado no concluyente como éxito. No se omiten guardrails adversos. No se generaliza fuera del alcance de evidencia.
+
+La publicación consume D008 y las autorizaciones aplicables.
+
+#### 38. Auditoría y reproducibilidad del expediente
+
+El expediente deberá conservar, como mínimo:
+
+- quien creó la propuesta;
+- quien aprobó;
+- quien ejecutó;
+- quien midió;
+- quien tomó la decisión final;
+- timestamps de decisiones y ejecución;
+- versiones de objetivo, acción y diseño;
+- población elegible y asignación;
+- exposición real;
+- consultas/modelos utilizados;
+- versiones de métricas;
+- fuentes y cortes;
+- eventos de pausa/reversa;
+- desviaciones del diseño;
+- cambios concurrentes;
+- resultados y guardrails;
+- cambios de confianza;
+- aprendizaje;
+- decisiones anteriores y vigentes;
+- relación con iteraciones posteriores.
+
+Una evidencia generada después del cierre no se inserta retroactivamente como si hubiera estado disponible al momento de decidir.
+
+#### 39. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                  | Propietario documental | Condición de salida                                                        |
+| ----------------------------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------- |
+| correcciones históricas, reconstrucciones y restatements                      | `DATA-DOM-017`         | antes de reexpresar resultados, baseline o conclusiones publicadas         |
+| protección por dominio, entidad, territorio y finalidad                       | `DATA-AUTH-001`        | antes de exponer o actuar sobre datos restringidos                         |
+| protección de poblaciones pequeñas, comparaciones y drill-down                | `DATA-AUTH-002`        | antes de analizar o publicar detalle sensible                              |
+| segregación de definición, certificación, publicación, metas y administración | `DATA-AUTH-003`        | antes de conceder capacidades sobre objetivos, intervenciones o resultados |
+| auditoría de consultas, descargas, modelos y recomendaciones                  | `DATA-AUTH-004`        | antes de automatizar trazabilidad de uso analítico                         |
+| experiencia de investigación diagnóstica                                      | `DATA-UX-005`          | antes de implementar navegación desde señal hacia intervención             |
+| experiencia de objetivos, metas, guardrails y acciones                        | `DATA-UX-006`          | antes de implementar la superficie operativa de mejora                     |
+| validación de comprensión, tiempos y decisiones                               | `DATA-UX-008`          | antes de declarar usable el flujo analítico completo                       |
+| capa semántica, cálculos, snapshots, consultas y rendimiento                  | `DATA-INT-002`         | antes de servir evaluaciones compartidas productivas                       |
+| BI, hojas, modelos analíticos e inteligencia artificial                       | `DATA-INT-004`         | antes de conectar herramientas externas o automatización analítica         |
+
+No existe en D016 una acción operacional concreta que requiera asignar un paquete de implementación de dominio. Cuando exista una instancia de intervención, la modificación física deberá pertenecer a la tarea o paquete propietario del comportamiento que cambie y deberá satisfacer sus autorizaciones y pruebas antes de ejecución. D016 no crea una modificación física pendiente por sí sola.
+
+#### 40. Cobertura de requisitos de prueba vigente
+
+Las reglas de D016 ya quedan protegidas por requisitos vigentes:
+
+- `TREQ-DATA-005` protege explícitamente la separación entre señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana, segmentos, resultado, confianza, aprendizaje y decisión de cierre o iteración; exige comparar resultado contra baseline y guardrails y conservar efectos no deseados;
+- `TREQ-DATA-002` protege identidad, propósito, fórmula, población, dimensiones, unidad, versión y comparación de métricas;
+- `TREQ-DATA-003` protege calidad, cobertura, datos tardíos, backfills, reconciliación y linaje;
+- `TREQ-DATA-004` protege publicación, corte, calidad, snapshots, drill-down y separación entre artefactos analíticos;
+- los requisitos propietarios de cada dominio continúan protegiendo las reglas operativas que una intervención futura pueda modificar.
+
+D016 especializa el ciclo de intervención, seguimiento y comprobación dentro del requisito existente de mejora basada en datos. No cambia su regla protegida, prioridad, modalidad, relaciones ni destino de implementación.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente el ciclo de acción, experimento, responsabilidad, exposición, seguimiento, guardrails, comprobación, confianza, aprendizaje y cierre dentro de requisitos vigentes que ya protegen ese comportamiento. No introduce una implementación, transición operativa, integración física, automatización, autorización, dato o experimento ejecutable nuevo.
+
+#### 41. Criterios de aceptación
+
+1. recomendación, decisión y acción permanecen separadas;
+2. acción y experimento permanecen separados;
+3. intervención diseñada, ejecutada y efectivamente expuesta permanecen estados observables distintos;
+4. asignación, exposición y cumplimiento de intervención permanecen separados;
+5. seguimiento no se presenta como comprobación causal;
+6. resultado observado y efecto atribuible permanecen separados;
+7. cumplir meta no demuestra causalidad;
+8. mejorar KPI no permite ignorar un guardrail material;
+9. before/after simple no se presenta como experimento causal;
+10. p-value no se presenta como probabilidad de causalidad;
+11. significancia estadística y relevancia empresarial permanecen separadas;
+12. pausa, reversa y fracaso definitivo permanecen decisiones distintas;
+13. acción completada no equivale a objetivo comprobado;
+14. `EFECTO_COMPROBADO` conserva límites de población, ventana, condiciones y versión;
+15. existe un expediente mínimo con 33 coordenadas obligatorias;
+16. la puerta previa contiene 20 condiciones explícitas;
+17. una condición crítica ausente produce `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` y no un supuesto;
+18. la puerta documental no concede autorización operativa;
+19. existen exactamente seis clases de intervención;
+20. la corrección obligatoria no se retrasa para mantener un control experimental cuando la obligación exige actuar;
+21. la necesidad de experimento depende de la afirmación causal, riesgo, reversibilidad y capacidad de identificación;
+22. un piloto sin comparador no se declara experimento causal;
+23. existen exactamente seis diseños de evaluación o experimento;
+24. el diseño pre/post de una sola población tiene como máximo `ASOCIACION` para atribución causal por sí solo;
+25. un diseño cuasi-experimental puede alcanzar `EVIDENCIA_CAUSAL` únicamente bajo supuestos y evidencia suficientes;
+26. `EFECTO_COMPROBADO` requiere intervención o experimento gobernado y evidencia compatible;
+27. el nombre del diseño no garantiza nivel de confianza;
+28. el diseño se preespecifica antes de exposición;
+29. cambios posteriores del diseño conservan nueva versión y no se presentan como preespecificados;
+30. unidad de asignación y unidad de análisis permanecen separadas cuando corresponda;
+31. población elegible se define antes de resultados;
+32. contaminación, interferencia y spillover permanecen visibles;
+33. baseline, preparación, exposición, estabilización, evaluación y seguimiento posterior permanecen ventanas distintas;
+34. no existe duración universal inventada;
+35. toda intervención concreta tiene propietario funcional, aprobador, responsable de ejecución y responsable de medición distinguibles;
+36. ejecutar no concede autoridad para cambiar KPI o meta;
+37. medir no concede autoridad para adoptar o revertir;
+38. fidelidad de implementación se verifica antes de interpretar resultado;
+39. una intervención mal ejecutada no se presenta automáticamente como refutación del mecanismo;
+40. guardrails se monitorean durante la intervención con cadencia compatible con riesgo;
+41. un guardrail no crea por sí solo una automatización;
+42. criterios de pausa se definen antes de ejecución cuando sean materiales;
+43. pausa conserva expediente y exposición previa;
+44. reversa no borra exposición ni resultados históricos;
+45. intervenciones irreversibles declaran esa condición antes de ejecución;
+46. cambios concurrentes permanecen como explicaciones alternativas;
+47. la comprobación evalúa conjuntamente ejecución, exposición, KPI, meta, drivers, guardrails, segmentos, calidad, incertidumbre y efectos no deseados;
+48. un valor favorable del KPI no satisface por sí solo la comprobación;
+49. resultado observado puede existir sin efecto atribuible;
+50. no cumplir meta no demuestra por sí solo ausencia de efecto;
+51. un experimento sin efecto concluyente puede generar aprendizaje válido;
+52. el residuo no explicado permanece visible;
+53. `EFECTO_COMPROBADO` exige diseño capaz de identificar efecto y resultado reproducible;
+54. la confianza no se generaliza automáticamente a otras sedes, poblaciones, canales, productos o periodos;
+55. tamaño de efecto, incertidumbre, significancia y relevancia empresarial se reportan por separado cuando apliquen;
+56. análisis de segmentos posteriores al resultado se declaran exploratorios;
+57. efectos no deseados se conservan aunque no estuvieran predefinidos como guardrail;
+58. existen exactamente siete decisiones de cierre;
+59. `ADOPTAR`, `AMPLIAR`, `ITERAR`, `PAUSAR`, `REVERTIR`, `ESCALAR_INVESTIGACION` y `CERRAR_SIN_ADOPCION` permanecen decisiones distintas;
+60. ampliar no demuestra efecto en la nueva población;
+61. una adopción empresarial no eleva retroactivamente la confianza causal;
+62. iterar crea una nueva versión y no sobrescribe resultados previos;
+63. todo cierre conserva aprendizaje, límites y decisión;
+64. resultados desfavorables y nulos permanecen en el registro;
+65. calidad D007 limita las conclusiones dependientes;
+66. backfills y correcciones posteriores se evalúan por impacto y remiten a D017;
+67. cambios de definición no reescriben silenciosamente evaluación original;
+68. privacidad, seguridad, equidad y cumplimiento no se suspenden para facilitar experimentación;
+69. no se retiene una corrección obligatoria para preservar un grupo control;
+70. IA, BI o modelos no pueden aprobar acciones, declarar efecto comprobado ni ejecutar cambios por sí solos;
+71. publicación conserva objetivo, acción, población, diseño, baseline, meta, KPI, guardrails, calidad, confianza, limitaciones y decisión;
+72. auditoría conserva actores, timestamps, versiones, exposición, cambios concurrentes, resultados y aprendizaje;
+73. cada handoff tiene propietario documental exacto y condición de salida;
+74. D016 no crea un paquete operacional inexistente cuando no existe intervención concreta;
+75. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+76. no se ejecuta código, DDL, DML, migración, backfill, despliegue, automatización, experimento, acción empresarial ni cambio de Supabase;
+77. `DATA-DOM-017` permanece únicamente reservada.
+
+#### 42. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+
+TAREA ACTUAL APROBADA
+DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+```
+
+
+### ✅ DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados` — APROBADA
+**Tarea siguiente:** `DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de versionado semántico, correcciones históricas, reconstrucciones, restatements y reproducibilidad analítica
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, replays, cambios de datos, reejecuciones productivas, publicación de restatements o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir cómo Vento OS conserva y reproduce el significado histórico de métricas, resultados, diagnósticos, objetivos, intervenciones y publicaciones cuando cambian datos, definiciones, dimensiones, transformaciones o evidencia, sin reescribir silenciosamente lo que una persona o proceso conocía y utilizó en un momento anterior.
+
+La tarea deberá permitir responder de forma reproducible:
+
+```text
+qué definición de métrica estaba vigente
+qué datos y versiones estaban disponibles al corte
+qué transformación, consulta o modelo produjo el resultado
+qué dimensiones, filtros, moneda, unidad y calendario aplicaron
+qué publicación o decisión consumió ese resultado
+qué cambió posteriormente
+si el cambio fue de fuente, semántica, cobertura, transformación o publicación
+qué periodos, métricas, artefactos y decisiones quedaron afectados
+si corresponde reconstrucción, corrección histórica o restatement
+qué valor se conocía entonces
+qué valor se obtiene ahora con la evidencia corregida
+qué diferencia existe entre ambos
+qué calidad y certificación corresponde a cada versión
+qué versión continúa vigente para nuevos usos
+qué evidencia permite reproducir cada resultado
+```
+
+D017 no corrige datos productivos, no ejecuta backfills, no reabre periodos, no recalcula métricas productivas, no publica restatements y no modifica el código de las aplicaciones. Define el contrato documental que esas operaciones deberán respetar cuando sean autorizadas e implementadas por sus tareas propietarias.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato canónico de versionado, corrección histórica y reproducibilidad con los siguientes resultados:
+
+- separación explícita entre identidad de métrica, versión semántica, versión de esquema, versión de transformación, versión técnica y edición de publicación;
+- preservación de la regla `misma métrica + misma versión + mismo contexto + mismo corte = mismo resultado`;
+- criterios exhaustivos para determinar cuándo un cambio exige una nueva versión semántica y cuándo solo exige una nueva versión técnica;
+- preservación de las **14 de 14 métricas reales** del registro inicial de asistencia como versión semántica `1`, sin renombrarlas ni inventar nuevas claves;
+- reconciliación del registro inicial: **14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas**;
+- preservación de los estados heredados de calidad: **11 `NO EVALUADO` y 3 `BLOQUEADO`**;
+- materialización de una decisión explícita de versionado para las **55 familias analíticas** aprobadas en D009 a D013, sin convertir nombres de familia en `metric_key` ni asignar versiones ficticias;
+- reconciliación del universo analítico: **55 esperadas; 55 decisiones materializadas; 0 faltantes; 0 duplicadas**;
+- separación canónica entre reintento, replay, backfill, corrección de fuente, reconstrucción y restatement;
+- una matriz de disparadores que determina cuándo una modificación puede afectar una publicación oficial y cuándo no constituye restatement;
+- contrato mínimo de evaluación de impacto histórico antes de reexpresar cualquier resultado;
+- preservación obligatoria de la publicación original y de la relación con cualquier reexpresión posterior;
+- distinción entre **resultado conocido entonces** y **resultado reconstruido ahora**;
+- reglas para cambios de métricas, maestros, dimensiones, transformaciones, datos tardíos, backfills, correcciones de fuente y cambios de calidad;
+- reglas de propagación de impacto desde hechos y maestros hasta métricas, publicaciones, diagnósticos, líneas base, objetivos e intervenciones;
+- regla de recertificación: una reconstrucción o restatement no hereda automáticamente la certificación de la versión anterior;
+- contrato mínimo de reproducibilidad con fuente, esquema, transformación, semántica, contexto, corte, población, dimensiones, calidad y evidencia;
+- tratamiento específico de las seis familias de artefacto de D008: tablero, reporte, exportación, suscripción, alerta y snapshot oficial;
+- reglas para diagnósticos D014, objetivos D015 e intervenciones D016 cuando una corrección posterior altera la evidencia disponible;
+- prohibición de usar una corrección histórica para ocultar el dato, publicación, diagnóstico, meta o decisión original;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Decisión principal
+
+Vento OS adopta un modelo de **historia analítica versionada y reproducible**.
+
+```text
+FUENTE PROPIETARIA
+→ conserva el hecho, maestro, evento o corrección autorizada
+
+VERSIÓN DE CONTRATO / ESQUEMA
+→ identifica la representación recibida
+
+VERSIÓN DE TRANSFORMACIÓN
+→ identifica las reglas que construyen el derivado
+
+VERSIÓN SEMÁNTICA DE MÉTRICA
+→ identifica el significado empresarial utilizado
+
+CONTEXTO + CORTE
+→ fija población, dimensiones, filtros, tiempo y evidencia disponible
+
+RESULTADO
+→ valor reproducible para esa coordenada
+
+PUBLICACIÓN O DECISIÓN
+→ conserva exactamente el resultado y contexto conocidos entonces
+
+CAMBIO POSTERIOR
+→ se evalúa por impacto; nunca sobrescribe silenciosamente la historia
+
+RECONSTRUCCIÓN
+→ recalcula un derivado con fuentes y versiones declaradas
+
+RESTATEMENT, CUANDO CORRESPONDA
+→ publica una reexpresión vinculada con la edición anterior
+
+HISTORIA
+→ conserva original, reexpresión, motivo, diferencia y evidencia
+```
+
+Regla cardinal:
+
+```text
+LO CONOCIDO ENTONCES
+≠
+LO RECONSTRUIDO AHORA
+```
+
+Ambas vistas pueden ser válidas para preguntas distintas y deberán permanecer trazables.
+
+#### 4. Fuentes y decisiones heredadas
+
+D017 consume sin redefinir:
+
+- `DATA-DOM-001` a `DATA-DOM-003` para propiedad, stewardship, identidad, claves, jerarquías, vigencias, fusión, separación y fuentes de verdad;
+- `DATA-DOM-004` para `metric_key`, versión semántica, fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, moneda, calendario, zona horaria, calidad y comparación;
+- `DATA-DOM-005` para tiempo de ocurrencia, fecha empresarial, recepción, procesamiento, corrección, corte, granularidad, dimensión efectiva, snapshots y comparabilidad histórica;
+- `DATA-DOM-006` para contratos de origen, esquema, ingestión, replay, backfill, corrección, reconstrucción, reconciliación y linaje;
+- `DATA-DOM-007` para calidad, evidencia y estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para tablero, reporte, exportación, suscripción, alerta, snapshot oficial, publicación y distribución;
+- `DATA-DOM-009` a `DATA-DOM-013` para las 55 familias analíticas de dominio;
+- `DATA-DOM-014` para diagnósticos, hipótesis, evidencia, confianza y conclusiones oficiales;
+- `DATA-DOM-015` para objetivos, KPI, líneas base, metas, drivers, guardrails y planes de medición;
+- `DATA-DOM-016` para acciones, experimentos, exposición, seguimiento, resultado, aprendizaje y decisión de cierre;
+- `CAP-SCOPE-017` para versionado de métricas, conservación de historia, datos tardíos, backfills, snapshots inmutables, restatements y reproducibilidad;
+- `TREQ-DATA-001`, `TREQ-DATA-002`, `TREQ-DATA-003` y `TREQ-DATA-004` como protección preexistente del significado histórico, versionado, correcciones, backfills, linaje, publicaciones inmutables y restatements;
+- `DATA-AUTH-001` a `DATA-AUTH-004` como frontera inmediata de autorización, segregación y auditoría;
+- `DATA-UX-002`, `DATA-UX-003` y `DATA-UX-007` como superficies futuras para definición, comparación y publicaciones versionadas;
+- `DATA-INT-001` a `DATA-INT-004` como fronteras futuras de contratos, materialización, crosswalks y herramientas externas.
+
+D017 no cambia el significado aprobado de ninguna métrica ni el estado de certificación de ninguna fuente o resultado.
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+metric_key
+≠ versión semántica
+≠ versión de esquema
+≠ versión de transformación
+≠ versión de código
+≠ edición de publicación
+```
+
+```text
+cambio técnico
+≠ cambio de significado
+```
+
+```text
+corrección de fuente
+≠ replay
+≠ backfill
+≠ reconstrucción
+≠ restatement
+```
+
+```text
+dato tardío
+≠ dato incorrecto
+```
+
+```text
+reconstrucción
+≠ modificación del hecho fuente
+```
+
+```text
+restatement
+≠ sobrescritura de la publicación anterior
+```
+
+```text
+fecha del hecho
+≠ fecha de corrección
+≠ fecha de reconstrucción
+≠ fecha de publicación
+≠ fecha de restatement
+```
+
+```text
+versión vigente para nuevos usos
+≠ versión usada históricamente
+```
+
+```text
+resultado original
+≠ resultado reexpresado
+≠ diferencia entre resultados
+```
+
+```text
+reproducibilidad
+≠ conservar únicamente el archivo final
+```
+
+```text
+certificación anterior
+≠ certificación automática del restatement
+```
+
+```text
+cambio de baseline
+≠ cambio real del negocio
+```
+
+```text
+cambio de diagnóstico
+≠ eliminación del diagnóstico anterior
+```
+
+#### 6. Ejes de versión obligatorios
+
+D017 reconoce ejes de versión distintos. Ninguno sustituye a los demás.
+
+| Eje                                          | Qué identifica                                                   | Cuándo cambia                                                                          | Qué no autoriza                                                                      |
+| -------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| identidad empresarial                        | `metric_key`, maestro, hecho o artefacto lógico                  | solo cuando cambia la identidad del objeto, conforme a su contrato propietario         | reutilizar una identidad para otro significado                                       |
+| versión semántica                            | significado de una métrica o definición analítica                | cuando cambia un elemento material que puede alterar resultado o interpretación        | reescribir resultados de versiones anteriores                                        |
+| versión de esquema/contrato                  | forma en que una fuente entrega datos                            | cuando cambia el contrato físico o lógico de entrada                                   | asumir equivalencia semántica por nombre parecido                                    |
+| versión de transformación                    | reglas, mappings, joins, derivaciones o cálculo técnico          | cuando cambia una regla capaz de modificar el derivado                                 | cambiar la definición empresarial sin versión semántica cuando el significado cambia |
+| versión de maestros/dimensiones              | identidad, relación o vigencia efectiva aplicable al hecho       | cuando cambia la historia efectiva o la relación gobernada                             | aplicar el maestro actual a hechos pasados por conveniencia                          |
+| versión técnica                              | código, consulta, modelo, vista, servicio o artefacto ejecutable | cuando cambia la implementación                                                        | crear por sí sola una nueva métrica                                                  |
+| edición de publicación                       | instancia oficial emitida para periodo, corte y contexto         | cada emisión oficial distinguible                                                      | sustituir o borrar una edición anterior                                              |
+| versión de diagnóstico/objetivo/intervención | estado documental de una conclusión o decisión empresarial       | cuando cambia evidencia, hipótesis, meta, diseño o conclusión conforme a sus contratos | fingir que la decisión histórica se tomó con evidencia posterior                     |
+
+La representación física de estos ejes pertenece a las tareas `DATA-INT-*` y de implementación aplicables. D017 no prescribe una tabla, enum, schema ni formato de identificador físico.
+
+#### 7. Identidad y coordenada mínima de una versión analítica
+
+Toda versión de resultado que deba reproducirse deberá poder resolver, cuando aplique:
+
+- identidad de métrica o resultado;
+- versión semántica;
+- fecha de inicio de vigencia;
+- fecha de fin de vigencia cuando exista;
+- relación con versión precedente y sucesora;
+- motivo de creación;
+- propietario empresarial;
+- steward;
+- custodio técnico;
+- fórmula y componentes versionados;
+- versión de contratos de fuente;
+- versión de transformación;
+- versión técnica o referencia reproducible del cálculo;
+- población;
+- granularidad;
+- dimensiones y vigencias;
+- filtros e inclusiones/exclusiones;
+- unidad, moneda y precisión;
+- calendario y zona horaria;
+- periodo observado;
+- fecha y hora de corte;
+- tratamiento de datos tardíos;
+- tratamiento de anulaciones, reversas, devoluciones y correcciones;
+- fuentes y dependencias;
+- cobertura;
+- calidad/certificación;
+- consulta, modelo o regla utilizada cuando aplique;
+- evidencia de ejecución;
+- publicación o decisión que consumió el resultado.
+
+Una versión no se considera reproducible solo porque exista un número almacenado.
+
+#### 8. Regla de versionado semántico de métricas
+
+Se preserva la decisión de D004: `metric_key` identifica la medida y la versión identifica una definición inmutable de esa medida.
+
+Una nueva versión semántica es obligatoria cuando cambia de forma material cualquiera de estos elementos:
+
+1. fórmula;
+2. numerador;
+3. denominador;
+4. inclusiones;
+5. exclusiones;
+6. granularidad de cálculo;
+7. dimensiones cuando alteran agregabilidad o interpretación;
+8. calendario;
+9. fecha empresarial;
+10. zona horaria;
+11. unidad;
+12. moneda;
+13. precisión semántica o redondeo que cambia el resultado empresarial;
+14. tratamiento de anulaciones;
+15. tratamiento de devoluciones;
+16. tratamiento de reversas;
+17. tratamiento de correcciones;
+18. tratamiento de datos tardíos;
+19. fuente lógica cuando modifica significado o cobertura;
+20. regla de comparación;
+21. interpretación de cero, ausencia, no aplica, desconocido, no recibido o denominador no disponible;
+22. cualquier regla que cambie qué hechos o entidades representan el resultado.
+
+No exige una nueva versión semántica cuando, preservando exactamente significado y resultado para la misma coordenada, solo cambia:
+
+- optimización de consulta;
+- índice;
+- caché;
+- ubicación del cálculo entre vista, función, servicio o modelo;
+- refactorización interna;
+- lenguaje de implementación;
+- formato visual;
+- orden de columnas;
+- texto de ayuda sin cambio semántico;
+- observabilidad técnica;
+- mecanismo de despliegue.
+
+Si una corrección técnica revela que la implementación anterior no cumplía la definición semántica vigente, se corrige la implementación sin inventar una versión semántica nueva. Los resultados oficiales históricamente afectados deberán evaluarse para reconstrucción y posible restatement.
+
+#### 9. Registro inicial: 14 métricas reales y decisión de versión
+
+Las 14 claves aprobadas en D004 conservan exactamente su identidad y versión semántica inicial `1`.
+
+|    # | `metric_key`        | Versión semántica aprobada | Estado DQ heredado | Decisión D017                                                                                              |
+| ---: | ------------------- | -------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    2 | `attendedShifts`    | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    3 | `restDayCount`      | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    4 | `lateCount`         | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    5 | `noShowCount`       | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    6 | `openCount`         | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    7 | `missingCloseCount` | `1`                        | `BLOQUEADO`        | preservar v1 canónica; corregir implementación futura no crea versión semántica si solo la alinea con v1   |
+|    8 | `autoCloseCount`    | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|    9 | `departureCount`    | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|   10 | `scheduledMinutes`  | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|   11 | `netMinutes`        | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|   12 | `incidentCount`     | `1`                        | `NO EVALUADO`      | preservar v1; todo cambio material de significado crea versión posterior                                   |
+|   13 | `attendanceRate`    | `1`                        | `BLOQUEADO`        | preservar v1 canónica; corregir denominador cero para cumplir v1 es corrección técnica, no nueva semántica |
+|   14 | `punctualityRate`   | `1`                        | `BLOQUEADO`        | preservar v1 canónica; corregir denominador cero para cumplir v1 es corrección técnica, no nueva semántica |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+D017 no desbloquea, certifica ni recalcula ninguna de estas métricas.
+
+#### 10. Corrección técnica frente a nueva versión semántica
+
+La decisión se toma por significado, no por tamaño del diff de código.
+
+| Situación                                                           | Tratamiento semántico                                              | Tratamiento histórico                                                           |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| optimización produce exactamente el mismo resultado                 | misma versión semántica                                            | no restatement por la optimización                                              |
+| corrección de bug alinea código con la definición v1 ya aprobada    | misma versión semántica; nueva versión técnica                     | evaluar resultados oficiales previos afectados y restatement cuando corresponda |
+| cambio deliberado de fórmula                                        | nueva versión semántica                                            | v1 permanece histórica; v2 rige desde su vigencia                               |
+| cambio de población elegible                                        | nueva versión semántica                                            | no combinar series sin compatibilidad explícita                                 |
+| cambio de zona horaria o calendario que altera asignación a periodo | nueva versión semántica o versión de regla temporal según contrato | evaluar comparabilidad y publicaciones afectadas                                |
+| cambio visual, etiqueta o orden sin cambio de significado           | misma versión semántica                                            | no restatement del resultado                                                    |
+| cambio de fuente física con equivalencia demostrada                 | misma versión semántica; nuevas versiones de contrato/técnicas     | reconciliar antes de declarar continuidad                                       |
+| cambio de fuente que altera cobertura o significado                 | nueva versión semántica cuando afecta la medida                    | preservar resultados anteriores bajo su versión                                 |
+
+Un cambio técnico no puede usarse para introducir de hecho una nueva semántica sin versionarla.
+
+#### 11. Vigencia y convivencia de versiones
+
+Una nueva versión semántica no elimina la anterior.
+
+Reglas:
+
+1. cada versión conserva su vigencia y motivo;
+2. una versión histórica continúa resolviendo resultados, publicaciones y decisiones que la usaron;
+3. la versión vigente para nuevos cálculos no se aplica retroactivamente por defecto;
+4. una comparación entre versiones exige una regla explícita de compatibilidad o una reconstrucción declarada;
+5. una versión deprecada puede seguir siendo necesaria para reproducir historia;
+6. retirar una versión para nuevos usos no autoriza borrar su definición ni evidencia;
+7. una aplicación consumidora deberá poder identificar qué versión utiliza antes de presentar un resultado oficial;
+8. una transición técnica puede soportar varias versiones durante convivencia sin fusionar sus resultados;
+9. el uso histórico resuelve la versión realmente aplicada al corte, no la versión actualmente vigente.
+
+D017 no crea un enum técnico de ciclo de vida; fija las obligaciones documentales de vigencia, sucesión y preservación.
+
+#### 12. Compatibilidad entre versiones y series históricas
+
+Dos resultados de la misma `metric_key` solo son directamente comparables cuando:
+
+- usan la misma versión semántica; o
+- existe una regla de compatibilidad aprobada que demuestra que la diferencia de versión no altera la comparación solicitada.
+
+Cuando no exista compatibilidad directa:
+
+- se presentan series separadas; o
+- se genera una reconstrucción histórica explícita bajo una versión seleccionada, conservando la serie original.
+
+Queda prohibido unir en una misma serie sin señalización valores calculados con definiciones materialmente distintas.
+
+Una reconstrucción histórica bajo una versión nueva no convierte esa versión en la definición que estuvo vigente en el pasado. Debe poder distinguirse:
+
+```text
+SERIE COMO FUE PUBLICADA
+
+SERIE RECONSTRUIDA BAJO DEFINICIÓN POSTERIOR
+```
+
+#### 13. Versionado de maestros, dimensiones y relaciones históricas
+
+Los hechos históricos consumen la identidad y vigencia que correspondían a su tiempo.
+
+Reglas:
+
+1. un cambio de nombre no cambia identidad;
+2. un reparenting no aplica el padre actual a hechos anteriores si la relación histórica era otra;
+3. una fusión no borra identificadores previos ni reasigna hechos por aproximación;
+4. una separación no redistribuye historia sin evidencia y contrato explícito;
+5. retirar una identidad no rompe referencias históricas;
+6. una corrección de vigencia o jerarquía histórica puede afectar agregados y deberá recorrer la evaluación de impacto de D017;
+7. los crosswalks externos deberán resolver la versión y vigencia aplicables conforme a `DATA-INT-003` antes de reconstruir historia;
+8. una dimensión actual no se utiliza como sustituto de la dimensión efectiva al hecho.
+
+#### 14. Taxonomía canónica de operaciones históricas
+
+D017 conserva exactamente las fronteras establecidas por D006.
+
+##### 14.1. Reintento
+
+Repite una solicitud cuyo resultado no quedó confirmado. Conserva identidad idempotente cuando el contrato lo permita y no pretende cambiar historia.
+
+##### 14.2. Replay
+
+Vuelve a procesar evidencia ya recibida bajo versiones declaradas. Puede comprobar determinismo o reconstruir un derivado, pero no crea hechos inexistentes.
+
+##### 14.3. Backfill
+
+Carga o reconstruye un periodo histórico faltante o incompleto desde una fuente aprobada y con cobertura declarada. El backfill no implica automáticamente restatement; primero se evalúa qué publicaciones o decisiones quedaron afectadas.
+
+##### 14.4. Corrección de fuente
+
+La fuente propietaria reconoce y corrige un dato o relación incorrectos preservando procedencia, original, decisión y tiempo de corrección conforme a su dominio.
+
+##### 14.5. Reconstrucción
+
+Recalcula una proyección, modelo, métrica o snapshot desde fuentes gobernadas y versiones declaradas. No modifica por sí misma la publicación anterior.
+
+##### 14.6. Restatement
+
+Reexpresa formalmente un resultado o publicación previa porque la representación oficial debe reflejar evidencia o definición corregida. El restatement crea una edición relacionada y trazable; nunca sobrescribe la edición anterior.
+
+Estas seis operaciones no se colapsan en un estado genérico de “actualizado”.
+
+#### 15. Disparadores de evaluación de impacto histórico
+
+Todo cambio de los siguientes tipos obliga a evaluar impacto antes de alterar una representación oficial:
+
+1. corrección de hecho fuente;
+2. corrección de identidad, clave, crosswalk o relación;
+3. corrección de jerarquía o vigencia dimensional;
+4. dato tardío incorporado después de un corte publicado;
+5. backfill de un periodo ya reportado;
+6. cambio de mapping;
+7. cambio de transformación;
+8. corrección de bug de cálculo;
+9. cambio de versión semántica;
+10. cambio de población o cobertura;
+11. cambio de moneda, unidad, calendario o zona horaria con efecto material;
+12. cambio de estado de calidad que invalida o habilita un resultado publicado;
+13. cambio de reconciliación que modifica una cifra o su aptitud para uso oficial;
+14. nueva evidencia que cambia una conclusión diagnóstica oficial;
+15. corrección que modifica una línea base o evaluación de objetivo;
+16. corrección que modifica el resultado atribuido a una intervención.
+
+Evaluar impacto no significa que todo caso produzca restatement. Significa que la decisión debe quedar explícita y trazable.
+
+#### 16. Matriz de decisión de restatement
+
+| Cambio observado                                                      | ¿Modifica resultado oficial ya emitido?             | Decisión D017                                                                                                                  |
+| --------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| dato tardío dentro de periodo abierto y sin publicación inmutable     | no existe edición oficial previa afectada           | actualizar el resultado vivo con nuevo corte; no denominarlo restatement                                                       |
+| dato tardío afecta snapshot o reporte oficial previo                  | sí o puede hacerlo                                  | reconstruir, recertificar y decidir restatement según impacto y obligación de reexpresión                                      |
+| corrección de fuente no cambia ninguna métrica publicada              | no                                                  | registrar impacto nulo; no crear restatement numérico                                                                          |
+| corrección de fuente cambia una cifra oficial                         | sí                                                  | reconstruir y emitir restatement cuando la cifra oficial deba corregirse                                                       |
+| bug técnico produjo cifra distinta de la definición semántica vigente | sí                                                  | mantener versión semántica; cambiar versión técnica; evaluar restatement de cada edición afectada                              |
+| nueva versión semántica prospectiva                                   | no cambia por sí sola lo ya publicado               | preservar historia v1 y aplicar v2 desde su vigencia                                                                           |
+| decisión expresa de reconstruir historia bajo nueva versión semántica | sí, como serie reexpresada                          | publicar reconstrucción/restatement distinguible, sin borrar serie original                                                    |
+| cambio de formato, orden, color o etiqueta sin cambio semántico       | no                                                  | no restatement del resultado                                                                                                   |
+| corrección de metadata material de una publicación                    | puede afectar interpretación aunque no cambie cifra | emitir corrección o nueva edición gobernada cuando la interpretación oficial deba cambiar                                      |
+| cambio de calidad/certificación sin cambio numérico                   | puede afectar aptitud de uso                        | conservar edición original y emitir la actualización gobernada que corresponda; no fingir que el estado anterior nunca existió |
+| backfill afecta periodo nunca publicado                               | no                                                  | reconstrucción inicial; no restatement de una publicación inexistente                                                          |
+| backfill afecta periodo previamente publicado                         | sí o puede hacerlo                                  | evaluar y reexpresar solo el alcance materialmente afectado                                                                    |
+
+D017 no fija un umbral universal de materialidad. La decisión de reexpresión debe declarar el impacto, la obligación empresarial y el propietario competente.
+
+#### 17. Evaluación de impacto antes de reexpresar
+
+Toda evaluación deberá identificar como mínimo:
+
+- cambio origen;
+- fuente propietaria;
+- evidencia de la corrección o nueva información;
+- periodo afectado;
+- momento en que la nueva evidencia quedó disponible;
+- versión de esquema anterior y nueva cuando aplique;
+- versión de transformación anterior y nueva;
+- versiones semánticas involucradas;
+- identidades o dimensiones afectadas;
+- métricas potencialmente afectadas;
+- publicaciones potencialmente afectadas;
+- diagnósticos potencialmente afectados;
+- objetivos, líneas base o metas potencialmente afectadas;
+- intervenciones o experimentos potencialmente afectados;
+- calidad y certificación previa;
+- impacto numérico o semántico observado;
+- posibilidad de reconstrucción;
+- consumidores conocidos de la publicación;
+- decisión de restatement o no restatement;
+- justificación;
+- propietario de la decisión;
+- evidencia de revisión.
+
+No se expande el restatement a periodos, sedes, entidades o métricas no afectadas solo por comodidad técnica.
+
+#### 18. Propagación de impacto por linaje
+
+La propagación se determina por linaje, no por similitud de nombres.
+
+```text
+HECHO / MAESTRO / RELACIÓN CORREGIDA
+→ CONTRATOS Y TRANSFORMACIONES QUE LO CONSUMEN
+→ MÉTRICAS AFECTADAS
+→ ARTEFACTOS AFECTADOS
+→ DIAGNÓSTICOS AFECTADOS
+→ OBJETIVOS / BASELINES AFECTADOS
+→ EVALUACIONES DE INTERVENCIÓN AFECTADAS
+```
+
+Reglas:
+
+1. una métrica no relacionada no se recalcula por inferencia;
+2. dos métricas que comparten un hecho pueden requerir evaluaciones distintas;
+3. una publicación puede quedar afectada por una corrección de metadata aunque su cifra no cambie;
+4. un diagnóstico puede cambiar confianza aunque el valor principal permanezca;
+5. una meta aprobada no cambia porque el baseline haya sido reexpresado; se conserva la decisión original y se evalúa el impacto;
+6. una intervención no se declara exitosa o fallida de nuevo sin reconstruir su diseño, población, exposición y guardrails bajo la evidencia pertinente;
+7. el linaje debe conservar fuentes y versiones suficientes para justificar inclusión o exclusión del impacto.
+
+#### 19. Contrato mínimo de un restatement
+
+Toda reexpresión oficial deberá poder declarar:
+
+- publicación o resultado original relacionado;
+- clase del artefacto original;
+- periodo y corte originales;
+- fecha de publicación original;
+- métricas y versiones originales;
+- fuentes, esquemas y transformaciones originales;
+- valor o resultado original;
+- razón de reexpresión;
+- evento, corrección, backfill, cambio semántico o evidencia que la originó;
+- periodo y población reexpresados;
+- fecha y hora del nuevo corte;
+- métricas y versiones usadas en la reexpresión;
+- fuentes y transformaciones usadas en la reexpresión;
+- valor o resultado reexpresado;
+- diferencia absoluta y relativa cuando ambas sean válidas;
+- componentes no comparables cuando existan;
+- calidad y certificación de la reexpresión;
+- responsable empresarial;
+- certificador cuando aplique;
+- publicador cuando aplique;
+- consumidores o artefactos derivados afectados;
+- relación con diagnósticos, objetivos o intervenciones afectados;
+- decisión de comunicación o redistribución conforme a las tareas de autorización y experiencia;
+- evidencia que permite reproducir original y reexpresión.
+
+D017 no define un namespace físico para identificar restatements. La identidad técnica se materializará en `DATA-INT-002` sin perder estas coordenadas.
+
+#### 20. Inmutabilidad de publicaciones anteriores
+
+Una edición oficial emitida permanece identificable.
+
+Reglas:
+
+1. no se edita una publicación histórica para sustituir el número anterior;
+2. no se cambia su corte para hacer que parezca una edición original distinta;
+3. no se reemplaza su versión semántica en metadata;
+4. no se elimina la relación con fuentes y certificación existentes al momento de publicación;
+5. una reexpresión se vincula con la edición anterior;
+6. un consumidor autorizado puede distinguir cuál fue el valor publicado originalmente y cuál es el valor vigente reexpresado;
+7. retirar una publicación de uso corriente por razones válidas no equivale a borrar su existencia histórica y auditada;
+8. la política de acceso y retención aplicable continúa gobernando qué actores pueden consultar cada evidencia.
+
+#### 21. Resultado conocido entonces y resultado conocido ahora
+
+D017 exige conservar dos preguntas distintas:
+
+```text
+¿QUÉ RESULTADO ESTABA DISPONIBLE Y AUTORIZADO AL MOMENTO DE LA DECISIÓN?
+```
+
+```text
+¿QUÉ RESULTADO SE OBTIENE AHORA CON LA EVIDENCIA CORREGIDA Y LAS VERSIONES DECLARADAS?
+```
+
+La primera pregunta es necesaria para auditar decisiones históricas. La segunda es necesaria para conocer la mejor representación actual.
+
+Reglas:
+
+- una evidencia posterior no se inserta retroactivamente en el expediente como si hubiera estado disponible entonces;
+- una corrección puede cambiar la lectura actual sin convertir en falsa la existencia de la decisión histórica;
+- una evaluación de desempeño debe indicar si usa datos “como publicados” o “reexpresados”;
+- un análisis de aprendizaje puede comparar ambas vistas sin fusionarlas.
+
+#### 22. Reproducibilidad mínima de un resultado
+
+Un resultado es reproducible cuando un proceso autorizado puede reconstruirlo a partir de evidencia y versiones suficientes sin depender de conocimiento implícito.
+
+Como mínimo deberán quedar resolubles:
+
+1. identidad de la métrica o resultado;
+2. versión semántica;
+3. periodo;
+4. corte;
+5. zona horaria;
+6. calendario;
+7. población;
+8. granularidad;
+9. dimensiones;
+10. filtros;
+11. inclusiones y exclusiones;
+12. unidad;
+13. moneda;
+14. precisión;
+15. fuentes lógicas;
+16. versiones de esquema o contrato;
+17. archivos/payloads originales cuando su preservación sea necesaria;
+18. claves/crosswalks aplicables;
+19. vigencias de maestros y dimensiones;
+20. versión de transformación;
+21. consulta, regla, modelo o artefacto técnico reproducible;
+22. versión técnica o hash cuando corresponda;
+23. datos tardíos conocidos al corte;
+24. backfills aplicados antes del corte;
+25. correcciones conocidas al corte;
+26. reglas de deduplicación;
+27. registros rechazados o en cuarentena que afecten cobertura;
+28. reconciliación;
+29. estado de calidad;
+30. decisión de certificación;
+31. fecha/hora de ejecución;
+32. evidencia de entrada y salida suficiente para comprobar la reconstrucción.
+
+No todos estos elementos requieren una columna física; todos deben poder resolverse cuando sean materiales para el resultado.
+
+#### 23. Regla determinista de reconstrucción
+
+Cuando la semántica y las fuentes sean deterministas:
+
+```text
+MISMAS ENTRADAS EVIDENCIADAS
++ MISMAS VERSIONES
++ MISMO CONTEXTO
++ MISMO CORTE
++ MISMAS REGLAS
+=
+MISMO RESULTADO
+```
+
+Si un resultado depende de una fuente externa mutable, un modelo no determinista, una API sin preservación de respuesta, una configuración no versionada o un artefacto no recuperable, esa limitación deberá quedar explícita y puede impedir declarar reproducibilidad completa.
+
+No se inventa el insumo faltante para forzar una reconstrucción.
+
+#### 24. Reproducibilidad de fuentes externas y archivos
+
+Cuando un resultado dependa de una fuente externa o exportación controlada:
+
+- se conserva procedencia;
+- se conserva versión/formato;
+- se conserva periodo y corte de extracción;
+- se conserva el original cuando la trazabilidad lo requiera;
+- se conserva hash o evidencia equivalente cuando corresponda;
+- se conserva mapping y crosswalk aplicables;
+- se conserva qué campos fueron rechazados o transformados;
+- se conserva la evidencia de cobertura conocida;
+- no se reemplaza el archivo histórico por una exportación nueva con el mismo nombre.
+
+Si la fuente externa no permite reconstruir la evidencia histórica, el resultado deberá declarar la limitación en lugar de presentarse como completamente reproducible.
+
+#### 25. Calidad y recertificación después de una corrección
+
+Una corrección o reconstrucción no hereda automáticamente el estado D007 de la edición anterior.
+
+Cadena obligatoria cuando la reexpresión pretenda uso oficial:
+
+```text
+CORRECCIÓN / NUEVA EVIDENCIA
+→ RECONSTRUCCIÓN
+→ NUEVA EVALUACIÓN DE CALIDAD
+→ NUEVA RECONCILIACIÓN CUANDO APLIQUE
+→ NUEVA DECISIÓN DE CERTIFICACIÓN
+→ PUBLICACIÓN O RESTATEMENT AUTORIZADO
+```
+
+Reglas:
+
+1. una fuente previamente `CERTIFICADO` puede quedar `DEGRADADO` o `BLOQUEADO` para el nuevo corte;
+2. una fuente previamente `BLOQUEADO` no se vuelve certificada por haber sido reconstruida;
+3. la certificación se acota al uso, periodo, versión, corte y dependencias de la reexpresión;
+4. un restatement no oficial o exploratorio debe conservar ese carácter;
+5. la comparación original/restated muestra la calidad aplicable a cada lado.
+
+#### 26. Datos tardíos, periodos abiertos y periodos publicados
+
+D017 preserva el tiempo original del hecho.
+
+| Situación                                                              | Tratamiento                                                                                           |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| dato tardío llega a periodo todavía abierto y sin snapshot oficial     | incorporar conforme al contrato de origen y producir un nuevo corte del resultado vivo                |
+| dato tardío llega después de snapshot oficial                          | conservar snapshot; reconstruir y evaluar restatement                                                 |
+| dato tardío llega después de cierre de dominio que requiere reapertura | no reabrir desde D017; consumir la decisión del dominio propietario y luego evaluar impacto analítico |
+| timestamp de ocurrencia no es confiable                                | no inventarlo; aplicar calidad D007 y mantener el resultado afectado según su estado                  |
+| dato tardío no afecta ninguna métrica/publicación                      | registrar impacto nulo cuando la evaluación lo requiera; no generar reexpresión ficticia              |
+
+La fecha de recepción tardía no sustituye la fecha del hecho para “hacer caber” el dato en un periodo conveniente.
+
+#### 27. Backfills y reconstrucción histórica
+
+Un backfill no es equivalente a restatement.
+
+Antes de usar un backfill para reconstruir historia deberá estar declarada, conforme a D006:
+
+- fuente;
+- periodo;
+- motivo;
+- cobertura;
+- formato/esquema;
+- mappings;
+- crosswalks;
+- deduplicación;
+- faltantes;
+- transformación;
+- conciliación;
+- consumidores potencialmente afectados;
+- relación con publicaciones previas.
+
+Después del backfill:
+
+1. se reconstruyen únicamente los derivados afectados;
+2. se compara original con reconstruido cuando exista original;
+3. se evalúa calidad;
+4. se decide si corresponde restatement;
+5. se conserva que el dato no estaba disponible al corte original;
+6. no se presenta el backfill como evidencia de que el histórico original estaba completo.
+
+#### 28. Correcciones de fuente
+
+La analítica no corrige el hecho operativo para hacer cuadrar un reporte.
+
+Reglas:
+
+1. la corrección nace en la fuente propietaria o mediante el contrato autorizado de ese dominio;
+2. original, corrección, actor/proceso, momento y motivo permanecen trazables;
+3. D017 consume la corrección para evaluar derivados;
+4. una corrección de fuente puede tener impacto cero, parcial o múltiple sobre métricas;
+5. una corrección no se propaga por coincidencia de valor o nombre;
+6. una fuente corregida no autoriza reescribir un snapshot histórico;
+7. si la corrección afecta una publicación oficial, se aplica el proceso de restatement.
+
+#### 29. Correcciones de transformación y mappings
+
+Cuando un mapping, parser, conversión, join o transformación se demuestre incorrecto:
+
+- se conserva la versión defectuosa utilizada históricamente;
+- se crea una versión técnica/transformacional corregida;
+- se identifica el primer y último periodo potencialmente afectados;
+- se reconstruye una muestra o población autorizada suficiente para medir impacto antes de una reexpresión masiva;
+- se verifica que la corrección no cambie significado sin versionado semántico;
+- se conservan diferencias de entrada/salida y reconciliación;
+- las publicaciones afectadas se evalúan individualmente o por conjunto demostrablemente homogéneo;
+- los periodos no afectados no se reexpresan por comodidad.
+
+#### 30. Cambio de definición semántica
+
+Una nueva definición de métrica se aplica prospectivamente desde su vigencia salvo que exista una decisión explícita de reconstrucción histórica.
+
+Reglas:
+
+1. la versión anterior conserva su historia;
+2. la nueva versión no se etiqueta como si hubiera estado vigente antes;
+3. una serie bajo v2 puede reconstruir periodos previos solo como serie reexpresada;
+4. la serie v1 “como publicada” continúa disponible conforme a autorización y retención;
+5. una comparación v1/v2 declara la diferencia de definición;
+6. una mejora aparente producida exclusivamente por cambiar definición no se presenta como mejora del negocio;
+7. diagnósticos, metas y evaluaciones que dependían de v1 conservan esa referencia histórica.
+
+#### 31. Versionado y las seis familias de artefacto D008
+
+|    # | Familia de artefacto | Tratamiento histórico D017                                                                                                | Regla de reexpresión                                                                                                                    |
+| ---: | -------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | tablero              | la vista viva puede avanzar con nuevos cortes, pero cada snapshot o valor histórico referenciado conserva versión y corte | no se llama restatement al simple avance del estado vivo; sí se relaciona una corrección de una publicación fija                        |
+|    2 | reporte              | cada edición oficial conserva periodo, corte, versiones y fecha de publicación                                            | una corrección oficial genera edición relacionada; no sustituye el archivo o edición previa                                             |
+|    3 | exportación          | cada generación conserva contexto, corte y alcance de autorización del momento                                            | una exportación corregida es una nueva generación vinculada; la entregada anteriormente no se altera retroactivamente                   |
+|    4 | suscripción          | cada entrega conserva el corte y versión usados en esa ejecución                                                          | futuras entregas usan la versión vigente que corresponda; una corrección histórica se redistribuye solo conforme al contrato autorizado |
+|    5 | alerta               | la ocurrencia original conserva regla, versión, datos y tiempo de evaluación                                              | una corrección puede producir una nueva señal o anotación; no se borra la alerta original para fingir que no ocurrió                    |
+|    6 | snapshot oficial     | publicación inmutable por corte, contexto y versiones                                                                     | todo cambio material produce reconstrucción/restatement distinguible                                                                    |
+
+**Reconciliación:** 6 familias esperadas; 6 decisiones materializadas; 0 faltantes; 0 duplicadas.
+
+#### 32. Diagnósticos y conclusiones D014
+
+Una conclusión diagnóstica oficial conserva la evidencia disponible cuando fue emitida.
+
+Si evidencia nueva o corregida cambia una conclusión:
+
+- la conclusión anterior permanece identificable;
+- se conserva su nivel D014 y evidencia originales;
+- se reconstruye la afirmación bajo la nueva evidencia;
+- se registra qué evidencia cambió;
+- se registra si cambia señal, factor, alternativas, impacto o confianza;
+- se publica una corrección/restatement de la conclusión cuando corresponda;
+- no se inserta evidencia posterior en la versión anterior como si hubiese estado disponible;
+- una reducción de confianza se conserva con el mismo rigor que un aumento.
+
+Un restatement analítico no convierte por sí mismo una asociación en causalidad.
+
+#### 33. Objetivos, líneas base y metas D015
+
+Cuando una corrección afecta un objetivo:
+
+```text
+BASELINE ORIGINAL USADO PARA DECIDIR
+≠
+BASELINE RECONSTRUIDO CON EVIDENCIA POSTERIOR
+```
+
+Reglas:
+
+1. el baseline original permanece vinculado al objetivo aprobado;
+2. el baseline reexpresado puede cambiar la interpretación actual;
+3. la meta original no se reescribe automáticamente por cambiar el baseline;
+4. si el propietario decide cambiar la meta, esa es una nueva decisión con vigencia propia;
+5. una comparación de cumplimiento debe declarar si usa baseline original o reexpresado;
+6. drivers y guardrails afectados deben reconstruirse bajo sus versiones pertinentes;
+7. un cambio de definición del KPI no se interpreta como cambio de desempeño sin reconciliación;
+8. si la corrección invalida comparabilidad, la evaluación queda `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` según corresponda hasta resolverla.
+
+#### 34. Acciones, experimentos y resultados D016
+
+D017 conserva la evidencia de una intervención tal como existía durante su diseño y evaluación.
+
+Si una corrección posterior afecta el resultado:
+
+- se conserva versión del objetivo;
+- se conserva acción/intervención definida;
+- se conserva diseño de evaluación;
+- se conserva población elegible y exposición observada originales;
+- se conserva baseline y meta usados;
+- se conservan guardrails;
+- se conserva resultado originalmente evaluado;
+- se conserva nivel de confianza D014 alcanzado;
+- se reconstruyen únicamente elementos afectados;
+- se determina si la conclusión de efecto cambia;
+- se registra el aprendizaje revisado;
+- la decisión histórica de adoptar, iterar, pausar, revertir o cerrar no se reescribe como si se hubiera tomado con la nueva evidencia.
+
+Una reexpresión del resultado experimental puede modificar la confianza actual. No modifica retroactivamente qué evidencia estaba disponible en la decisión original.
+
+#### 35. Métricas de asistencia bloqueadas y restatement futuro
+
+Las tres divergencias actuales permanecen:
+
+- `missingCloseCount`;
+- `attendanceRate` cuando `scheduledShifts = 0`;
+- `punctualityRate` cuando `attendedShifts = 0`.
+
+D017 decide cómo deberá tratarse la historia si la implementación futura se alinea con la semántica v1:
+
+1. la versión semántica sigue siendo `1` si el significado canónico no cambia;
+2. la corrección técnica recibe su propia versión técnica/transformacional;
+3. se identifica el periodo en que la implementación divergente produjo resultados;
+4. se reconstruyen únicamente los cortes afectados;
+5. se comparan resultados originales y corregidos;
+6. se reevalúa calidad y certificación;
+7. toda publicación oficial afectada se somete a decisión de restatement;
+8. una publicación provisional o no oficial conserva su condición histórica y no se promociona retroactivamente a certificada;
+9. la tarea técnica propietaria deberá implementar y verificar la corrección antes de cualquier certificación.
+
+D017 no ejecuta esa corrección.
+
+#### 36. Universo analítico heredado: 55 familias y decisión de versionado
+
+Las familias aprobadas de D009 a D013 son categorías semánticas de análisis, no `metric_key`. D017 debe preservar sus identidades sin inventar una versión de métrica donde todavía no existe una métrica concreta registrada.
+
+##### 36.1. Comercial — 11 familias
+
+|    # | Familia canónica                             | Decisión de versionado                                                                                                    |
+| ---: | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | versionar cada métrica concreta materializada; no versionar el nombre de familia como métrica                             |
+|    2 | pedidos y conversión                         | versionar cada métrica concreta materializada; numerador/denominador y población son parte de la versión                  |
+|    3 | ticket y unidades                            | versionar cada métrica concreta materializada; unidad y denominador forman parte de la semántica                          |
+|    4 | mezcla por producto, categoría, canal y sede | versionar la métrica y sus reglas de participación; cambios de jerarquía usan vigencia histórica                          |
+|    5 | demanda por franja, día y temporada          | versionar métricas y calendarios; estacionalidad no se reescribe con calendario posterior                                 |
+|    6 | disponibilidad perdida                       | no asignar versión ficticia mientras sus componentes permanezcan bloqueados; cada futura métrica concreta nace versionada |
+|    7 | cancelaciones, devoluciones y descuentos     | cada fenómeno conserva métricas y versiones separadas                                                                     |
+|    8 | promociones y efecto incremental             | versión de exposición, intervención y método causal permanece trazable                                                    |
+|    9 | recurrencia y frecuencia                     | identidad, población y ventana forman parte de la versión aplicable                                                       |
+|   10 | margen relacionado                           | consume versiones económico-financieras D013; no recalcula historia con costo actual                                      |
+|   11 | capacidad comercial no utilizada             | denominador de capacidad y unidad forman parte de la definición versionada                                                |
+
+##### 36.2. Inventario, abastecimiento, proveedores y logística — 12 familias
+
+|    # | Familia canónica                        | Decisión de versionado                                                                 |
+| ---: | --------------------------------------- | -------------------------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | versionar reglas de disponibilidad; cada snapshot conserva corte y estados elegibles   |
+|    2 | cobertura y días de inventario          | versionar existencia elegible, demanda/consumo y horizonte                             |
+|    3 | rotación y permanencia                  | versionar población, inventario medio y ventana histórica                              |
+|    4 | faltantes y quiebres                    | versionar definición de necesidad, disponibilidad y evento de quiebre                  |
+|    5 | vencimiento, daño y pérdida             | conservar versiones de clasificación y causa; no reclasificar historia silenciosamente |
+|    6 | diferencias de conteo                   | preservar corte, signo, antes/después de ajuste y regla de comparación                 |
+|    7 | cumplimiento de remisiones              | versionar hitos, población y definición de cumplimiento                                |
+|    8 | lead time y cumplimiento de proveedores | versionar eventos de inicio/recepción, promesa y población elegible                    |
+|    9 | compras urgentes                        | versionar clasificación de urgencia y estados elegibles                                |
+|   10 | consumo versus plan                     | versionar plan, población, unidad y ventana comparada                                  |
+|   11 | costo de inventario                     | consumir método económico versionado; no usar costo actual para reescribir historia    |
+|   12 | capacidad de almacenamiento             | versionar capacidad utilizable, unidad y vigencia física                               |
+
+##### 36.3. Producción, rendimiento, capacidad, merma y calidad — 10 familias
+
+|    # | Familia canónica                            | Decisión de versionado                                                                  |
+| ---: | ------------------------------------------- | --------------------------------------------------------------------------------------- |
+|    1 | demanda planificada versus producción       | versionar necesidad/plan y producción comparada                                         |
+|    2 | capacidad disponible y utilizada            | versionar denominador de capacidad, unidad y ventana                                    |
+|    3 | adherencia al programa                      | versionar programa publicado, hitos y población                                         |
+|    4 | rendimiento teórico y real                  | versión de receta, escala, unidad y regla teórica forman parte del resultado            |
+|    5 | consumo estándar y real                     | estándar, receta/versión y unidad quedan vinculados al corte histórico                  |
+|    6 | merma, reproceso y aprovechamiento          | categorías y denominadores se versionan; no reclasificar hechos pasados sin restatement |
+|    7 | calidad, retención y rechazo                | controles, criterios, liberación y estados elegibles conservan versión/vigencia         |
+|    8 | tiempo de ciclo                             | versión de hitos y tratamiento de pausas/esperas forma parte de la definición           |
+|    9 | cumplimiento de liberación                  | versionar criterio de liberación y población elegible                                   |
+|   10 | costo y variación por lote, producto y sede | consumir costo económico versionado y preservar costo técnico original                  |
+
+##### 36.4. Servicio, clientes, fidelización, reputación y experiencia — 12 familias
+
+|    # | Familia canónica                                        | Decisión de versionado                                                          |
+| ---: | ------------------------------------------------------- | ------------------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | versionar promesa aceptada, política y evento de cumplimiento                   |
+|    2 | tiempos de preparación, despacho y entrega              | versionar hitos reales y reglas de fase                                         |
+|    3 | pedidos completos                                       | versionar líneas elegibles, sustituciones y criterio de completitud             |
+|    4 | reclamos y tiempo de resolución                         | versionar expediente, SLA y eventos terminales aplicables                       |
+|    5 | compensaciones                                          | conservar clasificación, decisión y valor bajo su versión de política           |
+|    6 | satisfacción y feedback                                 | escala, población, invitación y clasificación temática deben quedar versionadas |
+|    7 | recurrencia, frecuencia y abandono                      | versionar identidad autorizada, cohorte y ventana de observación                |
+|    8 | adquisición y activación                                | versionar evento de adquisición, origen, evento de activación y ventana         |
+|    9 | fidelización, puntos y redenciones                      | ledger y reglas de programa conservan versión; saldo no reemplaza historia      |
+|   10 | reputación y temas recurrentes                          | fuentes, taxonomía y método de clasificación conservan versión                  |
+|   11 | reservas, no-show y utilización                         | versionar estados, capacidad y ventana de servicio                              |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | consumir versiones D013 y preservar finalidad/identidad autorizada aplicable    |
+
+##### 36.5. Costos, rentabilidad, liquidez, presupuesto y escenarios — 10 familias
+
+|    # | Familia canónica              | Decisión de versionado                                                                  |
+| ---: | ----------------------------- | --------------------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | métodos, componentes, moneda y vigencia deben quedar versionados                        |
+|    2 | variaciones                   | cada variación conserva base y versión de ambos lados de la comparación                 |
+|    3 | margen y contribución         | ingreso, costo/costo variable y política aplicable se resuelven históricamente          |
+|    4 | gastos                        | estados, reconocimiento, clasificación y moneda conservan versión/vigencia              |
+|    5 | centros de costo              | identidad y jerarquía efectiva al hecho se preservan; reparenting no reescribe historia |
+|    6 | presupuesto y forecast        | cada versión aprobada conserva corte, supuestos, horizonte y estado                     |
+|    7 | caja, bancos y tesorería      | saldos y conciliaciones se reproducen al corte con fuentes y moneda aplicables          |
+|    8 | cartera y obligaciones        | aging y saldo abierto conservan corte, vencimiento y aplicaciones conocidas entonces    |
+|    9 | rentabilidad multidimensional | asignaciones, drivers y residuos conservan método y versión                             |
+|   10 | escenarios y simulaciones     | cada escenario conserva supuestos y versión; nunca sustituye el real histórico          |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55` familias. **55 esperadas; 55 decisiones materializadas; 0 faltantes; 0 duplicadas.**
+
+Regla global: una familia no recibe por esta tarea un `metric_key`, valor, fórmula o versión numérica nueva. El versionado se materializa en cada métrica concreta registrada conforme a D004.
+
+#### 37. Cambios de calidad sin cambio numérico
+
+La historia analítica incluye la aptitud de uso, no solo el valor.
+
+Si un resultado publicado mantiene el mismo número pero cambia su estado de calidad o certificación:
+
+- la condición anterior permanece identificable;
+- la nueva evaluación conserva evidencia y corte propios;
+- si el cambio altera la interpretación oficial, se emite una actualización gobernada y relacionada;
+- no se cambia la metadata del artefacto original para fingir que siempre tuvo el nuevo estado;
+- un cambio de calidad no se presenta como cambio de desempeño empresarial.
+
+#### 38. Cambios de cobertura y fuentes
+
+Una nueva sede, canal, proveedor, fuente o periodo de datos puede cambiar la cobertura sin cambiar fórmula.
+
+Reglas:
+
+1. la cobertura forma parte del contexto reproducible;
+2. agregar una fuente no hace comparables automáticamente periodos anteriores;
+3. una serie puede mantener la misma versión semántica y aun requerir señalización de cobertura distinta;
+4. si la nueva cobertura cambia el significado práctico de la medida, se evalúa si corresponde nueva versión semántica;
+5. una reconstrucción de periodos anteriores con la nueva fuente se presenta como reconstrucción, no como dato que siempre estuvo disponible;
+6. la fuente retirada continúa identificable para historia mientras existan resultados que dependan de ella.
+
+#### 39. Cambios de moneda, unidad y precisión
+
+D017 conserva monto/unidad original y representación derivada.
+
+Reglas:
+
+- una conversión monetaria conserva moneda origen, moneda destino, tasa, fuente de tasa, vigencia y redondeo;
+- cambiar la fuente o método de tasa puede requerir nueva versión de transformación y, si altera la semántica aprobada, nueva versión semántica;
+- una unidad convertida no sobrescribe la cantidad original;
+- un cambio de redondeo visual sin efecto empresarial no obliga nueva versión semántica;
+- un cambio de precisión que altera clasificación, umbral, conciliación o decisión sí es material;
+- monedas incompatibles no se comparan ocultando la conversión usada.
+
+#### 40. Publicaciones distribuidas y consumidores
+
+Cuando una publicación oficial haya sido entregada, exportada o distribuida y luego sea reexpresada:
+
+- la edición original continúa identificable;
+- la nueva edición declara relación con la anterior;
+- la decisión sobre redistribución consume autorización y experiencia aplicables;
+- la lista o evidencia de consumidores conocidos no se usa para ampliar permisos;
+- una suscripción futura no sustituye retroactivamente entregas previas;
+- un consumidor que conserve una exportación antigua debe poder reconocer su periodo, corte y versión;
+- la publicación más reciente no se presenta como si hubiera sido la única publicación histórica.
+
+#### 41. Restatement parcial y alcance mínimo
+
+Una reexpresión debe ser tan amplia como el impacto demostrado y no más.
+
+Ejemplos:
+
+- una corrección de una sede no obliga a recalcular sedes no relacionadas si el agregado no las consume;
+- una corrección de un producto puede afectar un total de categoría y empresa si el linaje demuestra agregación;
+- una corrección de una dimensión puede afectar varias métricas aunque el hecho fuente no cambie;
+- una corrección de una fórmula puede afectar todas las poblaciones que usaron esa versión técnica durante su vigencia;
+- un cambio de metadata sin impacto de cifra no autoriza recalcular todas las métricas.
+
+La evaluación debe explicar por qué cada alcance está incluido o excluido.
+
+#### 42. Fallos de reproducibilidad
+
+Una reconstrucción puede quedar `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` cuando falte un insumo material.
+
+Ejemplos de bloqueo:
+
+- fuente histórica no disponible;
+- payload o archivo original requerido pero no preservado;
+- versión de esquema desconocida;
+- versión de transformación irrecuperable;
+- crosswalk histórico no disponible;
+- dimensión efectiva indeterminable;
+- configuración técnica no versionada que afecta resultado;
+- modelo externo no recuperable;
+- población original no reconstruible;
+- corte original desconocido;
+- fuente crítica `BLOQUEADO` conforme a D007.
+
+D017 prohíbe completar estos huecos con valores aproximados y presentar la salida como reproducción exacta.
+
+#### 43. Auditoría de versión, corrección y restatement
+
+Toda operación material deberá conservar, cuando aplique:
+
+- actor o proceso que propone el cambio;
+- propietario que lo aprueba;
+- fecha/hora;
+- razón;
+- objeto afectado;
+- versión anterior;
+- versión nueva;
+- evidencia de cambio;
+- alcance temporal;
+- alcance territorial/organizacional;
+- resultado de impacto;
+- artefactos afectados;
+- decisión de reconstrucción;
+- decisión de restatement;
+- nueva evaluación de calidad;
+- certificación aplicable;
+- publicación o redistribución;
+- excepciones;
+- relación con diagnósticos, objetivos e intervenciones;
+- evidencia de cierre.
+
+La materialización de permisos y auditoría pertenece a `DATA-AUTH-003`, `DATA-AUTH-004` y las tareas técnicas aplicables.
+
+#### 44. Segregación de responsabilidades
+
+| Responsabilidad                | Autoridad lógica                                | Regla                                                   |
+| ------------------------------ | ----------------------------------------------- | ------------------------------------------------------- |
+| corregir hecho o maestro       | dominio propietario                             | BLOQUE AB no modifica el origen para cuadrar resultados |
+| definir significado de métrica | propietario empresarial + gobierno AB           | un restatement no redefine fórmula por sí solo          |
+| implementar cálculo            | custodio técnico                                | implementación no adquiere autoridad semántica          |
+| evaluar calidad                | steward/certificador D007                       | reconstrucción no certifica por sí misma                |
+| decidir restatement            | propietario empresarial y funciones autorizadas | decisión separada de la capacidad técnica de recalcular |
+| publicar reexpresión           | función autorizada                              | publicar no permite corregir fuente ni certificar       |
+| auditar cambio                 | función segregada conforme a DATA-AUTH          | conserva evidencia y trazabilidad                       |
+| administrar versiones físicas  | tareas DATA-INT aplicables                      | no altera significado sin contrato documental           |
+
+La misma persona podrá ocupar más de una función solo cuando la autorización futura lo permita; D017 no concede esa acumulación.
+
+#### 45. Compatibilidad con herramientas BI, hojas y modelos externos
+
+Una herramienta externa puede consumir versiones, pero no convertirse en autoridad.
+
+Reglas:
+
+- una fórmula local de BI no reemplaza la definición canónica;
+- una hoja descargada no se usa como fuente para reescribir la métrica que originó la exportación;
+- un modelo externo conserva dataset, corte, variables, versión y evidencia suficientes;
+- un cambio de modelo se registra como versión técnica/modelo y no como versión semántica salvo que cambie la medida empresarial;
+- resultados externos corregidos siguen el mismo análisis de impacto antes de restatement;
+- `DATA-INT-004` gobierna la integración física y `DATA-AUTH-004` su auditoría.
+
+#### 46. Publicación de historia y experiencia
+
+Una superficie futura que muestre resultados históricos deberá poder distinguir, cuando exista reexpresión:
+
+- valor originalmente publicado;
+- fecha de publicación original;
+- valor reexpresado vigente;
+- fecha de reexpresión;
+- razón;
+- magnitud de diferencia;
+- versión de métrica original y nueva cuando difieran;
+- estado de calidad de cada edición;
+- alcance afectado;
+- enlace o drill-down autorizado a evidencia suficiente.
+
+No se exige mostrar toda esta información permanentemente en la vista principal. `DATA-UX-007` define la experiencia de divulgación progresiva sin ocultar la existencia del restatement.
+
+#### 47. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                            | Propietario documental | Condición de salida                                                            |
+| --------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------ |
+| protección de datos, métricas y resultados por dominio, entidad, territorio y finalidad | `DATA-AUTH-001`        | antes de exponer historia o reexpresiones a consumidores                       |
+| protección de poblaciones pequeñas, comparaciones, exportaciones y drill-down           | `DATA-AUTH-002`        | antes de exponer diferencias históricas sensibles                              |
+| segregación de definición, certificación, publicación, restatement y administración     | `DATA-AUTH-003`        | antes de conceder capacidades productivas sobre versiones o reexpresiones      |
+| auditoría de consultas, descargas, suscripciones, modelos y recomendaciones             | `DATA-AUTH-004`        | antes de habilitar trazabilidad operativa de consumidores y herramientas       |
+| experiencia de catálogo de métricas y versiones                                         | `DATA-UX-002`          | antes de implementar navegación y comparación de definiciones                  |
+| comparación y drill-down en tableros                                                    | `DATA-UX-003`          | antes de presentar series versionadas en superficies de dominio                |
+| reportes, exportaciones, suscripciones y snapshots versionados                          | `DATA-UX-007`          | antes de implementar experiencia de publicación/restatement                    |
+| contratos físicos de eventos y lectura                                                  | `DATA-INT-001`         | antes de reproducir resultados desde fuentes productivas compartidas           |
+| capa semántica, consultas, modelos, caché, snapshots y materialización de versiones     | `DATA-INT-002`         | antes de implementar cálculo, almacenamiento o servicio de restatements        |
+| crosswalks e identidades externas versionadas                                           | `DATA-INT-003`         | antes de reconstruir historia que dependa de correspondencias entre fuentes    |
+| BI, hojas, modelos analíticos e inteligencia artificial                                 | `DATA-INT-004`         | antes de integrar herramientas externas en reconstrucción o análisis histórico |
+
+No queda una decisión material de D017 diferida sin propietario documental y condición de salida.
+
+#### 48. Cobertura de requisitos de prueba vigente
+
+Las reglas de D017 ya están protegidas por requisitos vigentes:
+
+- `TREQ-DATA-001` exige identidad estable, historia efectiva, crosswalks y preservación de hechos pasados ante correcciones, fusiones y separaciones;
+- `TREQ-DATA-002` exige registro canónico versionado de métricas, mismo resultado bajo misma versión/contexto, reglas de comparación y prohibición de fórmulas locales competidoras;
+- `TREQ-DATA-003` exige conservar contratos de origen, tiempos, versión de esquema, datos tardíos, backfills, correcciones, reconciliación y linaje;
+- `TREQ-DATA-004` exige que publicaciones y exportaciones conserven versiones, periodo, corte, calidad y que toda corrección o restatement preserve la versión anterior;
+- `TREQ-DATA-005` continúa protegiendo que acciones y experimentos conserven resultados, confianza, aprendizaje, datos faltantes y cambios de definición, aunque su tarea responsable principal finalice en D016.
+
+D017 especializa la semántica de versionado, impacto histórico, reconstrucción y restatement dentro de reglas ya identificadas. No cambia prioridad, modalidad, estado, relación ni destino de implementación de esos requisitos.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los requisitos DATA vigentes ya asignan explícitamente a esta tarea la preservación de identidad e historia, el versionado semántico, datos tardíos, backfills, correcciones, linaje, publicaciones inmutables y restatements. Esta tarea materializa documentalmente esas obligaciones sin introducir una familia de comportamiento ejecutable independiente, modificar contratos físicos, cambiar datos, ejecutar reconstrucciones o publicar reexpresiones.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+#### 49. Criterios de aceptación
+
+1. `metric_key`, versión semántica, versión de esquema, versión de transformación, versión técnica y edición de publicación permanecen conceptos distintos;
+2. se conserva la regla misma métrica + misma versión + mismo contexto + mismo corte = mismo resultado;
+3. un cambio técnico que no cambia significado no crea versión semántica;
+4. un cambio material de significado sí crea una nueva versión semántica;
+5. se enumeran explícitamente los elementos que disparan nueva versión semántica;
+6. se enumeran explícitamente los cambios técnicos que no la disparan por sí solos;
+7. una corrección de bug que alinea implementación con la definición v1 conserva la versión semántica y cambia la versión técnica/transformacional;
+8. los resultados históricos afectados por ese bug se evalúan para restatement;
+9. una versión nueva no elimina la anterior;
+10. una versión histórica continúa resolviendo las publicaciones y decisiones que la usaron;
+11. la versión vigente para nuevos usos no se aplica retroactivamente por defecto;
+12. comparar versiones incompatibles exige puente explícito o series separadas;
+13. una reconstrucción bajo una versión nueva no se presenta como definición vigente en el pasado;
+14. se preservan exactamente las 14 `metric_key` de asistencia aprobadas;
+15. las 14 métricas permanecen en versión semántica `1`;
+16. existen 14 claves únicas, 0 faltantes y 0 duplicadas;
+17. se preservan 11 estados `NO EVALUADO` y 3 `BLOQUEADO`;
+18. D017 no desbloquea ni certifica métricas de asistencia;
+19. `missingCloseCount`, `attendanceRate` y `punctualityRate` conservan su divergencia actual hasta corrección técnica y reevaluación;
+20. reintento, replay, backfill, corrección, reconstrucción y restatement permanecen separados;
+21. un backfill no se denomina automáticamente restatement;
+22. una reconstrucción no modifica por sí sola la publicación anterior;
+23. un restatement nunca sobrescribe la edición original;
+24. dato tardío y dato incorrecto permanecen separados;
+25. un dato tardío conserva el tiempo del hecho original;
+26. un dato tardío en un periodo abierto puede producir nuevo corte sin ser restatement de una publicación inexistente;
+27. un dato tardío que afecta una publicación oficial dispara evaluación de impacto;
+28. una corrección de fuente nace en el dominio propietario;
+29. la analítica no corrige el hecho fuente para cuadrar un reporte;
+30. original y corrección de fuente permanecen trazables;
+31. un mapping o transformación corregidos conservan la versión histórica defectuosa usada;
+32. una corrección de mapping identifica periodos y consumidores potencialmente afectados;
+33. una nueva versión semántica se aplica prospectivamente salvo decisión explícita de reconstrucción histórica;
+34. una serie reconstruida bajo versión posterior se distingue de la serie publicada originalmente;
+35. se define evaluación de impacto antes de toda reexpresión oficial;
+36. la evaluación identifica fuente, periodos, versiones, métricas, artefactos, decisiones y evidencia afectadas;
+37. no existe un umbral universal inventado de materialidad;
+38. el restatement se limita al alcance demostrado por linaje;
+39. una corrección sin impacto en resultado oficial no genera un restatement numérico ficticio;
+40. una corrección de metadata material conserva historia y puede requerir una edición relacionada;
+41. la publicación original permanece identificable después del restatement;
+42. original y reexpresión conservan valores, cortes, versiones, calidad y fechas separados;
+43. se distingue lo conocido entonces de lo reconstruido ahora;
+44. evidencia posterior no se inserta retroactivamente como si hubiese estado disponible;
+45. una decisión histórica conserva la evidencia disponible cuando fue tomada;
+46. toda reconstrucción declara las versiones de fuente, esquema, transformación y semántica necesarias;
+47. la reproducibilidad exige contexto, corte, población, dimensiones, filtros, unidad, moneda y tiempo;
+48. la reproducibilidad conserva datos tardíos, backfills y correcciones conocidos al corte;
+49. cuando un insumo histórico material no existe, la reproducción no se fabrica;
+50. una fuente externa mutable requiere preservación de evidencia o declaración de limitación;
+51. una reconstrucción no hereda automáticamente certificación D007;
+52. toda reexpresión oficial pasa por nueva evaluación de calidad y certificación aplicable;
+53. una fuente crítica `BLOQUEADO` puede bloquear la reexpresión oficial dependiente;
+54. las seis familias de D008 están materializadas exactamente una vez en la matriz D017;
+55. existen 6 decisiones de artefacto, 0 faltantes y 0 duplicadas;
+56. tablero vivo y snapshot oficial no se confunden;
+57. reporte reexpresado es una nueva edición relacionada;
+58. exportación corregida es nueva generación y no altera el archivo ya entregado;
+59. suscripción futura no reescribe entregas históricas;
+60. alerta histórica no se elimina porque después se corrija la evidencia;
+61. snapshot oficial permanece inmutable;
+62. una conclusión diagnóstica D014 corregida conserva la conclusión y confianza originales;
+63. una nueva evidencia puede aumentar o reducir confianza sin borrar la versión anterior;
+64. baseline original D015 y baseline reexpresado permanecen separados;
+65. una meta no se reescribe automáticamente al corregir baseline;
+66. una evaluación D016 conserva diseño, exposición y resultado conocidos en el momento original;
+67. una corrección posterior puede reexpresar el resultado sin reescribir la decisión histórica;
+68. se preservan las 55 familias de D009 a D013 exactamente una vez;
+69. la reconciliación de familias es 11 + 12 + 10 + 12 + 10 = 55;
+70. existen 55 decisiones de versionado, 0 faltantes y 0 duplicadas;
+71. ninguna familia recibe un `metric_key` inventado;
+72. ninguna familia recibe una versión numérica ficticia antes de existir una métrica concreta registrada;
+73. costo actual, jerarquía actual, regla actual o dimensión actual no sustituyen automáticamente su versión histórica;
+74. la historia de moneda y unidad conserva conversiones y originales;
+75. una corrección no se expande a periodos o dimensiones no afectadas sin evidencia de linaje;
+76. un fallo de reproducibilidad queda visible como falta de evidencia o bloqueo;
+77. la auditoría conserva actor, razón, versiones, alcance, evidencia, decisiones y publicación;
+78. corregir, certificar y publicar permanecen capacidades separadas;
+79. BI, hojas, modelos externos e IA no adquieren autoridad sobre historia analítica;
+80. cada handoff tiene propietario documental exacto y condición de salida;
+81. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+82. no se ejecuta código, DDL, DML, migración, backfill, replay, reconstrucción productiva, restatement ni cambio de Supabase;
+83. `DATA-AUTH-001` permanece únicamente reservada.
+
+#### 50. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+
+TAREA ACTUAL APROBADA
+DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+
+SIGUIENTE TAREA RESERVADA
+DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad
+```
+
