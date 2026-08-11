@@ -1053,6 +1053,879 @@ SIGUIENTE TAREA RESERVADA
 `CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación`
 
 
-### [ ] CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación
+### ✅ CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación` — APROBADA  
+**Tarea siguiente:** `CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de acceso técnico extraordinario de continuidad, recuperación de credenciales y llaves, break-glass, autorización de failover, vigencia, expiración, revocación, rotación y evidencia  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md`  
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, RPC, funciones, Edge Functions, migraciones, datos, cuentas, permisos, grants, secretos, llaves, certificados, sesiones, dispositivos, proveedores, respaldos, restauraciones, failover, red, infraestructura ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar un gobierno único para cualquier acceso técnico extraordinario requerido durante continuidad, separar la decisión empresarial de activar continuidad de la autorización técnica excepcional, impedir que break-glass se convierta en bypass permanente, gobernar credenciales y material de recuperación sin exponer secretos, fijar vigencia y revocación obligatorias, y proteger la decisión de failover sin afirmar que exista actualmente una capacidad alterna acreditada.
+
+---
+
+#### 1. Resultado sustantivo
+
+`CONT-AUTH-002` queda definida con las siguientes decisiones obligatorias:
+
+1. **Una emergencia no suspende el modelo canónico de identidad, autorización, segregación, auditoría, privacidad ni seguridad.** La urgencia modifica el tiempo de respuesta, no crea autoridad.
+2. `ACTIVACION_DE_CONTINUIDAD` y `ACCESO_DE_EMERGENCIA` son decisiones distintas. Una activación aprobada no concede break-glass ni privilegios técnicos por sí sola.
+3. **Break-glass es una autorización excepcional, acotada y temporal para una necesidad técnica concreta; no es un rol, un permiso wildcard, una cuenta genérica, una credencial compartida ni una excepción permanente.**
+4. Toda persona que utilice acceso extraordinario debe conservar identidad humana atribuible y actor efectivo resoluble. La credencial de recuperación utilizada para obtener o restablecer acceso no se convierte en la identidad del actor.
+5. Las cuentas humanas genéricas o compartidas permanecen bloqueadas para operación privilegiada. La continuidad no crea una excepción a esa regla.
+6. Una credencial, llave, certificado, código de recuperación, token técnico o secreto permite autenticar o descifrar dentro de su propósito técnico; por sí solo concede **cero autorización empresarial**.
+7. El acceso extraordinario reutiliza el modelo canónico de autorización y el gobierno de acceso tecnológico ya aprobados. No se crea un carril paralelo de permisos para continuidad.
+8. Toda autorización de emergencia debe declarar necesidad, actor, recurso, ambiente, capacidad exacta, alcance, finalidad, correlación con incidente o recuperación, inicio, expiración, aprobador y condición de revocación.
+9. No existe renovación silenciosa. Extender una ventana, ampliar un recurso, cambiar el alcance o reactivar un acceso expirado exige una nueva decisión auditada.
+10. Las denegaciones aplicables continúan prevaleciendo. Break-glass no neutraliza un deny estructural, transversal, territorial, de seguridad o de segregación.
+11. La aprobación de un cambio, una restauración o una activación de continuidad no inserta automáticamente un grant técnico. Cada control conserva su propia decisión y evidencia.
+12. La ausencia de un aprobador requerido no equivale a aprobación. El silencio, la presión temporal, la indisponibilidad de una interfaz o la gravedad del incidente no crean un allow.
+13. Una acción protectora previamente autorizada que solo detenga, aísle o preserve seguridad puede ejecutarse conforme a su contrato sin convertir esa acción en privilegio de emergencia ni en autoridad para reanudar.
+14. La recuperación de secretos, certificados y llaves se mantiene separada de la recuperación de datos y configuración. Las referencias pueden documentarse; el material sensible no se incorpora en texto plano al expediente transversal.
+15. Toda liberación o uso de material de recuperación debe quedar correlacionado con una persona o servicio identificable, finalidad, recurso, ambiente, ventana y evidencia de devolución, cierre, rotación o invalidación cuando corresponda.
+16. Un servicio del sistema puede usar material técnico recuperado únicamente para operaciones permitidas de su identidad de servicio. `service_role`, una cuenta técnica o una automatización no sustituyen autorización empresarial humana.
+17. Un proveedor o técnico externo no se autoautoriza, no se convierte en aprobador interno y no recibe acceso por la sola existencia de contrato, soporte o relación técnica.
+18. El failover permanece separado de restore. Autorizar acceso de emergencia no autoriza conmutación; autorizar failover no declara recuperado el proceso empresarial.
+19. Una rama de failover solo puede habilitarse cuando exista capacidad alterna acreditada, autoridad aplicable, fuente activa inequívoca, control de split-brain, punto de datos compatible, validación y retorno definidos.
+20. La línea base vigente conserva **cero sustitutos concretos aprobados**. En consecuencia, la ejecución real de failover permanece `BLOQUEADO_HASTA_EXISTIR_CAPACIDAD_HABILITADA`.
+21. El retorno al primario no es automático. Failback exige decisión, comparación de delta e integridad, compatibilidad, tratamiento del trabajo posterior y nueva validación técnica y funcional.
+22. La expiración o revocación invalida la autoridad derivada. Sesiones, cachés, tokens, decisiones, suscripciones, reconexiones, reintentos y colas no pueden continuar usando una autorización vencida.
+23. Una revocación de emergencia no borra la evidencia histórica ni elimina la necesidad de reconciliar efectos producidos durante la ventana.
+24. Un ejercicio, simulación o tabletop no concede acceso productivo. El material de ejercicio debe permanecer aislado de autoridad real y no puede reutilizarse como credencial operativa.
+25. `H-CAP-SCOPE-018-033` queda tratado documentalmente: el acceso excepcional dispone de vigencia, límites, segregación, invalidación, revocación, rotación y evidencia que impiden normalizarlo como bypass permanente.
+26. La tarea no declara que exista hoy un inventario completo de credenciales de recuperación, un mecanismo físico de break-glass, un escrow operativo, una sesión de emergencia activa o un failover ejecutable. Esas instancias permanecen sujetas a evidencia y materialización posterior.
+27. La protección del contenido de respaldos, runbooks, contactos, formularios, evidencia y datos sensibles de contingencia permanece en `CONT-AUTH-003`.
+28. La separación entre ejecución, validación, reincorporación, conciliación, cierre y revisión posterior permanece en `CONT-AUTH-004`.
+29. La implementación física de identidad, evaluación, invalidación, auditoría, sesiones, secretos o integraciones permanece en los paquetes y tareas de implementación ya propietarios; esta tarea no adelanta esa fase.
+30. Se generan **cero cambios TREQ** porque el comportamiento protegido ya está cubierto por los requisitos vigentes de continuidad, autorización y administración tecnológica.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume sin redefinir:
+
+- `VPROC-0062 — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje`;
+- `PROC-ACTOR-001`, que permite a los ocho roles base aplicables participar como sujetos o reportantes sin conceder administración transversal, acceso sensible ni ejecución por el nombre del rol;
+- `PROC-ACTOR-002`, que permite a los doce roles operativos ejecutar únicamente procedimientos de contingencia aprobados dentro de sede, área, turno, recurso y autoridad válidos;
+- `PROC-ACTOR-003`, que conserva `RESPONSABLE_DE_CONTINUIDAD` y `RESPONSABLE_DEL_PROCESO` como funciones ejecutoras principales, `GERENCIA_GENERAL` y `GOBIERNO_Y_PROPIEDAD` como autoridades obligatorias de continuidad según severidad y `GERENCIA_GENERAL` o autoridad de seguridad competente como autoridad del ciclo sensible de acceso tecnológico;
+- `CONT-DOM-001`, incluida la regla de que una emergencia no elimina autorización, finalidad, territorio, RLS, auditoría ni límites permanentes;
+- `CONT-DOM-005` y `CONT-DOM-006`, para declaración, activación, severidad, mando, sustitución, decisiones y comunicación;
+- `CONT-DOM-007` a `CONT-DOM-010`, para operación mínima, contingencia, captura durante falla, reincorporación e idempotencia;
+- `CONT-DOM-011`, para inventario de objetos recuperables, separación de secretos respecto de configuración, acceso mínimo y recuperación separada de llaves, certificados y credenciales;
+- `CONT-DOM-012`, para runbooks, orden de recuperación, restore, failover condicional, fuente activa, prevención de split-brain, retorno y validación funcional;
+- `CONT-DOM-013`, para dependencias, proveedores y alternativas sin transferencia de autoridad;
+- `CONT-DOM-014` y `CONT-DOM-015`, para ejercicios, evidencia vigente, revisión y mantenimiento posterior;
+- `CONT-AUTH-001`, que separa activación de acceso de emergencia y reserva expresamente break-glass, elevación temporal, failover privilegiado, expiración, revocación, rotación y evidencia a esta tarea;
+- `TI-AUTH-002`, que define acceso privilegiado, elevación temporal, cuentas técnicas, soporte remoto y proveedor, y reserva expresamente break-glass, credenciales de recuperación y failover de continuidad a `CONT-AUTH-002`;
+- el modelo canónico de identidad, actor efectivo, permiso, modalidad, alcance, recurso, contexto, denegación, decisión y auditoría;
+- `TREQ-CONT-002`, `TREQ-CONT-003` y `TREQ-CONT-004`;
+- `TREQ-AUTH-013`, `TREQ-AUTH-014`, `TREQ-AUTH-015`, `TREQ-AUTH-016` y `TREQ-AUTH-165`;
+- `TREQ-SHELL-010`.
+
+No se crea un segundo catálogo de permisos, una segunda fuente de identidad, una política paralela de secretos, un rol nuevo denominado break-glass ni una cuenta compartida autorizada por continuidad.
+
+---
+
+#### 3. Fronteras conceptuales obligatorias
+
+Se fijan las siguientes separaciones:
+
+```text
+ACTIVACION DE CONTINUIDAD
+≠
+ACCESO DE EMERGENCIA
+
+ACCESO DE EMERGENCIA
+≠
+BREAK-GLASS PERMANENTE
+
+BREAK-GLASS
+≠
+ROL
+≠
+PERMISO WILDCARD
+≠
+CUENTA COMPARTIDA
+
+CREDENCIAL DE RECUPERACION
+≠
+IDENTIDAD HUMANA
+≠
+AUTORIZACION EMPRESARIAL
+
+POSEER UN SECRETO
+≠
+ESTAR AUTORIZADO A USAR EL RECURSO
+
+APROBACION DE CAMBIO
+≠
+APROBACION DE ACCESO
+
+RESTORE
+≠
+FAILOVER
+
+AUTORIZACION DE FAILOVER
+≠
+EJECUCION TECNICA DEL FAILOVER
+
+SERVICIO TECNICAMENTE RESTAURADO
+≠
+PROCESO EMPRESARIAL RECUPERADO
+
+FAILOVER
+≠
+FAILBACK
+
+EXPIRACION
+≠
+BORRADO DE HISTORIA
+
+REVOCACION DE ACCESO
+≠
+CIERRE DEL INCIDENTE
+```
+
+Estas fronteras son obligatorias en cualquier futura interfaz, API, RPC, función, servicio, runbook, integración, vault, proveedor o herramienta que materialice el resultado.
+
+---
+
+#### 4. Definición de acceso de emergencia
+
+Se considera **acceso de emergencia de continuidad** una autorización técnica extraordinaria requerida para proteger, aislar, recuperar, restaurar, verificar o conmutar un recurso durante una interrupción o recuperación controlada cuando la autoridad ordinaria del actor sea insuficiente para la acción exacta.
+
+La definición no concede acceso. Para que una solicitud sea autorizable deben resolverse como mínimo:
+
+1. incidente, recuperación o ejercicio controlado correlacionable;
+2. necesidad concreta que no pueda satisfacerse con autoridad ordinaria suficiente;
+3. actor humano efectivo o servicio técnico identificado;
+4. recurso y ambiente exactos;
+5. capacidad o permiso exactos;
+6. alcance mínimo suficiente;
+7. finalidad y efecto esperado;
+8. riesgo y blast radius conocidos hasta el nivel disponible;
+9. inicio y expiración;
+10. autoridad de aprobación aplicable;
+11. segregación aplicable;
+12. mecanismo de autenticación y reautenticación requerido;
+13. condición explícita de revocación;
+14. evidencia que deberá conservarse;
+15. mecanismo de retorno a autoridad ordinaria.
+
+Un valor ausente, desconocido o ambiguo no significa alcance global.
+
+---
+
+#### 5. Condiciones de elegibilidad de break-glass
+
+Break-glass solo es elegible cuando se cumplen simultáneamente estas condiciones:
+
+- existe una necesidad de continuidad o recuperación real y correlacionable, o un ejercicio expresamente autorizado y aislado;
+- el actor no dispone de autoridad ordinaria suficiente para la acción exacta;
+- la acción es necesaria para preservar seguridad, restablecer una capacidad, recuperar acceso técnico o ejecutar una transición autorizada;
+- el recurso y ambiente pueden identificarse sin ambigüedad;
+- existe una autoridad competente que aprueba la excepción conforme al objeto y severidad;
+- el acceso puede limitarse temporalmente y revocarse;
+- la acción conserva trazabilidad suficiente;
+- no exige neutralizar una denegación que el modelo canónico considera prevalente;
+- no convierte una identidad técnica, dispositivo, proveedor o secreto en actor humano;
+- no depende de una cuenta humana compartida como única forma de atribución;
+- no elimina validación, reconciliación o revisión posterior aplicables.
+
+Si una de estas condiciones no puede demostrarse, el acceso excepcional queda `BLOQUEADO` o `PENDIENTE_DE_EVIDENCIA` según la causa; no se presume autorizado.
+
+---
+
+#### 6. Matriz materializada de autoridad y segregación
+
+| Decisión o acción                       | Función que puede originar o preparar                                                                                                                                                                | Autoridad requerida                                                                | Ejecuta                                                 | Regla de segregación                                                                            |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| solicitar acceso de emergencia          | `RESPONSABLE_DE_CONTINUIDAD`, `RESPONSABLE_TECNOLOGICO`, `RESPONSABLE_DEL_PROCESO` o actor habilitado por el incidente según necesidad                                                               | no constituye aprobación                                                           | actor solicitante o preparador                          | solicitar no concede ni activa el acceso                                                        |
+| aprobar acceso técnico extraordinario   | autoridad del ciclo de acceso sensible: `GERENCIA_GENERAL` o autoridad de seguridad competente; cuando la decisión además cambia el modo de continuidad, se conserva la autoridad de `CONT-AUTH-001` | obligatoria                                                                        | no debe ser el beneficiario único de la misma excepción | el beneficiario o administrador técnico no emite por sí solo la aprobación final sensible       |
+| liberar material de recuperación        | custodio o mecanismo autorizado de la fuente propietaria                                                                                                                                             | decisión de acceso vigente y reglas de custodia aplicables                         | custodio o mecanismo técnico                            | custodiar no equivale a poder usar el material para cualquier finalidad                         |
+| usar credencial o llave de recuperación | actor humano o servicio técnico identificado y autorizado para el recurso                                                                                                                            | acceso extraordinario vigente o capacidad ordinaria suficiente                     | actor o servicio identificado                           | el material técnico no sustituye identidad, permiso ni alcance                                  |
+| ejecutar restauración técnica           | `RESPONSABLE_TECNOLOGICO` o ejecutor técnico autorizado                                                                                                                                              | runbook, acceso y decisión técnica aplicables                                      | ejecutor técnico                                        | restaurar no permite declarar recuperación empresarial                                          |
+| autorizar failover                      | autoridad aplicable a la recuperación y al cambio de modo, manteniendo las decisiones separadas de acceso y continuidad                                                                              | obligatoria cuando exista capacidad alterna acreditada                             | no necesariamente ejecuta la conmutación                | quien ejecuta técnicamente no declara por sí solo la decisión empresarial ni su éxito funcional |
+| ejecutar failover                       | ejecutor técnico explícitamente autorizado                                                                                                                                                           | autorización de failover + acceso técnico vigente                                  | ejecutor técnico                                        | conmutar no equivale a validar resultado empresarial                                            |
+| validar recuperación técnica            | función técnica distinta de la mera ejecución cuando el riesgo exige independencia                                                                                                                   | evidencia técnica                                                                  | validador técnico                                       | no sustituye validación funcional                                                               |
+| validar resultado empresarial           | `RESPONSABLE_DEL_PROCESO` y funciones empresariales aplicables                                                                                                                                       | evidencia de MBCO y pendientes                                                     | propietario funcional o validador autorizado            | no se delega al proveedor ni al ejecutor técnico por conveniencia                               |
+| revocar acceso de emergencia            | autoridad o mecanismo autorizado de revocación; la expiración automática ejecuta una condición previamente aprobada                                                                                  | no requiere una nueva aprobación para dejar de autorizar al cumplirse la condición | administrador técnico o mecanismo de identidad          | revocar no borra evidencia ni cierra el incidente                                               |
+| rotar material expuesto o de emergencia | propietario técnico/seguridad conforme al sistema afectado                                                                                                                                           | decisión de rotación aplicable                                                     | ejecutor autorizado                                     | la persona que usó el material no puede omitir la rotación requerida                            |
+| autorizar failback                      | autoridad aplicable a retorno controlado                                                                                                                                                             | obligatoria según riesgo y runbook                                                 | no necesariamente ejecuta                               | el retorno no ocurre por simple recuperación de salud del primario                              |
+| cerrar el incidente                     | fuera de esta tarea; conserva `CONT-AUTH-004` y el proceso de continuidad                                                                                                                            | autoridad de cierre aplicable                                                      | función de cierre                                       | revocación y failback no equivalen por sí solos a cierre                                        |
+
+La organización puede concentrar funciones únicamente cuando la concentración esté permitida y registrada. La concentración nunca transforma una decisión sensible en autoaprobación del beneficiario.
+
+---
+
+#### 7. Ciclo obligatorio del acceso extraordinario
+
+Todo acceso de emergencia deberá poder reconstruirse mediante este ciclo:
+
+```text
+NECESIDAD DETECTADA
+→ SOLICITUD CORRELACIONADA
+→ EVALUACION DE AUTORIDAD ORDINARIA
+→ JUSTIFICACION DE EXCEPCION
+→ APROBACION APLICABLE
+→ ACTIVACION TEMPORAL
+→ USO ATRIBUIBLE
+→ VERIFICACION DEL EFECTO
+→ EXPIRACION O REVOCACION
+→ INVALIDACION DE AUTORIDAD DERIVADA
+→ ROTACION O CIERRE DEL MATERIAL CUANDO APLIQUE
+→ EVIDENCIA Y HANDOFF A RECONCILIACION / REVISION
+```
+
+Reglas del ciclo:
+
+1. si la autoridad ordinaria es suficiente, no se crea break-glass artificial;
+2. una solicitud denegada permanece como evidencia y no se reintenta cambiando de canal para evitar la decisión;
+3. la aprobación se aplica a la necesidad evaluada, no a cualquier operación posterior del actor;
+4. el acceso no se activa antes de su inicio autorizado;
+5. el acceso deja de autorizar al alcanzar su expiración o condición de revocación;
+6. una sesión abierta no extiende la vigencia;
+7. una operación posterior exige contexto y autorización frescos;
+8. cualquier efecto incierto se conserva como pendiente de verificación y conciliación;
+9. la finalización técnica del trabajo no elimina la obligación de revocar;
+10. el incidente puede continuar después de revocar el privilegio.
+
+---
+
+#### 8. Vigencia, expiración y no renovación silenciosa
+
+Toda autorización extraordinaria debe declarar al menos:
+
+- inicio efectivo;
+- expiración efectiva o condición de término equivalente definida por contrato;
+- recurso y ambiente;
+- capacidad exacta;
+- actor o servicio beneficiario;
+- aprobador;
+- causa de activación;
+- referencia de incidente, recuperación o ejercicio;
+- condición de revocación anticipada.
+
+Aplican las siguientes invariantes:
+
+1. una autorización futura no autoriza antes de su inicio;
+2. una autorización expirada permanece en historia pero no participa como allow;
+3. una ampliación de tiempo genera una nueva decisión auditada;
+4. una ampliación de recurso o alcance genera una nueva decisión;
+5. el cambio de actor, principal, recurso, ambiente, riesgo, permiso, sede, área o situación de seguridad obliga a reevaluar;
+6. el acceso no permanece activo “hasta resolver” sin una frontera verificable;
+7. la expiración automática no necesita una segunda aprobación para dejar de autorizar;
+8. reactivar una autorización vencida exige una decisión nueva;
+9. una emergencia prolongada no convierte el acceso temporal en permanente.
+
+---
+
+#### 9. Credenciales de recuperación y material sensible
+
+Para esta tarea, **material de recuperación** comprende de forma conceptual credenciales, certificados, claves, códigos de recuperación, llaves criptográficas y otros mecanismos técnicos que permiten restablecer autenticación, descifrado o control de un recurso.
+
+La tarea no inventaría instancias ni valores. El gobierno obligatorio es:
+
+| Clase conceptual                             | Qué permite técnicamente                                                 | Qué no concede                                                   | Control mínimo                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| código o mecanismo de recuperación de cuenta | recuperar o restablecer autenticación de una cuenta o principal          | permiso empresarial, alcance global o identidad del operador     | actor atribuible, finalidad, vigencia, custodia y rotación cuando aplique |
+| credencial administrativa de recuperación    | recuperar capacidad técnica sobre un recurso concreto                    | rol permanente ni autoridad sobre otros recursos                 | recurso y ambiente exactos, aprobación, uso acotado y revocación          |
+| secreto de servicio                          | autenticar un proceso técnico identificado                               | capacidad humana interactiva ni bypass empresarial               | identidad de servicio, allowlist, propietario humano y revocación         |
+| llave o certificado                          | descifrar, firmar o autenticar dentro de su función técnica              | derecho a conocer los datos ni permiso para modificar el proceso | finalidad, custodio, sistema, acceso mínimo y evidencia de uso            |
+| material de proveedor                        | recuperar o administrar una cuenta/plataforma externa según su mecanismo | autoridad interna de Vento                                       | patrocinador interno, actor trazable, recurso, ventana y cierre           |
+
+Reglas obligatorias:
+
+- el expediente transversal conserva referencias, no valores secretos completos;
+- configuración recuperable y secreto se mantienen separados;
+- una copia de base o configuración no debe reactivar sesiones, permisos o excepciones revocados;
+- un backup que contiene material de autenticación no se considera seguro por el solo hecho de estar cifrado;
+- la recuperación de un secreto debe demostrar que el actor está autorizado a utilizarlo para el recurso exacto;
+- un secreto recuperado no se reutiliza indefinidamente si el procedimiento exige rotación tras exposición o uso de emergencia;
+- una llave recuperada que permite descifrar no elimina la autorización sobre los datos descifrados;
+- los runbooks solo deben referenciar el mecanismo o custodio aprobado, no incorporar el secreto.
+
+---
+
+#### 10. Custodia y liberación de material de recuperación
+
+Toda futura instancia de material de recuperación deberá poder declarar, desde su fuente propietaria y sin exponer el secreto:
+
+- identidad o referencia estable del material;
+- clase;
+- sistema, servicio, recurso y ambiente protegidos;
+- propietario responsable;
+- custodio o mecanismo de custodia;
+- finalidad;
+- estado;
+- versión o generación vigente cuando corresponda;
+- mecanismo de acceso;
+- requisito de aprobación;
+- requisito de autenticación reforzada cuando corresponda;
+- requisito de doble control cuando el riesgo o plataforma lo exijan;
+- condición de expiración, rotación o revocación;
+- última revisión demostrable;
+- evidencia de prueba de recuperación cuando exista;
+- estado de readiness.
+
+La ausencia de evidencia de estos campos no se corrige inventando valores. La instancia permanece `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` hasta que la fuente propietaria pueda demostrarla.
+
+---
+
+#### 11. Prohibición de cuenta humana compartida como break-glass
+
+La continuidad no crea una excepción a la prohibición vigente de cuenta humana genérica o compartida para operación privilegiada.
+
+Si una plataforma externa solo ofrece un mecanismo de recuperación no nominativo, ese mecanismo puede ser tratado como **material técnico de recuperación**, pero no satisface por sí mismo la identidad humana del operador. Antes de cualquier acción empresarial protegida deberá existir un actor humano atribuible, una decisión de acceso, una sesión correlacionable y evidencia suficiente para reconstruir quién utilizó el mecanismo y para qué.
+
+Si esa atribución no puede preservarse, el uso interactivo queda `BLOQUEADO` hasta que exista un control equivalente aprobado y demostrable.
+
+---
+
+#### 12. Acceso de proveedor o tercero durante continuidad
+
+Un proveedor, fabricante, operador de nube, soporte remoto, ISP o prestador externo puede participar en la recuperación únicamente bajo estas reglas:
+
+1. la relación técnica o comercial no concede acceso;
+2. el tercero debe ser identificable cuando realice una acción humana;
+3. debe existir patrocinador o propietario interno del recurso/dependencia;
+4. el recurso y ambiente se delimitan;
+5. la finalidad se correlaciona con el incidente o recuperación;
+6. la ventana y expiración son explícitas;
+7. el tercero no aprueba su propio acceso;
+8. la plataforma del proveedor no sustituye la autorización Vento;
+9. una sesión de soporte no puede continuar después de expiración por permanecer conectada;
+10. el tercero no recibe secretos de otros dominios por conveniencia;
+11. la terminación de la necesidad provoca revocación o revisión inmediata;
+12. el tercero no valida recuperación empresarial en nombre de Vento.
+
+El acceso persistente no atendido de un tercero no se habilita por esta tarea.
+
+---
+
+#### 13. Service role, servicios del sistema, automatización y dispositivos
+
+Aplican las siguientes reglas:
+
+```text
+SERVICE_ROLE
+=
+CAPACIDAD TECNICA PRIVILEGIADA
+≠
+AUTORIZACION EMPRESARIAL
+```
+
+1. una operación iniciada por una persona se autoriza primero sobre el actor humano;
+2. un proceso autónomo utiliza una identidad de servicio y operaciones permitidas por su contrato;
+3. un servicio no puede activar break-glass para sí mismo por detectar un error;
+4. una automatización puede solicitar, alertar, preparar o ejecutar una acción previamente autorizada, pero no aprobar su propia ampliación;
+5. el principal técnico de un dispositivo compartido no recibe privilegio humano por la emergencia;
+6. el techo de un dispositivo no se amplía porque el sistema esté degradado;
+7. un dispositivo alternativo no hereda permisos del dispositivo fallido;
+8. una sesión de actor humano debe reconstruirse con la semántica canónica correspondiente antes de una mutación protegida;
+9. una simulación, role override, `navigation_role` o bypass técnico no satisfacen un permiso real.
+
+---
+
+#### 14. Failover: decisión de autoridad separada
+
+`CONT-DOM-012` conserva el contrato técnico y funcional de failover. Esta tarea protege la **autoridad y el acceso extraordinario** necesarios para invocarlo.
+
+Antes de una conmutación real deberán resolverse, como mínimo:
+
+1. condición de activación del failover;
+2. capacidad alterna realmente acreditada;
+3. autoridad de continuidad aplicable;
+4. autorización técnica extraordinaria cuando la conmutación requiera privilegio;
+5. actor o servicio ejecutor identificable;
+6. punto de datos y RPO alcanzable;
+7. limitaciones del entorno alterno;
+8. fuente activa inequívoca;
+9. aislamiento, bloqueo o modo seguro de la fuente que deja de ser activa;
+10. prevención de split-brain;
+11. estado de integraciones, colas y dispositivos;
+12. validación técnica;
+13. validación empresarial del MBCO;
+14. mecanismo de reintegración;
+15. condición de retorno y rollback del failback.
+
+No se permite inferir capacidad de failover por la sola existencia de:
+
+- un servicio administrado;
+- una réplica;
+- una segunda región visible;
+- un backup;
+- un proveedor alternativo no acreditado;
+- una cuenta administrativa;
+- una URL secundaria;
+- un endpoint saludable;
+- documentación del fabricante.
+
+---
+
+#### 15. Estado canónico actual del failover
+
+La línea base heredada de `CONT-DOM-012` y del programa de ejercicios conserva:
+
+```text
+SUSTITUTOS CONCRETOS APROBADOS = 0
+CAPACIDAD DE FAILOVER ACREDITADA = NO DEMOSTRADA
+EJECUCION REAL DE FAILOVER POR ESTA TAREA = 0
+ESTADO DE EJECUCION = BLOQUEADO_HASTA_EXISTIR_CAPACIDAD_HABILITADA
+```
+
+Por tanto:
+
+- esta tarea define quién y bajo qué controles podría autorizarse un failover privilegiado;
+- no habilita una rama física de failover;
+- no selecciona proveedor, región, base, red, dispositivo o sede alterna;
+- no declara RTO/RPO alcanzados;
+- no declara readiness;
+- no produce una prueba operativa.
+
+---
+
+#### 16. Fuente activa, split-brain y autoridad residual
+
+Una conmutación autorizada debe conservar una única fuente activa para cada efecto material. Si el primario y el alterno pueden producir simultáneamente el mismo efecto empresarial, la operación queda bloqueada o se lleva al modo seguro definido hasta resolver la ambigüedad.
+
+La autorización de failover no permite:
+
+- doble cobro;
+- doble movimiento;
+- doble despacho;
+- doble mensaje;
+- doble impresión;
+- dos fuentes autoritativas compitiendo;
+- confirmar un resultado incierto mediante una segunda ejecución destructiva.
+
+Si no puede determinarse si el primario produjo el efecto, el resultado se conserva como incierto y pasa a verificación y reconciliación conforme a los contratos propietarios.
+
+---
+
+#### 17. Failback y retorno a autoridad ordinaria
+
+El retorno al primario exige una decisión separada de la conmutación inicial.
+
+Antes de failback deberán evaluarse:
+
+- salud y estabilidad del primario;
+- delta producido durante la operación alterna;
+- integridad;
+- compatibilidad de versión y configuración;
+- trabajo pendiente;
+- colas y eventos en tránsito;
+- autorizaciones vigentes;
+- riesgo de duplicación;
+- condición de checkpoint;
+- rollback propio del retorno cuando aplique;
+- validación técnica;
+- validación funcional posterior.
+
+El simple hecho de que el primario vuelva a responder no autoriza retorno automático.
+
+Al terminar la necesidad extraordinaria, el acceso de emergencia utilizado para failover o failback se revoca o expira independientemente de que el incidente global permanezca abierto.
+
+---
+
+#### 18. Revocación e invalidación
+
+La revocación debe producir el efecto conceptual:
+
+```text
+AUTORIZACION EXTRAORDINARIA INACTIVA
++
+SESION EXTRAORDINARIA TERMINADA O REVALIDADA
++
+CONTEXTO Y DECISIONES DERIVADAS INVALIDADAS
++
+TOKENS Y CACHE DERIVADOS NO REUTILIZABLES
++
+SUSCRIPCIONES REVALIDADAS
++
+REINTENTOS Y COLAS REAUTORIZADOS DESDE CERO
++
+MATERIAL ROTADO O INVALIDADO CUANDO APLIQUE
++
+EVIDENCIA CONSERVADA
+=
+CERO AUTORIDAD RESIDUAL ACEPTABLE
+```
+
+Eventos mínimos que obligan a expirar, revocar o reevaluar:
+
+- llegada de la expiración;
+- fin de la necesidad;
+- cambio de actor o principal;
+- cambio de recurso o ambiente;
+- cambio material de severidad o riesgo;
+- cambio de permiso, rol, vínculo, sede, área o responsabilidad relevante;
+- cierre o reducción de la ventana de recuperación;
+- failover, failback o retorno a modo ordinario que cambie la fuente activa;
+- compromiso o exposición del material de recuperación;
+- cambio de proveedor o sesión externa;
+- pérdida de autenticación requerida;
+- decisión explícita de revocación;
+- evidencia de uso fuera de alcance.
+
+Una revocación no elimina el registro del acceso ni las acciones ejecutadas durante su vigencia.
+
+---
+
+#### 19. Reconexión, offline, colas y reintentos
+
+1. una reconexión revalida identidad, sesión, contexto y vigencia antes de continuar;
+2. una conexión que sobreviva a la expiración no conserva autoridad;
+3. una operación privilegiada pendiente no se ejecuta automáticamente al recuperar conectividad;
+4. una cola offline no transporta el allow histórico como permiso reutilizable;
+5. todo reintento mutante reevalúa autorización inmediatamente antes del efecto;
+6. un resultado incierto se reconcilia, no se repite ciegamente;
+7. la revocación debe propagarse a consumidores, cachés y suscripciones conforme a los contratos de invalidación;
+8. un dispositivo que estuvo desconectado no puede revivir una sesión de emergencia al volver en línea.
+
+---
+
+#### 20. Ejercicios y simulaciones
+
+Un ejercicio de continuidad puede verificar el diseño de break-glass sin convertir la prueba en acceso productivo.
+
+Reglas:
+
+- una simulación no concede autoridad real;
+- las credenciales de ejercicio deben estar aisladas de material productivo o controladas por la autoridad de prueba aplicable;
+- una prueba que requiera material real solo puede ejecutarse en la fase y ambiente autorizados con controles equivalentes y condición de abortado;
+- el ejercicio conserva actor, escenario, objetivo, alcance, inicio, fin, evidencia y resultado;
+- el uso de material de recuperación durante una prueba no permite conservarlo como acceso posterior;
+- después de la prueba se confirma revocación, cierre o rotación aplicable;
+- una prueba fallida o abortada no autoriza a ampliar el acceso para “terminar” el ejercicio;
+- el programa de ejercicios permanece gobernado por `CONT-DOM-014`.
+
+---
+
+#### 21. Evidencia mínima del acceso de emergencia
+
+Sin reproducir secretos, la evidencia deberá poder reconstruir:
+
+- identificador del incidente, recuperación o ejercicio;
+- actor humano y principal efectivo, o servicio técnico identificado;
+- función ejercida;
+- solicitante;
+- aprobador;
+- motivo;
+- recurso y ambiente;
+- capacidad o permiso requerido;
+- alcance;
+- decisión y razones;
+- inicio y expiración;
+- mecanismo de autenticación utilizado por referencia;
+- material de recuperación utilizado por referencia, cuando aplique;
+- sesión o canal técnico por referencia;
+- acciones administrativas relevantes;
+- resultado técnico observado;
+- efectos inciertos o parciales;
+- revocación, expiración o terminación;
+- rotación o invalidación posterior cuando aplique;
+- versión contractual aplicable;
+- timestamps necesarios para reconstruir la secuencia.
+
+La evidencia no debe contener contraseñas, tokens, códigos de recuperación, claves privadas, llaves completas ni material sensible equivalente.
+
+---
+
+#### 22. Estado documental y AS-IS reconciliado
+
+| Materia                                         | Evidencia canónica disponible                                                                          | Estado posterior a esta tarea                  | Condición de salida                                                                            |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| gobierno documental de acceso de emergencia     | autoridad, segregación, límites, vigencia y revocación quedan definidos                                | `ESPECIFICADO`                                 | implementación posterior conforme a paquetes autorizados                                       |
+| mecanismo físico de break-glass                 | las fuentes consumidas no demuestran una implementación canónica completa y transversal                | `PENDIENTE_DE_EVIDENCIA`                       | mecanismo real con actor, aprobación, alcance, expiración, revocación y auditoría demostrables |
+| inventario real de credenciales de recuperación | `CONT-DOM-011` exige recuperación separada, pero no reproduce valores ni acredita todas las instancias | `PENDIENTE_DE_EVIDENCIA`                       | inventario protegido y reconciliado desde fuentes propietarias                                 |
+| recuperación de secretos, certificados y llaves | `CONT-DOM-011` la mantiene separada y pendiente de mecanismo autorizado                                | `PENDIENTE_DE_EVIDENCIA`                       | recuperación y prueba de uso/descifrado controladas sin texto plano                            |
+| cuenta humana compartida privilegiada           | el gobierno tecnológico vigente la prohíbe                                                             | `BLOQUEADO`                                    | no se habilita como mecanismo ordinario ni de continuidad                                      |
+| acceso persistente no atendido de tercero       | no está aprobado ni demostrado                                                                         | `BLOQUEADO`                                    | mecanismo trazable, limitado, revocable y auditado aprobado en fase propietaria                |
+| capacidad alterna concreta para failover        | línea base: cero sustitutos concretos aprobados                                                        | `BLOQUEADO_HASTA_EXISTIR_CAPACIDAD_HABILITADA` | alternativa acreditada con fuente activa, seguridad, acceso, prueba y retorno                  |
+| failover real ejecutado por esta tarea          | ninguno                                                                                                | `NO_EJECUTADO_POR_ESTA_TAREA`                  | ejecución posterior expresamente autorizada y evidenciada                                      |
+| readiness de acceso de emergencia               | no demostrado por fuentes actuales                                                                     | `PENDIENTE_DE_EVIDENCIA`                       | ejercicio válido, revocación comprobada y evidencia vigente                                    |
+
+Esta reconciliación no afirma que un objeto físico inexistente esté ausente; afirma únicamente qué capacidad está o no acreditada por las fuentes canónicas consumidas.
+
+---
+
+#### 23. Tratamiento de `H-CAP-SCOPE-018-033`
+
+Hallazgo:
+
+`H-CAP-SCOPE-018-033 — Acceso de emergencia puede convertirse en bypass permanente.`
+
+Tratamiento materializado:
+
+- break-glass queda definido como excepción temporal y no como rol o cuenta;
+- la activación de continuidad no concede acceso;
+- la elevación exige identidad, permiso/capacidad, recurso, alcance, motivo, aprobador e inicio/fin;
+- las denegaciones aplicables continúan prevaleciendo;
+- no existe renovación silenciosa;
+- expiración y revocación invalidan autoridad derivada;
+- reconexiones, cachés, tokens, colas y reintentos no reviven el allow vencido;
+- material de recuperación no se convierte en identidad ni permiso;
+- cuentas humanas compartidas permanecen bloqueadas;
+- failover y restore permanecen decisiones separadas;
+- el retorno a autoridad ordinaria es obligatorio;
+- evidencia y rotación posterior quedan exigidas cuando aplique.
+
+**Estado documental:** `ESPECIFICADO`; implementación y evidencia operativa permanecen pendientes de sus propietarios técnicos y paquetes autorizados.
+
+---
+
+#### 24. Fronteras con tareas posteriores y otros dominios
+
+| Materia                                                                                             | Propietario documental o técnico                                | Frontera conservada                                                                                |
+| --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| contenido y acceso a respaldos, runbooks, contactos, formularios, evidencia y datos de contingencia | `CONT-AUTH-003`                                                 | esta tarea protege el acceso extraordinario; no redefine clasificación ni exposición del contenido |
+| ejecución, validación, reincorporación, conciliación, cierre y revisión posterior                   | `CONT-AUTH-004`                                                 | esta tarea termina en autoridad, revocación y handoff; no certifica el cierre                      |
+| lógica de restore, orden de recuperación, fuente activa, failover y failback                        | `CONT-DOM-012`                                                  | esta tarea añade autoridad y acceso, no rediseña el runbook                                        |
+| recuperación de secretos y configuración recuperable                                                | `CONT-DOM-011`, `CONT-AUTH-003` y fuentes técnicas propietarias | separa autoridad de custodia y contenido sensible                                                  |
+| acceso tecnológico ordinario/privilegiado, cuentas técnicas, proveedor y soporte remoto             | `TI-AUTH-002` y `VPROC-0059`                                    | continuidad solo añade la condición excepcional; no crea un modelo paralelo                        |
+| invalidación, evaluación y auditoría físicas                                                        | tareas AUTH/SHELL ya propietarias y paquetes autorizados        | no se implementan en esta fase                                                                     |
+| contratos externos de continuidad                                                                   | `CONT-INT-003`                                                  | proveedor externo no recibe autoridad interna por integración                                      |
+| reincorporación y conciliación entre dominios                                                       | `CONT-INT-004`                                                  | revocar acceso no resuelve efectos pendientes                                                      |
+| ejercicios y readiness                                                                              | `CONT-DOM-014`, BLOQUE U y paquetes aplicables                  | una definición documental no constituye prueba operativa                                           |
+
+No queda un pendiente material de esta tarea sin propietario documental o técnico y condición de salida.
+
+---
+
+#### 25. Cobertura vigente de prueba
+
+El comportamiento protegido por `CONT-AUTH-002` ya está registrado de forma suficiente en requisitos vigentes:
+
+- `TREQ-CONT-002` protege autoridad explícita, decisiones, responsables, escalamiento, desactivación, sustitutos y cronología del incidente;
+- `TREQ-CONT-003` exige límites, vigencia, custodia, seguridad y criterio de abandono para modalidades de contingencia;
+- `TREQ-CONT-004` exige inventario y recuperación segura de secretos recuperables, acceso mínimo, separación del dominio de falla y restauración demostrable;
+- `TREQ-AUTH-013` impide bypass por interfaz, URL, API o RPC y exige validación autoritativa de cada mutación;
+- `TREQ-AUTH-014` exige invalidar contexto, caché y tokens derivados ante cambios de sesión, turno, área, trabajador, dispositivo, rol o asignación y reautorizar trabajo offline;
+- `TREQ-AUTH-015` exige evidencia correlacionable de actor, contexto, permiso, recurso, decisión, razones, versión y tiempo;
+- `TREQ-AUTH-016` exige revocación coordinada sin autoridad residual;
+- `TREQ-AUTH-165` impide que simulación, role override, dispositivo, nombre privilegiado de cargo o `service_role` sustituyan un permiso empresarial real;
+- `TREQ-SHELL-010` ya protege recuperación, acceso privilegiado, soporte remoto, proveedor, autoridad, alcance, vigencia, autenticación aplicable, actor, evidencia y cierre.
+
+La tarea materializa esas obligaciones para continuidad, break-glass, recuperación de credenciales y failover sin introducir una conducta protegida distinta.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las reglas de acceso extraordinario, vigencia, invalidación, revocación, evidencia, separación entre capacidad técnica y autorización empresarial, recuperación segura de material sensible y gobierno de continuidad ya disponen de cobertura canónica vigente. Esta tarea las materializa para el contexto de continuidad sin crear una conducta protegida nueva.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 27. Estados documentales de cierre de la tarea
+
+| Materia                                           | Estado                                                                     |
+| ------------------------------------------------- | -------------------------------------------------------------------------- |
+| definición de acceso de emergencia                | `ESPECIFICADO`                                                             |
+| separación activación / acceso extraordinario     | `ESPECIFICADO`                                                             |
+| elegibilidad de break-glass                       | `ESPECIFICADO`                                                             |
+| autoridad y segregación                           | `ESPECIFICADO`                                                             |
+| vigencia y expiración                             | `ESPECIFICADO`                                                             |
+| revocación e invalidación conceptual              | `ESPECIFICADO`                                                             |
+| gobierno de credenciales y llaves de recuperación | `ESPECIFICADO` documentalmente; instancias reales `PENDIENTE_DE_EVIDENCIA` |
+| protección contra cuenta humana compartida        | `BLOQUEADO` para uso privilegiado                                          |
+| acceso persistente no atendido de tercero         | `BLOQUEADO`                                                                |
+| autorización conceptual de failover               | `ESPECIFICADO`                                                             |
+| capacidad física de failover                      | `BLOQUEADO_HASTA_EXISTIR_CAPACIDAD_HABILITADA`                             |
+| failover o failback ejecutado por esta tarea      | `NO_EJECUTADO_POR_ESTA_TAREA`                                              |
+| readiness operativo de break-glass                | `PENDIENTE_DE_EVIDENCIA`                                                   |
+| implementación física                             | `PENDIENTE_DE_EVIDENCIA`; no autorizada en esta fase                       |
+
+---
+
+#### 28. Criterios de aceptación
+
+1. La tarea conserva `CONT-AUTH-001` como anterior aprobada.
+2. La tarea reserva únicamente `CONT-AUTH-003` como siguiente.
+3. La tarea permanece documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No crea código, migraciones, DDL, DML, RLS, RPC, datos, cuentas, secretos ni configuración.
+5. No ejecuta acceso de emergencia real.
+6. No ejecuta break-glass real.
+7. No recupera ni revela una credencial real.
+8. No rota una credencial real.
+9. No ejecuta restore.
+10. No ejecuta failover.
+11. No ejecuta failback.
+12. No declara readiness operativo.
+13. La emergencia no elimina autorización.
+14. La urgencia no crea autoridad.
+15. Activación y acceso de emergencia permanecen separados.
+16. Activación aprobada no concede break-glass automáticamente.
+17. Break-glass se define como excepción temporal y acotada.
+18. Break-glass no se define como rol.
+19. Break-glass no se define como permiso wildcard.
+20. Break-glass no se define como cuenta humana compartida.
+21. Una credencial de recuperación no se convierte en identidad humana.
+22. Poseer un secreto no equivale a estar autorizado.
+23. Un secreto de servicio no se convierte en permiso empresarial.
+24. `service_role` no se convierte en autorización empresarial.
+25. Una automatización no se autoaprueba privilegio.
+26. Un dispositivo compartido no obtiene privilegio humano por la emergencia.
+27. Un proveedor no se autoautoriza.
+28. Un proveedor no valida recuperación empresarial de Vento.
+29. Una relación comercial no concede acceso técnico.
+30. Una relación técnica no demuestra privilegio vigente.
+31. Cada solicitud de emergencia conserva una necesidad correlacionable.
+32. Cada solicitud identifica actor o servicio.
+33. Cada solicitud identifica recurso y ambiente.
+34. Cada solicitud identifica capacidad o permiso exacto.
+35. Cada solicitud limita el alcance.
+36. Cada solicitud conserva finalidad.
+37. Cada autorización conserva inicio.
+38. Cada autorización conserva expiración o condición de término equivalente.
+39. Cada autorización conserva aprobador.
+40. Cada autorización conserva condición de revocación.
+41. Un valor ambiguo no significa alcance global.
+42. La autoridad ordinaria suficiente evita crear break-glass artificial.
+43. La ausencia de aprobador no equivale a aprobación.
+44. El silencio no equivale a aprobación.
+45. La presión temporal no equivale a aprobación.
+46. El beneficiario no emite por sí solo la aprobación final sensible.
+47. El administrador técnico no obtiene por ejecución la autoridad de aprobación final.
+48. Solicitar no concede acceso.
+49. Aprobar cambio no concede acceso.
+50. Aprobar restore no concede acceso automáticamente.
+51. Aprobar activación no concede acceso automáticamente.
+52. Las denegaciones aplicables continúan prevaleciendo.
+53. Una elevación no elimina prerrequisitos del permiso.
+54. Una elevación no amplía silenciosamente territorio.
+55. Una elevación no amplía silenciosamente recurso.
+56. Una elevación no amplía silenciosamente ambiente.
+57. Una autorización futura no autoriza antes de su inicio.
+58. Una autorización vencida permanece en historia pero deja de autorizar.
+59. Una ampliación de tiempo exige una nueva decisión.
+60. Una ampliación de alcance exige una nueva decisión.
+61. Una ampliación de recurso exige una nueva decisión.
+62. Cambiar de actor obliga a reevaluar.
+63. Cambiar de principal obliga a reevaluar.
+64. Cambiar materialmente el riesgo obliga a reevaluar.
+65. Una sesión abierta no prolonga la vigencia.
+66. Una emergencia prolongada no convierte el acceso en permanente.
+67. El expediente no contiene contraseñas completas.
+68. El expediente no contiene tokens completos.
+69. El expediente no contiene códigos de recuperación completos.
+70. El expediente no contiene claves privadas completas.
+71. El expediente no contiene llaves completas.
+72. Configuración recuperable y secreto permanecen separados.
+73. La llave recuperada no concede derecho a conocer los datos.
+74. El secreto recuperado no concede permiso sobre el proceso.
+75. Una copia no reactiva sesiones revocadas.
+76. Una copia no reactiva permisos revocados.
+77. Una copia no reactiva excepciones revocadas.
+78. Los runbooks referencian mecanismos sin incorporar secretos.
+79. La custodia no se convierte en autorización de uso irrestricto.
+80. Una cuenta humana genérica permanece bloqueada para privilegio.
+81. Un mecanismo técnico no nominativo no sustituye atribución humana.
+82. Un tercero requiere identidad trazable cuando actúa como persona.
+83. Un tercero requiere patrocinador o propietario interno.
+84. Un tercero recibe recurso y ambiente delimitados.
+85. Un tercero recibe ventana delimitada.
+86. Una sesión de tercero no continúa por estar conectada después de expirar.
+87. El acceso persistente no atendido de tercero no se habilita por esta tarea.
+88. Restore y failover permanecen decisiones separadas.
+89. Failover exige capacidad alterna acreditada.
+90. La existencia de un servicio administrado no acredita failover.
+91. La existencia de una réplica no acredita failover.
+92. La existencia de un backup no acredita failover.
+93. La existencia de una URL secundaria no acredita failover.
+94. La línea base conserva cero sustitutos concretos aprobados.
+95. El failover real permanece bloqueado hasta existir capacidad habilitada.
+96. Failover conserva fuente activa inequívoca.
+97. Failover exige prevención de split-brain.
+98. Failover conserva estado de integraciones, colas y dispositivos.
+99. Failover exige validación técnica.
+100. Failover exige validación empresarial del MBCO.
+101. Autorizar failover no declara recuperación empresarial.
+102. Ejecutar failover no declara recuperación empresarial.
+103. La fuente secundaria no se vuelve primaria solo por estar saludable.
+104. Failback no es automático.
+105. Failback evalúa delta e integridad.
+106. Failback evalúa compatibilidad y trabajo posterior.
+107. Failback conserva checkpoint y rollback cuando aplique.
+108. Después de failback se repite validación técnica relevante.
+109. Después de failback se repite validación funcional relevante.
+110. La revocación puede ocurrir aunque el incidente continúe abierto.
+111. Revocar acceso no equivale a cerrar el incidente.
+112. La expiración invalida autoridad derivada.
+113. La revocación invalida autoridad derivada.
+114. Caché no conserva un allow vencido.
+115. Tokens derivados no conservan un allow vencido.
+116. Suscripciones deben revalidarse después de invalidación.
+117. Reintentos mutantes reautorizan antes del efecto.
+118. Colas offline reautorizan antes del efecto.
+119. Una reconexión no revive una sesión vencida.
+120. Un resultado incierto se reconcilia y no se repite ciegamente.
+121. La revocación conserva evidencia histórica.
+122. La revocación no borra acciones ejecutadas durante vigencia.
+123. La exposición del material puede exigir rotación posterior.
+124. Una simulación no concede autoridad real.
+125. Una credencial de ejercicio no se reutiliza como acceso productivo.
+126. Un ejercicio no declara readiness por existir documentación.
+127. `H-CAP-SCOPE-018-033` queda tratado documentalmente.
+128. `CONT-AUTH-003` conserva protección del contenido sensible de continuidad.
+129. `CONT-AUTH-004` conserva ejecución, validación, conciliación, cierre y revisión.
+130. `CONT-DOM-012` conserva lógica de restore, failover y retorno.
+131. `CONT-DOM-011` conserva inventario y política de objetos recuperables.
+132. `TI-AUTH-002` conserva el gobierno transversal de privilegio tecnológico ordinario y temporal.
+133. La tarea no crea un segundo catálogo de permisos.
+134. La tarea no crea un segundo catálogo de identidad.
+135. La tarea no crea un segundo modelo de secretos.
+136. La tarea no crea un rol base nuevo.
+137. La tarea no inventa cuentas, usuarios ni credenciales reales.
+138. La tarea no inventa proveedores alternativos.
+139. La tarea no inventa una capacidad de failover inexistente.
+140. La tarea distingue `ESPECIFICADO` de `IMPLEMENTADO`.
+141. La tarea distingue `PENDIENTE_DE_EVIDENCIA` de `BLOQUEADO`.
+142. La tarea conserva cero accesos de emergencia ejecutados por ella.
+143. La tarea conserva cero failovers ejecutados por ella.
+144. La tarea conserva cero cambios físicos.
+145. `TREQ-CONT-002` conserva cobertura de autoridad y cronología.
+146. `TREQ-CONT-003` conserva cobertura de vigencia, custodia y seguridad de contingencia.
+147. `TREQ-CONT-004` conserva cobertura de secretos recuperables y restauración segura.
+148. `TREQ-AUTH-013` conserva protección anti-bypass autoritativa.
+149. `TREQ-AUTH-014` conserva invalidación de contexto, caché y tokens derivados.
+150. `TREQ-AUTH-015` conserva evidencia correlacionable.
+151. `TREQ-AUTH-016` conserva revocación coordinada sin autoridad residual.
+152. `TREQ-AUTH-165` conserva prohibición de convertir bypass técnico en permiso empresarial.
+153. `TREQ-SHELL-010` conserva ciclo tecnológico de recuperación y acceso privilegiado.
+154. La tarea crea cero requisitos de prueba.
+155. La tarea modifica cero requisitos de prueba.
+156. La tarea difiere cero requisitos de prueba.
+157. La tarea descarta cero requisitos de prueba.
+158. La tarea vuelve obsoletos cero requisitos de prueba.
+159. No se genera una copia innecesaria del registro 04A.
+160. La tarea deja `CONT-AUTH-003` únicamente reservada.
+
+---
+
+#### 29. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación
+        ↓
+TAREA ACTUAL APROBADA
+CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación
+        ↓
+SIGUIENTE TAREA RESERVADA
+CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia
+```
+
+
 ### [ ] CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia
 ### [ ] CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior
