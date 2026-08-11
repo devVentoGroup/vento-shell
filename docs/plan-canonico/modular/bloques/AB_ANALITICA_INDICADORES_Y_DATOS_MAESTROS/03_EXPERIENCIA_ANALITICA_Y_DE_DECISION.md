@@ -6761,4 +6761,719 @@ DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
 ```
 
 
-### [ ] DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
+### ✅ DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados` — APROBADA
+**Tarea siguiente:** `DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas` — RESERVADA
+**Tipo de tarea:** documental; contrato materializado de validación con usuarios reales, medición de comprensión y tiempos, evaluación de decisiones y gate de evidencia para la experiencia analítica definida en DATA-UX-001 a DATA-UX-007
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica:** no autorizada
+**Sesiones con usuarios reales:** no acreditadas por evidencia verificable en las fuentes consumidas para esta tarea
+**Readiness de la experiencia analítica:** PENDIENTE_DE_EVIDENCIA
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir de forma completa y verificable cómo Vento OS deberá comprobar, con usuarios reales y en contexto de decisión, que la experiencia analítica diseñada en `DATA-UX-001` a `DATA-UX-007` se entiende, puede recorrerse en tiempos observables, conduce a decisiones correctas y no induce errores de calidad, causalidad, autorización, publicación, exportación, versionado o interpretación.
+
+La aprobación de esta tarea aprueba el contrato de validación y el gate de evidencia. No afirma que las sesiones humanas ya ocurrieron, no inventa participantes, no inventa tiempos y no convierte una superficie analítica en usable o lista para ampliación sin evidencia posterior.
+
+Regla principal:
+
+```text
+CONTRATO DE VALIDACIÓN APROBADO
+≠ SESIÓN EJECUTADA
+≠ EVIDENCIA HUMANA OBSERVADA
+≠ READINESS APROBADO
+≠ DESPLIEGUE AMPLIADO
+```
+
+La experiencia solo podrá superar el gate de usuarios reales cuando exista evidencia trazable producida por las tareas canónicas de pruebas integrales que demuestre comprensión, tiempo objetivo, decisión correcta, recuperación, protección de información y ausencia de errores bloqueantes.
+
+#### 2. Resultado sustantivo
+
+Quedan materializados:
+
+1. la unidad mínima de validación de experiencia analítica;
+2. una matriz obligatoria para las siete superficies heredadas de `DATA-UX-001` a `DATA-UX-007`;
+3. una matriz de cobertura para los nueve perfiles analíticos heredados;
+4. catorce escenarios de prueba que cubren comprensión, tiempo, decisión, calidad, causalidad, objetivos, guardrails, publicación, exportación, restatement y autorización;
+5. un contrato único de observación y medición de tiempos;
+6. un contrato de comprensión por `teach-back`, predicción y conducta observable;
+7. un contrato de corrección de decisión, no limitado a satisfacción subjetiva;
+8. una taxonomía de severidad heredada para hallazgos;
+9. doce errores analíticos bloqueantes que deben detectarse en sesiones;
+10. reglas de privacidad, minimización y no uso disciplinario de la evidencia;
+11. reglas de selección de participantes sin inventar tamaños de muestra;
+12. reglas para tratar `NO_APLICA`, ausencia de evidencia y cobertura insuficiente;
+13. un gate de readiness con estados canónicos de decisión;
+14. una matriz de propiedad exacta hacia `UX-QA-*` para ejecutar la evidencia real;
+15. el estado actual de las siete superficies como `PENDIENTE_DE_EVIDENCIA`;
+16. cero cambios físicos, cero sesiones fabricadas y cero requisitos de prueba nuevos.
+
+#### 3. Fuentes y decisiones preservadas
+
+Esta tarea consume y no redefine:
+
+- `DATA-UX-001` a `DATA-UX-007` como contrato de experiencia analítica que debe someterse a prueba;
+- `DATA-DOM-004` a `DATA-DOM-017` para definición de métricas, tiempo, calidad, artefactos, análisis, objetivos, experimentos y reproducibilidad;
+- `DATA-AUTH-001` a `DATA-AUTH-004` para autorización, sensibilidad, segregación de capacidades y auditoría;
+- los requisitos vigentes que protegen artefactos analíticos, mejora basada en datos y pilotos con usuarios reales, incluidos `TREQ-DATA-004`, `TREQ-DATA-005` y `TREQ-UX-007`;
+- `UX-BASE-015` para validación contextual con trabajadores reales, protocolo neutral, `teach-back`, severidad, privacidad y la regla de que aprobar un contrato no inventa resultados de sesiones;
+- `AUTH-UI-055` a `AUTH-UI-060` como precedente de prototipo, medición, criterios, sesiones reales, corrección y cierre de UX;
+- `UX-QA-001` a `UX-QA-030` como paquete canónico que materializa pruebas integrales de experiencia y pilotos por aplicación;
+- la separación entre definición, certificación, publicación, fijación de metas, anotación, exportación y administración;
+- la obligación de conservar fuente, versión, corte, calidad, población, autorización y trazabilidad durante toda decisión analítica.
+
+No se crea una capacidad nueva para “validar” ni se asigna autoridad a un rol por participar en una sesión.
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+comprender una pantalla ≠ estar de acuerdo con el resultado
+```
+
+```text
+encontrar una acción ≠ tener autorización para ejecutarla
+```
+
+```text
+tiempo rápido ≠ decisión correcta
+```
+
+```text
+satisfacción alta ≠ comprensión demostrada
+```
+
+```text
+capacitación previa ≠ claridad de la experiencia
+```
+
+```text
+explicar una métrica ≠ validar su fórmula
+```
+
+```text
+leer un valor ≠ entender su calidad y corte
+```
+
+```text
+correlación observada ≠ causa demostrada
+```
+
+```text
+recomendación ≠ acción empresarial autorizada
+```
+
+```text
+publicación ≠ exportación
+```
+
+```text
+exportación ≠ fuente de verdad
+```
+
+```text
+restatement ≠ borrado de la edición original
+```
+
+```text
+filtro seleccionado ≠ territorio autorizado
+```
+
+```text
+sesión moderada ≠ piloto superado
+```
+
+```text
+hallazgo observado ≠ desempeño laboral individual
+```
+
+#### 5. Unidad mínima de validación
+
+Cada observación deberá resolver como mínimo:
+
+```text
+PARTICIPANTE REPRESENTATIVO
++ FUNCIÓN O RESPONSABILIDAD REAL
++ SUPERFICIE ANALÍTICA
++ TAREA DE DECISIÓN
++ CONTEXTO EMPRESARIAL
++ DATO / MÉTRICA / ARTEFACTO
++ VERSIÓN Y CORTE
++ ESTADO DE CALIDAD
++ ALCANCE AUTORIZADO
++ DISPOSITIVO O MODO DE USO
++ RESULTADO ESPERADO
++ CONDUCTA OBSERVADA
++ TIEMPO OBSERVADO
++ DECISIÓN TOMADA
++ EVIDENCIA
+= OBSERVACIÓN EVALUABLE
+```
+
+Si una dimensión material no puede resolverse, la observación no puede utilizarse para declarar conformidad de esa superficie.
+
+#### 6. Estados del gate de evidencia
+
+Se preservan los cuatro estados del precedente canónico de usabilidad:
+
+| Estado                   | Significado                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `CONFORME_PARA_CIERRE`   | existe evidencia suficiente, los criterios aplicables se cumplen y no quedan hallazgos bloqueantes abiertos          |
+| `REQUIERE_AJUSTE`        | existe evidencia, pero uno o más hallazgos exigen corrección y nueva comprobación antes del cierre                   |
+| `BLOQUEADA`              | existe un error crítico/alto, una exposición, una decisión insegura o una condición que impide continuar con el gate |
+| `PENDIENTE_DE_EVIDENCIA` | falta ejecutar o completar la evidencia real necesaria para emitir una decisión de readiness                         |
+
+`PENDIENTE_DE_EVIDENCIA` no se transforma en conformidad por aprobación documental, demostración interna, revisión de escritorio o ausencia de reportes de error.
+
+#### 7. Matriz materializada de las siete superficies analíticas
+
+| Tarea propietaria | Superficie que debe probarse                       | Pregunta humana principal                                                         | Decisión que debe observarse                                                      | Error que no puede pasar inadvertido                                                  | Estado actual de evidencia | Propietario de salida                                                                     |
+| ----------------- | -------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------- |
+| `DATA-UX-001`     | inicio y orientación analítica                     | ¿entiende qué está viendo, para qué decisión sirve y cuál es el contexto vigente? | elegir el siguiente análisis sin confundir resumen con fuente de verdad           | decidir con periodo, población o calidad incorrectos                                  | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-001` a `UX-QA-020`; `UX-QA-023`/`UX-QA-028` según aplicación                       |
+| `DATA-UX-002`     | catálogo y definición de métricas                  | ¿puede encontrar y explicar la métrica correcta, su versión y sus límites?        | seleccionar la definición adecuada para la pregunta                               | aceptar fórmula local, versión incorrecta o denominador no comprendido                | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-002`, `UX-QA-003`, `UX-QA-014`, `UX-QA-017`, `UX-QA-020`                           |
+| `DATA-UX-003`     | tablero, comparación y drill-down                  | ¿comprende qué comparación es válida y qué cambia al profundizar?                 | comparar solo contextos compatibles y abrir detalle autorizado                    | asumir causalidad por un delta o interpretar filtro como autorización                 | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-003`, `UX-QA-005`, `UX-QA-007`, `UX-QA-014`, `UX-QA-016`, `UX-QA-020`              |
+| `DATA-UX-004`     | calidad, frescura, conciliación y certificación    | ¿distingue disponibilidad del dato de su aptitud para uso oficial?                | detener, continuar con advertencia o escalar según estado DQ                      | usar `BLOQUEADO` como dato oficial o convertir `NO EVALUADO` en cero                  | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-003`, `UX-QA-004`, `UX-QA-014`, `UX-QA-015`, `UX-QA-017`, `UX-QA-019`, `UX-QA-020` |
+| `DATA-UX-005`     | investigación de variaciones, anomalías y causas   | ¿separa señal, diagnóstico, hipótesis, evidencia y causa?                         | formular la conclusión con nivel de confianza compatible con evidencia            | presentar asociación como causa o ignorar evidencia contradictoria/faltante           | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-002`, `UX-QA-003`, `UX-QA-014`, `UX-QA-015`, `UX-QA-016`, `UX-QA-020`              |
+| `DATA-UX-006`     | objetivos, metas, drivers, guardrails y mejora     | ¿distingue resultado, baseline, meta, driver, guardrail, acción y experimento?    | proponer o rechazar una acción considerando objetivo y guardrails                 | optimizar el KPI ignorando efectos adversos o tratar driver como meta                 | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-002`, `UX-QA-003`, `UX-QA-014`, `UX-QA-016`, `UX-QA-017`, `UX-QA-020`              |
+| `DATA-UX-007`     | reportes, exportaciones, suscripciones y snapshots | ¿reconoce qué artefacto es oficial, portable, recurrente o histórico?             | elegir publicación/exportación/suscripción/snapshot con versión y corte correctos | creer que publicar autoriza exportar o que un restatement elimina la edición anterior | `PENDIENTE_DE_EVIDENCIA`   | `UX-QA-003`, `UX-QA-004`, `UX-QA-014`, `UX-QA-016`, `UX-QA-017`, `UX-QA-019`, `UX-QA-020` |
+
+Reconciliación:
+
+```text
+SUPERFICIES ESPERADAS: 7
+SUPERFICIES MATERIALIZADAS: 7
+FALTANTES: 0
+DUPLICADOS: 0
+CON EVIDENCIA HUMANA VERIFICADA EN LAS FUENTES CONSUMIDAS: 0
+PENDIENTE_DE_EVIDENCIA: 7
+```
+
+#### 8. Cobertura de perfiles analíticos
+
+Se preservan los nueve perfiles heredados por la experiencia analítica. Esta tarea no presume que todos deban usar todas las superficies: la aplicabilidad depende de responsabilidad real, finalidad y autorización.
+
+| Perfil heredado           | Decisión de cobertura                                                                   | Evidencia actual         | Condición de salida                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------- |
+| `propietario`             | incluir cuando ejerza una decisión analítica dentro de su alcance autorizado            | `PENDIENTE_DE_EVIDENCIA` | sesión representativa en las superficies realmente usadas y gate correspondiente en `UX-QA-*` |
+| `gerente_general`         | incluir cuando ejerza visión transversal o decisión ejecutiva autorizada                | `PENDIENTE_DE_EVIDENCIA` | sesión representativa y evidencia de comprensión/decisión                                     |
+| `gerente`                 | incluir por el dominio y territorio que gobierna                                        | `PENDIENTE_DE_EVIDENCIA` | sesión representativa y evidencia de comprensión/decisión                                     |
+| `supervisor`              | incluir cuando la analítica forme parte de supervisión autorizada                       | `PENDIENTE_DE_EVIDENCIA` | sesión representativa o `NO_APLICA` justificado por superficie                                |
+| `contador`                | incluir en superficies económicas/financieras y otras autorizadas                       | `PENDIENTE_DE_EVIDENCIA` | evidencia bajo `UX-QA-028` cuando corresponda a NUMERA y pruebas comunes aplicables           |
+| `marketing`               | incluir en análisis comercial/cliente dentro de finalidad autorizada                    | `PENDIENTE_DE_EVIDENCIA` | sesión representativa o `NO_APLICA` justificado por superficie                                |
+| `logistica`               | incluir en análisis de inventario, abastecimiento/logística y otros autorizados         | `PENDIENTE_DE_EVIDENCIA` | sesión representativa o `NO_APLICA` justificado por superficie                                |
+| `auxiliar_administrativa` | evaluar aplicabilidad a consulta, preparación o apoyo analítico sin ampliar capacidades | `PENDIENTE_DE_EVIDENCIA` | sesión representativa si existe uso real; de lo contrario `NO_APLICA` con razón               |
+| `talento_humano`          | incluir cuando consuma analítica de talento/asistencia autorizada                       | `PENDIENTE_DE_EVIDENCIA` | sesión representativa o `NO_APLICA` justificado por superficie                                |
+
+Reconciliación:
+
+```text
+PERFILES HEREDADOS: 9
+PERFILES CON DECISIÓN DE COBERTURA: 9
+FALTANTES: 0
+DUPLICADOS: 0
+```
+
+No se fija un número arbitrario de participantes. La ejecución deberá justificar representatividad por funciones, decisiones, sedes/áreas, dispositivos, niveles de experiencia y excepciones aplicables, y deberá registrar por qué una combinación queda cubierta o es `NO_APLICA`.
+
+#### 9. Selección de participantes
+
+La muestra de ejecución deberá cumplir simultáneamente:
+
+1. participantes que realizan o reciben realmente la decisión representada;
+2. mezcla suficiente de experiencia para no validar solo con expertos del sistema;
+3. cobertura del territorio o contexto cuando cambie la decisión;
+4. cobertura de dispositivos/modos de uso cuando cambie la interacción;
+5. separación entre quien diseñó la experiencia y quien la prueba cuando sea posible;
+6. autorización válida para el escenario o datos ficticios/minimizados que no exijan acceso adicional;
+7. ausencia de presión disciplinaria;
+8. capacidad de detener la sesión;
+9. registro anónimo o pseudonimizado mediante `participant_code`;
+10. no reutilizar una misma sesión para declarar cobertura de una superficie que el participante no recorrió.
+
+La experiencia previa con Vento OS se registra como contexto; no se utiliza para enseñar la respuesta durante la prueba.
+
+#### 10. Protocolo de sesión
+
+Cada escenario se ejecutará con esta secuencia:
+
+1. presentar el contexto y el objetivo de negocio sin explicar la interfaz;
+2. pedir al participante que diga qué entiende del estado actual;
+3. pedir que identifique qué información necesita antes de decidir;
+4. iniciar medición de tiempo en el mismo punto definido para todos los participantes del escenario;
+5. observar la primera interpretación y la primera acción elegida;
+6. registrar aperturas incorrectas, retrocesos, ayuda y bloqueos;
+7. pedir la decisión concreta que tomaría;
+8. pedir que explique por qué y con qué limitaciones;
+9. solicitar `teach-back`: explicar a otra persona qué significa el resultado y qué no significa;
+10. introducir, cuando aplique, una excepción de calidad, autorización, restatement, guardrail o evidencia contradictoria;
+11. observar si revisa su decisión correctamente;
+12. cerrar con dificultad percibida, comentario y evidencia del moderador;
+13. clasificar hallazgos sin convertir la dificultad del participante en evaluación laboral.
+
+El moderador no puede señalar dónde hacer clic, traducir el significado antes de medir comprensión ni confirmar que una interpretación es correcta antes de registrar la decisión inicial.
+
+#### 11. Contrato de observación y tiempo
+
+Por observación deberán registrarse, como mínimo:
+
+| Campo                                    | Uso                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------- |
+| `participant_code`                       | pseudónimo de la persona; no identidad laboral visible en el análisis ordinario |
+| `function_tested`                        | función o responsabilidad real bajo prueba                                      |
+| `surface_owner_task`                     | una de `DATA-UX-001` a `DATA-UX-007`                                            |
+| `application_context`                    | aplicación o contexto donde se presenta la experiencia                          |
+| `device_mode`                            | escritorio, tablet u otro modo realmente utilizado                              |
+| `scenario_prompt`                        | consigna entregada sin enseñar la respuesta                                     |
+| `business_context`                       | territorio, periodo, población y finalidad relevantes                           |
+| `metric_or_artifact_context`             | métrica, análisis o artefacto involucrado                                       |
+| `version_cut_quality_context`            | versión, corte y estado de calidad necesarios para interpretar                  |
+| `expected_decision`                      | resultado o decisión correcta definida por el escenario                         |
+| `first_interpretation`                   | significado que el participante atribuye antes de ayuda                         |
+| `first_action_chosen`                    | primera acción o recorrido seleccionado                                         |
+| `found_correct_action`                   | si llegó a la acción correcta sin ayuda material                                |
+| `time_to_action_seconds`                 | tiempo hasta localizar la acción requerida                                      |
+| `time_to_correct_interpretation_seconds` | tiempo hasta expresar una interpretación correcta                               |
+| `time_to_correct_decision_seconds`       | tiempo hasta emitir la decisión correcta bajo el escenario                      |
+| `task_completion_seconds`                | tiempo total hasta completar el escenario cuando aplique                        |
+| `wrong_openings`                         | aperturas o recorridos que no aportan a la tarea                                |
+| `backtracks`                             | retrocesos por interpretación o navegación                                      |
+| `moderator_help`                         | ayuda requerida y momento de la ayuda                                           |
+| `context_understanding`                  | comprensión de periodo, población, territorio y finalidad                       |
+| `quality_understanding`                  | comprensión de frescura, cobertura, conciliación y estado DQ                    |
+| `version_understanding`                  | comprensión de versión, edición, corte y restatement                            |
+| `effect_understanding`                   | predicción correcta del efecto de una acción                                    |
+| `causal_understanding`                   | separación entre asociación, hipótesis y evidencia causal                       |
+| `guardrail_understanding`                | comprensión de restricciones y efectos adversos                                 |
+| `authorization_understanding`            | reconocimiento de límites de acceso/acción sin inferir autoridad desde UI       |
+| `teach_back_result`                      | explicación final en palabras del participante                                  |
+| `recovery_behavior`                      | respuesta ante excepción, error, dato bloqueado o cambio de evidencia           |
+| `critical_error`                         | error que activa gate de bloqueo cuando corresponda                             |
+| `severity`                               | `S0_CRITICAL`, `S1_HIGH`, `S2_MEDIUM`, `S3_LOW` u `OBSERVATION`                 |
+| `difficulty_1_to_7`                      | dificultad subjetiva; no sustituye resultado observado                          |
+| `participant_comment`                    | comentario libre minimizado                                                     |
+| `observer_notes`                         | observación factual separada de interpretación posterior                        |
+| `evidence_refs`                          | referencias a captura, registro, nota o artefacto permitido de evidencia        |
+| `linked_requirement_or_defect`           | vínculo al requisito/defecto cuando exista, sin inventarlo durante la sesión    |
+
+La tarea no fija umbrales universales de segundos. `UX-QA-014` deberá validar el tiempo objetivo aplicable a cada tarea real; UX008 exige que el tiempo se mida con punto de inicio y final reproducibles y que un resultado rápido pero incorrecto nunca se considere conforme.
+
+#### 12. Dimensiones obligatorias de comprensión
+
+Una superficie no demuestra comprensión porque el participante complete un clic. Deberán evaluarse las siguientes dimensiones:
+
+1. **propósito:** para qué decisión sirve la superficie;
+2. **contexto:** empresa/territorio, periodo, población y filtros relevantes;
+3. **identidad semántica:** qué métrica, objeto o artefacto está viendo;
+4. **versión y corte:** qué edición y momento representan el resultado;
+5. **calidad:** qué significa su estado de frescura, cobertura, conciliación y certificación;
+6. **comparabilidad:** con qué referencia puede compararse legítimamente;
+7. **fuente:** qué es derivado y qué fuente conserva autoridad;
+8. **efecto de acción:** qué ocurrirá al abrir, publicar, exportar, suscribirse, fijar una meta o iniciar una investigación;
+9. **causalidad:** qué puede afirmarse y qué no puede afirmarse a partir de la evidencia;
+10. **guardrails:** qué límites pueden invalidar una acción aparentemente favorable;
+11. **autorización:** qué información/acción queda fuera de su alcance aunque sea imaginable desde la pantalla;
+12. **historia:** qué ocurre con la publicación anterior cuando existe corrección o restatement;
+13. **recuperación:** qué hacer ante bloqueo, degradación, evidencia faltante o conflicto;
+14. **siguiente paso:** qué decisión o tarea corresponde después de interpretar el resultado.
+
+#### 13. Catorce escenarios materializados
+
+|    # | Superficie principal                      | Consigna de decisión                                                                                | Evidencia que debe observarse                                                                                     |
+| ---: | ----------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+|    1 | `DATA-UX-001`                             | identificar qué pregunta puede responder el resumen y cuál requiere profundizar                     | comprensión de propósito, periodo, población, calidad y siguiente paso                                            |
+|    2 | `DATA-UX-002`                             | localizar la métrica correcta entre definiciones cercanas y explicar fórmula/denominador            | selección de versión correcta y rechazo de una fórmula local o ambigua                                            |
+|    3 | `DATA-UX-003`                             | comparar dos periodos/segmentos y decidir si la comparación es válida                               | revisión de compatibilidad antes de interpretar el delta                                                          |
+|    4 | `DATA-UX-003`                             | profundizar desde un agregado hasta detalle permitido                                               | no asumir que drill-down autoriza cualquier detalle ni que el agregado es editable como fuente                    |
+|    5 | `DATA-UX-004`                             | interpretar una métrica `NO EVALUADO` frente a otra `BLOQUEADO`                                     | no convertir ausencia de evaluación en cero ni usar bloqueado como oficial                                        |
+|    6 | `DATA-UX-004`                             | decidir qué hacer cuando una diferencia de reconciliación afecta una cifra publicada                | detener/advertir/escalar según contrato y preservar fuente/estado                                                 |
+|    7 | `DATA-UX-005`                             | explicar una variación con asociación fuerte pero sin evidencia causal suficiente                   | lenguaje de confianza correcto; no declarar causa demostrada                                                      |
+|    8 | `DATA-UX-005`                             | revisar una hipótesis cuando aparece evidencia contradictoria o faltante                            | modificar confianza/conclusión y conservar evidencia contraria visible                                            |
+|    9 | `DATA-UX-006`                             | distinguir baseline, meta, indicador principal y drivers de un objetivo                             | decisión sin confundir driver con resultado ni meta con observación                                               |
+|   10 | `DATA-UX-006`                             | aceptar o rechazar una acción cuyo KPI mejora pero un guardrail empeora                             | reconocimiento del efecto adverso y decisión de no declarar éxito automático                                      |
+|   11 | `DATA-UX-007`                             | escoger entre reporte oficial, exportación, suscripción y snapshot para una necesidad concreta      | selección del artefacto correcto y comprensión de destinatario/corte/versión                                      |
+|   12 | `DATA-UX-007`                             | interpretar una edición restated junto con su publicación original                                  | comprender que ambas permanecen trazables y que la corrección no borra historia                                   |
+|   13 | transversal                               | solicitar detalle fuera del territorio o sensibilidad autorizada                                    | detener el acceso/acción; no usar filtro de pantalla como prueba de autoridad                                     |
+|   14 | transversal `DATA-UX-001` a `DATA-UX-007` | pasar de señal a decisión, con calidad degradada, evidencia incompleta, objetivo y salida gobernada | cadena completa: contexto → métrica → calidad → análisis → decisión → guardrail → artefacto, sin saltar controles |
+
+Reconciliación:
+
+```text
+ESCENARIOS DEFINIDOS: 14
+SUPERFICIES UX CUBIERTAS: 7 DE 7
+ESCENARIOS TRANSVERSALES: 2
+ESCENARIOS CON EXCEPCIÓN O CONDICIÓN DE RIESGO: 10
+```
+
+#### 14. Caso obligatorio de asistencia con datos bloqueados
+
+La validación deberá incluir al menos un escenario que preserve la decisión ya aprobada sobre las catorce métricas de asistencia:
+
+```text
+TOTAL MÉTRICAS: 14
+NO EVALUADO: 11
+BLOQUEADO: 3
+```
+
+Las tres métricas bloqueadas son:
+
+- `missingCloseCount`;
+- `attendanceRate`;
+- `punctualityRate`.
+
+El escenario deberá comprobar que el usuario:
+
+1. identifica visualmente que el estado bloquea el uso oficial dependiente;
+2. no interpreta el bloqueo como valor cero;
+3. no compensa el bloqueo con conocimiento informal;
+4. no publica una conclusión oficial que dependa materialmente de la métrica bloqueada;
+5. puede explicar qué falta y cuál es el siguiente paso permitido;
+6. no recibe un recorrido visual que oculte el estado al pasar a dashboard, investigación, objetivo o salida.
+
+Una decisión humana correcta no cambia el estado de calidad. La resolución de los tres bloqueos permanece en las tareas propietarias de datos/implementación ya definidas por sus contratos; UX008 únicamente comprueba que la experiencia no induce a ignorarlos.
+
+#### 15. Validación de calidad de decisión
+
+Toda sesión deberá separar cuatro resultados:
+
+| Resultado   | Pregunta                                                                                                       |
+| ----------- | -------------------------------------------------------------------------------------------------------------- |
+| comprensión | ¿entendió correctamente el dato, contexto, calidad, versión y límites?                                         |
+| eficiencia  | ¿llegó a la interpretación/acción dentro del tiempo objetivo aplicable y sin navegación improductiva material? |
+| decisión    | ¿eligió una acción o conclusión compatible con la evidencia, guardrails, autorización y estado?                |
+| explicación | ¿puede explicar a otra persona por qué decidió así y qué incertidumbre permanece?                              |
+
+Una superficie no puede quedar conforme cuando el participante llega por azar a la acción correcta pero explica un significado incorrecto.
+
+Tampoco puede quedar conforme cuando la interpretación es correcta, pero la interfaz induce de manera repetida una acción no autorizada o una decisión incompatible con calidad/guardrails.
+
+#### 16. Taxonomía de severidad
+
+Se preserva la taxonomía transversal aprobada:
+
+- `S0_CRITICAL`: puede producir daño, pérdida, exposición o efecto irreversible;
+- `S1_HIGH`: conduce a acción incorrecta o bloqueo frecuente;
+- `S2_MEDIUM`: requiere ayuda o produce retraso considerable;
+- `S3_LOW`: fricción menor y recuperable;
+- `OBSERVATION`: variante o fricción sin impacto demostrado.
+
+Reglas:
+
+1. cualquier `S0_CRITICAL` bloquea el gate de la superficie afectada;
+2. cualquier `S1_HIGH` abierto bloquea el cierre de la superficie afectada;
+3. varios hallazgos repetidos de menor severidad pueden justificar `REQUIERE_AJUSTE` cuando degradan tiempo o comprensión;
+4. satisfacción alta no reduce severidad;
+5. un hallazgo de autorización, privacidad o causalidad se clasifica por efecto real posible, no por facilidad de corrección visual;
+6. una corrección debe volver a probar el escenario afectado antes de cambiar a `CONFORME_PARA_CIERRE`.
+
+#### 17. Doce errores analíticos que bloquean o fuerzan ajuste
+
+La sesión deberá detectar explícitamente si ocurre alguno de estos patrones:
+
+1. usar un dato `BLOQUEADO` como si estuviera certificado para el uso oficial;
+2. interpretar `NO EVALUADO`, nulo, no recibido o desconocido como cero;
+3. comparar periodos/versiones/granos incompatibles sin advertir la incompatibilidad;
+4. interpretar un filtro seleccionado como alcance de autorización;
+5. tratar tablero, reporte, exportación o snapshot como fuente transaccional editable;
+6. presentar correlación, coincidencia temporal o output de modelo como causa demostrada;
+7. tratar una recomendación como autorización automática para ejecutar un cambio empresarial;
+8. confundir indicador principal, driver, baseline, meta o guardrail;
+9. declarar éxito ignorando un guardrail o efecto adverso material;
+10. asumir que un restatement eliminó la publicación o versión original;
+11. tratar `PUBLISH` y `EXPORT` como la misma capacidad o inferir una desde la otra;
+12. abrir, inferir o exportar detalle sensible/no autorizado desde un agregado o drill-down.
+
+La severidad se decide por el riesgo del escenario concreto. Los patrones anteriores nunca se descartan como simple preferencia estética.
+
+#### 18. Autorización, privacidad y ética de la prueba
+
+Las sesiones deberán:
+
+- utilizar datos ficticios, minimizados o autorizados para la finalidad de prueba;
+- no registrar credenciales, PIN, secretos, datos médicos u otra información que no sea necesaria;
+- explicar propósito y uso de la evidencia;
+- permitir que la persona detenga la sesión;
+- evitar comparar productividad individual de trabajadores;
+- evitar convertir tiempos de prueba en métrica disciplinaria;
+- pseudonimizar participantes cuando sea posible;
+- separar observación de identidad personal;
+- no ampliar capacidades por ser participante;
+- reautorizar cualquier acción real que la sesión requiera;
+- no usar `service_role`, rol, dispositivo, filtro, propiedad funcional o acceso visual como sustituto de autorización;
+- conservar `PUBLISH` y `EXPORT` como decisiones separadas;
+- no exponer a un participante a datos fuera de su territorio/finalidad para fabricar un escenario.
+
+Si una prueba de seguridad exige comprobar una denegación, deberá construirse con datos controlados o un entorno autorizado; no se obtiene cobertura provocando acceso real indebido.
+
+#### 19. Aplicaciones y propiedad de la evidencia real
+
+La ejecución de este contrato se distribuye por las tareas canónicas de pruebas integrales:
+
+| Cobertura                                                                        | Tarea propietaria de evidencia                            |
+| -------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| principios generales de experiencia, comprensión, errores, recuperación y tiempo | `UX-QA-001` a `UX-QA-020`                                 |
+| SHELL por tipo de actor cuando consuma la experiencia analítica aplicable        | `UX-QA-021`                                               |
+| ANIMA con trabajadores y administradores cuando consuma analítica aplicable      | `UX-QA-022`                                               |
+| VISO por rol administrativo                                                      | `UX-QA-023`                                               |
+| NEXO por rol operativo cuando consuma analítica aplicable                        | `UX-QA-024`                                               |
+| FOGO por área productiva cuando consuma analítica aplicable                      | `UX-QA-025`                                               |
+| ORIGO por etapa de compra cuando consuma analítica aplicable                     | `UX-QA-026`                                               |
+| PULSO por punto operativo cuando consuma analítica aplicable                     | `UX-QA-027`                                               |
+| NUMERA por alcance financiero                                                    | `UX-QA-028`                                               |
+| PASS como cliente cuando consuma una superficie analítica aplicable              | `UX-QA-029`                                               |
+| AURA                                                                             | `UX-QA-030`, únicamente después de aprobar su continuidad |
+
+`UX-QA-020` mantiene el gate de piloto con usuarios reales. Una prueba específica de VISO o NUMERA no sustituye las dimensiones comunes aplicables de `UX-QA-001` a `UX-QA-020`.
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+La tarea materializa el contrato de evidencia y los escenarios necesarios para comprobar comportamientos ya protegidos por requisitos vigentes. No introduce una regla empresarial, de autorización, seguridad, datos, calidad, interfaz o integración nueva que requiera una identidad adicional en el registro canónico.
+
+#### 21. Gate de readiness
+
+Una superficie solo puede pasar de `PENDIENTE_DE_EVIDENCIA` a `CONFORME_PARA_CIERRE` cuando existan conjuntamente:
+
+1. participantes representativos para el uso real aplicable;
+2. escenarios correspondientes ejecutados con protocolo neutral;
+3. tiempos observados con puntos de inicio/fin definidos;
+4. comprensión de contexto, versión, calidad y efecto demostrada;
+5. decisión correcta en los escenarios de riesgo aplicables;
+6. `teach-back` compatible con el significado canónico;
+7. cobertura de errores, recuperación y excepción cuando corresponda;
+8. ausencia de `S0_CRITICAL` abierto;
+9. ausencia de `S1_HIGH` abierto;
+10. autorización y privacidad preservadas durante la prueba;
+11. hallazgos vinculados a requisitos/defectos/tareas propietarias cuando existan;
+12. revalidación de los escenarios afectados después de una corrección;
+13. decisión de readiness registrada por la tarea `UX-QA-*` propietaria;
+14. evidencia suficiente para el ambiente/aplicación donde se pretende ampliar el uso.
+
+No se exige que todas las superficies se cierren simultáneamente. Cada una conserva su estado y evidencia; una superficie conforme no oculta otra bloqueada.
+
+#### 22. Reglas para cobertura insuficiente
+
+Cuando falte evidencia:
+
+```text
+FALTA SESIÓN REAL
+→ PENDIENTE_DE_EVIDENCIA
+→ propietario: UX-QA correspondiente
+→ salida: sesión representativa ejecutada y evidencia registrada
+```
+
+Cuando una combinación no exista en operación:
+
+```text
+COMBINACIÓN NO APLICABLE
+→ NO_APLICA
+→ razón explícita
+→ propietario que confirma la no aplicabilidad
+→ sin usar NO_APLICA para ocultar una cobertura difícil
+```
+
+Cuando exista un hallazgo material:
+
+```text
+HALLAZGO CORREGIBLE
+→ REQUIERE_AJUSTE
+→ tarea/defecto propietario
+→ corrección
+→ repetir escenario afectado
+```
+
+Cuando exista un riesgo crítico/alto:
+
+```text
+S0 O S1 ABIERTO
+→ BLOQUEADA
+→ no ampliar readiness
+→ corregir en tarea propietaria
+→ repetir evidencia
+```
+
+No se utiliza “sin reportes” como equivalente de conformidad.
+
+#### 23. Evidencia mínima por superficie
+
+Cada una de las siete superficies deberá conservar un paquete trazable que incluya:
+
+- versión de la experiencia o prototipo probado;
+- aplicación y ambiente;
+- fecha de la sesión;
+- `participant_code` y función probada;
+- escenario(s) ejecutados;
+- datos/contexto utilizados;
+- estado de calidad y autorización relevantes;
+- tiempos observados;
+- primera interpretación y primera acción;
+- decisión y explicación;
+- ayuda requerida;
+- errores y severidad;
+- `teach-back`;
+- comentario del participante, si lo aporta;
+- observación factual del moderador;
+- evidencia permitida;
+- requisito o defecto vinculado cuando corresponda;
+- decisión de gate;
+- referencia a revalidación si hubo ajuste.
+
+Los agregados de resultados no sustituyen las observaciones individuales necesarias para reconstruir un hallazgo.
+
+#### 24. Resultados agregados permitidos
+
+Después de ejecutar evidencia real podrán calcularse, por escenario/superficie y sin convertirlos en métricas disciplinarias:
+
+- tasa de decisión correcta;
+- tasa de comprensión correcta;
+- tasa de `teach-back` correcto;
+- mediana y dispersión de tiempo a interpretación correcta;
+- mediana y dispersión de tiempo a decisión correcta;
+- proporción con ayuda del moderador;
+- aperturas incorrectas por escenario;
+- tasa de recuperación correcta;
+- hallazgos por severidad;
+- errores de causalidad;
+- errores de calidad/versionado;
+- errores de autorización/privacidad;
+- dificultad percibida.
+
+No se fija un porcentaje universal de aprobación. Las tareas de prueba deberán establecer criterios compatibles con riesgo, tarea y tiempo objetivo, respetando que un solo `S0` o `S1` abierto bloquea el cierre afectado.
+
+#### 25. Trazabilidad hacia la decisión de producto
+
+Cada hallazgo deberá terminar en uno de estos resultados:
+
+```text
+SIN CAMBIO
+→ evidencia suficiente y comportamiento conforme
+
+AJUSTE DE EXPERIENCIA
+→ superficie/tarea propietaria
+→ revalidación requerida
+
+AJUSTE DE TEXTO O TERMINOLOGÍA
+→ propietario semántico/UX aplicable
+→ revalidación si cambia comprensión
+
+AJUSTE DE DATO / CALIDAD
+→ propietario DATA correspondiente
+→ UX no certifica la corrección
+
+AJUSTE DE AUTORIZACIÓN
+→ propietario AUTH correspondiente
+→ UX no amplía permisos
+
+AJUSTE DE INTEGRACIÓN
+→ propietario DATA-INT / integración correspondiente
+→ UX no implementa el contrato físico
+
+DEFECTO DE IMPLEMENTACIÓN
+→ repositorio/tarea propietaria
+→ evidencia técnica y nueva prueba
+
+NO_APLICA
+→ justificación explícita y verificable
+```
+
+Ningún hallazgo material queda como nota sin propietario y condición de salida.
+
+#### 26. Estado material actual del gate
+
+Con las fuentes verificables consumidas para esta tarea:
+
+| Dimensión                                             | Estado                         |
+| ----------------------------------------------------- | ------------------------------ |
+| contrato de validación DATA                           | `ESPECIFICADO`                 |
+| siete superficies mapeadas                            | `ESPECIFICADO` — 7/7           |
+| nueve perfiles con regla de cobertura                 | `ESPECIFICADO` — 9/9           |
+| escenarios                                            | `ESPECIFICADO` — 14            |
+| contrato de tiempos                                   | `ESPECIFICADO`                 |
+| contrato de decisión y `teach-back`                   | `ESPECIFICADO`                 |
+| privacidad y ética                                    | `ESPECIFICADO`                 |
+| sesiones reales vinculadas a esta tarea               | `PENDIENTE_DE_EVIDENCIA`       |
+| tiempos humanos medidos vinculados a esta tarea       | `PENDIENTE_DE_EVIDENCIA`       |
+| decisiones humanas observadas vinculadas a esta tarea | `PENDIENTE_DE_EVIDENCIA`       |
+| defectos derivados de sesiones de esta tarea          | `PENDIENTE_DE_EVIDENCIA`       |
+| readiness por superficie                              | `PENDIENTE_DE_EVIDENCIA` — 7/7 |
+| implementación física de instrumentación              | `FUERA_DE_ALCANCE`             |
+
+No se interpreta `PENDIENTE_DE_EVIDENCIA` como defecto del contrato documental. Es el estado correcto hasta que `UX-QA-*` produzca observación real.
+
+#### 27. Criterios de aceptación documental
+
+- [x] Se distingue aprobación del contrato frente a ejecución real de sesiones.
+- [x] Se preservan las siete superficies de `DATA-UX-001` a `DATA-UX-007`.
+- [x] Las siete superficies tienen una pregunta, una decisión, un error crítico y un propietario de evidencia.
+- [x] Se preservan los nueve perfiles analíticos heredados sin asignarles acceso por inferencia.
+- [x] Se define cómo resolver `NO_APLICA` sin ocultar cobertura.
+- [x] Se materializan catorce escenarios de prueba.
+- [x] Se incluye un escenario de principio a fin.
+- [x] Se incluye calidad, frescura, reconciliación y certificación.
+- [x] Se preservan las tres métricas de asistencia bloqueadas.
+- [x] Se incluye causalidad y evidencia contradictoria/faltante.
+- [x] Se incluyen baseline, meta, driver y guardrail.
+- [x] Se distinguen reporte, exportación, suscripción y snapshot.
+- [x] Se incluye restatement e historia.
+- [x] Se distingue filtro de autorización.
+- [x] Se preserva la separación `PUBLISH`/`EXPORT`.
+- [x] Se define observación de comprensión mediante predicción, conducta y `teach-back`.
+- [x] Se definen campos para tiempos sin inventar umbrales universales.
+- [x] Se preserva la taxonomía `S0_CRITICAL` a `OBSERVATION`.
+- [x] `S0` y `S1` abiertos bloquean el cierre afectado.
+- [x] Se definen reglas de privacidad, minimización y ética.
+- [x] Se prohíbe usar tiempos como evaluación disciplinaria.
+- [x] Cada falta de evidencia tiene propietario y condición de salida.
+- [x] La ejecución real queda asignada a tareas `UX-QA-*` existentes.
+- [x] No se declara readiness sin evidencia humana.
+- [x] No se crean requisitos de prueba nuevos.
+- [x] No se implementa código, datos, integración ni instrumentación física.
+
+#### 28. Límites de la tarea
+
+Esta tarea no:
+
+- recluta participantes;
+- agenda ni simula sesiones;
+- inventa tiempos;
+- inventa respuestas de participantes;
+- inventa satisfacción;
+- inventa defectos observados;
+- declara aprobada una aplicación por ausencia de evidencia negativa;
+- modifica métricas, fórmulas, fuentes o calidad;
+- cambia estados DQ;
+- publica, exporta o fija metas;
+- modifica permisos o autorización;
+- implementa instrumentación, telemetría, BI, modelos o IA;
+- ejecuta `DATA-INT-*`;
+- habilita AURA antes de su continuidad;
+- sustituye las pruebas integrales del BLOQUE U.
+
+#### 29. Handoff exacto
+
+La salida documental de `DATA-UX-008` queda disponible para:
+
+- `UX-QA-001` a `UX-QA-020` como contrato común de comprensión, tiempo, errores, recuperación y piloto;
+- `UX-QA-023` para VISO;
+- `UX-QA-028` para NUMERA;
+- las pruebas por aplicación `UX-QA-021` a `UX-QA-029` cuando consuman superficies analíticas;
+- `UX-QA-030` para AURA solo después de aprobar su continuidad;
+- `DATA-INT-001` como siguiente tarea reservada del mini-bloque AB, sin que este handoff autorice iniciar integraciones antes de la continuidad correspondiente.
+
+La condición de salida del estado `PENDIENTE_DE_EVIDENCIA` es una sesión real trazable bajo la tarea `UX-QA-*` propietaria, seguida de una decisión de gate compatible con los hallazgos.
+
+#### 30. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas`
+
