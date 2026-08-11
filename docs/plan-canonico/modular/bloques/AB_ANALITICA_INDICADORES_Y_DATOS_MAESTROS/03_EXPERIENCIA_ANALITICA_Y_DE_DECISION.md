@@ -3071,7 +3071,944 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas`
 
 
-### [ ] DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
+### ✅ DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación` — APROBADA
+**Tarea siguiente:** `DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de investigación analítica para variaciones, anomalías, hipótesis, evidencia, causas, impacto, oportunidades y confianza diagnóstica sin automatizar decisiones empresariales ni alterar fuentes
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, componentes, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, datos, backfills, modelos productivos, automatizaciones, experimentos, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia mediante la cual un actor autorizado puede convertir una señal o variación gobernada en una investigación analítica trazable, localizar dónde ocurre, comprobar si es una anomalía empresarial o un problema de datos, formular hipótesis, reunir evidencia favorable y contradictoria, evaluar explicaciones alternativas, asignar el nivel de confianza permitido y documentar una oportunidad sin presentar correlaciones como causas ni ejecutar recomendaciones.
+
+La experiencia deberá permitir responder, para cada investigación:
+
+1. ¿qué señal, métrica, hecho o familia origina la investigación?;
+2. ¿respecto de qué referencia compatible se observó el cambio?;
+3. ¿qué versión, población, periodo, corte, dimensiones y cobertura sustentan la señal?;
+4. ¿la señal es reproducible y las dependencias DQ permiten interpretarla?;
+5. ¿se trata de comportamiento empresarial, calidad de datos, reconciliación, cambio semántico o cambio de cobertura?;
+6. ¿en qué segmentos, periodos o dimensiones se concentra la variación?;
+7. ¿qué factores candidatos se investigaron y cuál es el mecanismo propuesto?;
+8. ¿qué explicaciones alternativas siguen abiertas o fueron descartadas con evidencia?;
+9. ¿qué evidencia apoya, contradice o todavía falta para cada afirmación?;
+10. ¿la temporalidad permite sostener asociación o lenguaje causal?;
+11. ¿qué nivel de confianza diagnóstica corresponde y qué lo limita?;
+12. ¿qué impacto observado o potencial puede sostenerse sin atribución excesiva?;
+13. ¿qué oportunidad puede documentarse sin convertirla todavía en meta o acción?;
+14. ¿quién conserva propiedad sobre la interpretación empresarial y sobre cada fuente?;
+15. ¿qué navegación posterior corresponde cuando la salida es calidad, objetivo, acción, experimento, publicación o integración?
+
+Principio rector:
+
+```text
+INVESTIGACIÓN ANALÍTICA
+=
+SEÑAL REPRODUCIBLE
++ CONTEXTO Y REFERENCIA COMPATIBLES
++ CALIDAD Y COBERTURA VISIBLES
++ LOCALIZACIÓN DE LA VARIACIÓN
++ HIPÓTESIS Y ALTERNATIVAS
++ EVIDENCIA FAVORABLE, CONTRADICTORIA Y FALTANTE
++ TEMPORALIDAD Y MECANISMO
++ CONFIANZA EXPLICABLE
++ IMPACTO TRAZABLE
++ OPORTUNIDAD DOCUMENTADA
+
+NO
+
+VARIACIÓN = ANOMALÍA
+CORRELACIÓN = CAUSA
+HIPÓTESIS = CONCLUSIÓN
+MODELO = EVIDENCIA CAUSAL
+IA = AUTORIDAD EMPRESARIAL
+OPORTUNIDAD = META
+RECOMENDACIÓN = ACCIÓN
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el diseño del espacio de investigación con los siguientes resultados:
+
+- una experiencia única de investigación basada en afirmaciones diagnósticas trazables y no en narrativas libres sin evidencia;
+- una secuencia de trece momentos de investigación desde confirmación de señal hasta transferencia a objetivo o intervención;
+- clasificación obligatoria previa a causalidad entre comportamiento de negocio, calidad de datos, reconciliación, cambio semántico y cambio de cobertura;
+- ocho patrones diagnósticos descriptivos materializados sin convertirlos en causas;
+- seis niveles canónicos de confianza diagnóstica preservados exactamente desde `NO_EVALUABLE` hasta `EFECTO_COMPROBADO`;
+- ocho dimensiones mínimas de evidencia visibles por afirmación;
+- topes de confianza que impiden elevar conclusiones cuando faltan calidad, comparabilidad, precedencia temporal, alternativas o estrategia de identificación;
+- evidencia favorable, contradictoria y faltante separadas en la experiencia;
+- trazabilidad entre señal, referencia, población, evidencia, factor o hipótesis, alternativas, impacto, confianza, propietario y conclusión;
+- separación explícita entre investigación D014 y calidad/certificación D007;
+- separación explícita entre oportunidad D014 y objetivos/metas/guardrails D015;
+- separación explícita entre oportunidad y acciones/experimentos D016;
+- cinco recorridos transversales de investigación para comercial, inventario/abastecimiento, producción/calidad, servicio/cliente y economía/finanzas;
+- cobertura explícita de las 55 familias analíticas heredadas de D009 a D013, preservando la distribución `11 + 12 + 10 + 12 + 10`;
+- cobertura explícita de las 14 métricas de asistencia ya registradas, preservando 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+- cobertura explícita de las seis familias de artefacto D008 como posibles orígenes, referencias o salidas gobernadas sin convertirlas en fuentes de verdad;
+- protección de poblaciones pequeñas, dimensiones sensibles, evidencia individual, proveedores, trabajadores, clientes, información financiera y detalle técnico;
+- auditoría conceptual de consultas, modelos y recomendaciones sin convertir auditoría en autorización o causalidad;
+- cero umbrales estadísticos universales, cero porcentajes universales de confianza, cero fórmulas nuevas, cero `metric_key` nuevas, cero permisos nuevos y cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+Reconciliación documental:
+
+| Inventario consumido                  | Esperado | Materializado | Faltantes | Duplicados |
+| ------------------------------------- | -------: | ------------: | --------: | ---------: |
+| Patrones diagnósticos                 |        8 |             8 |         0 |          0 |
+| Niveles de confianza                  |        6 |             6 |         0 |          0 |
+| Dimensiones mínimas de evidencia      |        8 |             8 |         0 |          0 |
+| Familias analíticas                   |       55 |            55 |         0 |          0 |
+| Métricas de asistencia                |       14 |            14 |         0 |          0 |
+| Familias de artefacto D008            |        6 |             6 |         0 |          0 |
+| Nuevas métricas o fórmulas            |        0 |             0 |         0 |          0 |
+| Nuevos estados DQ o de confianza      |        0 |             0 |         0 |          0 |
+| Cambios físicos                       |        0 |             0 |         0 |          0 |
+| Requisitos TREQ creados o modificados |        0 |             0 |         0 |          0 |
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume sin redefinir:
+
+- `DATA-DOM-014` como contrato canónico de diagnóstico transversal, anomalías, causas, oportunidades y confianza;
+- `DATA-UX-001` para entradas desde atención ejecutiva sin convertir la priorización visual en causalidad;
+- `DATA-UX-002` para definición, propietario, fuente, versión, calidad, linaje e historia de métricas y objetos;
+- `DATA-UX-003` para señales, comparaciones, filtros, segmentación, corte y drill-down desde tableros por dominio;
+- `DATA-UX-004` para calidad, frescura, cobertura, conciliaciones, incidencias y certificación antes de interpretar una anomalía como comportamiento empresarial;
+- el contrato de autorización DATA para construir la población autorizada antes de segmentar, comparar o profundizar;
+- el contrato de protección DATA para poblaciones pequeñas, dimensiones sensibles, precisión, comparación, exportación y drill-down;
+- el contrato de segregación DATA que mantiene separadas `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- el contrato de auditoría DATA para consulta, descarga, suscripción, alerta, modelo y recomendación;
+- `DATA-DOM-015` únicamente como frontera posterior para objetivos, líneas base, metas, drivers, guardrails y plan de medición;
+- `DATA-DOM-016` únicamente como frontera posterior para acciones, experimentos, responsables, seguimiento y comprobación;
+- `DATA-DOM-017` únicamente como propietario de correcciones históricas, restatements y reproducibilidad de conclusiones publicadas;
+- `DATA-INT-002` como propietario futuro de la materialización física de capa semántica, consultas, modelos, snapshots, caché y rendimiento;
+- `DATA-INT-004` como propietario futuro de la integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial;
+- la línea base transversal vigente de privacidad, trazabilidad, accesibilidad, lenguaje humano, divulgación progresiva y densidad administrativa.
+
+Ninguna de estas entradas transfiere propiedad de datos o autoridad empresarial al espacio de investigación.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+MÉTRICA ≠ SEÑAL ≠ VARIACIÓN ≠ ANOMALÍA
+```
+
+```text
+ANOMALÍA DE NEGOCIO ≠ INCIDENCIA DE CALIDAD
+```
+
+```text
+DIFERENCIA DE RECONCILIACIÓN ≠ CAÍDA DE DESEMPEÑO
+```
+
+```text
+ALERTA ≠ DIAGNÓSTICO ≠ RECOMENDACIÓN ≠ ACCIÓN
+```
+
+```text
+CORRELACIÓN ≠ CAUSALIDAD ≠ HIPÓTESIS RESPALDADA ≠ EFECTO COMPROBADO
+```
+
+```text
+FACTOR CANDIDATO ≠ CAUSA PRINCIPAL ≠ CAUSA RAÍZ
+```
+
+```text
+IMPACTO OBSERVADO ≠ IMPACTO POTENCIAL ≠ BENEFICIO REALIZADO
+```
+
+```text
+OPORTUNIDAD ≠ OBJETIVO ≠ META ≠ PLAN ≠ EXPERIMENTO
+```
+
+```text
+CONFIANZA DIAGNÓSTICA ≠ CERTIFICACIÓN DE DATOS ≠ PROBABILIDAD ESTADÍSTICA
+```
+
+```text
+EXPLICACIÓN DE MODELO ≠ EVIDENCIA FUENTE
+```
+
+```text
+ESCENARIO SIMULADO ≠ CONTRAFACTUAL OBSERVADO ≠ RESULTADO REAL
+```
+
+```text
+INCUMPLIMIENTO DE META ≠ ANOMALÍA ESTADÍSTICA
+```
+
+La experiencia nunca oculta estas fronteras mediante un único indicador, score, semáforo o narrativa generada.
+
+---
+
+#### 5. Arquitectura de información del espacio de investigación
+
+La experiencia se organiza en siete zonas lógicas coordinadas:
+
+1. **Contexto y señal**: objeto investigado, métrica/familia, versión, periodo, corte, población, referencia, magnitud y método de detección.
+2. **Puerta de calidad y clasificación**: DQ de dependencias, cobertura, conciliación y clasificación de la señal antes de causalidad.
+3. **Localización de la variación**: tendencia, segmentación y descomposición únicamente sobre dimensiones autorizadas y comparables.
+4. **Hipótesis y alternativas**: factores candidatos, mecanismo propuesto, temporalidad, condiciones de aplicación y explicaciones competidoras.
+5. **Evidencia y confianza**: evidencia favorable, contradictoria y faltante, independencia de evidencias, ocho dimensiones y nivel de confianza permitido.
+6. **Impacto y oportunidad**: impacto observado/potencial, residuo no atribuido, restricciones, riesgos y oportunidad documentada.
+7. **Historia y continuidad**: cambios de hipótesis/confianza, propietario de interpretación, correlación de consultas/modelos y transferencias posteriores.
+
+La primera vista prioriza la señal, la clasificación, el estado DQ, el nivel de confianza y las preguntas abiertas. La evidencia extensa, los segmentos detallados, los modelos y la historia se presentan mediante divulgación progresiva.
+
+---
+
+#### 6. Coordenada visible de una investigación
+
+Toda investigación deberá poder reconstruir, cuando aplique:
+
+| Componente            | Decisión UX                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| objeto investigado    | métrica, hecho, proceso o familia analítica exacta; no usar la pantalla como identidad                     |
+| versión semántica     | versión de métrica, fórmula, población e inclusiones/exclusiones                                           |
+| periodo y corte       | ventana observada y fecha/hora de corte                                                                    |
+| granularidad          | unidad de observación y agregación                                                                         |
+| dimensiones           | únicamente dimensiones admitidas, compatibles y autorizadas                                                |
+| referencia            | comparador explícito: periodo, plan, presupuesto, peer, distribución o modelo gobernado                    |
+| fuentes               | fuentes propietarias y dependencias materiales que el actor esté autorizado a conocer                      |
+| calidad               | estado DQ de cada dependencia crítica                                                                      |
+| cobertura             | población incluida, exclusiones y parcialidad conocida                                                     |
+| método de señal       | manual, regla, estadística o modelo, con versión cuando aplique                                            |
+| evidencia             | referencias favorables, contradictorias y faltantes                                                        |
+| factores candidatos   | explicaciones investigadas y mecanismo propuesto                                                           |
+| alternativas          | explicaciones competidoras abiertas o descartadas con evidencia                                            |
+| impacto               | magnitud observada o potencial, unidad/moneda y método de atribución cuando exista                         |
+| confianza             | uno de los seis niveles D014 con justificación y topes                                                     |
+| propietario           | función responsable de la interpretación empresarial                                                       |
+| estado de publicación | exploratorio, interno controlado u oficial cuando exista una decisión de publicación separada y autorizada |
+
+Cambiar versión, población, periodo, corte, referencia, granularidad o dimensión material produce otra coordenada de investigación y exige reevaluar comparabilidad, evidencia y confianza.
+
+---
+
+#### 7. Secuencia de investigación materializada
+
+El espacio materializa la siguiente secuencia lógica de trece momentos:
+
+1. **Confirmar la señal**: reproducir valor, versión, referencia, corte y población.
+2. **Verificar calidad**: consultar estado DQ, cobertura, frescura, integridad y conciliación de dependencias críticas.
+3. **Clasificar la señal**: distinguir negocio, calidad, reconciliación, cambio semántico o cambio de cobertura.
+4. **Localizar la variación**: descomponer por dimensiones compatibles y autorizadas sin alterar la definición.
+5. **Establecer temporalidad**: ordenar hechos y factores antes, durante y después del cambio.
+6. **Enumerar factores candidatos**: registrar condiciones internas, externas y restricciones conocidas.
+7. **Enumerar alternativas**: registrar explicaciones plausibles que compiten con la hipótesis principal.
+8. **Reunir evidencia**: separar favorable, contradictoria y faltante.
+9. **Comprobar independencia**: identificar evidencias derivadas del mismo hecho para evitar falsa triangulación.
+10. **Asignar confianza**: aplicar los seis niveles y los topes obligatorios.
+11. **Estimar impacto**: cuantificar solo con métricas, unidades y bases gobernadas.
+12. **Formular oportunidad**: describir espacio de mejora, protección o captura de valor sin ejecutar solución.
+13. **Transferir**: a calidad cuando la señal no sea interpretable, a objetivos cuando exista oportunidad medible o a intervención cuando corresponda un candidato de acción/experimento.
+
+La salida `SIN_CAUSA_RESUELTA` es válida. La experiencia no obliga a seleccionar una causa dominante para cerrar una investigación.
+
+---
+
+#### 8. Clasificación previa a causalidad
+
+Antes de abrir hipótesis empresariales, la experiencia exige clasificar la señal:
+
+| Clase                     | Pregunta UX                                                                            | Consecuencia                                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| comportamiento de negocio | ¿el hecho cambió realmente en la operación?                                            | continuar investigación empresarial                                                                     |
+| calidad de datos          | ¿la señal puede provenir de fuente vencida, faltante, duplicada, inválida o degradada? | conservar la investigación, pero priorizar resolución en `DATA-UX-004` antes de elevar confianza causal |
+| reconciliación            | ¿representaciones del mismo proceso no concilian?                                      | mostrar diferencia y resolver fuente/contrato antes de interpretar desempeño                            |
+| cambio semántico          | ¿cambió fórmula, población, dimensión, unidad o versión?                               | bloquear continuidad comparativa hasta reconciliar versiones                                            |
+| cambio de cobertura       | ¿entró o salió una fuente, sede, canal o población?                                    | explicar cobertura antes de atribuir cambio a la operación                                              |
+
+Una señal aparente producida por una ruptura de datos no se presenta como problema empresarial.
+
+---
+
+#### 9. Ocho patrones diagnósticos
+
+|    # | Patrón                                     | Presentación UX                                                                 | Prohibición                                                                |
+| ---: | ------------------------------------------ | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+|    1 | desviación de nivel                        | mostrar observado, referencia, diferencia absoluta y relativa cuando sea válida | no llamar causa a la diferencia                                            |
+|    2 | cambio de tendencia                        | mostrar dirección/pendiente y ventana comparable                                | no extrapolar causalidad desde la forma de la serie                        |
+|    3 | cambio de volatilidad                      | mostrar dispersión/variabilidad y método                                        | una variación estadística no se rotula error por sí sola                   |
+|    4 | cambio de distribución o mezcla            | mostrar composición antes/después y poblaciones compatibles                     | el cambio de mezcla no se presenta como causa automáticamente              |
+|    5 | ruptura temporal o estacional              | mostrar patrón esperado, calendario y ruptura                                   | no inventar estacionalidad sin cobertura suficiente                        |
+|    6 | divergencia entre segmentos                | mostrar segmentos comparables y protección de grupos pequeños                   | diferencia entre grupos no autoriza explicación causal                     |
+|    7 | ruptura de relación o reconciliación       | mostrar relación esperada y residuo/diferencia                                  | no ocultar el residuo para conservar una narrativa de desempeño            |
+|    8 | recurrencia o concentración de excepciones | mostrar concentración por dimensión y repetición                                | concentración no identifica causa individual ni responsable por inferencia |
+
+**Reconciliación:** 8 patrones esperados; 8 materializados; 8 únicos; 0 faltantes; 0 duplicados.
+
+El método de detección conserva versión, población, mínimo de observaciones aplicable, tratamiento de faltantes, estacionalidad, outliers y sensibilidad cuando corresponda. No existe un umbral estadístico universal creado por esta tarea.
+
+---
+
+#### 10. Hipótesis, factores candidatos y alternativas
+
+Cada factor candidato visible deberá poder declarar:
+
+- mecanismo empresarial propuesto;
+- relación temporal con el resultado;
+- población donde debería observarse el efecto;
+- evidencia favorable;
+- evidencia contradictoria;
+- evidencia faltante;
+- explicaciones alternativas materiales;
+- condiciones bajo las cuales el mecanismo no aplicaría;
+- nivel de confianza alcanzado;
+- propietario funcional capaz de validar la interpretación.
+
+Tipos de relación permitidos en la experiencia:
+
+```text
+coincidencia temporal
+asociación descriptiva
+factor contribuyente plausible
+hipótesis respaldada
+relación con evidencia causal
+intervención con efecto comprobado
+```
+
+El tipo de relación siempre se muestra. La etiqueta genérica “causa” no sustituye el nivel de evidencia.
+
+Una causa declarada en un expediente propietario puede incorporarse como evidencia de causa declarada, conservando fuente, actor, fecha, versión y alcance. No se generaliza automáticamente a otra sede, producto, canal, población, periodo o efecto.
+
+---
+
+#### 11. Temporalidad y explicaciones alternativas
+
+Reglas de temporalidad:
+
+1. un factor propuesto debe preceder al efecto cuando el mecanismo causal lo exige;
+2. una variable registrada después del resultado no se presenta como causa por mera correlación;
+3. un patrón simultáneo permite asociación salvo diseño adicional que identifique dirección;
+4. cambios de precio, promoción, disponibilidad, capacidad, receta, proveedor, proceso o política usan la vigencia realmente aplicable al hecho;
+5. una resolución temporal insuficiente queda como limitación explícita.
+
+Alternativas materiales a revisar según el caso:
+
+- cambio de cobertura o fuente;
+- cambio de fórmula o definición;
+- estacionalidad o calendario;
+- precio o promoción;
+- mezcla de producto, canal, sede o cliente;
+- disponibilidad de inventario;
+- capacidad productiva, comercial, de almacenamiento o logística;
+- cambio de proveedor o lead time;
+- calidad, rechazo o liberación;
+- cambio de servicio o promesa;
+- presupuesto, forecast o escenario usado como referencia;
+- eventos extraordinarios externos documentados;
+- datos tardíos, backfills o restatements;
+- sesgo de selección, identidad o población;
+- otra intervención simultánea.
+
+Descartar una alternativa exige evidencia. La ausencia de una etiqueta no constituye descarte.
+
+---
+
+#### 12. Evidencia favorable, contradictoria y faltante
+
+Cada afirmación conserva tres grupos separados:
+
+```text
+EVIDENCIA FAVORABLE
+EVIDENCIA CONTRADICTORIA
+EVIDENCIA FALTANTE O NO DISPONIBLE
+```
+
+Reglas:
+
+- evidencia contradictoria no se oculta para elevar confianza;
+- falta de evidencia no se registra como evidencia en contra;
+- ausencia de una causa alternativa observada no demuestra que no exista;
+- una evidencia posterior puede reducir la confianza de una afirmación anterior;
+- varias métricas derivadas del mismo hecho no cuentan como fuentes independientes;
+- la evidencia sensible puede mostrarse mediante referencia protegida sin exponer su contenido completo;
+- una conclusión oficial modificada conserva historia y relación con la versión anterior conforme al gobierno de correcciones y restatements.
+
+---
+
+#### 13. Ocho dimensiones mínimas de evidencia
+
+|    # | Dimensión                   | Pregunta visible                                                                              |
+| ---: | --------------------------- | --------------------------------------------------------------------------------------------- |
+|    1 | calidad de fuente           | ¿las dependencias críticas tienen estado DQ compatible con el uso?                            |
+|    2 | cobertura                   | ¿la población observada representa el alcance de la afirmación?                               |
+|    3 | comparabilidad              | ¿resultado y referencia comparten definición, unidad, granularidad, calendario y dimensiones? |
+|    4 | precedencia temporal        | ¿el factor ocurre antes del efecto cuando el mecanismo lo exige?                              |
+|    5 | mecanismo                   | ¿existe una explicación empresarial coherente y verificable del vínculo?                      |
+|    6 | alternativas                | ¿se investigaron explicaciones materiales competidoras?                                       |
+|    7 | estabilidad/replicación     | ¿la relación persiste en ventanas, segmentos o repeticiones compatibles cuando corresponde?   |
+|    8 | intervención/identificación | ¿existe diseño que permita separar efecto de correlación cuando se usa lenguaje causal?       |
+
+**Reconciliación:** 8 dimensiones esperadas; 8 materializadas; 8 únicas; 0 faltantes; 0 duplicadas.
+
+No se promedian mecánicamente. Una condición crítica puede limitar todo el nivel de confianza.
+
+---
+
+#### 14. Seis niveles canónicos de confianza
+
+| Nivel                  | Presentación UX                                                                                             | Lenguaje permitido                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `NO_EVALUABLE`         | falta base suficiente para interpretar la afirmación; mostrar qué dependencia, comparador o evidencia falta | “no evaluable”, “información insuficiente”, “causa no resuelta”                   |
+| `SEÑAL_DESCRIPTIVA`    | cambio reproducible sin atribución a factor                                                                 | “se observó”, “aumentó/disminuyó”, “se concentra en”                              |
+| `ASOCIACION`           | relación reproducible sin identificación causal                                                             | “está asociado con”, “coincide con”, “es compatible con”                          |
+| `HIPOTESIS_RESPALDADA` | varias evidencias apoyan un mecanismo y se investigaron alternativas materiales                             | “la evidencia respalda la hipótesis de que”                                       |
+| `EVIDENCIA_CAUSAL`     | existe estrategia de identificación con supuestos y sensibilidad explícitos                                 | “la evidencia apoya un efecto causal bajo estos supuestos y contexto”             |
+| `EFECTO_COMPROBADO`    | intervención o experimento gobernado observó efecto bajo diseño previo                                      | “el efecto fue comprobado en la población, ventana y condiciones del experimento” |
+
+**Reconciliación:** 6 niveles esperados; 6 materializados; 6 únicos; 0 faltantes; 0 duplicados.
+
+`EFECTO_COMPROBADO` no autoriza generalización fuera de la población, ventana y condiciones demostradas.
+
+---
+
+#### 15. Topes obligatorios de confianza
+
+1. una dependencia crítica `BLOQUEADO` fuerza `NO_EVALUABLE` para toda afirmación que dependa de ella;
+2. una diferencia no reproducible fuerza `NO_EVALUABLE`;
+3. sin referencia comparable, el máximo es `SEÑAL_DESCRIPTIVA`;
+4. sin precedencia temporal demostrable, el máximo es `ASOCIACION` para afirmaciones causales;
+5. sin investigación de alternativas materiales, el máximo es `ASOCIACION`;
+6. evidencia redundante derivada del mismo hecho no eleva el nivel por multiplicidad;
+7. un output de IA o de un modelo predictivo por sí solo no eleva por encima de `ASOCIACION`;
+8. correlación, p-value, feature importance, SHAP, score o precisión predictiva no prueban causalidad por sí solos;
+9. `EVIDENCIA_CAUSAL` exige fuentes aptas, estrategia de identificación y supuestos explícitos;
+10. `EFECTO_COMPROBADO` solo consume evidencia de una intervención o experimento gobernado por su tarea propietaria;
+11. una afirmación no puede tener mayor alcance territorial, temporal o poblacional que la evidencia;
+12. un cambio de fórmula o definición dentro de la ventana debe reconciliarse antes de elevar confianza.
+
+No se crea un porcentaje universal de confianza ni un score ponderado que pueda compensar una falla crítica.
+
+---
+
+#### 16. Localización y segmentación
+
+La localización de una variación ocurre únicamente sobre el conjunto autorizado y con dimensiones admitidas por la versión de la métrica.
+
+Reglas:
+
+- segmentar no amplía población;
+- un filtro solo reduce el conjunto autorizado;
+- la sede seleccionada no sustituye territorio real;
+- la dimensión trabajador, cliente o proveedor no habilita ranking individual por defecto;
+- un grupo pequeño o sensible puede suprimirse aunque el total sea visible;
+- una diferencia de subtotales no se usa para reconstruir un grupo oculto;
+- la comparación entre segmentos conserva definición, periodo, corte, unidad, calendario, cobertura y DQ compatibles;
+- la investigación puede mostrar un residuo “no explicado” en lugar de forzar atribución total;
+- el drill-down a hechos, expedientes o evidencia reevalúa autorización en cada nivel.
+
+---
+
+#### 17. Impacto observado, impacto potencial y oportunidad
+
+**Impacto observado** cuantifica una diferencia ya ocurrida y conserva:
+
+- resultado afectado;
+- población;
+- periodo y corte;
+- magnitud absoluta;
+- magnitud relativa cuando exista denominador válido;
+- unidad o moneda;
+- método de atribución, si existe;
+- incertidumbre o rango cuando el método lo produzca;
+- parte no atribuible o residual;
+- calidad y confianza aplicables.
+
+**Impacto potencial** expresa lo que podría evitarse, recuperarse o capturarse y conserva referencia, supuesto/escenario, horizonte, población, mecanismo, límites, sensibilidad y confianza. Nunca se presenta como beneficio realizado.
+
+Reglas de atribución:
+
+- impacto comercial no se monetiza sin una base económica gobernada;
+- margen, costo y rentabilidad conservan las definiciones económicas propietarias;
+- merma física no se transforma automáticamente en pérdida financiera;
+- reclamo o rating no se transforma automáticamente en pérdida de cliente;
+- falta de inventario no se transforma automáticamente en venta perdida;
+- correlación no autoriza atribuir el 100 % de una variación a un factor;
+- el residuo no explicado permanece visible.
+
+Una **oportunidad** describe un espacio de mejora, protección o captura de valor e incluye señal/diagnóstico origen, población, resultado afectado, impacto observado o potencial, mecanismo, confianza, restricciones, propietario, riesgos, información faltante y destino posterior. No prescribe todavía una acción.
+
+---
+
+#### 18. Cinco recorridos transversales de investigación
+
+Estos recorridos orientan navegación; no son cadenas causales predefinidas.
+
+| Recorrido                   | Secuencia orientativa de investigación                                                                                                                  | Límite principal                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| comercial y demanda         | ventas/pedidos/ticket/demanda → cobertura/mezcla → disponibilidad → capacidad → servicio → precio/promoción/margen                                      | separar asociación, restricción y causa                                    |
+| inventario y abastecimiento | existencia/cobertura/faltante/vencimiento → demanda/consumo → remisiones/proveedores → plan/capacidad → costo/liquidez                                  | distinguir restricción, excepción y problema de datos                      |
+| producción y calidad        | plan/capacidad/rendimiento/consumo/merma/calidad → insumos → receta/secuencia productiva/programa → liberación/ciclo → servicio/venta → costo/variación | hechos productivos no se convierten en explicación económica sin evidencia |
+| servicio y cliente          | promesa/tiempos/completitud/reclamos/satisfacción → pedido/canal → inventario/producción → logística → compensación/recurrencia/reputación              | identidad, finalidad y detalle sensible se reautorizan                     |
+| económica y financiera      | costo/variación/margen/gasto/liquidez/rentabilidad → ventas/compras/inventario/producción/servicio → asignaciones/reconciliaciones                      | diferencia económica no se convierte en causa operacional sin evidencia    |
+
+---
+
+#### 19. Matriz de cobertura — Comercial, 11/11
+
+|    # | Familia canónica                             | Uso dentro de la investigación               | Límite UX005                                                                      |
+| ---: | -------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | señal, resultado e impacto comercial         | venta o ingreso no prueban margen ni causa                                        |
+|    2 | pedidos y conversión                         | señal de volumen/funnel y segmentación       | conversión exige denominador gobernado antes de cuantificar                       |
+|    3 | ticket y unidades                            | señal de intensidad y mezcla                 | solo se comparan sobre población compatible                                       |
+|    4 | mezcla por producto, categoría, canal y sede | localización de cambio composicional         | cambio de mezcla puede explicar agregados, no causa por sí solo                   |
+|    5 | demanda por franja, día y temporada          | patrón temporal y referencia comparable      | estacionalidad requiere cobertura suficiente                                      |
+|    6 | disponibilidad perdida                       | factor candidato de demanda no satisfecha    | sin intención y disponibilidad reconciliadas no se cuantifica como pérdida causal |
+|    7 | cancelaciones, devoluciones y descuentos     | factor, resultado o impacto según expediente | los tres conceptos permanecen separados                                           |
+|    8 | promociones y efecto incremental             | hipótesis de intervención comercial          | descuento o before/after no demuestran exposición ni efecto causal                |
+|    9 | recurrencia y frecuencia                     | comportamiento longitudinal                  | identidad y finalidad autorizadas son requisito previo                            |
+|   10 | margen relacionado                           | impacto económico consumido                  | margen no se recalcula localmente                                                 |
+|   11 | capacidad comercial no utilizada             | restricción o capacidad candidata            | venta baja no prueba capacidad ociosa                                             |
+
+**Reconciliación:** 11 esperadas; 11 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 20. Matriz de cobertura — Inventario, abastecimiento, proveedores y logística, 12/12
+
+|    # | Familia canónica                        | Uso dentro de la investigación                            | Límite UX005                                                         |
+| ---: | --------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | contexto de disponibilidad y restricción                  | conserva bloqueos y definiciones de fuente                           |
+|    2 | cobertura y días de inventario          | señal de exposición y restricción                         | no existe cobertura sin consumo/demanda compatible                   |
+|    3 | rotación y permanencia                  | señal de movimiento, obsolescencia o capital inmovilizado | exige historia y cohorte/lote comparables                            |
+|    4 | faltantes y quiebres                    | evento o factor candidato                                 | stock cero no prueba faltante o quiebre sin necesidad elegible       |
+|    5 | vencimiento, daño y pérdida             | hecho de pérdida/calidad e impacto                        | causa proviene de evidencia explícita, no de diferencia residual     |
+|    6 | diferencias de conteo                   | señal de integridad física/reconciliación                 | puede ser causa operativa o síntoma; debe investigarse               |
+|    7 | cumplimiento de remisiones              | señal de cumplimiento interno                             | preparación, despacho, recepción y faltante permanecen separados     |
+|    8 | lead time y cumplimiento de proveedores | factor temporal y de abastecimiento                       | exige evento contractual inicial y recepción aceptada                |
+|    9 | compras urgentes                        | señal de excepción                                        | recepción de emergencia no equivale automáticamente a compra urgente |
+|   10 | consumo versus plan                     | relación entre consumo real y base planificada            | sin plan compatible no existe comparación válida                     |
+|   11 | costo de inventario                     | impacto económico                                         | valoración oficial consume definición económica                      |
+|   12 | capacidad de almacenamiento             | restricción física candidata                              | exige denominador físico utilizable y unidad compatible              |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 21. Matriz de cobertura — Producción, rendimiento, capacidad, merma y calidad, 10/10
+
+|    # | Familia canónica                            | Uso dentro de la investigación                   | Límite UX005                                                               |
+| ---: | ------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+|    1 | demanda planificada versus producción       | señal plan-real y localización de brecha         | pedido o remisión no sustituyen el plan aceptado                           |
+|    2 | capacidad disponible y utilizada            | restricción o factor candidato                   | no mezclar unidades de capacidad sin puente explícito                      |
+|    3 | adherencia al programa                      | señal temporal de ejecución                      | exige programa publicado y versionado                                      |
+|    4 | rendimiento teórico y real                  | señal de rendimiento y posible factor productivo | receta, escala y unidad deben ser comparables                              |
+|    5 | consumo estándar y real                     | variación de consumo por ingrediente             | sustituciones y unidades se preservan                                      |
+|    6 | merma, reproceso y aprovechamiento          | pérdida, retrabajo o recuperación observada      | merma no se deriva automáticamente de diferencia de rendimiento            |
+|    7 | calidad, retención y rechazo                | señal o resultado de calidad                     | control, conformidad, retención, rechazo y liberación permanecen separados |
+|    8 | tiempo de ciclo                             | señal temporal y cuello de botella candidato     | requiere hitos reales; una fecha genérica no prueba duración               |
+|    9 | cumplimiento de liberación                  | resultado de calidad/cumplimiento                | terminado no equivale a liberado                                           |
+|   10 | costo y variación por lote, producto y sede | impacto económico/productivo                     | costo técnico productivo no se eleva a costo económico oficial             |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 22. Matriz de cobertura — Servicio, clientes, fidelización, reputación y experiencia, 12/12
+
+|    # | Familia canónica                                        | Uso dentro de la investigación                | Límite UX005                                                                    |
+| ---: | ------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | señal de servicio y resultado de cumplimiento | promesa solicitada no equivale a promesa aceptada                               |
+|    2 | tiempos de preparación, despacho y entrega              | localización temporal del deterioro           | no fabricar fase cuando falta un hito real                                      |
+|    3 | pedidos completos                                       | resultado de cumplimiento                     | estado terminal no prueba completitud línea a línea                             |
+|    4 | reclamos y tiempo de resolución                         | señal de problema y expediente de impacto     | reclamo exige expediente; contacto o chat no lo sustituyen                      |
+|    5 | compensaciones                                          | impacto y respuesta de servicio               | devolución, reembolso, descuento, cortesía, cupón y puntos no son equivalentes  |
+|    6 | satisfacción y feedback                                 | señal perceptual                              | sesgo de respuesta y denominador deben permanecer visibles                      |
+|    7 | recurrencia, frecuencia y abandono                      | comportamiento longitudinal                   | ausencia no prueba abandono sin población y ventana elegibles                   |
+|    8 | adquisición y activación                                | señal de entrada y progresión                 | cuenta creada o login no equivalen a activación                                 |
+|    9 | fidelización, puntos y redenciones                      | señal de comportamiento de fidelización       | saldo no sustituye el ledger                                                    |
+|   10 | reputación y temas recurrentes                          | señal temática o reputacional                 | feedback interno no equivale a reputación pública; tema no prueba causa         |
+|   11 | reservas, no-show y utilización                         | señal de capacidad/servicio                   | utilización exige capacidad compatible                                          |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | impacto económico por población autorizada    | rentabilidad consume definición económica y detalle sensible conserva finalidad |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 23. Matriz de cobertura — Costos, rentabilidad, liquidez, presupuesto y escenarios, 10/10
+
+|    # | Familia canónica              | Uso dentro de la investigación             | Límite UX005                                                                      |
+| ---: | ----------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | señal base-real e impacto                  | costo oficial conserva método y reconciliación propietaria                        |
+|    2 | variaciones                   | señal diagnóstica primaria                 | cada variación conserva su base; no mezclar costo, presupuesto, precio y cantidad |
+|    3 | margen y contribución         | impacto y resultado económico              | exige ingreso realizado y costos trazables                                        |
+|    4 | gastos                        | señal e impacto económico                  | gasto capturado no equivale automáticamente a reconocido o pagado                 |
+|    5 | centros de costo              | dimensión de localización                  | centro no equivale a sede, área, marca o canal                                    |
+|    6 | presupuesto y forecast        | comparador planificado o pronosticado      | presupuesto, forecast, revisión, escenario y real permanecen separados            |
+|    7 | caja, bancos y tesorería      | señal de liquidez y restricción financiera | posición real exige saldos reconciliados y disponibilidad                         |
+|    8 | cartera y obligaciones        | señal de exposición y flujo futuro         | pago/cobro sin aplicación no cierra saldo                                         |
+|    9 | rentabilidad multidimensional | impacto económico transversal              | exige ingreso, costos, asignaciones y residuo no atribuible visibles              |
+|   10 | escenarios y simulaciones     | comparador hipotético y exploración        | escenario no es evidencia observada ni prueba causal                              |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 24. Reconciliación global de las 55 familias
+
+| Dominio de familias                                 | Esperadas | Materializadas | Faltantes | Duplicadas |
+| --------------------------------------------------- | --------: | -------------: | --------: | ---------: |
+| Comercial                                           |        11 |             11 |         0 |          0 |
+| Inventario, abastecimiento, proveedores y logística |        12 |             12 |         0 |          0 |
+| Producción                                          |        10 |             10 |         0 |          0 |
+| Servicio y clientes                                 |        12 |             12 |         0 |          0 |
+| Económico-financiera                                |        10 |             10 |         0 |          0 |
+| **Total**                                           |    **55** |         **55** |     **0** |      **0** |
+
+Las 55 familias son categorías semánticas de investigación. Ninguna se convierte en métrica, score o detector por aparecer en este espacio.
+
+---
+
+#### 25. Métricas de asistencia — cobertura 14/14
+
+Las 14 métricas v1 conservan identidad y DQ heredado. La investigación no eleva su certificación.
+
+|    # | `metric_key`        | DQ heredado   | Tratamiento UX005                                                                                                            |
+| ---: | ------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | puede originar señal descriptiva de programación/cobertura con estado visible; no atribuir causas laborales individuales     |
+|    2 | `attendedShifts`    | `NO EVALUADO` | puede investigar variación de asistencia sobre población compatible; detalle de trabajador se reautoriza                     |
+|    3 | `restDayCount`      | `NO EVALUADO` | puede explicar composición de población programada; descanso no se interpreta como ausencia ni desempeño                     |
+|    4 | `lateCount`         | `NO EVALUADO` | puede investigar patrones temporales con gracia/versión y zona horaria; no producir ranking individual                       |
+|    5 | `noShowCount`       | `NO EVALUADO` | puede investigar concentración solo sobre turnos vencidos al corte; no inferir causa de ausencia sin expediente/evidencia    |
+|    6 | `openCount`         | `NO EVALUADO` | puede investigar sesiones abiertas AS OF corte; no equiparar con falta de cierre ni incidencia confirmada                    |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | toda conclusión empresarial dependiente queda `NO_EVALUABLE`; la divergencia se deriva al centro de calidad                  |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | puede investigar patrón de autocierre; mecanismo técnico no se interpreta automáticamente como comportamiento del trabajador |
+|    9 | `departureCount`    | `NO EVALUADO` | puede originar investigación agregada con minimización reforzada; evento geográfico individual requiere finalidad específica |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | puede investigar carga programada con periodos y reglas compatibles; no equivale a trabajo ejecutado                         |
+|   11 | `netMinutes`        | `NO EVALUADO` | puede investigar duración registrada con sesiones/descansos válidos; no atribuir productividad por duración únicamente       |
+|   12 | `incidentCount`     | `NO EVALUADO` | el conteo compuesto puede ser señal; no concede las señales subyacentes ni identifica una causa por sí solo                  |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | toda conclusión dependiente queda `NO_EVALUABLE` hasta resolver el caso de denominador ausente representado como cero        |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | toda conclusión dependiente queda `NO_EVALUABLE` hasta resolver el caso de denominador ausente representado como cero        |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Reglas adicionales:
+
+- `missingCloseCount`, `attendanceRate` y `punctualityRate` son exactamente las tres métricas bloqueadas;
+- una métrica `NO EVALUADO` puede soportar exploración con su DQ visible, pero nunca se presenta como evidencia certificada por inferencia;
+- una dependencia crítica `BLOQUEADO` impide evaluar la afirmación que dependa de ella;
+- tasas se recomputan desde numerador y denominador compatibles; no se promedian porcentajes;
+- trabajador es dimensión sensible y no habilita ranking, perfil disciplinario ni expediente por permiso agregado;
+- `incidentCount` no concede acceso automático a las señales individuales que lo componen.
+
+---
+
+#### 26. Familias de artefacto D008 — cobertura 6/6
+
+|    # | Familia          | Papel en UX005                                                                         | Límite                                                           |
+| ---: | ---------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+|    1 | tablero          | puede originar una señal o abrir una investigación conservando contexto                | no se convierte en fuente ni en diagnóstico por existir          |
+|    2 | reporte          | puede servir como referencia o publicación previa con versión/corte                    | una edición oficial no autoriza reinterpretación silenciosa      |
+|    3 | exportación      | puede ser evidencia portable únicamente si conserva procedencia e integridad           | una copia no adquiere autoridad ni amplía acceso                 |
+|    4 | suscripción      | una entrega puede originar señal sobre el mismo resultado gobernado                    | la entrega recurrente no crea definición ni población nueva      |
+|    5 | alerta           | es entrada natural de atención e investigación                                         | alerta no equivale a diagnóstico, causa, recomendación ni acción |
+|    6 | snapshot oficial | permite comparar una publicación histórica con otro resultado o restatement autorizado | snapshot permanece inmutable y separado del valor vivo           |
+
+**Reconciliación:** 6 familias esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 27. Modelos, estadística e inteligencia artificial
+
+Un modelo puede detectar patrones, estimar expectativas, segmentar, clasificar, pronosticar o sugerir factores para investigar. La experiencia deberá mostrar, cuando aplique, objetivo, versión, dataset/corte, variables, exclusiones, población de entrenamiento/evaluación, desempeño, limitaciones, fecha y responsable.
+
+Una herramienta de inteligencia artificial puede asistir para:
+
+- resumir evidencia;
+- proponer preguntas;
+- sugerir segmentaciones;
+- identificar inconsistencias para revisión;
+- proponer hipótesis candidatas;
+- explicar consultas o visualizaciones.
+
+No puede por sí sola:
+
+- certificar datos;
+- declarar una causa;
+- aprobar una oportunidad;
+- fijar una meta;
+- ejecutar una acción empresarial;
+- modificar una fuente de verdad;
+- ocultar evidencia contradictoria;
+- reemplazar al propietario funcional.
+
+Todo output de modelo o IA se identifica como tal, conserva procedencia y limitaciones y no se estiliza como evidencia fuente.
+
+---
+
+#### 28. Lenguaje causal y comunicación de incertidumbre
+
+| Nivel o situación    | Lenguaje permitido                                                    | Lenguaje que no corresponde sin evidencia adicional        |
+| -------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| señal descriptiva    | “se observó una caída de…”                                            | “X causó la caída”                                         |
+| asociación           | “la caída está asociada con…”                                         | “la caída se debe a…”                                      |
+| hipótesis respaldada | “la evidencia respalda la hipótesis de…”                              | “la causa confirmada es…”                                  |
+| evidencia causal     | “la evidencia apoya un efecto causal bajo estos supuestos y contexto” | generalización categórica fuera del diseño                 |
+| efecto comprobado    | “el efecto fue observado bajo las condiciones del experimento”        | generalizar fuera de población/ventana sin nueva evidencia |
+| sin causa resuelta   | “no existe evidencia suficiente para resolver una causa”              | seleccionar una causa por obligación de cierre             |
+
+La incertidumbre, las alternativas y el residuo no atribuido permanecen visibles.
+
+---
+
+#### 29. Autorización, privacidad y protección de evidencia
+
+Reglas obligatorias:
+
+1. la población autorizada se resuelve antes de calcular señal, segmentación, comparación o modelo;
+2. los filtros del espacio solo reducen el conjunto autorizado;
+3. una métrica visible no concede detalle fuente;
+4. una hipótesis que menciona un sujeto, cliente, trabajador, proveedor o contraparte no concede acceso a su expediente;
+5. evidencia sensible puede permanecer referenciada sin exponer contenido completo;
+6. grupos pequeños, cohortes, precisión, denominadores, tooltips, búsquedas y metadatos aplican la misma protección contra inferencia;
+7. conocer un identificador no permite saltar a evidencia no autorizada;
+8. el drill-down reevalúa actor, recurso, territorio, finalidad, clasificación, campos y población;
+9. publicación y exportación son capacidades independientes;
+10. anotación no cambia una métrica, estado DQ, confianza metodológica, meta, publicación o fuente por sí sola;
+11. administración no constituye superpermiso;
+12. un modelo o proceso técnico conserva la autorización empresarial de la finalidad y población; privilegio técnico no sustituye autoridad.
+
+La experiencia no crea una capacidad nueva denominada “investigar”. Las acciones autoritativas continúan resolviéndose mediante las capacidades canónicas existentes y la autorización de lectura/consumo correspondiente.
+
+---
+
+#### 30. Auditoría y reproducibilidad
+
+Cada expediente de investigación deberá conservar conceptualmente:
+
+- actor o proceso que inició la investigación;
+- fecha/hora;
+- señal original;
+- consultas utilizadas;
+- modelos o recomendaciones utilizados;
+- versiones de métricas;
+- fuentes y cortes;
+- filtros y dimensiones;
+- evidencia incorporada;
+- hipótesis creadas, descartadas o revisadas;
+- cambios de nivel de confianza y motivo;
+- propietario funcional que revisó la interpretación;
+- oportunidad resultante, si existe;
+- relación con objetivos, acciones o experimentos posteriores.
+
+La auditoría no es autorización, fuente de verdad, certificación, publicación ni evidencia causal. Los logs conservan referencias mínimas y no recrean datasets sensibles por defecto.
+
+---
+
+#### 31. Historia, correcciones y restatements
+
+1. una investigación nueva no borra una conclusión anterior;
+2. una evidencia posterior puede reducir o elevar confianza mediante una nueva decisión trazable;
+3. cambios de fuente, fórmula, población, cobertura o DQ se distinguen de cambios reales de negocio;
+4. una corrección histórica no reescribe silenciosamente una conclusión publicada;
+5. original y restatement permanecen distinguibles y comparables solo bajo autorización vigente;
+6. una ruptura semántica no se dibuja como continuidad homogénea;
+7. la explicación histórica usa identidades, jerarquías y vigencias aplicables al hecho;
+8. una conclusión revisada conserva el motivo del cambio y su relación con la evidencia nueva.
+
+---
+
+#### 32. Accesibilidad, densidad y ergonomía
+
+El espacio es una superficie analítica/administrativa y puede usar densidad alta, pero conserva:
+
+- contexto, señal, DQ y confianza visibles antes del detalle secundario;
+- navegación por teclado y foco visible;
+- orden semántico coherente;
+- texto, icono o semántica además de color para estados, confianza y evidencia;
+- visualizaciones con resumen textual o alternativa tabular cuando sea necesaria para comprender el hallazgo;
+- tooltips no utilizados como único lugar de información esencial;
+- filtros con etiqueta inequívoca y estado seleccionado;
+- divulgación progresiva para evidencia extensa y modelos;
+- mensajes humanos que distingan falta de datos, falta de autorización, DQ bloqueado y causa no resuelta;
+- reflow que preserve contexto principal sin convertir escritorio en una versión simplemente encogida;
+- acciones autoritativas visualmente separadas de exploración y lectura.
+
+La validación con usuarios reales corresponde a `DATA-UX-008`.
+
+---
+
+#### 33. Handoffs con propietario documental exacto
+
+| Necesidad detectada durante la investigación                              | Propietario documental         | Condición de salida                                                    |
+| ------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| comprender definición, fórmula, fuente, dueño, versión o linaje           | `DATA-UX-002`                  | cuando la pregunta sea semántica o de procedencia                      |
+| volver a tendencia, comparación o composición de una métrica              | `DATA-UX-003`                  | conservar contexto, filtros, referencia, periodo y corte               |
+| resolver frescura, cobertura, conciliación, incidencia o certificación    | `DATA-UX-004`                  | antes de interpretar como negocio una señal afectada por DQ            |
+| convertir oportunidad en objetivo, línea base, meta, drivers o guardrails | `DATA-UX-006` y `DATA-DOM-015` | cuando exista una oportunidad suficientemente descrita para medición   |
+| definir acción, experimento, responsable, seguimiento o comprobación      | `DATA-DOM-016`                 | antes de ejecutar o declarar efecto de una intervención                |
+| publicar, distribuir, exportar, suscribir o preservar una conclusión      | `DATA-UX-007` y `DATA-DOM-008` | cuando corresponda una salida gobernada y exista autorización separada |
+| validar comprensión, tiempos, confianza y decisión con personas usuarias  | `DATA-UX-008`                  | antes de declarar readiness de la experiencia                          |
+| corregir historia o reexpresar una conclusión publicada                   | `DATA-DOM-017`                 | antes de modificar una interpretación histórica oficial                |
+| materializar consultas, modelos, snapshots, caché o rendimiento           | `DATA-INT-002`                 | antes de implementar el espacio físicamente                            |
+| resolver correspondencias e identidades externas                          | `DATA-INT-003`                 | antes de unir evidencia cuya identidad no esté demostrada              |
+| integrar BI, hojas, modelos analíticos o inteligencia artificial          | `DATA-INT-004`                 | antes de conectar herramientas externas o modelos productivos          |
+
+No queda una decisión material de UX005 diferida sin propietario documental y condición de salida.
+
+---
+
+#### 34. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por esta tarea ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-005` asigna expresamente responsabilidad a `DATA-UX-005` y protege la separación entre señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana, segmentos, resultado, confianza, aprendizaje y decisión; además prohíbe presentar correlación como causa demostrada y ejecutar recomendaciones automáticamente;
+- `TREQ-DATA-002` protege definición, versión, fórmula, población, dimensiones, fuente, calidad y comparación de métricas;
+- `TREQ-DATA-003` protege calidad, cobertura, datos tardíos, reconciliación, linaje y separación entre ausencia y cero;
+- `TREQ-DATA-004` protege contexto, corte, calidad, artefactos analíticos, snapshots y drill-down autorizado;
+- `TREQ-UX-003` protege que información, acciones y densidad correspondan a tarea y autorización con minimización sensible;
+- `TREQ-UX-005` protege fuente de verdad, estados, diferencias, correcciones trazables y ausencia de copias competidoras;
+- `TREQ-UX-010` protege contexto administrativo de territorio, periodo, versión, estado, población, actor, permiso, segregación e impacto.
+
+La tarea especializa el contrato diagnóstico D014 como experiencia de investigación. No introduce una conducta ejecutable independiente que carezca de cobertura ni modifica prioridad, modalidad, estado, relación o destino de implementación de los requisitos existentes.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la experiencia materializa obligaciones de separación entre señal, diagnóstico, hipótesis, causa, acción y experimento; confianza explicable; calidad y comparabilidad; trazabilidad; privacidad; y prohibición de causalidad automática que ya están protegidas por requisitos canónicos vigentes y asignadas a esta responsabilidad documental. No crea un nuevo comportamiento ejecutable, un nuevo nivel de confianza, una nueva fórmula, un nuevo permiso, un nuevo modelo productivo ni una implementación física.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 35. Criterios de aceptación
+
+1. el espacio se define como experiencia analítica/administrativa y no como fuente de verdad;
+2. una investigación se organiza por afirmaciones trazables y no por narrativa libre sin evidencia;
+3. señal, variación y anomalía permanecen conceptos distintos;
+4. anomalía de negocio, calidad, reconciliación, cambio semántico y cobertura se clasifican antes de causalidad;
+5. correlación no se presenta como causa;
+6. factor candidato, causa principal y causa raíz permanecen separados;
+7. alerta, diagnóstico, recomendación y acción permanecen separados;
+8. impacto observado, potencial y beneficio realizado permanecen separados;
+9. oportunidad, objetivo, meta, plan y experimento permanecen separados;
+10. confianza diagnóstica permanece separada de certificación DQ;
+11. se materializan exactamente trece momentos de investigación;
+12. la salida `SIN_CAUSA_RESUELTA` se admite sin obligar a escoger una explicación;
+13. se materializan exactamente ocho patrones diagnósticos;
+14. los ocho patrones no implican causalidad;
+15. no se inventa un umbral estadístico universal;
+16. el método de detección conserva versión, población y tratamiento material de faltantes;
+17. se materializan exactamente ocho dimensiones mínimas de evidencia;
+18. no se promedian las dimensiones para ocultar una falla crítica;
+19. se materializan exactamente seis niveles de confianza;
+20. `NO_EVALUABLE` identifica falta de base suficiente;
+21. `SEÑAL_DESCRIPTIVA` no atribuye factores;
+22. `ASOCIACION` no autoriza lenguaje causal;
+23. `HIPOTESIS_RESPALDADA` exige temporalidad, mecanismo y alternativas investigadas;
+24. `EVIDENCIA_CAUSAL` exige estrategia de identificación y supuestos explícitos;
+25. `EFECTO_COMPROBADO` requiere evidencia de intervención/experimento gobernado;
+26. una dependencia crítica `BLOQUEADO` fuerza `NO_EVALUABLE` para la afirmación dependiente;
+27. sin referencia comparable el máximo es `SEÑAL_DESCRIPTIVA`;
+28. sin precedencia temporal el máximo causal es `ASOCIACION`;
+29. sin alternativas materiales investigadas el máximo es `ASOCIACION`;
+30. evidencia derivada del mismo hecho no se cuenta como confirmación independiente;
+31. modelo, IA, p-value, correlación, feature importance, SHAP o precisión no prueban causalidad por sí solos;
+32. no existe un porcentaje universal de confianza;
+33. evidencia favorable, contradictoria y faltante permanecen separadas;
+34. evidencia contradictoria no se oculta para elevar confianza;
+35. falta de evidencia no se presenta como evidencia en contra;
+36. la temporalidad de factores y efectos permanece visible cuando es material;
+37. una variable posterior no se atribuye como causa por mera correlación;
+38. las explicaciones alternativas se descartan únicamente con evidencia;
+39. la población autorizada se construye antes de segmentación o cálculo;
+40. los filtros solo reducen el conjunto autorizado;
+41. grupos pequeños y dimensiones sensibles no se revelan por subtotales, precisión, búsqueda o drill-down;
+42. cada nivel de detalle reevalúa autorización;
+43. la experiencia no crea una nueva capacidad de autorización para “investigar”;
+44. anotación, publicación, exportación, certificación, meta y administración permanecen acciones separadas;
+45. se materializan exactamente 55 familias analíticas;
+46. se conserva la distribución `11 + 12 + 10 + 12 + 10`;
+47. las 55 familias aparecen exactamente una vez en sus matrices de cobertura;
+48. ninguna familia se convierte en `metric_key` por aparecer en la investigación;
+49. se materializan exactamente 14 métricas de asistencia;
+50. se preservan exactamente 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+51. `missingCloseCount`, `attendanceRate` y `punctualityRate` son exactamente las tres bloqueadas;
+52. toda conclusión empresarial dependiente de una de las tres bloqueadas queda `NO_EVALUABLE`;
+53. `incidentCount` no concede sus señales subyacentes;
+54. trabajador no se convierte en ranking o perfil disciplinario por aparecer como dimensión;
+55. se materializan exactamente seis familias de artefacto D008;
+56. tablero, reporte, exportación, suscripción, alerta y snapshot permanecen distintos;
+57. una alerta no se presenta como diagnóstico o causa;
+58. una exportación no se convierte en fuente de verdad;
+59. modelos e IA se muestran con procedencia, versión y limitaciones cuando apliquen;
+60. IA no certifica, declara causa, aprueba oportunidad, fija meta ni ejecuta acción;
+61. el lenguaje visible corresponde al nivel de confianza;
+62. el residuo no atribuido permanece visible;
+63. una falta de inventario no se monetiza automáticamente como venta perdida;
+64. una merma física no se monetiza automáticamente como pérdida económica;
+65. un reclamo o rating no se convierte automáticamente en abandono;
+66. historia y cambios de confianza permanecen trazables;
+67. una corrección histórica no reescribe silenciosamente una conclusión publicada;
+68. auditoría no constituye causalidad ni autorización;
+69. logs no copian datasets sensibles por defecto;
+70. accesibilidad no depende únicamente de color, posición o tooltip;
+71. evidencia extensa utiliza divulgación progresiva sin ocultar contexto crítico;
+72. cada handoff conserva propietario documental y condición de salida;
+73. no se crean componentes físicos, endpoints, tablas, vistas, modelos, scores o nombres técnicos de implementación;
+74. no se crean permisos, roles, grants o excepciones;
+75. no se modifica código, SQL, Supabase, datos, migraciones, backfills, modelos, automatizaciones, experimentos ni despliegues;
+76. no se crea ni modifica ningún requisito de prueba;
+77. `DATA-UX-006` permanece únicamente reservada como siguiente tarea.
+
+---
+
+#### 36. Balance de cierre
+
+| Control                              | Resultado |
+| ------------------------------------ | --------: |
+| Momentos de investigación            |    **13** |
+| Patrones diagnósticos                |   **8/8** |
+| Niveles de confianza                 |   **6/6** |
+| Dimensiones mínimas de evidencia     |   **8/8** |
+| Recorridos transversales             |   **5/5** |
+| Familias comerciales                 | **11/11** |
+| Familias inventario/abastecimiento   | **12/12** |
+| Familias producción                  | **10/10** |
+| Familias servicio/clientes           | **12/12** |
+| Familias económico-financieras       | **10/10** |
+| Familias analíticas totales          | **55/55** |
+| Métricas de asistencia               | **14/14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO` |  **11/3** |
+| Familias de artefacto D008           |   **6/6** |
+| Nuevas métricas o fórmulas           |     **0** |
+| Nuevos niveles de confianza          |     **0** |
+| Nuevos permisos                      |     **0** |
+| Cambios físicos                      |     **0** |
+| Requisitos TREQ creados/modificados  |     **0** |
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora`
+
+
 ### [ ] DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
 ### [ ] DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
 ### [ ] DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
