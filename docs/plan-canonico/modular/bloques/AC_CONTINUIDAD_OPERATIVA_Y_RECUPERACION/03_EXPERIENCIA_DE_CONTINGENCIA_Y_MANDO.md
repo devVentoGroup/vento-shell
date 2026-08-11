@@ -2916,7 +2916,1057 @@ SIGUIENTE TAREA RESERVADA
 `CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad`
 
 
-### [ ] CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad
+### ✅ CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación` — APROBADA  
+**Tarea siguiente:** `CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior` — RESERVADA  
+**Tipo de tarea:** documental; materialización de la experiencia de runbooks y checklists de contingencia por función efectiva, proceso, sede y estrategia de contingencia  
+**Bloque:** AC — Continuidad operativa y recuperación  
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`  
+**Implementación técnica u operativa:** no autorizada  
+**Código, DDL, DML, migraciones, RLS, RPC, datos, backfills, despliegues, cambios de Supabase, activaciones de contingencia, restauraciones, failover, failback o comunicaciones reales:** no autorizados  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito y resultado material
+
+`CONT-UX-003` materializa la experiencia documental mediante la cual una persona que participa en un incidente de continuidad puede resolver **qué runbook vigente le corresponde, qué debe hacer ahora, qué no puede hacer, qué evidencia debe conservar, cuándo debe detenerse o escalar y a quién debe entregar el siguiente control**, sin convertir la interfaz en una fuente paralela de verdad ni en un mecanismo de autorización.
+
+El resultado es un diseño consumible de runbooks y checklists que cruza cuatro dimensiones obligatorias:
+
+1. **función efectiva** ejercida durante el incidente;
+2. **proceso/capacidad** representado por el `BCS-VPROC-*` y su `VPROC-*` propietario;
+3. **sede o alcance territorial** realmente aplicable;
+4. **estrategia de contingencia** heredada del contrato de continuidad.
+
+La experiencia no crea un catálogo alterno de procesos, sedes, actores o estrategias. Resuelve una **proyección operable** sobre las fuentes propietarias vigentes.
+
+Resultado documental de esta tarea:
+
+- arquitectura de información del runbook;
+- contrato visual del checklist;
+- selección por función, proceso, sede y estrategia;
+- matriz materializada de cobertura sobre los 69 servicios heredados;
+- reglas específicas para las estrategias de contingencia vigentes;
+- reglas de vigencia, obsolescencia, impresión y uso sin conectividad;
+- tratamiento de bloqueo, abort, escalamiento, resultado incierto y handoff;
+- separación entre lectura del runbook y autoridad para ejecutar;
+- handoffs explícitos a las experiencias posteriores sin absorberlas;
+- escenarios deterministas y criterios de aceptación.
+
+---
+
+#### 2. Alcance y fronteras
+
+La tarea **sí** define:
+
+- cómo localizar el runbook correcto;
+- cómo comprobar que la versión presentada es la vigente conocida;
+- cómo mostrar el alcance real por proceso y sede;
+- cómo proyectar el contenido por función efectiva;
+- cómo presentar prerrequisitos, materiales, dependencias y límites;
+- cómo presentar una secuencia simple de pasos;
+- cómo distinguir instrucción, comprobación, evidencia y handoff;
+- cómo mostrar acciones no autorizadas o bloqueadas;
+- cómo mostrar condiciones de detención, abort y escalamiento;
+- cómo tratar información sensible sin reproducir secretos;
+- cómo operar una copia controlada impresa o sin conectividad;
+- cómo conservar referencia al incidente cuando el runbook se usa en un evento real;
+- cómo evitar que una marca visual de completitud afirme un efecto empresarial no confirmado.
+
+La tarea **no**:
+
+- implementa pantallas, componentes, rutas, tablas o almacenamiento;
+- crea nuevos roles, permisos o capacidades de emergencia;
+- ejecuta un runbook real;
+- activa una estrategia de contingencia;
+- define nuevos BIA, RTO, RPO, MTPD, MBCO o prioridades;
+- redefine los 69 servicios ni sus propietarias;
+- acredita una ubicación física o proveedor sustituto;
+- crea formularios productivos, folios reales o rangos físicos;
+- captura trabajo de contingencia real;
+- realiza reincorporación, conciliación o cierre;
+- ejecuta restore, failover o failback;
+- emite comunicaciones reales;
+- declara readiness;
+- crea evidencia de prueba inexistente.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La experiencia consume sin redefinir:
+
+1. los **69 servicios** `BCS-VPROC-0001` a `BCS-VPROC-0069` y sus `VPROC-*` correspondientes;
+2. las decisiones de operación mínima, territorio, duración y temporada ya documentadas por continuidad;
+3. el catálogo documental `CTG-01` a `CTG-10` y la estrategia primaria ya asignada a cada servicio;
+4. el hecho de que **67 servicios** poseen estrategia primaria activa documentada y **2 servicios AURA** permanecen bloqueados por aplicación diferida;
+5. las cinco sedes operativas internas reconocidas: **Oficina 1**, **Vento Café**, **Saudo**, **Molka** y **Centro de Producción y Distribución**;
+6. la distinción por la cual Vaila, Catering y puntos externos no se promueven a sedes internas por esta tarea;
+7. el mando efectivo, la sustitución funcional y la separación entre preparar, aprobar, ejecutar y validar;
+8. la política que protege runbooks, contactos, evidencia, formularios y datos de contingencia;
+9. la separación entre ejecución, validación técnica, validación funcional, reincorporación, conciliación, cierre y revisión posterior;
+10. las secuencias de recuperación documentadas para los 69 servicios, sin convertirlas en ejecución real.
+
+Ninguna proyección de UX modifica la propietaria de una decisión. Una corrección se realiza en la fuente propietaria y luego vuelve a proyectarse.
+
+---
+
+#### 4. Principios inviolables de experiencia
+
+1. **Runbook visible ≠ autoridad para ejecutar.**
+2. **Paso marcado ≠ efecto empresarial confirmado.**
+3. **Éxito técnico ≠ recuperación empresarial.**
+4. **Copia disponible ≠ versión vigente.**
+5. **Sede seleccionada ≠ autoridad territorial.**
+6. **Rol mostrado ≠ permiso concedido.**
+7. **Acceso a un secreto referenciado ≠ permiso sobre su contenido.**
+8. **Modo sin conectividad ≠ segunda fuente de verdad.**
+9. **Proveedor presente ≠ segundo aprobador humano.**
+10. **Abort ≠ cierre silencioso.**
+11. **Resultado incierto ≠ éxito ni fallo inventado.**
+12. **Checklist completo ≠ incidente cerrado.**
+13. **Runbook obsoleto ≠ runbook actual.**
+14. **Impresión ≠ excepción a clasificación, custodia o vigencia.**
+15. **Filtro visual ≠ cambio de alcance canónico.**
+
+---
+
+#### 5. Resolución del runbook correcto
+
+La selección se resuelve en este orden:
+
+`INCIDENTE/CONTEXTO → PROCESO/CAPACIDAD → SEDE/ALCANCE → ESTRATEGIA VIGENTE → FUNCIÓN EFECTIVA → VERSIÓN VIGENTE DEL RUNBOOK`
+
+La interfaz puede ofrecer filtros, pero el filtro nunca inventa una coincidencia. Si falta una dimensión requerida, se muestra el faltante y no se presenta un runbook genérico como si fuera aplicable.
+
+##### 5.1 Dimensiones mínimas de resolución
+
+| Dimensión          | Fuente de verdad                       | Qué muestra UX                         | Qué no puede inferir                              |
+| ------------------ | -------------------------------------- | -------------------------------------- | ------------------------------------------------- |
+| incidente/contexto | expediente de continuidad              | referencia, alcance y estado relevante | que existe un incidente si no hay referencia real |
+| proceso/capacidad  | `BCS-VPROC-*` + `VPROC-*`              | servicio, proceso y propietaria        | criticidad o prioridad nueva                      |
+| sede/territorio    | alcance canónico del proceso/incidente | sede aplicable o alcance empresarial   | que todos los procesos aplican a todas las sedes  |
+| estrategia         | decisión vigente de continuidad        | estrategia primaria y límites          | una alternativa no acreditada                     |
+| función efectiva   | mando/contexto de identidad            | instrucciones pertinentes a la función | permisos por nombre de rol                        |
+| versión            | fuente propietaria del runbook         | versión, vigencia y revisión           | actualidad si el metadato no puede demostrarse    |
+
+##### 5.2 Resultado de una resolución incompleta
+
+Cuando no puede demostrarse proceso, sede aplicable, estrategia, función efectiva o versión vigente:
+
+- no se compone un runbook plausible por inferencia;
+- se indica la dimensión faltante;
+- se conserva acceso únicamente a información autorizada que sí tenga fuente vigente;
+- se ofrece el handoff funcional correspondiente para resolver el faltante;
+- no se habilita una acción material por el solo hecho de existir un documento parecido.
+
+---
+
+#### 6. Identidad documental del runbook
+
+Un runbook consumible por esta experiencia debe poder proyectar, cuando existan en la fuente propietaria, como mínimo:
+
+| Grupo               | Información presentada                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| identidad           | referencia estable, título, versión y propietario documental                                |
+| vigencia            | estado de actualidad, fecha/referencia de revisión y condición de obsolescencia             |
+| propósito           | objetivo y resultado protegido                                                              |
+| alcance             | proceso, servicio, sede/territorio, modalidad y contexto aplicable                          |
+| audiencia           | función efectiva y clasificación de la información                                          |
+| prerrequisitos      | dependencias, datos mínimos, materiales, dispositivos o condiciones necesarias              |
+| autorización        | referencia a la decisión o capacidad que debe resolverse antes de una acción protegida      |
+| secuencia           | pasos ordenados, checkpoints y ramas permitidas                                             |
+| límites             | acciones prohibidas, cantidades/alcances finitos y trabajo que permanece pendiente          |
+| abort               | condición de detención, contención y escalamiento                                           |
+| evidencia           | qué debe observarse o referenciarse sin duplicar contenido sensible innecesario             |
+| retorno             | criterio para pasar a validación, handoff, reanudación o ruta propietaria                   |
+| sensibilidad        | clasificación, audiencia, restricciones de proyección e impresión                           |
+| referencias seguras | recursos, ambientes y secretos por referencia recuperable, nunca valores secretos embebidos |
+
+La ausencia de metadatos de vigencia no se corrige mostrando “vigente” por defecto. Se representa como **vigencia no demostrada** y la ejecución que dependa de actualidad queda bloqueada o escalada según la decisión propietaria.
+
+---
+
+#### 7. Arquitectura de información de la vista de runbook
+
+La pantalla principal prioriza acción y seguridad sobre densidad técnica.
+
+##### 7.1 Franja fija de contexto
+
+Debe permanecer visible:
+
+- incidente o contexto de ejercicio, si existe;
+- proceso/capacidad;
+- sede/alcance;
+- estrategia vigente;
+- función efectiva;
+- versión y actualidad del runbook;
+- clasificación de la información;
+- estado de conectividad/frescura cuando afecte la validez.
+
+##### 7.2 Zona “Qué hago ahora”
+
+Presenta una sola unidad accionable a la vez:
+
+- instrucción breve;
+- razón o resultado esperado cuando sea necesario para evitar error;
+- prerrequisito inmediato;
+- control de autoridad aplicable;
+- evidencia mínima;
+- condición de éxito observable;
+- condición de bloqueo;
+- condición de abort/escalamiento;
+- siguiente handoff.
+
+##### 7.3 Zona “Antes de continuar”
+
+Agrupa únicamente los checkpoints que impiden avanzar: seguridad, autorización, versión, recurso, dependencia, cantidad/límite, evidencia o recepción necesaria.
+
+##### 7.4 Zona “No hacer”
+
+Las prohibiciones materiales se muestran antes de que la persona pueda interpretar una ausencia como permiso. Deben ser específicas al proceso y a la estrategia, no advertencias genéricas.
+
+##### 7.5 Zona “Evidencia y handoff”
+
+Muestra qué referencia debe conservarse y quién recibe el control siguiente. No exige duplicar en la interfaz documentos, secretos o datos personales que puedan mantenerse en la fuente protegida.
+
+---
+
+#### 8. Contrato visual del checklist
+
+Cada paso se presenta con un contrato mínimo:
+
+| Campo visual         | Regla                                                             |
+| -------------------- | ----------------------------------------------------------------- |
+| ordinal/fase         | conserva orden; una rama no renumera el historial                 |
+| instrucción          | verbo concreto y resultado observable                             |
+| función              | quién puede ejecutar o preparar ese paso según contexto           |
+| prerrequisito        | condición que debe existir antes de actuar                        |
+| autorización         | referencia a la decisión requerida cuando la acción sea protegida |
+| alcance              | objeto, sede, recurso, cantidad o ventana aplicable               |
+| evidencia mínima     | observación o referencia exigida, no un volcado indiscriminado    |
+| resultado observable | qué puede comprobar el ejecutor sin certificar más de lo debido   |
+| bloqueo              | condición que impide continuar                                    |
+| abort/escalamiento   | condición que obliga a detener, proteger o transferir             |
+| handoff              | función o superficie siguiente                                    |
+
+##### 8.1 Estados visuales de un paso
+
+La interfaz puede representar, únicamente como estado de presentación del checklist:
+
+- **pendiente**;
+- **en ejecución**;
+- **completado con resultado observable**;
+- **bloqueado**;
+- **no aplicable con razón**;
+- **resultado incierto**;
+- **detenido/abortado con handoff**.
+
+Estos rótulos no crean enums de negocio ni cambian el estado del proceso propietario. “Completado” significa que el paso dejó la evidencia/observación exigida; no certifica por sí mismo recuperación, conciliación, pago, inventario, publicación, autorización ni cierre.
+
+---
+
+#### 9. Proyección por función efectiva
+
+La experiencia no mantiene un segundo RBAC. Resuelve la función efectiva del incidente y adapta lenguaje, foco y acciones visibles, mientras la autorización real continúa en su dominio propietario.
+
+| Función/proyección                  | Enfoque del runbook                                                             | No absorbe                                                        |
+| ----------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| responsable de continuidad          | activación, prioridad, bloqueos, handoffs, decisión y estado transversal        | validación propietaria de cada proceso                            |
+| función de mando efectiva/sustituta | decisiones que requieren mando, transferencia y escalamiento                    | permisos técnicos o de contenido por inferencia                   |
+| responsable del proceso             | límites del MBCO, resultado funcional, validación y pendientes                  | ejecución técnica privilegiada automática                         |
+| supervisión/gerencia de sede        | recursos y operación aplicables a la sede real                                  | autoridad fuera de su alcance territorial                         |
+| equipo operativo del área           | pasos concretos, límites, evidencias y puntos de detención                      | aprobación o cierre que no le corresponda                         |
+| responsable tecnológico             | restore, conectividad, dependencias y validación técnica cuando aplique         | certificación empresarial por éxito técnico                       |
+| custodio documental                 | versión, custodia, copia, evidencia y disposición                               | aprobación del efecto empresarial                                 |
+| seguridad/privacidad                | tratamiento de exposición, información sensible y evidencia                     | dirección operativa general por defecto                           |
+| proveedor/tercero                   | mínimo segmento necesario del runbook y evidencia contractual/técnica aplicable | acceso al runbook completo o certificación empresarial automática |
+
+Una misma persona puede ejercer más de una función durante una contingencia, pero la interfaz conserva visibles las funciones y no fusiona sus responsabilidades para ocultar concentración de autoridad.
+
+---
+
+#### 10. Proyección por sede
+
+Las cinco sedes internas se presentan como dimensión real, no como etiquetas decorativas:
+
+| Sede                                | Regla de proyección                                                                                                              |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Oficina 1                           | muestra solo procesos, recursos y pasos cuyo alcance canónico incluya esa sede o un alcance empresarial que la afecte            |
+| Vento Café                          | aplica variaciones de proceso, dispositivo, recurso y modalidad solo cuando estén respaldadas por fuente propietaria             |
+| Saudo                               | no hereda por similitud una instrucción definida para otra sede                                                                  |
+| Molka                               | conserva bloqueos, límites y handoffs propios del alcance realmente demostrado                                                   |
+| Centro de Producción y Distribución | prioriza dependencias físicas, producción, almacenamiento, despacho y controles cuando los procesos propietarios así lo indiquen |
+
+Reglas:
+
+1. seleccionar una sede no amplía autoridad territorial;
+2. un runbook empresarial puede aplicar a varias sedes sin duplicarse como fuente de verdad;
+3. una variación por sede debe declarar su origen y versión;
+4. si una diferencia de sede no está documentada, la interfaz no la inventa;
+5. Vaila, Catering y puntos externos se muestran únicamente con su clasificación canónica vigente y no como una sexta, séptima u octava sede interna;
+6. una copia preparada para una sede conserva la versión maestra de la cual deriva.
+
+---
+
+#### 11. Proyección por estrategia de contingencia
+
+El catálogo documental heredado contiene diez estrategias. En el baseline actual, las estrategias primarias de los 67 servicios operables usan `CTG-01` a `CTG-08`; `CTG-09` y `CTG-10` permanecen condicionales y no acreditan por sí solas una alternativa concreta.
+
+| Estrategia                                       | Tratamiento del checklist                                                                              | Señal de seguridad dominante                |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`                     | checklist corto de contención, preservación y escalamiento                                             | no afirmar el efecto que se bloqueó         |
+| `CTG-02_REFERENCIA_VERSIONADA`                   | comprobar fuente, versión, frescura y uso solo lectura                                                 | referencia expirada no es vigente           |
+| `CTG-03_BORRADOR_LOCAL`                          | preparar sin transición, aprobación, publicación o compromiso                                          | el borrador no es resultado empresarial     |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`                 | observar/capturar con hora real, actor, contexto y evidencia                                           | captura pendiente no es aceptación          |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`               | comprobar envelope, recurso, vigencia, cantidad, secuencia e idempotencia antes de cada efecto         | no exceder autorización finita              |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`         | folio/registro físico gobernado, actor, hora, recurso, acción, evidencia y handoff                     | medio manual no es segunda fuente de verdad |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`            | mostrar explícitamente qué MBCO continúa y qué trabajo queda fuera                                     | servicio reducido no es servicio completo   |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`                 | conservar backlog, propietario, antigüedad, vencimiento y condición de reanudación                     | diferido no significa ejecutado             |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`          | no ofrece ejecución hasta que una fuente propietaria acredite recurso/ubicación alterna                | alternativa documental no es capacidad real |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CANAL_CONDICIONAL` | no ofrece sustitución hasta acreditar contrato, autorización, capacidad, datos, conciliación y retorno | tercero candidato no es sustituto aprobado  |
+
+---
+
+#### 12. Matriz materializada de cobertura por proceso
+
+La matriz siguiente conserva las **69 identidades** y la estrategia heredada. La decisión UX por fila no redefine la estrategia; determina cómo debe proyectarse el runbook/checklist.
+
+- `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA`: la experiencia puede resolver un runbook desde la estrategia heredada, sujeto a sede, función, versión y autorización.
+- `VISTA_DE_BLOQUEO_SIN_CHECKLIST_OPERATIVO`: no se presenta un procedimiento operativo que simule una capacidad diferida.
+
+|    # | Servicio         | Proceso      | Propietaria | Estrategia heredada                      | Decisión UX                                        | Estado documental              |
+| ---: | ---------------- | ------------ | ----------- | ---------------------------------------- | -------------------------------------------------- | ------------------------------ |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CTG-02_REFERENCIA_VERSIONADA`           | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `VISTA_DE_BLOQUEO_SIN_CHECKLIST_OPERATIVO`         | `BLOQUEADO`                    |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `VISTA_DE_BLOQUEO_SIN_CHECKLIST_OPERATIVO`         | `BLOQUEADO`                    |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `CTG-03_BORRADOR_LOCAL`                  | `RUNBOOK_Y_CHECKLIST_PROYECTADOS_DESDE_ESTRATEGIA` | `ESPECIFICADO_NO_IMPLEMENTADO` |
+
+---
+
+#### 13. Reconciliación de la matriz de cobertura
+
+La materialización anterior cumple:
+
+- total esperado: **69**;
+- total materializado: **69**;
+- faltantes: **0**;
+- duplicados de `BCS-VPROC-*`: **0**;
+- duplicados de `VPROC-*`: **0**;
+- servicios con estrategia primaria documentada: **67**;
+- servicios bloqueados por aplicación diferida: **2** (`BCS-VPROC-0056` y `BCS-VPROC-0057`);
+- nuevas estrategias creadas: **0**;
+- nuevas propietarias creadas: **0**.
+
+Distribución heredada que la experiencia debe conservar:
+
+| Estrategia/estado                        | Servicios |
+| ---------------------------------------- | --------: |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`             |     **6** |
+| `CTG-02_REFERENCIA_VERSIONADA`           |     **8** |
+| `CTG-03_BORRADOR_LOCAL`                  |     **8** |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`         |    **15** |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`       |     **6** |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` |    **11** |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    |     **9** |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`         |     **4** |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA`      |     **2** |
+| **Total**                                |    **69** |
+
+---
+
+#### 14. Secuencia simple de uso
+
+La experiencia guía al usuario por siete momentos, sin imponer que todos impliquen una escritura:
+
+1. **Confirmar contexto** — proceso, sede, estrategia, función y versión.
+2. **Comprobar prerrequisitos** — autoridad, recursos, dependencias, información y seguridad.
+3. **Leer el paso actual** — una instrucción accionable y sus límites.
+4. **Ejecutar o preparar** — solo dentro del alcance autorizado.
+5. **Comprobar resultado observable** — no certificar más de lo que realmente se observó.
+6. **Conservar referencia/evidencia mínima** — según la estrategia y el dominio propietario.
+7. **Continuar, bloquear, abortar o entregar** — con siguiente función o superficie explícita.
+
+El usuario puede volver a pasos anteriores para consultar historial, pero una corrección no reescribe el hecho original ni convierte una acción posterior en una acción pasada.
+
+---
+
+#### 15. Prerrequisitos y puerta de ejecución
+
+Antes de un paso material, el checklist debe poder mostrar una puerta compacta:
+
+| Verificación                               | Respuesta permitida                                              |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| versión vigente demostrada                 | continuar / bloquear por vigencia no demostrada                  |
+| proceso y sede aplicables                  | continuar / corregir contexto                                    |
+| función efectiva resuelta                  | continuar / resolver mando o función                             |
+| autorización aplicable                     | continuar / solicitar o escalar por canal propietario            |
+| recurso/dependencia disponible             | continuar / usar rama aprobada / bloquear                        |
+| estrategia compatible con el sobre offline | continuar / bloquear                                             |
+| límite/cantidad/vigencia finita            | continuar dentro del envelope / detener                          |
+| protección de información                  | continuar con proyección mínima / bloquear exposición            |
+| evidencia mínima disponible                | continuar / capturar o referenciar / escalar si es indispensable |
+
+No se usa un botón genérico “forzar” para saltarse la puerta. El acceso de emergencia, cuando exista, se resuelve mediante su contrato propietario y sigue siendo temporal, acotado y auditable.
+
+---
+
+#### 16. Bloqueo, abort y escalamiento
+
+Un bloqueo debe explicar **qué impide continuar y cuál es el siguiente control**, sin revelar información no autorizada.
+
+Causales mínimas que la experiencia debe soportar:
+
+- versión no vigente o no demostrable;
+- sede o proceso no aplicable;
+- función efectiva no resuelta;
+- autorización faltante, vencida o revocada;
+- dependencia crítica ausente;
+- recurso o suministro no disponible;
+- envelope offline agotado o incompatible;
+- dato mínimo no demostrable;
+- riesgo protector no controlado;
+- exposición de información sensible;
+- resultado externo incierto;
+- evidencia indispensable no preservable;
+- condición de abort definida por el runbook;
+- alternativa física o de proveedor no acreditada.
+
+El flujo de abort:
+
+`DETECTAR CONDICIÓN → DETENER EFECTO NUEVO → PROTEGER ESTADO/RECURSO → CONSERVAR EVIDENCIA → ESCALAR/HANDOFF → NO MARCAR RESULTADO COMO COMPLETO`
+
+Abortar un paso no equivale a cerrar el incidente ni a revertir automáticamente efectos ya producidos.
+
+---
+
+#### 17. Resultado incierto
+
+Cuando una llamada, pago, integración, movimiento o acción externa no devuelve confirmación suficiente:
+
+- el checklist muestra **resultado incierto**;
+- prohíbe repetir a ciegas una acción con potencial de duplicidad;
+- conserva referencia a intento, actor, hora, recurso, idempotencia/receipt cuando exista y evidencia disponible;
+- dirige al flujo propietario de consulta/reconciliación;
+- no ofrece “marcar como exitoso” para desbloquear el checklist;
+- no ofrece “marcar como fallido” si tampoco existe evidencia de fallo.
+
+---
+
+#### 18. Vigencia, obsolescencia y revisión
+
+El riesgo de runbooks desactualizados se trata como una condición visible de primera clase.
+
+Cada presentación debe distinguir:
+
+- versión actual demostrada;
+- versión anterior conocida;
+- vigencia no demostrada;
+- copia sin conectividad cuya frescura debe reevaluarse;
+- versión obsoleta;
+- versión sustituida pero conservada como historial.
+
+Reglas:
+
+1. una versión obsoleta nunca recibe apariencia de actual;
+2. una copia impresa conserva versión y fecha/referencia de revisión;
+3. una copia offline conserva el momento de última verificación de vigencia;
+4. reconectar obliga a comparar contra la fuente propietaria antes de seguir usando una copia susceptible de cambio;
+5. una actualización no elimina el historial ni altera evidencia de qué versión se utilizó;
+6. si una versión antigua sigue siendo necesaria para explicar un incidente, se conserva como evidencia, no como instrucción vigente;
+7. la ausencia de actualización reciente no prueba por sí sola obsolescencia; la fuente propietaria decide vigencia.
+
+---
+
+#### 19. Protección de información y secretos
+
+El runbook puede mostrar referencias seguras a recursos, credenciales o claves recuperables, pero no valores secretos en texto, impresión, captura, log o copia general.
+
+La experiencia aplica:
+
+- clasificación y propósito vigentes;
+- mínimo contenido por función;
+- mínimo contenido para proveedor/tercero;
+- ocultamiento de campos no necesarios;
+- prohibición de inferir autorización por conocer una URL, bucket, archivo o secreto referenciado;
+- no exposición de nombres, teléfonos o correos cuando baste una referencia funcional protegida;
+- no filtración de títulos, fragmentos o metadatos sensibles mediante búsqueda o error;
+- evidencia por referencia cuando el contenido propietario pueda permanecer en su dominio;
+- trazabilidad de impresión o copia controlada cuando la política lo requiera.
+
+---
+
+#### 20. Uso impreso y sin conectividad
+
+Una versión impresa o sin conectividad es un **medio de presentación controlado**, no una réplica autoritativa independiente.
+
+Debe incluir en la primera jerarquía:
+
+- referencia del runbook;
+- versión;
+- estado de vigencia conocido al momento de preparación;
+- fecha/hora o referencia de la última verificación cuando exista;
+- clasificación;
+- proceso y sede/alcance;
+- estrategia;
+- función/audiencia;
+- condición que obliga a dejar de usar la copia;
+- instrucciones de custodia y devolución/disposición según política.
+
+En modo sin conectividad:
+
+- no se finge una autorización nueva;
+- no se amplía el sobre offline;
+- una copia no “se actualiza” sin evidencia de fuente;
+- los pasos que necesitan confirmación autoritativa permanecen pendientes o bloqueados;
+- la reconexión revalida sesión, autorización, versión y contexto antes de mutar un hecho.
+
+---
+
+#### 21. Diseño móvil, estación compacta y accesibilidad
+
+La experiencia debe seguir siendo usable bajo presión:
+
+- una acción primaria por bloque;
+- texto accionable antes de explicación secundaria;
+- severidad, bloqueo y vigencia no dependen solo de color;
+- foco de teclado visible;
+- orden de tabulación consistente con orden operativo;
+- zoom no oculta contexto, bloqueo, abort o handoff;
+- responsive no elimina versión, sede, estrategia ni función;
+- en móvil, el paso actual y la condición de detención permanecen antes de información secundaria;
+- tablas extensas se transforman en fichas sin alterar orden o identidad;
+- loading no muestra valores ficticios;
+- error de red no convierte desconocido en cero ni vigente en obsoleto;
+- caché muestra edad/frescura;
+- confirmaciones de acciones críticas describen el efecto concreto, no “¿Seguro?” sin contexto;
+- icono siempre tiene texto o etiqueta semántica suficiente cuando comunica una condición material.
+
+---
+
+#### 22. Búsqueda y navegación
+
+La búsqueda permite localizar por:
+
+- proceso/capacidad;
+- sede aplicable;
+- función efectiva;
+- estrategia;
+- referencia/título autorizado;
+- estado de vigencia permitido.
+
+Reglas de seguridad:
+
+- resultados no autorizados no aparecen por título, contador o snippet;
+- cero resultados no confirma existencia de un runbook oculto;
+- filtros no cambian alcance real;
+- ordenar por nombre no cambia prioridad de recuperación;
+- favoritos o recientes no convierten una versión vieja en vigente;
+- un enlace profundo vuelve a resolver autorización, función, sede, estrategia y versión.
+
+---
+
+#### 23. Handoffs a experiencias propietarias posteriores
+
+`CONT-UX-003` termina cuando la persona necesita una experiencia cuya responsabilidad pertenece a otra tarea:
+
+| Necesidad                                                       | Handoff reservado                    | Información mínima que se conserva                                                             |
+| --------------------------------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| capturar trabajo de contingencia y reincorporarlo               | `CONT-UX-004`                        | incidente, proceso, sede, estrategia, paso, evidencia/ref y estado pendiente                   |
+| observar backup, restore, failover o pendientes de recuperación | `CONT-UX-005`                        | incidente, servicio, runbook/step, recurso y bloqueo                                           |
+| emitir comunicación interna/externa                             | `CONT-UX-006`                        | incidente, audiencia, hecho confirmado, incertidumbre, autoridad y plantilla/canal propietario |
+| ejercicio, revisión posterior y readiness                       | `CONT-UX-007`                        | runbook/version, escenario, participantes, desviaciones, evidencia y acciones                  |
+| reconciliación técnica/operativa                                | `CONT-INT-004` y dominio propietario | operación/folio/ref, secuencia, estado observado, evidencia y pendiente                        |
+
+El handoff no concede permisos adicionales y la superficie destino vuelve a resolver autorización.
+
+---
+
+#### 24. Escenarios deterministas de experiencia
+
+##### Escenario A — referencia versionada disponible
+
+Una persona abre un proceso con `CTG-02_REFERENCIA_VERSIONADA`. La experiencia muestra fuente, versión y frescura; permite consulta; oculta controles de edición; si la referencia expira, cambia a bloqueo y handoff. Nunca presenta una edición local como nueva referencia vigente.
+
+##### Escenario B — borrador local
+
+El runbook `CTG-03_BORRADOR_LOCAL` permite preparar información. El checklist usa lenguaje “preparar”, no “aprobar” ni “publicar”. La salida queda pendiente de revalidación propietaria.
+
+##### Escenario C — captura local pendiente
+
+El paso registra observación con hora real y referencia de evidencia. La marca visual de completitud del paso significa “captura realizada”, no “hecho aceptado por el sistema propietario”.
+
+##### Escenario D — ejecución offline acotada
+
+Antes de cada efecto se muestra envelope, recurso, vigencia, alcance y secuencia. Si se agota la cantidad o ventana, el siguiente paso queda bloqueado. No se amplía automáticamente el envelope.
+
+##### Escenario E — procedimiento manual
+
+La persona usa un formato/folio gobernado si existe. La interfaz o copia indica custodia y handoff. Digitalizar después no altera hora real ni convierte el papel en un registro autoritativo distinto.
+
+##### Escenario F — servicio reducido
+
+La cabecera muestra qué resultado mínimo continúa y qué trabajo queda excluido. Un usuario no puede marcar “servicio normal” desde el checklist.
+
+##### Escenario G — diferimiento
+
+El checklist no simula pasos operativos. Conserva backlog, propietario, antigüedad, vencimiento y condición de reanudación.
+
+##### Escenario H — AURA diferida
+
+Para `BCS-VPROC-0056` o `BCS-VPROC-0057`, la experiencia muestra bloqueo por aplicación diferida y no construye un procedimiento operativo de contenido/promoción u oportunidades/canales.
+
+##### Escenario I — copia impresa vieja
+
+La persona encuentra una copia de versión anterior. La primera jerarquía muestra versión y condición de obsolescencia; el flujo exige obtener una versión vigente o escalar. No se oculta la copia si forma parte de la evidencia histórica.
+
+##### Escenario J — resultado externo incierto
+
+Un paso no recibe confirmación. Se marca resultado incierto, se bloquea reintento ciego y se realiza handoff a consulta/reconciliación.
+
+##### Escenario K — proveedor
+
+Un tercero recibe únicamente el segmento necesario. No ve contactos, secretos, evidencia o pasos que no necesita. Su confirmación técnica no certifica recuperación empresarial.
+
+##### Escenario L — cambio de sede
+
+La persona cambia de Vento Café a Saudo. La interfaz vuelve a resolver aplicabilidad; no arrastra automáticamente instrucciones específicas de la sede anterior.
+
+##### Escenario M — cambio de función durante el incidente
+
+Una transferencia de mando cambia la función efectiva. La interfaz conserva la historia y vuelve a proyectar el runbook. Los pasos ejecutados bajo la función anterior permanecen atribuidos a quien los realizó.
+
+##### Escenario N — reconexión
+
+Una copia offline vuelve a tener red. Antes de cualquier mutación se revalidan sesión, autorización, contexto y versión del runbook. Un cambio remoto no se pisa con caché local silenciosamente.
+
+---
+
+#### 25. Criterios de aceptación
+
+1. el artefacto contiene exactamente una tarea canónica CONT-UX-003;
+2. la tarea se mantiene exclusivamente documental;
+3. no se inicia implementación física;
+4. no se crea código, migración, dato ni configuración productiva;
+5. se preservan exactamente 69 servicios BCS-VPROC;
+6. se preservan exactamente 69 procesos VPROC correlativos;
+7. no se renumera ningún servicio;
+8. no se renumera ningún proceso;
+9. la matriz de cobertura contiene 69 filas únicas;
+10. no falta ninguna identidad entre 0001 y 0069;
+11. no se duplica ninguna identidad BCS-VPROC;
+12. no se duplica ninguna identidad VPROC;
+13. se preserva la propietaria heredada de cada fila;
+14. se preserva la estrategia heredada de cada fila;
+15. la distribución de estrategias suma 69 incluyendo los dos bloqueos AURA;
+16. 67 servicios conservan una estrategia primaria documentada;
+17. 2 servicios AURA conservan bloqueo por aplicación diferida;
+18. AURA no recibe un checklist operativo ficticio;
+19. CTG-01 conserva 6 servicios;
+20. CTG-02 conserva 8 servicios;
+21. CTG-03 conserva 8 servicios;
+22. CTG-04 conserva 15 servicios;
+23. CTG-05 conserva 6 servicios;
+24. CTG-06 conserva 11 servicios;
+25. CTG-07 conserva 9 servicios;
+26. CTG-08 conserva 4 servicios;
+27. no se asigna CTG-09 como alternativa real sin acreditación;
+28. no se asigna CTG-10 como alternativa real sin acreditación;
+29. la experiencia resuelve función efectiva antes de proyectar acciones;
+30. la experiencia resuelve proceso/capacidad antes de proyectar acciones;
+31. la experiencia resuelve sede/alcance antes de proyectar acciones;
+32. la experiencia resuelve estrategia vigente antes de proyectar acciones;
+33. la experiencia resuelve versión vigente antes de proyectar acciones materiales;
+34. la ausencia de una dimensión requerida no se completa por inferencia;
+35. un filtro visual no cambia el alcance canónico;
+36. seleccionar una sede no amplía autoridad territorial;
+37. mostrar una función no concede un permiso;
+38. mostrar un runbook no concede autoridad de ejecución;
+39. conocer una referencia de recurso no concede acceso a su contenido;
+40. conocer una referencia de secreto no revela el valor del secreto;
+41. un paso completado no certifica un efecto empresarial distinto del resultado observable;
+42. un checklist completo no cierra el incidente;
+43. un éxito técnico no se presenta como recuperación empresarial;
+44. una validación técnica no sustituye validación funcional;
+45. la persona ejecutora no se vuelve validadora por marcar un paso;
+46. una automatización no cuenta como segundo aprobador humano;
+47. un proveedor no cuenta como segundo aprobador humano;
+48. el runbook conserva referencia estable cuando la fuente la provee;
+49. el runbook muestra título y versión;
+50. el runbook muestra propietaria documental cuando exista;
+51. el runbook muestra propósito;
+52. el runbook muestra alcance;
+53. el runbook muestra proceso/capacidad;
+54. el runbook muestra sede/territorio aplicable;
+55. el runbook muestra estrategia de contingencia;
+56. el runbook muestra audiencia o función efectiva;
+57. el runbook muestra clasificación cuando corresponda;
+58. el runbook muestra prerrequisitos;
+59. el runbook muestra dependencias relevantes;
+60. el runbook muestra materiales o recursos solo cuando sean necesarios;
+61. el runbook muestra límites de acción;
+62. el runbook muestra condiciones de bloqueo;
+63. el runbook muestra condiciones de abort;
+64. el runbook muestra ruta de escalamiento;
+65. el runbook muestra evidencia mínima;
+66. el runbook muestra handoff o retorno;
+67. los secretos se representan por referencia segura;
+68. no se incrustan secretos en pasos, copias o impresiones;
+69. el paso actual tiene una instrucción accionable;
+70. el paso actual muestra su prerrequisito inmediato;
+71. el paso actual muestra el alcance aplicable;
+72. el paso actual muestra la condición observable de avance;
+73. el paso actual muestra la condición que impide avanzar;
+74. el paso actual muestra abort/escalamiento cuando aplica;
+75. el paso actual muestra la evidencia mínima cuando aplica;
+76. el paso actual muestra el siguiente handoff cuando aplica;
+77. la interfaz no obliga a leer telemetría técnica irrelevante para ejecutar un paso;
+78. la zona de contexto conserva incidente cuando existe;
+79. la zona de contexto conserva proceso;
+80. la zona de contexto conserva sede/alcance;
+81. la zona de contexto conserva estrategia;
+82. la zona de contexto conserva función;
+83. la zona de contexto conserva versión/vigencia;
+84. la zona de contexto conserva frescura cuando influye en la validez;
+85. la vista de runbook no se convierte en un centro de mando duplicado;
+86. la vista de runbook no absorbe captura/reincorporación detallada;
+87. la vista de runbook no absorbe tablero de backup/restore/failover;
+88. la vista de runbook no absorbe emisión de comunicaciones;
+89. la vista de runbook no absorbe revisión posterior/readiness;
+90. la vista de runbook no absorbe reconciliación propietaria;
+91. CTG-01 prioriza contención y preservación;
+92. CTG-01 no afirma que la acción bloqueada fue ejecutada;
+93. CTG-02 muestra fuente y versión;
+94. CTG-02 muestra frescura o vigencia;
+95. CTG-02 no ofrece edición como parte de la referencia;
+96. CTG-03 usa lenguaje de preparación o borrador;
+97. CTG-03 no presenta aprobación o publicación como realizada;
+98. CTG-04 conserva hora real de observación cuando exista captura;
+99. CTG-04 diferencia captura de aceptación;
+100. CTG-05 exige envelope vigente antes de ejecutar;
+101. CTG-05 conserva recurso y alcance finitos;
+102. CTG-05 no amplía cantidad o vigencia automáticamente;
+103. CTG-05 conserva secuencia e idempotencia cuando sean aplicables;
+104. CTG-06 conserva folio o identidad controlada cuando aplique;
+105. CTG-06 conserva actor y hora real;
+106. CTG-06 conserva sitio/área cuando aplique;
+107. CTG-06 conserva custodia y handoff;
+108. CTG-06 no transforma el medio manual en fuente paralela de verdad;
+109. CTG-07 muestra el resultado mínimo que continúa;
+110. CTG-07 muestra el trabajo que queda excluido;
+111. CTG-07 no se presenta como servicio completo;
+112. CTG-08 conserva backlog;
+113. CTG-08 conserva propietario;
+114. CTG-08 conserva antigüedad o fecha de origen;
+115. CTG-08 conserva vencimiento cuando aplique;
+116. CTG-08 conserva condición de reanudación;
+117. CTG-08 no se presenta como trabajo ejecutado;
+118. CTG-09 solo puede proyectarse después de acreditación propietaria;
+119. CTG-10 solo puede proyectarse después de acreditación propietaria;
+120. Oficina 1 permanece como sede interna reconocida;
+121. Vento Café permanece como sede interna reconocida;
+122. Saudo permanece como sede interna reconocida;
+123. Molka permanece como sede interna reconocida;
+124. Centro de Producción y Distribución permanece como sede interna reconocida;
+125. Vaila no se promueve a sede interna por esta tarea;
+126. Catering no se promueve a sede interna por esta tarea;
+127. los puntos externos no se promueven a sedes internas por esta tarea;
+128. una variación de sede exige fuente propietaria;
+129. una instrucción de una sede no se hereda por similitud a otra;
+130. un runbook empresarial puede proyectarse a varias sedes sin duplicar su fuente;
+131. la función de continuidad prioriza mando, bloqueos y handoffs;
+132. la función propietaria del proceso conserva validación funcional;
+133. la función tecnológica conserva validación técnica sin certificar negocio;
+134. la supervisión de sede no recibe autoridad fuera de su territorio por la vista;
+135. el equipo operativo recibe pasos concretos y límites;
+136. el custodio documental conserva versión y custodia sin absorber aprobación empresarial;
+137. seguridad/privacidad conserva tratamiento de exposición sin asumir mando general;
+138. el proveedor recibe únicamente el segmento mínimo necesario;
+139. una persona con funciones concentradas ve cada función diferenciada;
+140. una transferencia de mando no reatribuye pasos históricos;
+141. una corrección no reescribe una decisión o evidencia anterior;
+142. la versión actual demostrada se distingue visualmente de una versión obsoleta;
+143. una versión anterior conocida se distingue de la actual;
+144. una vigencia no demostrada se muestra como tal;
+145. una copia offline muestra la última vigencia conocida;
+146. una copia impresa muestra versión;
+147. una copia impresa muestra clasificación;
+148. una copia impresa muestra alcance;
+149. una copia impresa muestra condición de dejar de usarla;
+150. una copia obsoleta no se presenta como vigente;
+151. una versión histórica puede conservarse como evidencia;
+152. la reconexión revalida versión antes de mutar;
+153. la reconexión revalida sesión antes de mutar;
+154. la reconexión revalida autorización antes de mutar;
+155. la reconexión revalida contexto antes de mutar;
+156. el modo offline no amplía el sobre offline;
+157. el modo offline no crea una nueva autoridad;
+158. el modo offline no inventa confirmaciones remotas;
+159. un resultado externo sin confirmación se muestra incierto;
+160. un resultado incierto no habilita reintento ciego;
+161. un resultado incierto conserva referencia al intento cuando exista;
+162. un resultado incierto se entrega a consulta o reconciliación propietaria;
+163. abort detiene nuevo efecto dentro del alcance afectado;
+164. abort conserva estado y evidencia necesarios;
+165. abort genera handoff o escalamiento;
+166. abort no se presenta como cierre;
+167. un bloqueo muestra la causa material;
+168. un bloqueo muestra el siguiente control sin filtrar contenido sensible;
+169. una autorización faltante no se sustituye con un botón genérico de forzado;
+170. un acceso de emergencia se resuelve en su contrato propietario;
+171. la búsqueda no enumera runbooks no autorizados;
+172. un contador no filtra existencia de runbooks ocultos;
+173. un error no revela títulos o fragmentos sensibles;
+174. un enlace profundo vuelve a resolver autorización;
+175. un enlace profundo vuelve a resolver sede;
+176. un enlace profundo vuelve a resolver estrategia;
+177. un enlace profundo vuelve a resolver versión;
+178. favoritos o recientes no convierten una versión vieja en vigente;
+179. ordenar alfabéticamente no cambia prioridad canónica;
+180. la experiencia puede navegarse por teclado;
+181. el foco de teclado es visible;
+182. el zoom conserva contexto y condiciones materiales;
+183. responsive conserva proceso, sede, estrategia, función y versión;
+184. móvil prioriza paso actual y condición de detención;
+185. color no es el único indicador de bloqueo;
+186. color no es el único indicador de vigencia;
+187. iconografía material tiene etiqueta o texto semántico;
+188. loading no inventa valores;
+189. un error de red no convierte desconocido en cero;
+190. la caché muestra antigüedad/frescura cuando aplica;
+191. una confirmación crítica describe el efecto concreto;
+192. la proyección minimiza datos personales;
+193. la proyección minimiza evidencia sensible;
+194. la proyección minimiza contactos nominales cuando basta una función;
+195. la proyección no reproduce secretos;
+196. la evidencia puede conservarse por referencia;
+197. un proveedor no recibe el runbook completo si basta un segmento;
+198. una captura de pantalla no se usa para ampliar audiencia de datos sensibles;
+199. el handoff a CONT-UX-004 conserva contexto mínimo sin iniciar esa tarea;
+200. el handoff a CONT-UX-005 conserva contexto mínimo sin iniciar esa tarea;
+201. el handoff a CONT-UX-006 conserva contexto mínimo sin emitir comunicación;
+202. el handoff a CONT-UX-007 conserva contexto mínimo sin declarar readiness;
+203. el handoff a CONT-INT-004 conserva referencias sin ejecutar conciliación;
+204. la superficie destino vuelve a resolver autorización;
+205. la superficie destino no hereda permisos por origen de navegación;
+206. la tarea no crea nuevos roles;
+207. la tarea no crea nuevos permisos;
+208. la tarea no crea nuevos estados de negocio;
+209. la tarea no crea nuevas sedes;
+210. la tarea no crea nuevas estrategias de contingencia;
+211. la tarea no crea nuevos servicios;
+212. la tarea no crea nuevas identidades de proceso;
+213. la tarea no crea nuevas prioridades de recuperación;
+214. la tarea no crea nuevos objetivos RTO/RPO/MTPD/MBCO;
+215. la tarea no acredita proveedores sustitutos;
+216. la tarea no acredita ubicaciones alternativas;
+217. la tarea no ejecuta restore;
+218. la tarea no ejecuta failover;
+219. la tarea no ejecuta failback;
+220. la tarea no captura formularios productivos;
+221. la tarea no emite folios reales;
+222. la tarea no ejecuta reconciliación;
+223. la tarea no cierra incidentes;
+224. la tarea no declara readiness;
+225. la tarea distingue ESPECIFICADO de IMPLEMENTADO;
+226. la tarea distingue ESPECIFICADO de VALIDADO;
+227. la tarea conserva pendientes de evidencia como pendientes;
+228. la tarea crea cero requisitos de prueba;
+229. la tarea modifica cero requisitos de prueba;
+230. la tarea difiere cero requisitos de prueba;
+231. la tarea descarta cero requisitos de prueba;
+232. la tarea vuelve obsoletos cero requisitos de prueba;
+233. no se genera una copia innecesaria del registro canónico de requisitos;
+234. la tarea no inicia CONT-UX-004;
+235. CONT-UX-004 permanece únicamente reservada.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La tarea especializa una experiencia ya exigida por requisitos vigentes: selección y uso controlado de modalidades de contingencia, vigencia de runbooks, accesibilidad, operación responsive y validación de usabilidad. No introduce un efecto empresarial nuevo, un permiso, una transición de dominio, una modalidad nueva, una integración nueva ni una obligación de prueba distinta.
+
+Balance de cambios de requisitos:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 27. Cobertura vigente de prueba
+
+La conducta central de esta tarea ya está cubierta por `TREQ-CONT-003`, que asigna expresamente responsabilidad a `CONT-UX-003` y exige modalidad de contingencia, datos mínimos, identificadores/formularios controlados, responsables, límites, vigencia, custodia, seguridad, suministros y criterio de abandono, sin crear una segunda fuente de verdad ni afirmar un efecto empresarial no confirmado.
+
+`TREQ-CONT-006` protege la revisión periódica de runbooks y el principio de que un plan sin prueba vigente no puede declararse listo. `TREQ-UX-006`, `TREQ-UX-007` y `TREQ-UX-008` cubren comportamiento responsive, validación con roles/sedes/dispositivos representativos y accesibilidad/estados de interfaz sin depender exclusivamente de color o iconografía.
+
+La presente tarea materializa esas obligaciones en el diseño del runbook y checklist; no altera su alcance normativo.
+
+---
+
+#### 28. Estado AS-IS y evidencia
+
+| Elemento                                                 | Estado tras esta tarea   | Evidencia/limitación                                 |
+| -------------------------------------------------------- | ------------------------ | ---------------------------------------------------- |
+| diseño de resolución por función/proceso/sede/estrategia | `ESPECIFICADO`           | contrato documental de esta tarea                    |
+| cobertura de 69 servicios                                | `ESPECIFICADO`           | matriz 69/69 sin identidades nuevas                  |
+| estrategias primarias de 67 servicios                    | `ESPECIFICADO`           | heredadas de continuidad; no redecididas aquí        |
+| dos servicios AURA diferidos                             | `BLOQUEADO`              | se conserva el bloqueo heredado                      |
+| tratamiento UX de `CTG-01` a `CTG-08`                    | `ESPECIFICADO`           | diseño documental                                    |
+| alternativas `CTG-09`/`CTG-10` concretas                 | `PENDIENTE_DE_EVIDENCIA` | esta tarea no acredita recurso o tercero sustituto   |
+| diseño de versión/vigencia/obsolescencia                 | `ESPECIFICADO`           | control documental materializado                     |
+| metadatos reales de versión para cada runbook productivo | `PENDIENTE_DE_EVIDENCIA` | deben provenir de la fuente propietaria implementada |
+| pantallas y componentes                                  | `NO_APLICA` en esta fase | implementación física no autorizada                  |
+| checklist productivo ejecutable                          | `NO_APLICA` en esta fase | no se ejecutan incidentes por esta tarea             |
+| copias impresas productivas                              | `NO_APLICA` en esta fase | no se emiten rangos ni copias reales                 |
+| validación con usuarios/sedes/dispositivos reales        | `PENDIENTE_DE_EVIDENCIA` | requiere ejercicio o implementación autorizada       |
+| ejecución de runbooks reales                             | **0**                    | tarea exclusivamente documental                      |
+| cambios de permisos                                      | **0**                    | se reutiliza autorización canónica                   |
+| cambios físicos                                          | **0**                    | sin código, datos ni infraestructura                 |
+
+El hallazgo `H-CAP-SCOPE-018-037`, relativo a contactos, dependencias o runbooks desactualizados que pueden inutilizar el plan, queda **ESPECIFICADO en la capa UX de runbooks** mediante versión visible, actualidad demostrable, señalización de obsolescencia, control de copia y revalidación tras reconexión. Su eficacia real permanece pendiente de validación en una fase autorizada.
+
+---
+
+#### 29. Decisiones sustantivas
+
+1. el runbook se resuelve, no se duplica como nueva fuente de verdad;
+2. función, proceso, sede, estrategia y versión son dimensiones obligatorias de resolución;
+3. se materializan 69 decisiones UX, una por servicio heredado;
+4. 67 servicios proyectan runbook/checklist desde su estrategia vigente;
+5. 2 servicios AURA mantienen vista de bloqueo sin checklist operativo ficticio;
+6. `CTG-01` a `CTG-08` conservan su distribución heredada;
+7. `CTG-09` y `CTG-10` no se presentan como alternativas reales sin acreditación propietaria;
+8. lectura de runbook y autoridad de ejecución permanecen separadas;
+9. completitud visual de paso y efecto empresarial permanecen separados;
+10. ejecución y validación permanecen separadas;
+11. éxito técnico y recuperación empresarial permanecen separados;
+12. resultado incierto bloquea reintento ciego;
+13. abort es una ruta explícita con evidencia y handoff;
+14. versión y vigencia ocupan la primera jerarquía;
+15. una copia impresa/offline nunca se presume vigente indefinidamente;
+16. la reconexión revalida contexto, autorización y versión;
+17. la sede seleccionada no amplía autoridad;
+18. la función mostrada no crea permisos;
+19. proveedor recibe solo el segmento mínimo necesario;
+20. secretos permanecen como referencias seguras, nunca como contenido del runbook;
+21. evidencia se mantiene por referencia cuando sea suficiente;
+22. búsqueda, contador y error no filtran existencia de contenido no autorizado;
+23. el paso actual domina la jerarquía visual bajo presión;
+24. bloqueo, vigencia y severidad no dependen solo de color;
+25. los handoffs posteriores conservan contexto sin absorber la tarea destino;
+26. no se crean estados de negocio, roles, permisos, procesos, sedes o modalidades nuevas;
+27. no se ejecuta ningún cambio físico;
+28. no se crean ni modifican requisitos de prueba.
+
+---
+
+#### 30. Balance de cierre
+
+| Control                                                   | Resultado |
+| --------------------------------------------------------- | --------: |
+| servicios heredados esperados                             |    **69** |
+| servicios materializados en matriz UX                     |    **69** |
+| servicios con estrategia primaria activa                  |    **67** |
+| servicios bloqueados por aplicación diferida              |     **2** |
+| estrategias documentales del catálogo preservadas         |    **10** |
+| estrategias presentes como primarias en servicios activos |     **8** |
+| sedes internas preservadas                                |     **5** |
+| escenarios deterministas                                  |    **14** |
+| decisiones sustantivas                                    |    **28** |
+| criterios de aceptación                                   |   **235** |
+| cambios físicos                                           |     **0** |
+| requisitos de prueba creados o modificados                |     **0** |
+
+---
+
+#### 31. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación`
+
+TAREA ACTUAL APROBADA
+
+`CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior`
+
+
 ### [ ] CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior
 ### [ ] CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes
 ### [ ] CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
