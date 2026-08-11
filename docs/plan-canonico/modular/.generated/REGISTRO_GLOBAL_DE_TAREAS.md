@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **694** |
+| Aprobadas | **695** |
 | En propuesta | **0** |
-| No iniciadas | **900** |
+| No iniciadas | **899** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.54% (694/1594)** |
+| Porcentaje de completamiento | **43.60% (695/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad | ✅ APROBADA |
-| Tarea actual | `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-UX-005` — Diseñar espacio de investigación de variaciones, anomalías y causas | ⬜ NO INICIADA |
+| Última aprobada | `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación | ✅ APROBADA |
+| Tarea actual | `DATA-UX-005` — Diseñar espacio de investigación de variaciones, anomalías y causas | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-UX-006` — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1583,7 +1583,7 @@
 | ✅ APROBADA | `DATA-UX-001` | Diseñar inicio ejecutivo simple y accionable por rol | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-002` | Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-003` | Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
-| ⬜ NO INICIADA | `DATA-UX-004` | Diseñar centro de calidad, frescura, conciliaciones y certificación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
+| ✅ APROBADA | `DATA-UX-004` | Diseñar centro de calidad, frescura, conciliaciones y certificación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-005` | Diseñar espacio de investigación de variaciones, anomalías y causas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-006` | Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-007` | Diseñar reportes, exportaciones, suscripciones y snapshots versionados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |

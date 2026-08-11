@@ -2322,7 +2322,755 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación`
 
 
-### [ ] DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
+### ✅ DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad` — APROBADA
+**Tarea siguiente:** `DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia del centro de calidad para evaluar frescura, cobertura, conciliaciones, incidencias y decisiones de certificación sin alterar datos fuente ni elevar estados por inferencia
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, rutas físicas, componentes, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, datos, backfills, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia mediante la cual un actor autorizado puede comprender el estado real de calidad de una fuente, objeto maestro, familia de hechos, métrica o resultado analítico; identificar qué dimensión falla; verificar frescura, cobertura y conciliación; conocer el propietario de resolución; revisar evidencia; y, únicamente cuando posea la capacidad separada correspondiente, emitir una decisión de certificación para una coordenada exacta.
+
+El centro deberá responder de forma determinista:
+
+1. ¿qué recurso o resultado se está evaluando?;
+2. ¿para qué uso, periodo, versión y corte se evalúa?;
+3. ¿cuál es su estado de calidad vigente para esa coordenada?;
+4. ¿qué dimensión o dependencia explica una observación, degradación o bloqueo?;
+5. ¿hasta qué corte están actualizadas las fuentes necesarias?;
+6. ¿qué población y cobertura están realmente demostradas?;
+7. ¿qué diferencias permanecen abiertas en la conciliación?;
+8. ¿qué evidencia respalda el estado mostrado?;
+9. ¿quién es propietario, steward y, cuando corresponda, certificador autorizado?;
+10. ¿qué acción de resolución pertenece a la fuente o contrato propietario?;
+11. ¿qué debe reevaluarse después de una corrección, backfill, reconstrucción o restatement?;
+12. ¿qué información puede conocer el actor sin ampliar su autorización por entrar al centro?
+
+Principio rector:
+
+```text
+CENTRO DE CALIDAD
+=
+COORDENADA DE EVALUACIÓN
++ ESTADO DQ VIGENTE
++ DIMENSIONES Y CONTROLES APLICABLES
++ FRESCURA Y COBERTURA REALES
++ CONCILIACIÓN Y DIFERENCIAS VISIBLES
++ EVIDENCIA Y RESPONSABILIDAD
++ ACCIONES GOBERNADAS SEPARADAS
+
+NO
+
+PANTALLA = CERTIFICACIÓN
+CHECK VERDE = CERTIFICADO
+CORRECCIÓN = RECERTIFICACIÓN
+PUBLICACIÓN = CERTIFICACIÓN
+ACCESO AL CENTRO = ACCESO AL DETALLE
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el diseño del centro de calidad con los siguientes resultados:
+
+- una única experiencia conceptual de calidad para fuentes, mecanismos de entrada, familias de hechos, objetos maestros/de referencia, métricas y resultados analíticos;
+- diez dimensiones DQ visibles y diferenciadas, sin colapsarlas en un puntaje universal;
+- cinco estados canónicos de certificación preservados exactamente y `NO_APLICA` tratado aparte como decisión de alcance;
+- una coordenada de evaluación explícita por recurso, uso, periodo, versión, corte, dependencias y evidencia;
+- una primera vista que prioriza bloqueos, degradaciones, observaciones y recursos no evaluados sin confundir prioridad visual con severidad global;
+- una experiencia de frescura que muestra corte, referencia temporal y atraso respecto del contrato concreto, sin inventar un SLA común;
+- una experiencia de cobertura que distingue atributos, relaciones y población y nunca fabrica denominadores;
+- una experiencia de conciliación que conserva origen, aceptados, rechazados, cuarentena, duplicados, exclusiones, resultado y diferencias cuando esos datos existan en el contrato;
+- una cola de incidencias que conserva dimensión, coordenada, impacto sobre el uso, propietario/steward y evidencia de resolución;
+- una puerta de certificación de doce condiciones, visible como evaluación gobernada y no como automatismo visual;
+- segregación estricta entre evaluación, corrección, certificación, publicación, anotación, exportación y administración;
+- cobertura explícita de los cuatro mecanismos de entrada aprobados;
+- cobertura explícita de las quince familias heredadas de hechos/eventos/representaciones;
+- cobertura explícita de los sesenta y dos objetos maestros y de referencia;
+- cobertura explícita de las cuatro fuentes observadas de asistencia;
+- cobertura explícita de las catorce métricas de asistencia, preservando once `NO EVALUADO` y tres `BLOQUEADO`;
+- preservación de `missingCloseCount`, `attendanceRate` y `punctualityRate` como bloqueadas;
+- cero fórmulas nuevas, cero estados DQ nuevos, cero umbrales universales, cero permisos nuevos y cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+Reconciliación documental:
+
+| Inventario consumido               | Esperado | Materializado | Faltantes | Duplicados |
+| ---------------------------------- | -------: | ------------: | --------: | ---------: |
+| Dimensiones de calidad             |       10 |            10 |         0 |          0 |
+| Estados canónicos de certificación |        5 |             5 |         0 |          0 |
+| Mecanismos de entrada              |        4 |             4 |         0 |          0 |
+| Familias heredadas                 |       15 |            15 |         0 |          0 |
+| Objetos maestros/referencia        |       62 |            62 |         0 |          0 |
+| Fuentes observadas de asistencia   |        4 |             4 |         0 |          0 |
+| Métricas de asistencia             |       14 |            14 |         0 |          0 |
+
+Estos conjuntos no se suman como un único total de recursos porque se solapan conceptualmente: una métrica, por ejemplo, puede depender de una fuente incluida en otro inventario. El centro evita un contador global aditivo que sugiera independencia inexistente.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume sin redefinir:
+
+- `DATA-DOM-006` para mecanismos de entrada, ingestión, duplicados, cuarentena, reconciliación, backfill, corrección, reconstrucción y linaje;
+- `DATA-DOM-007` para las diez dimensiones DQ, los cinco estados, la coordenada de evaluación, la puerta de certificación, frescura, cobertura, propagación, incidencias y los inventarios materializados;
+- `DATA-DOM-008` para la separación entre calidad/certificación y publicación de tableros, reportes, exportaciones, suscripciones, alertas y snapshots;
+- `DATA-DOM-017` para correcciones históricas, restatements y reproducibilidad;
+- `DATA-AUTH-001` para construir el conjunto autorizado antes de presentar recursos o agregados;
+- `DATA-AUTH-002` para minimizar detalle sensible, proteger poblaciones pequeñas e impedir inferencias mediante conteos, filtros, tooltips o navegación profunda;
+- `DATA-AUTH-003` para separar `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- `DATA-AUTH-004` para trazabilidad de consumo analítico sin convertir auditoría en autorización o certificación;
+- `DATA-UX-001` para la navegación desde calidad y limitaciones de la vista ejecutiva;
+- `DATA-UX-002` para definición, gobierno, fuente, calidad, linaje e historia de métricas y objetos de catálogo;
+- `DATA-UX-003` para contexto, corte, calidad y navegación desde tableros por dominio;
+- `UX-BASE-001` a `UX-BASE-015` para carril administrativo/analítico, contexto visible, lenguaje humano, simplicidad, excepciones y divulgación progresiva;
+- `NFR-REQ-005` a `NFR-REQ-007` para privacidad, trazabilidad, accesibilidad y ergonomía;
+- los requisitos de prueba vigentes que ya protegen identidad, calidad, frescura, conciliación, artefactos analíticos y experiencia administrativa.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+CALIDAD ≠ AUTORIZACIÓN
+```
+
+```text
+ESTADO DOCUMENTAL ≠ ESTADO DQ
+```
+
+```text
+PROCESADO ≠ RECONCILIADO ≠ EVALUADO ≠ CERTIFICADO ≠ PUBLICADO
+```
+
+```text
+FRESCO ≠ COMPLETO ≠ VÁLIDO ≠ RECONCILIADO ≠ CERTIFICADO
+```
+
+```text
+SEÑAL DQ ≠ INCIDENCIA ≠ CORRECCIÓN ≠ CERTIFICACIÓN
+```
+
+```text
+CERTIFICADOR ≠ PROPIETARIO ≠ STEWARD ≠ CUSTODIO TÉCNICO ≠ PUBLICADOR
+```
+
+```text
+CERO MEDIDO ≠ NULO ≠ NO APLICA ≠ DESCONOCIDO ≠ NO RECIBIDO ≠ DATO PENDIENTE
+```
+
+```text
+DUPLICADO TÉCNICO ≠ DUPLICADO EMPRESARIAL ≠ FUSIÓN DE IDENTIDADES
+```
+
+```text
+ÚLTIMO CORTE CONOCIDO ≠ ACTUALIZACIÓN NUEVA
+```
+
+```text
+PUNTAJE AGREGADO ≠ EVIDENCIA DE CALIDAD
+```
+
+El centro no crea un semáforo único que oculte cuál dimensión falló. Cuando se use una síntesis visual, debe conservar acceso al estado DQ, la dimensión, la coordenada, la evidencia y la consecuencia real sobre el uso.
+
+---
+
+#### 5. Arquitectura de información del centro
+
+La experiencia se organiza en seis zonas lógicas coordinadas:
+
+1. **Contexto de evaluación**: recurso, uso, periodo, corte, versiones, población, alcance y finalidad.
+2. **Estado y atención**: estado DQ vigente, limitaciones materiales y recursos que requieren revisión.
+3. **Dimensiones de calidad**: resultado por las diez dimensiones aplicables, sin puntaje universal obligatorio.
+4. **Frescura, cobertura y conciliación**: actualidad, población cubierta y diferencias respecto del origen o contrato.
+5. **Evidencia e historia**: controles, dependencias, decisiones previas, correcciones y recertificaciones vinculadas.
+6. **Acciones gobernadas**: únicamente las acciones exactas que el actor tenga autorizadas, manteniendo segregación.
+
+La primera vista no intenta mostrar simultáneamente los 62 objetos, las 15 familias, las 14 métricas y todas sus evidencias. Presenta atención y resumen autorizado; la expansión del inventario exige una acción explícita y mantiene filtros, contexto y protección.
+
+---
+
+#### 6. Coordenada visible de evaluación
+
+Toda ficha de calidad deberá poder mostrar, cuando aplique y sea seguro:
+
+| Componente                  | Decisión UX                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| recurso evaluado            | nombre empresarial o identidad canónica autorizada; no usar tabla física como sustituto semántico |
+| clase de recurso            | fuente, mecanismo, familia, maestro/referencia, métrica, resultado o artefacto, según contrato    |
+| uso empresarial             | expresa qué decisión o consumo se pretende soportar                                               |
+| periodo o ventana           | delimita la población temporal evaluada                                                           |
+| fecha y hora de corte       | fija hasta qué información debía estar incorporada                                                |
+| versión semántica           | visible cuando el significado depende de una versión                                              |
+| versión de esquema/contrato | visible cuando condiciona interpretación o compatibilidad                                         |
+| versión de transformación   | visible para derivados cuando aplica                                                              |
+| población esperada          | solo se presenta si existe un denominador demostrable                                             |
+| dimensiones críticas        | muestra cuáles controles son materiales para el uso                                               |
+| fuentes y dependencias      | muestra únicamente dependencias que el actor esté autorizado a conocer                            |
+| resultado de conciliación   | expone diferencias materiales y estado de resolución cuando aplica                                |
+| evidencia                   | resume existencia, fecha y referencia segura; el detalle sigue autorización propia                |
+| propietario y steward       | indica responsabilidad funcional y de mantenimiento                                               |
+| certificador                | se muestra únicamente cuando su identidad o función sea divulgable y necesaria                    |
+
+Cambiar uso, periodo, corte, versión, población o dependencia puede cambiar la coordenada y obliga a recuperar de nuevo el estado aplicable. El centro no reutiliza por conveniencia una certificación de otra coordenada.
+
+---
+
+#### 7. Matriz UX de las diez dimensiones de calidad
+
+|    # | Dimensión              | Qué muestra el centro                                                                                        | Consecuencia UX cuando existe falla material                                                                            |
+| ---: | ---------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+|    1 | completitud            | atributos, relaciones y población requeridos, separados; faltantes y cobertura demostrable                   | indicar qué plano está incompleto y si el uso queda degradado o bloqueado; nunca convertir ausencia en cero             |
+|    2 | unicidad               | clave/alcance evaluados, duplicados técnicos o conflictos de identidad demostrados                           | impedir que similitud visual se presente como duplicidad empresarial; dirigir la resolución al propietario              |
+|    3 | validez                | contrato/versión aplicables y controles de dominio, formato, estado, rango o regla                           | mostrar valores o conjuntos no válidos sin corregirlos silenciosamente para aprobar                                     |
+|    4 | consistencia           | contradicciones entre atributos, estados, tiempos, fuentes o representaciones                                | conservar qué fuentes divergen y cuál autoridad por atributo debe resolver; una copia no prevalece por ser más reciente |
+|    5 | integridad referencial | referencias críticas resueltas al tiempo y contexto correctos                                                | mostrar referencias no resueltas o en cuarentena; nunca proponer emparejamiento por parecido como hecho                 |
+|    6 | frescura               | corte exigido, último corte conocido, ocurrencia/recepción/procesamiento relevantes y referencia contractual | declarar atraso o vigencia real; no inventar un umbral universal ni presentar un dato antiguo como actualizado          |
+|    7 | cobertura              | población declarada, incluida y parcialidad conocida                                                         | mostrar porcentaje solo si existe denominador demostrable; en caso contrario mostrar cobertura parcial/no cuantificable |
+|    8 | volumen y forma        | conteos, estructura y cambios materiales respecto de la forma esperada cuando el contrato lo defina          | observar, degradar o bloquear según evidencia; una variación estadística por sí sola no se rotula error                 |
+|    9 | reconciliación         | origen, aceptados, rechazados, cuarentena, duplicados, exclusiones, resultado y diferencia cuando aplican    | impedir certificación mientras exista diferencia material abierta; nunca ocultarla ajustando el agregado                |
+|   10 | estabilidad histórica  | versión/corte reproducibles, correcciones, reconstrucciones y restatements                                   | mostrar divergencia histórica y vínculo entre versiones; bloquear certificación histórica cuando no pueda explicarse    |
+
+**Reconciliación:** 10 dimensiones esperadas; 10 materializadas; 10 identidades únicas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 8. Estados DQ y presentación
+
+| Estado           | Presentación principal                                                            | Acción conceptual permitida por el estado                                                   | Prohibición UX                                                                  |
+| ---------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `NO EVALUADO`    | indicar ausencia de evidencia suficiente para la coordenada                       | consultar controles, dependencias y propietario; iniciar workflow autorizado si corresponde | no presentarlo como aceptable, saludable o certificado por defecto              |
+| `EN OBSERVACIÓN` | mostrar señal bajo seguimiento, dimensión afectada y uso condicionado             | revisar evidencia y seguimiento autorizado                                                  | no equipararlo a certificado ni a degradado sin decisión material               |
+| `CERTIFICADO`    | mostrar coordenada exacta, corte, versión y evidencia de decisión                 | consumir dentro del uso certificado y consultar historia                                    | no extenderlo a otra población, periodo, versión, uso o publicación             |
+| `DEGRADADO`      | mostrar limitación conocida, alcance afectado y advertencia explícita             | permitir solo usos que el contrato admita bajo degradación                                  | no ocultar la limitación ni presentarla como certificada                        |
+| `BLOQUEADO`      | mostrar impedimento crítico, dependencia/causa segura y propietario de resolución | consultar evidencia y navegar al proceso propietario cuando esté autorizado                 | no mostrar cifra sustituta, cero, estado verde ni acción de publicación oficial |
+
+`NO_APLICA` se presenta en un filtro y etiqueta de alcance separados. No participa en conteos de los cinco estados de certificación ni se ofrece como resultado emitible por `CERTIFY`.
+
+El orden predeterminado de atención puede priorizar visualmente `BLOQUEADO`, `DEGRADADO`, `EN OBSERVACIÓN` y `NO EVALUADO` antes de `CERTIFICADO`. Ese orden solo organiza la revisión y no crea una escala universal de severidad.
+
+---
+
+#### 9. Resumen y conteos de calidad
+
+Los conteos de la primera vista cumplen estas reglas:
+
+1. se calculan únicamente sobre recursos que el actor esté autorizado a conocer;
+2. cada contador identifica el conjunto y la coordenada resumidos;
+3. no se usan conteos globales para inferir recursos ocultos;
+4. `NO_APLICA` se informa separado de los cinco estados;
+5. un mismo recurso no se duplica en el mismo contador por múltiples dimensiones afectadas;
+6. los conjuntos superpuestos no se suman entre sí para producir un total ficticio;
+7. una selección de estado solo reduce el conjunto autorizado y no concede acceso a evidencia o detalle;
+8. una cifra de `CERTIFICADO` no implica que el actor pueda publicar, exportar o administrar esos recursos.
+
+---
+
+#### 10. Búsqueda y filtros
+
+El centro admite como filtros conceptuales únicamente valores de metadatos que el actor esté autorizado a conocer:
+
+- estado DQ;
+- decisión `NO_APLICA` separada;
+- dimensión afectada;
+- clase de recurso;
+- dominio o fuente propietaria;
+- propietario/steward cuando sea divulgable;
+- periodo o corte;
+- uso empresarial;
+- estado de conciliación cuando exista una decisión material;
+- presencia de incidencia abierta o evidencia pendiente, cuando el contrato fuente lo determine.
+
+Reglas:
+
+- las opciones de filtro no enumeran recursos, dominios, propietarios o estados ocultos;
+- un filtro nunca cambia la autorización final;
+- búsqueda por identificador requiere la misma autorización que la navegación normal;
+- un resultado oculto no puede revelarse mediante autocomplete, conteo, tooltip, error o URL;
+- no se crea un filtro local de “certificable” basado en heurística; la puerta de certificación se evalúa sobre la coordenada concreta.
+
+---
+
+#### 11. Frescura y vigencia
+
+La experiencia de frescura conserva la referencia propia de cada clase de origen:
+
+| Clase                         | Información mínima visible                                                     | Regla UX                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| evento                        | ocurrencia, recepción y último evento esperado cuando el contrato lo define    | distinguir atraso de origen, transporte y procesamiento                              |
+| API                           | instante de consulta/corte, ventana solicitada y última información confirmada | respuesta exitosa no equivale a fuente fresca                                        |
+| vista                         | corte de dependencias y versión de definición                                  | hereda frescura de dependencias; no crea frescura propia                             |
+| exportación controlada        | periodo/corte cubierto por el archivo, recepción y cobertura declarada         | una importación reciente de un archivo antiguo sigue siendo antigua para ese periodo |
+| maestro/referencia versionada | vigencia efectiva y última decisión válida requerida por el uso                | no mostrar reloj de atraso cuando la ausencia de cambio empresarial es correcta      |
+| snapshot                      | corte de publicación                                                           | puede ser histórico, íntegro y válido sin ser actual                                 |
+
+El centro debe poder diferenciar, cuando apliquen, ocurrencia, fecha empresarial, recepción, procesamiento, corrección, conciliación y corte. No transforma esa secuencia en una sola marca “actualizado hace X” si ello altera el significado.
+
+---
+
+#### 12. Cobertura y estados de ausencia
+
+La experiencia de cobertura mantiene tres planos visibles cuando el uso los exige:
+
+1. **atributos requeridos**;
+2. **relaciones requeridas**;
+3. **población esperada**.
+
+La interfaz conserva de forma diferenciada:
+
+- `0` como valor medido;
+- `NULO` según semántica contractual;
+- `NO APLICA` como exclusión semántica;
+- `DESCONOCIDO` cuando no puede determinarse;
+- `NO RECIBIDO` cuando la evidencia esperada no llegó;
+- `DATO PENDIENTE` cuando existe una resolución o llegada todavía abierta.
+
+No se presenta `100 %` de cobertura si el universo esperado no es demostrable. En ese caso se explica que la cobertura no puede cuantificarse con evidencia suficiente y se conserva el efecto real sobre el uso.
+
+---
+
+#### 13. Experiencia de conciliación
+
+Cuando el contrato del recurso lo permita, el panel de conciliación muestra como piezas separadas:
+
+- evidencia u origen identificado;
+- periodo y corte;
+- población o unidades recibidas;
+- aceptados;
+- rechazados;
+- cuarentena;
+- duplicados tratados conforme a identidad/idempotencia;
+- exclusiones permitidas por definición;
+- resultado materializado o derivado;
+- diferencias absolutas o relativas únicamente cuando la semántica las permita;
+- diferencias explicadas;
+- diferencias materiales abiertas;
+- última reevaluación;
+- propietario/steward de resolución;
+- evidencia vinculada.
+
+No se impone una ecuación universal de conciliación sobre dominios con semánticas distintas. El centro presenta los componentes que el contrato propietario define y exige que toda diferencia material pueda explicarse antes de una decisión `CERTIFICADO`.
+
+Una corrección no se ejecuta sobre el agregado del centro. La resolución ocurre en la fuente, relación, mapping, contrato o proceso propietario y después puede provocar reproceso, reconstrucción, conciliación y nueva evaluación.
+
+---
+
+#### 14. Incidencias de calidad
+
+El centro materializa el workflow documental aprobado sin crear un enum técnico nuevo:
+
+```text
+DETECCIÓN
+→ IDENTIFICAR DIMENSIÓN Y COORDENADA AFECTADA
+→ DETERMINAR IMPACTO SOBRE EL USO
+→ ASIGNAR PROPIETARIO / STEWARD
+→ OBSERVAR, DEGRADAR O BLOQUEAR
+→ CORREGIR EN LA FUENTE, RELACIÓN O CONTRATO PROPIETARIO
+→ REPROCESAR O RECONSTRUIR CUANDO APLIQUE
+→ RECONCILIAR
+→ REEVALUAR CALIDAD
+→ RECERTIFICAR SOLO CON EVIDENCIA
+```
+
+Cada incidencia visible conserva como mínimo, cuando aplique:
+
+- recurso y coordenada afectados;
+- dimensión DQ;
+- uso afectado;
+- estado DQ resultante o vigente;
+- causa segura y evidencia disponible;
+- fuente/dependencia relacionada;
+- propietario y steward;
+- consecuencia sobre consumo, comparación o publicación;
+- referencia a la corrección o reconciliación cuando exista;
+- última evaluación y decisión vinculada.
+
+Una incidencia no desaparece de la experiencia solo porque el recurso deje de aparecer en un tablero. Su cierre documental exige evidencia de corrección/reconciliación o una decisión explícita permitida por el contrato.
+
+---
+
+#### 15. Puerta UX para una decisión de certificación
+
+El centro solo presenta una acción de decisión de calidad cuando el actor posee autorización exacta para `CERTIFY` sobre el recurso y la coordenada. La acción no se habilita por rol, propiedad funcional, stewardship, custodia técnica, administración ni capacidad de publicación.
+
+Antes de emitir una decisión, la experiencia debe permitir comprobar las doce condiciones canónicas:
+
+1. definición y versión identificadas;
+2. fuente o fuentes propietarias identificadas;
+3. corte y periodo explícitos;
+4. controles críticos definidos y ejecutables;
+5. frescura compatible con el uso;
+6. completitud y cobertura suficientes;
+7. unicidad, validez, consistencia e integridad referencial satisfechas en controles críticos;
+8. conciliación cerrada o diferencias materialmente explicadas y aceptadas conforme al contrato;
+9. linaje hacia fuente/evidencia y versiones aplicadas;
+10. ausencia de incidencia bloqueante abierta para el uso;
+11. actor autorizado para certificar y segregación aplicable satisfecha;
+12. evidencia retenida de evaluación y excepciones aceptadas.
+
+Reglas UX:
+
+- el cumplimiento visual de las condiciones no cambia el estado automáticamente;
+- una decisión debe referenciar la coordenada exacta y la evidencia utilizada;
+- un estado `BLOQUEADO` de una dependencia requerida no puede ser neutralizado desde el centro;
+- `CERTIFICADO` no concede `PUBLISH`, `EXPORT` ni otra acción;
+- una corrección o backfill posterior no hereda automáticamente la decisión previa;
+- una recertificación es una decisión vinculada nueva y no reescribe la anterior;
+- cuando la política exige independencia entre actores, la interfaz bloquea la segunda acción si la segregación no puede demostrarse;
+- no se ofrece certificación masiva genérica que omita uso, periodo, versión, corte, dependencia o evidencia.
+
+---
+
+#### 16. Acciones gobernadas y segregación
+
+| Acción A003  | Tratamiento dentro del centro                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DEFINE`     | no se ejecuta por inferencia desde calidad; cambios semánticos navegan al gobierno propietario cuando estén autorizados                    |
+| `CERTIFY`    | acción propia de decisión DQ; exige autorización exacta, coordenada, evidencia y segregación                                               |
+| `PUBLISH`    | no se concede por certificar; la publicación pertenece a su superficie gobernada                                                           |
+| `SET_TARGET` | no forma parte de calidad; una meta no cambia controles, hechos ni estado DQ                                                               |
+| `ANNOTATE`   | puede aportar contexto no autoritativo cuando exista autorización separada; nunca cambia estado por sí sola                                |
+| `EXPORT`     | no se concede por consultar calidad; toda salida portable requiere autorización independiente y protección de detalle                      |
+| `ADMINISTER` | puede operar asignación o mecánica de workflow cuando esté autorizada; nunca permite autoasignarse certificación ni neutralizar un bloqueo |
+
+No existe una barra universal de acciones basada únicamente en que el usuario abrió el centro.
+
+---
+
+#### 17. Cobertura de los cuatro mecanismos de entrada
+
+|    # | Mecanismo              | Estado documental heredado | DQ base       | Decisión de experiencia                                                                                                                                                             |
+| ---: | ---------------------- | -------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | Evento                 | `ESPECIFICADO`             | `NO EVALUADO` | mostrar identidad/correlación, versión, idempotencia, referencias críticas, ocurrencia/recepción y cobertura de ventana; la corrida concreta requiere evidencia antes de certificar |
+|    2 | API                    | `ESPECIFICADO`             | `NO EVALUADO` | mostrar contrato/versión, parámetros materiales, corte, paginación, errores parciales, última información confirmada y cobertura del proveedor                                      |
+|    3 | Vista                  | `ESPECIFICADO`             | `NO EVALUADO` | mostrar definición, dependencias, filtros, grano, joins, corte y calidad heredada; no permitir que la vista se certifique aislada de sus fuentes                                    |
+|    4 | Exportación controlada | `ESPECIFICADO`             | `NO EVALUADO` | mostrar original/evidencia, formato/versión, periodo, recepción, mapping, duplicados, cuarentena y cobertura; importación no equivale a certificación                               |
+
+**Reconciliación:** 4 mecanismos esperados; 4 materializados; 4 únicos; 0 faltantes; 0 duplicados; 4 con DQ base `NO EVALUADO`.
+
+---
+
+#### 18. Cobertura de las quince familias heredadas
+
+|    # | Familia canónica                                                         | DQ heredado   | Decisión de experiencia                                                                                                                     |
+| ---: | ------------------------------------------------------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | SHIFT, ATTENDANCE_EVENT, ATTENDANCE_CORRECTION                           | `NO EVALUADO` | presentar controles de turnos/eventos, correspondencia turno-sesión, tiempos, correcciones y corte laboral; no certificar sin evidencia     |
+|    2 | CONSENT_RECORD, CONTACT_VERIFICATION                                     | `NO EVALUADO` | presentar evidencia/versión/finalidad, persona/contacto, vigencia y retiro con protección reforzada de detalle                              |
+|    3 | LOYALTY_LEDGER_ENTRY, redención, ajuste de puntos                        | `NO EVALUADO` | presentar unicidad/idempotencia, cuenta/regla, vigencia y conciliación del ledger sin usar el saldo como sustituto de movimientos           |
+|    4 | solicitud, caso, cotización, orden, recepción, devolución de compra      | `NO EVALUADO` | presentar identidad cabecera/línea, referencias, cantidades/importes/estados, vigencias y conciliación propietaria                          |
+|    5 | lote, LPN, existencia, movimiento, conteo, ajuste                        | `NO EVALUADO` | presentar identidad de lote/LPN, integridad producto-LOC, cortes y reconciliación entre movimientos, conteos, ajustes y existencia derivada |
+|    6 | orden, lote, ejecución, consumo, merma y resultado productivo            | `NO EVALUADO` | presentar receta/versión/recursos, cantidades, balance y corte real de ejecución sin elevar costo técnico a verdad económica                |
+|    7 | pedido, comanda, venta, pago, caja, devolución, entrega                  | `NO EVALUADO` | presentar identidades separadas, líneas/partes monetarias, referencias, estados y conciliación por hecho                                    |
+|    8 | precio de venta, descuento, promoción vigente                            | `NO EVALUADO` | presentar versión/vigencia y contexto aplicado; AURA solo conserva intención promocional cuando corresponda y no adquiere fuente operativa  |
+|    9 | SERVICE_CASE, reclamo, reserva, compensación, satisfacción, comunicación | `NO EVALUADO` | presentar identidad de caso/evento, actor/relación, tiempos, estados y evidencia con minimización de información sensible                   |
+|   10 | hecho económico, obligación, pago, aplicación, conciliación              | `NO EVALUADO` | presentar identidades, moneda, referencias, importes, aplicaciones y saldos conciliables bajo corte económico/contable                      |
+|   11 | presupuesto, forecast, escenario                                         | `NO EVALUADO` | presentar versión/periodo/escenario, dimensiones, totales y estado de aprobación; no mezclar real, presupuesto, forecast y simulación       |
+|   12 | campaña, pieza publicada, oportunidad, interacción, publicación          | `BLOQUEADO`   | mostrar que AURA objetivo no dispone de fuente operativa vigente; no ofrecer certificación desde hojas, listas o copias paralelas           |
+|   13 | ticket, incidente, problema, cambio tecnológico                          | `NO EVALUADO` | presentar identidades separadas, servicio/recurso, secuencia de estados, tiempos y evidencia de cierre                                      |
+|   14 | PRINTER como clase de configuración, ASSET como clase de configuración   | `NO_APLICA`   | mostrar como decisión de alcance separada; evaluar objetos/eventos propietarios en lugar de fabricar una familia de hecho autónoma          |
+|   15 | métrica, KPI, dashboard, reporte, exportación, snapshot                  | `NO EVALUADO` | presentar versión, fuentes, corte, dimensiones/filtros, calidad heredada, conciliación y linaje; publicación permanece separada             |
+
+**Reconciliación:** 15 familias esperadas; 15 materializadas; 15 únicas; 0 faltantes; 0 duplicados. Distribución DQ preservada: 13 `NO EVALUADO`, 1 `BLOQUEADO`, 1 `NO_APLICA`.
+
+---
+
+#### 19. Cobertura de los sesenta y dos objetos maestros y de referencia
+
+Cada fila conserva la identidad y clase de `DATA-DOM-002` y el estado DQ base de `DATA-DOM-007`. El centro no redefine sus controles ni su fuente; materializa la decisión de experiencia para cada identidad.
+
+|    # | Objeto canónico               | Clase             | DQ heredado   | Decisión en el centro                                                                                                             |
+| ---: | ----------------------------- | ----------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar vigencia, controles aplicables, evidencia y propietario; no ofrecer certificación sin evaluación contextual               |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar controles de identidad bajo minimización reforzada; no exponer relaciones o evidencias fuera de finalidad                 |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar controles y vigencia laboral solo a actores autorizados; el estado DQ no amplía acceso a información personal             |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar controles y vigencia del vínculo con protección de detalle; no certificar por existencia documental                       |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código/identidad, definición, vigencia y evidencia; no ofrecer certificación sin evaluación contextual                    |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar identidad, definición, vigencia y consistencia; la calidad del catálogo de roles no concede permisos                      |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar identidad, definición y vigencia; la calidad no fabrica contexto operativo ni autoridad                                   |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar referencias, intervalos y vigencia bajo autorización; no usar asignación actual para reparar historia                     |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar controles de identidad y evidencia con minimización; contacto similar no prueba identidad                                 |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar formato, fuente, verificación y vigencia únicamente según finalidad autorizada                                            |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar referencias y vigencia sin inferir consentimiento ni ampliar finalidad                                                    |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar calidad de la proyección y fuente autorizada sin revelar atributos innecesarios                                           |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar fuente, finalidad y vigencia; calidad no sustituye consentimiento ni autorización                                         |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, referencias y conciliación del saldo con ledger cuando exista evidencia                                        |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar versión, reglas y vigencia; no reconstruir historia con una versión actual distinta                                       |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, códigos, taxonomías, relaciones y vigencia; no fusionar por nombre                                             |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar referencia a producto, atributos diferenciadores y vigencia; no reparar por similitud visual                              |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar producto, cantidad, unidad, multiplicador y vigencia sin alterar equivalencias desde el centro                            |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código, dimensión, conversiones gobernadas y vigencia; no mezclar identidad con conversión                                |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar jerarquía/relaciones y vigencia; no reparentar historia por corrección visual                                             |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar jerarquía/relaciones y vigencia; no reparentar historia por corrección visual                                             |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar jerarquía/relaciones y vigencia; no reparentar historia por corrección visual                                             |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, tipo, relaciones y vigencia; no usar ubicación parecida como referencia automática                             |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, clase, ubicación/custodia y vigencia; serie no sustituye identidad canónica                                    |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código/identidad, definición y vigencia; no ofrecer certificación sin evaluación contextual                               |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad/versión, producto y autoridad por atributo; no corregir especificación desde un agregado                        |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, procedencia, estado y vigencia bajo protección comercial                                                       |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar referencia, canal, formato, fuente y vigencia solo según finalidad autorizada                                             |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar coordenada proveedor-producto, contexto y vigencia; duplicidad se evalúa con identidad aprobada                           |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar versión, contexto, valores y vigencia con minimización de condiciones sensibles                                           |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código, jerarquía/relación y vigencia; no reescribir hechos históricos al cambiar clasificación                           |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad/versión, referencias y vigencia con protección de conocimiento propietario                                      |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código/identidad, definición y relaciones; no certificar por mera existencia del catálogo                                 |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad/versión, secuencia, recursos y vigencia; no modificar secuencia desde calidad                                   |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, relación funcional/física, estado y vigencia; corrección pertenece a la fuente propietaria                     |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código/identidad, definición, alcance y vigencia; mappings externos permanecen gobernados aparte                          |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar jerarquía/relaciones y vigencia; no recalcular mezcla histórica con jerarquía actual                                      |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad/versión, producto/canal/contexto y vigencia; publicación no deriva del estado DQ                                |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad/código, relaciones económicas y vigencia; no equiparar centro con sede o canal                                  |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código, definición y vigencia; conversión monetaria no cambia identidad de moneda                                         |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar límites, estado y vigencia del periodo; no reinterpretar un corte con periodo actual                                      |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar límites, cierre/reapertura y vigencia; cambios de estado quedan históricos                                                |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar límites, autoridad y vigencia; no inferir equivalencia con periodo contable                                               |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar código, jerarquía/relaciones y vigencia; no reclasificar historia silenciosamente                                         |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`   | mostrar bloqueo por ausencia de fuente operativa AURA; no ofrecer certificación desde copias paralelas                            |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | `BLOQUEADO`   | mostrar bloqueo por ausencia de fuente operativa AURA y requisitos de finalidad/consentimiento; no materializar listas sustitutas |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`   | mostrar bloqueo por ausencia de fuente operativa AURA y evidencia de derechos/vigencia; no usar carpetas como fuente sustituta    |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad técnica, estado, relaciones y vigencia sin exponer secretos o topología innecesaria                             |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad lógica, sede/estación/uso y vigencia; dispositivo no sustituye actor humano                                     |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad, tipo, relaciones y vigencia con minimización técnica; IP/MAC/SSID no prueban identidad                         |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | `NO EVALUADO` | mostrar identidad canónica, código y vigencia; ambiente/repositorio no sustituyen identidad empresarial                           |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | `NO EVALUADO` | mostrar identidad TI-SERVICE, relaciones y vigencia; no inventar aliases ni servicios para cerrar faltantes                       |
+
+**Reconciliación:** 62 objetos esperados; 62 materializados; 62 identidades únicas; 0 faltantes; 0 duplicados; 43 `DATO_MAESTRO`; 19 `DATO_REFERENCIA`; 59 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Los tres objetos bloqueados son exactamente `PERFIL_DE_MARCA`, `AUDIENCIA` y `ACTIVO_DE_MARCA`. El centro no crea una fuente AURA alternativa ni un estado intermedio para eludir ese bloqueo.
+
+---
+
+#### 20. Cobertura de las cuatro fuentes observadas de asistencia
+
+|    # | Fuente                       | Autoridad lógica              | DQ heredado   | Decisión de experiencia                                                                                                                                              |
+| ---: | ---------------------------- | ----------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduled_shifts`           | programación laboral de VISO  | `NO EVALUADO` | mostrar identidad de turno, trabajador/sede, intervalo, estado/clasificación, cobertura del periodo y vigencia de publicación; no certificar por existencia de filas |
+|    2 | `attendance_sessions`        | hechos de asistencia de ANIMA | `NO EVALUADO` | mostrar identidad/correlación, trabajador/sede, check-in/check-out, estado, duplicados y corte; distinguir sesión abierta de dato faltante                           |
+|    3 | `attendance_breaks`          | hechos de asistencia de ANIMA | `NO EVALUADO` | mostrar inicio/fin, relación temporal con sesión, superposición tratada y corte aplicable; no fabricar descanso cuando falta evidencia                               |
+|    4 | `attendance_geofence_events` | hechos de asistencia de ANIMA | `NO EVALUADO` | mostrar tipo de evento, ocurrencia, correlación con sesión/turno y valores requeridos; preservar ocurrencia original                                                 |
+
+**Reconciliación:** 4 fuentes esperadas; 4 materializadas; 4 únicas; 0 faltantes; 0 duplicadas; 4 `NO EVALUADO`.
+
+La proyección `attendance-report` puede figurar como consumidor técnico observado cuando el actor esté autorizado a conocer ese dato, pero su ejecución no eleva el estado de ninguna fuente.
+
+---
+
+#### 21. Cobertura de las catorce métricas de asistencia
+
+|    # | `metric_key`        | Entradas mínimas                                                          | DQ heredado   | Decisión de experiencia                                                                                                                                |
+| ---: | ------------------- | ------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|    1 | `scheduledShifts`   | `scheduled_shifts`                                                        | `NO EVALUADO` | mostrar identidad de turno, trabajador/sede, intervalo/clasificación y cobertura como gates; no certificar sin evidencia                               |
+|    2 | `attendedShifts`    | `scheduled_shifts` + `attendance_sessions`                                | `NO EVALUADO` | mostrar correspondencia turno-sesión, check-in y duplicados como gates; no confundir asistencia con puntualidad o cierre                               |
+|    3 | `restDayCount`      | `scheduled_shifts`                                                        | `NO EVALUADO` | mostrar clasificación de descanso y separación de población computable como gate                                                                       |
+|    4 | `lateCount`         | `scheduled_shifts` + `attendance_sessions`                                | `NO EVALUADO` | mostrar inicio, check-in, gracia/versión y zona horaria como gates reproducibles                                                                       |
+|    5 | `noShowCount`       | `scheduled_shifts` + `attendance_sessions`                                | `NO EVALUADO` | mostrar fin programado ocurrido al corte y ausencia de sesión válida; turnos futuros no son ausencia cerrada                                           |
+|    6 | `openCount`         | `scheduled_shifts` + `attendance_sessions`                                | `NO EVALUADO` | mostrar sesión abierta AS OF corte y referencias válidas; no equiparar con falta de cierre                                                             |
+|    7 | `missingCloseCount` | `scheduled_shifts` + `attendance_sessions`                                | `BLOQUEADO`   | mostrar divergencia: el resumen observado no conserva completamente la condición de fin programado vencido; no ofrecer certificación mientras persista |
+|    8 | `autoCloseCount`    | `attendance_sessions`                                                     | `NO EVALUADO` | mostrar evidencia de autocierre y sesión válida; no confundir autocierre con cierre normal                                                             |
+|    9 | `departureCount`    | `scheduled_shifts` + `attendance_sessions` + `attendance_geofence_events` | `NO EVALUADO` | mostrar correlación del evento con sesión/turno, identidad, tiempo y contexto como gates                                                               |
+|   10 | `scheduledMinutes`  | `scheduled_shifts`                                                        | `NO EVALUADO` | mostrar intervalo programado y descanso programado interpretables; resultado debe permanecer no negativo                                               |
+|   11 | `netMinutes`        | `attendance_sessions` + `attendance_breaks`                               | `NO EVALUADO` | mostrar intervalo de sesión, descansos superpuestos válidos, no negatividad y ausencia de doble conteo                                                 |
+|   12 | `incidentCount`     | `scheduled_shifts` + `attendance_sessions` + `attendance_geofence_events` | `NO EVALUADO` | mostrar máximo una incidencia agregada por turno elegible para las señales canónicas                                                                   |
+|   13 | `attendanceRate`    | `scheduledShifts` + `attendedShifts`                                      | `BLOQUEADO`   | mostrar divergencia: implementación observada devuelve cero sin denominador; la definición exige ausencia de valor numérico; no ofrecer certificación  |
+|   14 | `punctualityRate`   | `attendedShifts` + `lateCount`                                            | `BLOQUEADO`   | mostrar divergencia: implementación observada devuelve cero sin denominador; la definición exige ausencia de valor numérico; no ofrecer certificación  |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Las tres métricas bloqueadas permanecen bloqueadas hasta que sus propietarios técnicos/documentales materialicen las condiciones de salida ya definidas y una evaluación posterior produzca evidencia. Esta tarea no cambia código, función, fórmula ni datos.
+
+---
+
+#### 22. Historia, correcciones y recertificación
+
+El centro conserva una cronología documental que diferencia:
+
+- evaluación original;
+- estado DQ emitido;
+- evidencia usada;
+- incidencia detectada;
+- corrección en fuente o contrato propietario;
+- reproceso/backfill/reconstrucción cuando aplique;
+- conciliación posterior;
+- nueva evaluación;
+- recertificación vinculada;
+- restatement o nueva publicación cuando corresponda.
+
+Reglas:
+
+1. una nueva evaluación no elimina la anterior;
+2. una recertificación no reescribe el estado histórico de otra coordenada;
+3. una corrección no cambia silenciosamente un snapshot o reporte publicado;
+4. cuando se compare original y restatement, ambos conservan versiones, cortes y autorización vigente;
+5. el centro no usa el estado actual de un maestro para explicar automáticamente un resultado histórico;
+6. la estabilidad histórica es una dimensión DQ propia y no una nota opcional.
+
+---
+
+#### 23. Privacidad, autorización y protección del detalle
+
+La experiencia aplica estas reglas:
+
+- la lista de recursos se construye desde el conjunto autorizado antes de contar, ordenar o filtrar;
+- la calidad de un recurso no concede acceso a sus filas, sujetos, documentos o evidencias;
+- la identidad de propietario, steward o certificador se minimiza cuando no sea necesaria para la finalidad;
+- evidencia sensible puede mostrarse como referencia segura sin exponer contenido completo;
+- cada expansión hacia detalle reevalúa actor, recurso, territorio, finalidad, campos y población;
+- poblaciones pequeñas, laboral, financiera, de cliente, técnica o de seguridad conservan las protecciones vigentes;
+- los conteos de incidencias no se usan como canal para inferir recursos ocultos;
+- un actor autorizado a `CERTIFY` no recibe automáticamente `PUBLISH`, `EXPORT`, `ADMINISTER` ni acceso al detalle fuente;
+- un steward no recibe `CERTIFY` por ser responsable de mantenimiento;
+- un custodio técnico no puede certificar usando autoridad técnica o `service_role` como sustituto de actor empresarial.
+
+---
+
+#### 24. Navegación hacia otras experiencias y propietarios exactos
+
+| Necesidad detectada en el centro                                            | Propietario documental         | Regla de handoff                                                                |
+| --------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| entender definición, fuente, dueño, linaje o versión de un objeto/métrica   | `DATA-UX-002`                  | conservar recurso, versión, periodo y corte; calidad no redefine semántica      |
+| volver al análisis por dominio manteniendo limitación DQ visible            | `DATA-UX-003`                  | conservar filtros materiales y coordenada; el tablero no eleva estado           |
+| investigar variación, anomalía, causa o hipótesis                           | `DATA-UX-005`                  | separar incidencia DQ de diagnóstico causal; esta tarea no atribuye causas      |
+| revisar objetivos, metas, drivers o guardrails                              | `DATA-UX-006`                  | el estado DQ condiciona el uso de métricas pero no cambia objetivos por sí solo |
+| reportes, exportaciones, suscripciones y snapshots versionados              | `DATA-UX-007`                  | publicación/distribución consume el estado real y autorización separada         |
+| validar comprensión, tiempos y decisiones con usuarios reales               | `DATA-UX-008`                  | probar la experiencia materializada antes de readiness                          |
+| instrumentar eventos, lecturas y controles físicos                          | `DATA-INT-001`                 | antes de automatizar controles productivos                                      |
+| servir/persistir estados DQ en capa semántica, consultas, caché o snapshots | `DATA-INT-002`                 | antes de materialización técnica del centro                                     |
+| resolver crosswalks e identidad externa                                     | `DATA-INT-003`                 | antes de certificar integridad referencial externa                              |
+| correcciones históricas y restatements                                      | `DATA-DOM-017`                 | antes de reexpresar una publicación previa                                      |
+| publicación oficial de artefactos                                           | `DATA-DOM-008` y `DATA-UX-007` | `CERTIFY` y `PUBLISH` permanecen decisiones separadas                           |
+
+No queda un pendiente sustantivo detectado por esta tarea sin propietario documental y condición de salida.
+
+---
+
+#### 25. Accesibilidad y lenguaje
+
+El centro es una superficie administrativa/analítica densa, pero debe conservar:
+
+- estados expresados por texto y semántica, no únicamente color;
+- foco y navegación por teclado;
+- encabezados y relaciones programáticamente determinables;
+- contraste y reflow conforme a la línea base vigente;
+- mensajes humanos que expliquen qué uso está limitado, por qué, qué evidencia existe y quién puede resolver;
+- diferenciación explícita entre ausencia de dato, ausencia de permiso y estado `NO EVALUADO`;
+- tablas extensas bajo divulgación progresiva, filtros y encabezados persistentes sin ocultar contexto;
+- acciones excepcionales y autoritativas separadas de la consulta ordinaria.
+
+El centro no traduce `BLOQUEADO` como “error” genérico ni `NO EVALUADO` como “sin problemas”.
+
+---
+
+#### 26. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por esta tarea ya se encuentra protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-001` protege identidad, duplicidad, calidad e historia de maestros y referencias;
+- `TREQ-DATA-002` protege que cada métrica conserve fuente, frescura, calidad y estado de certificación dentro de una definición versionada;
+- `TREQ-DATA-003` protege directamente origen, tiempos, cobertura, duplicados, integridad referencial, datos tardíos, backfills, correcciones, cuarentena, conciliación, linaje, estados de ausencia y la prohibición de certificación con fuentes vencidas, incompletas, degradadas o sin conciliar, y asigna expresamente responsabilidad a `DATA-UX-004`;
+- `TREQ-DATA-004` protege la exposición de corte, frescura, cobertura y calidad en las superficies analíticas y mantiene el drill-down autorizado;
+- los requisitos UX vigentes protegen densidad administrativa, contexto, privacidad, trazabilidad y no exposición indirecta.
+
+La tarea especializa esas reglas como experiencia de revisión y decisión DQ. No introduce una conducta verificable independiente que carezca de cobertura ni modifica prioridad, modalidad, relaciones o destino de implementación de los requisitos existentes.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el centro materializa en experiencia obligaciones de calidad, frescura, cobertura, conciliación, evidencia, estados y segregación que ya tienen protección canónica vigente y una responsabilidad documental explícita. No introduce un nuevo comportamiento ejecutable, un nuevo estado, una nueva fórmula, un nuevo permiso, un umbral universal ni una implementación física que requieran una fila adicional o una modificación del registro.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 27. Criterios de aceptación
+
+1. el centro está diseñado como experiencia administrativa/analítica y no como fuente de verdad;
+2. la coordenada de evaluación incluye recurso, uso, periodo, versión, corte, dependencias y evidencia cuando apliquen;
+3. existen exactamente diez dimensiones DQ materializadas, con 0 faltantes y 0 duplicadas;
+4. no existe un puntaje universal que sustituya las diez dimensiones;
+5. se preservan exactamente cinco estados de certificación;
+6. `NO_APLICA` permanece fuera de esos cinco estados;
+7. `NO EVALUADO` no se presenta como saludable ni certificado;
+8. `EN OBSERVACIÓN` no equivale a `DEGRADADO` ni a `CERTIFICADO`;
+9. `DEGRADADO` conserva limitación y uso condicionado visibles;
+10. `BLOQUEADO` no se sustituye por cero, dato provisional rotulado como oficial ni semáforo positivo;
+11. `CERTIFICADO` conserva uso, periodo, versión, corte y evidencia;
+12. no se inventa un SLA universal de frescura;
+13. evento, API, vista, exportación controlada, maestro/referencia y snapshot conservan referencias de frescura distintas;
+14. cobertura distingue atributos, relaciones y población;
+15. no se calcula porcentaje cuando el denominador no es demostrable;
+16. cero, nulo, no aplica, desconocido, no recibido y dato pendiente permanecen distinguibles;
+17. la conciliación conserva componentes y diferencias materiales sin forzar igualdad;
+18. una incidencia no desaparece por dejar de aparecer en un tablero;
+19. la corrección se realiza en la fuente, relación o contrato propietario y no en el agregado del centro;
+20. recertificación exige nueva evaluación y evidencia;
+21. una decisión previa no se reescribe silenciosamente;
+22. se comprueban las doce condiciones antes de una decisión de certificación;
+23. la interfaz no cambia automáticamente el estado al completar controles;
+24. `CERTIFY` exige autorización exacta y segregación aplicable;
+25. propiedad, stewardship, custodia técnica y administración no conceden certificación por inferencia;
+26. certificación no concede publicación ni exportación;
+27. los cuatro mecanismos de entrada están materializados 4/4 y permanecen `NO EVALUADO` hasta evidencia contextual;
+28. las quince familias heredadas están materializadas 15/15, con 13 `NO EVALUADO`, 1 `BLOQUEADO` y 1 `NO_APLICA`;
+29. los sesenta y dos objetos están materializados 62/62, con 43 maestros y 19 referencias;
+30. los tres objetos AURA permanecen exactamente `PERFIL_DE_MARCA`, `AUDIENCIA` y `ACTIVO_DE_MARCA`, todos `BLOQUEADO`;
+31. los otros 59 objetos permanecen `NO EVALUADO` hasta evidencia;
+32. las cuatro fuentes observadas de asistencia están materializadas 4/4 y `NO EVALUADO`;
+33. las catorce métricas de asistencia están materializadas 14/14;
+34. se preservan exactamente 11 métricas `NO EVALUADO` y 3 `BLOQUEADO`;
+35. `missingCloseCount`, `attendanceRate` y `punctualityRate` son exactamente las tres bloqueadas;
+36. `attendance-report` no se presenta como fuente de verdad ni como evidencia suficiente de certificación;
+37. filtros, búsqueda y conteos no enumeran recursos no autorizados;
+38. cada expansión hacia evidencia o detalle reevalúa autorización;
+39. datos sensibles y evidencias se minimizan conforme al contrato vigente;
+40. el centro no crea permisos, roles, grants o excepciones;
+41. el centro no define causas, hipótesis o recomendaciones, que pertenecen a `DATA-UX-005`;
+42. el centro no modifica objetivos, metas o guardrails, que pertenecen a `DATA-UX-006`;
+43. el centro no publica ni distribuye artefactos, responsabilidad de `DATA-UX-007` y el contrato D008;
+44. la instrumentación física de controles queda en `DATA-INT-001` y la materialización semántica en `DATA-INT-002`;
+45. crosswalks físicos quedan en `DATA-INT-003`;
+46. restatements permanecen en `DATA-DOM-017`;
+47. no se modifica código, SQL, Supabase, datos, migraciones, backfills, dashboards, reportes ni snapshots oficiales;
+48. no se crea ni modifica ningún requisito de prueba;
+49. no queda un pendiente narrativo sin propietario documental exacto;
+50. la continuidad queda exclusivamente en `DATA-UX-005` como siguiente tarea reservada.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas`
+
+
 ### [ ] DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
 ### [ ] DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
 ### [ ] DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
