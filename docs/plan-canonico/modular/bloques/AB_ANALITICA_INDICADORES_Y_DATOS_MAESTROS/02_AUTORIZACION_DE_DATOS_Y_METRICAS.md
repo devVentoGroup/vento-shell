@@ -1129,5 +1129,698 @@ SIGUIENTE TAREA RESERVADA
 `DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración`
 
 
-### [ ] DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración
+### ✅ DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down` — APROBADA
+**Tarea siguiente:** `DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico y materializado de segregación de capacidades de gobierno y uso analítico para definición, certificación, publicación, fijación de metas, anotación, exportación y administración, sin asignar roles, permisos ni cambios físicos
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, cambios de datos, backfills, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Cerrar la separación de autoridad entre las siete acciones de gobierno y uso analítico reservadas por `DATA-AUTH-001` y `DATA-AUTH-002`: definir, certificar, publicar, fijar metas, anotar, exportar y administrar.
+
+La tarea determina qué función empresarial puede ser elegible para cada acción, qué autorización adicional debe existir, qué dependencias debe consumir y qué acciones nunca se heredan unas de otras. No crea un rol empresarial nuevo, no asigna permisos a personas, no introduce claves técnicas de permiso y no convierte propiedad funcional, stewardship, custodia técnica, acceso de lectura o administración en autoridad universal.
+
+El principio rector es:
+
+```text
+DEFINIR ≠ CERTIFICAR ≠ PUBLICAR ≠ FIJAR META ≠ ANOTAR ≠ EXPORTAR ≠ ADMINISTRAR
+
+PROPIETARIO FUNCIONAL ≠ PERMISO
+STEWARD ≠ PERMISO
+CERTIFICADOR ≠ PUBLICADOR
+PUBLICADOR ≠ EXPORTADOR
+ADMINISTRADOR ≠ SUPERUSUARIO
+CUSTODIO TÉCNICO ≠ AUTORIDAD EMPRESARIAL
+```
+
+Cada acción real deberá resolverse mediante el modelo canónico de autorización, con permiso exacto, actor, recurso, alcance, finalidad, contexto, estado, versiones y denegaciones aplicables. Una función documental solo define elegibilidad y responsabilidad; nunca sustituye esa decisión.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato `DATA-GOVERNANCE-CAPABILITY-SEGREGATION-CONTRACT-001` con los siguientes resultados:
+
+- siete acciones gobernadas y mutuamente no heredables: `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- propiedad funcional, stewardship, certificación, publicación, custodia técnica y consumo permanecen funciones distintas;
+- ningún rol base, rol operativo, cargo, jerarquía, aplicación o capacidad administrativa recibe por inferencia alguna de las siete acciones;
+- la coincidencia de una misma persona en dos funciones solo puede operar cuando existan autorizaciones separadas, no haya denegación y la política de segregación del recurso permita expresamente esa acumulación; si la independencia requerida no puede resolverse, la segunda acción se bloquea;
+- definición y certificación quedan separadas: crear o cambiar semántica no certifica datos ni resultados;
+- certificación y publicación quedan separadas: `CERTIFICADO` no publica y publicar no cambia el estado D007;
+- publicación y exportación quedan separadas: una publicación oficial no concede una copia portable y una exportación no se vuelve publicación oficial;
+- fijar una meta consume una métrica gobernada y una línea base válida, pero no modifica fórmula, fuente, certificación ni resultado observado;
+- una anotación es contextual y no autoritativa: no cambia valor, fórmula, estado DQ, meta, publicación, fuente ni historia;
+- administración gobierna mecánica y workflow dentro de autoridad separada; no puede autoasignarse capacidades, redefinir semántica, certificar, publicar, fijar metas ni ampliar exportaciones;
+- la protección de `DATA-AUTH-001` y `DATA-AUTH-002` sigue siendo obligatoria para toda lectura, publicación, anotación o exportación que revele información;
+- quedan materializadas decisiones para **62 de 62 objetos**, **14 de 14 métricas**, **55 de 55 familias analíticas** y **6 de 6 familias de artefacto** heredadas;
+- se preservan **3 objetos AURA `BLOQUEADO`**, **11 métricas `NO EVALUADO`** y **3 métricas `BLOQUEADO`** sin elevar su estado;
+- no se crea ni asigna ninguna clave de permiso, rol, grant o excepción;
+- no se crea, modifica, difiere, descarta u obsoleta ningún requisito `TREQ-*`.
+
+#### 3. Fuentes y decisiones heredadas
+
+La tarea consume sin redefinir:
+
+- `DATA-AUTH-001` para conjunto autorizado, roles funcionales, 62 objetos, 14 métricas, 55 familias y seis artefactos;
+- `DATA-AUTH-002` para clasificación efectiva, proyección mínima, población, inferencia, comparación, exportación protegida y drill-down;
+- `DATA-DOM-001` a `DATA-DOM-003` para propiedad, stewardship, custodia, identidad y gobierno de maestros/referencias;
+- `DATA-DOM-004` para identidad, versión, fórmula, propietario y contrato de métricas;
+- `DATA-DOM-007` para calidad y los estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para tablero, reporte, exportación, suscripción, alerta y snapshot oficial, y para la independencia entre certificación y publicación;
+- `DATA-DOM-014` para diagnóstico, evidencia, confianza y publicación de conclusiones;
+- `DATA-DOM-015` para objetivo, línea base, meta, drivers, guardrails y plan de medición;
+- `DATA-DOM-016` para acción, experimento, seguimiento, aprendizaje y comprobación;
+- `DATA-DOM-017` para versiones, restatements, historia y reproducibilidad;
+- el modelo canónico AUTH para permiso exacto, contexto, alcance, recurso, segregación, denegaciones y evidencia;
+- `INFO-AUTH-001` y `INFO-AUTH-002` para clasificación, finalidad, campos, destinatarios y salidas de información;
+- los requisitos vigentes `TREQ-DATA-001`, `TREQ-DATA-002`, `TREQ-DATA-004`, `TREQ-DATA-005`, `TREQ-AUTH-001`, `TREQ-AUTH-002`, `TREQ-AUTH-010`, `TREQ-AUTH-013`, `TREQ-AUTH-015` y `TREQ-SHELL-011`.
+
+Esta tarea no altera ninguna definición, estado de certificación, métrica, meta, publicación, anotación, exportación o asignación física existente. Define la autoridad que deberá evaluarse cuando esas acciones se implementen.
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+ELEGIBILIDAD FUNCIONAL ≠ AUTORIZACIÓN EFECTIVA
+PROPIEDAD ≠ DEFINICIÓN AUTORIZADA
+DEFINICIÓN APROBADA ≠ CERTIFICACIÓN
+CERTIFICACIÓN ≠ PUBLICACIÓN
+PUBLICACIÓN ≠ EXPORTACIÓN
+LECTURA ≠ EXPORTACIÓN
+MÉTRICA DEFINIDA ≠ META FIJADA
+META FIJADA ≠ ALERTA CONFIGURADA
+ANOTACIÓN ≠ CORRECCIÓN
+ANOTACIÓN ≠ CERTIFICACIÓN
+ANOTACIÓN ≠ RESTATEMENT
+ADMINISTRACIÓN ≠ DEFINICIÓN
+ADMINISTRACIÓN ≠ AUTORIZACIÓN PARA OTORGARSE PERMISOS
+CUSTODIA TÉCNICA ≠ AUTORIDAD SEMÁNTICA
+CAPACIDAD EN UNA APLICACIÓN ≠ CAPACIDAD TRANSVERSAL
+```
+
+#### 5. Contrato `DATA-GOVERNANCE-CAPABILITY-SEGREGATION-CONTRACT-001`
+
+Toda solicitud de una de las siete acciones deberá resolver como mínimo:
+
+| Dimensión        | Decisión obligatoria                                                                     | Bloqueo fail closed                                                             |
+| ---------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| acción exacta    | una de `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT`, `ADMINISTER`  | acción genérica, implícita o inferida desde otra capacidad                      |
+| recurso          | objeto, definición, métrica, versión, resultado, objetivo, anotación o artefacto exactos | identificador aislado, pantalla, fila enviada por cliente o recurso ambiguo     |
+| actor            | principal autenticado y actor efectivo exigidos por el contrato                          | rol, dispositivo, service role o sesión aislados                                |
+| permiso          | permiso canónico exacto y vigente que autoriza la acción concreta                        | nombre de función, cargo, propiedad, stewardship, aplicación o permiso parecido |
+| alcance          | dominio, entidad, organización, sede, área, sujeto, colección o recurso autorizado       | alcance global inferido o enviado libremente por cliente                        |
+| finalidad        | finalidad empresarial concreta compatible con la acción                                  | conveniencia, administración genérica o reutilización no declarada              |
+| estado y versión | versión, vigencia y estado del recurso compatibles con la acción                         | versión retirada, bloqueada, conflictiva o no resoluble                         |
+| prerrequisitos   | contratos D004/D007/D008/D015/D016/D017 que la acción consuma                            | omitir certificación, baseline, publicación o estado requerido                  |
+| segregación      | política aplicable entre actor actual y funciones/decisiones relacionadas                | asumir acumulación por ser la misma persona, propietario o administrador        |
+| protección       | A001/A002 e INFO-AUTH cuando la acción pueda revelar o producir una salida               | ocultar campos solo en UI o confiar en un canal técnico                         |
+| frescura         | autorización, recurso, estado, versiones y denegaciones vigentes al efecto               | decisión obsoleta, caché, sesión anterior o preview                             |
+| evidencia        | correlación mínima entre acción, actor, recurso, permiso, versión, decisión y resultado  | log o comentario usado como autoridad                                           |
+
+Una dimensión puede ser `NO_APLICA` únicamente cuando el contrato propietario de la acción lo determine expresamente. La ausencia de una clave técnica de permiso compatible no se sustituye por una función documental: la acción permanece denegada hasta que exista un binding canónico aprobado.
+
+#### 6. Matriz canónica de las siete capacidades
+
+| Acción       | Recurso gobernado                                                                                   | Función elegible primaria                                                             | Prerrequisitos                                                                                    | Efecto autorizado                                                                               | Nunca concede                                                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFINE`     | definición de maestro/referencia, definición/versionado de métrica o semántica gobernada            | propietario funcional y gobierno AB según el dominio, siempre con autorización exacta | identidad del recurso; fuente/owner; versión; contrato D001-D004 y D017 aplicable                 | crear o cambiar una definición o versión semántica dentro del alcance autorizado                | certificación, publicación, meta, exportación, administración ni mutación de hechos por inferencia                              |
+| `CERTIFY`    | coordenada de calidad de fuente, objeto, métrica o resultado                                        | certificador autorizado conforme a D007                                               | evidencia DQ; uso; periodo; corte; versiones; dependencias; segregación                           | emitir uno de los estados D007 para la coordenada exacta                                        | corregir fuente, cambiar definición, publicar, fijar meta o ampliar acceso                                                      |
+| `PUBLISH`    | tablero/reporte/snapshot/conclusión u otro artefacto oficial admitido por D008/D017                 | publicador autorizado                                                                 | recurso y versión; calidad/certificación exigible; audiencia/finalidad; A001/A002                 | emitir una publicación oficial o edición gobernada                                              | certificar, redefinir, exportar por defecto, cambiar meta o sobrescribir historia                                               |
+| `SET_TARGET` | objetivo y versión de meta D015                                                                     | propietario funcional del resultado con capacidad exacta de meta                      | métrica gobernada; baseline; horizonte; población; guardrails; calidad; versión                   | fijar o cambiar valor/horizonte de meta para el objetivo exacto                                 | cambiar fórmula, baseline observado, certificación, publicación o resultado medido                                              |
+| `ANNOTATE`   | versión/corte de métrica, resultado, diagnóstico, objetivo, intervención, publicación o restatement | actor con capacidad exacta de anotación sobre el recurso                              | recurso/version/corte; finalidad; visibilidad; A001/A002; versión esperada                        | añadir contexto, limitación, razonamiento, seguimiento o referencia sin autoridad sobre el dato | editar fuente, fórmula, certificado, meta, estado de publicación, evidencia previa o historia                                   |
+| `EXPORT`     | proyección portable de un conjunto/resultado/artefacto                                              | actor con capacidad exacta de exportación                                             | autorización A001; protección A002; recurso; campos; población; finalidad; destino cuando aplique | materializar únicamente la proyección autorizada y protegida                                    | publicación oficial, detalle adicional, nueva finalidad, certificación ni fuente de verdad                                      |
+| `ADMINISTER` | workflow y mecánica de gobierno dentro de un recurso autorizado                                     | administrador de gobierno con capacidad exacta y alcance acotado                      | recurso; alcance; acción administrativa concreta; estado/version; separación; AUTH                | operar asignación, enrutamiento o mecánica administrativa expresamente autorizada               | autootorgarse capacidades, alterar semántica, certificar, publicar, fijar metas, ampliar exportación o neutralizar denegaciones |
+
+Los nombres anteriores son **tipos documentales de acción**, no claves de permiso ni roles técnicos. La implementación futura deberá vincular cada tipo a permisos canónicos exactos sin usar wildcards, prefijos, roles genéricos o strings locales.
+
+#### 7. Elegibilidad funcional y no concesión automática
+
+| Función heredada o contextual             | Elegibilidad documental                                                                                                        | Autoridad que no obtiene por la función                                                     |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| propietario funcional                     | puede ser elegible para `DEFINE` y `SET_TARGET` dentro de su dominio y para otras acciones solo mediante autorización separada | no recibe `CERTIFY`, `PUBLISH`, `EXPORT`, `ANNOTATE` o `ADMINISTER` por ser propietario     |
+| steward                                   | puede preparar evidencia, proponer cambios, anotar o administrar workflow dentro de delegación explícita                       | no define semántica final, certifica, publica, fija metas ni exporta por ser steward        |
+| certificador autorizado                   | puede ejercer `CERTIFY` cuando la autorización, evidencia y segregación sean válidas                                           | no recibe `DEFINE`, `PUBLISH`, `SET_TARGET`, `EXPORT` o `ADMINISTER`                        |
+| publicador autorizado                     | puede ejercer `PUBLISH` sobre el artefacto y audiencia autorizados                                                             | no cambia definición, certificación, fuente, meta ni protección de salida                   |
+| actor con capacidad exacta de meta        | puede ejercer `SET_TARGET` sobre el objetivo autorizado                                                                        | no redefine KPI, baseline observado, certificación o resultados                             |
+| actor con capacidad exacta de anotación   | puede ejercer `ANNOTATE` sobre el recurso autorizado                                                                           | no transforma la nota en corrección, aprobación, certificación o publicación                |
+| actor con capacidad exacta de exportación | puede ejercer `EXPORT` sobre la proyección autorizada                                                                          | no recibe publicación, administración, detalle adicional ni acceso futuro permanente        |
+| administrador de gobierno                 | puede ejercer `ADMINISTER` sobre la operación administrativa exacta                                                            | no es superusuario y no hereda ninguna de las otras seis capacidades                        |
+| custodio técnico                          | puede implementar u operar mecanismos técnicos autorizados en fases posteriores                                                | no adquiere semántica, certificación, publicación, meta, exportación o gobierno empresarial |
+| consumidor                                | puede consultar o usar información conforme a su capacidad de consumo                                                          | consumo no concede ninguna de las siete acciones de gobierno                                |
+| principal técnico, job o integración      | puede ejecutar únicamente el contrato técnico expresamente autorizado                                                          | no se convierte en actor humano, propietario, certificador, publicador o administrador      |
+
+Ninguna fila anterior asigna una capacidad a una persona o rol actual. La elegibilidad solo limita quién podría recibirla; la autoridad efectiva sigue dependiendo del permiso exacto y del contexto canónico.
+
+#### 8. Regla de acumulación y separación de actor
+
+1. las siete acciones siempre conservan permisos, decisiones y evidencia independientes;
+2. una persona puede coincidir en más de una función únicamente cuando cada acción tenga autorización separada y la política del recurso no exija independencia de actor;
+3. cuando un contrato exija revisión o certificación independiente, el actor que produjo la decisión incompatible no puede satisfacer esa independencia con otra etiqueta funcional;
+4. ausencia de política resoluble sobre una combinación sensible no autoriza acumulación; la acción posterior se bloquea;
+5. un grant individual no neutraliza una denegación estructural o transversal;
+6. cambiar de acción exige reevaluar permiso, recurso, alcance, finalidad, estado y versiones; no existe sesión de gobierno universal;
+7. el administrador no puede otorgarse a sí mismo otra de las siete capacidades dentro de la misma operación;
+8. una reautenticación fuerte, cuando una capa futura la exija, confirma identidad pero no amplía capacidad ni scope;
+9. la simulación puede evaluar hipotéticamente una matriz futura, pero nunca ejecuta una de estas acciones ni convierte `WOULD_ALLOW` en autoridad real.
+
+#### 9. Matriz de segregación entre decisiones relacionadas
+
+| Decisión origen | Decisión posterior           | Regla A003                                                                                                                                              |
+| --------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DEFINE`        | `CERTIFY`                    | independiente; definir no certifica. Si la política exige certificador independiente, la coincidencia de actor sin excepción explícita produce bloqueo. |
+| `DEFINE`        | `PUBLISH`                    | independiente; una versión definida no queda publicada por existir.                                                                                     |
+| `DEFINE`        | `SET_TARGET`                 | la meta consume la definición vigente; no puede modificarla dentro de la misma acción.                                                                  |
+| `CERTIFY`       | `PUBLISH`                    | la publicación puede consumir el estado D007 exigido, pero el publicador no puede crearlo ni elevarlo.                                                  |
+| `CERTIFY`       | `SET_TARGET`                 | una certificación puede habilitar el uso de baseline/métrica; no decide el valor de meta.                                                               |
+| `SET_TARGET`    | `CERTIFY`                    | fijar una meta no certifica baseline, fuente, KPI ni resultado posterior.                                                                               |
+| `ANNOTATE`      | cualquiera de las otras seis | una anotación nunca produce una transición autoritativa; toda acción posterior se autoriza de nuevo.                                                    |
+| `PUBLISH`       | `EXPORT`                     | publicar no concede exportar; la copia portable aplica `EXPORT` y A002.                                                                                 |
+| `EXPORT`        | `PUBLISH`                    | una exportación no se convierte en reporte/snapshot oficial por almacenarse o compartirse.                                                              |
+| `ADMINISTER`    | cualquiera de las otras seis | administración no concede ni reemplaza semántica, calidad, publicación, meta, anotación o exportación.                                                  |
+
+#### 10. `DEFINE` — autoridad sobre definiciones
+
+`DEFINE` gobierna el significado, no la ejecución técnica ni los hechos observados.
+
+Reglas:
+
+- una definición de métrica conserva `metric_key`, versión, fórmula, numerador/denominador, unidad, granularidad, dimensiones, filtros, inclusiones, exclusiones, fuente y demás contrato D004;
+- cambiar semántica crea o referencia una versión gobernada; no reescribe silenciosamente periodos históricos;
+- un propietario funcional puede ser fuente de decisión semántica, pero su propiedad no sustituye el permiso exacto;
+- un steward puede preparar, validar o proponer información dentro de su delegación, pero no adquiere decisión final por esa función;
+- definir un maestro o referencia no autoriza mutar hechos, consolidar identidades, fusionar registros ni alterar consumidores fuera del contrato propietario;
+- una definición nueva no se autocertifica, no se publica y no activa una meta por el mismo acto;
+- una definición que afecte historia, comparación o publicaciones consume `DATA-DOM-017` antes de reexpresar resultados.
+
+#### 11. `CERTIFY` — autoridad sobre calidad
+
+`CERTIFY` solo puede emitir una decisión D007 para una coordenada exacta.
+
+Reglas:
+
+- se preservan exclusivamente `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- certificación exige uso, periodo, versión, corte, fuentes/dependencias y evidencia reproducible;
+- completar una carga, ejecutar una consulta o disponer de código no certifica;
+- el certificador no corrige la fuente ni cambia la fórmula dentro de la decisión de certificación;
+- una dependencia `BLOQUEADO` no se supera mediante publicación, anotación, meta o administración;
+- una recertificación posterior es una nueva decisión vinculada; no reescribe la decisión histórica;
+- el actor que deba ser independiente se valida contra la política de segregación antes de emitir la decisión.
+
+#### 12. `PUBLISH` — autoridad sobre publicación oficial
+
+`PUBLISH` convierte un artefacto elegible en una publicación gobernada; no convierte información en verdadera, certificada o pública por sí sola.
+
+Reglas:
+
+- publicación consume D008, D007, A001 y A002 según el artefacto y audiencia;
+- un artefacto que dependa de una entrada `BLOQUEADO` no se publica como oficial;
+- `NO EVALUADO` no se presenta como `CERTIFICADO`;
+- `DEGRADADO` solo puede publicarse con la condición visible que admita el contrato de uso;
+- una edición oficial o snapshot conserva corte, versiones, contexto y estado de calidad aplicable;
+- cambiar fórmula, datos o estado después de publicar no modifica silenciosamente la edición anterior;
+- publicación de una conclusión D014 conserva confianza, límites y calidad; no transforma correlación en causalidad;
+- publicar no concede exportación adicional, drill-down ni acceso a filas fuente.
+
+#### 13. `SET_TARGET` — autoridad para fijar metas
+
+`SET_TARGET` opera exclusivamente sobre un objetivo D015 y no sobre el valor observado de la métrica.
+
+Reglas:
+
+- debe identificar objetivo, métrica/KPI, versión, baseline, valor de meta, horizonte, población, segmentos, drivers, guardrails y plan de medición aplicables;
+- el valor y horizonte de meta corresponden al propietario funcional con la capacidad exacta de meta;
+- una anomalía, forecast, presupuesto, escenario, recomendación o modelo puede informar la decisión, pero no fija la meta automáticamente;
+- el baseline usa evidencia observada conforme a D015 y no se cambia para hacer alcanzable la meta;
+- una métrica o fuente `BLOQUEADO` no produce baseline oficial; el objetivo debe conservar ese bloqueo o condición hasta resolverlo;
+- fijar una meta no crea una alerta, no modifica una fórmula y no autoriza una acción empresarial;
+- el responsable de medición no cambia la meta por el solo hecho de medir el resultado;
+- cambiar una meta crea una nueva decisión/version aplicable al periodo futuro definido y conserva la anterior.
+
+#### 14. `ANNOTATE` — autoridad de anotación no autoritativa
+
+Una anotación añade contexto a un recurso gobernado sin sustituirlo.
+
+Toda anotación deberá vincularse, cuando aplique, a:
+
+- recurso y tipo de recurso;
+- versión, periodo, corte o snapshot exactos;
+- autor/actor efectivo;
+- finalidad de la anotación;
+- alcance y visibilidad autorizados;
+- timestamp y correlación;
+- referencia a evidencia o decisión relacionada cuando exista;
+- estado de la anotación y supersesión/corrección cuando corresponda.
+
+Reglas:
+
+1. una anotación no cambia el valor de una métrica ni una celda;
+2. no modifica fórmula, dimensión, fuente o versión;
+3. no cambia `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` o `BLOQUEADO`;
+4. no fija ni cambia una meta;
+5. no publica ni retira un artefacto;
+6. no corrige una fuente ni ejecuta un restatement;
+7. una corrección de anotación conserva historia o supersesión; no reescribe evidencia ajena;
+8. contenido sensible de una anotación hereda clasificación, finalidad y política A001/A002;
+9. una nota de administrador, steward, analista o propietario no equivale a aprobación, certificación ni permiso.
+
+#### 15. `EXPORT` — autoridad de salida portable
+
+`EXPORT` es una capacidad propia, separada de consulta y publicación.
+
+Reglas:
+
+- la acción se ejecuta únicamente sobre el conjunto ya autorizado por A001 y protegido por A002;
+- campos ocultos, claves auxiliares, poblaciones excluidas y celdas suprimidas no reaparecen por formato;
+- filtros del consumidor solo reducen un conjunto autorizado;
+- exportar un tablero, reporte o snapshot no cambia su estado de publicación ni certificación;
+- una exportación nueva reevalúa actor, permiso, finalidad, recurso, corte, población, campos y restricciones de destino aplicables;
+- la capacidad de exportar un artefacto no concede exportar sus hechos fuente ni un nivel de detalle adicional;
+- una exportación no se convierte en fuente de verdad, definición, baseline o evidencia suficiente de certificación;
+- cualquier destinatario o canal externo mantiene las reglas de INFO-AUTH aplicables.
+
+#### 16. `ADMINISTER` — autoridad administrativa sin superpermiso
+
+`ADMINISTER` gobierna únicamente la operación administrativa exacta autorizada sobre registros y workflows de gobierno.
+
+Puede abarcar, cuando el contrato propietario lo contemple, mecánicas como asignación de trabajo, enrutamiento, mantenimiento de metadatos administrativos, transición de workflow ya autorizada o gestión de referencias no semánticas.
+
+No puede por sí sola:
+
+- crear o cambiar una definición semántica;
+- emitir certificación;
+- publicar o retirar una publicación por inferencia;
+- fijar o modificar metas;
+- convertir una anotación en decisión;
+- exportar información;
+- cambiar hechos o fuentes de verdad;
+- asignar permisos de seguridad o ampliarse a sí misma;
+- desactivar denegaciones;
+- usar credenciales técnicas, service role o acceso de base como autoridad empresarial.
+
+Toda operación administrativa que en realidad produzca uno de esos efectos se reclasifica a la acción correspondiente y exige su autorización separada.
+
+#### 17. Orden mínimo de decisión
+
+Para cualquiera de las siete acciones:
+
+1. identificar la acción exacta;
+2. resolver el recurso y su versión desde fuente autoritativa;
+3. resolver principal y actor efectivo;
+4. resolver el permiso canónico exacto y vigente para esa acción;
+5. resolver dominio, entidad, territorio, relación, alcance y finalidad aplicables;
+6. resolver estado, vigencia, versión y precondiciones del recurso;
+7. consumir D004, D007, D008, D015, D016 o D017 cuando correspondan;
+8. evaluar política de segregación y conflicto de funciones;
+9. aplicar A001/A002 e INFO-AUTH cuando exista exposición o salida;
+10. evaluar denegaciones estructurales y explícitas;
+11. revalidar frescura inmediatamente antes del efecto;
+12. producir `ALLOW` o `DENY` mediante el contrato canónico de autorización;
+13. ejecutar únicamente el efecto de la acción autorizada;
+14. correlacionar la evidencia requerida sin convertirla en autoridad.
+
+Una acción obligatoria `UNRESOLVED`, `CONFLICT`, inactiva, bloqueada, obsoleta o no verificable produce `DENY`. No se busca una acción parecida, un rol alternativo ni una ruta administrativa como fallback.
+
+#### 18. Versiones, concurrencia y cambios de estado
+
+- cada acción se aplica a una versión o estado esperado del recurso;
+- un cambio concurrente de definición, calidad, meta, publicación, actor, permiso o scope obliga a revalidar;
+- una decisión tomada sobre una versión obsoleta no se aplica silenciosamente a la nueva;
+- retries deben conservar idempotencia y no duplicar publicación, certificación, anotación, exportación o transición administrativa;
+- una respuesta perdida no autoriza repetir un efecto sin consultar primero el resultado lógico cuando el contrato así lo requiera;
+- una operación compuesta no convierte éxito parcial en éxito total;
+- historia, snapshots, publicaciones, metas y anotaciones anteriores permanecen distinguibles de sus sustituciones o restatements.
+
+La implementación física de control de versión, idempotencia, transacciones y rollback pertenece a E3/E5 y tareas DATA-INT/SUPA aplicables.
+
+#### 19. Dispositivos compartidos, simulación y principales técnicos
+
+- un dispositivo compartido no recibe ninguna de las siete capacidades por su plantilla, aplicación visible o paquete máximo;
+- una acción humana de gobierno exige actor humano efectivo cuando el contrato así lo determine;
+- principal técnico, service role, job o integración solo ejecutan la operación técnica expresamente delegada y no se convierten en propietarios, certificadores, publicadores o administradores;
+- la simulación conserva `executable=false`; puede representar una decisión hipotética pero no define, certifica, publica, fija meta, anota, exporta ni administra recursos reales;
+- cambiar de actor invalida cualquier autoridad de gobierno vinculada al actor anterior;
+- una sesión administrativa real no se transfiere al trabajador operativo de un dispositivo compartido.
+
+#### 20. Perfiles A003 para objetos maestros y de referencia
+
+`CAPACIDADES_SEPARADAS` significa que el objeto queda cubierto por las siete fronteras A003: definición, certificación, anotación, exportación y administración requieren decisiones propias; publicación solo ocurre mediante un artefacto autorizado que proyecte el objeto; fijación de meta solo ocurre mediante un objetivo que consuma una métrica gobernada. Propiedad y stewardship no son permisos.
+
+`AURA_BLOQUEADO` preserva el bloqueo heredado: la definición documental puede existir, pero ninguna función A003 habilita fuente operativa, certificación, publicación oficial, exportación operativa o baseline/meta basada en una fuente AURA inexistente.
+
+#### 21. Matriz materializada para los 62 objetos maestros y de referencia
+
+|    # | Objeto canónico               | Clase heredada    | Perfil A002              | Decisión A003           | Estado heredado | Bloqueo / regla                                                                                                  |
+| ---: | ----------------------------- | ----------------- | ------------------------ | ----------------------- | --------------- | ---------------------------------------------------------------------------------------------------------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | `FINANCIERO_RESTRINGIDO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | `FINANCIERO_RESTRINGIDO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`              | `AURA_BLOQUEADO`        | `BLOQUEADO`     | Fuente AURA no habilitada; ninguna capacidad A003 levanta el bloqueo ni crea una fuente sustituta.               |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | `BLOQUEADO`              | `AURA_BLOQUEADO`        | `BLOQUEADO`     | Fuente AURA no habilitada; ninguna capacidad A003 levanta el bloqueo ni crea una fuente sustituta.               |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`              | `AURA_BLOQUEADO`        | `BLOQUEADO`     | Fuente AURA no habilitada; ninguna capacidad A003 levanta el bloqueo ni crea una fuente sustituta.               |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO`  | Ninguna función, propiedad, stewardship, custodia o acceso previo sustituye la autorización exacta de la acción. |
+
+**Reconciliación:** 62 esperados; 62 materializados; 62 identidades únicas; 0 faltantes; 0 duplicados; 43 datos maestros; 19 datos de referencia; 59 `ESPECIFICADO`; 3 AURA `BLOQUEADO`.
+
+#### 22. Leyenda de capacidades para métricas
+
+- `SEPARADA_D004_D017`: definición/versionado independiente conforme a D004/D017;
+- `SEPARADA_D007`: certificación independiente conforme a D007;
+- `BLOQUEADO_D007`: no puede elevarse mientras persista el bloqueo heredado;
+- `SEPARADA_D008`: publicación independiente conforme a D008 y al estado aplicable;
+- `BLOQUEADO_OFICIAL`: no puede publicarse como resultado oficial mientras la dependencia bloqueante persista;
+- `SEPARADA_D015`: fijación de meta independiente conforme a D015;
+- `SEPARADA_D015_CON_BASELINE_BLOQUEADO`: la capacidad de meta es independiente, pero no existe baseline oficial válido mientras persista el bloqueo;
+- `SEPARADA_NO_AUTORITATIVA`: la anotación no modifica la métrica ni sus estados;
+- `SEPARADA_A001_A002`: exportación exige autorización de conjunto y protección de divulgación;
+- `SEPARADA_NO_SUPERPERMISO`: administración no concede otra acción.
+
+#### 23. Matriz materializada para las 14 métricas de asistencia
+
+|    # | `metric_key`        | DQ heredado   | `DEFINE`             | `CERTIFY`        | `PUBLISH`           | `SET_TARGET`                           | `ANNOTATE`                 | `EXPORT`             | `ADMINISTER`               | Estado A003    |
+| ---: | ------------------- | ------------- | -------------------- | ---------------- | ------------------- | -------------------------------------- | -------------------------- | -------------------- | -------------------------- | -------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    2 | `attendedShifts`    | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    3 | `restDayCount`      | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    4 | `lateCount`         | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    5 | `noShowCount`       | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    6 | `openCount`         | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | `SEPARADA_D004_D017` | `BLOQUEADO_D007` | `BLOQUEADO_OFICIAL` | `SEPARADA_D015_CON_BASELINE_BLOQUEADO` | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `BLOQUEADO`    |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|    9 | `departureCount`    | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|   11 | `netMinutes`        | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|   12 | `incidentCount`     | `NO EVALUADO` | `SEPARADA_D004_D017` | `SEPARADA_D007`  | `SEPARADA_D008`     | `SEPARADA_D015`                        | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `ESPECIFICADO` |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | `SEPARADA_D004_D017` | `BLOQUEADO_D007` | `BLOQUEADO_OFICIAL` | `SEPARADA_D015_CON_BASELINE_BLOQUEADO` | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `BLOQUEADO`    |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | `SEPARADA_D004_D017` | `BLOQUEADO_D007` | `BLOQUEADO_OFICIAL` | `SEPARADA_D015_CON_BASELINE_BLOQUEADO` | `SEPARADA_NO_AUTORITATIVA` | `SEPARADA_A001_A002` | `SEPARADA_NO_SUPERPERMISO` | `BLOQUEADO`    |
+
+**Reconciliación:** 14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Las tres métricas bloqueadas (`missingCloseCount`, `attendanceRate`, `punctualityRate`) no se elevan mediante A003. Una definición nueva, anotación, permiso de publicación, permiso de exportación o capacidad administrativa no sustituye la corrección y evidencia exigidas por D007.
+
+#### 24. Perfiles A003 para familias analíticas
+
+`CAPACIDADES_SEPARADAS` significa que la etiqueta de familia no es un permiso ni una métrica. Cualquier definición concreta, certificación de resultado, publicación, meta, anotación, exportación o administración exige recurso y autorización propios. El perfil A002 heredado continúa limitando contenido, precisión, población, comparación y detalle.
+
+#### 25. Matriz materializada para las 55 familias analíticas
+
+| Tarea propietaria |    # | Familia canónica                                        | Perfil A002            | Decisión A003           | Estado         |
+| ----------------- | ---: | ------------------------------------------------------- | ---------------------- | ----------------------- | -------------- |
+| `DATA-DOM-009`    |    1 | ventas netas y brutas                                   | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    2 | pedidos y conversión                                    | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    3 | ticket y unidades                                       | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    4 | mezcla por producto, categoría, canal y sede            | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    5 | demanda por franja, día y temporada                     | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    6 | disponibilidad perdida                                  | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    7 | cancelaciones, devoluciones y descuentos                | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    8 | promociones y efecto incremental                        | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |    9 | recurrencia y frecuencia                                | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |   10 | margen relacionado                                      | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-009`    |   11 | capacidad comercial no utilizada                        | `COMERCIAL_OPERATIVO`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    1 | existencia disponible y comprometida                    | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    2 | cobertura y días de inventario                          | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    3 | rotación y permanencia                                  | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    4 | faltantes y quiebres                                    | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    5 | vencimiento, daño y pérdida                             | `CALIDAD_OPERATIVA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    6 | diferencias de conteo                                   | `CALIDAD_OPERATIVA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    7 | cumplimiento de remisiones                              | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    8 | lead time y cumplimiento de proveedores                 | `PROVEEDOR_COMERCIAL`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |    9 | compras urgentes                                        | `PROVEEDOR_COMERCIAL`  | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |   10 | consumo versus plan                                     | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |   11 | costo de inventario                                     | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-010`    |   12 | capacidad de almacenamiento                             | `INVENTARIO_OPERATIVO` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    1 | demanda planificada versus producción                   | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    2 | capacidad disponible y utilizada                        | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    3 | adherencia al programa                                  | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    4 | rendimiento teórico y real                              | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    5 | consumo estándar y real                                 | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    6 | merma, reproceso y aprovechamiento                      | `CALIDAD_OPERATIVA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    7 | calidad, retención y rechazo                            | `CALIDAD_OPERATIVA`    | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    8 | tiempo de ciclo                                         | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |    9 | cumplimiento de liberación                              | `PRODUCCION_OPERATIVA` | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-011`    |   10 | costo y variación por lote, producto y sede             | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    1 | cumplimiento de promesa                                 | `SERVICIO_OPERATIVO`   | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    2 | tiempos de preparación, despacho y entrega              | `SERVICIO_OPERATIVO`   | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    3 | pedidos completos                                       | `SERVICIO_OPERATIVO`   | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    4 | reclamos y tiempo de resolución                         | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    5 | compensaciones                                          | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    6 | satisfacción y feedback                                 | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    7 | recurrencia, frecuencia y abandono                      | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    8 | adquisición y activación                                | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |    9 | fidelización, puntos y redenciones                      | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |   10 | reputación y temas recurrentes                          | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |   11 | reservas, no-show y utilización                         | `CLIENTE_SENSIBLE`     | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-012`    |   12 | valor y rentabilidad del cliente cuando esté autorizado | `CLIENTE_FINANCIERO`   | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    1 | costos estándar y reales                                | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    2 | variaciones                                             | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    3 | margen y contribución                                   | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    4 | gastos                                                  | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    5 | centros de costo                                        | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    6 | presupuesto y forecast                                  | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    7 | caja, bancos y tesorería                                | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    8 | cartera y obligaciones                                  | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |    9 | rentabilidad multidimensional                           | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+| `DATA-DOM-013`    |   10 | escenarios y simulaciones                               | `FINANCIERO`           | `CAPACIDADES_SEPARADAS` | `ESPECIFICADO` |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55`; 55 esperadas; 55 materializadas; 0 faltantes; 0 duplicadas.
+
+Reglas transversales:
+
+- una familia no crea por sí sola una definición ejecutable de métrica;
+- certificación se emite sobre una coordenada concreta, no sobre el nombre genérico de la familia;
+- publicación y exportación siguen siendo acciones distintas incluso cuando consumen el mismo resultado;
+- una meta solo se fija sobre un objetivo que referencia una métrica gobernada y una baseline válida;
+- una anotación de diagnóstico, oportunidad o resultado no eleva confianza ni calidad;
+- administración de una familia no permite cambiar datos de dominio ni ampliar su acceso;
+- perfiles `CLIENTE_SENSIBLE`, `CLIENTE_FINANCIERO` y `FINANCIERO` conservan las restricciones A001/A002 sin excepción administrativa.
+
+#### 26. Matriz materializada para las seis familias de artefacto D008
+
+|    # | Familia          | Relación con capacidades A003                                                                                    | Estado         |
+| ---: | ---------------- | ---------------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | tablero          | Publicar o hacer oficial el tablero requiere `PUBLISH`; exportarlo requiere además `EXPORT`.                     | `ESPECIFICADO` |
+|    2 | reporte          | Emitir una edición oficial requiere `PUBLISH`; producir una copia portable adicional requiere `EXPORT`.          | `ESPECIFICADO` |
+|    3 | exportación      | Su acción primaria es `EXPORT`; existir como archivo no la convierte en publicación oficial ni en fuente.        | `ESPECIFICADO` |
+|    4 | suscripción      | Administrar la regla de entrega no concede `PUBLISH` ni `EXPORT`; cada entrega conserva autorización vigente.    | `ESPECIFICADO` |
+|    5 | alerta           | Emitir la señal no concede `SET_TARGET`, `ANNOTATE`, `DEFINE` ni autoridad para ejecutar acciones empresariales. | `ESPECIFICADO` |
+|    6 | snapshot oficial | Crear una publicación inmutable exige `PUBLISH`; certificación y exportación permanecen decisiones separadas.    | `ESPECIFICADO` |
+
+**Reconciliación:** 6 esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+#### 27. Escenarios de decisión obligatorios
+
+| Escenario                                                                                  | Resultado A003                                                                                            |
+| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| propietario define una nueva versión y luego intenta certificarla solo por ser propietario | `DENY` salvo que exista `CERTIFY` separado y la política de segregación permita esa coincidencia de actor |
+| steward mantiene metadatos y pretende publicar                                             | `DENY`; stewardship no concede `PUBLISH`                                                                  |
+| certificador emite `CERTIFICADO` y el sistema publica automáticamente                      | `DENY`; publicación requiere `PUBLISH` independiente                                                      |
+| publicador intenta cambiar fórmula antes de emitir reporte                                 | `DENY`; requiere `DEFINE` separado sobre la definición gobernada                                          |
+| responsable de meta modifica baseline observado para alcanzar el objetivo                  | `DENY`; `SET_TARGET` no modifica hechos ni baseline                                                       |
+| responsable de medición cambia la meta desde el resultado observado                        | `DENY`; medición no concede `SET_TARGET`                                                                  |
+| anotador marca una métrica como certificada dentro de una nota                             | `DENY`; la anotación no modifica D007                                                                     |
+| anotador cambia una meta editando el texto visible                                         | `DENY`; la meta requiere `SET_TARGET`                                                                     |
+| actor con lectura exporta una tabla completa                                               | `DENY` sin `EXPORT`; la lectura no se amplía por formato                                                  |
+| actor con `EXPORT` solicita columnas ocultas o celdas suprimidas                           | `DENY` por A002 aunque posea capacidad de exportación                                                     |
+| publicador intenta reutilizar una exportación como snapshot oficial                        | `DENY`; requiere `PUBLISH` sobre un artefacto D008 válido                                                 |
+| administrador pretende asignarse `CERTIFY` o neutralizar una denegación                    | `DENY`; `ADMINISTER` no administra autoridad de seguridad ni vence denies                                 |
+| custodio técnico usa service role para certificar o publicar                               | `DENY`; capacidad técnica no equivale a actor empresarial autorizado                                      |
+| métrica `BLOQUEADO` se intenta publicar como oficial                                       | `DENY` mientras persista la condición D007                                                                |
+| objeto AURA bloqueado se intenta certificar usando una hoja o copia paralela               | `DENY`; no existe fuente sustituta autorizada                                                             |
+| misma persona posee dos grants separados y la política exige actores distintos             | `DENY` para la segunda acción incompatible                                                                |
+| misma persona posee dos grants separados y la política permite acumulación                 | reevaluar cada acción por separado; nunca heredar la decisión anterior                                    |
+| restatement se intenta publicar sobre la edición previa                                    | crear decisión/publicación nueva conforme a D017; no sobrescribir historia                                |
+| simulación devuelve `WOULD_ALLOW` para publicar o exportar                                 | `DENY` para el efecto real; debe salir de simulación y emitir solicitud real nueva                        |
+
+#### 28. Historia, restatements y decisiones previas
+
+- cambiar una definición no reescribe el significado histórico de una versión anterior;
+- recertificar no altera la evidencia ni el estado histórico emitido para otro corte;
+- cambiar meta conserva la meta anterior, su periodo y la decisión que la produjo;
+- corregir una anotación crea una relación de corrección/supersesión sin borrar la anterior cuando tenga valor histórico;
+- una publicación corregida o restatement crea una edición distinguible;
+- una nueva exportación no modifica la copia ya emitida;
+- administración de workflow nunca edita retrospectivamente una decisión para aparentar que una función distinta la tomó.
+
+#### 29. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                                       | Propietario documental                                        | Condición de salida                                              |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| auditoría detallada de consultas, exportaciones, suscripciones, alertas, modelos y recomendaciones | `DATA-AUTH-004`                                               | antes de considerar trazable la operación analítica productiva   |
+| experiencia de matriz, estados, publicación, metas, anotaciones y bloqueos                         | `DATA-UX-001` a `DATA-UX-008`                                 | antes de implementar superficies de gobierno y analítica         |
+| binding físico de definiciones, calidad, artefactos, objetivos, consultas y modelos                | `DATA-INT-001` a `DATA-INT-004` según el recurso              | antes de materializar integración o capa semántica productiva    |
+| permisos técnicos, catálogo, evaluadores, RLS/RPC y enforcement                                    | bloques AUTH/C/SHELL y E3/E5 aplicables                       | antes de habilitar una de las siete acciones en runtime          |
+| clasificación, finalidad, campos, destinatarios y salidas de información                           | `INFO-AUTH-001` a `INFO-AUTH-004`                             | en toda acción que exponga o transfiera información gobernada    |
+| versiones, restatements y reconstrucción histórica                                                 | `DATA-DOM-017`                                                | antes de reexpresar o republicar resultados históricos           |
+| cambios físicos de Supabase                                                                        | tareas E3/BLOQUE R y paquetes autorizados desde `vento-shell` | únicamente en una fase de implementación expresamente autorizada |
+
+No queda una decisión material de A003 diferida sin propietario documental y condición de salida. La ausencia de un binding técnico para una acción se resuelve con denegación por defecto y no altera el contrato documental ya cerrado.
+
+#### 30. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por esta tarea ya se encuentra cubierta por requisitos vigentes:
+
+- `TREQ-DATA-001` protege identidad, propiedad, stewardship, fuente de verdad y gobierno de maestros y asigna responsabilidad a `DATA-AUTH-003`;
+- `TREQ-DATA-002` protege definición/versionado de métricas, propietario, fórmula, certificación, drill-down y comparabilidad y asigna responsabilidad a `DATA-AUTH-003`;
+- `TREQ-DATA-004` protege la separación de artefactos, publicación, exportación, snapshots y estado de calidad y asigna responsabilidad a `DATA-AUTH-001` a `DATA-AUTH-004`;
+- `TREQ-DATA-005` exige separar señal, diagnóstico, hipótesis, acción, experimento, responsable, baseline, meta, KPI, drivers, guardrails, resultado, aprendizaje y decisión y asigna responsabilidad a `DATA-AUTH-003`;
+- `TREQ-AUTH-001` exige permiso, contexto y alcance canónicos en toda capacidad protegida;
+- `TREQ-AUTH-002` exige que toda clave de permiso consumida exista en el catálogo vigente y prohíbe strings huérfanos o inventados;
+- `TREQ-AUTH-010` protege segregación de funciones y evita que una concesión individual neutralice prohibiciones transversales;
+- `TREQ-AUTH-013` exige validación server-side de permiso exacto, actor, territorio, recurso, estado y campos para toda mutación;
+- `TREQ-AUTH-015` exige evidencia correlacionable de actor, permiso, recurso, decisión, razones y versión;
+- `TREQ-SHELL-011` protege consulta, exportación, compartición y administración de información mediante acción exacta, finalidad, clasificación, recurso, relación, territorio, estado y destinatario.
+
+A003 especializa y materializa esas obligaciones para las siete acciones de gobierno de datos. No introduce una nueva superficie ejecutable ni cambia texto, estado, relación, prioridad, paquete o evidencia de los requisitos vigentes.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la segregación de capacidades, ausencia de herencia por rol/propiedad/administración, separación de artefactos, metas, exportación, permiso exacto, validación server-side, segregación de funciones y evidencia ya están protegidas por `TREQ-DATA-001`, `TREQ-DATA-002`, `TREQ-DATA-004`, `TREQ-DATA-005`, `TREQ-AUTH-001`, `TREQ-AUTH-002`, `TREQ-AUTH-010`, `TREQ-AUTH-013`, `TREQ-AUTH-015` y `TREQ-SHELL-011`. Esta tarea materializa su aplicación al dominio DATA sin crear permisos, tablas, APIs, acciones ejecutables o un comportamiento técnico adicional fuera de esa cobertura.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+#### 31. Criterios de aceptación
+
+1. existen exactamente siete acciones A003: `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+2. los siete nombres son tipos documentales y no se presentan como claves técnicas de permiso;
+3. ninguna acción hereda autorización de otra;
+4. propiedad funcional no constituye permiso;
+5. stewardship no constituye permiso;
+6. custodia técnica no constituye autoridad empresarial;
+7. ningún rol base, operativo, cargo o jerarquía recibe una de las siete capacidades por inferencia;
+8. toda acción exige permiso canónico exacto y vigente;
+9. una clave de permiso ausente no se sustituye por wildcard, prefijo, rol, aplicación o string local;
+10. toda acción resuelve recurso y versión exactos;
+11. toda acción resuelve actor efectivo, scope y finalidad;
+12. una denegación aplicable prevalece sobre cualquier función o grant incompatible;
+13. `DEFINE` no certifica;
+14. `DEFINE` no publica;
+15. `DEFINE` no fija meta;
+16. `CERTIFY` utiliza exclusivamente estados D007 y no corrige la fuente;
+17. `CERTIFY` no publica;
+18. `PUBLISH` no cambia la certificación;
+19. `PUBLISH` no concede exportación;
+20. un artefacto con dependencia `BLOQUEADO` no se publica como oficial;
+21. `NO EVALUADO` no se rotula como `CERTIFICADO`;
+22. `SET_TARGET` no cambia fórmula ni baseline observado;
+23. una fuente o métrica `BLOQUEADO` no produce baseline oficial por una capacidad de meta;
+24. fijar una meta no crea automáticamente alerta ni acción empresarial;
+25. `ANNOTATE` no cambia datos, fórmula, certificación, meta ni publicación;
+26. una corrección de anotación conserva historia o supersesión cuando corresponda;
+27. `EXPORT` exige A001 y A002 además de su capacidad propia;
+28. lectura o publicación no conceden `EXPORT`;
+29. `EXPORT` no reintroduce columnas ocultas ni celdas suprimidas;
+30. una exportación no se convierte en fuente de verdad ni publicación oficial;
+31. `ADMINISTER` no es superpermiso;
+32. `ADMINISTER` no puede autootorgar otra capacidad ni neutralizar denegaciones;
+33. una operación administrativa que produzca un efecto de otra acción se reautoriza como esa acción;
+34. dos capacidades en el mismo actor requieren autorizaciones independientes;
+35. una política de independencia de actor no se satisface cambiando la etiqueta funcional de la misma persona;
+36. si la política de segregación necesaria no puede resolverse, la acción posterior se deniega;
+37. principal técnico, service role, job o integración no se convierten en actor humano autorizado;
+38. simulación no ejecuta ninguna de las siete acciones;
+39. se materializan exactamente 62 objetos con decisión A003 explícita;
+40. se preservan 43 maestros, 19 referencias, 59 `ESPECIFICADO` y 3 AURA `BLOQUEADO`;
+41. se materializan exactamente 14 métricas y se preservan 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+42. las tres métricas bloqueadas no se elevan por definición, publicación, anotación, exportación o administración;
+43. se materializan exactamente 55 familias con distribución `11 + 12 + 10 + 12 + 10`;
+44. cada familia conserva perfil A002 y separación A003;
+45. se materializan exactamente seis familias de artefacto D008;
+46. certificación y publicación permanecen distintas en los seis artefactos;
+47. publicación y exportación permanecen distintas;
+48. restatements y publicaciones corregidas conservan la edición/historia previa;
+49. no se crea ni asigna ninguna clave de permiso, rol, grant o excepción;
+50. no se modifica código, DDL, DML, RLS, RPC, datos, migraciones, backfills, despliegues o Supabase;
+51. no se crea ni modifica ningún requisito de prueba;
+52. `DATA-AUTH-004` permanece únicamente reservada.
+
+#### 32. Balance de cierre
+
+| Control                                        |                  Resultado |
+| ---------------------------------------------- | -------------------------: |
+| Capacidades A003 esperadas / materializadas    |                  **7 / 7** |
+| Objetos esperados / materializados             |                **62 / 62** |
+| Datos maestros / referencias preservados       |                **43 / 19** |
+| Objetos AURA bloqueados preservados            |                  **3 / 3** |
+| Métricas esperadas / materializadas            |                **14 / 14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO`           |                 **11 / 3** |
+| Familias analíticas esperadas / materializadas |                **55 / 55** |
+| Distribución D009-D013                         | **11 + 12 + 10 + 12 + 10** |
+| Artefactos D008 esperados / materializados     |                  **6 / 6** |
+| Claves de permiso creadas                      |                      **0** |
+| Roles o grants asignados                       |                      **0** |
+| Cambios físicos                                |                      **0** |
+| Requisitos TREQ nuevos o modificados           |                      **0** |
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down`
+
+TAREA ACTUAL APROBADA
+`DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones`
+
+
 ### [ ] DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
