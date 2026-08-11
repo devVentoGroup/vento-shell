@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **725** |
+| Aprobadas | **726** |
 | En propuesta | **0** |
-| No iniciadas | **869** |
+| No iniciadas | **868** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.48% (725/1594)** |
+| Porcentaje de completamiento | **45.55% (726/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-UX-003` — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad | ✅ APROBADA |
-| Tarea actual | `CONT-UX-004` — Diseñar captura controlada durante la falla y reincorporación posterior | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes | ⬜ NO INICIADA |
+| Última aprobada | `CONT-UX-004` — Diseñar captura controlada durante la falla y reincorporación posterior | ✅ APROBADA |
+| Tarea actual | `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1614,7 +1614,7 @@
 | ✅ APROBADA | `CONT-UX-001` | Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ✅ APROBADA | `CONT-UX-002` | Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ✅ APROBADA | `CONT-UX-003` | Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
-| ⬜ NO INICIADA | `CONT-UX-004` | Diseñar captura controlada durante la falla y reincorporación posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
+| ✅ APROBADA | `CONT-UX-004` | Diseñar captura controlada durante la falla y reincorporación posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ⬜ NO INICIADA | `CONT-UX-005` | Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ⬜ NO INICIADA | `CONT-UX-006` | Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ⬜ NO INICIADA | `CONT-UX-007` | Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |

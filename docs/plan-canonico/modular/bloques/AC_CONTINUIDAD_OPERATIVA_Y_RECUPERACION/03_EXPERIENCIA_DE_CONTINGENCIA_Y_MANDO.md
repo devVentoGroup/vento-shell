@@ -3967,7 +3967,1271 @@ SIGUIENTE TAREA RESERVADA
 `CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior`
 
 
-### [ ] CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior
+### ✅ CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad` — APROBADA
+**Tarea siguiente:** `CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de experiencia para captura contingente, custodia, transición de reconexión, revisión humana, reincorporación, conflicto y conciliación posterior sin crear una segunda fuente de verdad
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Servicios evaluados:** 69 / 69
+**Servicios activos con experiencia de captura/reincorporación especificada:** 67 / 67
+**Servicios AURA bloqueados:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia completa mediante la cual Vento OS permite capturar trabajo de forma controlada durante una falla y, posteriormente, revisar, admitir, reincorporar y conciliar ese trabajo sin duplicar efectos, perder atribución, fabricar autoridad, sobrescribir historia ni convertir un medio temporal en una segunda fuente de verdad empresarial.
+
+La tarea cubre la experiencia humana desde el momento en que una capacidad entra en modo contingente hasta que cada unidad queda con un resultado autoritativo o una disposición explícita del dominio propietario.
+
+```text
+CAPTURA DURANTE FALLA
+!= RESULTADO EMPRESARIAL CONFIRMADO
+
+CONECTIVIDAD RECUPERADA
+!= REPLAY AUTOMATICO
+
+DIGITALIZACION
+!= REINCORPORACION ACEPTADA
+
+UPLOAD
+!= EVIDENCIA VINCULADA
+
+SYNC
+!= CONCILIACION
+
+REINCORPORACION
+!= CIERRE DEL INCIDENTE
+```
+
+La experiencia debe hacer visible la diferencia entre lo observado, lo guardado localmente, lo enviado, lo aceptado, el efecto empresarial, la confirmación propietaria y la conciliación posterior.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados los siguientes resultados documentales:
+
+1. una arquitectura UX de tres momentos: captura durante falla, transición de reconexión y reincorporación posterior;
+2. un encabezado persistente de modo contingente que muestra incidente, proceso, sede/área, estrategia, conectividad, frescura y función efectiva sin fabricar autoridad;
+3. una superficie de captura que conserva identidad, actor, contexto, hora observada, recurso, versión, evidencia, folio u operación local cuando apliquen;
+4. una gramática de estado que reutiliza los estados canónicos de operación local y evidencia, sin taxonomías paralelas;
+5. una experiencia específica para las ocho estrategias activas `CTG-01` a `CTG-08`;
+6. tratamiento condicional y no instanciado de `CTG-09` y `CTG-10`;
+7. bloqueo explícito de los dos servicios AURA diferidos;
+8. una experiencia de folio manual que preserva rango, original, condición, anulación, pérdida, deterioro, duplicado, excepción y cadena de custodia;
+9. una experiencia de evidencia que separa pieza local, upload, vínculo y confirmación;
+10. una transición de reconexión que primero verifica condiciones y clasifica pendientes antes de cualquier sincronización elegible;
+11. una bandeja de reincorporación que distingue causalidad, prioridad, propietario, estado, antigüedad, evidencia y siguiente acción;
+12. una ficha de unidad que separa actor/contexto históricos de autoridad/contexto actuales;
+13. una puerta visual de admisión que materializa los doce controles definidos por el dominio de reincorporación;
+14. una experiencia de idempotencia y deduplicación que no ofrece un segundo intento independiente cuando el resultado previo puede existir;
+15. una experiencia específica de `RESULT_UNKNOWN` centrada en verificar receipt, recurso y resultado antes de actuar;
+16. una experiencia de conflicto que reutiliza las clases y resoluciones canónicas y prohíbe `last write wins`;
+17. una experiencia de expiración que distingue efecto ocurrido de trabajo todavía no ejecutado;
+18. una experiencia de efecto parcial que preserva las partes confirmadas y pendientes por separado;
+19. una experiencia de cuarentena que conserva datos, razón y propietario sin ejecutar contenido incompatible;
+20. una vista de dependencias que separa prioridad `SYNC-*` de elegibilidad causal;
+21. representación de los tres corredores empresariales de precedencia ya aprobados sin trasladar propiedad entre dominios;
+22. una secuencia visible de confirmación por capas: registro, decisión propietaria, hecho autoritativo, efectos derivados y conciliación;
+23. una vista de conciliación por frente empresarial sin obligar a duplicar el dato en todas las aplicaciones;
+24. un balance de pendientes por incidente que impide ocultar unidades, conflictos, resultados desconocidos, evidencia o efectos downstream;
+25. una regla UX que impide presentar `DESACTIVADO` como `CERRADO`;
+26. una frontera expresa que permite mostrar bloqueos de cierre sin conceder autoridad de cierre a esta superficie;
+27. separación entre quien capturó, quien digitalizó, quien revisó, quien decidió y quien ejecutó una acción posterior;
+28. minimización de datos sensibles en la ruta ordinaria y divulgación progresiva del detalle de evidencia, custodia y auditoría;
+29. mensajes deterministas que explican qué ocurrió, qué se conservó, qué está pendiente y qué acción es segura;
+30. tratamiento de dispositivos compartidos y cambio de actor/área sin transferencia implícita de borradores, cola o custodia;
+31. tratamiento de capacidad local y backpressure sin descarte silencioso de trabajo ni evidencia obligatoria;
+32. una matriz 69 / 69 que conserva identidad, propietaria, BIA, estrategia y prioridad heredadas y materializa la decisión UX por servicio;
+33. reconciliación cuantitativa de las 67 capacidades activas y los dos bloqueos AURA;
+34. dieciocho escenarios deterministas de fallo, reconexión, resultado desconocido, folio, autoridad, conflicto y conciliación;
+35. handoffs explícitos hacia las tareas propietarias de autorización, integración, recuperación, evidencia y certificación sin ejecutarlas;
+36. cero cambios físicos, cero cambios productivos y cero cambios en requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume y conserva, sin redefinirlas:
+
+- `CONT-DOM-009`, para registro, folios, evidencia, custodia, tiempos y trabajo ejecutado durante la falla;
+- `CONT-DOM-010`, para admisión, idempotencia, duplicados, conflictos, orden causal, reincorporación, conciliación y balance de pendientes;
+- `CONT-AUTH-004`, para segregación entre ejecución, validación, reincorporación, conciliación, recuperación total y cierre;
+- `CONT-UX-001`, para estado ejecutivo, impacto, prioridades, responsables, decisiones y bloqueos;
+- `CONT-UX-002`, para centro de mando, línea de tiempo, servicios afectados y dimensiones de recuperación;
+- `CONT-UX-003`, para runbooks/checklists por función, proceso, sede y modalidad;
+- `NFR-REQ-004`, para perfiles offline, estados de operación local, estados de evidencia, prioridades `SYNC-*`, reconexión, idempotencia, conflictos, causalidad y aislamiento por actor/dispositivo/contexto;
+- el registro canónico vigente de requisitos de continuidad, UX e integración, como cobertura de prueba ya existente;
+- la secuencia prioritaria vigente, que mantiene esta tarea en `CONDITIONAL_DESIGN_ARTIFACTS` y prohíbe implementación física en este momento.
+
+La tarea no altera los 69 servicios BIA, las 67 estrategias activas, los dos bloqueos AURA, las prioridades `SYNC-*`, la propiedad de los hechos ni las reglas de autoridad ya aprobadas.
+
+---
+
+#### 4. Arquitectura de experiencia
+
+La experiencia se organiza en tres momentos que pueden coexistir por unidad, pero no se confunden:
+
+| Momento                        | Objetivo                                                    | Acción principal                                                         | Resultado que puede afirmar                               | Resultado que no puede afirmar                                |
+| ------------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------------- |
+| `M1_CAPTURA_DURANTE_FALLA`     | preservar trabajo y evidencia bajo la estrategia autorizada | registrar, proteger, diferir o ejecutar solo lo permitido                | que existe un registro contingente con estado verdadero   | que el dominio propietario ya confirmó el efecto              |
+| `M2_TRANSICION_DE_RECONEXION`  | comprobar si es seguro procesar cada unidad                 | verificar contexto, receipts, recurso, esquema, evidencia y dependencias | que la unidad es elegible, bloqueada o requiere decisión  | que toda la cola puede reproducirse automáticamente           |
+| `M3_REINCORPORACION_POSTERIOR` | obtener decisión propietaria y conciliar efectos            | aceptar, rechazar, corregir, escalar o conciliar según autoridad         | resultado autoritativo o disposición explícita por unidad | cierre del incidente por el solo hecho de terminar una unidad |
+
+La unidad visual primaria es una intención, observación, hecho físico, registro manual, borrador o elemento diferido identificable de forma estable. Un archivo, lote de papeles o cola completa no adquiere por sí mismo una identidad empresarial única.
+
+---
+
+#### 5. Encabezado persistente de modo contingente
+
+Toda superficie de esta tarea deberá mantener visible, en densidad adecuada al actor:
+
+```text
+incidente o referencia temporal disponible
+proceso / capacidad
+sede y área cuando apliquen
+estrategia de contingencia vigente
+estado de conectividad relevante para esa operación
+frescura de la referencia usada
+función efectiva del actor
+estado de la unidad
+último cambio relevante
+```
+
+Reglas:
+
+- un selector visual no concede permiso;
+- una etiqueta de función no reemplaza la decisión de autorización;
+- Wi-Fi visible no equivale a `ONLINE_STABLE`;
+- la superficie no oculta que trabaja sobre una referencia cacheada o una versión observada;
+- la ruta ordinaria muestra el mínimo necesario y el detalle técnico queda en divulgación progresiva;
+- un incidente sin identificador canónico todavía disponible puede conservar una referencia temporal sin reenumerar después el trabajo.
+
+---
+
+#### 6. Estados de conectividad y disponibilidad para la experiencia
+
+Se reutilizan exactamente:
+
+```text
+ONLINE_STABLE
+ONLINE_DEGRADED
+PARTIAL_SERVICE
+OFFLINE_CONFIRMED
+CONNECTIVITY_UNKNOWN
+RECOVERING_SYNC
+SYNC_BLOCKED
+```
+
+La interfaz no reduce estos estados a un icono de red. El estado se determina con las dependencias necesarias para la operación: transporte, identidad/sesión, `AccessContext`, servicio propietario, sincronización, reloj confiable, almacenamiento local seguro, dependencia externa y periférico cuando apliquen.
+
+Mensajes mínimos:
+
+| Estado                 | Mensaje operativo                                              | Acción segura                                            |
+| ---------------------- | -------------------------------------------------------------- | -------------------------------------------------------- |
+| `ONLINE_STABLE`        | servicios requeridos disponibles para esta operación           | continuar según el contrato ordinario                    |
+| `ONLINE_DEGRADED`      | la operación dispone de conectividad con degradación relevante | continuar solo con las capacidades habilitadas           |
+| `PARTIAL_SERVICE`      | falta una dependencia concreta                                 | mostrar qué parte puede continuar y cuál queda bloqueada |
+| `OFFLINE_CONFIRMED`    | no existe ruta autoritativa disponible                         | usar solo la estrategia contingente aprobada             |
+| `CONNECTIVITY_UNKNOWN` | no puede demostrarse la disponibilidad requerida               | evitar nuevas mutaciones sensibles y diagnosticar        |
+| `RECOVERING_SYNC`      | se recuperan servicios y se clasifican pendientes              | no presentar la cola como conciliada                     |
+| `SYNC_BLOCKED`         | existe una condición que impide procesar una o más unidades    | mostrar causa, propietario y siguiente acción            |
+
+---
+
+#### 7. Estados canónicos de una operación local
+
+La superficie reutiliza exactamente los estados aprobados y los presenta con lenguaje humano sin cambiar su identidad:
+
+| Estado                    | Significado visible                                                         | CTA ordinario permitido                                            |
+| ------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `DRAFT_LOCAL`             | borrador guardado localmente; todavía no es una intención confirmada        | continuar edición o descartar si es permitido                      |
+| `CAPTURED_LOCAL`          | observación o captura conservada en el dispositivo                          | revisar evidencia y esperar reincorporación                        |
+| `QUEUED`                  | unidad preparada para procesamiento posterior                               | ver posición, dependencias y prioridad; no duplicar                |
+| `WAITING_DEPENDENCY`      | falta un prerrequisito                                                      | abrir dependencia o esperar su resolución                          |
+| `VALIDATING`              | se verifican condiciones de admisión                                        | ver controles; no crear una intención paralela                     |
+| `SYNCING`                 | la misma intención está siendo procesada                                    | consultar estado; no reenviar manualmente                          |
+| `ACCEPTED_PENDING_EFFECT` | el dominio aceptó la operación, pero el efecto final aún no está confirmado | consultar progreso o receipt                                       |
+| `CONFIRMED`               | existe resultado autoritativo verificable                                   | abrir resultado y efectos derivados                                |
+| `REJECTED`                | la propietaria rechazó la unidad                                            | ver motivo y opciones autorizadas                                  |
+| `CONFLICT`                | existen estados incompatibles que requieren resolución                      | revisar diferencia y resolver con opción permitida                 |
+| `RESULT_UNKNOWN`          | no puede afirmarse si el efecto ocurrió                                     | verificar receipt y recurso                                        |
+| `EXPIRED`                 | la intención original ya no puede ejecutarse bajo sus condiciones previas   | disponer o crear intención actual enlazada si procede              |
+| `SUPERSEDED`              | otra intención vigente la sustituyó                                         | abrir sucesora; no ejecutar la anterior                            |
+| `QUARANTINED`             | la unidad se conserva pero no es ejecutable bajo el contrato actual         | revisar causa y escalar/transformar solo si existe ruta autorizada |
+| `RECONCILIATION_REQUIRED` | el efecto o representación todavía no converge con los dominios aplicables  | abrir conciliación                                                 |
+| `DISCARDED_WITH_REASON`   | el borrador o unidad descartable fue cerrado con motivo explícito           | consultar historia                                                 |
+
+No se introduce un estado nuevo para simplificar la interfaz.
+
+---
+
+#### 8. Captura mínima común durante la falla
+
+La experiencia solicita o conserva únicamente los campos aplicables del contrato de registro. En la ruta ordinaria se agrupan así:
+
+| Grupo UX               | Datos canónicos que puede contener                                            | Regla                                                      |
+| ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| identidad del trabajo  | incidente observado, folio, proceso, servicio, estrategia, tipo de registro   | ninguna referencia sustituye otra identidad                |
+| atribución             | principal, actor, función, dispositivo, contexto, sede, área, turno, check-in | el operador posterior no reemplaza al actor original       |
+| recurso                | referencias y versiones observadas                                            | la versión observada no se presenta como versión actual    |
+| autorización observada | referencia del envelope cuando exista                                         | describe autoridad histórica; no concede autoridad actual  |
+| identidad local        | `local_operation_id`, `idempotency_key`, `sequence_ref`, `payload_hash`       | permanece estable durante retries y reincorporación        |
+| tiempo                 | `observed_at`, `created_local_at`, `recorded_at`, `handoff_at`                | cada tiempo conserva su significado                        |
+| evidencia              | `evidence_refs[]`, receipts externos, sensibilidad                            | upload no equivale a vínculo ni confirmación               |
+| efecto                 | estado observado, efecto reclamado, motivo de pendiente                       | un efecto no confirmado permanece explícitamente pendiente |
+| custodia               | custodio, estado y excepción                                                  | transferencia requiere handoff trazable                    |
+| conciliación           | indicador de conciliación requerida                                           | marca necesidad; no ejecuta conciliación                   |
+
+Los valores desconocidos no se rellenan para poder avanzar. La interfaz marca ausencia, incertidumbre o incompatibilidad de forma explícita.
+
+---
+
+#### 9. Experiencia por estrategia durante la falla
+
+| Estrategia                                       | Acción primaria de UX             | Información obligatoria visible                                                                     | Afirmación prohibida                                |
+| ------------------------------------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`                     | registrar protección/bloqueo      | actor/función, hora, alcance, motivo, acción protectora y estado observado                          | que el efecto bloqueado se ejecutó                  |
+| `CTG-02_REFERENCIA_VERSIONADA`                   | consultar referencia controlada   | fuente, versión, fetched_at, valid_until, frescura, actor y hora                                    | que una referencia vencida sigue vigente            |
+| `CTG-03_BORRADOR_LOCAL`                          | guardar preparación               | actor, contexto, recurso, versiones observadas, hora local y sensibilidad                           | aprobación, publicación, reserva o compromiso       |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`                 | registrar observación             | hora observada, actor, contexto, recurso, evidencia y estado pendiente                              | aceptación, corrección, cierre o impacto confirmado |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`               | ejecutar solo dentro del envelope | operación, actor, recurso/versión, envelope, idempotencia, secuencia, evidencia y receipts          | efecto fuera del envelope o éxito sin confirmación  |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`         | registrar medio manual            | folio, actor, hora real, sede/área, recurso, acción, cantidad/unidad si aplica, evidencia y handoff | incorporación digital o cierre autoritativo         |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`            | operar alcance reducido           | MBCO preservado, límites, trabajo aceptado/rechazado y subregistro de cada acción                   | servicio completo o capacidad fuera del MBCO        |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`                 | registrar backlog                 | item estable, propietario, origen, fecha, deadline, motivo y condición de reanudación               | trabajo ejecutado                                   |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`          | no instanciada                    | solo podrá existir cuando la alternativa esté acreditada                                            | que existe hoy una alternativa física               |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CANAL_CONDICIONAL` | no instanciada                    | solo podrá existir cuando el tercero/canal esté acreditado                                          | que existe hoy un proveedor o canal alterno         |
+
+---
+
+#### 10. Folios y medios manuales
+
+Cuando el perfil use un medio físico, la pantalla o formulario de apoyo debe preservar el folio como referencia estable, inmutable, no reutilizable y trazable al emisor. La experiencia no promete que exista hoy un talonario, impresora, papel, sello o almacenamiento seguro; esa disponibilidad debe demostrarse en la fase propietaria.
+
+Tratamiento visible de excepciones:
+
+| Evento               | Estado UX                        | Acción segura                                                         |
+| -------------------- | -------------------------------- | --------------------------------------------------------------------- |
+| folio anulado        | consumido y no reutilizable      | conservar motivo, actor, hora y soporte disponible                    |
+| folio perdido        | faltante de custodia             | registrar rango, último custodio e impacto posible; no recrear número |
+| folio deteriorado    | legibilidad/integridad degradada | enlazar digitalización o transcripción declarando deterioro           |
+| folio ilegible       | dato no demostrable              | mandar a revisión; no completar por intuición                         |
+| folio duplicado      | conflicto de identidad           | bloquear confirmación automática y escalar                            |
+| folio fuera de rango | excepción no confiable           | demostrar origen antes de aceptar                                     |
+| salto de secuencia   | brecha de inventario             | explicar uso, anulación, pérdida o no emisión                         |
+| página adicional     | parte del registro principal     | vincular y preservar integridad                                       |
+
+Una corrección conserva el dato original y registra antes/después, actor, hora y motivo.
+
+---
+
+#### 11. Cadena de custodia y handoff
+
+La experiencia debe permitir reconstruir:
+
+```text
+quien creo u observo la pieza
+quien la tuvo bajo control
+cuando cambio de custodia
+que medio o contenedor se transfirio
+que folio o rango la identifica
+que condicion tenia al entregar y recibir
+que excepcion ocurrio
+quien asumio la responsabilidad siguiente
+```
+
+Cada handoff muestra, cuando aplique:
+
+```text
+from_custodian_ref
+to_custodian_ref
+handoff_at
+medium_ref
+folio_or_range
+condition_at_handoff
+exception_reason
+acknowledgement_ref
+```
+
+La custodia física, la representación digital y el vínculo autoritativo son estados separados. Fotografiar, escanear o subir un original no autoriza su destrucción.
+
+---
+
+#### 12. Evidencia y adjuntos
+
+Se reutilizan exactamente los estados:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+QUARANTINED
+```
+
+La experiencia debe mostrar por pieza:
+
+- origen y relación con la unidad;
+- estado real de transferencia;
+- si el dominio propietario ya la enlazó;
+- sensibilidad y visibilidad permitida;
+- fallo o cuarentena;
+- relación con un original físico cuando exista;
+- siguiente acción segura.
+
+`UPLOADED_UNLINKED` se presenta como “subido, todavía no vinculado”, nunca como evidencia completa. Una fotografía, firma, medición, impresión, receipt o testigo solo se solicita cuando el contrato del proceso lo requiera; no se convierte en requisito universal por comodidad de interfaz.
+
+---
+
+#### 13. Tiempos y secuencia visibles
+
+La superficie separa, cuando sean relevantes:
+
+```text
+observed_at
+created_local_at
+recorded_at
+first_send_at
+accepted_at
+business_effect_at
+confirmed_at
+reconciled_at
+handoff_at
+```
+
+La vista resumida prioriza “ocurrió”, “se registró” y “se confirmó”; el detalle de auditoría conserva todos los tiempos aplicables.
+
+Reglas:
+
+- la hora de sincronización no reemplaza la hora de observación;
+- la hora de registro no se presenta como hora del efecto empresarial;
+- `confirmed_at` representa confirmación propietaria;
+- `reconciled_at` aparece únicamente después de conciliación aplicable;
+- un reloj dudoso conserva la incertidumbre;
+- el orden causal puede prevalecer sobre el orden de timestamps si existe evidencia que lo justifique.
+
+---
+
+#### 14. Dispositivos compartidos, actor y contexto
+
+Toda partición local mantiene la combinación aplicable de dispositivo, actor, contexto, sede y área. Al cambiar de actor o área:
+
+1. se detienen nuevas mutaciones de la partición anterior;
+2. no se transfieren borradores, cola, claims ni custodia;
+3. los pendientes anteriores conservan atribución original;
+4. la visibilidad se minimiza para el nuevo actor;
+5. se resuelven sesión y contexto actuales;
+6. sin mecanismo de identidad offline aprobado, la estación pasa a consulta o a la contingencia permitida.
+
+La vista de reincorporación muestra por separado:
+
+```text
+ACTOR Y CONTEXTO OBSERVADOS DURANTE LA FALLA
+AUTORIDAD Y CONTEXTO ACTUALES PARA LA ACCION PENDIENTE
+```
+
+Esta separación impide que una sesión nueva reescriba quién produjo el registro original.
+
+---
+
+#### 15. Capacidad local y backpressure
+
+Cuando un paquete físico implemente almacenamiento local, la UX deberá exponer antes de alcanzar límites críticos:
+
+- cantidad de operaciones pendientes;
+- antigüedad máxima;
+- evidencia pendiente de transferencia;
+- riesgo de capacidad;
+- trabajo bloqueado por dependencia;
+- condición de pausa segura o contingencia.
+
+La experiencia nunca resuelve capacidad eliminando silenciosamente la unidad más antigua o evidencia obligatoria. Al alcanzar un límite duro aplicará el comportamiento protector definido por el paquete: backpressure, solo lectura, pausa segura o contingencia aprobada.
+
+---
+
+#### 16. Transición de reconexión
+
+La reconexión se representa como una transición controlada, no como una animación de “sincronizando todo”. La secuencia visible respeta:
+
+```text
+1. estabilizar conectividad
+2. verificar hora, DNS y servicios requeridos
+3. revalidar sesion y dispositivo
+4. resolver AccessContext actual
+5. obtener revocaciones, versiones y politicas vigentes
+6. validar esquema de unidades locales
+7. consultar receipts e idempotency keys
+8. clasificar pendientes, expirados, desconocidos y conflictos
+9. ordenar por dependencias y prioridad
+10. procesar unidades elegibles sin bloquear trabajo foreground
+11. detener solo la rama afectada ante conflicto
+12. actualizar proyecciones
+13. mostrar balance humano y pendientes restantes
+```
+
+La interfaz puede automatizar pasos técnicos cuando el contrato físico lo permita, pero no oculta su resultado ni transforma un paso técnico en decisión propietaria.
+
+---
+
+#### 17. Bandeja de reincorporación
+
+La bandeja se diseña para trabajo operativo y de supervisión, con densidad progresiva.
+
+Resumen por unidad:
+
+```text
+servicio / proceso
+origen y tipo de registro
+folio u operacion local
+actor original
+sede / area
+hora observada
+estrategia
+estado
+prioridad sync
+bloqueo o dependencia
+propietario de la siguiente decision
+evidencia necesaria
+siguiente accion segura
+```
+
+Filtros permitidos: proceso, servicio, sede, área, estrategia, propietaria, estado, prioridad, antigüedad, tipo de bloqueo y responsable. Los filtros ordenan la vista; no fabrican contexto, autorización ni elegibilidad causal.
+
+Vistas recomendadas por intención:
+
+| Vista            | Contenido                                                                | Uso                 |
+| ---------------- | ------------------------------------------------------------------------ | ------------------- |
+| `MIS_PENDIENTES` | unidades cuya siguiente acción corresponde a la función efectiva         | trabajo inmediato   |
+| `BLOQUEADAS`     | conflicto, cuarentena, resultado desconocido, evidencia o dependencia    | resolución dirigida |
+| `EN_PROCESO`     | validando, sincronizando o aceptada pendiente de efecto                  | seguimiento         |
+| `CONCILIACION`   | unidades con resultado propietario pero efectos aplicables pendientes    | convergencia        |
+| `RESUELTAS`      | confirmadas, rechazadas, superseded o descartadas con disposición válida | consulta histórica  |
+
+Estas etiquetas son categorías de vista, no estados canónicos persistentes.
+
+---
+
+#### 18. Ficha de una unidad
+
+La ficha completa separa cinco zonas:
+
+1. **Origen histórico:** incidente, estrategia, actor, contexto, sede/área, tiempos, folio u operación local.
+2. **Contenido y evidencia:** recurso, versiones observadas, payload/hash, evidencia, receipts y custodia.
+3. **Estado actual:** recurso y versión actuales, dependencias, conectividad, estado local y resultado conocido.
+4. **Autoridad y propiedad:** dominio propietario, función que puede decidir y autoridad actual aplicable.
+5. **Acción y trazabilidad:** puerta de admisión, decisión, resultado, efectos derivados y conciliación.
+
+El diseño no coloca un botón de acción al inicio de la ficha antes de mostrar el estado y los bloqueos que determinan si esa acción es segura.
+
+---
+
+#### 19. Puerta UX de admisión
+
+Antes de habilitar una acción que produzca o confirme un efecto, la interfaz presenta los controles aplicables:
+
+|    # | Control        | Pregunta que debe resolver la UX                                             | Resultado de bloqueo                              |
+| ---: | -------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+|    1 | origen         | ¿existe registro, folio, operación local, backlog o evidencia identificable? | unidad no procesable hasta identificar origen     |
+|    2 | integridad     | ¿hash, rango, secuencia y custodia disponibles son coherentes?               | revisión de integridad/custodia                   |
+|    3 | incidente      | ¿la unidad está vinculada o puede relacionarse sin reenumerarla?             | enlace temporal pendiente                         |
+|    4 | atribución     | ¿se conserva quién, dónde y bajo qué contexto produjo el registro?           | no reasignar al operador actual                   |
+|    5 | esquema        | ¿la versión se interpreta mediante un contrato vigente?                      | `QUARANTINED` si es incompatible                  |
+|    6 | receipts       | ¿ya existe un resultado externo o propietario para esta intención?           | consultar/vincular antes de reenviar              |
+|    7 | recurso actual | ¿el recurso existe y qué versión/estado tiene ahora?                         | conflicto o revalidación                          |
+|    8 | autorización   | ¿el efecto pendiente está permitido bajo autoridad actual?                   | bloquear nueva ejecución si no                    |
+|    9 | evidencia      | ¿las piezas requeridas existen, son legibles y están vinculables?            | evidencia pendiente o excepción admisible         |
+|   10 | dependencias   | ¿los prerrequisitos están confirmados o dispuestos?                          | `WAITING_DEPENDENCY`                              |
+|   11 | propiedad      | ¿qué dominio decide aceptar, rechazar, corregir o escalar?                   | no habilitar decisión transversal sin propietario |
+|   12 | resultado      | ¿qué efecto o disposición quedará registrado?                                | no terminar en un estado ambiguo                  |
+
+No todos los controles exigen intervención humana. La experiencia muestra intervención solo cuando el contrato no puede resolver el control automáticamente o cuando la decisión pertenece a una función humana autorizada.
+
+---
+
+#### 20. Autoridad histórica y autoridad actual
+
+La experiencia distingue dos preguntas:
+
+```text
+¿QUIEN HIZO U OBSERVO EL HECHO DURANTE LA FALLA Y BAJO QUE CONTEXTO?
+
+¿QUIEN PUEDE EJECUTAR O DECIDIR AHORA EL EFECTO QUE TODAVIA NO HA OCURRIDO?
+```
+
+Reglas:
+
+- una observación física real se conserva aunque la persona ya no tenga hoy el mismo permiso;
+- una mutación pendiente que nunca ocurrió exige autorización y estado vigentes antes de ejecutarse;
+- el operador de digitalización no hereda la autoridad del actor original;
+- el ejecutor de sincronización no obtiene capacidad para aprobar el resultado;
+- la función de continuidad coordina, pero la decisión propietaria permanece en el dominio correspondiente;
+- ninguna acción crítica se habilita solo porque el usuario pueda abrir la pantalla.
+
+---
+
+#### 21. Idempotencia y detección de duplicados
+
+La UX presenta la identidad estable de la intención y las señales de posible duplicado sin pedir al operador que invente una clave.
+
+Tratamiento:
+
+```text
+MISMA IDEMPOTENCY KEY + MISMO CONTENIDO
+→ consultar y enlazar resultado existente
+→ no mostrar una segunda ejecución como acción ordinaria
+
+MISMA IDEMPOTENCY KEY + CONTENIDO DIFERENTE
+→ CONFLICT
+→ preservar ambos datos
+→ resolver mediante opción permitida
+```
+
+Las señales de duplicado se muestran por capas: identidad técnica, contenido, folio/medio manual, receipt, recurso/versión/secuencia y semántica empresarial. Una coincidencia débil no permite descartar automáticamente una unidad.
+
+---
+
+#### 22. Experiencia de `RESULT_UNKNOWN`
+
+`RESULT_UNKNOWN` recibe tratamiento propio porque el riesgo principal es duplicar un efecto que quizá ya ocurrió.
+
+La pantalla muestra:
+
+```text
+resultado no comprobado
+ultima solicitud o accion conocida
+idempotency key / operacion estable
+receipts disponibles o ausentes
+recurso y version actuales
+hora del intento
+siguiente verificacion segura
+```
+
+Orden de acción:
+
+```text
+CONSULTAR RECEIPT
+→ CONSULTAR RECURSO Y VERSION
+→ COMPARAR IDENTIDAD Y CONTENIDO
+→ VINCULAR RESULTADO EXISTENTE
+  O REINTENTAR LA MISMA INTENCION SI EL CONTRATO LO PERMITE
+→ SI SIGUE INCIERTO: RECONCILIATION_REQUIRED
+```
+
+El CTA ordinario es “Verificar resultado”, no “Intentar de nuevo”.
+
+---
+
+#### 23. Conflictos y opciones de resolución
+
+Clases reutilizadas:
+
+```text
+RESOURCE_VERSION_CONFLICT
+CONTEXT_CHANGED
+AUTHORIZATION_CHANGED
+DUPLICATE_OPERATION
+DEPENDENCY_REJECTED
+SCHEMA_INCOMPATIBLE
+BUSINESS_STATE_CHANGED
+QUANTITY_CONFLICT
+CUSTODY_CONFLICT
+TIME_WINDOW_EXPIRED
+CLOCK_INVALID
+LOCAL_STORAGE_CORRUPTED
+```
+
+Opciones canónicas que la UI puede exponer únicamente cuando sean aplicables y autorizadas:
+
+```text
+ACCEPT_SERVER_STATE
+REAPPLY_ALLOWED_FIELDS
+CREATE_CORRECTION
+SPLIT_OPERATION
+ESCALATE
+DISCARD_LOCAL_DRAFT
+MANUAL_RECONCILIATION
+```
+
+Cada opción debe explicar antes de confirmar:
+
+- qué valor o hecho se conserva;
+- qué no se ejecutará;
+- si existe un hecho físico ya ocurrido;
+- qué actor y autoridad resuelven;
+- qué evidencia quedará;
+- qué efectos derivados permanecen pendientes.
+
+No existe una opción genérica “usar el último valor” para efectos empresariales.
+
+---
+
+#### 24. Expiración, borradores y efecto parcial
+
+**Expiración**
+
+- si la operación nunca produjo efecto, no se ejecuta por haber recuperado conectividad;
+- si todavía es necesaria, la UX permite originar una intención actual revalidada y enlazada con la expirada;
+- si el efecto ocurrió mientras era válido, se preserva el hecho y se concilia su representación;
+- una unidad expirada sin disposición permanece en el balance.
+
+**Borrador**
+
+- puede continuar como trabajo actual solo después de revalidar actor, contexto, recurso y versión;
+- puede descartarse únicamente cuando es un borrador descartable y queda motivo;
+- nunca se backdatea como efecto ocurrido durante la falla.
+
+**Efecto parcial**
+
+- se visualiza cada parte confirmada y pendiente;
+- la parte confirmada no se vuelve a emitir;
+- la parte pendiente conserva identidad y estado propios;
+- cualquier compensación, reversión o corrección aparece como intención nueva y solo si el dominio la autoriza.
+
+---
+
+#### 25. Orden causal, dependencias y prioridad `SYNC-*`
+
+La bandeja no usa FIFO global como semántica de ejecución. Cada unidad muestra por separado:
+
+```text
+DEPENDENCIAS
+ELEGIBILIDAD CAUSAL
+PRIORIDAD SYNC
+ESTADO
+PROPIETARIO
+```
+
+Reglas visuales:
+
+- una operación dependiente se muestra “esperando” aunque tenga prioridad superior;
+- una rama independiente puede continuar aunque otra esté en conflicto;
+- una operación `SUPERSEDED` se muestra fuera de la ruta de ejecución;
+- la prioridad ayuda a ordenar trabajo causalmente elegible, no a saltar prerequisitos;
+- una dependencia rechazada explica qué unidades quedan bloqueadas o deben reclasificarse.
+
+---
+
+#### 26. Corredores empresariales de precedencia
+
+Los tres corredores aprobados se muestran como relaciones de propietario y efectos derivados, no como un workflow universal rígido:
+
+```text
+PULSO confirma venta
+→ NEXO aplica salida
+→ PASS aplica puntos cuando corresponda
+→ NUMERA registra efecto economico
+```
+
+```text
+ORIGO confirma compra o recepcion empresarial
+→ NEXO aplica entrada fisica
+→ NUMERA registra obligacion
+```
+
+```text
+FOGO confirma lote y resultado productivo
+→ NEXO aplica consumos y salida de producto
+→ NUMERA calcula costo
+```
+
+La interfaz marca cada nodo con su estado propio. El fallo de un consumidor no convierte en no ocurrido el hecho ya confirmado por la propietaria.
+
+---
+
+#### 27. Confirmación por capas
+
+La ficha de unidad representa el progreso así:
+
+```text
+REGISTRO CONTINGENTE
+→ DECISION DEL DOMINIO PROPIETARIO
+→ HECHO AUTORITATIVO CONFIRMADO O RECHAZADO
+→ EFECTOS DERIVADOS APLICABLES
+→ CONCILIACION POR CADA DOMINIO CONSUMIDOR
+→ UNIDAD RESUELTA
+```
+
+Una unidad “resuelta” dentro de esta superficie significa que el tratamiento de esa unidad terminó conforme a sus efectos aplicables. No implica por sí sola recuperación total, desactivación o cierre del incidente.
+
+---
+
+#### 28. Frentes de conciliación
+
+La vista de conciliación activa solo los frentes aplicables al incidente y muestra propietario, estado, diferencias, evidencia y siguiente acción:
+
+| Frente                         | Comprobación UX mínima                                                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| personas y asistencia          | marcaciones, novedades, correcciones y jornadas sin duplicado por replay                                  |
+| compras y recepciones          | orden, recepción, diferencias y obligaciones relacionadas sin entradas dobles                             |
+| inventario, custodia y activos | movimientos, cantidades, lotes, ubicaciones, tenencias y handoffs convergentes                            |
+| producción y calidad           | lotes, consumos, resultados, retenciones y reprocesos con receta/versión y secuencia correctas            |
+| pedidos, ventas y servicio     | pedido, entrega, venta, devolución, reserva y estado de canal sin recreaciones                            |
+| dinero, pagos y caja           | cobros, pagos, efectivo, obligaciones y cartera con receipt y una sola aplicación del efecto              |
+| documentos y evidencia         | original, archivo, metadatos, versión, firma aplicable, hash y vínculo autoritativo                       |
+| comunicaciones                 | destinatario, canal, intento, resultado y excepción cuando la entrega sea material                        |
+| colas, accesos e integraciones | operaciones, jobs, eventos, permisos, revocaciones y proveedores sin resultado silenciosamente abandonado |
+
+La vista compara; no convierte una proyección o reporte en fuente propietaria.
+
+---
+
+#### 29. Balance de pendientes del incidente
+
+La experiencia deberá poder mostrar y reconciliar conteos y referencias para:
+
+```text
+unidades identificadas
+unidades sin replay requerido
+borradores o backlog convertidos en trabajo actual
+unidades en validacion o sincronizacion
+hechos confirmados por propietaria
+unidades rechazadas con motivo
+unidades superseded con sucesora
+borradores descartados con motivo
+operaciones expiradas con disposicion
+conflictos abiertos
+resultados desconocidos abiertos
+unidades quarantined
+unidades en reconciliation_required
+evidencia obligatoria no enlazada
+efectos downstream pendientes
+pendientes sin propietario
+```
+
+Toda reducción del total abierto debe corresponder a una causa demostrable. Un agregado nunca puede ocultar una unidad material sin destino.
+
+---
+
+#### 30. Frontera con desactivación y cierre
+
+Esta tarea muestra la información necesaria para saber si existen bloqueos de reincorporación, pero no aprueba recuperación total ni cierre.
+
+Puede existir `DESACTIVADO` con pendientes cuando todos los restantes están identificados, referenciados, tienen propietario y no requieren mantener activa la respuesta extraordinaria.
+
+La superficie marca como **bloqueo de cierre** cualquier condición aplicable de esta lista:
+
+- `RESULT_UNKNOWN` sin resolución;
+- `CONFLICT` abierto;
+- `QUARANTINED` sin decisión;
+- `RECONCILIATION_REQUIRED` abierto;
+- efecto ocurrido sin representación propietaria o disposición explícita;
+- evidencia obligatoria sin vínculo o excepción admisible;
+- efecto downstream obligatorio pendiente;
+- operación expirada sin disposición;
+- folio, registro o unidad contabilizada sin destino;
+- pendiente de reincorporación sin propietario;
+- diferencia material aplicable todavía no resuelta.
+
+La autoridad de recuperación total y cierre permanece en el contrato de autorización; esta superficie solo muestra el estado verdadero y las decisiones pendientes.
+
+---
+
+#### 31. Tratamiento de acciones masivas
+
+La bandeja puede permitir selección múltiple únicamente cuando el paquete de implementación demuestre que las unidades comparten tratamiento autorizado y son causalmente elegibles.
+
+Antes de confirmar una acción masiva deberá mostrar:
+
+```text
+cantidad seleccionada
+tratamiento propuesto
+unidades excluidas y motivo
+propietario de la decision
+impacto esperado
+resultado por elemento
+```
+
+Una operación masiva no puede convertir 50 decisiones individuales inciertas en un solo “éxito”. Cada elemento conserva identidad, resultado, error, evidencia y trazabilidad.
+
+---
+
+#### 32. Lenguaje, densidad y accesibilidad
+
+La ruta ordinaria usa lenguaje humano y mantiene los códigos canónicos en el detalle cuando sean necesarios para soporte, auditoría o investigación.
+
+Reglas:
+
+- estado, bloqueo y siguiente acción no dependen solo del color;
+- la vista táctil prioriza una acción principal y evita tablas densas cuando el actor está ejecutando;
+- la vista de supervisión puede aumentar densidad sin mezclar configuración administrativa con operación;
+- los detalles de hash, payload, versiones, receipts y custodia se muestran mediante divulgación progresiva;
+- el foco permanece en la unidad al volver de un detalle o conflicto;
+- los mensajes de error indican qué se conservó y qué no se ejecutó;
+- una acción no disponible explica la condición que falta cuando revelar esa información sea seguro;
+- la sensibilidad gobierna máscara, visibilidad y acceso al detalle, no solo el diseño visual.
+
+---
+
+#### 33. Experiencia materializada por los 69 servicios
+
+La matriz conserva las identidades, propietarias, clases BIA, estrategias y prioridades heredadas. `Experiencia durante falla` y `Experiencia de reincorporación` son decisiones documentales de esta tarea; no son enums persistentes.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Estrategia heredada                      | Sync heredada        | Experiencia durante falla                  | Experiencia de reincorporación                         | Estado documental                   |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | ---------------------------------------- | -------------------- | ------------------------------------------ | ------------------------------------------------------ | ----------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-4_DEFERRED`    | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-2_OPERATIONAL` | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Backlog diferido con propietario           | Reanudar backlog como trabajo actual revalidado        | `ESPECIFICADO`                      |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-1_URGENT`      | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-2_OPERATIONAL` | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-3_CYCLE`       | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-4_DEFERRED`    | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-0_BLOCKING`    | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Servicio reducido con subregistros         | Conciliar alcance y subregistros por perfil            | `ESPECIFICADO`                      |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-0_BLOCKING`    | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-0_BLOCKING`    | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Ejecución offline dentro del envelope      | Consultar receipt; conservar misma intención           | `ESPECIFICADO`                      |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-2_OPERATIONAL` | Referencia versionada con frescura visible | Sin replay; validar vigencia y estado actual           | `ESPECIFICADO`                      |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-4_DEFERRED`    | Sin captura operativa autorizada           | Sin reincorporación operativa autorizada               | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-3_CYCLE`       | Sin captura operativa autorizada           | Sin reincorporación operativa autorizada               | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Bloqueo/protección con estado observado    | Enlazar protección; no reproducir efecto bloqueado     | `ESPECIFICADO`                      |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Backlog diferido con propietario           | Reanudar backlog como trabajo actual revalidado        | `ESPECIFICADO`                      |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Backlog diferido con propietario           | Reanudar backlog como trabajo actual revalidado        | `ESPECIFICADO`                      |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Registro manual foliable y custodiado      | Incorporar por folio; preservar original y custodia    | `ESPECIFICADO`                      |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Captura local pendiente de decisión        | Incorporar una vez; decisión del dominio propietario   | `ESPECIFICADO`                      |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Backlog diferido con propietario           | Reanudar backlog como trabajo actual revalidado        | `ESPECIFICADO`                      |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Borrador local sin efecto empresarial      | Revalidar como intención actual o descartar con motivo | `ESPECIFICADO`                      |
+
+---
+
+#### 34. Reconciliación cuantitativa
+
+| Control                                    |   Resultado |
+| ------------------------------------------ | ----------: |
+| servicios evaluados                        | **69 / 69** |
+| decisiones UX materializadas               | **69 / 69** |
+| servicios activos especificados            | **67 / 67** |
+| AURA bloqueados                            |   **2 / 2** |
+| perfiles activos de estrategia cubiertos   |   **8 / 8** |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`               |       **6** |
+| `CTG-02_REFERENCIA_VERSIONADA`             |       **8** |
+| `CTG-03_BORRADOR_LOCAL`                    |       **8** |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`           |      **15** |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`         |       **6** |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`   |      **11** |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`      |       **9** |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`           |       **4** |
+| operaciones productivas ejecutadas         |       **0** |
+| requisitos de prueba creados o modificados |       **0** |
+
+Distribución de prioridad de los 67 servicios activos:
+
+| Prioridad            | Servicios |
+| -------------------- | --------: |
+| `SYNC-0_BLOCKING`    |    **12** |
+| `SYNC-1_URGENT`      |    **23** |
+| `SYNC-2_OPERATIONAL` |    **11** |
+| `SYNC-3_CYCLE`       |    **15** |
+| `SYNC-4_DEFERRED`    |     **6** |
+| **Total**            |    **67** |
+
+Los dos servicios AURA conservan sus prioridades documentales heredadas, pero no adquieren por ello una ruta operativa de captura o reincorporación.
+
+---
+
+#### 35. Escenarios deterministas de experiencia
+
+|    # | Escenario                                                     | Comportamiento exigido                                                             |
+| ---: | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+|    1 | cae la red después de una captura permitida                   | conservar la unidad local, atribución y evidencia; mostrar que no está confirmada  |
+|    2 | vuelve la conectividad con una unidad en cola                 | ejecutar secuencia de reconexión y mantener la misma identidad                     |
+|    3 | una mutación termina en `RESULT_UNKNOWN`                      | verificar receipt/recurso antes de habilitar cualquier retry de la misma intención |
+|    4 | misma clave y mismo contenido ya confirmado                   | vincular resultado existente; no crear segundo efecto                              |
+|    5 | misma clave y contenido diferente                             | mostrar `CONFLICT` y preservar la intención original                               |
+|    6 | folio manual válido                                           | digitalizar una sola vez, conservar original, actor, hora y custodia               |
+|    7 | folio duplicado                                               | bloquear confirmación automática y escalar                                         |
+|    8 | folio fuera de rango o ilegible                               | conservar excepción y evidencia; no completar por inferencia                       |
+|    9 | cambia el actor del dispositivo                               | no transferir borradores, cola, claims ni custodia                                 |
+|   10 | el permiso actual ya no existe pero el hecho físico ocurrió   | conservar hecho histórico y enviarlo a decisión/conciliación; no borrarlo          |
+|   11 | el permiso actual ya no existe y la mutación nunca ocurrió    | bloquear ejecución y exigir revalidación actual                                    |
+|   12 | una rama está en conflicto y otra es independiente            | detener la rama afectada y permitir avance de la independiente                     |
+|   13 | evidencia queda `UPLOADED_UNLINKED`                           | mostrar pendiente y mantener abierto el requisito de vínculo                       |
+|   14 | servicio operó en modo reducido                               | conciliar alcance y subregistros antes de presentarlo como completo                |
+|   15 | una operación expiró pero el trabajo sigue siendo necesario   | crear intención actual enlazada después de revalidación; no replay de la vencida   |
+|   16 | existe efecto parcial                                         | preservar parte confirmada y procesar solo la parte pendiente permitida            |
+|   17 | servicio AURA diferido                                        | no mostrar captura, sincronización o reincorporación inexistente                   |
+|   18 | hecho propietario confirmado pero efecto downstream pendiente | conservar hecho fuente y mostrar conciliación transversal incompleta               |
+
+---
+
+#### 36. Cobertura vigente de prueba
+
+La tarea queda cubierta por requisitos ya vigentes que protegen:
+
+- modalidad de contingencia, datos mínimos, identificadores controlados, custodia, seguridad y estado pendiente;
+- reincorporación controlada, idempotencia, duplicados, conflictos, vencimientos, efectos parciales y conciliación antes del cierre;
+- mensajes de error y recuperación que no duplican efectos;
+- visibilidad de fuente de verdad, estado pendiente/confirmado, actor y diferencias;
+- comportamiento ante pérdida de red, sesión, dispositivo o proveedor y reautorización al reanudar;
+- identidad estable, resultado recuperable, retry idempotente y `RESULT_UNKNOWN`;
+- continuidad transversal con replay controlado y trazabilidad entre incidente, pendiente y hecho recuperado.
+
+No se identifica una regla verificable nueva fuera de esa cobertura. Esta tarea especializa la experiencia humana y materializa decisiones por los 69 servicios sin alterar el comportamiento protegido.
+
+---
+
+#### 37. Brechas de implementación y condiciones de salida
+
+| Brecha                                                                      | Estado                   | Propietario documental                                            | Condición de salida                                                                           |
+| --------------------------------------------------------------------------- | ------------------------ | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| persistencia local, aislamiento, capacidad y recuperación física            | `PENDIENTE_DE_EVIDENCIA` | `CONT-INT-004`, consumiendo el contrato aprobado de `NFR-REQ-004` | implementación versionada que preserve identidad, contexto y reinicio sin pérdida             |
+| transporte físico de outbox/inbox, claims, retry, replay y dead-letter      | `PENDIENTE_DE_EVIDENCIA` | `CONT-INT-004`                                                    | contratos implementados con idempotencia, resultado recuperable y pruebas de orden/conflicto  |
+| enforcement de permisos para captura, admisión, resolución y conciliación   | `PENDIENTE_DE_EVIDENCIA` | `CONT-AUTH-004` y contratos de autorización aplicables            | autorización de servidor implementada y probada sin autoaprobación crítica                    |
+| formularios, folios, medios físicos y capacidad por sede                    | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                                    | medio real disponible, inventariado y probado en ejercicio aplicable                          |
+| almacenamiento, vínculo, acceso, sensibilidad y retención de evidencia      | `PENDIENTE_DE_EVIDENCIA` | `CONT-AUTH-003` y `CONT-INT-004`                                  | evidencia enlazada con acceso y retención materializados                                      |
+| contratos ejecutables de aceptación/corrección por dominio                  | `PENDIENTE_DE_EVIDENCIA` | `CONT-INT-004`                                                    | operación idempotente con receipt recuperable y pruebas de duplicado/conflicto                |
+| validación de la experiencia con fallos, reconexión y conciliación realista | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                                    | ejercicio reproducible con unidades offline/manuales, unknown, conflicto y conciliación final |
+| seguimiento transversal de restauración, failover y recuperación            | `PENDIENTE_DE_EVIDENCIA` | `CONT-UX-005`                                                     | experiencia específica de respaldo/restauración/failover y pendientes materializada           |
+
+No queda una brecha material sin propietario documental y condición de salida.
+
+---
+
+#### 38. Handoffs obligatorios
+
+| Resultado posterior                                                                | Tarea propietaria | Frontera conservada                                                                                |
+| ---------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------- |
+| separación y enforcement entre ejecutar, validar, reincorporar, conciliar y cerrar | `CONT-AUTH-004`   | esta tarea muestra autoridad y bloqueos; no concede permisos                                       |
+| seguimiento de backup, restore, failover y validación de recuperación              | `CONT-UX-005`     | esta tarea se limita a trabajo contingente y su reincorporación                                    |
+| transporte, replay y conciliación física entre sistemas                            | `CONT-INT-004`    | esta tarea define experiencia y semántica; no implementa workers ni endpoints                      |
+| restauración y punto seguro para habilitar reincorporación                         | `CONT-DOM-012`    | reconexión no sustituye restauración ni validación funcional                                       |
+| readiness de medios, folios y procedimiento                                        | `CONT-DOM-014`    | la especificación UX no demuestra disponibilidad física                                            |
+| revisión posterior y aprendizaje                                                   | `CONT-DOM-015`    | una acción de mejora no sustituye un pendiente operativo de reincorporación                        |
+| persistencia e interfaces reales por dominio                                       | `CONT-INT-004`    | la implementación posterior conserva propiedad del hecho y del comando en cada dominio propietario |
+| pruebas integrales y ejercicio de reincorporación                                  | `CONT-DOM-014`    | la tarea documental no certifica uso real, dispositivo ni ejercicio                                |
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa la experiencia humana de captura contingente y reincorporación sobre reglas ya protegidas por requisitos vigentes de continuidad, experiencia, autorización e integración. No introduce un nuevo efecto empresarial, transición, cálculo, permiso, contrato de integración o comportamiento ejecutable que requiera un identificador adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 40. Criterios de aceptación
+
+1. La tarea conserva exactamente 69 servicios BIA y 69 procesos VPROC.
+2. Cada identidad conserva su `business_service_id` y `process_id` heredados sin renombrarlos.
+3. No existen identidades faltantes ni duplicadas en la matriz de cobertura UX.
+4. La distribución de propietarias permanece 1/20/16/6/4/12/7/2/1 para ANIMA/VISO/NEXO/FOGO/ORIGO/PULSO/NUMERA/AURA/PASS.
+5. La distribución BIA permanece 12 `CRITICA_PROTECCION`, 20 `CRITICA_OPERACIONAL`, 31 `ALTA_CONTROL` y 6 `DIFERIBLE_CONTROLADA`.
+6. La distribución de estrategias permanece 6/8/8/15/6/11/9/4 más 2 AURA bloqueados.
+7. Las prioridades de los 67 servicios activos permanecen 12 `SYNC-0_BLOCKING`, 23 `SYNC-1_URGENT`, 11 `SYNC-2_OPERATIONAL`, 15 `SYNC-3_CYCLE` y 6 `SYNC-4_DEFERRED`.
+8. Los dos servicios AURA no reciben por esta tarea una ruta operativa de captura o reincorporación.
+9. La superficie distingue de forma visible captura durante falla, transición de reconexión y reincorporación posterior.
+10. Recuperar conectividad no activa por sí solo un replay ciego de todas las operaciones.
+11. Una captura local no se presenta como resultado empresarial confirmado.
+12. Un registro contingente no se presenta como fuente de verdad empresarial paralela.
+13. Una referencia de incidente no sustituye el folio, la operación local ni la referencia empresarial definitiva.
+14. El folio no sustituye `local_operation_id` ni `idempotency_key`.
+15. Una referencia de evidencia no se presenta como identidad del hecho empresarial.
+16. La interfaz distingue actor original de operador de digitalización o revisión.
+17. La interfaz distingue contexto observado durante la falla de contexto actual de reincorporación.
+18. La interfaz distingue autoridad histórica registrada de autoridad actual necesaria para ejecutar un efecto todavía no ocurrido.
+19. Un hecho físico ya ocurrido no se elimina ni oculta porque la autoridad actual del actor haya cambiado.
+20. Una mutación todavía no ejecutada se bloquea hasta resolver autoridad y estado actuales cuando el contrato lo exige.
+21. Los datos desconocidos permanecen explícitamente desconocidos y no se completan por inferencia.
+22. `business_effect_claimed` no se convierte visualmente en efecto confirmado sin resultado autoritativo.
+23. `reconciliation_required` se muestra como necesidad de conciliación y no como conciliación realizada.
+24. El modo de conectividad se deriva del vector de dependencias aplicables y no solo de Wi-Fi o `navigator.onLine`.
+25. `ONLINE_STABLE`, `ONLINE_DEGRADED`, `PARTIAL_SERVICE`, `OFFLINE_CONFIRMED`, `CONNECTIVITY_UNKNOWN`, `RECOVERING_SYNC` y `SYNC_BLOCKED` conservan su semántica.
+26. La interfaz no convierte `RECOVERING_SYNC` en disponibilidad empresarial plena.
+27. La interfaz no convierte `SYNC_BLOCKED` en fallo definitivo sin la causa correspondiente.
+28. `DRAFT_LOCAL` se presenta como borrador sin efecto.
+29. `CAPTURED_LOCAL` se presenta como captura local, no como guardado en servidor.
+30. `QUEUED` se presenta como pendiente de procesamiento, no como aceptado.
+31. `WAITING_DEPENDENCY` identifica la dependencia que impide avanzar.
+32. `VALIDATING` distingue validación de ejecución o confirmación.
+33. `SYNCING` no se presenta como efecto confirmado.
+34. `ACCEPTED_PENDING_EFFECT` no se presenta como terminado.
+35. `CONFIRMED` exige receipt o estado autoritativo verificable.
+36. `REJECTED` conserva motivo, propietario de la decisión y referencia de origen.
+37. `CONFLICT` conserva ambos lados relevantes sin sobrescritura silenciosa.
+38. `RESULT_UNKNOWN` bloquea un nuevo intento independiente de la misma intención.
+39. `EXPIRED` conserva la intención y exige disposición antes de desaparecer del balance.
+40. `SUPERSEDED` conserva referencia de la intención sucesora.
+41. `QUARANTINED` conserva los datos y la razón de incompatibilidad o bloqueo.
+42. `RECONCILIATION_REQUIRED` conserva propietario, siguiente acción y evidencia necesaria.
+43. `DISCARDED_WITH_REASON` solo se usa cuando el descarte es permitido y deja motivo trazable.
+44. La interfaz de evidencia distingue `LOCAL_ONLY` de evidencia recibida por el dominio propietario.
+45. `UPLOADED_UNLINKED` no se presenta como evidencia enlazada.
+46. `LINKED_AND_CONFIRMED` exige relación verificable con el hecho o expediente correspondiente.
+47. Una carga fallida conserva el estado y no se elimina para aparentar éxito.
+48. La eliminación local de evidencia exige confirmación y política aplicable.
+49. Toda operación durable conserva una identidad local estable desde su creación.
+50. Una mutación repetible conserva una `idempotency_key` estable desde antes de su primer envío.
+51. Un reintento de la misma intención no genera un identificador nuevo para probar el resultado.
+52. La misma clave con el mismo contenido recupera o vincula el resultado existente sin segundo efecto.
+53. La misma clave con contenido diferente produce conflicto visible.
+54. La UI no ofrece un CTA de reintento limpio cuando el resultado previo puede haber ocurrido.
+55. Ante `RESULT_UNKNOWN`, la primera acción segura es verificar receipt, recurso y versión según el contrato.
+56. Una respuesta tardía se incorpora a la historia y se confronta con el estado actual.
+57. Una operación expirada que no ocurrió no se ejecuta automáticamente al reconectar.
+58. Si el trabajo expirado sigue siendo necesario, la interfaz lo convierte en candidato a nueva intención actual revalidada y enlazada al origen.
+59. Un efecto ocurrido mientras era válido no se borra por expiración posterior.
+60. Un efecto parcial muestra por separado las partes confirmadas y pendientes.
+61. La parte ya confirmada no se vuelve a ejecutar para completar una operación parcial.
+62. La interfaz no dispara compensación, reversión o corrección automática por detectar parcialidad.
+63. La puerta de admisión verifica origen antes de permitir una acción de reincorporación.
+64. La puerta de admisión verifica integridad disponible y expone cualquier anomalía.
+65. La puerta de admisión conserva o resuelve la relación con el incidente sin reenumerar el trabajo.
+66. La puerta de admisión conserva atribución original de principal, actor, dispositivo y contexto cuando aplique.
+67. Un esquema incompatible lleva a cuarentena y no a transformación implícita.
+68. La puerta de admisión consulta receipts y referencias empresariales existentes antes de repetir una mutación.
+69. La puerta de admisión verifica recurso y versión actuales antes de una escritura sensible.
+70. La puerta de admisión revalida autorización actual cuando el efecto aún no ocurrió.
+71. La puerta de admisión verifica evidencia obligatoria o una excepción admisible.
+72. La puerta de admisión verifica dependencias antes de habilitar una operación dependiente.
+73. La puerta de admisión identifica el dominio propietario que debe aceptar, rechazar, corregir o escalar.
+74. La UI no presenta la unidad como reincorporada antes de la decisión y resultado aplicables.
+75. Los conflictos reutilizan las clases canónicas y no crean una taxonomía paralela.
+76. `RESOURCE_VERSION_CONFLICT` bloquea sobrescritura silenciosa de una versión posterior.
+77. `CONTEXT_CHANGED` exige nueva resolución de contexto antes de una acción actual.
+78. `AUTHORIZATION_CHANGED` no amplía autoridad histórica ni actual.
+79. `DUPLICATE_OPERATION` no produce un segundo efecto.
+80. `DEPENDENCY_REJECTED` bloquea o reclasifica las operaciones dependientes.
+81. `SCHEMA_INCOMPATIBLE` puede llevar a `QUARANTINED` conservando evidencia.
+82. `BUSINESS_STATE_CHANGED` exige decisión propietaria.
+83. `QUANTITY_CONFLICT` no se resuelve mediante suma o reemplazo intuitivo.
+84. `CUSTODY_CONFLICT` conserva soporte, handoffs y excepción.
+85. `TIME_WINDOW_EXPIRED` no autoriza backdating de una nueva ejecución.
+86. `CLOCK_INVALID` conserva incertidumbre temporal.
+87. `LOCAL_STORAGE_CORRUPTED` no inventa contenido perdido.
+88. Las resoluciones visibles se limitan a las opciones canónicas aplicables y autorizadas.
+89. `ACCEPT_SERVER_STATE` no elimina evidencia de un efecto físico ocurrido.
+90. `REAPPLY_ALLOWED_FIELDS` solo habilita campos revalidados por el dominio propietario.
+91. `CREATE_CORRECTION` preserva original, antes/después, actor y motivo.
+92. `SPLIT_OPERATION` no duplica una parte ya confirmada.
+93. `ESCALATE` identifica la función o autoridad requerida.
+94. `DISCARD_LOCAL_DRAFT` no se ofrece para hechos físicos o empresariales ya ocurridos.
+95. `MANUAL_RECONCILIATION` conserva decisión, evidencia y referencias resultantes.
+96. La interfaz no ofrece `last write wins` para un efecto empresarial.
+97. La lista visible de pendientes no se interpreta como FIFO de ejecución.
+98. Las dependencias causales prevalecen sobre la prioridad `SYNC-*`.
+99. Una operación `SYNC-0_BLOCKING` bloquea sus dependientes, no todas las ramas independientes por definición.
+100. Una rama en conflicto puede detenerse sin ocultar el avance de ramas independientes.
+101. Una operación `SUPERSEDED` no se ejecuta después de su sucesora.
+102. La UI diferencia prioridad de sincronización, elegibilidad causal y estado actual.
+103. El corredor PULSO→NEXO→PASS→NUMERA se representa sin transferir propiedad de la venta a una consumidora.
+104. El corredor ORIGO→NEXO→NUMERA se representa sin crear una segunda compra o recepción.
+105. El corredor FOGO→NEXO→NUMERA se representa sin crear un segundo lote o resultado productivo.
+106. Cada efecto derivado conserva estado, resultado e idempotencia independientes.
+107. El fallo de una consumidora no revierte visualmente el hecho confirmado por la propietaria.
+108. El procesamiento de una consumidora no se presenta como conciliación de todas las demás.
+109. CTG-01 presenta la acción protectora y el estado observado sin afirmar el efecto bloqueado como ejecutado.
+110. CTG-02 muestra fuente, versión y frescura sin convertir una referencia vencida en vigente.
+111. CTG-03 muestra el borrador como preparación sin reserva, publicación, aprobación o compromiso.
+112. CTG-04 muestra observación y evidencia como pendientes de decisión propietaria.
+113. CTG-05 muestra envelope, intención, secuencia, receipts y resultado sin permitir efecto fuera del alcance autorizado.
+114. CTG-06 muestra folio, actor, hora, sitio/área, custodia y handoff sin presentar digitalización como cierre.
+115. CTG-07 muestra el alcance reducido, límites, trabajo aceptado/rechazado y cada subregistro aplicable.
+116. CTG-08 muestra backlog, propietario, edad/deadline, motivo y condición de reanudación sin presentarlo como ejecutado.
+117. CTG-09 no se instancia sin una alternativa física acreditada por su tarea propietaria.
+118. CTG-10 no se instancia sin un proveedor o canal alterno acreditado por su tarea propietaria.
+119. Un folio manual se muestra como referencia estable e inmutable del origen.
+120. Un folio anulado permanece consumido y visible en la trazabilidad.
+121. Un folio perdido no se recrea con el mismo número.
+122. Un folio deteriorado conserva esa condición y su representación enlazada.
+123. Un folio ilegible no se completa por inferencia.
+124. Un folio duplicado no habilita confirmación automática.
+125. Un folio fuera de rango permanece como excepción no confiable hasta decisión.
+126. Un salto de secuencia exige explicación trazable.
+127. Una página adicional conserva vínculo con el folio principal.
+128. La captura de un medio manual registra la condición de custodia relevante antes de la transferencia.
+129. Cada handoff visible conserva custodio de origen, custodio de destino, hora, medio, folio/rango y condición cuando aplican.
+130. Digitalizar o fotografiar un original no autoriza destruirlo.
+131. La interfaz distingue custodia física, representación digital y vínculo empresarial.
+132. La transcripción del mismo soporte no crea múltiples fuentes competidoras.
+133. La interfaz muestra `observed_at` separado de `created_local_at` y `recorded_at` cuando la diferencia sea material.
+134. La interfaz no presenta `recorded_at` como hora del efecto empresarial.
+135. `business_effect_at`, `confirmed_at` y `reconciled_at` conservan significados diferentes.
+136. Un reloj local dudoso se marca sin corregirlo por intuición.
+137. La secuencia causal puede mostrarse aunque el tiempo exacto permanezca incierto.
+138. Al cambiar de actor en un dispositivo compartido no se transfieren borradores, cola, claims ni custodia.
+139. Los pendientes de un actor anterior conservan atribución y privacidad.
+140. Cambiar de área no convierte dos colas en una ni amplía permiso.
+141. La interfaz muestra capacidad, antigüedad y riesgo antes de alcanzar un umbral local crítico cuando el paquete físico lo implemente.
+142. La saturación local no permite descartar silenciosamente la operación más antigua.
+143. La evidencia obligatoria no se elimina para liberar espacio.
+144. La pérdida de almacenamiento local se muestra como incidente o conflicto de integridad y no como cola vacía exitosa.
+145. La bandeja de reincorporación permite filtrar por proceso, servicio, sede, estrategia, propietario, estado y prioridad sin convertir un filtro en autoridad.
+146. La selección masiva no cambia el significado individual ni salta las puertas de admisión.
+147. Una acción masiva solo puede incluir unidades causalmente elegibles y con el mismo tratamiento autorizado.
+148. El resultado de una acción masiva se devuelve por elemento y no como éxito global opaco.
+149. La vista operativa minimiza datos sensibles y reserva el detalle ampliado para funciones autorizadas.
+150. Los mensajes explican qué ocurrió, qué se conservó, qué está pendiente y la siguiente acción segura.
+151. Los estados críticos no dependen únicamente de color.
+152. El foco y la navegación permiten revisar pendientes sin perder la unidad seleccionada.
+153. La experiencia táctil evita controles densos en la ruta ordinaria y usa divulgación progresiva para evidencia y metadatos.
+154. La interfaz conserva suficiente información para reconstruir quién capturó, quién revisó, quién decidió y quién ejecutó una acción posterior.
+155. El usuario que ejecutó la captura no obtiene por ello autoridad para aprobar el resultado.
+156. El operador técnico que sincroniza no obtiene autoridad para decidir el hecho empresarial.
+157. El dominio propietario conserva la decisión de aceptación, rechazo, corrección o escalamiento.
+158. Una conciliación entre dominios exige reconocimiento de cada extremo aplicable.
+159. La pantalla puede mostrar bloqueos de cierre, pero no concede autoridad de cierre por mostrarlos.
+160. `RESULT_UNKNOWN`, `CONFLICT`, `QUARANTINED` y `RECONCILIATION_REQUIRED` permanecen visibles en el balance hasta resolución o disposición válida.
+161. Un pendiente de reincorporación sin propietario se trata como bloqueo y no se oculta en un total agregado.
+162. Una evidencia obligatoria no enlazada permanece visible como pendiente.
+163. Un efecto downstream obligatorio pendiente permanece visible aunque la unidad fuente esté confirmada.
+164. Un folio o registro contabilizado sin destino permanece visible como pendiente.
+165. Una operación expirada sin disposición permanece visible como pendiente.
+166. La bandeja distingue unidades que no requieren replay de unidades realmente pendientes de incorporación.
+167. La bandeja distingue borradores o backlog convertidos en trabajo actual.
+168. La bandeja distingue hechos confirmados por la propietaria de efectos downstream todavía pendientes.
+169. La bandeja distingue unidades rechazadas, superseded y descartadas con sus motivos.
+170. La bandeja permite reconstruir la reducción del total abierto mediante causas demostrables.
+171. La superficie no declara `CERRADO` mientras existan bloqueos de reincorporación que el contrato prohíbe ocultar.
+172. La superficie no convierte `DESACTIVADO` en `CERRADO`.
+173. Un pendiente transferido a trabajo ordinario conserva identidad, propietario y vínculo histórico antes de dejar el balance de continuidad.
+174. La interfaz de CONT-UX-004 no implementa la aprobación final de recuperación total o cierre.
+175. El seguimiento de respaldos, restauración, failover y validación de recuperación permanece fuera de esta tarea.
+176. La ejecución física de replay, outbox, inbox, workers, claims y dead-letter permanece fuera de esta tarea.
+177. La resolución de permisos, RLS y controles de servidor permanece fuera de esta tarea.
+178. La tarea no selecciona IndexedDB, SQLite, Service Worker, tabla, bucket o almacén físico.
+179. La tarea no crea formularios productivos ni emite rangos reales de folios.
+180. La tarea no captura datos reales durante una falla.
+181. La tarea no ejecuta replay, importaciones, compensaciones, reversos ni conciliaciones sobre datos reales.
+182. La tarea no modifica código, DDL, DML, migraciones, RLS, RPC, Edge Functions, datos o Supabase.
+183. La tarea no crea ni modifica requisitos de prueba.
+184. La ausencia de cambios de requisitos evita generar una copia innecesaria del registro de requisitos.
+185. Toda brecha de implementación queda vinculada con una tarea propietaria y una condición de salida.
+186. La siguiente tarea permanece exclusivamente reservada.
+187. El escenario de caída de red durante una captura permitida conserva la captura local y muestra que todavía no está confirmada.
+188. El escenario de reconexión con la misma operación conserva identidad, payload e idempotencia sin duplicar el efecto.
+189. El escenario de timeout con `RESULT_UNKNOWN` ofrece verificación del resultado antes de permitir cualquier nueva intención equivalente.
+190. El escenario de misma idempotency key y contenido diferente termina en conflicto visible.
+191. El escenario de folio manual válido conserva original, representación digital, actor, hora y custodia.
+192. El escenario de folio duplicado bloquea confirmación automática y escala la decisión correspondiente.
+193. El escenario de folio fuera de rango o ilegible conserva la excepción sin completar datos por inferencia.
+194. El escenario de cambio de actor en estación compartida no transfiere pendientes ni custodia.
+195. El escenario de autoridad revocada después de un hecho físico conserva el hecho histórico y lo envía a conciliación.
+196. El escenario de borrador no ejecutado con autoridad ya inválida impide convertirlo en efecto sin revalidación actual.
+197. El escenario de una rama en conflicto permite continuar ramas independientes causalmente elegibles.
+198. El escenario de `UPLOADED_UNLINKED` mantiene el recurso abierto cuando la evidencia sea obligatoria.
+199. El escenario de servicio reducido conserva límites y reconcilia cada subregistro antes de declarar operación completa.
+200. El escenario de operación expirada aún necesaria crea una nueva intención actual enlazada, no un replay de la intención vencida.
+201. El escenario de efecto parcial evita repetir la parte confirmada y deja la parte pendiente con estado independiente.
+202. El escenario AURA bloqueado no muestra acciones de captura o reincorporación inexistentes.
+203. El escenario de dependencia downstream pendiente impide presentar conciliación transversal completa.
+204. El escenario de resultado confirmado en la propietaria y fallo de una consumidora mantiene verdadero el hecho fuente y muestra la divergencia downstream.
+
+
+---
+
+#### 41. Balance de cierre
+
+| Control                                 |   Resultado |
+| --------------------------------------- | ----------: |
+| servicios evaluados                     | **69 / 69** |
+| decisiones UX por servicio              | **69 / 69** |
+| servicios activos especificados         | **67 / 67** |
+| servicios AURA bloqueados               |   **2 / 2** |
+| perfiles activos de estrategia          |   **8 / 8** |
+| estados locales reutilizados            | **16 / 16** |
+| estados de evidencia reutilizados       |   **8 / 8** |
+| controles de admisión UX                | **12 / 12** |
+| clases de conflicto reutilizadas        | **12 / 12** |
+| resoluciones canónicas reutilizadas     |   **7 / 7** |
+| corredores de precedencia representados |   **3 / 3** |
+| escenarios deterministas                | **18 / 18** |
+| criterios de aceptación                 |     **204** |
+| cambios físicos                         |       **0** |
+| cambios TREQ                            |       **0** |
+
+---
+
+#### 42. Límites de la tarea
+
+Esta tarea no:
+
+- implementa almacenamiento offline;
+- crea una tabla, bucket, outbox, inbox, worker, job o dead-letter;
+- crea Service Workers, IndexedDB, SQLite u otra persistencia;
+- emite folios o imprime formularios reales;
+- captura información productiva durante una falla;
+- ejecuta replay o importaciones;
+- resuelve conflictos sobre datos productivos;
+- ejecuta compensaciones, reversos o correcciones productivas;
+- modifica autorización, permisos, RLS o roles;
+- restaura infraestructura ni ejecuta failover;
+- declara recuperación total, desactivación o cierre;
+- modifica código, DDL, DML, migraciones, RPC, Edge Functions, datos o Supabase;
+- modifica el registro canónico de requisitos;
+- inicia `CONT-UX-005`.
+
+---
+
+#### 43. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad`
+
+TAREA ACTUAL APROBADA
+`CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes`
+
+
 ### [ ] CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes
 ### [ ] CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
 ### [ ] CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness

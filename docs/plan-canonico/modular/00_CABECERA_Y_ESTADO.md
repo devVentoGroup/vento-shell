@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **725** |
+| Tareas aprobadas | **726** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **869** |
+| Tareas no iniciadas | **868** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.48% (725/1594)** |
+| Porcentaje de completamiento | **45.55% (726/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad** |
-| Tarea actual | **CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior** |
+| Última tarea aprobada | **CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior** |
+| Tarea actual | **CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes** |
+| Siguiente tarea | **CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 149 de 157 aprobadas; CONT-UX-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 150 de 157 aprobadas; CONT-UX-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-UX-003` — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad |
-| Tarea actual | `CONT-UX-004` — Diseñar captura controlada durante la falla y reincorporación posterior — **NO INICIADA** |
-| Siguiente tarea | `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes |
+| Última aprobada | `CONT-UX-004` — Diseñar captura controlada durante la falla y reincorporación posterior |
+| Tarea actual | `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes — **NO INICIADA** |
+| Siguiente tarea | `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 149 DE 157 APROBADAS — ACTUAL CONT-UX-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 150 DE 157 APROBADAS — ACTUAL CONT-UX-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad
-        ↓
-TAREA ACTUAL
 CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 149 de 157 tareas aprobadas
+CARRIL NEXO — 150 de 157 tareas aprobadas
 ```
