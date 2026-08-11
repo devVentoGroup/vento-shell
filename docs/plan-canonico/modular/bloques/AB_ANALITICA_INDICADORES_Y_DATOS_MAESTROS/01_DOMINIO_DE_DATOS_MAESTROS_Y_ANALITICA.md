@@ -9538,6 +9538,1009 @@ DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y p
 ```
 
 
-### [ ] DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+### ✅ DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza` — APROBADA
+**Tarea siguiente:** `DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de objetivos medibles, líneas base, metas, KPI priorizados, drivers, guardrails y planes de medición
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, automatizaciones, experimentos, despliegues, acciones empresariales o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir cómo Vento OS convierte una oportunidad, obligación o prioridad empresarial en un objetivo medible sin confundir intención con meta, línea base con referencia futura, KPI con cualquier métrica visible, driver con causa demostrada ni guardrail con un indicador decorativo.
+
+La tarea materializa el contrato documental necesario para que todo objetivo pueda responder, sin ambigüedad:
+
+```text
+qué resultado empresarial se quiere cambiar, proteger o mantener
+por qué existe el objetivo
+quién responde por el resultado
+qué métrica registrada será el indicador principal
+cuál es la línea base reproducible
+qué meta se pretende alcanzar y en qué horizonte
+qué drivers se observarán
+qué guardrails limitarán daño o desplazamiento no deseado
+qué población, segmentos y dimensiones aplican
+qué calidad mínima necesitan los datos
+qué cadencia y cortes se usarán
+qué regla determina si el resultado puede evaluarse
+qué cambios semánticos impiden una comparación directa
+qué evidencia deberá conservarse
+qué debe quedar listo antes de pasar a acciones o experimentos
+```
+
+D015 no crea metas numéricas arbitrarias, no configura alertas, no ejecuta acciones, no inicia experimentos y no declara resultados obtenidos. Las fuentes canónicas actuales no contienen valores objetivo empresariales universales para las familias analíticas de D009 a D013; inventarlos violaría el gobierno de datos y de decisiones. La tarea completa el contrato que permite registrar valores concretos cuando exista una decisión empresarial autorizada.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato canónico de objetivos y medición con los siguientes resultados:
+
+- una cadena obligatoria que separa oportunidad, objetivo, indicador principal, línea base, meta, drivers, guardrails, plan de medición, acción y resultado;
+- una coordenada mínima de objetivo con propósito de decisión, propietario, población, periodo, contexto, métrica y evidencia;
+- una regla de **un indicador principal por objetivo**, sin impedir métricas secundarias explicativas;
+- línea base obligatoria, reproducible y anterior a la evaluación del objetivo;
+- cinco formas semánticas admitidas para expresar una meta sin inventar valores: punto, mínimo, máximo, rango y cambio respecto de línea base;
+- drivers contextualizados que no adquieren causalidad por ser llamados drivers;
+- guardrails obligatorios para todo riesgo material identificado, con decisión explícita cuando una dimensión no aplique;
+- plan de medición completo con corte, cadencia, ventana, segmentos, calidad, comparabilidad, tratamiento de faltantes y regla de evaluación;
+- reglas de activación que impiden tratar como objetivo medible oficial una especificación cuyo indicador, línea base o guardrail crítico esté `BLOQUEADO`;
+- separación entre calidad/certificación de D007, confianza diagnóstica de D014 y evaluación de objetivo de D015;
+- preservación de las **55 familias analíticas** de D009 a D013 como universo de medición contextual: 11 comerciales, 12 de inventario y abastecimiento, 10 productivas, 12 de servicio y clientes y 10 económico-financieras;
+- reconciliación del inventario heredado: **55 esperadas; 55 decisiones de elegibilidad materializadas; 0 faltantes; 0 duplicadas**;
+- ninguna familia es declarada KPI global por conveniencia de dashboard;
+- cero valores meta inventados y cero nuevas `metric_key`;
+- handoff cerrado hacia D016 para acciones y experimentos, hacia D017 para restatements y hacia las tareas DATA-AUTH, DATA-UX y DATA-INT correspondientes;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Decisión principal
+
+Vento OS adopta un modelo de **objetivo medible gobernado por contexto**.
+
+```text
+DIAGNÓSTICO U OPORTUNIDAD
+→ describe qué merece atención y con qué confianza
+
+OBJETIVO
+→ declara el resultado empresarial que se quiere cambiar, proteger o mantener
+
+INDICADOR PRINCIPAL
+→ usa una métrica registrada y versionada para evaluar el resultado
+
+LÍNEA BASE
+→ fija el punto de comparación observado y reproducible
+
+META
+→ declara el resultado objetivo, el operador y el horizonte
+
+DRIVERS
+→ observan factores o mecanismos relevantes sin adquirir causalidad automática
+
+GUARDRAILS
+→ vigilan daño, desplazamiento o deterioro no deseado
+
+PLAN DE MEDICIÓN
+→ fija población, ventana, cortes, calidad, comparabilidad y regla de evaluación
+
+DATA-DOM-016
+→ define y gobierna acciones, experimentos, responsables y comprobación
+
+DATA-DOM-017
+→ gobierna correcciones históricas, restatements y reproducibilidad
+```
+
+Un objetivo no se vuelve medible por aparecer en un tablero. Una cifra no se vuelve KPI por ocupar una tarjeta destacada. Una meta no se vuelve válida por existir como número en una configuración.
+
+#### 4. Fuentes y decisiones heredadas
+
+D015 consume sin redefinir:
+
+- `DATA-DOM-001` a `DATA-DOM-003` para propiedad, stewardship, identidad, dimensiones, jerarquías, vigencias y fuentes de verdad;
+- `DATA-DOM-004` para identidad, versión, fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, moneda, calendario, fuente, calidad y propósito de las métricas;
+- `DATA-DOM-005` para granularidad, tiempo, calendario, snapshots y comparabilidad histórica;
+- `DATA-DOM-006` para ingestión, transformación, backfill, reconciliación, linaje y datos tardíos;
+- `DATA-DOM-007` para las diez dimensiones de calidad y los estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para tableros, reportes, alertas, exportaciones, suscripciones y snapshots oficiales;
+- `DATA-DOM-009` a `DATA-DOM-013` para las 55 familias analíticas disponibles como entradas de medición;
+- `DATA-DOM-014` para diagnóstico, oportunidades, ocho patrones de anomalía, seis niveles de confianza y límites de causalidad;
+- `CAP-SCOPE-017`, especialmente `CAP-17.11` y `CAP-17.12`, para el ciclo común con responsable, línea base, meta, drivers, guardrails, ventana, segmentos, evidencia y efectos no deseados;
+- `TREQ-DATA-005` como protección preexistente del ciclo de mejora y de la separación entre señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana, segmentos, resultado, confianza, aprendizaje y decisión;
+- `DATA-UX-006` como superficie futura de objetivos, metas, drivers, guardrails y acciones de mejora;
+- `DATA-AUTH-003` como frontera futura de segregación entre definición, certificación, publicación, fijación de metas, anotación y administración;
+- `DATA-INT-002` como propietario futuro de la materialización técnica de modelos semánticos, cálculos y consultas;
+- `DATA-INT-004` como frontera futura para BI, hojas de cálculo, modelos analíticos e inteligencia artificial.
+
+D015 no eleva el estado de calidad de ninguna fuente ni el nivel de confianza de ningún diagnóstico.
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+prioridad empresarial ≠ objetivo ≠ meta
+```
+
+```text
+métrica ≠ KPI ≠ driver ≠ guardrail
+```
+
+```text
+línea base ≠ meta ≠ benchmark ≠ forecast ≠ escenario
+```
+
+```text
+umbral objetivo ≠ umbral de alerta ≠ límite técnico
+```
+
+```text
+driver ≠ causa demostrada
+```
+
+```text
+guardrail ≠ KPI secundario decorativo
+```
+
+```text
+cumplir KPI ≠ cumplir objetivo si existe daño material en guardrails
+```
+
+```text
+calidad de datos ≠ confianza diagnóstica ≠ cumplimiento de meta
+```
+
+```text
+resultado observado ≠ resultado atribuible a una acción
+```
+
+```text
+objetivo medible ≠ acción aprobada ≠ experimento autorizado
+```
+
+```text
+cambio de meta ≠ restatement de historia
+```
+
+```text
+meta aprobada ≠ valor real observado
+```
+
+#### 6. Autoridad y segregación
+
+| Responsabilidad           | Autoridad lógica                                                         | Regla                                                                |
+| ------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| resultado empresarial     | propietario funcional del dominio afectado                               | responde por el propósito del objetivo y su prioridad                |
+| definición de métrica     | propietario de la definición + BLOQUE AB                                 | el objetivo consume la métrica; no redefine fórmula                  |
+| línea base                | BLOQUE AB + propietario funcional + estado D007                          | debe ser reproducible bajo la misma versión y contexto               |
+| valor y horizonte de meta | propietario funcional con capacidad futura gobernada por `DATA-AUTH-003` | no se infiere desde una anomalía ni desde la interfaz                |
+| driver                    | propietario funcional + BLOQUE AB                                        | declara relación y evidencia; no adquiere causalidad automática      |
+| guardrail                 | propietario funcional del riesgo o resultado protegido                   | limita daño o deterioro no deseado                                   |
+| calidad/certificación     | funciones gobernadas por D007 y autorización futura                      | un objetivo no certifica sus propias entradas                        |
+| publicación               | rol futuro gobernado por `DATA-AUTH-003`                                 | definir o medir no concede capacidad de publicar                     |
+| acción o experimento      | `DATA-DOM-016` + propietario funcional                                   | D015 no autoriza ejecución                                           |
+| materialización técnica   | `DATA-INT-002` y paquetes posteriores                                    | el contrato documental no prescribe tabla, vista, RPC ni herramienta |
+
+La persona o función que fija una meta no adquiere por ello propiedad sobre la métrica ni sobre los hechos fuente.
+
+#### 7. Coordenada mínima de un objetivo
+
+Todo objetivo deberá declarar como mínimo:
+
+| Coordenada                | Contenido obligatorio                                                             |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| resultado empresarial     | qué se quiere mejorar, reducir, proteger, sostener o recuperar                    |
+| justificación             | decisión, oportunidad, obligación o prioridad que origina el objetivo             |
+| propietario funcional     | función responsable del resultado y de la decisión                                |
+| indicador principal       | métrica registrada, versión y propósito de decisión                               |
+| línea base                | valor observado, periodo, corte, población, versión y calidad                     |
+| meta                      | operador, valor o rango aprobado, unidad y horizonte                              |
+| drivers                   | métricas o factores observables asociados al mecanismo de mejora                  |
+| guardrails                | métricas que protegen resultados o riesgos materiales distintos del KPI principal |
+| población                 | inclusiones, exclusiones y estados computables                                    |
+| dimensiones               | sedes, áreas, canales, productos, clientes, centros u otras aplicables            |
+| periodo                   | horizonte del objetivo y ventanas de evaluación                                   |
+| calendario/zona horaria   | semántica temporal compatible con la métrica                                      |
+| fuentes                   | hechos y maestros propietarios consumidos                                         |
+| calidad                   | estado D007 requerido para cada dependencia crítica                               |
+| confianza                 | nivel D014 cuando el objetivo deriva de una hipótesis o diagnóstico               |
+| segmentos                 | cortes predefinidos para comprobar heterogeneidad y evitar promedios engañosos    |
+| cadencia                  | frecuencia de observación y de revisión empresarial                               |
+| regla de evaluación       | cómo se determina si la meta puede compararse y evaluarse                         |
+| tratamiento de guardrails | qué significa un incumplimiento para la evaluación del objetivo                   |
+| evidencia                 | snapshots, consultas, versiones y decisiones que deberán conservarse              |
+
+Dos objetivos con el mismo nombre narrativo no son equivalentes si difieren materialmente en métrica, versión, población, línea base, meta, horizonte o guardrails.
+
+#### 8. Cadena obligatoria de objetivo y medición
+
+Toda iniciativa medible seguirá, como mínimo, esta secuencia lógica:
+
+```text
+ORIGEN EMPRESARIAL
+→ OBJETIVO
+→ INDICADOR PRINCIPAL
+→ LÍNEA BASE
+→ META
+→ DRIVERS
+→ GUARDRAILS
+→ PLAN DE MEDICIÓN
+→ ELEGIBILIDAD PARA ACCIÓN O EXPERIMENTO EN D016
+```
+
+Reglas:
+
+1. no se fija una meta antes de identificar el indicador principal y su unidad;
+2. no se activa seguimiento oficial sin línea base reproducible o una excepción empresarial explícita que deje el objetivo `PENDIENTE_DE_EVIDENCIA`;
+3. un objetivo derivado de D014 conserva la confianza diagnóstica que lo originó;
+4. un driver no puede elevar la confianza causal más allá de D014;
+5. un guardrail no puede ser omitido cuando existe un riesgo material conocido;
+6. la acción se define después de que el objetivo y el plan de medición sean suficientes para comprobar resultados;
+7. D015 no exige que todo objetivo origine un experimento; la decisión corresponde a D016 según riesgo, reversibilidad y necesidad de identificación causal.
+
+#### 9. Estado de preparación de un objetivo
+
+D015 utiliza los estados transversales de trabajo únicamente para describir preparación documental y evidencia, sin crear un catálogo técnico nuevo.
+
+| Estado                   | Aplicación en D015                                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ESPECIFICADO`           | objetivo, indicador, línea base, meta, drivers, guardrails y plan de medición están definidos documentalmente                                                |
+| `PENDIENTE_DE_EVIDENCIA` | falta evidencia suficiente para cerrar línea base, comparabilidad, driver o guardrail sin inventar valores                                                   |
+| `BLOQUEADO`              | una dependencia crítica o métrica necesaria está bloqueada y no permite evaluación oficial                                                                   |
+| `VALIDADO`               | existe evidencia reproducible de que el contrato de medición puede evaluarse en la coordenada declarada; D015 no asigna este estado por redacción documental |
+| `IMPLEMENTADO`           | existe materialización técnica operativa; fuera de la fase documental actual                                                                                 |
+| `NO_APLICA`              | una dimensión o guardrail concreto se excluye con justificación y propietario                                                                                |
+| `FUERA_DE_ALCANCE`       | el elemento pertenece a acción, experimento, autorización, UX, integración o restatement de otra tarea                                                       |
+
+Ningún objetivo de esta tarea se declara `IMPLEMENTADO` o `VALIDADO` por la sola existencia del documento.
+
+#### 10. Objetivo
+
+Un objetivo expresa un resultado empresarial deseado, no una actividad.
+
+Debe formularse con:
+
+- resultado afectado;
+- población y contexto;
+- dirección deseada;
+- razón empresarial;
+- propietario;
+- horizonte;
+- indicador principal;
+- restricción o riesgo material que deba protegerse.
+
+Un objetivo no deberá redactarse como una solución técnica, una consulta, una pantalla, una automatización ni una herramienta.
+
+La oportunidad de D014 puede originar un objetivo, pero no todo objetivo depende de un diagnóstico causal. También puede existir por obligación contractual, cumplimiento, planificación aprobada o decisión estratégica, siempre que el origen quede trazable y el propietario funcional lo respalde.
+
+#### 11. Indicador principal
+
+Cada objetivo tendrá exactamente **un indicador principal** para resolver la pregunta primaria de éxito.
+
+Reglas:
+
+1. el indicador principal consume una métrica registrada conforme a D004;
+2. no se crea una fórmula local para adaptar el KPI a un dashboard;
+3. si la métrica requerida todavía no está materializada como `metric_key`, el objetivo puede quedar `ESPECIFICADO` a nivel empresarial, pero su medición permanece `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` según la fuente;
+4. métricas secundarias pueden explicar composición, restricciones o efectos, pero no sustituyen el indicador principal;
+5. la misma métrica puede ser KPI en un objetivo, driver en otro y guardrail en un tercero sin duplicar su definición;
+6. la designación de KPI siempre es contextual al objetivo, población y horizonte;
+7. ninguna métrica se vuelve KPI global por aparecer con frecuencia o por ser fácil de medir.
+
+#### 12. Línea base
+
+La línea base es el estado observado contra el que se evaluará el cambio del objetivo.
+
+Deberá conservar:
+
+- métrica y versión;
+- valor o distribución observada;
+- población;
+- periodo de observación;
+- fecha/hora de corte;
+- granularidad;
+- dimensiones;
+- unidad o moneda;
+- fuentes;
+- calidad D007;
+- cobertura;
+- regla de agregación;
+- snapshot o evidencia reproducible cuando aplique.
+
+Reglas:
+
+1. una línea base usa datos observados; forecast, presupuesto o escenario pueden ser comparadores o fuentes para fijar una meta, pero no sustituyen el observado base;
+2. la línea base debe preceder la ventana en la que se pretende evaluar un cambio;
+3. una media, mediana, percentil, tasa, suma u otra estadística solo se usa cuando pertenece a la definición gobernada de la métrica o al método de baseline declarado;
+4. no se elige una ventana posterior al observar el resultado para favorecer una conclusión;
+5. datos faltantes no se convierten en cero;
+6. una fuente `BLOQUEADO` no produce línea base oficial;
+7. una fuente `NO EVALUADO` o `EN OBSERVACIÓN` puede soportar exploración visible, pero no se presenta como línea base certificada;
+8. una fuente `DEGRADADO` solo puede usarse si el propósito admite esa degradación y queda explícita;
+9. una corrección posterior no sobrescribe silenciosamente la línea base originalmente publicada;
+10. D017 gobierna la relación entre baseline original, reconstrucción, corrección histórica y restatement.
+
+#### 13. Métodos de línea base
+
+D015 admite tres métodos documentales, seleccionados según la naturaleza de la métrica:
+
+| Método                        | Uso                                                      | Condición                                                     |
+| ----------------------------- | -------------------------------------------------------- | ------------------------------------------------------------- |
+| periodo fijo observado        | ventana histórica cerrada y comparable                   | periodo, corte y cobertura definidos antes de evaluación      |
+| referencia histórica agregada | varios periodos comparables resumidos de forma gobernada | regla de agregación, estacionalidad y exclusiones explícitas  |
+| cohorte o segmento comparable | población emparejada o segmento de referencia            | dimensiones, elegibilidad y diferencias materiales declaradas |
+
+No existe una ventana universal de baseline. La selección deberá ser defendible para el objetivo y permanecer versionada.
+
+#### 14. Meta
+
+La meta declara el resultado objetivo que se pretende evaluar para el indicador principal.
+
+Toda meta deberá conservar:
+
+- indicador principal y versión;
+- operador de cumplimiento;
+- valor, rango o cambio aprobado;
+- unidad o moneda;
+- población;
+- horizonte;
+- fecha de vigencia;
+- fecha o condición de evaluación;
+- fuente de la decisión;
+- propietario que la aprueba;
+- supuestos materiales;
+- relación con línea base;
+- tratamiento de cambios posteriores.
+
+D015 no fija valores numéricos universales porque no existe respaldo canónico actual para hacerlo.
+
+#### 15. Cinco formas semánticas de meta
+
+| Forma                         | Semántica                                                    | Ejemplo abstracto de evaluación                                    |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| punto                         | alcanzar un valor concreto                                   | resultado = valor objetivo bajo tolerancia declarada               |
+| mínimo                        | no quedar por debajo de un valor                             | resultado ≥ mínimo aprobado                                        |
+| máximo                        | no superar un valor                                          | resultado ≤ máximo aprobado                                        |
+| rango                         | permanecer dentro de límites inferior y superior             | inferior ≤ resultado ≤ superior                                    |
+| cambio respecto de línea base | mover el resultado una magnitud absoluta o relativa definida | resultado comparado con baseline bajo la misma versión y población |
+
+La tabla define semántica, no valores vigentes.
+
+Reglas:
+
+1. una dirección como “mejorar” o “reducir” no sustituye una meta evaluable cuando el objetivo se declare listo para medición;
+2. un valor visible en presupuesto, forecast, escenario, SLA, contrato o benchmark no se convierte automáticamente en meta; debe existir decisión explícita de usarlo como tal;
+3. la meta debe usar unidad y semántica compatibles con el indicador principal;
+4. una meta porcentual no se evalúa si el denominador no es válido;
+5. una meta monetaria conserva moneda y regla de conversión aplicable;
+6. cambiar la meta durante la ventana no reescribe la meta anterior; la nueva decisión conserva vigencia y motivo;
+7. D017 gobierna la reconstrucción histórica cuando cambian definiciones o publicaciones.
+
+#### 16. Fuente de la meta
+
+Todo valor objetivo concreto deberá declarar de dónde proviene la decisión.
+
+Fuentes válidas solo cuando estén documentadas y autorizadas pueden incluir:
+
+- obligación legal, contractual o de seguridad aplicable;
+- compromiso de servicio aprobado;
+- presupuesto o plan aprobado;
+- benchmark aceptado para la población y contexto;
+- capacidad técnica u operativa gobernada;
+- decisión estratégica del propietario funcional;
+- resultado de un aprendizaje previo reproducible;
+- análisis económico o escenario D013 usado explícitamente para decidir, sin confundir escenario con resultado real.
+
+La fuente de la meta explica la decisión; no sustituye la evidencia de línea base.
+
+#### 17. Driver
+
+Un driver es una métrica o factor observable relacionado con el mecanismo mediante el cual se espera mover el indicador principal.
+
+Cada driver deberá declarar:
+
+- métrica o factor;
+- versión o definición aplicable;
+- dirección esperada de relación;
+- población y ventana;
+- evidencia disponible;
+- nivel D014 cuando exista afirmación explicativa;
+- propietario funcional;
+- frecuencia de observación;
+- límite de interpretación.
+
+Reglas:
+
+1. llamar driver a una métrica no demuestra causalidad;
+2. un driver con nivel `SEÑAL_DESCRIPTIVA` o `ASOCIACION` se comunica como relación observada, no como palanca causal demostrada;
+3. un driver puede ser controlable, parcialmente controlable o externo; la condición deberá permanecer visible;
+4. un driver no sustituye el KPI principal;
+5. un driver no puede redefinir la fórmula de la métrica fuente;
+6. si no existe driver suficientemente sustentado, el objetivo puede permanecer medible sobre su KPI, pero cualquier acción que asuma causalidad deberá esperar D014/D016;
+7. D016 decide qué driver, mecanismo o intervención se convertirá en acción o experimento.
+
+#### 18. Guardrail
+
+Un guardrail es una métrica utilizada para limitar daño, desplazamiento o deterioro no deseado mientras se persigue un objetivo.
+
+Cada guardrail deberá declarar:
+
+- resultado o riesgo protegido;
+- métrica y versión;
+- población y dimensiones;
+- límite, rango o regla de no deterioro;
+- unidad;
+- periodo y corte;
+- calidad mínima;
+- propietario funcional;
+- tratamiento cuando el límite se incumple;
+- relación con el indicador principal.
+
+Reglas:
+
+1. todo riesgo material identificado deberá tener al menos un guardrail o una decisión `NO_APLICA` con justificación y propietario;
+2. un guardrail debe medir un resultado materialmente distinto o una restricción que el KPI principal podría empeorar;
+3. el logro del indicador principal no se presenta como éxito pleno si un guardrail material se incumple y la regla del objetivo declara ese guardrail como bloqueante;
+4. un guardrail de calidad de datos no sustituye la certificación D007;
+5. un guardrail no ejecuta automáticamente una reversa, pausa o cambio; el tratamiento operativo pertenece a D016 y a las tareas propietarias;
+6. el límite de guardrail no se inventa; conserva su fuente de decisión igual que una meta;
+7. una métrica puede ser guardrail en un objetivo y KPI en otro sin cambiar su definición.
+
+#### 19. KPI, driver y guardrail son roles contextuales
+
+La misma `metric_key` y versión puede desempeñar roles diferentes según objetivo, población y horizonte.
+
+| Rol                | Pregunta que responde                                            | Prohibición principal                                          |
+| ------------------ | ---------------------------------------------------------------- | -------------------------------------------------------------- |
+| KPI principal      | ¿se logró el resultado objetivo?                                 | no tener más de uno como resultado primario del mismo objetivo |
+| driver             | ¿qué factor observable acompaña o podría mover el KPI?           | no presentar asociación como causa                             |
+| guardrail          | ¿qué resultado no debe deteriorarse mientras se persigue el KPI? | no ignorarlo al declarar éxito                                 |
+| métrica secundaria | ¿qué detalle ayuda a interpretar el resultado?                   | no convertirla en KPI por conveniencia visual                  |
+
+D015 no crea copias de una métrica para cada rol.
+
+#### 20. Plan de medición
+
+Todo objetivo `ESPECIFICADO` deberá contar con un plan de medición completo.
+
+El plan deberá declarar:
+
+1. propósito de decisión;
+2. propietario funcional;
+3. indicador principal y versión;
+4. línea base y su evidencia;
+5. meta y fuente de decisión;
+6. drivers y límites de interpretación;
+7. guardrails y tratamiento documental de incumplimiento;
+8. población e inclusiones/exclusiones;
+9. segmentos predefinidos;
+10. dimensiones de comparación;
+11. unidad, moneda y precisión;
+12. calendario y zona horaria;
+13. ventana de observación;
+14. fecha de corte;
+15. cadencia de actualización;
+16. cadencia de revisión empresarial;
+17. calidad mínima de fuentes;
+18. cobertura mínima o condición de suficiencia cuando aplique;
+19. tratamiento de faltantes, nulos y denominadores inválidos;
+20. regla de comparabilidad con baseline;
+21. tratamiento de datos tardíos y backfills;
+22. condición para revaluar tras cambio semántico;
+23. regla de evaluación de meta;
+24. regla de evaluación de guardrails;
+25. evidencia que deberá conservarse;
+26. restricción de detalle sensible y poblaciones pequeñas;
+27. condición de handoff hacia D016;
+28. tratamiento de correcciones y restatements mediante D017.
+
+No existe una cadencia universal. La frecuencia debe responder a la velocidad real del proceso, la latencia de las fuentes y la decisión que se pretende tomar.
+
+#### 21. Puerta de activación de medición oficial
+
+Un objetivo solo puede considerarse listo para medición oficial cuando:
+
+1. existe un propietario funcional;
+2. el resultado empresarial está definido;
+3. el indicador principal está identificado y versionado;
+4. la línea base es reproducible;
+5. la meta tiene fuente, operador, unidad y horizonte;
+6. los riesgos materiales tienen guardrails o exclusión `NO_APLICA` justificada;
+7. población, segmentos, periodo y corte están definidos;
+8. existe plan de medición completo;
+9. las fuentes críticas no están `BLOQUEADO`;
+10. la comparabilidad con baseline está resuelta;
+11. la calidad de entradas es compatible con el uso declarado;
+12. cualquier dependencia causal se comunica al nivel D014 realmente alcanzado;
+13. las restricciones de autorización y privacidad aplicables están identificadas;
+14. existe evidencia suficiente para reproducir la evaluación.
+
+Si una condición crítica falla, el objetivo permanece `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO`; no se rellena con supuestos.
+
+#### 22. Calidad y certificación en objetivos
+
+D015 consume D007 sin crear un sistema paralelo de calidad.
+
+Reglas:
+
+1. `CERTIFICADO` se conserva únicamente para el uso, periodo, versión y corte cubiertos por D007;
+2. `NO EVALUADO` no se presenta como baseline certificado;
+3. `EN OBSERVACIÓN` exige visibilidad de la condición;
+4. `DEGRADADO` requiere que el propósito de decisión admita expresamente la limitación;
+5. `BLOQUEADO` impide medición oficial del elemento dependiente;
+6. una métrica certificada no hace que el objetivo sea automáticamente válido si faltan meta, guardrails o comparabilidad;
+7. un objetivo bien definido no mejora la calidad de sus fuentes.
+
+#### 23. Comparabilidad con la línea base
+
+La evaluación deberá preservar las reglas de D005.
+
+Como mínimo deberán coincidir o reconciliarse explícitamente:
+
+- `metric_key` y versión semántica;
+- grano;
+- población;
+- inclusiones y exclusiones;
+- calendario y zona horaria;
+- periodo y corte;
+- dimensiones;
+- unidad o moneda;
+- cobertura;
+- fuentes críticas;
+- tratamiento de datos tardíos;
+- cambios de definición o de maestro;
+- restatements aplicables.
+
+Un objetivo no se declara cumplido comparando valores no equivalentes.
+
+#### 24. Segmentos y heterogeneidad
+
+El plan de medición deberá declarar por adelantado los segmentos materialmente relevantes para interpretar el resultado.
+
+Reglas:
+
+1. no se seleccionan únicamente segmentos favorables después de observar el resultado;
+2. el agregado puede ocultar deterioro de una sede, canal, producto, cohorte o población;
+3. los segmentos deben usar dimensiones gobernadas;
+4. la ausencia de tamaño suficiente se muestra como limitación;
+5. detalle sensible y poblaciones pequeñas consumen `DATA-AUTH-002`;
+6. un resultado agregado no se generaliza automáticamente a todos los segmentos;
+7. diferencias entre segmentos pueden abrir diagnóstico D014 sin convertirse por sí solas en causa.
+
+#### 25. Cadencia, corte y ventanas
+
+D015 separa:
+
+```text
+cadencia de actualización de datos
+≠ cadencia de cálculo
+≠ cadencia de revisión empresarial
+≠ ventana de evaluación del objetivo
+```
+
+Reglas:
+
+- una fuente diaria no obliga a revisar el objetivo diariamente;
+- una revisión frecuente no crea observaciones nuevas;
+- una ventana incompleta se presenta como parcial;
+- la fecha de corte debe acompañar toda evaluación;
+- una meta terminal no se declara incumplida antes del cierre salvo que el contrato defina hitos intermedios;
+- los hitos intermedios, cuando existan, conservan su propia fecha y regla de evaluación.
+
+#### 26. Datos faltantes, cero y denominadores
+
+D015 conserva las distinciones de D006 y D007.
+
+```text
+0
+≠ NULL
+≠ NO_APLICA
+≠ DESCONOCIDO
+≠ NO_RECIBIDO
+≠ PENDIENTE
+≠ DENOMINADOR_NO_DISPONIBLE
+```
+
+Reglas:
+
+1. una meta no se evalúa con un denominador inexistente;
+2. un dato faltante no se sustituye por cero para evitar estado pendiente;
+3. una ausencia de observación no prueba cumplimiento;
+4. una muestra parcial conserva cobertura visible;
+5. una meta de cero exige semántica explícita de cero real, no ausencia de registros;
+6. un objetivo puede permanecer sin evaluación hasta que la fuente sea suficiente.
+
+#### 27. Umbral de meta, guardrail y alerta
+
+D015 define meta y límites de guardrail. D008 gobierna alertas.
+
+```text
+META
+→ valor objetivo empresarial
+
+GUARDRAIL
+→ límite de protección para otro resultado o riesgo
+
+ALERTA
+→ señal de que una condición configurada requiere atención
+```
+
+Una misma cifra puede coincidir por decisión empresarial, pero no se asume equivalencia conceptual.
+
+Reglas:
+
+- fijar una meta no crea automáticamente una alerta;
+- fijar un guardrail no crea automáticamente una automatización;
+- una alerta no modifica la meta;
+- ausencia de dato no se interpreta como cumplimiento ni incumplimiento salvo que la regla mida precisamente disponibilidad de datos;
+- D016 gobierna qué acción procede ante desviaciones o incumplimientos.
+
+#### 28. Relación con D014
+
+Cuando el objetivo nace de una oportunidad diagnóstica:
+
+- conserva el diagnóstico de origen;
+- conserva el nivel de confianza D014;
+- conserva alternativas materiales abiertas;
+- conserva población, periodo y límites de generalización;
+- no transforma un driver asociado en causa demostrada;
+- no convierte impacto potencial en beneficio comprometido;
+- puede definir medición adicional para resolver incertidumbre antes de ejecutar una acción.
+
+Un objetivo puede ser válido con confianza diagnóstica baja si su finalidad es aprender o proteger un riesgo, pero cualquier afirmación causal seguirá limitada por D014.
+
+#### 29. Relación con D016
+
+D015 termina cuando el objetivo está suficientemente especificado para que una acción o experimento pueda diseñarse y evaluarse.
+
+El handoff hacia D016 deberá conservar:
+
+- resultado empresarial;
+- propietario funcional;
+- indicador principal;
+- baseline;
+- meta;
+- drivers;
+- guardrails;
+- población y segmentos;
+- ventana y cadencia;
+- calidad y limitaciones;
+- diagnóstico de origen cuando exista;
+- confianza D014;
+- riesgos de actuar y de no actuar;
+- regla de evaluación del resultado.
+
+D016 decide acción, experimento, responsable de ejecución, seguimiento, reversa y comprobación. D015 no anticipa esas decisiones.
+
+#### 30. Relación con D017
+
+Cuando una corrección, backfill, cambio de definición o reexpresión afecte baseline, KPI, driver o guardrail:
+
+1. no se sobrescribe silenciosamente el valor usado originalmente;
+2. se conserva versión, corte y decisión original;
+3. se identifica qué evaluaciones quedan potencialmente afectadas;
+4. D017 decide si corresponde reconstrucción, corrección histórica o restatement;
+5. una meta posterior no se aplica retroactivamente a una ventana anterior;
+6. cambiar la definición de una métrica no se trata como mejora o deterioro del negocio sin reconciliación.
+
+#### 31. Conflictos entre objetivos y optimización local
+
+Un objetivo puede mejorar su KPI y deteriorar otro resultado empresarial.
+
+D015 exige:
+
+- guardrails para riesgos materiales previsibles;
+- visibilidad de objetivos que comparten recursos, población o métricas;
+- declaración de restricciones de capacidad, liquidez, inventario, calidad, servicio, cumplimiento o seguridad cuando sean relevantes;
+- prohibición de ocultar desplazamiento de impacto entre sedes, periodos, canales, productos o centros;
+- revisión del resultado conjunto antes de declarar éxito cuando exista conflicto material.
+
+No se crea una función universal de optimización ni un score que combine objetivos heterogéneos.
+
+#### 32. Métricas de vanidad y anti-gaming
+
+Una métrica no puede ser KPI principal solo porque sea fácil de aumentar, frecuente o visible.
+
+El KPI deberá:
+
+- representar el resultado empresarial declarado;
+- tener fórmula y población gobernadas;
+- poder interpretarse en la dirección elegida;
+- no premiar actividad sin resultado cuando el objetivo exige resultado;
+- estar acompañado por guardrails cuando exista riesgo de optimización local;
+- permitir drill-down hasta evidencia autorizada;
+- conservar cambios de definición y cobertura.
+
+Los proxies solo podrán usarse si su condición de proxy queda explícita y no se presentan como resultado final.
+
+#### 33. Inventario heredado de 55 familias: decisión de elegibilidad para objetivos
+
+Las 55 familias conservan exactamente los nombres aprobados. La decisión de esta tarea no asigna un KPI global; define qué roles pueden desempeñar contextualmente y qué condición debe satisfacerse antes de activar medición oficial.
+
+##### 33.1. Comercial — 11 familias
+
+|    # | Familia canónica                             | Roles contextuales admisibles               | Condición principal                                                                                    | Estado de la decisión |
+| ---: | -------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------- |
+|    1 | ventas netas y brutas                        | KPI, driver, guardrail o métrica secundaria | usar base comercial/fiscal y población gobernadas; no confundir venta con margen                       | `ESPECIFICADO`        |
+|    2 | pedidos y conversión                         | KPI o driver                                | conversión requiere numerador y denominador gobernados; conteo de pedidos conserva su propia población | `ESPECIFICADO`        |
+|    3 | ticket y unidades                            | KPI o driver                                | ticket usa transacciones elegibles y unidades compatibles; no dividir por filas de producto            | `ESPECIFICADO`        |
+|    4 | mezcla por producto, categoría, canal y sede | KPI contextual, driver o guardrail          | dimensiones y denominadores de participación deben reconciliar al total                                | `ESPECIFICADO`        |
+|    5 | demanda por franja, día y temporada          | KPI o driver                                | demanda observada no equivale a demanda total; estacionalidad exige historia suficiente                | `ESPECIFICADO`        |
+|    6 | disponibilidad perdida                       | KPI, driver o guardrail                     | permanece bloqueada para medición oficial sin intención y disponibilidad histórica reconciliadas       | `ESPECIFICADO`        |
+|    7 | cancelaciones, devoluciones y descuentos     | KPI, driver o guardrail                     | mantener cada fenómeno y denominador separados                                                         | `ESPECIFICADO`        |
+|    8 | promociones y efecto incremental             | KPI o driver                                | exposición/versionado son previos; efecto causal respeta D014 y, cuando corresponda, D016              | `ESPECIFICADO`        |
+|    9 | recurrencia y frecuencia                     | KPI o driver                                | identidad, finalidad, población y ventana deben estar gobernadas                                       | `ESPECIFICADO`        |
+|   10 | margen relacionado                           | KPI o guardrail                             | consumir margen económico D013; no recalcular costo localmente                                         | `ESPECIFICADO`        |
+|   11 | capacidad comercial no utilizada             | KPI contextual, driver o guardrail          | requiere denominador de capacidad compatible                                                           | `ESPECIFICADO`        |
+
+##### 33.2. Inventario, abastecimiento, proveedores y logística — 12 familias
+
+|    # | Familia canónica                        | Roles contextuales admisibles      | Condición principal                                                                 | Estado de la decisión |
+| ---: | --------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- | --------------------- |
+|    1 | existencia disponible y comprometida    | KPI, driver o guardrail            | separar física, comprometida, cuarentena, tránsito y disponible                     | `ESPECIFICADO`        |
+|    2 | cobertura y días de inventario          | KPI, driver o guardrail            | requiere existencia elegible y tasa de demanda/consumo compatible                   | `ESPECIFICADO`        |
+|    3 | rotación y permanencia                  | KPI, driver o guardrail            | requiere inventario medio e historia/cohorte compatibles                            | `ESPECIFICADO`        |
+|    4 | faltantes y quiebres                    | KPI, driver o guardrail            | stock cero no prueba faltante o quiebre sin necesidad elegible                      | `ESPECIFICADO`        |
+|    5 | vencimiento, daño y pérdida             | KPI o guardrail                    | hechos y causas deben ser explícitos; cuarentena y disposición permanecen separadas | `ESPECIFICADO`        |
+|    6 | diferencias de conteo                   | KPI, driver o guardrail            | conservar signo, corte y relación antes/después del ajuste                          | `ESPECIFICADO`        |
+|    7 | cumplimiento de remisiones              | KPI o driver                       | preparación, despacho, recepción, faltante y cierre se evalúan por separado         | `ESPECIFICADO`        |
+|    8 | lead time y cumplimiento de proveedores | KPI o driver                       | requiere inicio contractual y recepción aceptada con promesa comparable             | `ESPECIFICADO`        |
+|    9 | compras urgentes                        | KPI o guardrail                    | solo hechos clasificados explícitamente como urgentes/emergencia                    | `ESPECIFICADO`        |
+|   10 | consumo versus plan                     | KPI o driver                       | requiere plan explícito de misma población, unidad, sede y ventana                  | `ESPECIFICADO`        |
+|   11 | costo de inventario                     | KPI o guardrail                    | valoración oficial consume método económico aprobado D013                           | `ESPECIFICADO`        |
+|   12 | capacidad de almacenamiento             | KPI contextual, driver o guardrail | requiere capacidad utilizable y unidad física compatible                            | `ESPECIFICADO`        |
+
+##### 33.3. Producción, rendimiento, capacidad, merma y calidad — 10 familias
+
+|    # | Familia canónica                            | Roles contextuales admisibles | Condición principal                                                                                 | Estado de la decisión |
+| ---: | ------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------- | --------------------- |
+|    1 | demanda planificada versus producción       | KPI o driver                  | requiere necesidad/plan FOGO aceptado y producción elegible comparable                              | `ESPECIFICADO`        |
+|    2 | capacidad disponible y utilizada            | KPI, driver o guardrail       | requiere denominador integral de capacidad en unidad compatible                                     | `ESPECIFICADO`        |
+|    3 | adherencia al programa                      | KPI o driver                  | exige programa publicado/versionado con hitos y población                                           | `ESPECIFICADO`        |
+|    4 | rendimiento teórico y real                  | KPI o driver                  | teoría y real deben reconciliar receta/versión, escala y unidad                                     | `ESPECIFICADO`        |
+|    5 | consumo estándar y real                     | KPI, driver o guardrail       | estándar y real se comparan por ingrediente y unidad compatible                                     | `ESPECIFICADO`        |
+|    6 | merma, reproceso y aprovechamiento          | KPI, driver o guardrail       | cada categoría requiere hecho explícito y denominador propio                                        | `ESPECIFICADO`        |
+|    7 | calidad, retención y rechazo                | KPI o guardrail               | control, resultado, retención, rechazo, reproceso y liberación permanecen separados                 | `ESPECIFICADO`        |
+|    8 | tiempo de ciclo                             | KPI o driver                  | requiere hitos reales; espera, preparación, ejecución, pausa, retención y liberación no se colapsan | `ESPECIFICADO`        |
+|    9 | cumplimiento de liberación                  | KPI o guardrail               | producción terminada no equivale a lote liberado                                                    | `ESPECIFICADO`        |
+|   10 | costo y variación por lote, producto y sede | KPI, driver o guardrail       | costo técnico no sustituye costo económico oficial D013                                             | `ESPECIFICADO`        |
+
+##### 33.4. Servicio, clientes, fidelización, reputación y experiencia — 12 familias
+
+|    # | Familia canónica                                        | Roles contextuales admisibles      | Condición principal                                                                            | Estado de la decisión |
+| ---: | ------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------- |
+|    1 | cumplimiento de promesa                                 | KPI o driver                       | promesa aceptada y versionada es requisito; solicitud no equivale a compromiso                 | `ESPECIFICADO`        |
+|    2 | tiempos de preparación, despacho y entrega              | KPI o driver                       | cada fase requiere eventos reales compatibles                                                  | `ESPECIFICADO`        |
+|    3 | pedidos completos                                       | KPI o driver                       | completitud se resuelve por líneas, cantidades, revisiones y sustituciones aceptadas           | `ESPECIFICADO`        |
+|    4 | reclamos y tiempo de resolución                         | KPI, driver o guardrail            | reclamo exige expediente y SLA/version aplicable                                               | `ESPECIFICADO`        |
+|    5 | compensaciones                                          | KPI contextual, driver o guardrail | devolución, reembolso, descuento, cortesía, cupón y puntos permanecen distintos                | `ESPECIFICADO`        |
+|    6 | satisfacción y feedback                                 | KPI, driver o guardrail            | feedback interno, invitación y reputación externa permanecen separados                         | `ESPECIFICADO`        |
+|    7 | recurrencia, frecuencia y abandono                      | KPI o driver                       | abandono exige población elegible, ventana y observación completa                              | `ESPECIFICADO`        |
+|    8 | adquisición y activación                                | KPI o driver                       | adquisición y activación requieren eventos y origen gobernados                                 | `ESPECIFICADO`        |
+|    9 | fidelización, puntos y redenciones                      | KPI, driver o guardrail            | movimientos y redenciones se analizan por estado; saldo no sustituye ledger                    | `ESPECIFICADO`        |
+|   10 | reputación y temas recurrentes                          | KPI, driver o guardrail            | reputación pública requiere fuente externa gobernada; feedback interno permanece distinto      | `ESPECIFICADO`        |
+|   11 | reservas, no-show y utilización                         | KPI, driver o guardrail            | utilización requiere capacidad gobernada; reserva, cancelación y no-show son estados distintos | `ESPECIFICADO`        |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | KPI o guardrail                    | identidad/finalidad autorizadas y rentabilidad D013 son requisitos                             | `ESPECIFICADO`        |
+
+##### 33.5. Costos, rentabilidad, liquidez, presupuesto y escenarios — 10 familias
+
+|    # | Familia canónica              | Roles contextuales admisibles           | Condición principal                                                                             | Estado de la decisión |
+| ---: | ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
+|    1 | costos estándar y reales      | KPI, driver o guardrail                 | estándar y real usan método, versión, unidad, moneda y componentes comparables                  | `ESPECIFICADO`        |
+|    2 | variaciones                   | KPI o driver                            | cada variación conserva su base; costo, presupuesto, forecast, precio y cantidad no se colapsan | `ESPECIFICADO`        |
+|    3 | margen y contribución         | KPI o guardrail                         | exige ingreso realizado y costos trazables/variables elegibles                                  | `ESPECIFICADO`        |
+|    4 | gastos                        | KPI, driver o guardrail                 | capturado, reconocido, aprobado, pagado, anulado y conciliado permanecen separados              | `ESPECIFICADO`        |
+|    5 | centros de costo              | driver, dimensión o métrica secundaria  | un centro es dimensión económica; no es KPI por sí mismo sin métrica definida sobre él          | `ESPECIFICADO`        |
+|    6 | presupuesto y forecast        | KPI contextual, driver o comparador     | presupuesto aprobado, revisión, forecast, escenario y real permanecen distintos                 | `ESPECIFICADO`        |
+|    7 | caja, bancos y tesorería      | KPI o guardrail                         | posición real exige saldos reconciliados y disponibilidad                                       | `ESPECIFICADO`        |
+|    8 | cartera y obligaciones        | KPI, driver o guardrail                 | saldo abierto deriva de reconocimiento menos aplicaciones válidas                               | `ESPECIFICADO`        |
+|    9 | rentabilidad multidimensional | KPI o guardrail                         | exige ingreso realizado, costos trazables, asignaciones y residuo visibles                      | `ESPECIFICADO`        |
+|   10 | escenarios y simulaciones     | driver, comparador o métrica secundaria | simulado no sustituye real, baseline ni efecto observado                                        | `ESPECIFICADO`        |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55` familias. **55 esperadas; 55 decisiones materializadas; 0 faltantes; 0 duplicadas.**
+
+#### 34. Reglas globales de la matriz de elegibilidad
+
+1. `ESPECIFICADO` en la tabla significa que D015 decide la elegibilidad semántica del rol; no certifica datos ni activa una meta.
+2. los bloqueos y estados de D009 a D013 se heredan sin mejora silenciosa;
+3. una familia con componentes `BLOQUEADO` no puede producir medición oficial de esos componentes;
+4. una familia `NO EVALUADO` puede soportar análisis provisional con estado visible, no baseline certificado;
+5. el rol KPI/driver/guardrail solo se materializa cuando se vincula a una métrica registrada y a un objetivo concreto;
+6. ningún rol de esta tabla crea una fórmula alternativa;
+7. una dimensión, comparador o escenario no se convierte en resultado real por participar en un objetivo;
+8. cuando una familia combine submétricas con estados distintos, el plan de medición conserva el estado de cada dependencia material.
+
+#### 35. Objetivos derivados de las 55 familias
+
+D015 no crea 55 objetivos automáticos. Las familias son capacidades de medición, no una lista de metas obligatorias.
+
+Un objetivo deberá seleccionarse por una decisión empresarial explícita y podrá combinar métricas de varias familias cuando:
+
+- cada métrica conserve su propietario y definición;
+- las poblaciones sean compatibles o su diferencia esté declarada;
+- la comparación temporal sea válida;
+- las monedas/unidades sean compatibles;
+- el driver no se presente como causal sin nivel D014 suficiente;
+- los guardrails protejan los riesgos materiales de la intervención futura.
+
+No se exige un objetivo por familia ni una familia por objetivo.
+
+#### 36. Portafolio y prioridad
+
+D015 no define un score universal para priorizar objetivos.
+
+La priorización deberá conservar visibles, como mínimo:
+
+- resultado empresarial;
+- impacto esperado o protegido;
+- urgencia o fecha límite;
+- confianza diagnóstica cuando aplique;
+- calidad y disponibilidad de medición;
+- riesgo;
+- restricciones de capacidad, liquidez, seguridad o cumplimiento;
+- dependencia de otros objetivos;
+- propietario funcional.
+
+Un objetivo fácil de medir no desplaza automáticamente uno de mayor importancia empresarial.
+
+#### 37. Auditoría de decisiones de objetivo
+
+Toda creación o cambio de objetivo deberá poder conservar:
+
+- quién propuso el objetivo;
+- propietario funcional;
+- fecha de decisión;
+- origen o justificación;
+- versión de la métrica principal;
+- baseline usado;
+- meta y fuente;
+- drivers y guardrails vigentes;
+- plan de medición;
+- cambio de población, horizonte o segmento;
+- motivo de revisión;
+- relación con diagnóstico D014;
+- relación futura con acción/experimento D016;
+- relación con restatement D017 cuando corresponda.
+
+La materialización física de auditoría y permisos corresponde a `DATA-AUTH-003`, `DATA-AUTH-004` y a las tareas técnicas aplicables.
+
+#### 38. Publicación y experiencia
+
+Una presentación de objetivo deberá mostrar, como mínimo:
+
+- objetivo;
+- propietario;
+- indicador principal;
+- baseline y corte;
+- meta y horizonte;
+- valor actual cuando exista;
+- distancia a meta con semántica válida;
+- drivers principales;
+- guardrails y su estado;
+- calidad/certificación;
+- fecha de corte;
+- población y segmentos;
+- estado de preparación o limitación;
+- cambios de definición relevantes.
+
+D008 gobierna publicación y snapshots; `DATA-UX-006` gobierna la experiencia concreta de objetivos, metas, drivers, guardrails y acciones. El detalle sensible consume `DATA-AUTH-001` y `DATA-AUTH-002`.
+
+Un objetivo `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` no se presenta visualmente como objetivo medido y saludable.
+
+#### 39. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                                        | Propietario documental | Condición de salida                                           |
+| --------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------- |
+| acción, experimento, responsable de ejecución, seguimiento y comprobación                           | `DATA-DOM-016`         | antes de ejecutar una intervención o declarar efecto obtenido |
+| corrección histórica, restatement y reproducibilidad de resultados                                  | `DATA-DOM-017`         | antes de reexpresar baseline o evaluación publicada           |
+| protección por dominio, entidad, territorio y finalidad                                             | `DATA-AUTH-001`        | antes de exponer resultados restringidos                      |
+| protección de poblaciones pequeñas, comparaciones, exportaciones y drill-down                       | `DATA-AUTH-002`        | antes de exponer detalle sensible                             |
+| separación de definición, certificación, publicación, fijación de metas, anotación y administración | `DATA-AUTH-003`        | antes de conceder capacidades sobre objetivos y metas         |
+| auditoría de consultas, descargas, modelos y recomendaciones                                        | `DATA-AUTH-004`        | antes de automatizar auditoría de uso analítico               |
+| inicio ejecutivo priorizado por rol                                                                 | `DATA-UX-001`          | antes de diseñar la superficie ejecutiva de objetivos         |
+| tableros por dominio y trazabilidad                                                                 | `DATA-UX-003`          | antes de implementar seguimiento visual por dominio           |
+| espacio de investigación diagnóstica                                                                | `DATA-UX-005`          | antes de navegar de objetivo a diagnóstico                    |
+| experiencia de objetivos, metas, drivers, guardrails y acciones                                     | `DATA-UX-006`          | antes de implementar la superficie de seguimiento             |
+| capa semántica, modelos analíticos, snapshots, caché y consultas                                    | `DATA-INT-002`         | antes de servir cálculo de objetivos compartidos              |
+| BI, hojas de cálculo, modelos analíticos e inteligencia artificial                                  | `DATA-INT-004`         | antes de conectar herramientas externas al seguimiento        |
+
+No queda una decisión material de D015 diferida sin propietario documental exacto y condición de salida.
+
+#### 40. Cobertura de requisitos de prueba vigente
+
+Las reglas de D015 ya están protegidas por requisitos vigentes:
+
+- `TREQ-DATA-005` exige separar señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana de medición, segmentos, resultado, confianza, aprendizaje y decisión de cierre o iteración; además exige comparar resultados contra línea base y guardrails;
+- `TREQ-DATA-002` protege identidad, propósito, fórmula, numerador, denominador, granularidad, dimensiones, filtros, unidad, moneda, calendario, fuente, calidad, versión y reglas de comparación de toda métrica;
+- `TREQ-DATA-003` protege calidad de contratos de origen, cobertura, datos tardíos, backfills, reconciliación, linaje y separación entre cero y ausencia;
+- `TREQ-DATA-004` protege presentación de periodo, corte, filtros, dimensiones, calidad, snapshots, drill-down y separación entre artefactos analíticos;
+- los requisitos propietarios de cada dominio continúan protegiendo los hechos operativos que alimentan KPI, drivers y guardrails.
+
+D015 especializa estas obligaciones sin cambiar su regla protegida, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente objetivos, líneas base, metas, KPI priorizados, drivers, guardrails y planes de medición dentro de requisitos vigentes que ya protegen el ciclo de mejora, las definiciones de métricas, calidad, comparabilidad y publicación. No introduce comportamiento ejecutable, contrato físico, autorización, datos, integración, automatización ni experimento nuevo.
+
+#### 41. Criterios de aceptación
+
+1. objetivo, meta y prioridad empresarial permanecen conceptos distintos;
+2. métrica, KPI, driver y guardrail permanecen roles distintos;
+3. baseline, meta, benchmark, forecast y escenario permanecen separados;
+4. cada objetivo tiene exactamente un indicador principal;
+5. el KPI principal consume una métrica registrada y no redefine fórmula;
+6. ninguna métrica se declara KPI global por conveniencia de dashboard;
+7. la misma métrica puede asumir roles contextuales distintos sin duplicar definición;
+8. todo objetivo declara resultado, propietario, población, horizonte e indicador principal;
+9. la línea base conserva versión, periodo, corte, población, unidad y calidad;
+10. una línea base usa datos observados y no se sustituye por forecast o escenario;
+11. una línea base `BLOQUEADO` no produce medición oficial;
+12. `NO EVALUADO`, `EN OBSERVACIÓN`, `DEGRADADO` y `BLOQUEADO` conservan semántica D007;
+13. se definen tres métodos documentales de baseline sin imponer una ventana universal;
+14. toda meta conserva operador, valor/rango, unidad, horizonte, fuente y propietario;
+15. se definen cinco formas semánticas de meta;
+16. una dirección narrativa no sustituye una meta evaluable al activar medición;
+17. un valor de presupuesto, forecast, SLA, contrato o benchmark no se convierte automáticamente en meta;
+18. no se inventa ningún valor numérico de meta;
+19. driver no equivale a causa demostrada;
+20. todo driver conserva evidencia y nivel D014 cuando exista afirmación explicativa;
+21. guardrail protege un riesgo o resultado material distinto del KPI principal;
+22. todo riesgo material identificado tiene guardrail o `NO_APLICA` justificado;
+23. cumplir el KPI no oculta un incumplimiento de guardrail material;
+24. guardrail no sustituye certificación D007;
+25. se materializan 28 elementos mínimos del plan de medición;
+26. no existe cadencia universal inventada;
+27. la puerta de medición oficial exige indicador, baseline, meta, guardrails, población, plan, calidad y comparabilidad;
+28. una dependencia crítica `BLOQUEADO` impide medición oficial;
+29. calidad/certificación, confianza diagnóstica y cumplimiento de meta permanecen ejes distintos;
+30. la comparabilidad conserva versión, grano, población, calendario, periodo, dimensiones, unidad/moneda, cobertura y fuentes;
+31. segmentos se declaran antes de observar el resultado cuando sean materialmente relevantes;
+32. poblaciones pequeñas y sensibles consumen `DATA-AUTH-002`;
+33. cadencia de datos, cálculo, revisión y ventana de evaluación permanecen separadas;
+34. cero, nulo, no aplica, desconocido, no recibido, pendiente y denominador no disponible permanecen distintos;
+35. meta, guardrail y alerta permanecen conceptos distintos;
+36. una meta o guardrail no crea automatización;
+37. un objetivo derivado de D014 conserva confianza, alternativas y límites;
+38. D015 no eleva causalidad de drivers;
+39. D015 entrega a D016 un objetivo listo para diseñar acción o experimento cuando la puerta de medición se satisface;
+40. D015 no ejecuta acción ni experimento;
+41. D017 gobierna correcciones históricas y restatements que afecten baseline o evaluación;
+42. cambios de meta no reescriben la meta anterior;
+43. se gobiernan conflictos entre objetivos y optimización local sin score universal;
+44. proxies y métricas de vanidad no sustituyen resultados empresariales;
+45. las 55 familias heredadas están presentes exactamente una vez;
+46. se conservan 11 familias comerciales;
+47. se conservan 12 familias de inventario y abastecimiento;
+48. se conservan 10 familias productivas;
+49. se conservan 12 familias de servicio y clientes;
+50. se conservan 10 familias económico-financieras;
+51. existen 55 decisiones de elegibilidad, 0 faltantes y 0 duplicadas;
+52. la elegibilidad no mejora estados heredados de D009 a D013;
+53. ninguna familia genera una `metric_key` nueva;
+54. no se crean 55 objetivos automáticos;
+55. todo valor de meta concreto deberá provenir de una decisión empresarial autorizada y trazable;
+56. toda creación o cambio de objetivo conserva evidencia de decisión;
+57. publicación de objetivo muestra baseline, meta, KPI, guardrails, calidad, corte y población;
+58. cada handoff tiene propietario documental exacto y condición de salida;
+59. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+60. no se ejecuta código, DDL, DML, migración, backfill, automatización, experimento, acción empresarial ni cambio de Supabase;
+61. `DATA-DOM-016` permanece únicamente reservada.
+
+#### 42. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+
+TAREA ACTUAL APROBADA
+DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+```
+
+
 ### [ ] DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
 ### [ ] DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad

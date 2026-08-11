@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **684** |
+| Tareas aprobadas | **685** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **910** |
+| Tareas no iniciadas | **909** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.91% (684/1594)** |
+| Porcentaje de completamiento | **42.97% (685/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza** |
-| Tarea actual | **DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición** |
+| Última tarea aprobada | **DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición** |
+| Tarea actual | **DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados** |
+| Siguiente tarea | **DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 108 de 157 aprobadas; DATA-DOM-015 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 109 de 157 aprobadas; DATA-DOM-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza |
-| Tarea actual | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados |
+| Última aprobada | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición |
+| Tarea actual | `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 108 DE 157 APROBADAS — ACTUAL DATA-DOM-015** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 109 DE 157 APROBADAS — ACTUAL DATA-DOM-016** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
-        ↓
-TAREA ACTUAL
 DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 108 de 157 tareas aprobadas
+CARRIL NEXO — 109 de 157 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **684** |
+| Aprobadas | **685** |
 | En propuesta | **0** |
-| No iniciadas | **910** |
+| No iniciadas | **909** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **42.91% (684/1594)** |
+| Porcentaje de completamiento | **42.97% (685/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza | ✅ APROBADA |
-| Tarea actual | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados | ⬜ NO INICIADA |
+| Última aprobada | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | ✅ APROBADA |
+| Tarea actual | `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1573,7 +1573,7 @@
 | ✅ APROBADA | `DATA-DOM-012` | Definir analítica de servicio, clientes, fidelización, reputación y experiencia | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-013` | Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-014` | Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-DOM-015` | Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
+| ✅ APROBADA | `DATA-DOM-015` | Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-016` | Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-DOM-017` | Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `DATA-AUTH-001` | Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
