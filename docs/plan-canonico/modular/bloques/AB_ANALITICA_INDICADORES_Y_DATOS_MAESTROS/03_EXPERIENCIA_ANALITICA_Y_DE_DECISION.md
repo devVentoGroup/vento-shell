@@ -4009,6 +4009,1378 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora`
 
 
-### [ ] DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
+### ✅ DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas` — APROBADA
+**Tarea siguiente:** `DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de objetivos medibles, metas gobernadas, drivers, guardrails, planes de medición, acciones de mejora, intervenciones y comprobación de resultados
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, rutas físicas, componentes, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, datos, backfills, automatizaciones, experimentos reales, despliegues, cambios de proceso, cambios de configuración o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia mediante la cual un actor autorizado puede convertir una oportunidad, obligación, riesgo o prioridad empresarial en un objetivo medible; fijar una meta únicamente mediante la autoridad gobernada correspondiente; comprender su línea base, KPI principal, drivers y guardrails; preparar un plan de medición reproducible; diseñar y seguir una acción o intervención sin confundir propuesta con ejecución; y comprobar resultados sin convertir mejora observada en efecto causal por conveniencia visual.
+
+La experiencia deberá permitir responder, de forma trazable:
+
+1. ¿qué resultado empresarial se quiere cambiar, proteger, sostener o recuperar?;
+2. ¿qué decisión, oportunidad, obligación o riesgo origina el objetivo?;
+3. ¿quién es propietario funcional del resultado?;
+4. ¿cuál es el único indicador principal del objetivo y qué versión lo gobierna?;
+5. ¿cuál es la línea base reproducible y con qué calidad fue observada?;
+6. ¿qué meta está vigente, con qué operador, unidad, horizonte, fuente y autoridad?;
+7. ¿qué drivers se observan y qué nivel de evidencia respalda su interpretación?;
+8. ¿qué guardrails protegen resultados o riesgos materiales distintos del KPI?;
+9. ¿qué población, segmentos, dimensiones, calendario, ventana y corte delimitan la medición?;
+10. ¿está el objetivo listo para medición oficial o permanece pendiente/bloqueado?;
+11. ¿qué acción o intervención se propone y qué mecanismo pretende activar?;
+12. ¿se requiere experimento o basta seguimiento no causal?;
+13. ¿quién aprueba, quién ejecuta y quién mide?;
+14. ¿qué población fue elegible, asignada y realmente expuesta?;
+15. ¿qué ocurrió con KPI, meta, drivers, guardrails y efectos no deseados?;
+16. ¿qué parte del resultado es observada y qué parte puede atribuirse a la intervención?;
+17. ¿qué confianza diagnóstica permite la evidencia?;
+18. ¿qué decisión de cierre está vigente y qué aprendizaje queda preservado?;
+19. ¿qué restricciones impiden publicar, ampliar, exportar o actuar?;
+20. ¿qué destino propietario corresponde cuando se requiere investigación, calidad, implementación, publicación o restatement?
+
+Principio rector:
+
+```text
+OBJETIVO GOBERNADO
+=
+RESULTADO EMPRESARIAL
++ PROPIETARIO
++ KPI PRINCIPAL VERSIONADO
++ LÍNEA BASE REPRODUCIBLE
++ META AUTORIZADA
++ DRIVERS CON LÍMITE DE INTERPRETACIÓN
++ GUARDRAILS MATERIALES
++ PLAN DE MEDICIÓN
++ POBLACIÓN / SEGMENTOS / VENTANA
++ CALIDAD Y COMPARABILIDAD
+
+INTERVENCIÓN EVALUABLE
+=
+OBJETIVO GOBERNADO
++ ACCIÓN CONCRETA
++ MECANISMO / HIPÓTESIS
++ RESPONSABILIDADES SEPARADAS
++ DISEÑO PREESPECIFICADO
++ ASIGNACIÓN Y EXPOSICIÓN RECONSTRUIBLES
++ SEGUIMIENTO DE FIDELIDAD Y GUARDRAILS
++ COMPROBACIÓN
++ APRENDIZAJE
++ DECISIÓN DE CIERRE
+
+NO
+
+MÉTRICA VISIBLE = KPI
+VALOR DE CONFIGURACIÓN = META VIGENTE
+DRIVER = CAUSA DEMOSTRADA
+GUARDRAIL = INDICADOR DECORATIVO
+RECOMENDACIÓN = ACCIÓN APROBADA
+ACCIÓN DISEÑADA = ACCIÓN EJECUTADA
+ASIGNACIÓN = EXPOSICIÓN
+CUMPLIR META = EFECTO CAUSAL
+MEJORAR KPI = ÉXITO SI HAY DAÑO MATERIAL
+ALERTA = PAUSA AUTOMÁTICA
+PANTALLA = AUTORIDAD PARA ACTUAR
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializada la experiencia completa de objetivos y mejora con los siguientes resultados:
+
+- una experiencia única de portafolio y ficha de objetivo, sin convertir el tablero en fuente de verdad;
+- una cadena explícita desde origen empresarial hasta objetivo, KPI, baseline, meta, drivers, guardrails, plan de medición e intervención;
+- un único KPI principal por objetivo;
+- tres métodos documentales de línea base preservados;
+- cinco formas semánticas de meta preservadas, sin inventar valores numéricos;
+- tratamiento gobernado de `SET_TARGET`, separado de definición, certificación, publicación, anotación, exportación y administración;
+- veintiocho elementos mínimos del plan de medición;
+- catorce condiciones de puerta para medición oficial;
+- decisión explícita de elegibilidad para las cincuenta y cinco familias analíticas heredadas, con 11 + 12 + 10 + 12 + 10 identidades y cero faltantes;
+- cobertura explícita de las catorce métricas de asistencia ya registradas, preservando once `NO EVALUADO` y tres `BLOQUEADO`;
+- un expediente de intervención con treinta y tres coordenadas mínimas;
+- veinte condiciones previas para declarar una intervención documentalmente lista para ejecución futura;
+- seis clases de intervención preservadas;
+- seis diseños de evaluación o experimento con su techo de interpretación;
+- seis ventanas diferenciadas de una intervención;
+- separación visible entre población elegible, asignación, exposición y cumplimiento;
+- comprobación de resultado en dieciocho dimensiones;
+- siete decisiones empresariales de cierre preservadas exactamente;
+- separación entre resultado observado y efecto atribuible;
+- cero metas concretas inventadas;
+- cero nuevas `metric_key`;
+- cero acciones empresariales ejecutadas;
+- cero experimentos ejecutados;
+- cero permisos, roles o grants creados;
+- cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+Reconciliación documental:
+
+| Inventario o contrato               |               Esperado |          Materializado | Faltantes | Duplicados |
+| ----------------------------------- | ---------------------: | ---------------------: | --------: | ---------: |
+| Familias analíticas                 |                     55 |                     55 |         0 |          0 |
+| Distribución por dominio            | 11 + 12 + 10 + 12 + 10 | 11 + 12 + 10 + 12 + 10 |         0 |          0 |
+| Métricas de asistencia              |                     14 |                     14 |         0 |          0 |
+| Formas semánticas de meta           |                      5 |                      5 |         0 |          0 |
+| Métodos documentales de baseline    |                      3 |                      3 |         0 |          0 |
+| Elementos del plan de medición      |                     28 |                     28 |         0 |          0 |
+| Condiciones de medición oficial     |                     14 |                     14 |         0 |          0 |
+| Coordenadas de intervención         |                     33 |                     33 |         0 |          0 |
+| Condiciones previas de intervención |                     20 |                     20 |         0 |          0 |
+| Clases de intervención              |                      6 |                      6 |         0 |          0 |
+| Diseños de evaluación               |                      6 |                      6 |         0 |          0 |
+| Ventanas de intervención            |                      6 |                      6 |         0 |          0 |
+| Decisiones de cierre                |                      7 |                      7 |         0 |          0 |
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+La experiencia consume sin redefinir:
+
+- `DATA-DOM-004` y `DATA-DOM-005` para identidad y versión de métricas, granularidad, tiempo, dimensiones, calendario, comparabilidad y snapshots;
+- `DATA-DOM-006` y `DATA-DOM-007` para procedencia, datos tardíos, reconciliación, calidad, cobertura y estados DQ;
+- `DATA-DOM-008` para mantener tablero, reporte, alerta, exportación, suscripción y snapshot como artefactos distintos;
+- `DATA-DOM-009` a `DATA-DOM-013` para las cincuenta y cinco familias analíticas y sus restricciones reales;
+- `DATA-DOM-014` para oportunidad, diagnóstico, confianza, causalidad y límites de generalización;
+- `DATA-DOM-015` para objetivo, KPI, baseline, meta, drivers, guardrails y plan de medición;
+- `DATA-DOM-016` para acción, intervención, experimento, ejecución, exposición, seguimiento, comprobación, aprendizaje y cierre;
+- `DATA-DOM-017` para versiones, correcciones históricas, restatements y reproducibilidad;
+- `DATA-AUTH-001` y `DATA-AUTH-002` para construir el conjunto autorizado y proteger detalle sensible, poblaciones pequeñas, comparaciones y drill-down;
+- `DATA-AUTH-003` para separar `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- `DATA-AUTH-004` para la trazabilidad de consultas, modelos y recomendaciones sin convertir auditoría en autoridad;
+- `DATA-UX-001` para el resumen ejecutivo simple;
+- `DATA-UX-002` para definición, dueño, fuente, calidad, linaje e historia de métricas;
+- `DATA-UX-003` para tableros por dominio, comparación y drill-down;
+- `DATA-UX-004` para calidad, frescura, conciliaciones y certificación;
+- `DATA-UX-005` para señal, variación, anomalía, investigación, evidencia, oportunidad y confianza;
+- la línea base UX y NFR vigente para contexto administrativo, privacidad, trazabilidad, accesibilidad y ergonomía;
+- los requisitos canónicos vigentes que ya protegen el ciclo de mejora basada en datos.
+
+La tarea no define nombres físicos de rutas, componentes, tablas, vistas, modelos, jobs, colas, funciones, RPC, permisos o eventos. La materialización técnica pertenece a los paquetes y tareas propietarias posteriores.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+PRIORIDAD EMPRESARIAL ≠ OBJETIVO ≠ META
+```
+
+```text
+MÉTRICA ≠ KPI ≠ DRIVER ≠ GUARDRAIL
+```
+
+```text
+LÍNEA BASE ≠ META ≠ BENCHMARK ≠ FORECAST ≠ ESCENARIO
+```
+
+```text
+DRIVER ≠ CAUSA DEMOSTRADA
+```
+
+```text
+GUARDRAIL ≠ KPI SECUNDARIO DECORATIVO
+```
+
+```text
+META ≠ ALERTA ≠ LÍMITE TÉCNICO
+```
+
+```text
+CALIDAD DQ ≠ CONFIANZA DIAGNÓSTICA ≠ CUMPLIMIENTO DE META
+```
+
+```text
+OPORTUNIDAD ≠ OBJETIVO ≠ ACCIÓN ≠ EXPERIMENTO
+```
+
+```text
+RECOMENDACIÓN ≠ DECISIÓN ≠ ACCIÓN
+```
+
+```text
+INTERVENCIÓN DISEÑADA ≠ INTERVENCIÓN EJECUTADA
+```
+
+```text
+ASIGNADO ≠ EXPUESTO ≠ CUMPLIÓ INTERVENCIÓN
+```
+
+```text
+RESULTADO OBSERVADO ≠ EFECTO ATRIBUIBLE
+```
+
+```text
+CUMPLIR META ≠ DEMOSTRAR CAUSALIDAD
+```
+
+```text
+BEFORE/AFTER ≠ EXPERIMENTO CONTROLADO
+```
+
+```text
+PAUSA ≠ REVERSA ≠ FRACASO DEFINITIVO
+```
+
+```text
+ACCIÓN COMPLETADA ≠ OBJETIVO COMPROBADO
+```
+
+```text
+PUBLICACIÓN ≠ SET_TARGET ≠ EJECUCIÓN
+```
+
+---
+
+#### 5. Arquitectura de información de la experiencia
+
+La experiencia se organiza en siete zonas lógicas coordinadas. Son responsabilidades de UX y no nombres físicos de componentes:
+
+1. **Portafolio de objetivos** — objetivos visibles para el actor, propietario, KPI, preparación, calidad, horizonte y riesgos materiales.
+2. **Definición y medición** — resultado empresarial, KPI principal, baseline, meta, población, segmentos, ventanas y regla de evaluación.
+3. **Drivers y guardrails** — factores observables, confianza, controlabilidad, riesgos protegidos y tratamiento de incumplimiento.
+4. **Evidencia y comparabilidad** — calidad, cobertura, versiones, cambios semánticos, snapshots y limitaciones que condicionan la lectura.
+5. **Acciones e intervenciones** — propuesta, clase, mecanismo, responsabilidades, diseño de evaluación, población y readiness documental.
+6. **Seguimiento y comprobación** — exposición, fidelidad, KPI, meta, guardrails, segmentos, cambios concurrentes, efectos no deseados y confianza.
+7. **Aprendizaje e historia** — decisión de cierre, aprendizaje, iteraciones, versiones, restatements y navegación a fuentes propietarias.
+
+La primera vista no muestra las cincuenta y cinco familias ni todos los campos del expediente simultáneamente. Prioriza objetivo, KPI, estado de preparación, meta/horizonte, guardrails materiales, calidad y siguiente decisión autorizada. El detalle se expande de forma progresiva.
+
+---
+
+#### 6. Coordenada visible de un objetivo
+
+Toda ficha deberá poder presentar, cuando aplique y sea autorizado:
+
+| Coordenada                | Decisión UX006                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| resultado empresarial     | describir qué se quiere mejorar, reducir, proteger, sostener o recuperar                                      |
+| justificación             | mostrar decisión, oportunidad, obligación o prioridad de origen y su referencia                               |
+| propietario funcional     | mostrar la función responsable del resultado, sin inferir permiso desde el cargo                              |
+| indicador principal       | mostrar la métrica registrada, versión y propósito de decisión; exactamente uno por objetivo                  |
+| línea base                | mostrar valor/distribución, periodo, corte, población, versión, calidad y evidencia                           |
+| meta                      | mostrar operador, valor/rango aprobado, unidad, horizonte, vigencia y fuente de decisión                      |
+| drivers                   | mostrar métricas/factores, dirección esperada, evidencia, controlabilidad y nivel de confianza cuando aplique |
+| guardrails                | mostrar resultado/riesgo protegido, métrica, límite/regla, estado y tratamiento previsto                      |
+| población                 | mostrar inclusiones, exclusiones y estados computables                                                        |
+| dimensiones               | mostrar únicamente dimensiones gobernadas y autorizadas                                                       |
+| periodo                   | mostrar horizonte y ventanas de evaluación                                                                    |
+| calendario/zona horaria   | conservar semántica temporal de la métrica                                                                    |
+| fuentes                   | mostrar referencias propietarias autorizadas, no copias de detalle innecesarias                               |
+| calidad                   | conservar estado DQ de dependencias críticas                                                                  |
+| confianza                 | mostrar nivel diagnóstico cuando el objetivo deriva de hipótesis o investigación                              |
+| segmentos                 | mostrar cortes predefinidos relevantes y su protección                                                        |
+| cadencia                  | distinguir actualización, cálculo, revisión y evaluación                                                      |
+| regla de evaluación       | explicar cómo se determina comparabilidad y cumplimiento                                                      |
+| tratamiento de guardrails | explicar qué significa un incumplimiento para la evaluación del objetivo                                      |
+| evidencia                 | mostrar referencias seguras a snapshots, consultas, versiones y decisiones                                    |
+
+Dos objetivos con el mismo nombre narrativo se presentan como coordenadas distintas si difieren materialmente en métrica, versión, población, baseline, meta, horizonte o guardrails.
+
+---
+
+#### 7. Estados transversales de preparación
+
+La experiencia utiliza los estados transversales ya definidos para describir preparación y evidencia; no crea un enum UX paralelo.
+
+| Estado                   | Presentación UX006                                                                   | Prohibición                                 |
+| ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `ESPECIFICADO`           | contrato documental suficiente identificado                                          | no presentarlo como implementado o validado |
+| `PENDIENTE_DE_EVIDENCIA` | mostrar exactamente qué evidencia falta y qué decisión queda condicionada            | no rellenar el dato con supuestos           |
+| `BLOQUEADO`              | mostrar dependencia crítica, efecto sobre medición y propietario de resolución       | no mostrar medición oficial saludable       |
+| `VALIDADO`               | solo reflejar evidencia reproducible proveniente del proceso que realmente lo valide | no asignarlo por redacción documental       |
+| `IMPLEMENTADO`           | solo reflejar materialización técnica u operativa real                               | no asignarlo por diseño UX                  |
+| `NO_APLICA`              | excluir una dimensión/guardrail concreto con justificación y propietario             | no usarlo como equivalente a dato faltante  |
+| `FUERA_DE_ALCANCE`       | indicar que la decisión pertenece a otra tarea o proceso propietario                 | no ocultar una obligación propia de UX006   |
+
+---
+
+#### 8. Cadena UX obligatoria de objetivo
+
+```text
+ORIGEN EMPRESARIAL
+→ OBJETIVO
+→ KPI PRINCIPAL
+→ LÍNEA BASE
+→ META
+→ DRIVERS
+→ GUARDRAILS
+→ PLAN DE MEDICIÓN
+→ PUERTA DE MEDICIÓN OFICIAL
+→ ELEGIBILIDAD PARA ACCIÓN O EXPERIMENTO
+```
+
+Reglas:
+
+1. una oportunidad de UX005 puede iniciar la ficha conservando diagnóstico, confianza, evidencia, población, periodo y límites;
+2. no se permite presentar una meta como lista para gobernarse antes de resolver KPI, baseline y contexto;
+3. un objetivo puede existir por obligación, riesgo o prioridad aunque no provenga de diagnóstico causal;
+4. un driver conserva el nivel de evidencia real y no se convierte en causa por aparecer junto al objetivo;
+5. todo riesgo material conocido requiere guardrail o decisión `NO_APLICA` justificada;
+6. la acción se diseña únicamente cuando el plan de medición puede comprobar resultados con suficiente claridad;
+7. no todo objetivo exige experimento;
+8. una brecha de calidad remite a UX004; una brecha causal remite a UX005; una brecha de definición remite a UX002.
+
+---
+
+#### 9. KPI principal
+
+Cada objetivo presenta exactamente **un KPI principal** como respuesta primaria de éxito.
+
+Reglas UX:
+
+- consumir una métrica registrada y versionada;
+- no crear una fórmula local para la ficha de objetivo;
+- mostrar nombre empresarial antes del identificador técnico, conservando este último para trazabilidad autorizada;
+- permitir métricas secundarias sin presentarlas como resultados primarios competidores;
+- permitir que la misma métrica sea KPI, driver o guardrail en objetivos distintos sin duplicar definición;
+- identificar cuando una métrica aún no puede soportar medición oficial;
+- no declarar KPI globales por frecuencia, popularidad o posición visual;
+- navegar a UX002 para definición y a UX003 para análisis profundo.
+
+---
+
+#### 10. Línea base
+
+La línea base deberá mostrar como mínimo:
+
+- métrica y versión;
+- valor o distribución observada;
+- población;
+- periodo de observación;
+- corte;
+- granularidad;
+- dimensiones;
+- unidad o moneda;
+- fuentes;
+- calidad DQ;
+- cobertura;
+- regla de agregación;
+- referencia reproducible cuando aplique.
+
+Métodos documentales preservados:
+
+| Método                        | Uso                                                      | Condición UX                                                     |
+| ----------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------- |
+| periodo fijo observado        | ventana histórica cerrada y comparable                   | mostrar periodo, corte y cobertura definidos antes de evaluación |
+| referencia histórica agregada | varios periodos comparables resumidos de forma gobernada | mostrar regla de agregación, estacionalidad y exclusiones        |
+| cohorte o segmento comparable | población emparejada o segmento de referencia            | mostrar dimensiones, elegibilidad y diferencias materiales       |
+
+Reglas:
+
+1. forecast, presupuesto o escenario no sustituyen el observado base;
+2. una fuente `BLOQUEADO` no produce baseline oficial;
+3. `NO EVALUADO`, `EN OBSERVACIÓN` o `DEGRADADO` conservan su estado real;
+4. datos faltantes no se convierten en cero;
+5. una corrección posterior no sobrescribe silenciosamente la línea base original;
+6. una ruptura semántica detiene la comparación directa hasta reconciliar versiones.
+
+---
+
+#### 11. Meta y sus cinco formas semánticas
+
+Toda meta visible conserva indicador, versión, operador, valor/rango, unidad, población, horizonte, vigencia, evaluación, fuente, propietario, supuestos y relación con baseline.
+
+| Forma                         | Semántica UX                                                 | Evaluación conceptual                                         |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------- |
+| punto                         | alcanzar un valor concreto                                   | resultado = valor objetivo bajo tolerancia declarada          |
+| mínimo                        | no quedar por debajo                                         | resultado ≥ mínimo aprobado                                   |
+| máximo                        | no superar                                                   | resultado ≤ máximo aprobado                                   |
+| rango                         | permanecer entre límites                                     | inferior ≤ resultado ≤ superior                               |
+| cambio respecto de línea base | mover el resultado una magnitud absoluta o relativa definida | comparar contra baseline bajo versión y población compatibles |
+
+Reglas:
+
+- la interfaz no inventa valores de meta;
+- “mejorar”, “reducir” o “aumentar” no sustituyen una meta evaluable cuando se declara medición oficial;
+- un presupuesto, forecast, SLA, contrato, benchmark o escenario solo informa la meta si existe una decisión explícita de usarlo;
+- una meta porcentual no se evalúa con denominador inválido;
+- una meta monetaria conserva moneda y conversión gobernada;
+- un cambio de meta crea una decisión/version nueva para la vigencia definida y conserva la anterior;
+- la meta no reescribe el valor real observado.
+
+---
+
+#### 12. Acción gobernada `SET_TARGET`
+
+La experiencia presenta una decisión autoritativa de meta únicamente cuando el actor posee la capacidad exacta aplicable al objetivo.
+
+Antes de una decisión de meta, UX006 deberá poder comprobar:
+
+- objetivo exacto;
+- KPI y versión;
+- baseline;
+- valor/rango propuesto;
+- horizonte;
+- población;
+- segmentos;
+- drivers;
+- guardrails;
+- plan de medición;
+- calidad y versión aplicables;
+- autoridad efectiva y segregación correspondiente.
+
+Reglas:
+
+1. propiedad funcional puede hacer elegible al actor, pero no sustituye autorización exacta;
+2. una anomalía, forecast, presupuesto, escenario, recomendación o modelo no fija meta automáticamente;
+3. baseline observado no se modifica para hacer alcanzable la meta;
+4. un bloqueo crítico de baseline o fuente permanece visible y evita presentar la decisión como medición oficial lista;
+5. fijar meta no crea alerta ni acción empresarial;
+6. medir no concede autoridad para cambiar meta;
+7. `DEFINE`, `CERTIFY`, `PUBLISH`, `ANNOTATE`, `EXPORT` y `ADMINISTER` permanecen acciones independientes;
+8. un cambio concurrente de definición, calidad, meta, permiso o alcance obliga a revalidar antes del efecto;
+9. una simulación o preview nunca representa una meta real vigente.
+
+---
+
+#### 13. Drivers
+
+Cada driver muestra:
+
+- métrica o factor;
+- versión/definición;
+- dirección esperada;
+- población y ventana;
+- evidencia favorable, contradictoria y faltante cuando corresponda;
+- nivel de confianza diagnóstica si existe afirmación explicativa;
+- propietario funcional;
+- frecuencia de observación;
+- condición de controlabilidad: controlable, parcialmente controlable o externo, cuando esté documentada;
+- límite de interpretación.
+
+La experiencia debe impedir que la proximidad visual entre driver y KPI sugiera causalidad no demostrada. Para relaciones descriptivas o asociativas usa lenguaje compatible con el nivel real de confianza. Una acción que dependa de causalidad no demostrada debe navegar a investigación o diseñar una evaluación apropiada en vez de ocultar la incertidumbre.
+
+---
+
+#### 14. Guardrails
+
+Cada guardrail muestra:
+
+- resultado o riesgo protegido;
+- métrica y versión;
+- población y dimensiones;
+- límite, rango o regla de no deterioro;
+- unidad;
+- periodo y corte;
+- calidad mínima;
+- propietario;
+- tratamiento ante incumplimiento;
+- relación con KPI principal.
+
+Reglas:
+
+1. un riesgo material identificado requiere al menos un guardrail o `NO_APLICA` justificado;
+2. el guardrail protege un resultado distinto o una restricción que el KPI podría empeorar;
+3. cumplir el KPI no se presenta como éxito pleno cuando un guardrail bloqueante se incumple;
+4. un guardrail de datos no sustituye certificación DQ;
+5. el límite no ejecuta automáticamente pausa, reversa o cambio;
+6. el límite conserva fuente de decisión;
+7. redefinir un guardrail durante una intervención conserva versiones y afecta comparabilidad.
+
+---
+
+#### 15. Plan de medición — 28/28 elementos
+
+Todo objetivo `ESPECIFICADO` deberá poder presentar o navegar los veintiocho elementos siguientes:
+
+1. propósito de decisión;
+2. propietario funcional;
+3. indicador principal y versión;
+4. línea base y evidencia;
+5. meta y fuente de decisión;
+6. drivers y límites de interpretación;
+7. guardrails y tratamiento documental de incumplimiento;
+8. población e inclusiones/exclusiones;
+9. segmentos predefinidos;
+10. dimensiones de comparación;
+11. unidad, moneda y precisión;
+12. calendario y zona horaria;
+13. ventana de observación;
+14. fecha de corte;
+15. cadencia de actualización;
+16. cadencia de revisión empresarial;
+17. calidad mínima de fuentes;
+18. cobertura mínima o condición de suficiencia cuando aplique;
+19. tratamiento de faltantes, nulos y denominadores inválidos;
+20. regla de comparabilidad con baseline;
+21. tratamiento de datos tardíos y backfills;
+22. condición para revaluar tras cambio semántico;
+23. regla de evaluación de meta;
+24. regla de evaluación de guardrails;
+25. evidencia que deberá conservarse;
+26. restricción de detalle sensible y poblaciones pequeñas;
+27. condición de handoff hacia intervención;
+28. tratamiento de correcciones y restatements.
+
+**Reconciliación:** 28 esperados; 28 materializados; 0 faltantes; 0 duplicados.
+
+La UI diferencia cadencia de datos, cadencia de cálculo, cadencia de revisión y ventana de evaluación; no inventa una frecuencia universal.
+
+---
+
+#### 16. Puerta de medición oficial — 14/14 condiciones
+
+Un objetivo solo se presenta como listo para medición oficial cuando se comprueba:
+
+1. propietario funcional;
+2. resultado empresarial definido;
+3. KPI identificado y versionado;
+4. baseline reproducible;
+5. meta con fuente, operador, unidad y horizonte;
+6. riesgos materiales con guardrail o exclusión `NO_APLICA` justificada;
+7. población, segmentos, periodo y corte;
+8. plan de medición completo;
+9. fuentes críticas sin `BLOQUEADO`;
+10. comparabilidad con baseline resuelta;
+11. calidad compatible con el uso;
+12. cualquier dependencia causal comunicada al nivel de confianza realmente alcanzado;
+13. restricciones de autorización y privacidad identificadas;
+14. evidencia suficiente para reproducir la evaluación.
+
+Si una condición crítica falla, la experiencia conserva `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO`. No existe un botón visual que convierta una ficha incompleta en objetivo saludable.
+
+---
+
+#### 17. Seguimiento del objetivo antes de intervenir
+
+Cuando exista valor actual autorizado, la ficha puede mostrar:
+
+- valor actual y corte;
+- baseline;
+- meta vigente;
+- distancia a meta con semántica compatible;
+- estado de guardrails;
+- calidad y cobertura;
+- segmentos predefinidos;
+- cambios de definición;
+- periodos parciales;
+- información faltante.
+
+Reglas:
+
+- distancia a meta no implica tendencia ni causalidad;
+- una ventana incompleta se presenta como parcial;
+- una meta terminal no se declara incumplida antes del cierre salvo hitos predefinidos;
+- cero, nulo, no aplica, desconocido, no recibido, pendiente y denominador no disponible permanecen distinguibles;
+- ausencia de observación no prueba cumplimiento;
+- resultados agregados no se generalizan automáticamente a segmentos.
+
+---
+
+#### 18. Portafolio de objetivos y conflictos
+
+La vista de portafolio puede ordenar o filtrar únicamente objetivos autorizados por:
+
+- propietario;
+- dominio;
+- estado transversal de preparación;
+- horizonte;
+- KPI;
+- calidad;
+- presencia de guardrail afectado;
+- dependencia de investigación o evidencia;
+- relación con intervención cuando exista.
+
+No se crea un score universal de prioridad. La experiencia mantiene visibles, cuando apliquen, impacto esperado/protegido, urgencia, confianza, calidad de medición, riesgo, restricciones, dependencias y propietario.
+
+Cuando objetivos compartan población, recursos o métricas, la experiencia debe advertir posibles conflictos y desplazamientos. Mejorar un objetivo no permite ocultar deterioro de otro resultado material.
+
+---
+
+#### 19. Handoff desde investigación
+
+Cuando UX005 origine el objetivo, el handoff conserva:
+
+- señal/diagnóstico u oportunidad de origen;
+- conclusión y nivel de confianza;
+- evidencia favorable, contradictoria y faltante;
+- población;
+- periodo y corte;
+- impacto observado o potencial;
+- factores/mecanismos relevantes;
+- alternativas abiertas;
+- propietario funcional;
+- límites de generalización;
+- calidad de dependencias.
+
+UX006 no reescribe la conclusión diagnóstica. Si la evidencia causal es insuficiente, el objetivo puede orientarse a aprendizaje o protección, pero un driver no se presenta como causa demostrada.
+
+---
+
+#### 20. Expediente de intervención — 33/33 coordenadas
+
+La experiencia de acción trabaja sobre un expediente de intervención evaluable. Deberá poder resolver:
+
+1. objetivo y versión;
+2. origen de la intervención;
+3. propietario funcional;
+4. hipótesis o mecanismo;
+5. acción propuesta;
+6. tipo de intervención;
+7. necesidad de experimento: sí, no o no evaluable, con justificación;
+8. diseño de evaluación;
+9. responsable de ejecución;
+10. aprobador;
+11. unidad de intervención;
+12. población elegible;
+13. asignación;
+14. exposición prevista;
+15. KPI y versión;
+16. baseline;
+17. meta;
+18. drivers;
+19. guardrails;
+20. segmentos;
+21. ventanas;
+22. calidad mínima;
+23. confianza de origen;
+24. riesgos de actuar, no actuar y ejecutar parcialmente;
+25. cambios concurrentes;
+26. criterio de pausa;
+27. criterio de reversa;
+28. evidencia de ejecución;
+29. evidencia de exposición;
+30. regla de análisis;
+31. decisión de cierre;
+32. aprendizaje;
+33. reproducibilidad.
+
+**Reconciliación:** 33 coordenadas esperadas; 33 materializadas; 0 faltantes; 0 duplicadas.
+
+La experiencia separa visualmente propuesta, diseño, ejecución observada y comprobación. La existencia del expediente no autoriza la intervención ni prueba que haya sido ejecutada.
+
+---
+
+#### 21. Puerta previa de intervención — 20/20 condiciones
+
+Solo se presenta una intervención como documentalmente lista para una eventual ejecución cuando constan:
+
+1. objetivo identificado;
+2. propietario funcional;
+3. KPI versionado;
+4. baseline reproducible o limitación aceptada que impida declarar efecto;
+5. meta vigente o propósito de aprendizaje explícito;
+6. guardrails materiales;
+7. población elegible y unidad de intervención;
+8. acción concreta;
+9. mecanismo o hipótesis;
+10. responsable de ejecución;
+11. autoridad de aprobación identificada;
+12. riesgos de actuar y no actuar;
+13. decisión sobre necesidad de experimento;
+14. diseño de evaluación previo a exposición;
+15. criterios de pausa/reversa cuando apliquen;
+16. ventana y cortes;
+17. calidad mínima compatible;
+18. restricciones de autorización, privacidad, seguridad, inocuidad, cumplimiento o capacidad;
+19. evidencia que deberá demostrar ejecución y exposición;
+20. regla de cierre y aprendizaje.
+
+Una puerta completa sigue siendo documental. No crea permiso de cambio ni dispara ejecución.
+
+---
+
+#### 22. Seis clases de intervención
+
+|    # | Clase                                                 | Propósito                                                                          | Identificación causal                                                                           | Restricción UX                                                                             |
+| ---: | ----------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+|    1 | corrección obligatoria                                | eliminar incumplimiento, riesgo crítico o defecto cuya remediación es obligatoria  | puede no requerir experimento para decidir actuar; sí requiere comprobar resultado y guardrails | no usar experimento para aplazar una obligación de seguridad, legal o integridad           |
+|    2 | ajuste operativo reversible                           | modificar una regla, secuencia, nivel, asignación o práctica que puede restaurarse | depende de incertidumbre causal y riesgo                                                        | reversibilidad debe ser real y documentada                                                 |
+|    3 | cambio de proceso o política                          | modificar una forma gobernada de operar                                            | alta cuando se pretende atribuir impacto al cambio                                              | requiere versión, vigencia y control de cambios concurrentes                               |
+|    4 | intervención de comunicación, capacitación o adopción | cambiar conocimiento, comportamiento o adopción                                    | depende de si se necesita demostrar efecto sobre resultado final                                | actividad realizada no equivale a adopción ni a resultado                                  |
+|    5 | piloto controlado                                     | limitar alcance para comprobar operación, riesgo y señal de resultado              | puede usar comparación; no implica causalidad automáticamente                                   | piloto sin comparador no se presenta como experimento causal                               |
+|    6 | experimento deliberado                                | crear variación controlada para estimar efecto de una intervención                 | sí; existe para identificación causal                                                           | requiere ética, autorización, elegibilidad, asignación, exposición y guardrails gobernados |
+
+**Reconciliación:** 6 clases esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+La clase de intervención no asigna por sí sola una técnica estadística. Una corrección obligatoria no se retrasa para conservar un control si una obligación exige actuar. Un piloto reduce alcance, pero no se denomina causal sin un diseño compatible.
+
+---
+
+#### 23. Seis diseños de evaluación y techo de interpretación
+
+|    # | Diseño                                      | Estructura mínima                                                           | Techo por diseño aislado                                                                      | Condición crítica                                                                    |
+| ---: | ------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+|    1 | seguimiento pre/post de una sola población  | baseline y periodo posterior bajo misma definición                          | `ASOCIACION` como máximo para atribución causal                                               | cambios concurrentes y tendencia permanecen alternativas                             |
+|    2 | comparación contemporánea no aleatoria      | intervención y comparador elegible en la misma ventana                      | hasta `HIPOTESIS_RESPALDADA` salvo estrategia de identificación adicional                     | diferencias basales y selección deben medirse y tratarse                             |
+|    3 | diseño cuasi-experimental gobernado         | comparador o contrafactual y supuestos explícitos                           | puede alcanzar `EVIDENCIA_CAUSAL`                                                             | supuestos, sensibilidad y tendencias deben quedar documentados                       |
+|    4 | despliegue escalonado controlado            | unidades reciben intervención en momentos predefinidos con comparabilidad   | puede alcanzar `EVIDENCIA_CAUSAL` o `EFECTO_COMPROBADO` si la asignación y diseño lo soportan | calendario, contaminación y cambios simultáneos deben controlarse                    |
+|    5 | switchback o alternancia temporal gobernada | periodos de intervención/control predefinidos sobre unidades aptas          | puede alcanzar `EFECTO_COMPROBADO` cuando controla carryover, temporalidad y exposición       | efectos persistentes o estacionalidad pueden invalidar la comparación                |
+|    6 | experimento aleatorizado controlado         | asignación aleatoria gobernada, control, exposición y análisis predefinidos | puede alcanzar `EFECTO_COMPROBADO`                                                            | aleatorización, cumplimiento, interferencia, pérdidas y guardrails deben verificarse |
+
+**Reconciliación:** 6 diseños esperados; 6 materializados; 0 faltantes; 0 duplicados.
+
+Reglas UX:
+
+- el nombre del diseño no garantiza un nivel de confianza;
+- el diseño se presenta como preespecificado únicamente si quedó definido antes de observar resultados;
+- cambios posteriores crean versión nueva y quedan visibles;
+- un pre/post de una sola población no se estiliza como experimento causal;
+- p-value, significancia o precisión predictiva no sustituyen tamaño de efecto, relevancia empresarial o identificación causal;
+- el nivel `EFECTO_COMPROBADO` solo se muestra cuando la evidencia gobernada realmente permite ese nivel.
+
+---
+
+#### 24. Diseño preespecificado
+
+Antes de exposición, la ficha de evaluación deberá poder registrar o presentar, según autorización:
+
+- pregunta de decisión;
+- objetivo e hipótesis;
+- intervención;
+- unidad de asignación;
+- unidad de análisis;
+- población elegible;
+- inclusiones/exclusiones;
+- comparador/control cuando exista;
+- método de asignación;
+- KPI principal;
+- meta o efecto de interés;
+- guardrails;
+- segmentos predefinidos;
+- baseline;
+- duración prevista;
+- estabilización;
+- faltantes;
+- no adherencia/exposición parcial;
+- contaminación/interferencia;
+- cambios concurrentes;
+- regla analítica;
+- suficiencia de evidencia;
+- criterio de pausa;
+- criterio de reversa;
+- regla de cierre;
+- versión del diseño.
+
+La UI diferencia lo preespecificado de lo añadido después de observar resultados.
+
+---
+
+#### 25. Población, asignación, exposición y cumplimiento
+
+```text
+POBLACIÓN ELEGIBLE
+→ quién o qué puede recibir la intervención
+
+ASIGNADO
+→ unidad seleccionada para una condición
+
+EXPUESTO
+→ intervención realmente recibida según definición aprobada
+
+CUMPLIÓ INTERVENCIÓN
+→ intensidad o condición prevista realmente satisfecha
+```
+
+Reglas:
+
+1. asignación sin exposición no cuenta como exposición plena;
+2. exposición sin evidencia suficiente permanece pendiente;
+3. exposición parcial, abandono, cruce de condición y contaminación quedan visibles;
+4. el análisis declara si usa asignación, exposición o cumplimiento y sus limitaciones;
+5. despliegue técnico no prueba uso efectivo;
+6. comunicación enviada no prueba comprensión, adopción ni resultado;
+7. el detalle de personas o poblaciones sensibles requiere autorización específica.
+
+---
+
+#### 26. Seis ventanas de intervención
+
+|    # | Ventana               | Presentación UX006                                                                |
+| ---: | --------------------- | --------------------------------------------------------------------------------- |
+|    1 | baseline              | periodo observado previo definido por el objetivo                                 |
+|    2 | preparación           | configuración, capacitación, asignación o readiness sin contabilizar efecto       |
+|    3 | exposición            | periodo en que la intervención puede afectar la población                         |
+|    4 | estabilización        | tiempo necesario antes de interpretar resultado cuando exista latencia/adaptación |
+|    5 | evaluación            | ventana predefinida para KPI y guardrails                                         |
+|    6 | seguimiento posterior | persistencia, reversión tardía o efectos no deseados posteriores                  |
+
+No existe una duración universal. La experiencia muestra ventanas y cortes reales del expediente, no un calendario inventado.
+
+---
+
+#### 27. Responsabilidades separadas
+
+La ficha distingue al menos:
+
+| Función                   | Responsabilidad                                      | No obtiene por esa función                             |
+| ------------------------- | ---------------------------------------------------- | ------------------------------------------------------ |
+| propietario del resultado | resultado, prioridad y aceptación empresarial        | permiso técnico automático                             |
+| decisor de intervenir     | decisión empresarial de actuar                       | capacidad de alterar métricas o seguridad              |
+| aprobador del cambio      | autorización aplicable a la intervención concreta    | propiedad universal del resultado                      |
+| responsable de ejecución  | preparar y ejecutar conforme a versión/alcance       | cambiar KPI/meta o declarar causalidad                 |
+| responsable de medición   | corte, comparabilidad, calidad, análisis y evidencia | adoptar o revertir por sí solo                         |
+| responsable de calidad    | estado DQ de fuentes                                 | alterar acción o meta por conveniencia                 |
+| propietario del guardrail | decisión sobre riesgo protegido                      | autoridad sobre el KPI principal por defecto           |
+| decisor final             | adoptar, ampliar, iterar, pausar, revertir o cerrar  | elevar retrospectivamente la confianza de la evidencia |
+
+La misma persona solo acumula funciones cuando las autorizaciones independientes y la segregación aplicable lo permiten.
+
+---
+
+#### 28. Seguimiento de fidelidad de implementación
+
+Antes de interpretar resultados, UX006 deberá poder mostrar si la intervención ocurrió como se diseñó:
+
+- unidades asignadas con exposición verificable cuando la métrica sea válida;
+- intensidad/dosis cuando aplique;
+- secuencia;
+- versión aplicada;
+- retrasos;
+- exclusiones no previstas;
+- interrupciones;
+- errores de configuración;
+- cambios concurrentes;
+- desviaciones aprobadas/no aprobadas;
+- incidencias que alteren medición.
+
+Una intervención mal ejecutada puede producir un resultado no concluyente. La UI no la convierte automáticamente en refutación del mecanismo.
+
+---
+
+#### 29. Guardrails durante una intervención
+
+Reglas:
+
+1. el estado de guardrails permanece visible junto al KPI cuando sea material;
+2. un guardrail deteriorado no queda oculto por una mejora del KPI;
+3. el límite por sí solo no ejecuta pausa ni reversa;
+4. la acción prevista puede ser revisar, pausar, reducir exposición, revertir o escalar únicamente conforme al contrato y autoridad aplicables;
+5. riesgos de seguridad, legalidad, privacidad, inocuidad o integridad conservan sus procesos propietarios;
+6. un guardrail con fuente `BLOQUEADO` impide afirmar que el riesgo estuvo adecuadamente controlado;
+7. cambios de versión del guardrail permanecen en historia.
+
+---
+
+#### 30. Pausa y reversa
+
+La experiencia mantiene como conceptos distintos:
+
+- **pausa**: suspensión controlada para revisar evidencia o riesgo;
+- **reversa**: cambio empresarial/técnico propietario que deshace una intervención reversible;
+- **cierre**: decisión empresarial sobre el expediente y su aprendizaje.
+
+Una pausa conserva exposición y evidencia acumuladas. Una reversa no borra exposición ni resultados históricos. Las intervenciones irreversibles deben mostrar esa condición antes de cualquier ejecución futura.
+
+UX006 no materializa el procedimiento técnico de reversa del dominio propietario.
+
+---
+
+#### 31. Cambios concurrentes
+
+La experiencia permite registrar y mostrar cambios que pueden afectar interpretación, por ejemplo precio/promoción, inventario, proveedor, receta, capacidad, dotación, servicio, canal, cobertura, definición de métrica, incidentes, cambios tecnológicos, otra intervención o evento externo documentado.
+
+El cambio concurrente se presenta como explicación alternativa o limitación; no invalida ni explica automáticamente el resultado.
+
+---
+
+#### 32. Comprobación del resultado — 18/18 dimensiones
+
+Toda comprobación de cierre deberá considerar conjuntamente:
+
+1. ejecución conforme al diseño;
+2. población asignada y expuesta;
+3. comparabilidad de KPI, baseline y meta;
+4. calidad de datos;
+5. resultado del KPI;
+6. distancia/cumplimiento de meta cuando sea evaluable;
+7. comportamiento de drivers;
+8. comportamiento de guardrails;
+9. segmentos predefinidos;
+10. efectos no deseados;
+11. cambios concurrentes;
+12. pérdidas, contaminación o interferencia;
+13. incertidumbre del método;
+14. resultado observado frente a efecto atribuible;
+15. nivel de confianza sustentable;
+16. límites de generalización;
+17. persistencia cuando exista seguimiento posterior;
+18. decisión empresarial de cierre.
+
+Un único valor favorable del KPI no satisface la comprobación.
+
+---
+
+#### 33. Resultado observado y efecto atribuible
+
+La UI presenta en planos separados:
+
+```text
+RESULTADO OBSERVADO
+→ qué ocurrió en KPI, drivers y guardrails
+
+EFECTO ATRIBUIBLE
+→ qué parte del cambio puede atribuirse razonablemente a la intervención bajo diseño y supuestos
+```
+
+Reglas:
+
+- resultado observado puede existir sin efecto atribuible;
+- cumplir meta no demuestra que la intervención la causó;
+- no cumplir meta no demuestra efecto exactamente cero;
+- una acción puede producir efecto favorable sin alcanzar aún la meta;
+- KPI favorable con daño material en guardrails no se presenta como éxito pleno;
+- un experimento sin efecto detectable puede producir aprendizaje útil;
+- el residuo no explicado permanece visible.
+
+---
+
+#### 34. Siete decisiones de cierre
+
+|    # | Decisión                | Semántica                                                        | Condición mínima                                                                                       |
+| ---: | ----------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+|    1 | `ADOPTAR`               | mantener la intervención dentro del alcance comprobado           | beneficio o resultado suficiente, riesgos aceptables y guardrails compatibles                          |
+|    2 | `AMPLIAR`               | extender a una población o alcance adicional                     | resultado suficiente y justificación de transferibilidad; la ampliación crea una nueva coordenada      |
+|    3 | `ITERAR`                | modificar hipótesis, acción o diseño y volver a evaluar          | aprendizaje concreto y nueva versión del expediente                                                    |
+|    4 | `PAUSAR`                | suspender antes de una nueva decisión                            | riesgo, evidencia insuficiente o condición predefinida de pausa                                        |
+|    5 | `REVERTIR`              | deshacer una intervención reversible                             | balance de riesgo/resultado o condición de reversa satisfecha y autoridad aplicable                    |
+|    6 | `ESCALAR_INVESTIGACION` | regresar a diagnóstico o medición antes de intervenir nuevamente | resultado no concluyente, explicación alternativa o calidad insuficiente                               |
+|    7 | `CERRAR_SIN_ADOPCION`   | terminar la iniciativa sin mantener la intervención              | ausencia de beneficio suficiente, riesgo no aceptable, inviabilidad o decisión empresarial documentada |
+
+**Reconciliación:** 7 decisiones esperadas; 7 materializadas; 0 faltantes; 0 duplicados.
+
+Reglas:
+
+- solo una decisión representa la decisión vigente de una evaluación cerrada, sin borrar decisiones anteriores;
+- `AMPLIAR` crea nueva coordenada y no demuestra efecto en la población nueva;
+- `ITERAR` crea nueva versión de hipótesis, acción o diseño;
+- `ESCALAR_INVESTIGACION` retorna a UX005/contrato diagnóstico cuando la evidencia es insuficiente;
+- una adopción empresarial no aumenta retrospectivamente el nivel causal de la evidencia;
+- resultados nulos o desfavorables permanecen visibles y producen aprendizaje.
+
+---
+
+#### 35. Aprendizaje
+
+Todo cierre deberá presentar, cuando sea autorizado:
+
+```text
+QUÉ SE HIZO
+QUÉ SE OBSERVÓ
+QUÉ PUEDE ATRIBUIRSE
+QUÉ NO PUDO DETERMINARSE
+QUÉ GUARDRAILS O EFECTOS NO DESEADOS APARECIERON
+QUÉ LIMITACIONES EXISTIERON
+QUÉ DECISIÓN SE TOMÓ
+DÓNDE PUEDE Y NO PUEDE GENERALIZARSE
+```
+
+El aprendizaje no reescribe resultados previos. Una iteración enlaza una nueva versión con la anterior.
+
+---
+
+#### 36. Matriz materializada de las 55 familias analíticas
+
+Cada identidad conserva el rol contextual admitido y su condición canónica. `ESPECIFICADO` significa únicamente que la experiencia puede gobernar ese rol; no crea un objetivo, meta ni certificación.
+
+##### Comercial — 11/11
+
+|    # | Familia canónica                             | Roles contextuales                          | Condición UX006                                                                                            | Estado         |
+| ---: | -------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | ventas netas y brutas                        | KPI, driver, guardrail o métrica secundaria | usar base comercial/fiscal y población gobernadas; no confundir venta con margen                           | `ESPECIFICADO` |
+|    2 | pedidos y conversión                         | KPI o driver                                | conversión requiere numerador y denominador gobernados; conteo de pedidos conserva su propia población     | `ESPECIFICADO` |
+|    3 | ticket y unidades                            | KPI o driver                                | ticket usa transacciones elegibles y unidades compatibles; no dividir por filas de producto                | `ESPECIFICADO` |
+|    4 | mezcla por producto, categoría, canal y sede | KPI contextual, driver o guardrail          | dimensiones y denominadores de participación deben reconciliar al total                                    | `ESPECIFICADO` |
+|    5 | demanda por franja, día y temporada          | KPI o driver                                | demanda observada no equivale a demanda total; estacionalidad exige historia suficiente                    | `ESPECIFICADO` |
+|    6 | disponibilidad perdida                       | KPI, driver o guardrail                     | permanece bloqueada para medición oficial sin intención y disponibilidad histórica reconciliadas           | `ESPECIFICADO` |
+|    7 | cancelaciones, devoluciones y descuentos     | KPI, driver o guardrail                     | mantener cada fenómeno y denominador separados                                                             | `ESPECIFICADO` |
+|    8 | promociones y efecto incremental             | KPI o driver                                | exposición y versión son previas; cualquier efecto causal conserva los límites de diagnóstico y evaluación | `ESPECIFICADO` |
+|    9 | recurrencia y frecuencia                     | KPI o driver                                | identidad, finalidad, población y ventana deben estar gobernadas                                           | `ESPECIFICADO` |
+|   10 | margen relacionado                           | KPI o guardrail                             | consumir margen económico gobernado; no recalcular costo localmente                                        | `ESPECIFICADO` |
+|   11 | capacidad comercial no utilizada             | KPI contextual, driver o guardrail          | requiere denominador de capacidad compatible                                                               | `ESPECIFICADO` |
+
+**Reconciliación:** 11 esperadas; 11 materializadas; 0 faltantes; 0 duplicadas.
+
+##### Inventario, abastecimiento, proveedores y logística — 12/12
+
+|    # | Familia canónica                        | Roles contextuales                 | Condición UX006                                                                     | Estado         |
+| ---: | --------------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- | -------------- |
+|    1 | existencia disponible y comprometida    | KPI, driver o guardrail            | separar física, comprometida, cuarentena, tránsito y disponible                     | `ESPECIFICADO` |
+|    2 | cobertura y días de inventario          | KPI, driver o guardrail            | requiere existencia elegible y tasa de demanda/consumo compatible                   | `ESPECIFICADO` |
+|    3 | rotación y permanencia                  | KPI, driver o guardrail            | requiere inventario medio e historia/cohorte compatibles                            | `ESPECIFICADO` |
+|    4 | faltantes y quiebres                    | KPI, driver o guardrail            | stock cero no prueba faltante o quiebre sin necesidad elegible                      | `ESPECIFICADO` |
+|    5 | vencimiento, daño y pérdida             | KPI o guardrail                    | hechos y causas deben ser explícitos; cuarentena y disposición permanecen separadas | `ESPECIFICADO` |
+|    6 | diferencias de conteo                   | KPI, driver o guardrail            | conservar signo, corte y relación antes/después del ajuste                          | `ESPECIFICADO` |
+|    7 | cumplimiento de remisiones              | KPI o driver                       | preparación, despacho, recepción, faltante y cierre se evalúan por separado         | `ESPECIFICADO` |
+|    8 | lead time y cumplimiento de proveedores | KPI o driver                       | requiere inicio contractual y recepción aceptada con promesa comparable             | `ESPECIFICADO` |
+|    9 | compras urgentes                        | KPI o guardrail                    | solo hechos clasificados explícitamente como urgentes o de emergencia               | `ESPECIFICADO` |
+|   10 | consumo versus plan                     | KPI o driver                       | requiere plan explícito de misma población, unidad, sede y ventana                  | `ESPECIFICADO` |
+|   11 | costo de inventario                     | KPI o guardrail                    | valoración oficial consume método económico aprobado                                | `ESPECIFICADO` |
+|   12 | capacidad de almacenamiento             | KPI contextual, driver o guardrail | requiere capacidad utilizable y unidad física compatible                            | `ESPECIFICADO` |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+##### Producción, rendimiento, capacidad, merma y calidad — 10/10
+
+|    # | Familia canónica                            | Roles contextuales      | Condición UX006                                                                                     | Estado         |
+| ---: | ------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | demanda planificada versus producción       | KPI o driver            | requiere necesidad o plan aceptado y producción elegible comparable                                 | `ESPECIFICADO` |
+|    2 | capacidad disponible y utilizada            | KPI, driver o guardrail | requiere denominador integral de capacidad en unidad compatible                                     | `ESPECIFICADO` |
+|    3 | adherencia al programa                      | KPI o driver            | exige programa publicado y versionado con hitos y población                                         | `ESPECIFICADO` |
+|    4 | rendimiento teórico y real                  | KPI o driver            | teoría y real deben reconciliar receta/versión, escala y unidad                                     | `ESPECIFICADO` |
+|    5 | consumo estándar y real                     | KPI, driver o guardrail | estándar y real se comparan por ingrediente y unidad compatible                                     | `ESPECIFICADO` |
+|    6 | merma, reproceso y aprovechamiento          | KPI, driver o guardrail | cada categoría requiere hecho explícito y denominador propio                                        | `ESPECIFICADO` |
+|    7 | calidad, retención y rechazo                | KPI o guardrail         | control, resultado, retención, rechazo, reproceso y liberación permanecen separados                 | `ESPECIFICADO` |
+|    8 | tiempo de ciclo                             | KPI o driver            | requiere hitos reales; espera, preparación, ejecución, pausa, retención y liberación no se colapsan | `ESPECIFICADO` |
+|    9 | cumplimiento de liberación                  | KPI o guardrail         | producción terminada no equivale a lote liberado                                                    | `ESPECIFICADO` |
+|   10 | costo y variación por lote, producto y sede | KPI, driver o guardrail | costo técnico no sustituye costo económico oficial                                                  | `ESPECIFICADO` |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+##### Servicio, clientes, fidelización, reputación y experiencia — 12/12
+
+|    # | Familia canónica                                        | Roles contextuales                 | Condición UX006                                                                                | Estado         |
+| ---: | ------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------- | -------------- |
+|    1 | cumplimiento de promesa                                 | KPI o driver                       | promesa aceptada y versionada es requisito; solicitud no equivale a compromiso                 | `ESPECIFICADO` |
+|    2 | tiempos de preparación, despacho y entrega              | KPI o driver                       | cada fase requiere eventos reales compatibles                                                  | `ESPECIFICADO` |
+|    3 | pedidos completos                                       | KPI o driver                       | completitud se resuelve por líneas, cantidades, revisiones y sustituciones aceptadas           | `ESPECIFICADO` |
+|    4 | reclamos y tiempo de resolución                         | KPI, driver o guardrail            | reclamo exige expediente y SLA o versión aplicable                                             | `ESPECIFICADO` |
+|    5 | compensaciones                                          | KPI contextual, driver o guardrail | devolución, reembolso, descuento, cortesía, cupón y puntos permanecen distintos                | `ESPECIFICADO` |
+|    6 | satisfacción y feedback                                 | KPI, driver o guardrail            | feedback interno, invitación y reputación externa permanecen separados                         | `ESPECIFICADO` |
+|    7 | recurrencia, frecuencia y abandono                      | KPI o driver                       | abandono exige población elegible, ventana y observación completa                              | `ESPECIFICADO` |
+|    8 | adquisición y activación                                | KPI o driver                       | adquisición y activación requieren eventos y origen gobernados                                 | `ESPECIFICADO` |
+|    9 | fidelización, puntos y redenciones                      | KPI, driver o guardrail            | movimientos y redenciones se analizan por estado; saldo no sustituye ledger                    | `ESPECIFICADO` |
+|   10 | reputación y temas recurrentes                          | KPI, driver o guardrail            | reputación pública requiere fuente externa gobernada; feedback interno permanece distinto      | `ESPECIFICADO` |
+|   11 | reservas, no-show y utilización                         | KPI, driver o guardrail            | utilización requiere capacidad gobernada; reserva, cancelación y no-show son estados distintos | `ESPECIFICADO` |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | KPI o guardrail                    | identidad y finalidad autorizadas, junto con rentabilidad gobernada, son requisitos            | `ESPECIFICADO` |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+##### Costos, rentabilidad, liquidez, presupuesto y escenarios — 10/10
+
+|    # | Familia canónica              | Roles contextuales                      | Condición UX006                                                                                 | Estado         |
+| ---: | ----------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------- |
+|    1 | costos estándar y reales      | KPI, driver o guardrail                 | estándar y real usan método, versión, unidad, moneda y componentes comparables                  | `ESPECIFICADO` |
+|    2 | variaciones                   | KPI o driver                            | cada variación conserva su base; costo, presupuesto, forecast, precio y cantidad no se colapsan | `ESPECIFICADO` |
+|    3 | margen y contribución         | KPI o guardrail                         | exige ingreso realizado y costos trazables o variables elegibles                                | `ESPECIFICADO` |
+|    4 | gastos                        | KPI, driver o guardrail                 | capturado, reconocido, aprobado, pagado, anulado y conciliado permanecen separados              | `ESPECIFICADO` |
+|    5 | centros de costo              | driver, dimensión o métrica secundaria  | un centro es dimensión económica; no es KPI por sí mismo sin métrica definida sobre él          | `ESPECIFICADO` |
+|    6 | presupuesto y forecast        | KPI contextual, driver o comparador     | presupuesto aprobado, revisión, forecast, escenario y real permanecen distintos                 | `ESPECIFICADO` |
+|    7 | caja, bancos y tesorería      | KPI o guardrail                         | posición real exige saldos reconciliados y disponibilidad                                       | `ESPECIFICADO` |
+|    8 | cartera y obligaciones        | KPI, driver o guardrail                 | saldo abierto deriva de reconocimiento menos aplicaciones válidas                               | `ESPECIFICADO` |
+|    9 | rentabilidad multidimensional | KPI o guardrail                         | exige ingreso realizado, costos trazables, asignaciones y residuo visibles                      | `ESPECIFICADO` |
+|   10 | escenarios y simulaciones     | driver, comparador o métrica secundaria | simulado no sustituye real, baseline ni efecto observado                                        | `ESPECIFICADO` |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+**Reconciliación global:** `11 + 12 + 10 + 12 + 10 = 55`; 55 esperadas; 55 materializadas; 55 identidades únicas; 0 faltantes; 0 duplicadas.
+
+Reglas globales:
+
+1. ninguna familia crea un objetivo automático;
+2. ninguna familia se convierte en KPI hasta vincularse a una métrica registrada y a un objetivo concreto;
+3. los estados y bloqueos de origen se heredan sin mejora silenciosa;
+4. una familia con dependencia `BLOQUEADO` no produce medición oficial del componente afectado;
+5. una familia `NO EVALUADO` puede soportar exploración visible, no baseline certificado;
+6. una dimensión, comparador o escenario no se presenta como resultado real;
+7. una familia puede combinar varias métricas con estados distintos y la experiencia conserva el estado de cada dependencia material;
+8. no existe obligación de un objetivo por familia ni de una familia por objetivo.
+
+---
+
+#### 37. Cobertura de las catorce métricas de asistencia
+
+Las métricas concretas de asistencia permanecen disponibles únicamente como métricas gobernadas dentro de un objetivo. UX006 no les asigna metas universales ni modifica sus fórmulas.
+
+|    # | `metric_key`        | DQ heredado   | Decisión UX006                                                                                                                                                                                     |
+| ---: | ------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    2 | `attendedShifts`    | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    3 | `restDayCount`      | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    4 | `lateCount`         | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    5 | `noShowCount`       | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    6 | `openCount`         | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | puede figurar en un objetivo o borrador contextual, pero no soporta baseline/medición oficial mientras persista el bloqueo; no se muestra como KPI saludable ni se neutraliza desde la experiencia |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|    9 | `departureCount`    | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|   11 | `netMinutes`        | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|   12 | `incidentCount`     | `NO EVALUADO` | elegible contextualmente como KPI, driver, guardrail o métrica secundaria según semántica del objetivo; conserva `NO EVALUADO` y no recibe meta por defecto                                        |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | puede figurar en un objetivo o borrador contextual, pero no soporta baseline/medición oficial mientras persista el bloqueo; no se muestra como KPI saludable ni se neutraliza desde la experiencia |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | puede figurar en un objetivo o borrador contextual, pero no soporta baseline/medición oficial mientras persista el bloqueo; no se muestra como KPI saludable ni se neutraliza desde la experiencia |
+
+**Reconciliación:** 14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Las tres bloqueadas permanecen exactamente `missingCloseCount`, `attendanceRate` y `punctualityRate`.
+
+---
+
+#### 38. Autorización, privacidad y segregación
+
+Reglas obligatorias:
+
+1. el portafolio se construye únicamente con objetivos y metadatos que el actor esté autorizado a conocer;
+2. ver un objetivo no concede `SET_TARGET`;
+3. `SET_TARGET` no concede `DEFINE`, `CERTIFY`, `PUBLISH`, `ANNOTATE`, `EXPORT` ni `ADMINISTER`;
+4. ver un KPI no concede filas fuente;
+5. ver una meta no concede editarla;
+6. ver una acción propuesta no concede aprobarla ni ejecutarla;
+7. ejecutar una intervención requiere la autorización del proceso propietario y no se deriva de la experiencia analítica;
+8. comparar segmentos o poblaciones sensibles reevalúa protección y divulgación;
+9. no se muestran opciones de filtro, conteos o errores que revelen objetivos, personas, clientes, proveedores, importes o poblaciones fuera del conjunto autorizado;
+10. un principal técnico o `service_role` no sustituye actor empresarial;
+11. las anotaciones autorizadas siguen siendo no autoritativas;
+12. la identidad de aprobadores, responsables o participantes se minimiza según finalidad;
+13. la evidencia sensible puede representarse mediante referencia segura;
+14. cada salto a detalle o expediente propietario reevalúa autorización;
+15. una acción masiva futura no se infiere de que varios objetivos sean visibles simultáneamente.
+
+---
+
+#### 39. Auditoría, historia y reproducibilidad
+
+La experiencia deberá poder mostrar historia segura de decisiones sin convertirla en una segunda fuente de verdad.
+
+Para objetivos y metas conserva, cuando exista evidencia:
+
+- propuesta/origen;
+- propietario;
+- decisión y fecha;
+- KPI/versión;
+- baseline;
+- meta y fuente;
+- drivers y guardrails;
+- plan de medición;
+- cambios de población/horizonte/segmentos;
+- motivo de revisión;
+- relación con diagnóstico;
+- relación con intervención;
+- relación con restatement.
+
+Para intervenciones conserva:
+
+- quien propuso, aprobó, ejecutó, midió y decidió;
+- timestamps;
+- versiones de objetivo, acción y diseño;
+- elegibilidad, asignación y exposición;
+- consultas/modelos referenciados;
+- fuentes/cortes;
+- pausas/reversas;
+- desviaciones;
+- cambios concurrentes;
+- resultados/guardrails;
+- cambios de confianza;
+- aprendizaje;
+- decisiones anteriores y vigentes;
+- iteraciones posteriores.
+
+Una evidencia posterior no se presenta como disponible en una decisión histórica si no lo estaba entonces. Correcciones, backfills o cambios de definición que afecten baseline, KPI, meta o guardrail navegan al gobierno histórico correspondiente y no reescriben silenciosamente la ficha original.
+
+---
+
+#### 40. Navegación y handoffs con propietario documental exacto
+
+| Necesidad detectada en UX006                                                        | Propietario documental                                    | Condición de handoff                                                                            |
+| ----------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| comprender definición, versión, fuente o linaje de KPI/driver/guardrail             | `DATA-UX-002`                                             | conservar objetivo, métrica, versión, población y corte                                         |
+| analizar tendencia, comparación o composición del KPI                               | `DATA-UX-003`                                             | conservar métrica, filtros, población, periodo, corte y meta solo como referencia               |
+| resolver calidad, frescura, cobertura, conciliación o certificación                 | `DATA-UX-004`                                             | conservar recurso, uso, periodo, versión y corte; no cambiar DQ en UX006                        |
+| investigar causa, anomalía, alternativa o confianza                                 | `DATA-UX-005`                                             | conservar objetivo, señal, evidencia, población y límites; `ESCALAR_INVESTIGACION` retorna aquí |
+| publicar, distribuir o preservar reportes, exportaciones, suscripciones o snapshots | `DATA-UX-007`                                             | antes de materializar salidas oficiales o portables                                             |
+| validar comprensión, tiempos y decisiones con usuarios reales                       | `DATA-UX-008`                                             | antes de declarar readiness del flujo analítico completo                                        |
+| semántica de objetivos, baseline, meta, drivers, guardrails y medición              | `DATA-DOM-015`                                            | siempre que se cree o cambie la definición del objetivo                                         |
+| clases de intervención, diseños, exposición, comprobación y cierre                  | `DATA-DOM-016`                                            | siempre que se diseñe o evalúe una acción/intervención                                          |
+| correcciones históricas y restatements                                              | `DATA-DOM-017`                                            | antes de reexpresar baseline, evaluación o publicación previa                                   |
+| autorización de `SET_TARGET` y otras capacidades de gobierno                        | `DATA-AUTH-003`                                           | antes de cualquier decisión autoritativa de meta o gobierno                                     |
+| auditoría de consultas, modelos y recomendaciones                                   | `DATA-AUTH-004`                                           | antes de instrumentar trazabilidad operativa                                                    |
+| capa semántica, cálculos, consultas, caché y snapshots                              | `DATA-INT-002`                                            | antes de materializar técnicamente la experiencia                                               |
+| BI, hojas, modelos analíticos e inteligencia artificial                             | `DATA-INT-004`                                            | antes de integrar herramientas externas o automatización analítica                              |
+| ejecución física de una intervención concreta                                       | tarea o paquete propietario del comportamiento modificado | solo cuando exista una intervención real, autorización aplicable y paquete físico definido      |
+
+No queda una brecha sustantiva detectada por UX006 sin propietario documental y condición de salida.
+
+---
+
+#### 41. Accesibilidad, densidad y lenguaje
+
+La experiencia es administrativa/analítica y puede ser densa, pero deberá conservar:
+
+- objetivo, KPI, meta/horizonte y estado de preparación en un orden semántico claro;
+- texto equivalente para estado, tendencia, riesgo y guardrails; el color no es señal única;
+- foco visible y navegación por teclado;
+- encabezados y relaciones programáticamente determinables;
+- representación textual equivalente para gráficos de progreso o efecto;
+- divulgación progresiva de los veintiocho elementos del plan y treinta y tres coordenadas de intervención;
+- tooltips nunca como único lugar de información esencial;
+- redacción humana para bloqueos: qué impide medir o actuar, qué se conserva y qué propietario debe resolver;
+- diferenciación explícita entre dato ausente, no autorizado, pendiente de evidencia y `BLOQUEADO`;
+- preservación de contexto al navegar entre objetivo, investigación, calidad y tablero sin preservar privilegios obsoletos;
+- reflow sin depender de tablas horizontales para comprender la decisión principal.
+
+---
+
+#### 42. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por UX006 ya se encuentra protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-005` protege de forma directa la separación entre señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana de medición, segmentos, resultado, confianza, aprendizaje y decisión de cierre/iteración, además de exigir comparación contra baseline/guardrails y conservar efectos no deseados;
+- `TREQ-DATA-002` protege identidad, versión, propósito, fórmula, población, dimensiones, unidad, fuente, calidad y comparación de métricas;
+- `TREQ-DATA-003` protege calidad, cobertura, datos tardíos, backfills, reconciliación y linaje;
+- `TREQ-DATA-004` protege contexto analítico, corte, calidad, artefactos separados, drill-down y reproducibilidad de salidas;
+- los requisitos UX vigentes protegen densidad, contexto, privacidad, fuente de verdad, trazabilidad y no exposición indirecta.
+
+UX006 especializa esas obligaciones como experiencia de objetivo, meta, drivers, guardrails, acción, intervención, comprobación y cierre. No introduce una conducta ejecutable nueva fuera de esa cobertura ni cambia prioridad, modalidad, relaciones o destino de implementación de los requisitos existentes.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa en experiencia obligaciones ya protegidas para objetivos medibles, línea base, meta, KPI principal, drivers, guardrails, acciones, experimentos, exposición, comprobación, confianza, aprendizaje y cierre. No introduce una regla ejecutable independiente, un nuevo estado operativo, una fórmula, una transición física, un permiso, una integración o una automatización que requiera una fila nueva o modificación del registro.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 43. Criterios de aceptación
+
+1. prioridad empresarial, objetivo y meta permanecen conceptos distintos;
+2. métrica, KPI, driver y guardrail permanecen roles distintos;
+3. baseline, meta, benchmark, forecast y escenario permanecen separados;
+4. cada objetivo contiene exactamente un KPI principal;
+5. el KPI consume una métrica registrada/versionada y no redefine fórmula;
+6. ninguna métrica se declara KPI global por conveniencia visual;
+7. una misma métrica puede asumir roles contextuales distintos sin duplicar definición;
+8. la ficha materializa las veinte coordenadas mínimas del objetivo;
+9. la línea base conserva versión, periodo, corte, población, unidad y calidad;
+10. baseline observado no se sustituye por forecast o escenario;
+11. una dependencia `BLOQUEADO` no produce baseline oficial;
+12. `NO EVALUADO`, `EN OBSERVACIÓN`, `DEGRADADO` y `BLOQUEADO` conservan semántica real;
+13. se preservan exactamente tres métodos documentales de baseline;
+14. se preservan exactamente cinco formas semánticas de meta;
+15. ninguna forma de meta contiene un valor numérico inventado;
+16. toda meta concreta conserva fuente, propietario, operador, unidad, horizonte y vigencia;
+17. un presupuesto, forecast, SLA, contrato o benchmark no se convierte automáticamente en meta;
+18. `SET_TARGET` se resuelve como capacidad separada;
+19. propiedad funcional no sustituye permiso de `SET_TARGET`;
+20. fijar una meta no crea alerta ni acción empresarial;
+21. `SET_TARGET` no cambia KPI, baseline observado, calidad ni resultado medido;
+22. driver no equivale a causa demostrada;
+23. driver conserva evidencia y confianza diagnóstica cuando exista afirmación explicativa;
+24. guardrail protege un riesgo o resultado material distinto del KPI;
+25. todo riesgo material identificado tiene guardrail o `NO_APLICA` justificado;
+26. un KPI favorable no oculta guardrail material incumplido;
+27. se materializan exactamente 28 elementos del plan de medición;
+28. se materializan exactamente 14 condiciones de medición oficial;
+29. una condición crítica faltante conserva pendiente o bloqueo;
+30. calidad DQ, confianza diagnóstica y cumplimiento de meta permanecen ejes distintos;
+31. comparabilidad conserva métrica/version, grano, población, calendario, periodo, dimensiones, unidad/moneda, cobertura y fuentes;
+32. cero, nulo, no aplica, desconocido, no recibido, pendiente y denominador no disponible permanecen distinguibles;
+33. cadencia de datos, cálculo, revisión y ventana de evaluación permanecen separadas;
+34. el portafolio no crea un score universal de prioridad;
+35. conflictos entre objetivos permanecen visibles cuando son materiales;
+36. el handoff desde UX005 conserva confianza, evidencia, población, impacto y límites;
+37. se materializan exactamente 33 coordenadas de intervención;
+38. se materializan exactamente 20 condiciones previas de intervención;
+39. una puerta documental completa no autoriza ejecución;
+40. recomendación, decisión y acción permanecen separadas;
+41. acción y experimento permanecen separados;
+42. intervención diseñada y ejecutada permanecen distintas;
+43. asignación, exposición y cumplimiento permanecen distintos;
+44. se preservan exactamente seis clases de intervención;
+45. una corrección obligatoria no se retrasa para mantener un control experimental cuando existe obligación de actuar;
+46. un piloto sin comparador no se presenta como causal;
+47. se preservan exactamente seis diseños de evaluación;
+48. pre/post de una sola población tiene techo `ASOCIACION` para atribución causal por sí solo;
+49. el nombre del diseño no garantiza nivel de confianza;
+50. cambios posteriores al diseño conservan nueva versión;
+51. se preservan exactamente seis ventanas de intervención;
+52. no se inventa duración universal;
+53. propietario, aprobador, ejecutor, medición y decisión final permanecen funciones distinguibles;
+54. ejecutar no concede cambiar KPI/meta;
+55. medir no concede adoptar o revertir;
+56. fidelidad de implementación se comprueba antes de interpretar resultado;
+57. guardrails permanecen visibles durante intervención;
+58. guardrail no crea pausa/reversa automática;
+59. pausa y reversa permanecen conceptos distintos;
+60. una reversa no borra exposición ni historia;
+61. cambios concurrentes se conservan como alternativas o limitaciones;
+62. se materializan exactamente 18 dimensiones de comprobación;
+63. resultado observado y efecto atribuible permanecen separados;
+64. cumplir meta no demuestra causalidad;
+65. un resultado no concluyente no se presenta como éxito;
+66. el residuo no explicado permanece visible;
+67. se preservan exactamente siete decisiones de cierre;
+68. `ADOPTAR`, `AMPLIAR`, `ITERAR`, `PAUSAR`, `REVERTIR`, `ESCALAR_INVESTIGACION` y `CERRAR_SIN_ADOPCION` permanecen distintas;
+69. ampliar no demuestra efecto en población nueva;
+70. iterar crea nueva versión y no sobrescribe resultados previos;
+71. todo cierre conserva aprendizaje y límites;
+72. resultados negativos o nulos no se eliminan;
+73. IA, BI o modelos no pueden fijar metas, aprobar acciones, declarar efecto comprobado ni ejecutar cambios por sí solos;
+74. se materializan 55/55 familias analíticas con distribución 11 + 12 + 10 + 12 + 10;
+75. las 55 identidades son únicas y no existen faltantes ni duplicados;
+76. ninguna familia crea un objetivo automático ni una nueva `metric_key`;
+77. se materializan 14/14 métricas de asistencia;
+78. se preservan exactamente 11 métricas `NO EVALUADO` y 3 `BLOQUEADO`;
+79. `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen las tres bloqueadas;
+80. ninguna de las catorce métricas recibe meta universal ni mejora DQ por aparecer en un objetivo;
+81. búsquedas, filtros y conteos operan únicamente sobre objetivos/metadatos autorizados;
+82. ver objetivo no concede fijar meta, publicar, exportar ni ejecutar;
+83. cada expansión de detalle reevalúa autorización y protección;
+84. decisiones e historia no se reescriben silenciosamente;
+85. correcciones y restatements conservan vínculo con versión original;
+86. cada handoff tiene propietario documental exacto y condición de salida;
+87. no se crean rutas, componentes, endpoints, tablas, vistas, jobs, modelos físicos, permisos, roles, grants o excepciones;
+88. no se modifica código, DDL, DML, RLS, RPC, datos, migraciones, backfills, despliegues, automatizaciones, experimentos reales ni Supabase;
+89. no se crea ni modifica ningún requisito de prueba;
+90. `DATA-UX-007` permanece únicamente reservada.
+
+---
+
+#### 44. Balance de cierre
+
+| Control                                   |                  Resultado |
+| ----------------------------------------- | -------------------------: |
+| Familias analíticas                       |                **55 / 55** |
+| Distribución                              | **11 + 12 + 10 + 12 + 10** |
+| Métricas de asistencia                    |                **14 / 14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO`      |                 **11 / 3** |
+| Métodos de baseline                       |                  **3 / 3** |
+| Formas de meta                            |                  **5 / 5** |
+| Elementos de plan de medición             |                **28 / 28** |
+| Condiciones de medición oficial           |                **14 / 14** |
+| Coordenadas de intervención               |                **33 / 33** |
+| Condiciones previas de intervención       |                **20 / 20** |
+| Clases de intervención                    |                  **6 / 6** |
+| Diseños de evaluación                     |                  **6 / 6** |
+| Ventanas de intervención                  |                  **6 / 6** |
+| Dimensiones de comprobación               |                **18 / 18** |
+| Decisiones de cierre                      |                  **7 / 7** |
+| Valores de meta inventados                |                      **0** |
+| Nuevas `metric_key`                       |                      **0** |
+| Acciones empresariales ejecutadas         |                      **0** |
+| Experimentos ejecutados                   |                      **0** |
+| Permisos, roles o grants creados          |                      **0** |
+| Cambios físicos                           |                      **0** |
+| Requisitos de prueba nuevos o modificados |                      **0** |
+
+---
+
+#### 45. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados`
+
+
 ### [ ] DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
 ### [ ] DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
