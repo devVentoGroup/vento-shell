@@ -2285,7 +2285,594 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo`
 
 
-### [ ] CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo
+### ✅ CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos` — APROBADA
+**Tarea siguiente:** `CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materialización de objetivos empresariales de continuidad por servicio BIA, con MTPD, RTO, RPO, MBCO, prioridad de recuperación y criterios de aceptación de riesgo, separando objetivo aprobado de capacidad validada
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, datos, backfills, respaldos, restauraciones, failover, activaciones de contingencia, compras, cambios de proveedor o cambios en Supabase:** no autorizados
+**Servicios BIA evaluados:** 69 de 69
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Fijar para cada uno de los 69 resultados empresariales protegidos un límite temporal y funcional de continuidad que permita decidir, antes de un incidente, cuánto tiempo puede faltar el resultado mínimo, cuándo debe estar restablecido, qué antigüedad máxima de estado recuperable es tolerable, qué nivel mínimo debe preservarse, en qué orden debe recuperarse y bajo qué condiciones un incumplimiento puede o no someterse a aceptación temporal de riesgo.
+
+La tarea convierte el BIA y el mapa de dependencias ya aprobados en objetivos empresariales explícitos. No afirma que la arquitectura, los respaldos, los proveedores, las personas o los procedimientos actuales ya puedan cumplirlos.
+
+Invariante central:
+
+```text
+OBJETIVO DE CONTINUIDAD DEFINIDO
+!= CAPACIDAD TECNICA DEMOSTRADA
+!= TIEMPO OBSERVADO EN EJERCICIO
+!= RIESGO ACEPTADO
+!= READINESS CERTIFICADO
+```
+
+#### 2. Resultado material
+
+| Control                                            |   Resultado |
+| -------------------------------------------------- | ----------: |
+| Servicios `BCS-*` heredados                        | **69 / 69** |
+| BIA `BIA-*` reconciliados                          | **69 / 69** |
+| Procesos `VPROC-*` reconciliados                   | **69 / 69** |
+| Perfiles de objetivo de continuidad                |       **4** |
+| Decisiones MTPD                                    | **69 / 69** |
+| Decisiones RTO                                     | **69 / 69** |
+| Decisiones RPO                                     | **69 / 69** |
+| Decisiones MBCO                                    | **69 / 69** |
+| Decisiones de prioridad                            | **69 / 69** |
+| Decisiones de estado de aceptación de riesgo       | **69 / 69** |
+| Objetivos activos definidos y todavía no validados |      **67** |
+| Objetivos bloqueados por aplicación AURA diferida  |       **2** |
+| Capacidades declaradas validadas por esta tarea    |       **0** |
+| Riesgos aceptados por esta tarea                   |       **0** |
+| Cambios físicos                                    |       **0** |
+| Cambios de requisitos de prueba                    |       **0** |
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume y conserva, sin redefinir:
+
+1. `CONT-DOM-001`, incluido su gobierno, derechos de decisión, segregación, excepciones, versionado y prohibición de presentar objetivos no demostrados como capacidad real;
+2. `CONT-DOM-002`, incluidos los 69 servicios BIA, las cuatro clases de criticidad, los cuatro niveles mínimos cualitativos, cinco sedes internas y la separación entre criticidad BIA, severidad de incidente y prioridad de recuperación;
+3. `CONT-DOM-003`, incluidos los 69 mapas de dependencia, 552 decisiones de dimensión, 67 candidatos a validar como concentración, dos bloqueos AURA, cero SPOF confirmados y cero sustitutos aprobados;
+4. las aplicaciones propietarias y la distribución de propiedad aprobada para `VPROC-0001` a `VPROC-0069`;
+5. los requisitos vigentes de continuidad, autorización e integración que exigen objetivos, evidencia, trazabilidad y recuperación correlacionada;
+6. la regla de que la operación mínima exacta por volumen, sede, horario, temporada y duración pertenece a `CONT-DOM-007`;
+7. la regla de que modalidades concretas de contingencia pertenecen a `CONT-DOM-008`, respaldos a `CONT-DOM-011`, runbooks y tiempos observados de recuperación a `CONT-DOM-012` y `CONT-DOM-014`, y continuidad externa a `CONT-DOM-013`.
+
+#### 4. Definiciones normativas
+
+| Concepto                  | Definición aprobada en esta tarea                                                                                                                                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MTPD`                    | Duración máxima de interrupción durante la cual el resultado empresarial puede permanecer por debajo de su MBCO antes de que el impacto residual pase a ser inaceptable. Es un límite empresarial, no un tiempo técnico medido. |
+| `RTO`                     | Tiempo objetivo máximo desde la interrupción hasta restablecer el MBCO aplicable. No exige normalidad completa; exige capacidad mínima controlada y verificable.                                                                |
+| `RPO`                     | Antigüedad máxima tolerable del estado recuperable necesario para reconstruir el resultado y sus efectos sin pérdida silenciosa. No autoriza borrar, omitir ni dar por inexistentes hechos comprometidos.                       |
+| `MBCO`                    | Objetivo mínimo de continuidad del resultado empresarial. En esta tarea se fija su clase funcional; el volumen, capacidad, dotación y detalle cuantitativo se materializan en `CONT-DOM-007`.                                   |
+| prioridad de recuperación | Orden empresarial de atención para recuperar MBCO. No es severidad de incidente, prioridad de ticket ni prioridad técnica de un componente.                                                                                     |
+| aceptación de riesgo      | Decisión explícita, temporal y trazable por la autoridad aplicable para convivir con una brecha concreta. Esta tarea define elegibilidad y límites; no concede aceptaciones reales.                                             |
+
+Reglas:
+
+
+1. `RTO < MTPD` para todo perfil activo;
+2. `RPO <= RTO` en los cuatro perfiles base, sin inferir que la arquitectura actual lo satisfaga;
+3. el reloj comienza cuando el resultado empresarial queda por debajo de su MBCO, no cuando un técnico abre un ticket;
+4. la recuperación de un componente no detiene el reloj si el resultado empresarial sigue por debajo del MBCO;
+5. un objetivo más estricto impuesto por obligación legal, sanitaria, contractual, de seguridad o por evidencia local prevalece sobre el perfil base;
+6. relajar un objetivo exige una nueva versión, justificación, revisión de dependencias y decisión de riesgo aplicable;
+7. un horario cerrado puede reducir impacto inmediato, pero no altera silenciosamente el objetivo aprobado ni borra pendientes;
+8. un MBCO puede ordenar detener de forma segura. Continuidad no significa operar a cualquier costo.
+
+#### 5. Perfiles de objetivo de continuidad
+
+Los cuatro perfiles son límites empresariales máximos de diseño. No son evidencia de capacidad implementada.
+
+| Perfil         | Criticidad BIA base    |       MTPD |        RTO |        RPO | MBCO                           | Prioridad         | Regla de aceptación                                                                                                                                                            |
+| -------------- | ---------------------- | ---------: | ---------: | ---------: | ------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`: nunca se acepta continuar de forma insegura, no autorizada o sin control obligatorio.                                                    |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`: una brecha solo puede evaluarse si el mínimo sigue protegido, existe tratamiento y el escenario permanece claramente por debajo del MTPD. |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`: exige expediente, autoridad, compensación, vencimiento y capacidad de reconciliar lo diferido.                                         |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO`: el trabajo puede diferirse, no abandonarse; debe conservar cola, propietario, antigüedad, reanudación y cierre.                     |
+
+Los valores son objetivos de negocio aprobados para diseño. Su factibilidad técnica, operativa y económica queda pendiente de demostración mediante estrategias, respaldos, runbooks y ejercicios. Una evidencia posterior puede exigir un objetivo más estricto; cualquier relajación debe seguir gobierno de cambio y riesgo.
+
+#### 6. Semántica especial de `CRITICA_PROTECCION`
+
+`CONT-OBJ-001` no ordena mantener la producción o transacción durante una falla. Su MBCO es conservar la capacidad de proteger, bloquear, detener, aislar, advertir, custodiar o registrar la decisión imprescindible.
+
+Por tanto:
+
+- si el control protector puede aplicarse inmediatamente mediante una vía segura ya autorizada, se aplica sin esperar la restauración normal;
+- si no puede demostrarse el control protector, la operación afectada permanece detenida;
+- `RTO = 15 min` fija el objetivo máximo para recuperar una capacidad mínima controlada de protección, no para reanudar automáticamente la operación ordinaria;
+- `MTPD = 30 min` es el límite de exposición sin el MBCO protector disponible; no autoriza quince o treinta minutos de operación insegura;
+- una decisión de riesgo no puede dispensar vida, SST, inocuidad, privacidad, integridad, autorización o auditoría no dispensables.
+
+#### 7. Semántica de RPO y pérdida de información
+
+RPO se aplica al estado necesario para reconstruir el resultado y sus efectos. No es permiso para perder definitivamente hechos.
+
+
+1. un RPO de 1 h significa que la arquitectura de recuperación debe poder devolver un punto de estado con antigüedad no superior a una hora;
+2. cualquier hecho posterior al punto restaurado que exista en evidencia, colas, documentos, proveedores o registros debe reincorporarse mediante reconciliación;
+3. pagos, inventario, producción, asistencia, accesos, evidencias u otros efectos confirmados no pueden declararse inexistentes solo porque un respaldo sea más antiguo;
+4. fuentes con requisitos más estrictos pueden tener RPO propio inferior al del servicio BIA;
+5. la política física de respaldo y la demostración de restaurabilidad pertenecen a `CONT-DOM-011` y `CONT-DOM-014`.
+
+#### 8. MBCO y frontera con operación mínima detallada
+
+Esta tarea fija una decisión MBCO para cada servicio, pero no inventa volumen, número de trabajadores, inventario mínimo, transacciones por hora, capacidad de producción, terminales, formularios ni recursos alternos.
+
+
+| MBCO                           | Resultado funcional protegido                                                                                   | Detalle que queda para `CONT-DOM-007`                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `PROTEGER_Y_DETENER`           | seguridad, integridad, custodia, control obligatorio y detención segura cuando no pueda sostenerse la operación | volumen cero o mínimo seguro por contexto, puntos de control, responsables, medios y duración |
+| `MANTENER_RESULTADO_ESENCIAL`  | continuar el resultado empresarial esencial sin completar funciones accesorias                                  | volumen mínimo, sedes, horarios, dotación, cola aceptable, insumos y pasos mínimos            |
+| `MANTENER_CONTROL_Y_EVIDENCIA` | preservar autoridad, expediente, obligaciones, conciliación y capacidad de reanudar                             | capacidad mínima administrativa, backlog, soportes, controles y ventanas                      |
+| `DIFERIR_CON_TRAZABILIDAD`     | aceptar pausa controlada sin perder identidad, prioridad, evidencia ni propietario                              | cola máxima, orden de reanudación, antigüedad y capacidad de absorción posterior              |
+
+#### 9. Prioridades de recuperación
+
+| Prioridad         | Propósito                                                                                                       | Regla de entrada base      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `PR-0_PROTECCION` | restaurar primero la capacidad de proteger, detener, contener o evitar efectos irreversibles                    | BIA `CRITICA_PROTECCION`   |
+| `PR-1_ESENCIAL`   | recuperar resultados operativos cuya ausencia detiene servicio, producción, logística, venta o soporte esencial | BIA `CRITICA_OPERACIONAL`  |
+| `PR-2_CONTROL`    | recuperar control, expediente, conciliación, obligaciones y administración de alto impacto                      | BIA `ALTA_CONTROL`         |
+| `PR-3_DIFERIBLE`  | recuperar trabajo que puede esperar bajo trazabilidad y backlog controlado                                      | BIA `DIFERIBLE_CONTROLADA` |
+
+La prioridad actual no se obtiene únicamente de la criticidad. La criticidad define la entrada base; luego se evalúan modificadores. En la evidencia vigente no existen SPOF confirmados, sustitutos aprobados ni ciclos duros confirmados que justifiquen elevar o reducir una fila concreta. Por ello la materialización actual conserva la prioridad base y deja explícita la regla de revisión.
+
+
+Orden de desempate dentro de una misma prioridad:
+
+1. menor tiempo restante hasta MTPD;
+2. riesgo inmediato de vida, SST, inocuidad, integridad, autorización, privacidad o efecto financiero irreversible;
+3. mayor cantidad de servicios aguas abajo demostrablemente bloqueados por la misma dependencia;
+4. compromiso legal, contractual, fiscal o con cliente cuyo vencimiento ocurra primero;
+5. mayor antigüedad del backlog o del último estado recuperable;
+6. capacidad de una recuperación común para desbloquear varios servicios sin crear un nuevo riesgo.
+
+
+Un componente técnico no adquiere prioridad propia fuera del resultado empresarial que desbloquea.
+
+#### 10. Criterios de aceptación de riesgo
+
+Se aprueban cinco estados de decisión documental:
+
+
+| Estado                    | Uso                                                                                                                                                                                             |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DENTRO_DE_TOLERANCIA`    | evidencia vigente demuestra MBCO, RTO, RPO y demás controles dentro del objetivo aplicable; no requiere excepción por esa brecha.                                                               |
+| `ELEGIBLE_PARA_EXCEPCION` | existe una brecha concreta, pero puede someterse a decisión temporal porque no viola un control no dispensable, permanece por debajo de MTPD y tiene compensación, propietario y salida.        |
+| `ACEPTADO_TEMPORALMENTE`  | solo existe después de una decisión explícita de la autoridad aplicable, con vigencia y evidencia. Esta tarea no crea ninguna.                                                                  |
+| `NO_ACEPTABLE`            | el escenario incumple una condición no dispensable, alcanza o puede superar MTPD sin tratamiento suficiente, no preserva MBCO, produce pérdida irreconciliable o carece de autoridad/evidencia. |
+| `BLOQUEADO`               | no puede evaluarse operativamente porque la capacidad objetivo permanece diferida o falta el prerrequisito canónico que habilita la decisión.                                                   |
+
+Una aceptación futura exige conjuntamente:
+
+1. servicio, BIA, proceso, sede/alcance, horario/ventana y versión exactos;
+2. brecha cuantificada contra MTPD, RTO, RPO o MBCO;
+3. causa o condición que impide el cumplimiento;
+4. propietario del riesgo distinto de la evidencia puramente técnica;
+5. análisis de dependencias y concentración aplicable;
+6. controles compensatorios verificables;
+7. vigencia y vencimiento explícitos;
+8. disparadores de revocación;
+9. plan de salida con tarea, responsable y condición de cierre;
+10. impacto residual sobre clientes, personas, dinero, inventario, producción, privacidad, seguridad, regulación y terceros cuando aplique;
+11. tratamiento de datos pendientes, pérdida potencial y reconciliación;
+12. revisión por continuidad, proceso, riesgo y funciones afectadas;
+13. aprobación por la autoridad de riesgo/gobierno aplicable sin autoaprobación del mismo control crítico;
+14. evidencia correlacionable de actor, decisión, razones, versión y timestamp;
+15. reevaluación después de incidente, ejercicio, cambio material o nueva evidencia.
+
+#### 11. Condiciones que nunca son elegibles para aceptación ordinaria
+
+No se considera elegible para excepción ordinaria un escenario que:
+
+- requiera operar sin un control de vida, SST, inocuidad o seguridad obligatorio;
+- requiera conceder acceso no autorizado, compartir credenciales o eliminar segregación esencial;
+- implique pérdida conocida de hechos que no puedan reconstruirse ni conciliarse;
+- permita superar MTPD sin una decisión de suspensión/protección y tratamiento ejecutivo explícito;
+- presente una copia, proveedor, sede o dispositivo como sustituto sin demostrar independencia y capacidad;
+- dependa de una persona, proveedor o recurso no identificado como si estuviera disponible;
+- elimine auditoría, evidencia, privacidad, retención o integridad requeridas;
+- convierta una excepción vencida en estado permanente por silencio;
+- declare readiness usando estimaciones no probadas como si fueran resultados observados.
+
+#### 12. Estado actual de cumplimiento frente a los objetivos
+
+Las tareas anteriores aportan BIA y dependencias, pero la evidencia vigente conserva cero SPOF confirmados, cero sustitutos aprobados y no presenta ejercicios de recuperación que demuestren los tiempos de estas 69 filas. En consecuencia:
+
+
+- **67** servicios reciben objetivo activo `OBJETIVO_DEFINIDO_NO_VALIDADO`;
+- **2** servicios AURA conservan `BLOQUEADO_POR_APLICACION_DIFERIDA`;
+- **0** servicios reciben `DENTRO_DE_TOLERANCIA` por inferencia;
+- **0** riesgos reciben `ACEPTADO_TEMPORALMENTE`;
+- **0** capacidades se declaran listas;
+- los objetivos deberán compararse con capacidad real en las tareas de estrategia, respaldo, recuperación y ejercicios.
+
+#### 13. Matriz materializada de objetivos por servicio
+
+La matriz conserva cada identidad heredada y produce una decisión explícita de MTPD, RTO, RPO, MBCO, prioridad y estado de riesgo. Para AURA, el perfil base se conserva como referencia de política, pero el objetivo operativo permanece bloqueado hasta que la capacidad deje de estar diferida.
+
+|    # | Servicio         | BIA                 | Proceso      | Propietaria | Criticidad             | Perfil         |       MTPD |        RTO |        RPO | MBCO                           | Prioridad         | Criterio de riesgo                        | Estado objetivo                     | Estado de riesgo                      |
+| ---: | ---------------- | ------------------- | ------------ | ----------- | ---------------------- | -------------- | ---------: | ---------: | ---------: | ------------------------------ | ----------------- | ----------------------------------------- | ----------------------------------- | ------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `BIA-VPROC-0001-V1` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    2 | `BCS-VPROC-0002` | `BIA-VPROC-0002-V1` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    3 | `BCS-VPROC-0003` | `BIA-VPROC-0003-V1` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    4 | `BCS-VPROC-0004` | `BIA-VPROC-0004-V1` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    5 | `BCS-VPROC-0005` | `BIA-VPROC-0005-V1` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    6 | `BCS-VPROC-0006` | `BIA-VPROC-0006-V1` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    7 | `BCS-VPROC-0007` | `BIA-VPROC-0007-V1` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    8 | `BCS-VPROC-0008` | `BIA-VPROC-0008-V1` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|    9 | `BCS-VPROC-0009` | `BIA-VPROC-0009-V1` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   10 | `BCS-VPROC-0010` | `BIA-VPROC-0010-V1` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   11 | `BCS-VPROC-0011` | `BIA-VPROC-0011-V1` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   12 | `BCS-VPROC-0012` | `BIA-VPROC-0012-V1` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   13 | `BCS-VPROC-0013` | `BIA-VPROC-0013-V1` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   14 | `BCS-VPROC-0014` | `BIA-VPROC-0014-V1` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   15 | `BCS-VPROC-0015` | `BIA-VPROC-0015-V1` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   16 | `BCS-VPROC-0016` | `BIA-VPROC-0016-V1` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   17 | `BCS-VPROC-0017` | `BIA-VPROC-0017-V1` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   18 | `BCS-VPROC-0018` | `BIA-VPROC-0018-V1` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   19 | `BCS-VPROC-0019` | `BIA-VPROC-0019-V1` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   20 | `BCS-VPROC-0020` | `BIA-VPROC-0020-V1` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   21 | `BCS-VPROC-0021` | `BIA-VPROC-0021-V1` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   22 | `BCS-VPROC-0022` | `BIA-VPROC-0022-V1` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   23 | `BCS-VPROC-0023` | `BIA-VPROC-0023-V1` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   24 | `BCS-VPROC-0024` | `BIA-VPROC-0024-V1` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   25 | `BCS-VPROC-0025` | `BIA-VPROC-0025-V1` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   26 | `BCS-VPROC-0026` | `BIA-VPROC-0026-V1` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   27 | `BCS-VPROC-0027` | `BIA-VPROC-0027-V1` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   28 | `BCS-VPROC-0028` | `BIA-VPROC-0028-V1` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   29 | `BCS-VPROC-0029` | `BIA-VPROC-0029-V1` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   30 | `BCS-VPROC-0030` | `BIA-VPROC-0030-V1` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   31 | `BCS-VPROC-0031` | `BIA-VPROC-0031-V1` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   32 | `BCS-VPROC-0032` | `BIA-VPROC-0032-V1` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   33 | `BCS-VPROC-0033` | `BIA-VPROC-0033-V1` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   34 | `BCS-VPROC-0034` | `BIA-VPROC-0034-V1` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   35 | `BCS-VPROC-0035` | `BIA-VPROC-0035-V1` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   36 | `BCS-VPROC-0036` | `BIA-VPROC-0036-V1` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   37 | `BCS-VPROC-0037` | `BIA-VPROC-0037-V1` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   38 | `BCS-VPROC-0038` | `BIA-VPROC-0038-V1` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   39 | `BCS-VPROC-0039` | `BIA-VPROC-0039-V1` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   40 | `BCS-VPROC-0040` | `BIA-VPROC-0040-V1` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   41 | `BCS-VPROC-0041` | `BIA-VPROC-0041-V1` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   42 | `BCS-VPROC-0042` | `BIA-VPROC-0042-V1` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   43 | `BCS-VPROC-0043` | `BIA-VPROC-0043-V1` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   44 | `BCS-VPROC-0044` | `BIA-VPROC-0044-V1` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   45 | `BCS-VPROC-0045` | `BIA-VPROC-0045-V1` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   46 | `BCS-VPROC-0046` | `BIA-VPROC-0046-V1` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   47 | `BCS-VPROC-0047` | `BIA-VPROC-0047-V1` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   48 | `BCS-VPROC-0048` | `BIA-VPROC-0048-V1` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   49 | `BCS-VPROC-0049` | `BIA-VPROC-0049-V1` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   50 | `BCS-VPROC-0050` | `BIA-VPROC-0050-V1` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   51 | `BCS-VPROC-0051` | `BIA-VPROC-0051-V1` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   52 | `BCS-VPROC-0052` | `BIA-VPROC-0052-V1` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   53 | `BCS-VPROC-0053` | `BIA-VPROC-0053-V1` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   54 | `BCS-VPROC-0054` | `BIA-VPROC-0054-V1` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   55 | `BCS-VPROC-0055` | `BIA-VPROC-0055-V1` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   56 | `BCS-VPROC-0056` | `BIA-VPROC-0056-V1` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   57 | `BCS-VPROC-0057` | `BIA-VPROC-0057-V1` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   58 | `BCS-VPROC-0058` | `BIA-VPROC-0058-V1` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | `EXCEPCION_TEMPORAL_SOLO_BAJO_MTPD`       | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   59 | `BCS-VPROC-0059` | `BIA-VPROC-0059-V1` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   60 | `BCS-VPROC-0060` | `BIA-VPROC-0060-V1` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   61 | `BCS-VPROC-0061` | `BIA-VPROC-0061-V1` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   62 | `BCS-VPROC-0062` | `BIA-VPROC-0062-V1` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   63 | `BCS-VPROC-0063` | `BIA-VPROC-0063-V1` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   64 | `BCS-VPROC-0064` | `BIA-VPROC-0064-V1` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   65 | `BCS-VPROC-0065` | `BIA-VPROC-0065-V1` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   66 | `BCS-VPROC-0066` | `BIA-VPROC-0066-V1` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | `NO_ACEPTABLE_SIN_CONTROL_PROTECTOR`      | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   67 | `BCS-VPROC-0067` | `BIA-VPROC-0067-V1` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   68 | `BCS-VPROC-0068` | `BIA-VPROC-0068-V1` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | `DIFERIMIENTO_CONTROLADO_CON_VENCIMIENTO` | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+|   69 | `BCS-VPROC-0069` | `BIA-VPROC-0069-V1` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | `EXCEPCION_ACOTADA_CON_RECONCILIACION`    | `OBJETIVO_DEFINIDO_NO_VALIDADO`     | `NO_ACEPTADO_PENDIENTE_DE_VALIDACION` |
+
+#### 14. Reconciliación de identidades y distribuciones
+
+La matriz conserva:
+
+
+- **69** servicios `BCS-*` únicos;
+- **69** BIA `BIA-*` únicos;
+- **69** procesos `VPROC-*` únicos;
+- **0** faltantes;
+- **0** duplicados;
+- **0** propietarias múltiples;
+- **2** filas AURA bloqueadas y ninguna fila adicional bloqueada.
+
+
+Distribución de propietarias:
+
+
+| Aplicación | Servicios |
+| ---------- | --------: |
+| `anima`    |     **1** |
+| `viso`     |    **20** |
+| `nexo`     |    **16** |
+| `fogo`     |     **6** |
+| `origo`    |     **4** |
+| `pulso`    |    **12** |
+| `numera`   |     **7** |
+| `aura`     |     **2** |
+| `pass`     |     **1** |
+| `shell`    |     **0** |
+| **Total**  |    **69** |
+
+Distribución de criticidad y perfil:
+
+
+| Criticidad             | Servicios | Perfil         |
+| ---------------------- | --------: | -------------- |
+| `CRITICA_PROTECCION`   |    **12** | `CONT-OBJ-001` |
+| `CRITICA_OPERACIONAL`  |    **20** | `CONT-OBJ-002` |
+| `ALTA_CONTROL`         |    **31** | `CONT-OBJ-003` |
+| `DIFERIBLE_CONTROLADA` |     **6** | `CONT-OBJ-004` |
+| **Total**              |    **69** | —              |
+
+Distribución de prioridad operativamente activable en la fase objetivo:
+
+
+| Prioridad                           | Servicios no bloqueados |
+| ----------------------------------- | ----------------------: |
+| `PR-0_PROTECCION`                   |                  **12** |
+| `PR-1_ESENCIAL`                     |                  **20** |
+| `PR-2_CONTROL`                      |                  **31** |
+| `PR-3_DIFERIBLE`                    |                   **4** |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA` |                   **2** |
+| **Total**                           |                  **69** |
+
+#### 15. Caso AURA
+
+`VPROC-0056` y `VPROC-0057` conservan BIA, identidad y perfil de política `CONT-OBJ-004`, pero sus campos de capacidad operativa permanecen bloqueados por aplicación diferida.
+
+
+Reglas:
+
+1. el perfil de política no autoriza activar AURA ni contratar un proveedor;
+2. los valores de `CONT-OBJ-004` no se presentan como compromiso operativo de una aplicación no habilitada;
+3. no se crea una aceptación de riesgo para sortear el bloqueo;
+4. cuando AURA tenga decisión canónica de continuidad y capacidad operativa habilitada, deberá revalidar dependencias, MBCO y factibilidad antes de declarar cumplimiento del perfil.
+
+#### 16. Modificadores de objetivo y prioridad
+
+Una versión posterior puede endurecer un objetivo o elevar prioridad cuando exista evidencia de:
+
+- obligación legal, contractual, sanitaria, laboral, fiscal o de privacidad más estricta;
+- ventana de negocio o temporada que reduzca el tiempo disponible;
+- dependencia compartida con fan-out demostrado;
+- SPOF confirmado;
+- ausencia demostrada de sustituto para un resultado esencial;
+- volumen o backlog que no pueda recuperarse dentro de la ventana;
+- incidente o ejercicio que demuestre degradación más rápida que la asumida;
+- pérdida de datos o reconciliación que exija RPO menor;
+- dependencia de seguridad o integridad que exija control inmediato.
+
+
+Reducir prioridad, ampliar MTPD/RTO/RPO o bajar MBCO exige evidencia equivalente, nueva versión y decisión de riesgo/gobierno; nunca ocurre por silencio, costo estimado, dificultad técnica o preferencia del proveedor.
+
+#### 17. Evidencia mínima para declarar capacidad dentro de objetivo
+
+Un servicio solo podrá pasar de `OBJETIVO_DEFINIDO_NO_VALIDADO` a una afirmación de cumplimiento cuando exista evidencia suficiente de:
+
+1. escenario y alcance de prueba;
+2. instante verificable de caída por debajo de MBCO;
+3. instante verificable de recuperación de MBCO;
+4. RTO observado;
+5. punto de recuperación y RPO observado;
+6. volumen/capacidad mínima realmente sostenida;
+7. personas y autoridades que participaron;
+8. dependencias, proveedores y recursos usados;
+9. datos, pendientes y reconciliación posteriores;
+10. seguridad, privacidad, calidad e integridad preservadas;
+11. desviaciones y acciones abiertas;
+12. comparación directa con el perfil aplicable;
+13. evidencia de que una ruta aparentemente redundante no comparte silenciosamente el mismo dominio de fallo;
+14. versión del BIA, objetivos, estrategia y runbook usados.
+
+#### 18. Handoffs obligatorios
+
+| Decisión posterior                                        | Propietario documental            | Condición de salida                                                                               |
+| --------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------- |
+| taxonomía, severidad, activación y cierre de incidentes   | `CONT-DOM-005`                    | la severidad usa impacto real y tiempo restante, sin sustituir prioridad de recuperación          |
+| mando, suplencia y autoridad de crisis                    | `CONT-DOM-006` y `CONT-AUTH-*`    | actores, suplentes, segregación y autoridad aplicables antes de decisiones reales                 |
+| MBCO cuantificado por sede, horario, temporada y duración | `CONT-DOM-007`                    | volumen, dotación, backlog, insumos y capacidad mínima compatibles con el perfil de esta tarea    |
+| modalidad de contingencia                                 | `CONT-DOM-008`                    | estrategia capaz de sostener MBCO dentro de RTO sin violar controles                              |
+| captura durante falla                                     | `CONT-DOM-009`                    | registros controlados que permitan cumplir RPO y reconciliación                                   |
+| reincorporación y conflictos                              | `CONT-DOM-010`                    | hechos posteriores al punto restaurado reincorporables sin duplicidad ni sobrescritura silenciosa |
+| respaldo y cobertura                                      | `CONT-DOM-011`                    | fuentes y retención capaces de soportar el RPO objetivo, pendientes de prueba                     |
+| runbooks, recuperación y retorno                          | `CONT-DOM-012`                    | secuencia capaz de alcanzar MBCO dentro de RTO y validar resultado empresarial                    |
+| proveedores, energía, red, pagos, transporte y canales    | `CONT-DOM-013`                    | continuidad externa y alternativas compatibles con los objetivos                                  |
+| ejercicios y tiempos observados                           | `CONT-DOM-014`                    | RTO/RPO/MBCO observados y comparados con esta matriz                                              |
+| actualización por evidencia                               | `CONT-DOM-015`                    | objetivos, dependencias y estrategias revisados cuando la evidencia contradiga supuestos          |
+| autoridad detallada para aceptar riesgo                   | `CONT-AUTH-001` a `CONT-AUTH-004` | capacidad, segregación y evidencia de la decisión antes de aceptar una brecha real                |
+
+#### 19. Versionado y disparadores de revisión
+
+Una versión de objetivo deberá conservar servicio, BIA, proceso, perfil, MTPD, RTO, RPO, MBCO, prioridad, supuestos, estado de evidencia, preparadores/revisores/aprobador aplicables, vigencia, motivo y versión sustituida.
+
+
+Revisión obligatoria cuando cambie: criticidad BIA, MBCO, sede/horario/temporada material, obligación externa, dependencia, SPOF, sustituto, proveedor, arquitectura, respaldo, runbook, resultado de ejercicio, tiempo observado, volumen mínimo o aceptación de riesgo. No se reescribe la versión histórica usada en un incidente o ejercicio.
+
+#### 20. Cobertura de requisitos vigente
+
+El requisito canónico de continuidad vigente ya exige por capacidad crítica análisis de impacto y dependencias, nivel mínimo, impacto por duración, pérdida máxima tolerable, MTPD, RTO, RPO, prioridad y supuestos. La auditoría transversal vigente exige preservar actor, decisión, razones, versión y timestamp, y el contrato de integración de continuidad exige correlación durante degradación, recuperación y retorno.
+
+
+Esta tarea materializa esas obligaciones para los 69 servicios y no introduce una nueva acción ejecutable, un mecanismo de failover, una excepción efectiva ni un nuevo efecto empresarial.
+
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los objetivos de continuidad, su prioridad, la evidencia requerida y los criterios de aceptación de riesgo materializados aquí especializan obligaciones ya registradas para el bloque. La tarea no agrega una conducta ejecutable, no cambia el estado de un requisito vigente y no implementa recuperación, respaldo, contingencia, acceso de emergencia ni aceptación real de riesgo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 22. Criterios de aceptación
+
+1. se preservan exactamente 69 servicios `BCS-VPROC-0001` a `BCS-VPROC-0069`;
+2. cada servicio conserva exactamente una referencia `BIA-VPROC-####-V1`;
+3. cada servicio conserva su `VPROC-*` sin renumeración;
+4. cada servicio conserva una sola aplicación propietaria;
+5. la distribución de propietarias suma exactamente 69;
+6. SHELL conserva cero procesos propietarios;
+7. AURA conserva exactamente dos procesos;
+8. las dos filas AURA permanecen bloqueadas por aplicación diferida;
+9. las otras 67 filas reciben objetivo activo definido pero no validado;
+10. existen exactamente cuatro perfiles de objetivo;
+11. cada perfil define MTPD;
+12. cada perfil define RTO;
+13. cada perfil define RPO;
+14. cada perfil define MBCO;
+15. cada perfil define prioridad de recuperación;
+16. cada perfil define regla de aceptación de riesgo;
+17. todo RTO activo es menor que su MTPD;
+18. todo RPO base es menor o igual que su RTO;
+19. MTPD se mide contra ausencia de MBCO y no contra apertura de ticket;
+20. RTO restaura MBCO y no se confunde con normalidad completa;
+21. RPO no autoriza pérdida definitiva de hechos confirmados;
+22. MBCO se separa de volumen mínimo cuantitativo;
+23. la cuantificación detallada de MBCO permanece en `CONT-DOM-007`;
+24. `CRITICA_PROTECCION` conserva `PROTEGER_Y_DETENER`;
+25. `CRITICA_OPERACIONAL` conserva `MANTENER_RESULTADO_ESENCIAL`;
+26. `ALTA_CONTROL` conserva `MANTENER_CONTROL_Y_EVIDENCIA`;
+27. `DIFERIBLE_CONTROLADA` conserva `DIFERIR_CON_TRAZABILIDAD`;
+28. la distribución de criticidad permanece 12/20/31/6;
+29. la prioridad no se declara severidad de incidente;
+30. la prioridad no se declara prioridad de ticket;
+31. la prioridad no se declara prioridad intrínseca de componente técnico;
+32. las 12 filas de protección reciben `PR-0_PROTECCION`;
+33. las 20 filas operacionales reciben `PR-1_ESENCIAL`;
+34. las 31 filas de alto control reciben `PR-2_CONTROL`;
+35. las cuatro filas diferibles no bloqueadas reciben `PR-3_DIFERIBLE`;
+36. las dos filas diferibles AURA permanecen bloqueadas operativamente;
+37. no se inventa un modificador por SPOF porque existen cero SPOF confirmados;
+38. no se inventa un modificador por sustituto porque existen cero sustitutos aprobados;
+39. no se inventa un modificador por ciclo duro porque existen cero ciclos duros confirmados;
+40. el desempate prioriza tiempo restante hasta MTPD;
+41. el desempate considera controles no reversibles y obligaciones reales;
+42. un fan-out solo modifica prioridad cuando está demostrado;
+43. un objetivo más estricto puede prevalecer con evidencia aplicable;
+44. relajar un objetivo exige versión y gobierno;
+45. horario cerrado no relaja silenciosamente el objetivo;
+46. temporada o volumen no cambian objetivo por inferencia;
+47. se distinguen objetivo definido y capacidad validada;
+48. se distinguen tiempo objetivo y tiempo observado;
+49. se distinguen riesgo elegible y riesgo aceptado;
+50. se distinguen aceptación temporal y política permanente;
+51. esta tarea acepta exactamente cero riesgos;
+52. esta tarea declara exactamente cero capacidades validadas;
+53. ningún servicio recibe `DENTRO_DE_TOLERANCIA` sin evidencia;
+54. un riesgo que alcance o pueda superar MTPD sin tratamiento suficiente es `NO_ACEPTABLE`;
+55. un escenario sin MBCO protector no es elegible cuando compromete controles no dispensables;
+56. una excepción no puede conceder acceso no autorizado;
+57. una excepción no puede eliminar auditoría requerida;
+58. una excepción no puede normalizar pérdida irreconciliable;
+59. una excepción requiere objeto y alcance exactos;
+60. una excepción requiere brecha cuantificada contra objetivo;
+61. una excepción requiere propietario del riesgo;
+62. una excepción requiere controles compensatorios;
+63. una excepción requiere vigencia y vencimiento;
+64. una excepción requiere condiciones de revocación;
+65. una excepción requiere plan de salida;
+66. una excepción requiere autoridad aplicable;
+67. una excepción conserva actor, razones, versión y timestamp;
+68. una excepción vencida no se extiende por silencio;
+69. un proveedor no puede aceptar riesgo en nombre de Vento;
+70. una automatización no puede aceptar riesgo;
+71. la recuperación técnica no certifica recuperación empresarial;
+72. la evidencia de cumplimiento exige instante de interrupción y de recuperación de MBCO;
+73. la evidencia de cumplimiento exige RTO observado;
+74. la evidencia de cumplimiento exige RPO observado;
+75. la evidencia de cumplimiento exige capacidad mínima sostenida;
+76. la evidencia de cumplimiento exige reconciliación de pendientes;
+77. la evidencia de cumplimiento exige seguridad, privacidad e integridad preservadas;
+78. la evidencia de cumplimiento exige versión de BIA, objetivo, estrategia y runbook;
+79. `CONT-DOM-005` permanece propietario de severidad y activación;
+80. `CONT-DOM-006` permanece propietario de mando y suplencia;
+81. `CONT-DOM-007` permanece propietario del MBCO cuantificado;
+82. `CONT-DOM-008` permanece propietario de modalidades de contingencia;
+83. `CONT-DOM-009` permanece propietario de captura durante falla;
+84. `CONT-DOM-010` permanece propietario de reincorporación;
+85. `CONT-DOM-011` permanece propietario de respaldo;
+86. `CONT-DOM-012` permanece propietario de runbooks y recuperación;
+87. `CONT-DOM-013` permanece propietario de continuidad externa;
+88. `CONT-DOM-014` permanece propietario de ejercicios y tiempos observados;
+89. `CONT-DOM-015` permanece propietario de actualización por evidencia;
+90. `CONT-AUTH-*` permanece propietario de autoridad detallada para decisiones reales;
+91. no se crea una sede alternativa;
+92. Vaila no se convierte en sede;
+93. Catering no se convierte en sede;
+94. no se inventa proveedor, red, endpoint, respaldo ni sustituto;
+95. no se modifica ningún requisito de prueba;
+96. no se modifica código, DDL, DML, datos, configuración ni Supabase;
+97. no se ejecuta respaldo, restauración, failover, interrupción ni ejercicio productivo;
+98. `CONT-DOM-005` permanece únicamente reservada;
+
+#### 23. Balance de cierre
+
+| Control                                  |   Resultado |
+| ---------------------------------------- | ----------: |
+| Servicios con decisión completa          | **69 / 69** |
+| MTPD materializados                      |      **69** |
+| RTO materializados                       |      **69** |
+| RPO materializados                       |      **69** |
+| MBCO materializados                      |      **69** |
+| Prioridades materializadas               |      **69** |
+| Estados de riesgo materializados         |      **69** |
+| Objetivos activos no validados           |      **67** |
+| Bloqueos AURA                            |       **2** |
+| Riesgos aceptados                        |       **0** |
+| Capacidades validadas                    |       **0** |
+| Criterios de aceptación                  |      **98** |
+| Requisitos de prueba creados/modificados |       **0** |
+| Cambios físicos                          |       **0** |
+
+---
+
+#### 24. Límites de la tarea
+
+Esta tarea no:
+
+- certifica que los objetivos sean alcanzables con la arquitectura actual;
+- afirma que un respaldo existente cumpla RPO;
+- afirma que un runbook existente cumpla RTO;
+- declara un SPOF, sustituto o proveedor alternativo nuevo;
+- define severidad, activación o cierre de incidentes;
+- cuantifica volumen, dotación o capacidad física del MBCO;
+- selecciona operación manual, offline, snapshot, sede alternativa o failover;
+- acepta un riesgo real;
+- concede una excepción;
+- modifica autorizaciones;
+- cambia datos, código, configuración, infraestructura, proveedores o Supabase;
+- ejecuta pruebas operativas o recuperación;
+- declara readiness.
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad`
+
+
 ### [ ] CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad
 ### [ ] CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
 ### [ ] CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración

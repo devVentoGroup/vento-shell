@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **706** |
+| Aprobadas | **707** |
 | En propuesta | **0** |
-| No iniciadas | **888** |
+| No iniciadas | **887** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.29% (706/1594)** |
+| Porcentaje de completamiento | **44.35% (707/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-DOM-003` — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | ✅ APROBADA |
-| Tarea actual | `CONT-DOM-004` — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-DOM-005` — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | ⬜ NO INICIADA |
+| Última aprobada | `CONT-DOM-004` — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | ✅ APROBADA |
+| Tarea actual | `CONT-DOM-005` — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-006` — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1595,7 +1595,7 @@
 | ✅ APROBADA | `CONT-DOM-001` | Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-003` | Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-DOM-004` | Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-DOM-004` | Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-005` | Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-006` | Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-007` | Definir operación mínima viable por proceso, sede, horario, temporada y duración | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
