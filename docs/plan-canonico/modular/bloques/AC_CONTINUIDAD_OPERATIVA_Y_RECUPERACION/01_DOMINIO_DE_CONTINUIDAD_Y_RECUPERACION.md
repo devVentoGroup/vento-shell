@@ -10079,5 +10079,1218 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos`
 
 
-### [ ] CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos
+### ✅ CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos` — APROBADA
+**Tarea siguiente:** `CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan` — RESERVADA
+**Tipo de tarea:** documental; programa recurrente, basado en riesgo, de walkthroughs, tabletops, simulaciones técnicas, restauraciones y ejercicios operativos de continuidad con cobertura materializada por servicio BIA
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Ejecución real de interrupciones, restauraciones, failover, failback, cambios de proveedor, conmutación de red o energía, pruebas destructivas, uso de datos productivos, simulaciones sobre producción, cambios en código, DDL, DML, migraciones, RLS, RPC, secretos, configuración o Supabase:** no autorizada
+**Servicios BIA cubiertos por el programa:** 69 de 69
+**Servicios activos con cobertura de ejercicio especificada:** 67 de 67
+**Servicios AURA bloqueados por aplicación diferida:** 2 de 2
+**Ejercicios reales ejecutados por esta tarea:** 0
+**Readiness declarado por esta tarea:** 0
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el programa empresarial mediante el cual Vento Group demostrará, con evidencia vigente y proporcional al riesgo, que sus decisiones de continuidad pueden ser comprendidas, decididas, ejecutadas, recuperadas, validadas y reconciliadas sin confundir documentación aprobada con capacidad operativa real.
+
+El programa debe permitir responder de forma determinista:
+
+```text
+qué servicio o conjunto de servicios se está probando
+qué riesgo y objetivo de continuidad justifican el ejercicio
+qué tipo de ejercicio corresponde
+qué escenario, supuestos e inyectores se utilizarán
+qué funciones participan, observan, controlan y validan
+qué recursos, dependencias, respaldos, runbooks o modos degradados entran en alcance
+qué acciones están permitidas y cuáles quedan prohibidas
+qué tiempos y pérdidas se observaron realmente
+si se sostuvo el MBCO correspondiente
+si la recuperación técnica produjo recuperación empresarial
+si el trabajo contingente pudo reincorporarse y conciliarse
+qué resultados quedaron desconocidos o pendientes
+qué evidencia demuestra el resultado
+cuándo vence la evidencia y qué cambio obliga a repetirla
+qué hallazgos pasan a revisión posterior sin alterar la historia del ejercicio
+```
+
+La tarea define el programa y su cobertura. No ejecuta el calendario, no genera evidencia ficticia y no declara que un servicio haya cumplido RTO, RPO, MTPD, MBCO o readiness.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado un programa de continuidad con:
+
+1. seis modalidades documentales de ejercicio y sus fronteras;
+2. ventanas máximas de cobertura por perfil de riesgo y disparadores extraordinarios;
+3. un ciclo recurrente de planificación, preparación, autorización, ejecución, validación, evidencia y cierre del ejercicio;
+4. un contrato mínimo de escenario y un contrato mínimo de resultado;
+5. reglas de seguridad, privacidad, datos, aislamiento, abortado y conversión de simulación a incidente real;
+6. separación obligatoria entre éxito técnico y recuperación empresarial;
+7. validación funcional por propietario del proceso y conciliación de pendientes cuando exista trabajo o estado empresarial afectado;
+8. comparación de tiempos y pérdida observada contra los objetivos aprobados sin convertir el objetivo en resultado;
+9. reglas de vigencia, vencimiento e invalidación de evidencia por cambio material;
+10. catálogo materializado de escenarios empresariales y técnicos;
+11. matriz de cobertura 69/69 con decisión explícita por servicio;
+12. tratamiento específico de AURA diferida;
+13. cierre documental de la ausencia de un programa recurrente de ejercicios;
+14. cierre documental del riesgo de validar solo restauración técnica sin conciliación operativa;
+15. handoff de lecciones, acciones, eficacia y mantenimiento posterior a `CONT-DOM-015`;
+16. cero ejecución física y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+La tarea consume sin redefinir:
+
+- `CONT-DOM-001` para gobierno federado, funciones, versionado y principio de prueba antes de confianza;
+- `CONT-DOM-002` para los 69 servicios BIA, cinco sedes internas, criticidad y nivel mínimo funcional;
+- `CONT-DOM-003` para dependencias, candidatos a concentración y ausencia de SPOF confirmados sin evidencia;
+- `CONT-DOM-004` para los cuatro perfiles `CONT-OBJ-*`, MTPD, RTO, RPO, MBCO y prioridad;
+- `CONT-DOM-005` para taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre;
+- `CONT-DOM-006` para mando, sustitución, bitácora y comunicación;
+- `CONT-DOM-007` para operación mínima y límites de capacidad;
+- `CONT-DOM-008` para estrategias `CTG-*`, sobres offline y criterio de abandono;
+- `CONT-DOM-009` para registro, folios, evidencia y custodia durante la falla;
+- `CONT-DOM-010` para reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes;
+- `CONT-DOM-011` para inventario y política de respaldos;
+- `CONT-DOM-012` para runbooks, restauración, failover, retorno y validación funcional;
+- `CONT-DOM-013` para continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos;
+- los requisitos vigentes de continuidad e integración que ya exigen ejercicios, restauración verificable, trazabilidad y reconciliación;
+- los hallazgos de continuidad que asignan a esta tarea el programa recurrente y el diseño de escenarios que no se detienen en la restauración técnica.
+
+No se altera ninguna identidad, propietaria, criticidad, objetivo, estrategia, autorización, proveedor, recurso, sede o decisión aprobada anteriormente.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+PLAN DOCUMENTADO ≠ PLAN PROBADO ≠ READINESS VIGENTE
+```
+
+```text
+WALKTHROUGH ≠ TABLETOP ≠ SIMULACION TECNICA ≠ RESTAURACION ≠ EJERCICIO OPERATIVO
+```
+
+```text
+COMPONENTE RESTAURADO ≠ SERVICIO EMPRESARIAL RECUPERADO
+```
+
+```text
+RTO OBJETIVO ≠ TIEMPO OBSERVADO ≠ TIEMPO VALIDADO
+```
+
+```text
+RPO OBJETIVO ≠ EDAD DEL PUNTO RESTAURADO ≠ PERDIDA EMPRESARIAL ACEPTADA
+```
+
+```text
+EJERCICIO APROBADO ≠ AUTORIZACION PARA INTERRUMPIR PRODUCCION
+```
+
+```text
+HALLAZGO ≠ ACCION CERRADA ≠ EFICACIA DEMOSTRADA
+```
+
+```text
+ALTERNATIVA DISEÑADA ≠ ALTERNATIVA ACREDITADA ≠ ALTERNATIVA PROBADA
+```
+
+---
+
+#### 5. Perfiles de objetivo heredados
+
+| Perfil         | Criticidad BIA         |   MTPD |    RTO |    RPO | MBCO                           | Prioridad         |
+| -------------- | ---------------------- | -----: | -----: | -----: | ------------------------------ | ----------------- |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   | 30 min | 15 min | 15 min | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |    4 h |    2 h |    1 h | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |   24 h |    8 h |    4 h | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |   72 h |   24 h |   24 h | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  |
+
+Estos valores son objetivos empresariales de diseño. El programa observa resultados y los compara contra ellos; no los da por cumplidos antes de ejecutar la prueba correspondiente.
+
+---
+
+#### 6. Modalidades del programa
+
+Las etiquetas siguientes son categorías documentales de esta tarea y no constituyen enums persistentes.
+
+| Modalidad                     | Propósito                                                                                                                | Qué demuestra                                                                                                    | Qué no demuestra por sí sola                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| walkthrough documental        | recorrer plan, dependencias, roles, contactos funcionales, runbooks, formularios, datos y decisiones paso a paso         | completitud, comprensión, vigencia aparente, contradicciones y puntos sin propietario                            | ejecución bajo presión, tiempos reales, disponibilidad física o técnica             |
+| tabletop de decisión          | someter al equipo a escenario e inyectores sin intervenir producción                                                     | mando, clasificación, priorización, escalamiento, comunicación, decisiones, límites y coordinación               | funcionamiento real de infraestructura, restauración o recursos físicos             |
+| simulación técnica controlada | reproducir fallas o estados degradados en entorno controlado o mediante mecanismos no destructivos                       | detección, aislamiento, observabilidad, reintentos, degradación, decisión de failover, compatibilidad y abortado | recuperación empresarial si no se valida proceso y conciliación                     |
+| restauración aislada          | recuperar una fuente, copia, configuración o componente en ambiente separado                                             | integridad recuperable, versión compatible, punto restaurado, tiempos observados y pasos técnicos                | que el proceso empresarial haya recuperado su resultado o que no existan pendientes |
+| ejercicio operativo           | ejecutar personas, procedimiento, medios, evidencia, operación mínima, handoffs y reconciliación en escenario controlado | capacidad humana y operativa, trazabilidad, MBCO, tiempos, custodia, pendientes y cierre funcional               | capacidad de un tercero o componente no incluido en el alcance                      |
+| ejercicio integrado           | combinar mando, comunicación, degradación, restauración, operación, retorno y conciliación entre dominios                | comportamiento extremo a extremo de un escenario representativo                                                  | cobertura automática de servicios, sedes o dependencias no declarados en alcance    |
+
+---
+
+#### 7. Regla cardinal de aprobación de un ejercicio
+
+Ningún ejercicio que incluya recuperación de estado empresarial puede aprobarse únicamente porque una aplicación, base, backup, enlace, dispositivo o proveedor vuelva a responder.
+
+Para que el resultado sea concluyente debe incluir, según aplique:
+
+1. confirmación técnica del componente;
+2. validación funcional del `RESPONSABLE_DEL_PROCESO` o función autorizada;
+3. verificación del MBCO aplicable;
+4. medición del tiempo observado y comparación con RTO/MTPD;
+5. medición del punto o edad del estado recuperado y comparación con RPO cuando aplique;
+6. confirmación de identidad, versión y autoridad de la fuente activa;
+7. inventario de trabajo ejecutado, diferido, desconocido o pendiente;
+8. reincorporación y conciliación según `CONT-DOM-010` cuando el escenario haya producido trabajo contingente;
+9. verificación de duplicados, conflictos y resultados inciertos;
+10. validación de retorno o permanencia controlada en modo degradado;
+11. evidencia suficiente para reconstruir decisiones y tiempos;
+12. propietario explícito para cualquier pendiente que impida cierre integral.
+
+Una restauración técnicamente exitosa con conciliación no ejecutada se registra como resultado incompleto y no acredita readiness empresarial.
+
+---
+
+#### 8. Ciclo recurrente del programa
+
+Cada ejercicio seguirá el ciclo:
+
+```text
+SELECCIONAR COBERTURA VENCIDA O PRIORITARIA
+→ DEFINIR ESCENARIO Y OBJETIVOS
+→ IDENTIFICAR SERVICIOS, SEDES, DEPENDENCIAS Y FUNCIONES
+→ CONFIRMAR PRECONDICIONES Y BLOQUEOS
+→ CLASIFICAR DATOS Y ENTORNO
+→ DEFINIR BLAST RADIUS Y CONDICIONES DE ABORTADO
+→ OBTENER AUTORIZACIONES APLICABLES
+→ PREPARAR INYECTORES, OBSERVADORES Y EVIDENCIA
+→ EJECUTAR O RECORRER EL ESCENARIO
+→ MEDIR DECISIONES, TIEMPOS Y RESULTADOS
+→ VALIDAR TECNICAMENTE
+→ VALIDAR FUNCIONALMENTE
+→ REINCORPORAR Y CONCILIAR CUANDO APLIQUE
+→ CLASIFICAR RESULTADO POR SERVICIO
+→ REGISTRAR DESVIACIONES Y PENDIENTES
+→ ENTREGAR HALLAZGOS A REVISION POSTERIOR
+→ CALCULAR SIGUIENTE VENCIMIENTO O INVALIDACION POR CAMBIO
+```
+
+Un ejercicio puede cubrir varios servicios a la vez, pero cada `BCS-VPROC-*` incluido conserva objetivo, resultado, evidencia y estado propios. La cobertura agregada no permite marcar como probado un servicio que no haya sido explícitamente incluido.
+
+---
+
+#### 9. Ventanas máximas de cobertura por riesgo
+
+Las ventanas siguientes definen el máximo entre evidencias vigentes del programa; no afirman que exista hoy una ejecución previa.
+
+| Prioridad         | Walkthrough     | Tabletop        | Ejercicio operativo / simulación relevante                                              | Restauración cuando exista una afirmación de recuperabilidad                                                                                        | Regla extraordinaria                                                                                           |
+| ----------------- | --------------- | --------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `PR-0_PROTECCION` | máximo 6 meses  | máximo 6 meses  | máximo 12 meses                                                                         | máximo 6 meses cuando la fuente recuperable soporte el control protector; en otro caso aplica la frecuencia más estricta de la política de respaldo | cambio material, incidente grave o fallo de control invalida evidencia aplicable y exige revalidación dirigida |
+| `PR-1_ESENCIAL`   | máximo 12 meses | máximo 12 meses | máximo 12 meses                                                                         | máximo 12 meses o la frecuencia más estricta de la política de respaldo                                                                             | cambio material o incidente que cuestione la estrategia exige revalidación dirigida                            |
+| `PR-2_CONTROL`    | máximo 12 meses | máximo 12 meses | máximo 24 meses, sin omitir escenarios que protejan evidencia, autoridad o conciliación | máximo 12 meses cuando se afirme recuperabilidad o la frecuencia más estricta de la política de respaldo                                            | cambio que afecte control, evidencia, datos o dependencias invalida la parte afectada                          |
+| `PR-3_DIFERIBLE`  | máximo 12 meses | máximo 24 meses | máximo 24 meses                                                                         | máximo 24 meses cuando aplique, salvo frecuencia más estricta heredada                                                                              | cambio que altere backlog, vencimiento o capacidad de reanudación exige revalidación dirigida                  |
+
+Reglas:
+
+- la frecuencia más estricta entre este programa, respaldo, requisito contractual, seguridad, cumplimiento o paquete propietario prevalece;
+- una evidencia vencida no se prorroga por ausencia de incidentes;
+- un cambio material puede invalidar solo la parte afectada si existe trazabilidad suficiente para demostrar el resto;
+- la misma sesión puede satisfacer varias modalidades únicamente si ejecuta y evidencia realmente los objetivos de cada una;
+- una restauración automatizada exitosa no sustituye el ejercicio de validación funcional exigido por el servicio.
+
+---
+
+#### 10. Calendario rodante y control de vencimientos
+
+El programa se gobierna como calendario rodante, no como lista estática de fechas.
+
+Cada servicio activo deberá conservar:
+
+```text
+last_walkthrough_at
+last_tabletop_at
+last_operational_exercise_at
+last_restore_exercise_at cuando aplique
+last_integrated_exercise_at cuando aplique
+last_material_change_at
+next_due_at por modalidad aplicable
+exercise_scope_version
+current_evidence_state
+invalidation_reason cuando aplique
+```
+
+El `RESPONSABLE_DE_CONTINUIDAD` consolida vencimientos y cobertura; cada propietario conserva la responsabilidad de su resultado. Las fechas reales se incorporan únicamente cuando existan ejercicios o cambios efectivamente registrados.
+
+---
+
+#### 11. Disparadores extraordinarios de ejercicio
+
+Además de la ventana periódica, se requiere walkthrough o prueba dirigida cuando ocurra un cambio material que pueda invalidar la evidencia, incluyendo:
+
+1. cambio de objetivo, BIA, MTPD, RTO, RPO o MBCO;
+2. cambio de propietario, mando, suplencia o función crítica;
+3. nueva sede, cierre de sede o cambio material de capacidad física;
+4. cambio de aplicación, arquitectura, base, Storage, integración o fuente de verdad;
+5. cambio de red, energía, dispositivo, impresora, endpoint o infraestructura crítica;
+6. cambio de proveedor, pago, transporte, mensajería o canal relevante;
+7. cambio de estrategia de contingencia o runbook;
+8. cambio de política de respaldo o restauración;
+9. cambio de formato, folio, medio de custodia o mecanismo offline/manual;
+10. incidente real que revele una desviación no prevista;
+11. ejercicio fallido o no concluyente sobre un objetivo crítico;
+12. hallazgo de seguridad, privacidad, SST, inocuidad o cumplimiento que afecte el procedimiento;
+13. cambio material de volumen, temporada, horario o capacidad;
+14. evidencia de que un recurso o alternativa ya no está disponible.
+
+---
+
+#### 12. Contrato mínimo del escenario
+
+Cada escenario deberá declarar, como mínimo:
+
+- identidad y versión del escenario;
+- modalidad o combinación de modalidades;
+- servicios `BCS-*` y procesos `VPROC-*` incluidos;
+- perfiles `CONT-OBJ-*`, RTO, RPO, MTPD y MBCO aplicables;
+- sedes, áreas, horarios, canales o contextos incluidos;
+- evento inicial y causa simulada sin afirmar que sea la causa de un incidente real;
+- dependencias primarias y fallos supuestos;
+- alternativas acreditadas incluidas, si existen;
+- supuestos permitidos y supuestos expresamente prohibidos;
+- funciones participantes, controladoras, observadoras y validadoras;
+- secuencia de inyectores con condición de liberación;
+- decisiones esperadas que se observarán, sin revelar respuestas a participantes cuando la modalidad no lo permita;
+- entorno, datos, copias, identidades y recursos autorizados;
+- clasificación de sensibilidad y restricciones de evidencia;
+- blast radius máximo;
+- condiciones de abortado;
+- condición para convertir la simulación en respuesta a incidente real;
+- criterios de éxito técnico;
+- criterios de éxito empresarial;
+- conciliación y pendientes que deben verificarse;
+- evidencia mínima requerida;
+- mecanismo de cronometraje;
+- criterio para declarar el resultado concluyente, no concluyente o bloqueado.
+
+---
+
+#### 13. Inyectores y control de la simulación
+
+Un inyector puede representar pérdida, demora, degradación, error, respuesta incierta, ausencia de persona, cambio de condición o nueva información.
+
+Reglas:
+
+1. el inyector nunca modifica datos o infraestructura real por inferencia;
+2. el equipo controlador conoce el escenario completo y registra cuándo libera cada inyector;
+3. el participante recibe únicamente la información que tendría legítimamente en el escenario;
+4. los inyectores no conceden permisos ni capacidades inexistentes;
+5. la falta de una alternativa real se simula como indisponibilidad o decisión bloqueada, no como recurso imaginario;
+6. los resultados inciertos permanecen inciertos hasta que el escenario provea evidencia compatible;
+7. un participante no se penaliza por negarse a ejecutar una acción no autorizada;
+8. si aparece un incidente real, la seguridad y la operación real prevalecen y el ejercicio se suspende o termina.
+
+---
+
+#### 14. Entornos y datos permitidos
+
+Orden de preferencia:
+
+```text
+DOCUMENTAL / TABLETOP
+→ SANDBOX AISLADO
+→ STAGING CONTROLADO
+→ LABORATORIO O DISPOSITIVO DE PRUEBA
+→ PRODUCCION SOLO CON AUTORIZACION EXPLICITA POSTERIOR
+```
+
+La tarea no autoriza el último nivel.
+
+Los datos de ejercicio deberán ser sintéticos o controlados por defecto. El uso de copia de información real exige finalidad, minimización, controles de acceso, retención y autorización ya aprobados. Un restore de prueba debe impedir que correos, pagos, webhooks, notificaciones, impresiones, jobs o integraciones externas produzcan efectos reales no deseados.
+
+---
+
+#### 15. Condiciones de abortado y seguridad
+
+Todo ejercicio no puramente documental tendrá condiciones de abortado explícitas.
+
+Se aborta o pausa cuando:
+
+- aparece riesgo para personas, SST, inocuidad, seguridad física o operación real;
+- el blast radius supera el alcance aprobado;
+- se detecta riesgo de cobro, movimiento, despacho, comunicación o escritura productiva no autorizada;
+- se pierde control de la fuente activa o aparece riesgo de split-brain;
+- una credencial, secreto o dato sensible queda expuesto fuera del alcance;
+- el entorno deja de estar aislado;
+- el escenario interfiere con un incidente real;
+- no puede preservarse evidencia mínima para distinguir ejercicio de operación real;
+- la función de control determina que continuar destruiría la utilidad de la prueba o crearía daño material.
+
+Abortar por seguridad no se clasifica automáticamente como fracaso; el resultado debe indicar si el abortado fue correcto y qué objetivo quedó sin evaluar.
+
+---
+
+#### 16. Catálogo materializado de escenarios
+
+| Familia de escenario                                | Servicios o dependencias objetivo                                     | Modalidades mínimas                                                               | Cierre requerido                                                                       | Estado de ejecución actual                     |
+| --------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| pérdida de mando o persona clave                    | continuidad, gobierno, operación por sede                             | walkthrough + tabletop                                                            | suplencia, autoridad, bitácora, escalamiento y continuidad del MBCO                    | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| indisponibilidad de sede o energía                  | servicios territoriales, producción, inventario, venta, instalaciones | tabletop + ejercicio operativo; simulación física solo con autorización posterior | protección, operación mínima o detención, evidencia y retorno                          | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| pérdida de red o conectividad                       | aplicaciones, dispositivos, POS, impresión, logística                 | tabletop + simulación técnica + ejercicio operativo según alcance                 | degradación, cola o bloqueo, seguridad, sincronización y pendientes                    | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| indisponibilidad de aplicación o backend            | servicios digitales y consumidores                                    | simulación técnica + ejercicio operativo                                          | detección, aislamiento, operación mínima, restauración funcional y conciliación        | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| restauración de datos o configuración               | fuentes cubiertas por respaldo                                        | restauración aislada + validación funcional                                       | integridad, versión, edad del punto, tiempo, propiedad y pendientes                    | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| dispositivo, impresora o periférico indisponible    | estaciones, inventario, producción, venta, evidencia                  | walkthrough + simulación/ejercicio operativo cuando exista recurso real           | fallback permitido o bloqueo seguro, trazabilidad y resultado funcional                | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| proveedor de pago indisponible o resultado incierto | ventas, pagos, caja, finanzas                                         | tabletop + simulación contractual/controlada                                      | no doble cobro, resultado desconocido preservado, conciliación y comunicación          | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| proveedor o canal de mensajería indisponible        | comunicación laboral, cliente, crisis y notificaciones                | tabletop + simulación controlada                                                  | destinatarios, consentimiento, deduplicación, evidencia de entrega y pendientes        | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| transporte o recurso logístico indisponible         | planificación, custodia, despacho, entrega                            | tabletop + ejercicio operativo                                                    | autoridad, custodia, capacidad, evidencia, retorno y conciliación                      | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| proveedor crítico de insumo o servicio indisponible | compras, producción, instalaciones, EPP, soporte                      | tabletop; ejercicio operativo solo con recurso acreditado                         | especificación, calidad, capacidad, aprobación, recepción y continuidad                | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| operación manual u offline y reincorporación        | servicios con `CTG-03` a `CTG-08` y medios aplicables                 | walkthrough + ejercicio operativo                                                 | identificación, folios/evidencia, idempotencia, conflicto, conciliación y pendientes   | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+| failover y retorno                                  | componentes o servicios con failover realmente habilitado             | simulación técnica + ejercicio operativo                                          | fuente activa inequívoca, no split-brain, validación funcional, backlog y failback     | `BLOQUEADO_HASTA_EXISTIR_CAPACIDAD_HABILITADA` |
+| alternativa física o proveedor sustituto            | estrategias `CTG-09` y `CTG-10`                                       | tabletop; ejercicio operativo únicamente con alternativa acreditada               | independencia, capacidad, acceso, seguridad, MBCO, conciliación y retorno              | `BLOQUEADO_SIN_ALTERNATIVA_ACREDITADA`         |
+| escenario integrado multidominio                    | combinación de servicios críticos y dependencias compartidas          | tabletop + simulación/restauración/operativo según alcance                        | mando, recuperación técnica, resultado empresarial, conciliación y cierre por servicio | `NO_EJECUTADO_POR_ESTA_TAREA`                  |
+
+---
+
+#### 17. Walkthrough documental
+
+El walkthrough se usa para descubrir incoherencias antes de exponer personas o sistemas a una simulación más exigente.
+
+Debe recorrer:
+
+- versión vigente del plan y runbook;
+- propietario y suplencia;
+- dependencias y contactos funcionales;
+- entradas, salidas y fuente de verdad;
+- MBCO, RTO, RPO y MTPD;
+- modalidad de contingencia;
+- medios, formularios, folios y evidencia;
+- criterios de activación, abandono y retorno;
+- pasos de validación funcional y conciliación;
+- datos sensibles, credenciales y controles;
+- condiciones de abortado;
+- handoffs a otras funciones.
+
+Un walkthrough puede cerrar una brecha documental, pero no acredita disponibilidad de un recurso físico ni cumplimiento temporal.
+
+---
+
+#### 18. Tabletop de decisión
+
+El tabletop debe observar decisiones, no memorización de respuestas.
+
+Como mínimo evalúa:
+
+1. detección y clasificación;
+2. autoridad de declaración y activación;
+3. establecimiento de mando y suplencia;
+4. selección del MBCO y estrategia permitida;
+5. priorización basada en dependencias y no solo en criticidad nominal;
+6. escalamiento antes de MTPD;
+7. comunicación interna, externa y a proveedores;
+8. tratamiento de información no confirmada;
+9. decisión ante resultado desconocido;
+10. criterio de abandono de contingencia;
+11. criterio de recuperación y retorno;
+12. identificación de pendientes y responsables.
+
+La función controladora no corrige al participante durante una evaluación, salvo cuando hacerlo sea necesario por seguridad o cuando el ejercicio sea explícitamente formativo.
+
+---
+
+#### 19. Simulación técnica controlada
+
+Una simulación técnica podrá comprobar, cuando exista implementación disponible y autorización posterior:
+
+- health y detección de degradación;
+- alertas y correlación;
+- circuit breaking o aislamiento;
+- reintentos y backoff;
+- cola y recuperación de trabajo;
+- protección contra duplicados;
+- selección de fuente activa;
+- secuencia de failover sin ejecutarla en producción;
+- configuración de red o dispositivo en laboratorio;
+- compatibilidad de versión;
+- observabilidad y evidencia.
+
+La simulación no puede generar efectos reales de negocio por comodidad. Si el comportamiento no puede probarse sin riesgo inaceptable, se conserva el objetivo pendiente y se diseña un entorno o sustituto de prueba apropiado en su paquete propietario.
+
+---
+
+#### 20. Restauración aislada
+
+Toda restauración de ejercicio debe separar:
+
+```text
+COPIA EXISTENTE
+→ COPIA LEGIBLE
+→ RESTAURACION TECNICA COMPLETA
+→ DATOS / CONFIGURACION INTEGROS
+→ VERSION COMPATIBLE
+→ SERVICIO TECNICO DISPONIBLE
+→ VALIDACION FUNCIONAL
+→ RECONCILIACION / PENDIENTES
+→ RESULTADO EMPRESARIAL CONCLUIDO
+```
+
+Debe medir, cuando aplique:
+
+- inicio y fin de cada fase;
+- tiempo hasta datos disponibles;
+- tiempo hasta servicio técnico disponible;
+- tiempo hasta resultado funcional confirmado;
+- punto temporal recuperado y edad del estado;
+- faltantes o corrupción;
+- compatibilidad de esquema, configuración y aplicación;
+- trabajos posteriores al punto recuperado que exigen reconciliación;
+- tiempo de conciliación y cierre.
+
+El RTO se compara contra el momento en que el resultado exigido por el objetivo queda funcionalmente disponible, no contra el primer health check verde.
+
+---
+
+#### 21. Ejercicio operativo
+
+El ejercicio operativo prueba personas, proceso y medios juntos.
+
+Debe incorporar, según el escenario:
+
+- función y contexto realista de los participantes;
+- instrucciones vigentes;
+- recursos físicos o equivalentes autorizados;
+- formularios, folios o registros controlados;
+- operación mínima o detención protectora;
+- handoffs y custodia;
+- tiempos reales de decisión y ejecución;
+- comunicación y escalamiento;
+- trabajo pendiente o diferido;
+- retorno al flujo normal;
+- reincorporación y conciliación;
+- validación de que no quedaron pendientes sin propietario.
+
+No es obligatorio interrumpir producción para realizar un ejercicio operativo. Puede usarse laboratorio, turno controlado, datos sintéticos, recursos de prueba o una réplica del proceso siempre que la evidencia permita afirmar únicamente lo que realmente se probó.
+
+---
+
+#### 22. Ejercicio integrado
+
+Un ejercicio integrado se utiliza cuando la cadena de dependencia hace insuficiente evaluar cada componente por separado.
+
+Debe declarar explícitamente los servicios cubiertos. Como mínimo debe conservar:
+
+- incidente común y cronología;
+- dependencias compartidas;
+- prioridades de recuperación;
+- decisiones de mando;
+- estados técnicos por componente;
+- estado empresarial por proceso;
+- comunicaciones y terceros incluidos;
+- trabajo en contingencia;
+- restauración y retorno;
+- conciliación entre propietarias y consumidoras;
+- cierre individual por servicio.
+
+El éxito del escenario global no sobreescribe un fallo individual. Un servicio que no cumple su objetivo queda con resultado propio aunque el resto del ejercicio termine satisfactoriamente.
+
+---
+
+#### 23. Funciones y segregación
+
+| Función                                     | Responsabilidad en el programa                                                    | No adquiere por esta tarea                                           |
+| ------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `RESPONSABLE_DE_CONTINUIDAD`                | mantener cobertura, calendario, escenarios, coordinación y evidencia del programa | autoridad universal para modificar producción o aceptar riesgos      |
+| `RESPONSABLE_DEL_PROCESO`                   | definir resultado empresarial, participar y validar funcionalmente su servicio    | propiedad técnica de componentes ajenos                              |
+| `RESPONSABLE_TECNOLOGICO`                   | preparar y ejecutar pruebas técnicas autorizadas, medir y aportar evidencia       | autoridad para declarar recuperación empresarial                     |
+| `COORDINACION_DE_OPERACIONES`               | coordinar escenarios entre sedes, recursos y handoffs                             | ownership de los procesos coordinados                                |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`            | representar contexto territorial, seguridad y capacidad de sede                   | alcance global por presencia local                                   |
+| `EQUIPO_OPERATIVO_DEL_AREA`                 | ejecutar procedimiento autorizado dentro del escenario                            | permiso para improvisar bypass o ampliar el alcance                  |
+| `GERENCIA_GENERAL` / `GOBIERNO_Y_PROPIEDAD` | patrocinio, escalamiento y decisiones de gobierno que correspondan                | ejecución técnica automática                                         |
+| controlador del ejercicio                   | administrar escenario, inyectores, seguridad y abortado                           | propiedad del resultado del proceso                                  |
+| observador / custodio de evidencia          | registrar hechos, tiempos y referencias                                           | facultad de corregir la historia para obtener un resultado favorable |
+
+La misma persona puede ejercer varias funciones en una organización pequeña, pero el expediente identifica qué función ejerció en cada decisión.
+
+---
+
+#### 24. Medición temporal
+
+Se distinguen, cuando apliquen:
+
+```text
+scenario_start_at
+incident_detected_at
+declaration_at
+activation_at
+protective_control_at
+degraded_mode_ready_at
+restore_start_at
+technical_restore_at
+functional_validation_at
+reconciliation_start_at
+reconciliation_complete_at
+normal_return_at
+exercise_end_at
+```
+
+Reglas:
+
+- no se redondea un tiempo para hacerlo cumplir el objetivo;
+- pausas administrativas del ejercicio se registran y se separan del tiempo operacional cuando corresponda;
+- los tiempos de briefing previo no se contabilizan como recuperación;
+- el cronómetro de RTO parte del evento definido por el escenario y termina en el resultado empresarial exigido, salvo que el objetivo canónico establezca otra frontera;
+- el MTPD nunca se usa como permiso para seguir ejecutando una actividad insegura;
+- si el escenario no puede producir una medición comparable, el resultado temporal es `NO_CONCLUYENTE`.
+
+---
+
+#### 25. Medición de RPO y estado recuperado
+
+Cuando el servicio dependa de estado recuperable se conserva:
+
+- punto de recuperación seleccionado;
+- timestamp o versión verificable del estado;
+- edad del estado respecto del evento;
+- eventos posteriores conocidos;
+- eventos posteriores desconocidos;
+- trabajo que requiere replay o reincorporación;
+- diferencias detectadas;
+- evidencia de integridad;
+- relación con el RPO objetivo.
+
+Una copia más reciente no se presenta como mejor si está corrupta, incompleta, incompatible o no puede utilizarse de forma autorizada.
+
+---
+
+#### 26. Clasificación documental de resultados
+
+Las etiquetas siguientes son estados documentales de evaluación, no enums persistentes.
+
+| Resultado                             | Significado                                                                                                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `CUMPLE_OBJETIVO`                     | la evidencia observada satisface todos los criterios aplicables del alcance definido                             |
+| `CUMPLE_CON_HALLAZGOS_NO_BLOQUEANTES` | el objetivo medido se cumple, pero existen mejoras que no invalidan la capacidad probada                         |
+| `NO_CUMPLE_OBJETIVO`                  | al menos un criterio obligatorio del objetivo no se cumple                                                       |
+| `NO_CONCLUYENTE`                      | el ejercicio no produjo evidencia suficiente o comparable para decidir                                           |
+| `ABORTADO_POR_SEGURIDAD`              | el ejercicio se detuvo correctamente por una condición de seguridad o control; se conserva qué quedó sin evaluar |
+| `BLOQUEADO_POR_PRECONDICION`          | no se ejecuta porque falta una precondición real, autorización, recurso, implementación o evidencia necesaria    |
+
+Ningún resultado se asigna actualmente por esta tarea porque no se ejecuta un ejercicio real.
+
+---
+
+#### 27. Contrato mínimo de evidencia del ejercicio
+
+El expediente del ejercicio deberá poder reconstruir:
+
+- identidad, versión y modalidad;
+- escenario y alcance;
+- servicios, procesos, sedes y dependencias;
+- objetivos y criterios;
+- participantes por función;
+- autorizaciones y precondiciones;
+- entorno y datos utilizados;
+- inyectores y timestamps;
+- decisiones observadas;
+- acciones realizadas;
+- tiempos medidos;
+- punto de recuperación y RPO cuando aplique;
+- evidencia técnica;
+- evidencia funcional;
+- evidencia de custodia y handoffs;
+- evidencia de reincorporación y conciliación;
+- resultados desconocidos y pendientes;
+- condiciones de abortado activadas;
+- resultado por servicio;
+- observaciones y desviaciones;
+- referencia al paquete de revisión posterior;
+- fecha de ejecución y vigencia de la evidencia;
+- cambios posteriores que puedan invalidarla.
+
+La evidencia original no se reescribe durante la revisión posterior.
+
+---
+
+#### 28. Vigencia de evidencia y readiness
+
+Un servicio solo podrá ser presentado posteriormente como con readiness vigente cuando, para el alcance afirmado:
+
+1. las modalidades obligatorias según su perfil se encuentren dentro de ventana;
+2. las dependencias críticas incluidas en la afirmación estén probadas o explícitamente limitadas;
+3. el MBCO haya sido observado y validado;
+4. RTO y RPO se hayan comparado con evidencia cuando apliquen;
+5. la restauración técnica, cuando exista, haya terminado en validación funcional;
+6. los pendientes hayan sido reconciliados o tengan tratamiento compatible con el cierre;
+7. no exista un bloqueo material abierto que invalide la capacidad;
+8. seguridad, privacidad, SST, inocuidad y autorización se hayan respetado;
+9. no haya ocurrido un cambio material posterior que invalide el resultado;
+10. la evidencia pueda reconstruirse.
+
+La readiness se limita exactamente al escenario, sedes, servicios, dependencias, versiones y modalidades probadas. No se extrapola a todo Vento OS.
+
+Estado actual de esta tarea: **cero servicios reciben readiness validado**, porque la tarea únicamente define el programa.
+
+---
+
+#### 29. Alternativas físicas y de proveedor
+
+La ausencia actual de alternativas concretas acreditadas se conserva.
+
+Por tanto:
+
+- un tabletop puede evaluar la decisión de buscar, contratar o no activar una alternativa;
+- no se puede ejecutar un failover real hacia un recurso o tercero inexistente;
+- no se puede declarar probado `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL` sin una instancia física acreditada;
+- no se puede declarar probado `CTG-10_ALTERNATIVA_PROVEEDOR_CONDICIONAL` sin un tercero acreditado;
+- una futura alternativa debe pasar primero las puertas de `CONT-DOM-013` y luego este programa podrá probarla;
+- el ejercicio no crea proveedor, contrato, inventario, energía, enlace, transportador, dispositivo o canal por simulación.
+
+---
+
+#### 30. Tratamiento de AURA diferida
+
+`BCS-VPROC-0056` y `BCS-VPROC-0057` conservan su identidad, BIA y perfil, pero no se presentan como capacidades operativas habilitadas.
+
+Mientras AURA permanezca diferida:
+
+- pueden participar en walkthrough documental de dependencias, gobierno y vigencia;
+- no generan evidencia de readiness operativo;
+- no se ejecuta una simulación productiva de una aplicación no habilitada;
+- no se inventan canales, proveedores o datos operativos para cerrar cobertura;
+- al cambiar el estado de AURA deberá realizarse un análisis de vigencia y programarse la cobertura correspondiente antes de afirmar readiness.
+
+---
+
+#### 31. Matriz materializada de cobertura por servicio — 69 / 69
+
+La matriz conserva exactamente las identidades, propietarias, criticidades y perfiles heredados. La columna de cobertura define la obligación del programa, no afirma ejecución.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Perfil         | Prioridad         | Cobertura mínima del programa                                                                        | Ventana máxima                                                                                                                             | Estado actual                                    |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | ----------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough; tabletop o ejercicio operativo dirigido por escenario y riesgo                          | ≤ 12 meses para revisión; ≤ 24 meses para ejercicio; restauración ≤ 24 meses cuando aplique                                                | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough documental de vigencia; sin ejercicio operativo mientras AURA permanezca diferida        | revisar ante cambio de estado de AURA; no inicia ventana de readiness operativo                                                            | `BLOQUEADO_POR_APLICACION_DIFERIDA`              |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough documental de vigencia; sin ejercicio operativo mientras AURA permanezca diferida        | revisar ante cambio de estado de AURA; no inicia ventana de readiness operativo                                                            | `BLOQUEADO_POR_APLICACION_DIFERIDA`              |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 12 meses para decisión y ejercicio; restauración ≤ 12 meses cuando aplique                                                               | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough; tabletop o ejercicio operativo dirigido por escenario y riesgo                          | ≤ 12 meses para revisión; ≤ 24 meses para ejercicio; restauración ≤ 24 meses cuando aplique                                                | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough; tabletop o ejercicio operativo dirigido por escenario y riesgo                          | ≤ 12 meses para revisión; ≤ 24 meses para ejercicio; restauración ≤ 24 meses cuando aplique                                                | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | ≤ 6 meses para decisión; ≤ 12 meses para ejercicio operativo; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | walkthrough; tabletop o ejercicio operativo dirigido por escenario y riesgo                          | ≤ 12 meses para revisión; ≤ 24 meses para ejercicio; restauración ≤ 24 meses cuando aplique                                                | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | ≤ 12 meses para revisión/decisión; ≤ 24 meses para ejercicio integral; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad | `PROGRAMA_ESPECIFICADO_SIN_EJECUCION_ACREDITADA` |
+
+---
+
+#### 32. Reconciliación de la matriz
+
+| Control                                     | Resultado |
+| ------------------------------------------- | --------: |
+| servicios esperados                         |    **69** |
+| servicios materializados                    |    **69** |
+| identificadores `BCS-*` únicos              |    **69** |
+| identificadores `VPROC-*` únicos            |    **69** |
+| servicios activos                           |    **67** |
+| servicios AURA bloqueados                   |     **2** |
+| `CRITICA_PROTECCION`                        |    **12** |
+| `CRITICA_OPERACIONAL`                       |    **20** |
+| `ALTA_CONTROL`                              |    **31** |
+| `DIFERIBLE_CONTROLADA`                      |     **6** |
+| `anima`                                     |     **1** |
+| `viso`                                      |    **20** |
+| `nexo`                                      |    **16** |
+| `fogo`                                      |     **6** |
+| `origo`                                     |     **4** |
+| `pulso`                                     |    **12** |
+| `numera`                                    |     **7** |
+| `aura`                                      |     **2** |
+| `pass`                                      |     **1** |
+| readiness validado por esta tarea           |     **0** |
+| ejercicios reales ejecutados por esta tarea |     **0** |
+
+---
+
+#### 33. Cobertura de hallazgos heredados
+
+| Hallazgo                                                          | Tratamiento en esta tarea                                                                                                            | Estado documental posterior                                            |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| ausencia de programa recurrente de ejercicios                     | se materializan modalidades, ventanas máximas, calendario rodante, disparadores, cobertura 69/69 y contrato de evidencia             | programa `ESPECIFICADO`; ejecución y evidencia permanecen pendientes   |
+| riesgo de validar restauración técnica sin conciliación operativa | se establece que toda restauración relevante termina en validación funcional, inventario de pendientes y conciliación cuando aplique | diseño de escenario `ESPECIFICADO`; evidencia real permanece pendiente |
+| lecciones desconectadas de acciones                               | se conserva como materia de revisión posterior                                                                                       | reservado a `CONT-DOM-015` y propietario analítico aplicable           |
+| contactos, dependencias y runbooks obsoletos tras cambios         | se define invalidación de evidencia por cambio y handoff de mantenimiento                                                            | reservado a `CONT-DOM-015` y tareas técnicas propietarias              |
+| vista consolidada de estado, impacto, decisiones y pendientes     | no se resuelve desde el programa documental                                                                                          | reservado a `CONT-UX-001` y `CONT-UX-002`                              |
+
+No se cierra una brecha de ejecución mediante una decisión documental.
+
+---
+
+#### 34. Reglas para escenarios agrupados
+
+Un escenario puede cubrir varios servicios para reducir duplicación, siempre que:
+
+1. cada servicio esté listado explícitamente;
+2. se identifique su perfil y objetivo;
+3. se preserve su propietario funcional;
+4. se distinga el resultado esperado de cada servicio;
+5. se mida el tiempo relevante de cada resultado cuando difiera;
+6. la evidencia permita reconstruir qué parte del escenario cubrió cada servicio;
+7. un fallo individual no sea ocultado por el éxito global;
+8. una dependencia compartida no se duplique para aparentar independencia;
+9. AURA bloqueada no se cuente como cobertura operativa;
+10. la cobertura agregada no se extrapole a sedes, horarios o variantes no ejercitadas.
+
+---
+
+#### 35. Orden de madurez de prueba
+
+El programa utiliza progresión por riesgo:
+
+```text
+DOCUMENTO CONSISTENTE
+→ WALKTHROUGH
+→ TABLETOP
+→ SIMULACION / RESTAURACION CONTROLADA
+→ EJERCICIO OPERATIVO
+→ EJERCICIO INTEGRADO CUANDO EL RIESGO LO EXIJA
+→ EVIDENCIA VIGENTE
+```
+
+No todas las capacidades necesitan todas las modalidades en cada ciclo. La matriz y el riesgo determinan el mínimo. Sin embargo, una modalidad de menor fidelidad no sustituye una de mayor fidelidad cuando el objetivo depende de comportamiento físico, técnico o operativo real.
+
+---
+
+#### 36. Criterio de cobertura de restauraciones
+
+Una restauración se incorpora al programa cuando exista una afirmación de recuperabilidad para una fuente o componente que soporte el servicio.
+
+La prueba debe incluir el objeto real de la afirmación: base, archivo, configuración, Storage, secreto recuperable, cola, integración, artefacto u otro elemento cubierto. Si la política de respaldo identifica una cobertura crítica, no puede declararse vigente sin restauración comprobada en la frecuencia más estricta aplicable.
+
+La falta de acceso a una copia, clave, configuración, entorno aislado o versión compatible bloquea el ejercicio; no se resuelve con una simulación narrativa.
+
+---
+
+#### 37. Criterio de cobertura de proveedores y recursos alternativos
+
+Un tercero o recurso alternativo solo puede entrar en ejercicio operativo como alternativa cuando:
+
+- su identidad y alcance están acreditados;
+- existe autoridad para activarlo;
+- capacidad y límites son conocidos;
+- seguridad y acceso están preparados;
+- compatibilidad y reconciliación están definidas;
+- el escenario puede evitar efectos reales no autorizados;
+- el retorno o retiro están documentados.
+
+Si falta una condición, el programa permite tabletop de la decisión y registra la imposibilidad de prueba práctica, pero no declara readiness.
+
+---
+
+#### 38. Criterio de cobertura de operación manual y offline
+
+Cuando un servicio use procedimiento manual, borrador local, captura pendiente, autorización finita u otro modo degradado, el ejercicio debe comprobar, según aplique:
+
+- disponibilidad real del medio;
+- identidad y folio;
+- capacidad de captura;
+- actor y autoridad;
+- custodia;
+- secuencia;
+- agotamiento de autorización finita;
+- resultado desconocido;
+- handoff;
+- reincorporación;
+- conflictos;
+- conciliación;
+- retorno al flujo normal.
+
+Un formulario vacío o un documento aprobado no acredita que el medio exista, esté disponible o pueda sostener la ventana prevista.
+
+---
+
+#### 39. Criterio de cobertura de comunicaciones
+
+Todo escenario que requiera comunicación deberá especificar:
+
+- destinatarios por función o población;
+- información confirmada y no confirmada;
+- aprobador cuando corresponda;
+- canal principal y alternativas realmente disponibles;
+- sensibilidad y minimización;
+- identidad del mensaje o correlación con incidente;
+- intento y resultado de entrega;
+- tratamiento de no entrega;
+- prevención de mensajes duplicados o contradictorios;
+- comunicación de retorno a normalidad únicamente cuando el estado haya sido validado.
+
+El tabletop puede evaluar mensajes sin enviarlos a destinatarios reales.
+
+---
+
+#### 40. Criterio de cobertura financiera y de pagos
+
+Un escenario de pagos debe demostrar que la contingencia no produce doble cobro ni confirmación ficticia.
+
+Debe distinguir:
+
+```text
+INTENCION DE PAGO
+→ INTENTO
+→ RESULTADO CONFIRMADO
+→ RESULTADO DESCONOCIDO
+→ RECONCILIACION
+→ EFECTO FINANCIERO / COMERCIAL
+```
+
+No se fuerza un fallo real del proveedor ni se realizan cobros reales por esta tarea. Las pruebas posteriores deberán usar sandbox, simulación contractual o mecanismo seguro autorizado.
+
+---
+
+#### 41. Criterio de cobertura de logística y custodia
+
+Un ejercicio logístico debe preservar:
+
+- origen y destino;
+- carga y unidad;
+- custodio;
+- vehículo o recurso;
+- evidencia de salida, entrega, rechazo o retorno;
+- estado del pedido o movimiento;
+- eventos offline o tardíos;
+- impacto sobre inventario y costo;
+- retorno de contenedores o recursos cuando aplique;
+- conciliación posterior.
+
+Cambiar el trayecto o transportador en el escenario no puede inventar capacidad inexistente.
+
+---
+
+#### 42. Criterio de cobertura de seguridad, SST e inocuidad
+
+El objetivo de continuidad nunca prevalece sobre un control protector obligatorio.
+
+El ejercicio debe tratar como éxito una decisión de detener cuando el MBCO es `PROTEGER_Y_DETENER` y no puede demostrarse seguridad. Ningún participante debe ser incentivado a saltar permisos, controles de acceso, privacidad, SST, inocuidad, calidad o custodia para cumplir un tiempo objetivo.
+
+---
+
+#### 43. Brechas de evidencia después del diseño
+
+| Brecha                                                     | Estado                   | Propietario documental / operativo                     | Condición de salida                                                                                            |
+| ---------------------------------------------------------- | ------------------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| calendario con fechas reales de primera ejecución          | `PENDIENTE_DE_EVIDENCIA` | `RESPONSABLE_DE_CONTINUIDAD` y paquetes propietarios   | inventario de servicios implementados/readiness disponible y fechas asignadas dentro de las ventanas definidas |
+| participantes nominales y suplentes disponibles            | `PENDIENTE_DE_EVIDENCIA` | gobierno organizacional y `CONT-DOM-006`               | asignaciones vigentes y verificadas para el ejercicio                                                          |
+| entornos aislados para restauración y simulación           | `PENDIENTE_DE_EVIDENCIA` | TI, E3/E4 y paquete propietario                        | entorno, datos, aislamiento, seguridad y rollback demostrados                                                  |
+| respaldos concretos restaurables                           | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011`, `CONT-DOM-012` y propietarios técnicos | copia identificada y restauración ejecutable con acceso y compatibilidad                                       |
+| alternativas físicas o de proveedor ejercitables           | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-013` y propietario funcional                 | alternativa acreditada y precondiciones de ejercicio cumplidas                                                 |
+| medios manuales/offline físicamente disponibles            | `PENDIENTE_DE_EVIDENCIA` | paquete propietario y operación                        | inventario, formularios/medios, capacidad y custodia demostrados                                               |
+| mediciones reales RTO/RPO/MTPD/MBCO                        | `PENDIENTE_DE_EVIDENCIA` | este programa durante ejercicios posteriores           | ejecución controlada con timestamps y resultado funcional verificables                                         |
+| reconciliación operativa observada después de restauración | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-010`, `CONT-INT-004` y propietarios          | ejercicio con pendientes, incorporación y conciliación comprobados                                             |
+| readiness por servicio                                     | `PENDIENTE_DE_EVIDENCIA` | propietario del proceso + continuidad                  | modalidades vigentes ejecutadas, evidencia completa y ausencia de bloqueos invalidantes                        |
+| lecciones, acciones y eficacia                             | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-015`                                         | revisión posterior y acciones verificadas después de ejercicio/incidente                                       |
+
+No queda una brecha material sin propietario y condición de salida.
+
+---
+
+#### 44. Handoffs obligatorios
+
+| Materia                                                         | Propietario posterior                                              | Frontera                                                                                                 |
+| --------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| revisión posterior, lecciones y acciones                        | `CONT-DOM-015`                                                     | esta tarea registra observaciones y desviaciones; no declara causa ni eficacia de una corrección futura  |
+| separación entre ejecución, validación, conciliación y revisión | `CONT-AUTH-004`                                                    | la misma persona no obtiene autoridad adicional por participar en el ejercicio                           |
+| experiencia de ejercicios y seguimiento                         | `CONT-UX-007`                                                      | esta tarea define contrato y estado; la superficie de usuario se diseña en su tarea propietaria          |
+| health, degradación, replay y reconciliación entre aplicaciones | `CONT-INT-001` a `CONT-INT-004`                                    | el ejercicio consume contratos implementados; no los crea desde el escenario                             |
+| integridad de evidencia y ciclo documental                      | `INFO-DOM-012`, `INFO-DOM-013` y gobierno de información aplicable | el expediente de ejercicio no debilita privacidad, retención o cadena de evidencia                       |
+| métricas, análisis y eficacia                                   | `DATA-DOM-016` y tareas analíticas aplicables                      | la medición observada se conserva; el análisis de eficacia posterior tiene propietario separado          |
+| ejercicios técnicos de TI                                       | `TI-DOM-013` y tareas técnicas aplicables                          | continuidad define el resultado empresarial; TI ejecuta y prueba su parte técnica cuando esté autorizada |
+| certificación transversal                                       | BLOQUE U                                                           | este programa produce evidencia de continuidad; la certificación integral conserva su propio alcance     |
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el programa materializa documentalmente la revisión recurrente, los tipos de ejercicio, el registro de escenario, la restauración comprobable, la validación funcional y la reconciliación que ya están protegidos por el registro vigente de continuidad e integración. No introduce una nueva transición productiva, permiso, mecanismo de failover, formato físico, proveedor, integración, almacenamiento o conducta ejecutable adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 46. Criterios de aceptación
+
+1. La tarea conserva `CONT-DOM-013` como anterior aprobada.
+2. La tarea reserva únicamente `CONT-DOM-015` como siguiente.
+3. La tarea permanece documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No se ejecuta un ejercicio real.
+5. No se interrumpe producción.
+6. No se ejecuta failover o failback real.
+7. No se ejecuta una restauración real por esta tarea.
+8. No se cambia proveedor, energía, red, pago, transporte, canal o recurso.
+9. No se modifica código, datos, configuración, DDL, DML, migración, RLS, RPC ni Supabase.
+10. Se materializan exactamente seis modalidades documentales de ejercicio.
+11. Walkthrough y tabletop permanecen diferenciados.
+12. Simulación técnica y restauración permanecen diferenciadas.
+13. Restauración y recuperación empresarial permanecen diferenciadas.
+14. Ejercicio operativo y ejercicio integrado permanecen diferenciados.
+15. Cada modalidad declara qué puede demostrar y qué no demuestra por sí sola.
+16. Existe un ciclo recurrente de extremo a extremo.
+17. El ciclo incluye selección de cobertura y escenario.
+18. El ciclo incluye precondiciones, seguridad y autorización.
+19. El ciclo incluye ejecución o recorrido controlado.
+20. El ciclo incluye medición, validación técnica y funcional.
+21. El ciclo incluye reincorporación y conciliación cuando aplique.
+22. El ciclo incluye resultado por servicio y evidencia.
+23. El ciclo entrega hallazgos a revisión posterior sin modificar su historia.
+24. Las ventanas máximas se definen por prioridad de riesgo.
+25. `PR-0_PROTECCION` recibe la ventana más estricta.
+26. `PR-3_DIFERIBLE` no queda exento de ejercicio periódico.
+27. Una obligación externa más estricta prevalece sobre la ventana del programa.
+28. Una evidencia vencida no se prorroga por silencio.
+29. Un cambio material puede invalidar evidencia vigente.
+30. Se materializan disparadores extraordinarios de revalidación.
+31. El calendario es rodante y conserva próximo vencimiento por modalidad.
+32. La ausencia de fecha histórica no se rellena con una ejecución inventada.
+33. Cada escenario conserva identidad y versión.
+34. Cada escenario lista servicios y procesos en alcance.
+35. Cada escenario conserva objetivos de continuidad aplicables.
+36. Cada escenario conserva sedes y contextos aplicables.
+37. Cada escenario conserva supuestos y dependencias.
+38. Cada escenario conserva funciones participantes y controladoras.
+39. Cada escenario conserva inyectores y secuencia.
+40. Cada escenario conserva entorno y datos autorizados.
+41. Cada escenario conserva blast radius.
+42. Cada escenario conserva condiciones de abortado.
+43. Cada escenario conserva criterios técnicos y empresariales separados.
+44. Cada escenario conserva evidencia mínima.
+45. Un inyector no concede permisos inexistentes.
+46. Un recurso inexistente no se convierte en alternativa por simulación.
+47. Los resultados inciertos permanecen inciertos hasta evidencia compatible.
+48. Un incidente real prevalece sobre el ejercicio.
+49. El orden de preferencia de entornos prioriza documental, sandbox, staging y laboratorio.
+50. Producción requiere autorización expresa posterior y no queda autorizada aquí.
+51. Los datos sintéticos o controlados son la opción predeterminada.
+52. Una restauración aislada bloquea efectos externos reales no deseados.
+53. Todo ejercicio técnico no documental tiene condición de abortado.
+54. Riesgo a personas o seguridad obliga a pausar o abortar.
+55. Exceder blast radius obliga a pausar o abortar.
+56. Riesgo de doble cobro, movimiento, despacho o mensaje real obliga a abortar.
+57. Riesgo de split-brain obliga a abortar.
+58. Perder aislamiento obliga a abortar.
+59. Abortar por seguridad no se clasifica automáticamente como fracaso.
+60. El catálogo cubre mando/persona clave.
+61. El catálogo cubre sede/energía.
+62. El catálogo cubre red/conectividad.
+63. El catálogo cubre aplicación/backend.
+64. El catálogo cubre restauración de datos/configuración.
+65. El catálogo cubre dispositivos, impresión y periféricos.
+66. El catálogo cubre pagos y resultado incierto.
+67. El catálogo cubre comunicación y mensajería.
+68. El catálogo cubre transporte/logística.
+69. El catálogo cubre proveedor crítico de insumo o servicio.
+70. El catálogo cubre operación manual/offline y reincorporación.
+71. El catálogo cubre failover/retorno cuando exista capacidad habilitada.
+72. El catálogo cubre alternativa física/proveedor solo cuando exista acreditación.
+73. El catálogo cubre escenario integrado multidominio.
+74. Una restauración no concluye en health check técnico.
+75. Una restauración concluyente exige validación funcional.
+76. Una restauración con trabajo posterior exige conciliación o tratamiento explícito de pendientes.
+77. El RTO se compara contra el resultado empresarial aplicable y no contra el primer componente disponible.
+78. El RPO se compara contra un punto recuperado verificable.
+79. Estado corrupto o incompatible no se presenta como mejor por ser más reciente.
+80. El ejercicio operativo comprueba personas, proceso y medios.
+81. El ejercicio operativo no exige interrumpir producción si existe un entorno representativo seguro.
+82. Un ejercicio integrado conserva resultado individual por servicio.
+83. Un éxito agregado no oculta un fallo individual.
+84. El propietario funcional valida el resultado empresarial.
+85. El responsable técnico no declara recuperación empresarial por sí solo.
+86. El controlador del ejercicio no adquiere propiedad del proceso.
+87. La evidencia conserva hechos y no se corrige para producir un resultado favorable.
+88. Se distinguen timestamps de detección, activación, restauración, validación, conciliación y retorno.
+89. No se redondean tiempos para cumplir objetivos.
+90. El MTPD no concede permiso para continuar de forma insegura.
+91. Medición no comparable se clasifica como no concluyente.
+92. El expediente de RPO conserva punto y edad del estado.
+93. El expediente de RPO conserva eventos posteriores y diferencias.
+94. Los estados de resultado se declaran documentales y no persistentes.
+95. Ningún estado de resultado real se asigna desde esta tarea.
+96. El expediente conserva servicios, procesos, sedes y dependencias.
+97. El expediente conserva autorizaciones, datos e inyectores.
+98. El expediente conserva decisiones, acciones y tiempos.
+99. El expediente conserva evidencia técnica y funcional.
+100. El expediente conserva conciliación y pendientes.
+101. La readiness futura exige modalidades vigentes dentro de ventana.
+102. La readiness futura exige MBCO observado.
+103. La readiness futura exige comparación RTO/RPO cuando aplique.
+104. La readiness futura exige validación funcional posterior a restauración.
+105. La readiness futura exige pendientes tratados.
+106. La readiness futura exige ausencia de bloqueo material invalidante.
+107. La readiness futura exige seguridad y autorización respetadas.
+108. La readiness futura queda limitada al alcance realmente probado.
+109. Esta tarea declara cero servicios con readiness validado.
+110. Se conservan cero alternativas físicas concretas acreditadas.
+111. Se conservan cero alternativas de proveedor/canal concretas acreditadas.
+112. Una alternativa no acreditada solo puede tratarse en tabletop o como bloqueo de precondición.
+113. Los dos servicios AURA permanecen bloqueados para readiness operativo.
+114. AURA puede participar únicamente en walkthrough documental mientras continúe diferida.
+115. Se materializan exactamente 69 servicios en la matriz.
+116. Se materializan exactamente 69 procesos VPROC.
+117. No existen servicios faltantes ni duplicados.
+118. La distribución BIA permanece 12/20/31/6.
+119. La distribución de propietarias permanece 1 ANIMA, 20 VISO, 16 NEXO, 6 FOGO, 4 ORIGO, 12 PULSO, 7 NUMERA, 2 AURA y 1 PASS.
+120. Los 67 servicios activos quedan con programa especificado sin ejecución acreditada.
+121. Los dos servicios AURA quedan bloqueados por aplicación diferida.
+122. Un escenario agrupado lista cada servicio cubierto.
+123. Un escenario agrupado conserva objetivo y resultado por servicio.
+124. Una dependencia compartida no se duplica para aparentar independencia.
+125. La restauración se incluye cuando exista una afirmación de recuperabilidad.
+126. La frecuencia más estricta de respaldo prevalece cuando corresponda.
+127. La falta de copia, clave, versión o entorno bloquea la restauración; no se simula como prueba real.
+128. Un proveedor alternativo solo entra en ejercicio operativo si fue acreditado previamente.
+129. Operación manual/offline exige disponibilidad real de medio, identidad, custodia y reconciliación.
+130. Un formulario aprobado no demuestra disponibilidad física.
+131. Comunicaciones de ejercicio distinguen información confirmada y no confirmada.
+132. El tabletop puede evaluar mensajes sin enviarlos a destinatarios reales.
+133. Un escenario de pagos evita doble cobro y confirmación ficticia.
+134. No se fuerza fallo real del proveedor de pagos.
+135. Logística conserva origen, destino, carga, custodia y reconciliación.
+136. Cambiar trayecto o transportador no inventa capacidad.
+137. `PROTEGER_Y_DETENER` permite considerar correcta una detención protectora.
+138. La presión temporal no autoriza omitir SST, inocuidad, seguridad, privacidad o permisos.
+139. La ausencia de programa recurrente queda resuelta documentalmente por esta tarea.
+140. El riesgo de validar solo restauración técnica queda resuelto documentalmente mediante validación funcional y conciliación obligatorias.
+141. Las lecciones y acciones permanecen con `CONT-DOM-015`.
+142. La eficacia de acciones permanece con `CONT-DOM-015` y propietarios aplicables.
+143. La experiencia de usuario de ejercicios permanece con `CONT-UX-007`.
+144. La autorización y segregación de ejercicio permanece con `CONT-AUTH-004` y contratos aplicables.
+145. La integración de health, replay y reconciliación permanece con `CONT-INT-*`.
+146. La tarea no crea ni modifica requisitos de prueba.
+147. La ausencia de cambios de requisitos impide generar un nuevo registro 04A.
+148. No se declara evidencia operativa inexistente.
+149. No se declara validación remota, física o de dispositivo inexistente.
+150. `CONT-DOM-015` permanece únicamente reservada.
+
+---
+
+#### 47. Balance de cierre
+
+| Control                                               |   Resultado |
+| ----------------------------------------------------- | ----------: |
+| servicios cubiertos por el programa                   | **69 / 69** |
+| servicios activos con cobertura especificada          | **67 / 67** |
+| servicios AURA bloqueados                             |   **2 / 2** |
+| modalidades de ejercicio                              |       **6** |
+| familias de escenario materializadas                  |      **14** |
+| perfiles de riesgo con ventana definida               |   **4 / 4** |
+| ejercicios reales ejecutados                          |       **0** |
+| restauraciones reales ejecutadas                      |       **0** |
+| failovers reales ejecutados                           |       **0** |
+| servicios con readiness validado                      |       **0** |
+| alternativas físicas acreditadas heredadas            |       **0** |
+| alternativas de proveedor/canal acreditadas heredadas |       **0** |
+| criterios de aceptación                               |     **150** |
+| cambios físicos                                       |       **0** |
+| requisitos de prueba creados/modificados              |       **0** |
+
+---
+
+#### 48. Límites de la tarea
+
+Esta tarea no:
+
+- ejecuta walkthroughs, tabletop, simulaciones, restauraciones o ejercicios operativos reales;
+- agenda personas concretas ni inventa disponibilidad de participantes;
+- interrumpe una sede, aplicación, red, energía, proveedor o servicio;
+- desconecta enlaces, routers, dispositivos, impresoras o endpoints;
+- ejecuta cobros, devoluciones, webhooks, mensajes, impresiones o movimientos reales para probar fallos;
+- restaura datos productivos ni modifica fuentes de verdad;
+- activa failover o failback;
+- habilita una alternativa no acreditada;
+- crea proveedor, contrato, recurso, sede, inventario, dispositivo o canal alternativo;
+- crea un entorno de prueba físico o técnico;
+- asigna credenciales o accesos de emergencia;
+- modifica autorización, roles, RLS o secretos;
+- modifica código, DDL, DML, migraciones, datos o Supabase;
+- declara readiness;
+- declara cumplidos RTO, RPO, MTPD o MBCO;
+- ejecuta la revisión posterior ni cierra acciones de mejora;
+- inicia `CONT-DOM-015`.
+
+---
+
+#### 49. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan`
+
+
 ### [ ] CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan

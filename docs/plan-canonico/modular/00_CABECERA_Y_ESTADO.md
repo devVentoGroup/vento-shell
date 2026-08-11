@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **716** |
+| Tareas aprobadas | **717** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **878** |
+| Tareas no iniciadas | **877** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **44.92% (716/1594)** |
+| Porcentaje de completamiento | **44.98% (717/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos** |
-| Tarea actual | **CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos** |
+| Última tarea aprobada | **CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos** |
+| Tarea actual | **CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan** |
+| Siguiente tarea | **CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 140 de 157 aprobadas; CONT-DOM-014 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 141 de 157 aprobadas; CONT-DOM-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-DOM-013` — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos |
-| Tarea actual | `CONT-DOM-014` — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos — **NO INICIADA** |
-| Siguiente tarea | `CONT-DOM-015` — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan |
+| Última aprobada | `CONT-DOM-014` — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos |
+| Tarea actual | `CONT-DOM-015` — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan — **NO INICIADA** |
+| Siguiente tarea | `CONT-AUTH-001` — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 140 DE 157 APROBADAS — ACTUAL CONT-DOM-014** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 141 DE 157 APROBADAS — ACTUAL CONT-DOM-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
-        ↓
-TAREA ACTUAL
 CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 140 de 157 tareas aprobadas
+CARRIL NEXO — 141 de 157 tareas aprobadas
 ```
