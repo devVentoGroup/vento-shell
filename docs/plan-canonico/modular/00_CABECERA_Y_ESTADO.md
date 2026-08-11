@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **709** |
+| Tareas aprobadas | **710** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **885** |
+| Tareas no iniciadas | **884** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **44.48% (709/1594)** |
+| Porcentaje de completamiento | **44.54% (710/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa** |
-| Tarea actual | **CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración** |
+| Última tarea aprobada | **CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración** |
+| Tarea actual | **CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor** |
+| Siguiente tarea | **CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 133 de 157 aprobadas; CONT-DOM-007 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 134 de 157 aprobadas; CONT-DOM-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-DOM-006` — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa |
-| Tarea actual | `CONT-DOM-007` — Definir operación mínima viable por proceso, sede, horario, temporada y duración — **NO INICIADA** |
-| Siguiente tarea | `CONT-DOM-008` — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor |
+| Última aprobada | `CONT-DOM-007` — Definir operación mínima viable por proceso, sede, horario, temporada y duración |
+| Tarea actual | `CONT-DOM-008` — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor — **NO INICIADA** |
+| Siguiente tarea | `CONT-DOM-009` — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 133 DE 157 APROBADAS — ACTUAL CONT-DOM-007** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 134 DE 157 APROBADAS — ACTUAL CONT-DOM-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
-        ↓
-TAREA ACTUAL
 CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 133 de 157 tareas aprobadas
+CARRIL NEXO — 134 de 157 tareas aprobadas
 ```

@@ -4617,7 +4617,703 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración`
 
 
-### [ ] CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
+### ✅ CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa` — APROBADA
+**Tarea siguiente:** `CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor` — RESERVADA
+**Tipo de tarea:** documental; materialización de la operación mínima viable por servicio/proceso y contexto territorial-temporal, con resultado mínimo, suspensión, capacidad funcional, controles, duración y brechas de evidencia gobernadas
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Activación real de contingencia, cambios operativos, código, DDL, DML, migraciones, RLS, RPC, datos, backfills, restauraciones, failover, compras, cambios de proveedor o cambios en Supabase:** no autorizados
+**Servicios BIA evaluados:** 69 de 69
+**Procesos canónicos evaluados:** 69 de 69
+**Sedes operativas canónicas consideradas:** 5 de 5
+**Servicios con mínimo operativo documental especificado:** 67
+**Servicios bloqueados por aplicación diferida:** 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar el piso funcional que Vento Group deberá preservar, proteger o diferir de forma controlada cuando un proceso no pueda operar normalmente, de manera que la continuidad se juzgue por el resultado empresarial mínimo y no por la mera disponibilidad de una pantalla, aplicación, dispositivo o proveedor.
+
+La tarea responde, para cada uno de los 69 servicios BIA:
+
+- qué resultado mínimo debe mantenerse o protegerse;
+- qué trabajo puede suspenderse;
+- qué regla de capacidad mínima aplica sin inventar volúmenes no medidos;
+- qué función y clase de recurso son mínimamente necesarias;
+- qué controles no pueden omitirse;
+- en qué clase de ventana operativa debe existir el mínimo;
+- cómo se aplica el alcance territorial sin inventar sedes o capacidades;
+- cómo cambia la evaluación ante campañas, eventos o temporadas;
+- cuánto puede permanecer degradado el resultado antes de alcanzar RTO o MTPD;
+- cuándo debe escalarse, restringirse o detenerse;
+- qué evidencia falta antes de afirmar capacidad física real.
+
+El resultado es normativo y materializado. No selecciona todavía una modalidad manual, offline, snapshot, recurso alternativo, ubicación alternativa o proveedor sustituto; esas decisiones pertenecen a `CONT-DOM-008`.
+
+---
+
+#### 2. Resultado material
+
+| Control                                              |           Resultado |
+| ---------------------------------------------------- | ------------------: |
+| servicios `BCS-*` preservados                        |         **69 / 69** |
+| procesos `VPROC-*` preservados                       |         **69 / 69** |
+| servicios activos con mínimo funcional materializado |         **67 / 67** |
+| servicios AURA bloqueados por aplicación diferida    |           **2 / 2** |
+| perfiles OMV                                         |               **4** |
+| perfiles de duración                                 |               **4** |
+| clases de ventana heredadas usadas                   | **4** — `A0` a `A3` |
+| sedes operativas canónicas                           |           **5 / 5** |
+| sedes inventadas                                     |               **0** |
+| cantidades de personal inventadas                    |               **0** |
+| volúmenes productivos/transaccionales inventados     |               **0** |
+| sustitutos/proveedores alternativos aprobados        |               **0** |
+| modalidades de contingencia seleccionadas            |               **0** |
+| cambios físicos                                      |               **0** |
+| requisitos de prueba creados/modificados             |               **0** |
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume sin redefinir:
+
+1. `CONT-DOM-001`, que fija gobierno federado, propiedad de procesos, funciones, suplencia, autorización persistente y prohibición de confundir recuperación técnica con recuperación empresarial;
+2. `CONT-DOM-002`, que fija 69 servicios BIA, cinco sedes operativas, cuatro clases de criticidad y cuatro niveles mínimos funcionales;
+3. `CONT-DOM-003`, que fija el mapa de dependencias y conserva cero SPOF confirmados y cero sustitutos aprobados;
+4. `CONT-DOM-004`, que fija MTPD, RTO, RPO, MBCO y prioridad mediante los perfiles `CONT-OBJ-001` a `CONT-OBJ-004`;
+5. `CONT-DOM-005`, que fija impacto, urgencia, severidad, declaración, activación, escalamiento, desactivación y cierre;
+6. `CONT-DOM-006`, que fija mando, sustitución, bitácora y comunicación sin asignar personas o contactos ficticios;
+7. `NFR-REQ-001`, que fija ventanas `A0` a `A4` y distingue disponibilidad empresarial de disponibilidad técnica;
+8. `NFR-REQ-002`, que fija formas/bandas de carga y mantiene la evidencia cuantitativa actual en estado `CLASS_ONLY`;
+9. `PROC-CAT-*` y `PROC-ACTOR-*`, que conservan identidad, propósito, propiedad y participación por proceso;
+10. `CAP-SCOPE-018`, que exige operación mínima por proceso y duración y asigna su hallazgo específico a esta tarea.
+
+Ninguna decisión de esta tarea cambia propiedad de proceso, criticidad BIA, objetivos temporales, autoridad de incidente, fuente de verdad o autorización.
+
+---
+
+#### 4. Unidad canónica de operación mínima
+
+La unidad de decisión es:
+
+```text
+servicio BCS
++ BIA vigente
++ proceso VPROC
++ aplicación propietaria
++ contexto territorial aplicable
++ ventana de disponibilidad
++ condición de temporada/evento
++ perfil de duración
++ resultado mínimo
++ alcance suspendible
++ capacidad funcional mínima
++ función mínima
++ recursos mínimos por clase
++ controles no omitibles
++ estado de evidencia
+```
+
+Una variante por sede, turno, horario, temporada o canal no crea un nuevo `VPROC-*` ni un nuevo servicio BCS. Es una instancia contextual del mismo resultado y conserva la identidad canónica.
+
+---
+
+#### 5. Fronteras obligatorias
+
+```text
+OPERACION MINIMA
+!= OPERACION NORMAL
+!= APLICACION DISPONIBLE
+!= MODALIDAD DE CONTINGENCIA
+!= PROCEDIMIENTO MANUAL
+!= CAPACIDAD FISICA PROBADA
+```
+
+```text
+MBCO
+!= VOLUMEN MEDIDO
+!= DOTACION MEDIDA
+!= INVENTARIO DISPONIBLE
+!= READINESS
+```
+
+```text
+PISO FUNCIONAL ESPECIFICADO
+!= CAPACIDAD CUANTITATIVA DEMOSTRADA
+```
+
+Reglas:
+
+1. un mínimo protector puede ser detener la operación y preservar capacidad de proteger;
+2. una aplicación accesible no demuestra que el resultado mínimo pueda completarse;
+3. una operación degradada no elimina identidad, permiso, segregación, inocuidad, integridad, privacidad, custodia, evidencia ni conciliabilidad;
+4. una modalidad técnica o manual no se aprueba por aparecer como posible en otra fuente;
+5. las bandas `L*`/`K*` de NFR son envolventes de diseño y no sustituyen una medición de capacidad real;
+6. ningún mínimo puede relajarse por conveniencia de costo, presión operativa o ausencia de evidencia.
+
+---
+
+#### 6. Perfiles canónicos de operación mínima
+
+| Perfil OMV                        | BIA / MBCO heredado                                   | Regla de capacidad mínima                                                                                                                                                                             | Función mínima                                                                                                   | Recurso mínimo por clase                                                                                                 | Controles no omitibles                                                                                                 | Duración máxima degradada          |
+| --------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `OMV-P1_PROTEGER_Y_DETENER`       | `CRITICA_PROTECCION` / `PROTEGER_Y_DETENER`           | **0 nuevos efectos empresariales no verificables** cuando el control protector no pueda demostrarse; solo continúan acciones autorizadas de protección, contención, aislamiento, custodia o detención | función protectora/ejecutora autorizada + autoridad de decisión/escalamiento aplicable                           | evidencia y referencia protectora vigentes + medio seguro indispensable; si faltan, se detiene el alcance afectado       | vida, SST, inocuidad, acceso, integridad, custodia, autorización y evidencia que sean materiales para el proceso       | `DUR-001`: RTO 15 min; MTPD 30 min |
+| `OMV-P2_RESULTADO_ESENCIAL`       | `CRITICA_OPERACIONAL` / `MANTENER_RESULTADO_ESENCIAL` | solo el subconjunto de compromisos esenciales priorizados que pueda completarse **end-to-end** sin omitir controles; el umbral numérico permanece `PENDIENTE_DE_EVIDENCIA`                            | ejecutor autorizado del resultado + propietario funcional disponible para decisión/validación cuando corresponda | datos/referencias vigentes + recursos físicos/operativos indispensables del resultado; cantidades exactas no se presumen | identidad, permiso, fuente de verdad, trazabilidad, integridad, custodia, idempotencia/conciliabilidad cuando apliquen | `DUR-002`: RTO 2 h; MTPD 4 h       |
+| `OMV-P3_CONTROL_Y_EVIDENCIA`      | `ALTA_CONTROL` / `MANTENER_CONTROL_Y_EVIDENCIA`       | la ejecución sustantiva puede caer a **0**; el **100% de los pendientes materiales** debe conservar identidad, propietario, estado, evidencia y vencimiento                                           | custodio/ejecutor autorizado del expediente + propietario funcional                                              | expediente/estado/autoridad/evidencia + medio para registrar y ordenar pendientes                                        | autoridad, integridad, privacidad, evidencia, vencimiento, segregación y propiedad del pendiente                       | `DUR-003`: RTO 8 h; MTPD 24 h      |
+| `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `DIFERIBLE_CONTROLADA` / `DIFERIR_CON_TRAZABILIDAD`   | la ejecución nueva puede caer a **0**; el **100% del backlog material** queda identificado, ordenado, con propietario, antigüedad, vencimiento y condición de reanudación                             | propietario del backlog + custodio autorizado                                                                    | cola/expediente controlado con identidad, fechas, prioridad y evidencia mínima                                           | identidad, propietario, fecha, vencimiento, privacidad y ruta de reanudación                                           | `DUR-004`: RTO 24 h; MTPD 72 h     |
+
+Los porcentajes de completitud anteriores son reglas de integridad del expediente, no métricas de throughput.
+
+---
+
+#### 7. Perfiles de duración
+
+| Perfil    | Intervalo 1                                                     | Intervalo 2                                                                                 | Límite          | Regla                                                                                       |
+| --------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------- |
+| `DUR-001` | `0–15 min`: proteger/contener y restablecer el control objetivo | `>15 y <30 min`: degradación solo bajo protección demostrada y escalamiento activo          | `>=30 min` MTPD | no se continúa una operación insegura para evitar el vencimiento                            |
+| `DUR-002` | `0–2 h`: sostener resultado esencial y recuperar                | `>2 y <4 h`: RTO excedido; reducir demanda, priorizar compromisos y escalar                 | `>=4 h` MTPD    | el modo degradado no se prolonga por silencio; se decide protección/suspensión/escalamiento |
+| `DUR-003` | `0–8 h`: conservar control/evidencia y recuperar                | `>8 y <24 h`: RTO excedido; backlog, obligaciones y vencimientos se revisan de forma activa | `>=24 h` MTPD   | no se declara tolerado sin decisión de riesgo autorizada                                    |
+| `DUR-004` | `0–24 h`: diferir con trazabilidad                              | `>24 y <72 h`: RTO excedido; controlar antigüedad, prioridad y capacidad de absorción       | `>=72 h` MTPD   | el backlog no puede permanecer abierto indefinidamente por omisión                          |
+
+RTO es objetivo de recuperación y MTPD es el límite de daño inaceptable. Alcanzar MTPD no convierte automáticamente la operación degradada en una excepción aceptada.
+
+---
+
+#### 8. Horario, ventana y continuidad del reloj
+
+Se heredan las clases NFR:
+
+| Ventana | Regla para esta tarea                                                                                                                                                                      |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `A0`    | el mínimo debe poder activarse ante el evento en cualquier momento aplicable; el registro digital completo puede completarse después solo si protección y trazabilidad permanecen intactas |
+| `A1`    | el mínimo debe existir durante el horario, turno, recorrido o ventana operativa real en la que el proceso está activo                                                                      |
+| `A2`    | el mínimo debe estar disponible en el corte, publicación, cierre, vencimiento o hito definido                                                                                              |
+| `A3`    | el trabajo puede acumularse dentro del SLA/horario administrativo siempre que el backlog, vencimiento y propietario permanezcan controlados                                                |
+| `A4`    | no aparece como ventana primaria de los 69 servicios actuales; permanece disponible para futuras variantes aprobadas                                                                       |
+
+Reglas temporales:
+
+1. no se presume `24×7`;
+2. cada instancia real deberá resolver zona horaria, calendario, turno, cierre y ventana contractual desde su fuente vigente;
+3. una sede cerrada puede reducir demanda nueva, pero no elimina compromisos ya aceptados, custodias, incidentes, pagos inciertos, vencimientos o relojes de continuidad activos;
+4. cambiar turno o responsable no reinicia RTO/MTPD;
+5. una ventana administrativa no reduce un control protector que se materialice fuera de ella.
+
+---
+
+#### 9. Temporada, campaña, evento y pico
+
+Se usa la semántica aprobada de NFR:
+
+- `G3_CONDICIONAL`: el proceso ya reconoce estacionalidad, promociones, eventos, cierres o ráfagas como impulsor de carga. Una instancia de temporada debe reevaluar piso de capacidad, prioridades, cola y recursos antes de operar degradada;
+- `BASE_SIN_DELTA_APROBADO`: no existe un multiplicador estacional aprobado. Un cambio material de demanda, horario, canal, evento o temporada obliga a revisar el perfil antes de afirmar que la capacidad mínima sigue siendo suficiente.
+
+Ninguna temporada:
+
+- aumenta automáticamente capacidad;
+- justifica saltar controles;
+- convierte una banda `CLASS_ONLY` en medición;
+- permite aceptar pedidos, producción, rutas o pagos por encima de la capacidad demostrada;
+- relaja MTPD, RTO, RPO o MBCO sin gobierno de cambio.
+
+---
+
+#### 10. Alcance territorial
+
+Las únicas sedes operativas canónicas consideradas son:
+
+| Sede                                  | Tratamiento en operación mínima                                                                                     |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `Oficina 1`                           | contexto administrativo cuando el proceso/obligación corresponda; no se infieren capacidades físicas no demostradas |
+| `Vento Café`                          | contexto comercial/operativo solo para capacidades realmente aprobadas en la sede                                   |
+| `Saudo`                               | contexto comercial/operativo solo para capacidades realmente aprobadas en la sede                                   |
+| `Molka`                               | contexto comercial/operativo; **no se infiere cocina productiva** por nombre, uso o necesidad de continuidad        |
+| `Centro de Producción y Distribución` | contexto productivo/logístico para las áreas y capacidades canónicas realmente existentes                           |
+
+No se convierten en sedes por esta tarea:
+
+- Vaila Vainilla;
+- Catering;
+- apartamento asociado a Vaila;
+- apartamento de reserva de vehículo;
+- punto de decoración;
+- un destino de entrega, proveedor, vehículo o canal;
+- la función de distribución separada del Centro de Producción y Distribución.
+
+Cuando la aplicabilidad proceso–sede no pueda demostrarse, el perfil local queda `PENDIENTE_DE_EVIDENCIA`; no se rellena con `NO_APLICA` por comodidad.
+
+---
+
+#### 11. Capacidad, personas y recursos
+
+La tarea define el **piso funcional** y la **clase mínima de función/recurso**, pero no inventa dotaciones o cantidades.
+
+Para los 67 servicios activos:
+
+```text
+resultado mínimo              = ESPECIFICADO
+función mínima por perfil     = ESPECIFICADA
+clase de recurso mínimo       = ESPECIFICADA
+controles no omitibles        = ESPECIFICADOS
+piso cuantitativo por sede    = PENDIENTE_DE_EVIDENCIA
+headcount mínimo por turno    = PENDIENTE_DE_EVIDENCIA
+unidades/hora o casos/hora    = PENDIENTE_DE_EVIDENCIA
+inventario/insumo mínimo      = PENDIENTE_DE_EVIDENCIA cuando aplique
+número de equipos/estaciones  = PENDIENTE_DE_EVIDENCIA cuando aplique
+```
+
+La ausencia de cifra no autoriza operar sin límite. Mientras el perfil continúe `CLASS_ONLY`, solo puede aceptarse demanda que pueda completarse integralmente con recursos efectivamente disponibles y controles verificables; la incertidumbre se resuelve restringiendo o deteniendo, no prometiendo capacidad.
+
+---
+
+#### 12. Priorización del trabajo durante operación mínima
+
+El orden mínimo es:
+
+1. protección de vida, SST, inocuidad, acceso, integridad, custodia y controles no dispensables;
+2. compromisos esenciales ya aceptados y dentro de capacidad demostrable;
+3. hechos cuya falta de registro produciría pérdida, duplicidad, resultado desconocido o imposibilidad de reconciliar;
+4. obligaciones con vencimiento legal, laboral, fiscal, contractual o de cliente más próximo;
+5. pendientes necesarios para desbloquear varios procesos o sedes sin crear riesgo nuevo;
+6. trabajo de control/evidencia;
+7. backlog diferible según antigüedad y vencimiento.
+
+Un producto, pedido, lote, ruta, compra o pago no se vuelve prioritario solo por haber sido iniciado si completar el efecto exige omitir un control protector.
+
+---
+
+#### 13. Comunicación mínima del estado degradado
+
+Toda instancia activa de operación mínima deberá poder comunicar, al público interno que corresponda:
+
+- incidente/alcance relacionado;
+- proceso/servicio afectado;
+- estado `DEGRADED_SAFE`, `UNAVAILABLE`, `UNKNOWN`, `RECOVERING` o `RECONCILIATION_REQUIRED` según corresponda;
+- qué resultado sí puede producirse;
+- qué trabajo queda suspendido o limitado;
+- qué no debe afirmarse como completado;
+- propietario funcional y mando aplicable por referencia;
+- próximo hito o condición de revisión;
+- canal de escalamiento cuando el mínimo deje de poder sostenerse.
+
+La comunicación no inventa causa, tiempo estimado, capacidad, proveedor alternativo ni promesa de recuperación.
+
+---
+
+#### 14. Matriz materializada de operación mínima — 69 servicios
+
+La columna `Perfil OMV` incorpora por referencia la regla completa de capacidad, función, recurso, control y duración definida en la sección 6. La columna `Ventana` incorpora la regla temporal de la sección 8.
+
+|    # | Servicio         | Proceso      | Propietaria | Perfil OMV                        | Ventana | Territorio                                                                                        | Temporada                                                                                                      | Resultado mínimo                                                                                                                                                                  | Se suspende                                                                                                     | Estado                                  |
+| ---: | ---------------- | ------------ | ----------- | --------------------------------- | ------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | empresa + cinco sedes como impacto; no depende de una sede única                                  | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | conservar decisión autorizada, responsable, compromiso, vencimiento y estado                                                                                                      | nuevas decisiones no urgentes y enriquecimiento administrativo                                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | empresa + cinco sedes como estructura consultada                                                  | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | consultar estructura, relación organizativa, sede y alcance vigentes                                                                                                              | cambios estructurales no urgentes                                                                               | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | empresa + cinco sedes como ámbito de política/delegación                                          | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | consultar política, responsabilidad, delegación y límite vigente antes de decidir                                                                                                 | ediciones o nuevas delegaciones no verificadas                                                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | empresa; transferencia entre las sedes/áreas realmente implicadas                                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar cada handoff con origen, destino, propietario, plazo y estado                                                                                                           | coordinación no crítica y transferencias sin receptor confirmado                                                | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A3`    | empresa; demanda laboral originada en cualquiera de las cinco sedes                               | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar vacantes/candidatos activos, responsable, fecha y compromiso ya adquirido                                                                                               | nueva selección, campañas y evaluación no urgente                                                               | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | cinco sedes según asignación laboral real                                                         | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar identidad, estado, fecha de ingreso, requisitos y habilitaciones pendientes                                                                                             | enriquecimiento documental y altas no vinculadas a un ingreso inminente                                         | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A2`    | cinco sedes según asignación, turno y cobertura real                                              | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | conservar programación publicada y cobertura necesaria del turno; resolver reemplazos que eviten dejar la operación sin función crítica                                           | optimización, simulaciones y cambios no necesarios para la cobertura inmediata                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | cinco sedes con trabajador/turno aplicable                                                        | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar el hecho de asistencia ocurrido con actor, sede, instante y estado pendiente de conciliación                                                                            | correcciones y enriquecimiento no urgentes                                                                      | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | cinco sedes según trabajador, turno y cobertura afectada                                          | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | capturar y priorizar ausencia/novedad y asegurar responsable de cobertura cuando afecte una función operativa                                                                     | trámite no urgente y enriquecimiento posterior del caso                                                         | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa; cinco sedes como origen de hechos laborales                                              | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar integridad del corte, autorizaciones, vencimientos y estado de pagos/beneficios ya preparados                                                                           | análisis fuera de corte y cualquier pago no verificable                                                         | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A0`    | cinco sedes según vínculo, acceso y activos del retiro                                            | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar la decisión de retiro y ejecutar/probar las revocaciones o protecciones urgentes exigibles por el evento                                                                | enriquecimiento documental y cierres administrativos no protectores                                             | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A2`    | cinco sedes según riesgo, inspección o control aplicable                                          | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | mantener controles protectores vigentes, hallazgos de alto riesgo, responsable y criterio de detener/contener                                                                     | planeación rutinaria e inspecciones sin efecto protector inmediato                                              | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A0`    | cinco sedes y puntos controlados según la emergencia real                                         | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | proteger personas, contener la emergencia, activar respuesta autorizada y conservar evidencia inicial suficiente                                                                  | documentación extensa, análisis causal y tareas posteriores a la contención                                     | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | cinco sedes donde higiene, inocuidad o cumplimiento sean condición de operación                   | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | ejecutar y demostrar el control obligatorio antes/durante la operación; si no puede verificarse, detener el alcance afectado                                                      | registro accesorio que no sea necesario para demostrar el control                                               | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | empresa; cinco sedes consumidoras del catálogo aprobado                                           | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | consultar versión vigente de producto, presentación, unidad y equivalencia para toda operación activa                                                                             | altas, bajas y cambios maestros no urgentes                                                                     | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes/capacidades productivas aprobadas; no se infiere producción por nombre de sede              | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | permitir consulta inequívoca de receta y versión aprobadas para producción activa                                                                                                 | desarrollo, prueba y edición de recetas no requeridos para producción en curso                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes comerciales y canales aprobados; producción solo como consumidora del dato                  | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | mostrar/ofrecer únicamente producto cuya disponibilidad y regla vigente puedan confirmarse                                                                                        | ítems, promociones o canales con estado incierto y cambios no esenciales de oferta                              | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sedes/productos donde especificación, alérgeno, restricción o calidad sean aplicables             | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | consultar especificación, alérgenos, restricciones y criterio de calidad vigentes antes de producir, vender o entregar                                                            | producto o decisión afectada cuando la información protectora no pueda verificarse                              | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa; sedes/áreas solicitantes reales                                                          | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | capturar necesidad esencial con origen, cantidad/unidad conocida, prioridad, fecha y responsable antes del corte aplicable                                                        | priorización no urgente y solicitudes sin evidencia suficiente                                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | sin territorio primario; conserva contexto de demanda/proveedor y sede beneficiaria cuando exista | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | conservar evidencia y comparación suficiente antes de cualquier decisión urgente que no pueda esperar                                                                             | comparaciones ordinarias y decisiones sin evidencia completa                                                    | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa; sedes/áreas que originan la necesidad aprobada                                           | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | emitir solo compra esencial/urgente con necesidad, autoridad, alcance, proveedor y evidencia verificables                                                                         | compras discrecionales y órdenes sin segregación/soporte                                                        | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sitios de recepción realmente habilitados; un punto externo no se convierte en sede               | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | aceptar físicamente solo si orden, cantidad, conformidad, custodia y decisión de diferencia pueden verificarse; en incertidumbre, retener/segregar sin efecto de stock confirmado | incorporación a inventario, cierre económico o aceptación definitiva cuando falte control                       | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | cinco sedes y LOC/zonas que existan realmente                                                     | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | consultar estructura de almacenamiento y condiciones vigentes antes de ubicar, mover o buscar existencia                                                                          | cambios espaciales no esenciales y cualquier reubicación sin trazabilidad                                       | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes con inventario/custodia real y LOC vigente                                                  | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | registrar solo ingresos/reubicaciones esenciales con identidad, origen, destino, unidad, actor y cadena de custodia                                                               | movimientos no esenciales o sin destino/origen verificable                                                      | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes con inventario/custodia real                                                                | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | ejecutar solo consumo/retiro/traslado esencial con identidad, unidad, conversión, origen, destino y actor preservados                                                             | movimientos no esenciales y cualquier efecto cuyo origen/destino sea incierto                                   | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | sedes con inventario real y alcance de conteo declarado                                           | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | conservar observación de conteo con alcance, actor, instante y diferencia; separar ajuste posterior                                                                               | ajustes de inventario y cierre de diferencia sin decisión autorizada                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sedes con inventario, frío, cuarentena o disposición aplicables                                   | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | mantener condición, vencimiento, frío, cuarentena, pérdida y decisión protectora; impedir uso de producto inseguro o incierto                                                     | disposición definitiva y análisis administrativo no requeridos para proteger                                    | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | origen/destino internos autorizados con inventario y recepción reales                             | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | abastecer solo demanda esencial con origen, destino, cantidades por etapa, custodia y recepción conciliables                                                                      | reposición no prioritaria y transferencias sin confirmación de etapas                                           | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | sedes con el activo realmente presente o asignado                                                 | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar identidad, ubicación, custodio, estado y handoff de activos en uso/préstamo/retorno activo                                                                              | movimientos discrecionales y actualización administrativa no urgente                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A0`    | sedes con activo o servicio afectado real                                                         | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | atender falla que comprometa resultado protector/esencial, conservar restricción del activo y estado del servicio                                                                 | mantenimiento rutinario y administración de garantías no urgente                                                | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes/rutas con vehículo real y alcance logístico activo                                          | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar disponibilidad segura del vehículo, custodia, combustible/kilometraje material e incidencia para rutas activas                                                          | despachos no esenciales y administración histórica no urgente                                                   | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | sedes/rutas con reutilizable o contenedor real                                                    | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar identidad, completitud, custodio y estado de entrega/retorno de elementos en circulación                                                                                | movimientos no esenciales y conciliación administrativa que pueda esperar                                       | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A2`    | sedes/capacidades productivas aprobadas                                                           | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | conservar demanda aceptada, prioridades, inventario/capacidad conocida y plan mínimo de producción segura                                                                         | optimización, escenarios y producción no prioritaria                                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes/capacidades productivas aprobadas                                                           | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | producir únicamente ítems esenciales/priorizados con receta aprobada, lote, cantidades, actor, mediciones y consumos trazables                                                    | producción no prioritaria y cualquier lote sin versión/control verificable                                      | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sedes/capacidades productivas donde exista decisión de calidad/liberación                         | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | retener/liberar/rechazar solo con evidencia y autoridad de calidad suficientes; producto incierto permanece retenido                                                              | liberación y despacho del producto sin evidencia; análisis posterior no protector                               | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes/capacidades productivas aprobadas                                                           | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | empacar, etiquetar y almacenar solo producto esencial ya aprobado conservando lote, identidad, fecha y trazabilidad                                                               | empaque no prioritario y cualquier etiquetado sin datos verificables                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | sedes/capacidades productivas con lote/reproceso real                                             | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar hechos de lote, reproceso, aprovechamiento, rendimiento, merma y estado de cierre                                                                                       | análisis de optimización y cierre definitivo cuando falte conciliación                                          | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes comerciales con servicio en mesa aprobado                                                   | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | completar pedidos ya aceptados que puedan recorrer pedido-preparación-entrega-pago de forma segura y conciliable                                                                  | nueva demanda por encima de capacidad demostrada y funciones accesorias de servicio                             | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sedes comerciales con mostrador/para llevar aprobado                                              | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | completar ventas aceptadas que puedan cerrarse con entrega y cobro inequívocos                                                                                                    | nueva demanda por encima de capacidad demostrada y oferta no esencial                                           | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | canales externos aprobados + sede receptora del pedido cuando corresponda                         | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | aceptar/normalizar solo pedido externo con identidad única y transferencia interna confirmable                                                                                    | ingesta cuyo resultado sea incierto, duplicable o no conciliable                                                | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A2`    | Catering/B2B como línea/canal; sede productiva/comercial concreta solo cuando el caso la vincule  | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | proteger compromisos B2B/catering ya aceptados según fecha, capacidad, producción, facturación y entrega conocidas                                                                | nuevas cotizaciones, cambios opcionales y compromisos sin capacidad verificable                                 | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | sede/canal del pedido o pago afectado                                                             | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | resolver cambios/anulaciones/devoluciones de casos activos cuando sean necesarios para evitar un efecto incorrecto o duplicado                                                    | ajustes no urgentes y cualquier operación con estado fuente incierto                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sede/canal donde existe intento de cobro o obligación fiscal real                                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | confirmar pago/soporte fiscal solo con resultado autoritativo inequívoco; estado desconocido no autoriza repetir ni duplicar efecto                                               | nuevo cobro del mismo intento, confirmación o soporte cuando la autoridad del resultado no pueda verificarse    | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | caja y sede reales del corte/cambio de responsable                                                | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar custodia, conteo, ventas, pagos, efectivo, diferencias, responsable y estado del cierre                                                                                 | analítica y enriquecimiento posteriores; cierre definitivo sin conciliación                                     | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | sedes/canales comerciales donde fidelización/identidad sea aplicable                              | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | identificar solo contra referencia autorizada y preservar consentimiento/ledger; saldo o redención inciertos no se confirman                                                      | redenciones, ajustes o beneficios cuyo saldo/identidad no pueda verificarse                                     | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | sede/canal del caso de cliente; alertas protectoras escalan por su proceso propio                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | capturar reclamo con identidad de caso, responsable, plazo y evidencia; priorizar seguridad, derechos y efectos ya comprometidos                                                  | resolución ordinaria y compensación sin autoridad/evidencia suficiente                                          | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | sede/canal/evento realmente asociado a la reserva                                                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | proteger reservas/eventos confirmados, capacidad comprometida y comunicación indispensable                                                                                        | nuevas reservas opcionales, cambios no urgentes y comunicaciones promocionales                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A2`    | origen, destino, ruta y recurso reales; destino externo no se convierte en sede Vento             | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | definir antes del despacho ruta esencial con vehículo, carga, secuencia, restricciones y responsables conocidos                                                                   | optimización y rutas no esenciales                                                                              | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | origen/destino/ruta/recurso reales; puntos externos siguen siendo puntos externos                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | durante ruta activa conservar custodia, parada, entrega/rechazo/novedad/retorno, actor y prueba pendiente o confirmada                                                            | nuevas rutas no esenciales y tareas administrativas ajenas a la entrega activa                                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `OMV-P2_RESULTADO_ESENCIAL`       | `A1`    | proveedor/canal externo + pedido/sede relacionados; el proveedor no es sede Vento                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | proteger entregas de tercero ya aceptadas con identidad, estado, prueba, incidencia y conciliación trazables                                                                      | nuevos despachos cuando el estado del proveedor/canal sea incierto                                              | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | empresa; cinco sedes como dimensiones/origen de hechos económicos                                 | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar recepción idempotente de hechos económicos autoritativos y su correlación con origen                                                                                    | cálculos/analítica no necesarios para conservar el hecho y cualquier duplicación por reintento                  | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa; obligación/proveedor no crea territorio propio                                           | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | proteger obligaciones próximas a vencer y estado de pagos ya iniciados con autoridad y conciliación bancaria                                                                      | pagos no urgentes y cualquier nueva ejecución con estado bancario incierto                                      | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | empresa; relación comercial/financiera con referencia de sede cuando exista                       | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar cobro/recaudo recibido, aplicación conocida, diferencia, responsable y vencimientos materiales                                                                          | gestión ordinaria de cartera y análisis sin urgencia                                                            | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa; cinco sedes como dimensiones de costo/cierre                                             | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar versión vigente de reglas, corte, presupuesto/costo, responsable y fecha de cierre aplicable                                                                            | recalculo, distribución y análisis fuera del corte necesario                                                    | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | cinco sedes donde exista la instalación/servicio/control real                                     | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | mantener condiciones de limpieza, plagas, mantenimiento y servicios indispensables para abrir/operar de forma segura; restringir o detener el área cuando no puedan demostrarse   | trabajo no esencial de instalaciones y cierre administrativo posterior                                          | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A3`    | canales AURA; no crea sede ni materializa operación donde AURA sigue diferida                     | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | conservar solo la decisión documental de diferimiento; esta tarea no habilita publicación ni operación AURA                                                                       | toda ejecución operativa de contenido/promoción bajo AURA mientras la aplicación permanezca diferida            | `BLOQUEADO_POR_APLICACION_DIFERIDA`     |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A1`    | canales AURA; no crea sede ni materializa operación donde AURA sigue diferida                     | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | conservar solo la decisión documental de diferimiento y trazabilidad de oportunidades ya referenciadas                                                                            | toda ejecución operativa AURA mientras la aplicación permanezca diferida                                        | `BLOQUEADO_POR_APLICACION_DIFERIDA`     |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `OMV-P2_RESULTADO_ESENCIAL`       | `A0`    | empresa + sedes/servicios/activos realmente afectados                                             | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | triage y coordinar incidentes que amenacen resultados críticos con servicio, impacto, responsable, estado y workaround/evidencia conocidos                                        | tickets rutinarios y conocimiento no necesario para la afectación activa                                        | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A0`    | empresa + cinco sedes según identidad, dispositivo, aplicación y contexto                         | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | ejecutar/probar revocación o control de acceso crítico y preservar actor, alcance, permiso, motivo y evidencia                                                                    | aprovisionamiento ordinario y cualquier acceso que requiera compartir credenciales o omitir segregación         | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | empresa + cinco sedes como productoras/consumidoras de documentos/evidencia                       | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar acceso autorizado a la versión requerida, identidad documental, metadatos, custodia y evidencia producida por procesos críticos                                         | disposición, clasificación secundaria y administración no urgente                                               | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A3`    | empresa + cinco sedes como dimensiones analíticas                                                 | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar fuentes/snapshot referenciado, backlog analítico, propietario y fecha; no publicar métricas no demostradas                                                              | medición, análisis y mejora durante la contingencia salvo que otro proceso la requiera para una decisión activa | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A0`    | empresa + cinco sedes según procesos/servicios afectados                                          | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | detectar, clasificar, proteger, mantener mando/estado y coordinar mínimo, recuperación y pendientes del incidente de continuidad                                                  | administración no necesaria para proteger, mandar, informar o recuperar el alcance activo                       | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A3`    | empresa + cinco sedes según exposición del riesgo                                                 | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar riesgo material, tratamiento, responsable, fecha y cambio de exposición; un riesgo materializado escala al proceso afectado                                             | revisión rutinaria y análisis no necesario para el evento activo                                                | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | sin territorio primario; requerimiento/obligación puede referir una sede concreta                 | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar requerimiento, autoridad/asesor, entregable, vencimiento, evidencia y comunicación indispensable                                                                        | coordinación no urgente y entregables fuera de ventana                                                          | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A3`    | cinco sedes según trabajador/relación laboral                                                     | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar privacidad, propietario, fecha y estado de casos ya abiertos                                                                                                            | evaluación, retroalimentación y nuevas decisiones de desempeño durante el incidente                             | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `OMV-P1_PROTEGER_Y_DETENER`       | `A1`    | sedes/personas/tareas donde EPP sea requisito real                                                | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | demostrar requisito, vigencia, entrega/aceptación y disponibilidad del elemento protector antes de la tarea que lo exige                                                          | la tarea afectada cuando el EPP/control no pueda demostrarse; administración no urgente                         | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A1`    | sedes/procesos con kits realmente existentes; no se infieren recursos por catálogo                | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar identidad, componentes obligatorios, completitud, custodio y estado de préstamo/retorno del kit en uso                                                                  | ensamble/cambio no esencial y movimiento sin completitud/custodia verificable                                   | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `A3`    | sedes/canales comerciales donde la medición aplique                                               | `G3_CONDICIONAL` — campaña/evento/temporada obliga a reevaluar capacidad y prioridades; nunca relaja controles | preservar respuestas ya capturadas con muestra/canal/consentimiento/origen y propietario del backlog                                                                              | nueva medición, incentivos, análisis y campañas de satisfacción                                                 | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `A2`    | empresa + cinco sedes como dimensiones presupuestales                                             | `BASE_SIN_DELTA_APROBADO` — sin multiplicador estacional; cambio material obliga a revisión                    | preservar versión presupuestal vigente, supuestos aprobados, corte/vencimiento, consumo conocido y autoridad de cambio                                                            | forecast, escenarios y refinamiento fuera del ciclo activo                                                      | `ESPECIFICADO_CON_CAPACIDAD_CLASS_ONLY` |
+---
+
+#### 15. Reconciliación de identidades y distribuciones
+
+| Control                               | Esperado | Materializado | Diferencia |
+| ------------------------------------- | -------: | ------------: | ---------: |
+| servicios `BCS-*`                     |       69 |            69 |          0 |
+| procesos `VPROC-*`                    |       69 |            69 |          0 |
+| identificadores duplicados            |        0 |             0 |          0 |
+| faltantes `VPROC-0001` a `VPROC-0069` |        0 |             0 |          0 |
+| servicios activos                     |       67 |            67 |          0 |
+| servicios AURA bloqueados             |        2 |             2 |          0 |
+
+Distribución BIA / OMV:
+
+| Criticidad BIA         | Perfil OMV                        | Cantidad |
+| ---------------------- | --------------------------------- | -------: |
+| `CRITICA_PROTECCION`   | `OMV-P1_PROTEGER_Y_DETENER`       |   **12** |
+| `CRITICA_OPERACIONAL`  | `OMV-P2_RESULTADO_ESENCIAL`       |   **20** |
+| `ALTA_CONTROL`         | `OMV-P3_CONTROL_Y_EVIDENCIA`      |   **31** |
+| `DIFERIBLE_CONTROLADA` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` |    **6** |
+| **Total**              | —                                 |   **69** |
+
+Distribución de ventanas heredadas:
+
+| Ventana   | Servicios |
+| --------- | --------: |
+| `A0`      |     **6** |
+| `A1`      |    **36** |
+| `A2`      |    **15** |
+| `A3`      |    **12** |
+| `A4`      |     **0** |
+| **Total** |    **69** |
+
+Distribución de propietarias preservada:
+
+| Aplicación | Servicios |
+| ---------- | --------: |
+| `viso`     |    **20** |
+| `nexo`     |    **16** |
+| `pulso`    |    **12** |
+| `numera`   |     **7** |
+| `fogo`     |     **6** |
+| `origo`    |     **4** |
+| `aura`     |     **2** |
+| `anima`    |     **1** |
+| `pass`     |     **1** |
+| `shell`    |     **0** |
+| **Total**  |    **69** |
+
+---
+
+#### 16. Brecha cuantitativa de evidencia y condición de salida
+
+La línea base aprobada de carga conserva estado `CLASS_ONLY`. Por ello, los siguientes elementos no se presentan como capacidad real:
+
+| Brecha                                             | Estado actual                                                                        | Propietario                                                           | Tarea/puerta de resolución                                                                                                       | Condición de salida                                                                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| piso de volumen/casos/unidades por servicio y sede | `PENDIENTE_DE_EVIDENCIA` para 67 servicios activos                                   | `RESPONSABLE_DEL_PROCESO` + responsable técnico/operativo del paquete | perfil cuantitativo y pruebas del paquete en `DELIV-PKG-013`, `DELIV-PKG-016`, `DELIV-PKG-017` y `DELIV-PKG-025` según dimensión | medición reproducible o estimación estructurada con evidencia, alcance, ventana y confianza explícitos antes de aprobación física |
+| headcount mínimo por turno/ventana                 | `PENDIENTE_DE_EVIDENCIA` cuando el proceso requiere ejecución humana                 | propietario funcional + responsable de operación/sede                 | paquete propietario + ejercicio de `CONT-DOM-014`                                                                                | dotación observada/probada que sostenga el mínimo sin omitir segregación ni control                                               |
+| inventario/insumo/material mínimo                  | `PENDIENTE_DE_EVIDENCIA` cuando aplique                                              | propietario funcional + NEXO/FOGO/ORIGO según fuente                  | paquete propietario + `CONT-DOM-008`/`CONT-DOM-013` si se propone alternativa                                                    | cantidad y reposición verificables para el escenario/contexto aprobado                                                            |
+| equipos/estaciones/periféricos mínimos             | `PENDIENTE_DE_EVIDENCIA` cuando aplique                                              | propietario funcional + BLOQUE Z/NEXO según recurso                   | paquete propietario + `CONT-DOM-008`; validación en `CONT-DOM-014`                                                               | capacidad física probada en sede/ventana, incluida dependencia compartida                                                         |
+| piso por temporada/campaña/evento                  | `PENDIENTE_DE_EVIDENCIA` para instancias `G3_CONDICIONAL`                            | propietario funcional + propietario de carga del paquete              | perfil de carga del paquete antes de activar la instancia estacional                                                             | demanda/pico/ráfaga documentados y capacidad suficiente o regla de admisión/restricción aprobada                                  |
+| horarios de reloj por sede                         | `PENDIENTE_DE_EVIDENCIA` donde la fuente operativa no materialice el horario vigente | propietario funcional + gerencia/supervisión de sede                  | configuración/artefacto propietario del horario + paquete                                                                        | calendario, zona horaria, turno, cierres y excepciones vigentes vinculados al perfil local                                        |
+
+Estas brechas no difieren la definición normativa de la operación mínima: impiden afirmar **capacidad física suficiente** o readiness hasta producir evidencia.
+
+Para `VPROC-0056` y `VPROC-0057`, la salida no es una medición de capacidad: ambos permanecen `BLOQUEADO_POR_APLICACION_DIFERIDA` y no adquieren operación real por esta tarea.
+
+---
+
+#### 17. Regla de admisión cuando la capacidad no está cuantificada
+
+Mientras el piso cuantitativo no esté demostrado:
+
+1. no se acepta una demanda adicional si no puede demostrarse que el resultado esencial puede completarse íntegramente dentro del control y antes del límite aplicable;
+2. se preservan primero trabajos ya aceptados y protectores;
+3. la incertidumbre de capacidad se expresa como restricción, cola controlada, no aceptación o detención según el perfil;
+4. no se sobrevende, sobreproduce, sobredespacha ni se promete un tiempo de recuperación por estimación informal;
+5. el backlog mantiene identidad, propietario, antigüedad y vencimiento;
+6. una decisión de reducir/admitir demanda debe quedar correlacionada con el incidente y el mando aplicable;
+7. la modalidad concreta que permita ejecutar esa reducción o captura pertenece a `CONT-DOM-008` y posteriores.
+
+---
+
+#### 18. Criterios de escalamiento y salida por perfil
+
+| Perfil                            | Escalar cuando                                                                                                                   | Salida del mínimo degradado                                                                                                                          |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OMV-P1_PROTEGER_Y_DETENER`       | el control protector no puede demostrarse, aparece efecto irreversible/no dispensable o se aproxima/supera MTPD                  | solo cuando el control protector y el resultado necesario estén nuevamente verificables; la operación no reinicia por disponibilidad técnica aislada |
+| `OMV-P2_RESULTADO_ESENCIAL`       | la demanda aceptada ya no puede completarse bajo control, RTO se incumple, MTPD se amenaza o un recurso crítico pierde capacidad | resultado esencial estable, pendientes conocidos y transición autorizada hacia recuperación/normalidad                                               |
+| `OMV-P3_CONTROL_Y_EVIDENCIA`      | backlog, vencimiento, integridad, autoridad o evidencia dejan de ser controlables, o el reloj supera el perfil                   | expediente y pendientes controlados, recuperación funcional validada y backlog transferido a conciliación/normalidad                                 |
+| `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | la cola pierde propietario, antigüedad/fecha, prioridad o posibilidad razonable de absorción antes del límite                    | reanudación autorizada, backlog priorizado y capacidad de absorción demostrable                                                                      |
+
+---
+
+#### 19. Cierre documental del hallazgo propietario
+
+Se cierra documentalmente `H-CAP-SCOPE-018-013 — No se define operación mínima por proceso y duración` porque:
+
+- los 69 servicios tienen una decisión explícita;
+- los 67 servicios activos tienen resultado mínimo, suspensión, perfil, ventana, territorio, temporada y estado;
+- los cuatro perfiles definen capacidad funcional, función mínima, recurso mínimo, controles y duración;
+- los dos servicios AURA conservan bloqueo explícito y no reciben capacidad ficticia;
+- las brechas cuantitativas tienen propietario, tarea/puerta y condición de salida.
+
+No se cierran por esta tarea:
+
+- `H-CAP-SCOPE-018-014` — modalidad de contingencia por capacidad;
+- `H-CAP-SCOPE-018-015` — riesgo de fuente paralela en procedimiento manual;
+- hallazgos de folios/custodia, reincorporación, respaldos, proveedores o ejercicios pertenecientes a tareas posteriores.
+
+---
+
+#### 20. Handoffs exactos
+
+| Decisión restante                                                                                                              | Tarea propietaria                              | Condición de salida                                              |
+| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- | ---------------------------------------------------------------- |
+| elegir modalidad bloqueada, snapshot, borrador local, cola offline, manual, recurso/sede/proveedor alterno o servicio reducido | `CONT-DOM-008`                                 | antes de ejecutar una alternativa real                           |
+| definir folio, campos, formato, custodia y evidencia de trabajo durante falla                                                  | `CONT-DOM-009`                                 | antes de capturar efectos de contingencia                        |
+| definir reincorporación, idempotencia, conflicto y conciliación                                                                | `CONT-DOM-010`                                 | antes de retornar trabajo contingente a la fuente propietaria    |
+| definir respaldo y cobertura recuperable                                                                                       | `CONT-DOM-011`                                 | antes de afirmar protección de información/configuración         |
+| definir runbook, restauración, failover, retorno y validación funcional                                                        | `CONT-DOM-012`                                 | antes de ejecutar recuperación técnica/funcional                 |
+| aprobar continuidad de proveedores/recursos externos                                                                           | `CONT-DOM-013`                                 | antes de contar un tercero o recurso como alternativa disponible |
+| demostrar mediante walkthrough/tabletop/ejercicio que el mínimo es ejecutable                                                  | `CONT-DOM-014`                                 | antes de declarar readiness                                      |
+| operar aprendizaje y actualización posterior                                                                                   | `CONT-DOM-015`                                 | después de incidente/ejercicio y ante cambios materiales         |
+| proteger autoridad/ejecución y acceso excepcional                                                                              | `CONT-AUTH-*`                                  | antes de cualquier acción protegida                              |
+| implementar experiencia de operación mínima/checklists                                                                         | `CONT-UX-003` y superficies propietarias       | antes de usar experiencia operativa real                         |
+| integrar estados de criticidad/degradación/incidente                                                                           | `CONT-INT-001` a `CONT-INT-004` según contrato | antes de orquestación física transversal                         |
+
+No queda una brecha material detectada en esta tarea sin propietario documental y condición de salida.
+
+---
+
+#### 21. Cobertura de requisitos vigente
+
+El comportamiento materializado ya está protegido por requisitos vigentes:
+
+- `TREQ-CONT-001` exige nivel mínimo aceptable por capacidad crítica y su relación con proceso, sede, horario, personas, datos, aplicaciones, infraestructura, proveedores y recursos;
+- `TREQ-CONT-003` asigna expresamente `CONT-DOM-007` a `CONT-DOM-009` y protege límites, responsables, vigencia, seguridad, suministros, contingencia visible y prohibición de crear una segunda fuente de verdad;
+- `TREQ-INTEGRATION-023` protege degradación parcial, correlación de incidente/operación, mecanismos alternos, retorno y trazabilidad transversal.
+
+Esta tarea especializa la decisión documental por servicio/proceso/contexto sin crear una acción ejecutable, permiso, modalidad de contingencia, integración física o efecto empresarial nuevo.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la operación mínima por proceso, sede, ventana, temporada y duración materializada aquí especializa obligaciones ya protegidas por el registro vigente. No se añade una conducta ejecutable nueva, no se altera un requisito existente y no se implementa una modalidad de contingencia.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 22. Criterios de aceptación
+
+1. existe una definición única de operación mínima distinta de operación normal;
+2. operación mínima y disponibilidad técnica permanecen separadas;
+3. operación mínima y modalidad de contingencia permanecen separadas;
+4. MBCO y volumen medido permanecen separados;
+5. piso funcional y capacidad física demostrada permanecen separados;
+6. se preservan exactamente 69 servicios `BCS-*`;
+7. se preservan exactamente 69 procesos `VPROC-*`;
+8. no existen faltantes ni duplicados en la matriz;
+9. se preservan 67 servicios activos y dos AURA bloqueados;
+10. ninguna fila AURA recibe activación operativa;
+11. existen cuatro perfiles OMV vinculados uno a uno con las cuatro clases BIA;
+12. `OMV-P1_PROTEGER_Y_DETENER` impide nuevos efectos no verificables sin control protector;
+13. un mínimo protector puede significar detener la operación;
+14. `OMV-P2_RESULTADO_ESENCIAL` limita la operación a compromisos esenciales completables end-to-end;
+15. `OMV-P3_CONTROL_Y_EVIDENCIA` permite detener ejecución sustantiva preservando todos los pendientes materiales;
+16. `OMV-P4_DIFERIR_CON_TRAZABILIDAD` permite pausa controlada sin perder backlog;
+17. ningún perfil autoriza omitir vida, SST, inocuidad, autorización, integridad o custodia aplicables;
+18. cada perfil define función mínima;
+19. cada perfil define clase de recurso mínimo;
+20. cada perfil define controles no omitibles;
+21. cada perfil define capacidad funcional mínima;
+22. la capacidad cuantitativa no se inventa;
+23. la dotación mínima numérica no se inventa;
+24. el inventario/insumo mínimo numérico no se inventa;
+25. el número de equipos/estaciones no se inventa;
+26. las brechas cuantitativas están marcadas `PENDIENTE_DE_EVIDENCIA`;
+27. cada brecha cuantitativa tiene propietario;
+28. cada brecha cuantitativa tiene tarea/puerta de resolución;
+29. cada brecha cuantitativa tiene condición de salida;
+30. el estado `CLASS_ONLY` de NFR no se presenta como medición;
+31. una demanda por encima de capacidad demostrable se restringe, no se promete;
+32. se heredan RTO y MTPD sin modificarlos;
+33. existen cuatro perfiles de duración;
+34. `DUR-001` conserva RTO 15 min y MTPD 30 min;
+35. `DUR-002` conserva RTO 2 h y MTPD 4 h;
+36. `DUR-003` conserva RTO 8 h y MTPD 24 h;
+37. `DUR-004` conserva RTO 24 h y MTPD 72 h;
+38. alcanzar MTPD no crea una excepción tácita;
+39. exceder RTO obliga a reevaluar y escalar conforme al perfil;
+40. cambiar turno o responsable no reinicia el reloj;
+41. se heredan las clases de ventana `A0` a `A3` por los 69 servicios;
+42. `A4` no se fuerza sobre ningún servicio actual;
+43. no se presume operación `24×7`;
+44. una sede cerrada no borra obligaciones o custodias activas;
+45. se preservan exactamente cinco sedes operativas canónicas;
+46. `Oficina 1` no recibe capacidades físicas inventadas;
+47. `Vento Café` conserva solo capacidades realmente aprobadas;
+48. `Saudo` conserva solo capacidades realmente aprobadas;
+49. `Molka` no recibe cocina productiva por inferencia;
+50. Centro de Producción y Distribución no se duplica como segunda sede de distribución;
+51. Vaila Vainilla no se convierte en sede;
+52. Catering no se convierte en sede;
+53. puntos externos, vehículos, proveedores y destinos no se convierten en sedes;
+54. aplicabilidad proceso–sede insuficiente queda pendiente de evidencia y no se rellena silenciosamente como no aplicable;
+55. cada una de las 69 filas declara territorio;
+56. cada una de las 69 filas declara ventana;
+57. cada una de las 69 filas declara condición estacional;
+58. cada una de las 69 filas declara resultado mínimo;
+59. cada una de las 69 filas declara trabajo suspendible;
+60. cada una de las 69 filas declara perfil OMV;
+61. cada una de las 69 filas declara estado;
+62. los procesos `G3_CONDICIONAL` obligan a reevaluar capacidad ante campaña/evento/temporada;
+63. un proceso sin `G3` no recibe multiplicador estacional inventado;
+64. temporada no relaja controles;
+65. temporada no cambia MTPD/RTO por inferencia;
+66. las decisiones de prioridad protegen primero controles no dispensables;
+67. compromisos esenciales ya aceptados preceden trabajo accesorio;
+68. estados desconocidos no se convierten en resultados completados;
+69. pagos desconocidos no se reintentan como si hubieran fallado;
+70. producto incierto no se libera ni ofrece como seguro;
+71. recepción incierta no crea stock confirmado;
+72. movimientos de inventario conservan origen/destino/unidad/actor;
+73. producción mínima conserva receta/lote/control y trazabilidad;
+74. calidad incierta retiene el producto;
+75. ventas mínimas solo aceptan demanda completable dentro de capacidad demostrable;
+76. canales externos conservan identidad y conciliación;
+77. B2B/Catering conserva compromisos aceptados sin crear una sede ficticia;
+78. caja preserva custodia y conciliación del corte;
+79. fidelización no inventa saldo ni redención;
+80. rutas activas preservan custodia y evidencia;
+81. terceros de entrega no adquieren autoridad interna ni condición de sede;
+82. hechos económicos se preservan sin duplicación por reintento;
+83. acceso tecnológico crítico preserva revocación, actor, alcance y evidencia;
+84. documentos/evidencia preservan versión, custodia y autorización;
+85. continuidad conserva mando y protección como parte de su propio mínimo;
+86. EPP obligatorio bloquea la tarea cuando no pueda demostrarse;
+87. backlog diferible conserva identidad, propietario, antigüedad y vencimiento;
+88. se mantiene distribución BIA 12/20/31/6;
+89. se mantiene distribución de propietarias 20/16/12/7/6/4/2/1/1/0;
+90. se mantiene distribución de ventanas A0=6, A1=36, A2=15, A3=12;
+91. no se confirma ningún SPOF nuevo;
+92. no se aprueba ningún sustituto nuevo;
+93. no se aprueba ningún proveedor alternativo;
+94. no se selecciona modalidad manual;
+95. no se selecciona modalidad offline;
+96. no se selecciona snapshot;
+97. no se selecciona sede alternativa;
+98. no se selecciona recurso alternativo;
+99. no se crean folios o formularios de contingencia;
+100. no se implementa reincorporación;
+101. no se modifica política de respaldo;
+102. no se ejecuta restauración ni failover;
+103. no se ejecuta ejercicio operativo;
+104. no se declara readiness;
+105. `H-CAP-SCOPE-018-013` queda cerrado documentalmente;
+106. `H-CAP-SCOPE-018-014` permanece en `CONT-DOM-008`;
+107. `H-CAP-SCOPE-018-015` permanece en `CONT-DOM-008`/`CONT-DOM-009`;
+108. las demás brechas posteriores conservan sus propietarios;
+109. la comunicación mínima distingue degradación, resultado posible y trabajo suspendido;
+110. la comunicación no inventa causa, capacidad o tiempo de recuperación;
+111. toda salida de operación mínima exige transición autorizada;
+112. disponibilidad técnica por sí sola no declara recuperación empresarial;
+113. no se modifica autorización ni permiso;
+114. no se modifica código, DDL, DML, migración, RLS, RPC, datos o Supabase;
+115. no se modifica proveedor, hardware, red o infraestructura;
+116. no se modifica ningún requisito de prueba;
+117. no se genera registro 04A nuevo por ausencia de cambios TREQ;
+118. `CONT-DOM-008` permanece únicamente reservada.
+
+---
+
+#### 23. Balance de cierre
+
+| Control                                  |                     Resultado |
+| ---------------------------------------- | ----------------------------: |
+| servicios evaluados                      |                   **69 / 69** |
+| servicios activos especificados          |                   **67 / 67** |
+| servicios AURA bloqueados                |                     **2 / 2** |
+| perfiles OMV                             |                         **4** |
+| perfiles de duración                     |                         **4** |
+| sedes canónicas                          |                     **5 / 5** |
+| decisiones por fila                      |                   **69 / 69** |
+| criterios de aceptación                  |                       **118** |
+| hallazgos propietarios cerrados          | **1** — `H-CAP-SCOPE-018-013` |
+| modalidades de contingencia aprobadas    |                         **0** |
+| sustitutos aprobados                     |                         **0** |
+| capacidad física certificada             |                         **0** |
+| cambios físicos                          |                         **0** |
+| requisitos de prueba creados/modificados |                         **0** |
+
+---
+
+#### 24. Límites de la tarea
+
+Esta tarea no:
+
+- selecciona la modalidad concreta de contingencia;
+- aprueba procedimiento manual u offline;
+- crea una fuente paralela de verdad;
+- define formatos, folios o campos físicos de contingencia;
+- implementa captura durante falla;
+- implementa reincorporación o conciliación;
+- define o modifica respaldo;
+- crea runbooks de restauración o failover;
+- aprueba recursos, sedes o proveedores alternativos;
+- nombra personas concretas;
+- inventa headcount, inventario, throughput o capacidad;
+- ejecuta operación degradada real;
+- declara una capacidad probada;
+- modifica aplicaciones, infraestructura, datos, permisos o Supabase;
+- inicia `CONT-DOM-008`.
+
+---
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor`
+
+
 ### [ ] CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor
 ### [ ] CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
 ### [ ] CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes
