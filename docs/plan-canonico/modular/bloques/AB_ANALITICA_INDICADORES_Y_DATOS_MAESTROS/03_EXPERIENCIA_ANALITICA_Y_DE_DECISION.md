@@ -5382,5 +5382,1383 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados`
 
 
-### [ ] DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
+### ✅ DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora` — APROBADA
+**Tarea siguiente:** `DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de la experiencia de reportes, exportaciones, suscripciones, snapshots oficiales, ediciones versionadas, correcciones y restatements sin alterar fuentes ni ejecutar distribución productiva
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, componentes, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, datos, backfills, replays, reconstrucciones productivas, publicaciones, redistribuciones, jobs, automatizaciones, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia canónica mediante la cual una persona autorizada pueda comprender, consultar y distinguir reportes, exportaciones, suscripciones y snapshots versionados sin convertir una representación derivada en fuente de verdad, sin ocultar el corte o la calidad de los datos y sin perder la edición histórica cuando exista una corrección o restatement.
+
+La experiencia deberá permitir responder, como mínimo:
+
+```text
+qué artefacto estoy viendo
+qué pregunta empresarial responde
+qué versión y edición estoy consumiendo
+qué periodo y corte representa
+qué población, filtros y dimensiones contiene
+qué métricas y versiones utiliza
+qué calidad, frescura y cobertura tenían sus entradas
+si es vivo, provisional, degradado, oficial, histórico o simulado
+si existe una edición posterior o un restatement
+qué cambió respecto de la edición anterior
+qué puedo consultar, publicar, exportar o suscribir según mi autorización
+qué evidencia permite reproducir el resultado
+qué información está protegida o suprimida
+qué ocurrió en una entrega de suscripción concreta
+qué relación existe entre el artefacto y la fuente propietaria
+```
+
+La tarea no implementa motores de reporting, generación física de archivos, jobs de suscripción, almacenamiento de snapshots, conectores BI, replays, reconstrucciones ni distribución automática. Esas materializaciones pertenecen a las tareas DATA-INT y paquetes posteriores autorizados.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el diseño de experiencia con los siguientes resultados:
+
+- cuatro familias foco de UX007 con comportamiento explícito: reporte, exportación, suscripción y snapshot oficial;
+- preservación visible del universo D008 de seis familias: tablero, reporte, exportación, suscripción, alerta y snapshot oficial;
+- separación entre vista viva, reporte oficial, exportación, suscripción, alerta, snapshot oficial y simulación;
+- coordenada común de artefacto con diecinueve componentes obligatorios;
+- puerta de publicación oficial con diez condiciones verificables;
+- experiencia específica para reporte, exportación, suscripción y snapshot;
+- ocho ejes de versión que impiden reducir la historia a un único número de versión;
+- seis operaciones históricas diferenciadas: reintento, replay, backfill, corrección de fuente, reconstrucción y restatement;
+- experiencia dual para valor o edición original y valor o edición restated;
+- navegación histórica que conserva ediciones retiradas o superadas sin presentarlas como vigentes;
+- divulgación progresiva de treinta y dos elementos de reproducibilidad;
+- reglas de autorización que mantienen `PUBLISH` y `EXPORT` como capacidades distintas y reevalúan acceso en cada entrega de suscripción;
+- experiencia de calidad que preserva los estados D007 y evita estilizar datos bloqueados como oficiales;
+- decisión explícita para las catorce métricas actuales de asistencia, manteniendo once `NO EVALUADO` y tres `BLOQUEADO`;
+- decisión explícita sobre los reportes de asistencia JSON y XLSX actuales como artefactos técnicamente existentes pero no elegibles hoy para publicación oficial completa;
+- matriz de elegibilidad de las cincuenta y cinco familias analíticas sin crear cincuenta y cinco reportes obligatorios;
+- estados vacíos, degradados, bloqueados y no comparables tratados sin sustituir ausencia por cero;
+- fronteras exactas con DATA-UX-003, DATA-UX-005, DATA-UX-006 y DATA-UX-008;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Decisión principal
+
+Vento OS adopta una experiencia de **artefacto analítico versionado por contexto, edición y evidencia**.
+
+```text
+FUENTE PROPIETARIA
+→ conserva los hechos y maestros autoritativos
+
+CAPA SEMÁNTICA
+→ conserva definición y versión de métricas
+
+CALIDAD / CERTIFICACIÓN
+→ determina si las entradas son aptas para el uso declarado
+
+ARTEFACTO ANALÍTICO
+→ representa un resultado derivado para una pregunta, población, periodo y corte
+
+EDICIÓN
+→ conserva qué se publicó o generó en un momento concreto
+
+HISTORIA
+→ preserva ediciones anteriores, reconstrucciones y restatements
+
+AUTORIZACIÓN
+→ decide qué puede consultar, publicar, exportar o recibir cada actor
+
+REPRODUCIBILIDAD
+→ permite reconstruir qué datos, versiones y decisiones produjeron el resultado
+```
+
+La interfaz no podrá presentar “último” como sinónimo de “única verdad histórica”. La edición vigente y la edición originalmente publicada son conceptos distintos cuando existe corrección o restatement.
+
+---
+
+#### 4. Fuentes y decisiones heredadas
+
+UX007 consume sin redefinir:
+
+- `DATA-DOM-004` para identidad, fórmula, versión, unidad, moneda, granularidad, filtros y dimensiones de métricas;
+- `DATA-DOM-005` para tiempo, cortes, calendarios, snapshots y comparabilidad;
+- `DATA-DOM-006` para ingestión, datos tardíos, backfills, correcciones, reconciliación y linaje;
+- `DATA-DOM-007` para frescura, cobertura, calidad, certificación y estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para las seis familias de artefacto y sus contratos de publicación;
+- `DATA-DOM-009` a `DATA-DOM-013` para las cincuenta y cinco familias analíticas;
+- `DATA-DOM-014` para diagnóstico, evidencia y límites de causalidad;
+- `DATA-DOM-015` para objetivos, baseline, meta, drivers, guardrails y plan de medición;
+- `DATA-DOM-016` para intervenciones, seguimiento, comprobación y aprendizaje;
+- `DATA-DOM-017` para versionado, correcciones históricas, reconstrucciones, restatements y reproducibilidad;
+- `DATA-AUTH-001` y `DATA-AUTH-002` para conjunto autorizado, minimización, poblaciones pequeñas, comparación, detalle y protección de salidas;
+- `DATA-AUTH-003` para la separación de `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- `DATA-AUTH-004` para evidencia de consulta, descarga, suscripción, alerta, modelo y recomendación;
+- `DATA-UX-003` para tableros por dominio, comparaciones y drill-down;
+- `DATA-UX-004` para calidad, frescura, conciliación y certificación visibles;
+- `DATA-UX-005` para investigación de variaciones, anomalías y causas;
+- `DATA-UX-006` para objetivos, metas, drivers, guardrails y acciones;
+- `DATA-INT-001` a `DATA-INT-004` como propietarios futuros de contratos físicos, capa semántica, snapshots, consultas, BI, hojas de cálculo, modelos e inteligencia artificial.
+
+UX007 no eleva certificación, no cambia definiciones, no concede permisos y no transforma una entrega histórica en fuente de verdad.
+
+---
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+VISTA VIVA ≠ TABLERO ≠ REPORTE OFICIAL ≠ EXPORTACIÓN ≠ SUSCRIPCIÓN ≠ ALERTA ≠ SNAPSHOT OFICIAL ≠ SIMULACIÓN
+```
+
+```text
+PUBLICADO ≠ CERTIFICADO
+```
+
+```text
+PUBLICAR ≠ EXPORTAR
+```
+
+```text
+EXPORTACIÓN ≠ FUENTE DE VERDAD
+```
+
+```text
+SUSCRIPCIÓN ≠ ACCESO PERMANENTE
+```
+
+```text
+ALERTA ≠ DIAGNÓSTICO ≠ DECISIÓN ≠ ACCIÓN
+```
+
+```text
+SNAPSHOT OFICIAL ≠ RESPALDO TÉCNICO ≠ ESTADO VIVO ≠ RESTATEMENT
+```
+
+```text
+EDICIÓN ORIGINAL ≠ EDICIÓN RESTATED
+```
+
+```text
+CORRECCIÓN DE FUENTE ≠ RECONSTRUCCIÓN ≠ RESTATEMENT
+```
+
+```text
+VERSIÓN SEMÁNTICA ≠ EDICIÓN DE PUBLICACIÓN ≠ VERSIÓN TÉCNICA
+```
+
+```text
+GENERAR UNA EXPORTACIÓN ≠ OBTENERLA
+```
+
+```text
+CONFIGURAR UNA SUSCRIPCIÓN ≠ RECIBIR UNA ENTREGA
+```
+
+```text
+CERO MEDIDO ≠ SIN DATOS ≠ DENOMINADOR INVÁLIDO ≠ NO_APLICA ≠ PENDIENTE
+```
+
+---
+
+#### 6. Universo D008 y foco UX007
+
+La experiencia conserva las seis familias D008. UX007 profundiza cuatro de ellas sin redefinir las dos restantes.
+
+|    # | Familia D008     | Tratamiento en UX007                  | Frontera principal                                                                                       |
+| ---: | ---------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+|    1 | tablero          | contexto y enlace de origen o destino | su diseño principal pertenece a DATA-UX-003; una vista viva no se vuelve snapshot por conservación local |
+|    2 | reporte          | diseño completo                       | edición, corte, estado de publicación, calidad, historia y relación con restatement deben ser visibles   |
+|    3 | exportación      | diseño completo                       | es una proyección portable autorizada; no amplía detalle ni se vuelve fuente de verdad                   |
+|    4 | suscripción      | diseño completo                       | configura entregas futuras; cada entrega reevalúa autorización, calidad, corte y versión                 |
+|    5 | alerta           | contexto y enlace                     | su regla y señal pertenecen a D008; UX007 no la convierte en diagnóstico ni acción                       |
+|    6 | snapshot oficial | diseño completo                       | es una edición inmutable; cualquier corrección material produce una reconstrucción o edición vinculada   |
+
+**Reconciliación:** 6 familias esperadas; 6 materializadas; 0 faltantes; 0 duplicadas. Foco UX007: 4 familias; 4 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 7. Coordenada común de artefacto: diecinueve componentes
+
+Todo reporte, exportación, suscripción materializada o snapshot que se muestre deberá poder resolver, mediante información visible o divulgación progresiva, los siguientes diecinueve componentes:
+
+1. pregunta empresarial;
+2. propósito y audiencia;
+3. clase de artefacto;
+4. periodo;
+5. fecha/hora de corte;
+6. zona horaria;
+7. filtros;
+8. dimensiones;
+9. métricas y versiones;
+10. unidad y moneda;
+11. frescura;
+12. cobertura;
+13. calidad/certificación;
+14. fuentes y dependencias;
+15. última actualización o generación;
+16. responsable;
+17. trazabilidad al detalle autorizado;
+18. estado de publicación;
+19. relación con publicación anterior.
+
+La vista compacta prioriza identidad, periodo, corte, estado, calidad y edición. El resto permanece a un nivel de detalle accesible sin forzar al usuario a interpretar metadatos técnicos antes de comprender el resultado.
+
+---
+
+#### 8. Jerarquía visual común
+
+La experiencia ordena la información en cinco niveles lógicos:
+
+##### 8.1. Identidad y vigencia
+
+Muestra primero:
+
+- nombre del artefacto;
+- clase;
+- periodo;
+- corte;
+- edición o versión visible;
+- estado de publicación;
+- indicador de si existe una edición posterior.
+
+##### 8.2. Resultado
+
+Muestra el contenido empresarial principal sin esconder:
+
+- unidad o moneda;
+- población resumida;
+- filtros que cambien materialmente la interpretación;
+- calidad cuando no sea `CERTIFICADO` para el uso declarado.
+
+##### 8.3. Contexto analítico
+
+Permite abrir:
+
+- métricas y versiones;
+- dimensiones;
+- fuentes;
+- cobertura;
+- frescura;
+- dependencias;
+- notas o limitaciones autorizadas.
+
+##### 8.4. Historia
+
+Permite distinguir:
+
+- edición original;
+- ediciones posteriores;
+- reconstrucciones;
+- restatements;
+- retiros de vigencia;
+- relación entre ediciones.
+
+##### 8.5. Evidencia
+
+Permite llegar, según autorización, a:
+
+- snapshot de contexto;
+- linaje;
+- consulta o modelo referenciado;
+- evidencia de publicación;
+- evidencia de entrega;
+- detalle autorizado.
+
+---
+
+#### 9. Puerta de publicación oficial: diez condiciones
+
+Un artefacto solo podrá presentarse como publicación oficial cuando se hayan resuelto las diez condiciones canónicas:
+
+1. definiciones y versiones de métricas identificadas;
+2. periodo, corte y zona horaria definidos;
+3. filtros, dimensiones, unidad y moneda explícitos cuando sean materiales;
+4. fuentes y dependencias identificables;
+5. frescura y cobertura conocidas;
+6. reconciliación completada o tratada explícitamente;
+7. ninguna dependencia obligatoria se encuentra `BLOQUEADO`;
+8. si se presenta como certificado, la certificación de dependencias permite el uso declarado;
+9. autorización de actor y destinatario evaluada de manera independiente;
+10. existe información suficiente para reproducir o explicar el resultado sin convertir el artefacto en fuente de verdad.
+
+Si una condición crítica falla, la experiencia no maquilla el estado. El resultado permanece provisional, degradado, bloqueado o pendiente según la condición real.
+
+---
+
+#### 10. Estados visibles de publicación y calidad
+
+UX007 no crea un enum técnico nuevo. La interfaz combina el estado de publicación con el estado de calidad heredado.
+
+| Situación                                         | Presentación obligatoria                      | Presentación prohibida                               |
+| ------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------- |
+| entrada `CERTIFICADO` y puerta oficial satisfecha | publicación oficial con corte y edición       | ocultar corte o tratar la edición como fuente        |
+| `NO EVALUADO`                                     | provisional con estado visible                | certificado por apariencia o por existir el archivo  |
+| `EN OBSERVACIÓN`                                  | condición y limitación visibles               | normalizarlo visualmente como saludable              |
+| `DEGRADADO`                                       | degradación, alcance y uso permitido visibles | certificado sin condición                            |
+| dependencia crítica `BLOQUEADO`                   | bloqueo visible y motivo                      | publicación oficial completa dependiente de ese dato |
+| dato faltante                                     | ausencia explícita                            | cero fabricado                                       |
+| denominador inválido                              | no evaluable con explicación                  | porcentaje cero fabricado                            |
+| simulación                                        | etiqueta de escenario o simulación            | resultado observado u oficial                        |
+
+---
+
+#### 11. Experiencia de reporte
+
+Un reporte es una composición analítica preparada para una pregunta y audiencia concretas. La experiencia deberá mostrar como mínimo:
+
+- nombre y propósito;
+- responsable;
+- periodo y corte;
+- fecha de generación o publicación;
+- zona horaria;
+- métricas y versiones;
+- filtros y dimensiones;
+- unidad o moneda;
+- frescura, cobertura y calidad;
+- fuentes y dependencias;
+- condición oficial, provisional o degradada;
+- edición;
+- relación con una edición anterior cuando exista corrección o restatement.
+
+Reglas:
+
+1. una nueva emisión no altera la edición anterior;
+2. una edición corregida queda enlazada a la original;
+3. un cambio de formato sin cambio semántico no fuerza restatement numérico;
+4. un reporte que dependa de un elemento crítico `BLOQUEADO` no se presenta como oficial completo;
+5. una edición puede retirarse de uso vigente sin desaparecer del historial;
+6. un reporte no concede acceso adicional a sus hechos fuente;
+7. el detalle autorizado se reevalúa al navegar, no se hereda de la mera apertura del reporte;
+8. el usuario puede identificar rápidamente si está viendo la edición vigente o una histórica;
+9. cuando una corrección afecte una cifra publicada, la experiencia muestra la relación original-restated;
+10. el diseño visual puede evolucionar sin fingir que la edición histórica tuvo ese diseño.
+
+---
+
+#### 12. Cabecera canónica de reporte
+
+La cabecera deberá resolver, sin obligar a abrir un panel secundario:
+
+```text
+NOMBRE DEL REPORTE
+CLASE / ESTADO DE PUBLICACIÓN
+PERIODO · CORTE · ZONA HORARIA
+EDICIÓN VIGENTE O HISTÓRICA
+CALIDAD / LIMITACIÓN MATERIAL
+RESPONSABLE
+```
+
+Cuando exista restatement, deberá añadirse una señal inequívoca de “edición corregida” o equivalente semántico, con acceso a la comparación entre ediciones.
+
+---
+
+#### 13. Cuerpo y anexos de reporte
+
+El cuerpo prioriza la pregunta empresarial y puede contener:
+
+- KPI principales;
+- tablas;
+- gráficos;
+- comparaciones;
+- comentarios autorizados;
+- segmentación;
+- hallazgos;
+- referencias a diagnóstico u objetivo.
+
+Los anexos o paneles de detalle concentran:
+
+- definición de métricas;
+- fuentes;
+- calidad;
+- metodología;
+- linaje;
+- historial de ediciones;
+- evidencia de reproducibilidad.
+
+Un anexo no se usa para esconder una limitación que cambie materialmente la interpretación del resultado principal.
+
+---
+
+#### 14. Experiencia de exportación
+
+Una exportación representa únicamente la proyección autorizada de un conjunto o resultado.
+
+Antes de generar la proyección, la experiencia deberá poder confirmar:
+
+- recurso de origen;
+- edición o corte de origen;
+- población;
+- filtros y dimensiones;
+- columnas o campos autorizados;
+- unidad o moneda;
+- formato disponible;
+- clasificación o protección relevante;
+- finalidad cuando sea exigible;
+- condición de calidad;
+- si la proyección está ligada a una publicación oficial o a una vista ad hoc.
+
+Después de la generación, deberá conservarse la referencia de contexto necesaria para saber qué se produjo, sin convertir el archivo resultante en fuente de verdad.
+
+---
+
+#### 15. Reglas de exportación protegida
+
+1. `EXPORT` se autoriza de forma independiente de `PUBLISH` y de la consulta ordinaria;
+2. una proyección nunca amplía población, territorio, detalle o campos;
+3. celdas, columnas o poblaciones suprimidas por protección no reaparecen por cambiar de formato;
+4. el formato no altera la semántica de métricas;
+5. la exportación conserva periodo, corte, filtros, dimensiones, versiones, unidad, moneda y calidad;
+6. una nueva generación crea una nueva evidencia de salida; no reescribe la anterior;
+7. una exportación ligada a un reporte oficial conserva la edición del reporte de origen;
+8. una exportación ad hoc no se presenta como snapshot oficial;
+9. una exportación histórica no se sustituye silenciosamente cuando existe restatement;
+10. una versión corregida se produce como nueva generación vinculada a la anterior cuando corresponda;
+11. la obtención efectiva y la generación son hechos auditables distintos cuando el mecanismo físico lo permita;
+12. un archivo exportado no adquiere autoridad para actualizar la fuente propietaria.
+
+---
+
+#### 16. Experiencia de suscripción
+
+La suscripción es una regla gobernada para evaluar y, cuando corresponda, entregar un artefacto o conjunto analítico en el futuro. La experiencia deberá declarar:
+
+- artefacto o conjunto de métricas;
+- política de versión;
+- periodo o ventana;
+- filtros y dimensiones;
+- cadencia o condición;
+- zona horaria de evaluación y entrega;
+- formato de salida;
+- destinatario o audiencia autorizada;
+- estado mínimo de calidad exigido para una entrega oficial;
+- tratamiento de datos degradados, bloqueados o incompletos;
+- relación con reporte o snapshot cuando aplique;
+- finalidad empresarial;
+- estado de la regla;
+- última evaluación disponible cuando exista implementación futura.
+
+UX007 no define un job, scheduler, canal físico ni mecanismo de reintento.
+
+---
+
+#### 17. Regla de entrega de suscripción
+
+Cada entrega futura constituye una coordenada nueva y no hereda autoridad de una entrega anterior.
+
+Antes de cada entrega deberán reevaluarse, por los componentes propietarios futuros:
+
+1. actor o destinatario vigente;
+2. autorización;
+3. clasificación;
+4. población;
+5. campos o proyección;
+6. periodo y corte;
+7. versión de métricas;
+8. calidad;
+9. frescura;
+10. cobertura;
+11. estado de publicación cuando la entrega dependa de una edición oficial;
+12. restricciones del canal o destino cuando apliquen.
+
+La experiencia debe poder mostrar por entrega si fue producida, suprimida, bloqueada o falló, sin imponer esos términos como enum técnico universal antes de su materialización.
+
+---
+
+#### 18. Historial de suscripción
+
+La vista de una suscripción deberá separar:
+
+```text
+REGLA DE SUSCRIPCIÓN
+→ qué está configurado actualmente
+
+HISTORIAL DE CAMBIOS
+→ cómo cambió la regla y quién tomó la decisión autorizada
+
+EVALUACIONES
+→ cuándo se evaluó la regla
+
+ENTREGAS
+→ qué edición, corte y versión se distribuyó realmente
+```
+
+Una modificación de la regla no reescribe entregas previas. Una persona retirada de la audiencia no conserva acceso futuro por haber sido destinataria anteriormente.
+
+---
+
+#### 19. Experiencia de snapshot oficial
+
+Un snapshot oficial es una edición analítica inmutable de una coordenada publicada.
+
+La experiencia deberá mostrar o permitir resolver:
+
+- identidad del snapshot;
+- periodo y corte;
+- contexto organizacional o territorial;
+- filtros y dimensiones;
+- métricas y versiones;
+- unidad o moneda;
+- fuentes y dependencias;
+- calidad y certificación vigentes al publicar;
+- fecha/hora de generación y publicación;
+- responsable de publicación;
+- edición;
+- relación con edición anterior o posterior;
+- estado de vigencia;
+- existencia de reconstrucción o restatement posterior.
+
+El snapshot no es un respaldo técnico ni una copia editable de la fuente.
+
+---
+
+#### 20. Inmutabilidad y corrección de snapshots
+
+1. una edición oficial publicada no se sobrescribe;
+2. datos tardíos no cambian silenciosamente el snapshot;
+3. una corrección de fuente no muta la edición histórica;
+4. una reconstrucción crea una nueva representación distinguible;
+5. un restatement crea una edición vinculada que declara qué corrigió;
+6. retirar una edición del uso vigente no borra su existencia;
+7. el acceso a ediciones antiguas continúa sujeto a autorización;
+8. la reconstrucción debe indicar si usa las versiones históricas originales o versiones actuales;
+9. una edición reconstruida bajo una nueva semántica no se presenta como la publicación original;
+10. la materialización física de snapshots pertenece a `DATA-INT-002`.
+
+---
+
+#### 21. Vista viva, provisional, oficial y simulación
+
+| Clase de presentación | Qué representa                                                     | Obligación visible             | Nunca significa                 |
+| --------------------- | ------------------------------------------------------------------ | ------------------------------ | ------------------------------- |
+| viva                  | proyección actual de una coordenada                                | corte y frescura               | edición histórica inmutable     |
+| provisional           | resultado pendiente de cierre, reconciliación o calidad suficiente | condición pendiente            | publicación oficial certificada |
+| oficial               | edición publicada que superó la puerta aplicable                   | edición, corte y estado        | fuente de verdad operativa      |
+| degradada             | resultado cuyo uso admite una limitación de calidad                | limitación y alcance           | certificación plena             |
+| simulación            | escenario construido con supuestos                                 | supuestos y condición simulada | resultado observado             |
+| histórica             | edición que ya no es la vigente o fue sucedida                     | fecha, edición y relación      | error que deba ocultarse        |
+
+---
+
+#### 22. Ocho ejes de versión
+
+La experiencia deberá evitar un único campo “versión” ambiguo. D017 exige distinguir ocho ejes cuando sean materiales:
+
+1. identidad empresarial;
+2. versión semántica;
+3. versión de esquema o contrato;
+4. versión de transformación;
+5. versión de maestros o dimensiones;
+6. versión técnica;
+7. edición de publicación;
+8. versión de diagnóstico, objetivo o intervención relacionada.
+
+La vista principal muestra solo los ejes necesarios para comprender vigencia y comparabilidad. El detalle de reproducibilidad conserva el resto.
+
+---
+
+#### 23. Selector de edición e historia
+
+Cuando un artefacto tenga más de una edición, la experiencia deberá permitir:
+
+- identificar la edición vigente;
+- abrir una edición histórica autorizada;
+- ver fecha de publicación;
+- ver corte;
+- ver motivo de sucesión;
+- distinguir corrección, reconstrucción o restatement;
+- comparar original y vigente cuando sean comparables;
+- ver si cambió la versión semántica;
+- ver si cambió la calidad o certificación;
+- ver qué consumidores o entregas pudieron depender de la edición anterior cuando esa información esté autorizada.
+
+El selector no ordena únicamente por “más reciente”. Debe preservar la relación semántica entre ediciones.
+
+---
+
+#### 24. Seis operaciones históricas
+
+UX007 representa sin colapsar las seis operaciones D017:
+
+|    # | Operación            | Presentación UX                                            | Regla                                                 |
+| ---: | -------------------- | ---------------------------------------------------------- | ----------------------------------------------------- |
+|    1 | reintento            | nuevo intento correlacionado                               | no crea por sí solo una nueva verdad empresarial      |
+|    2 | replay               | repetición controlada de procesamiento                     | debe conservar versión y propósito del replay         |
+|    3 | backfill             | incorporación gobernada de datos faltantes o tardíos       | no sobrescribe una publicación oficial sin evaluación |
+|    4 | corrección de fuente | cambio autorizado en el origen                             | puede o no afectar una publicación; se evalúa impacto |
+|    5 | reconstrucción       | recomputación de una coordenada histórica                  | debe indicar versiones y relación con el original     |
+|    6 | restatement          | nueva edición oficial que corrige o reexpresa una anterior | preserva original y nueva edición vinculadas          |
+
+**Reconciliación:** 6 operaciones esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 25. Experiencia de restatement
+
+Cuando exista restatement, la interfaz no reemplaza un valor por otro sin contexto. La vista deberá poder mostrar:
+
+- artefacto o resultado original;
+- clase de artefacto;
+- periodo original;
+- corte original;
+- fecha de publicación original;
+- versión de métrica original;
+- fuentes o transformaciones originales cuando sean materiales;
+- valor o resultado original;
+- motivo del evento de corrección;
+- periodo y población restated;
+- corte restated;
+- versiones restated;
+- fuentes restated;
+- valor o resultado restated;
+- diferencia absoluta cuando sea válida;
+- diferencia relativa cuando exista denominador válido;
+- componentes no comparables;
+- calidad o certificación de cada edición;
+- responsable de la decisión;
+- responsable de certificación o publicación cuando corresponda;
+- consumidores o artefactos derivados afectados cuando estén disponibles;
+- relación con diagnósticos, objetivos o intervenciones;
+- decisión de comunicación o redistribución;
+- evidencia autorizada.
+
+No existe un umbral universal de materialidad inventado por UX007.
+
+---
+
+#### 26. Vista comparativa original versus restated
+
+La comparación deberá privilegiar la claridad:
+
+| Campo           | Edición original             | Edición restated                    |
+| --------------- | ---------------------------- | ----------------------------------- |
+| publicación     | fecha original               | fecha de restatement                |
+| periodo/corte   | coordenada original          | coordenada corregida                |
+| métrica/versión | versión original             | versión vigente para el restatement |
+| valor           | resultado original           | resultado corregido                 |
+| calidad         | estado original              | estado de la nueva edición          |
+| diferencia      | base de comparación          | magnitud válida o “no comparable”   |
+| motivo          | contexto disponible entonces | evento que justificó reexpresión    |
+
+La edición original siempre permanece identificable. “Restated” no significa que el dato original nunca haya sido publicado.
+
+---
+
+#### 27. Decisión de restatement en la experiencia
+
+La interfaz deberá ser compatible con las reglas D017:
+
+- actualización normal de un periodo abierto sin publicación inmutable previa no se presenta como restatement;
+- dato tardío que afecta una edición oficial exige evaluación, reconstrucción y decisión gobernada;
+- corrección sin impacto numérico oficial puede no requerir restatement numérico;
+- corrección que cambia una cifra oficial puede producir una edición restated;
+- bug técnico que no cambia semántica mantiene la versión semántica y puede cambiar versión técnica;
+- una nueva semántica prospectiva no muta retrospectivamente una edición previa;
+- una reconstrucción con nueva semántica queda distinguida de la serie original;
+- un cambio solo de layout no se presenta como corrección numérica;
+- una corrección material de metadatos puede requerir una edición vinculada aun sin cambio de cifra;
+- un cambio de calidad sin cambio numérico no borra la calidad que tenía la edición original.
+
+---
+
+#### 28. Reproducibilidad: treinta y dos elementos resolubles
+
+La experiencia deberá permitir llegar progresivamente a los treinta y dos elementos mínimos necesarios para reconstruir o explicar una edición cuando apliquen:
+
+1. identidad del artefacto;
+2. clase de artefacto;
+3. edición;
+4. propósito;
+5. audiencia;
+6. periodo;
+7. corte;
+8. zona horaria;
+9. población;
+10. inclusiones y exclusiones;
+11. filtros;
+12. dimensiones;
+13. métricas;
+14. versiones semánticas;
+15. unidad;
+16. moneda;
+17. fuentes;
+18. versiones de esquema o contrato;
+19. transformaciones;
+20. versiones de transformación;
+21. maestros o dimensiones vigentes;
+22. versiones técnicas materiales;
+23. frescura;
+24. cobertura;
+25. calidad o certificación;
+26. reconciliaciones relevantes;
+27. datos tardíos o backfills aplicables;
+28. consultas, modelos o reglas por referencia;
+29. responsable de generación;
+30. responsable de publicación;
+31. relación con edición anterior o posterior;
+32. evidencia suficiente para reproducir la coordenada sin duplicar contenido sensible.
+
+La ausencia histórica de un insumo no se completa por inferencia. El expediente queda `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` según la dependencia.
+
+---
+
+#### 29. Divulgación progresiva de reproducibilidad
+
+La densidad se distribuye así:
+
+```text
+NIVEL 1 — COMPRENDER
+artefacto, periodo, corte, edición, estado, calidad
+
+NIVEL 2 — INTERPRETAR
+métricas, filtros, dimensiones, población, unidad, fuentes
+
+NIVEL 3 — COMPARAR HISTORIA
+ediciones, restatement, diferencias, motivo, calidad por edición
+
+NIVEL 4 — REPRODUCIR
+versiones, transformaciones, maestros, consultas/modelos, reconciliación, evidencia
+```
+
+Una limitación crítica nunca queda escondida exclusivamente en el nivel 4.
+
+---
+
+#### 30. Autorización en reportes y snapshots
+
+La lectura de un reporte o snapshot se resuelve sobre el conjunto autorizado. La experiencia deberá cumplir:
+
+1. abrir un artefacto no concede detalle fuente;
+2. cambiar de edición reevalúa autorización si cambia recurso, población o clasificación;
+3. una edición histórica no se vuelve pública por haber sido publicada internamente antes;
+4. drill-down reevalúa recurso y nivel de detalle;
+5. poblaciones pequeñas o sensibles aplican protección A002;
+6. metadatos sensibles también pueden requerir minimización;
+7. una edición retirada conserva protección;
+8. la UI no usa ocultamiento visual como sustituto de autorización server-side futura.
+
+---
+
+#### 31. `PUBLISH` y `EXPORT` permanecen separados
+
+UX007 representa ambas acciones como decisiones distintas:
+
+| Acción    | Efecto                                                   | No concede                                                                                  |
+| --------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `PUBLISH` | emitir una edición oficial para una audiencia autorizada | certificación, exportación, mayor detalle, cambio de meta o fuente                          |
+| `EXPORT`  | producir una proyección portable autorizada              | publicación oficial, nueva finalidad, mayor población, detalle fuente o autoridad histórica |
+
+Una persona que pueda abrir un reporte no recibe por inferencia ninguna de estas capacidades. Una persona que pueda publicar no recibe exportación por inferencia, y viceversa.
+
+---
+
+#### 32. Auditoría visible y evidencia correlacionable
+
+UX007 consume A004 sin convertir auditoría en una segunda fuente de verdad.
+
+Las seis familias auditables se mantienen distinguibles:
+
+|    # | Familia A004  | Relación con UX007                                                                         |
+| ---: | ------------- | ------------------------------------------------------------------------------------------ |
+|    1 | consulta      | apertura, filtros o drill-down protegidos pueden producir evidencia lógica correlacionable |
+|    2 | descarga      | generación y obtención efectiva de una proyección portable se distinguen cuando aplique    |
+|    3 | suscripción   | gobierno de la regla, evaluación y entrega son hechos distintos                            |
+|    4 | alerta        | puede vincularse desde un artefacto, pero no se convierte en diagnóstico o acción          |
+|    5 | modelo        | su ejecución puede explicar un resultado, sin certificarlo ni probar causalidad            |
+|    6 | recomendación | puede acompañar una decisión, sin ejecutar cambios empresariales                           |
+
+**Reconciliación:** 6 familias auditables esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+La experiencia de auditoría ordinaria muestra referencias, actores, cortes, versiones y resultado lógico suficiente; no replica filas protegidas ni payloads sensibles.
+
+---
+
+#### 33. Calidad, bloqueo y publicación
+
+UX007 consume la calidad de DATA-UX-004 y D007.
+
+Reglas:
+
+- `CERTIFICADO` solo aplica al uso, periodo, corte y versión cubiertos;
+- `NO EVALUADO` no se presenta como certificado;
+- `EN OBSERVACIÓN` conserva la condición;
+- `DEGRADADO` conserva la limitación;
+- `BLOQUEADO` impide publicación oficial del elemento dependiente;
+- un artefacto puede incluir secciones con estados distintos, pero la cabecera deberá reflejar cualquier dependencia material que limite la interpretación global;
+- omitir visualmente una métrica bloqueada solo permite liberar el resto si la pregunta empresarial y el contrato del artefacto siguen completos sin esa dependencia;
+- una edición histórica conserva el estado de calidad que tenía al ser publicada;
+- una recertificación posterior no reescribe el estado histórico.
+
+---
+
+#### 34. Catorce métricas actuales de asistencia
+
+UX007 materializa una decisión explícita para las catorce métricas heredadas.
+
+|    # | Métrica             | Estado heredado | Tratamiento UX007                                                                        |
+| ---: | ------------------- | --------------- | ---------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    2 | `attendedShifts`    | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    3 | `restDayCount`      | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    4 | `lateCount`         | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    5 | `noShowCount`       | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    6 | `openCount`         | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    7 | `missingCloseCount` | `BLOQUEADO`     | no elegible para publicación oficial dependiente; mostrar bloqueo y motivo autorizado    |
+|    8 | `autoCloseCount`    | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|    9 | `departureCount`    | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|   10 | `scheduledMinutes`  | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|   11 | `netMinutes`        | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|   12 | `incidentCount`     | `NO EVALUADO`   | admisible en vista provisional con estado visible; no certificado por UX007              |
+|   13 | `attendanceRate`    | `BLOQUEADO`     | no elegible para publicación oficial dependiente; no fabricar 0 ante denominador ausente |
+|   14 | `punctualityRate`   | `BLOQUEADO`     | no elegible para publicación oficial dependiente; no fabricar 0 ante denominador ausente |
+
+**Reconciliación:** 14 métricas esperadas; 14 materializadas; 0 faltantes; 0 duplicadas. Distribución heredada: 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+---
+
+#### 35. Bloqueos concretos de asistencia
+
+La experiencia conserva, sin intentar resolverlos, los tres bloqueos documentados:
+
+- `missingCloseCount`: el resumen actual no preserva de forma suficiente la condición de que el fin programado ya haya pasado al corte;
+- `attendanceRate`: la implementación actual devuelve cero cuando `scheduledShifts = 0`, mientras la definición requiere ausencia de valor numérico;
+- `punctualityRate`: la implementación actual devuelve cero cuando `attendedShifts = 0`, mientras la definición requiere ausencia de valor numérico.
+
+UX007 no corrige código ni redefine estas métricas. La UI deberá impedir que esos valores sean estilizados como cifras oficiales mientras el bloqueo siga vigente.
+
+---
+
+#### 36. Reporte de asistencia JSON actual
+
+La salida JSON actual de asistencia se clasifica para UX007 como una proyección técnicamente existente de naturaleza viva o ad hoc, no como una publicación oficial certificada.
+
+Razones visibles que deben poder expresarse:
+
+- contiene o puede depender de métricas `BLOQUEADO`;
+- las demás métricas relevantes permanecen `NO EVALUADO`;
+- la experiencia actual no materializa por sí sola la puerta completa de publicación;
+- un response técnicamente correcto no certifica calidad;
+- conservar un archivo o payload no lo convierte en snapshot oficial.
+
+La corrección física de contrato, metadata o generación corresponde a las tareas de integración y aplicación propietarias futuras.
+
+---
+
+#### 37. Reporte XLSX actual de asistencia
+
+El reporte XLSX identificado como “REPORTE OPERATIVO DE TURNOS Y ASISTENCIA” se trata como reporte/exportación técnicamente existente pero hoy `BLOQUEADO` para publicación oficial completa en su forma actual.
+
+La experiencia deberá poder hacer visibles, cuando corresponda:
+
+- las tres métricas bloqueadas;
+- el estado `NO EVALUADO` de las restantes;
+- ausencia de certificación oficial suficiente;
+- periodo y scope;
+- corte o fecha de generación;
+- condición derivada del artefacto;
+- relación con su fuente propietaria.
+
+UX007 no modifica el generador XLSX.
+
+---
+
+#### 38. Cincuenta y cinco familias analíticas: elegibilidad de artefactos
+
+Las cincuenta y cinco familias de D009 a D013 pueden alimentar reportes, exportaciones, suscripciones o snapshots según su estado real. UX007 no crea un reporte obligatorio por familia.
+
+##### 38.1. Comercial — 11 familias
+
+|    # | Familia                                      | Decisión UX007                                                                           |
+| ---: | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | elegible con base, población, versión, unidad/moneda y calidad explícitas                |
+|    2 | pedidos y conversión                         | elegible preservando conteos y denominadores; una tasa inválida no se sustituye por cero |
+|    3 | ticket y unidades                            | elegible con transacciones y unidades compatibles                                        |
+|    4 | mezcla por producto, categoría, canal y sede | elegible con dimensiones gobernadas y reconciliación al total                            |
+|    5 | demanda por franja, día y temporada          | elegible con periodo, estacionalidad y cobertura visibles                                |
+|    6 | disponibilidad perdida                       | solo publicación oficial cuando intención y disponibilidad histórica estén reconciliadas |
+|    7 | cancelaciones, devoluciones y descuentos     | cada fenómeno conserva identidad y denominador propios                                   |
+|    8 | promociones y efecto incremental             | efecto incremental conserva diseño, versión y límites causales                           |
+|    9 | recurrencia y frecuencia                     | elegible solo con identidad, finalidad y ventana autorizadas                             |
+|   10 | margen relacionado                           | consume el margen económico gobernado; no recalcula costo localmente                     |
+|   11 | capacidad comercial no utilizada             | requiere denominador de capacidad compatible                                             |
+
+##### 38.2. Inventario, abastecimiento, proveedores y logística — 12 familias
+
+|    # | Familia                                 | Decisión UX007                                                                |
+| ---: | --------------------------------------- | ----------------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | separar estados físicos, comprometidos, tránsito, cuarentena y disponibilidad |
+|    2 | cobertura y días de inventario          | mostrar base de existencia y demanda o consumo compatible                     |
+|    3 | rotación y permanencia                  | conservar método, inventario medio e historia o cohorte aplicable             |
+|    4 | faltantes y quiebres                    | no inferir quiebre desde stock cero sin necesidad elegible                    |
+|    5 | vencimiento, daño y pérdida             | separar hechos, causas, cuarentena y disposición                              |
+|    6 | diferencias de conteo                   | conservar signo, corte y relación antes/después del ajuste                    |
+|    7 | cumplimiento de remisiones              | separar preparación, despacho, recepción, faltante y cierre                   |
+|    8 | lead time y cumplimiento de proveedores | conservar inicio contractual, promesa y recepción aceptada                    |
+|    9 | compras urgentes                        | incluir solo hechos clasificados bajo la definición gobernada                 |
+|   10 | consumo versus plan                     | comparar población, unidad, sede y ventana equivalentes                       |
+|   11 | costo de inventario                     | consumir valoración económica gobernada                                       |
+|   12 | capacidad de almacenamiento             | usar capacidad utilizable y unidad física compatible                          |
+
+##### 38.3. Producción, rendimiento, capacidad, merma y calidad — 10 familias
+
+|    # | Familia                                     | Decisión UX007                                                         |
+| ---: | ------------------------------------------- | ---------------------------------------------------------------------- |
+|    1 | demanda planificada versus producción       | preservar plan aceptado y producción comparable                        |
+|    2 | capacidad disponible y utilizada            | declarar denominador integral de capacidad                             |
+|    3 | adherencia al programa                      | conservar programa publicado/versionado e hitos                        |
+|    4 | rendimiento teórico y real                  | reconciliar receta, versión, escala y unidad                           |
+|    5 | consumo estándar y real                     | comparar ingrediente y unidad compatibles                              |
+|    6 | merma, reproceso y aprovechamiento          | separar cada categoría y su denominador                                |
+|    7 | calidad, retención y rechazo                | separar control, resultado, retención, rechazo, reproceso y liberación |
+|    8 | tiempo de ciclo                             | conservar hitos reales y no colapsar espera, pausa o liberación        |
+|    9 | cumplimiento de liberación                  | no equiparar producción terminada con lote liberado                    |
+|   10 | costo y variación por lote, producto y sede | distinguir costo técnico de costo económico oficial                    |
+
+##### 38.4. Servicio, clientes, fidelización, reputación y experiencia — 12 familias
+
+|    # | Familia                                                 | Decisión UX007                                                         |
+| ---: | ------------------------------------------------------- | ---------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | requiere promesa aceptada y versionada                                 |
+|    2 | tiempos de preparación, despacho y entrega              | separar fases y eventos reales                                         |
+|    3 | pedidos completos                                       | resolver líneas, cantidades, revisiones y sustituciones aceptadas      |
+|    4 | reclamos y tiempo de resolución                         | conservar expediente y SLA o versión aplicable                         |
+|    5 | compensaciones                                          | no colapsar devolución, reembolso, descuento, cortesía, cupón y puntos |
+|    6 | satisfacción y feedback                                 | separar feedback interno de reputación externa                         |
+|    7 | recurrencia, frecuencia y abandono                      | declarar población elegible y ventana completa                         |
+|    8 | adquisición y activación                                | conservar eventos y origen gobernados                                  |
+|    9 | fidelización, puntos y redenciones                      | saldo no sustituye movimientos o ledger                                |
+|   10 | reputación y temas recurrentes                          | fuente externa e interna permanecen distinguibles                      |
+|   11 | reservas, no-show y utilización                         | reserva, cancelación, no-show y capacidad permanecen distintos         |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | exige identidad/finalidad autorizadas y rentabilidad gobernada         |
+
+##### 38.5. Costos, rentabilidad, liquidez, presupuesto y escenarios — 10 familias
+
+|    # | Familia                       | Decisión UX007                                                             |
+| ---: | ----------------------------- | -------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | conservar método, versión, unidad, moneda y componentes                    |
+|    2 | variaciones                   | cada variación conserva su base de comparación                             |
+|    3 | margen y contribución         | exige ingreso realizado y costos trazables o variables elegibles           |
+|    4 | gastos                        | separar capturado, reconocido, aprobado, pagado, anulado y conciliado      |
+|    5 | centros de costo              | mostrarlo como dimensión económica cuando corresponda, no KPI por sí mismo |
+|    6 | presupuesto y forecast        | separar presupuesto, revisión, forecast, escenario y real                  |
+|    7 | caja, bancos y tesorería      | posición real exige saldos reconciliados y disponibilidad                  |
+|    8 | cartera y obligaciones        | saldo abierto deriva de reconocimiento menos aplicaciones válidas          |
+|    9 | rentabilidad multidimensional | conservar costos trazables, asignaciones y residuo visible                 |
+|   10 | escenarios y simulaciones     | simulado nunca sustituye real, baseline ni efecto observado                |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55` familias. 55 esperadas; 55 decisiones UX007 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 39. Regla transversal para las cincuenta y cinco familias
+
+1. la elegibilidad UX no certifica la familia;
+2. el estado real de cada dependencia se hereda;
+3. una familia puede aparecer en varias clases de artefacto sin duplicar su definición;
+4. una exportación no crea una nueva métrica;
+5. una suscripción no congela una versión de forma implícita: su política debe ser explícita;
+6. un snapshot sí conserva la versión de la edición publicada;
+7. un reporte puede mezclar familias solo si población, tiempo, unidad y comparación son compatibles o la diferencia queda explícita;
+8. un restatement de una familia no obliga a reexpresar automáticamente todo artefacto consumidor; el impacto se evalúa;
+9. una métrica bloqueada no se libera por aparecer junto a métricas certificadas;
+10. UX007 no crea cincuenta y cinco objetivos, reportes, suscripciones ni snapshots.
+
+---
+
+#### 40. Navegación entre superficies analíticas
+
+La experiencia puede ofrecer vínculos contextuales, sujetos a autorización, hacia:
+
+- tablero de dominio en `DATA-UX-003`;
+- calidad y conciliación en `DATA-UX-004`;
+- diagnóstico en `DATA-UX-005`;
+- objetivo o acción en `DATA-UX-006`;
+- edición histórica o restatement de este mismo artefacto;
+- detalle fuente autorizado.
+
+Reglas:
+
+- navegar no transfiere permisos;
+- volver a una edición anterior no modifica el contexto vigente;
+- un reporte puede referenciar un diagnóstico sin convertirlo en causa probada;
+- una suscripción puede entregar un reporte sin convertir la regla de suscripción en publicación;
+- una alerta puede abrir un reporte o diagnóstico, pero no ejecuta una acción;
+- un snapshot puede ser evidencia de contexto, pero no fuente editable.
+
+---
+
+#### 41. Búsqueda, orden y filtros de biblioteca
+
+Una biblioteca futura de reportes o snapshots deberá permitir encontrar artefactos por criterios autorizados como:
+
+- clase;
+- dominio;
+- propósito;
+- responsable;
+- periodo;
+- fecha de publicación;
+- estado de publicación;
+- edición;
+- existencia de restatement;
+- calidad;
+- métrica o familia cuando el índice pueda exponerla;
+- audiencia o colección cuando esté autorizada.
+
+La búsqueda no revela títulos, etiquetas, conteos o metadatos de recursos a los que el actor no tenga acceso.
+
+---
+
+#### 42. Estados vacíos y recuperación
+
+La experiencia define estados explícitos:
+
+| Estado                     | Mensaje funcional                                      | Acción permitida                                                    |
+| -------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| sin artefactos autorizados | no existen resultados visibles para el contexto actual | cambiar únicamente filtros permitidos o volver al contexto anterior |
+| sin datos para el periodo  | no hay observaciones elegibles                         | revisar periodo o cobertura, sin fabricar cero                      |
+| bloqueado por calidad      | una dependencia crítica impide uso oficial             | abrir detalle de calidad si está autorizado                         |
+| degradado                  | resultado disponible con limitación                    | revisar limitación y decidir si el uso declarado la admite          |
+| no comparable              | las ediciones no pueden compararse directamente        | abrir diferencias de versión o definición                           |
+| edición histórica          | existe una edición posterior                           | abrir edición vigente o comparar                                    |
+| restatement disponible     | la publicación original fue reexpresada                | ver motivo y diferencias                                            |
+| acceso denegado            | el recurso o la acción no están autorizados            | no revelar contenido protegido                                      |
+| evidencia incompleta       | no puede reconstruirse todo el contexto                | mostrar pendiente sin rellenar supuestos                            |
+
+---
+
+#### 43. Accesibilidad y densidad
+
+UX007 adopta las siguientes reglas:
+
+- el estado no depende únicamente de color;
+- edición histórica y restatement usan texto y estructura, no solo iconos;
+- tablas permiten lectura lineal y encabezados comprensibles;
+- diferencias original/restated incluyen signos y unidades;
+- tooltips no contienen la única explicación de una limitación crítica;
+- controles de edición y fecha tienen etiquetas accesibles;
+- la navegación por teclado mantiene orden lógico;
+- en pantallas estrechas se priorizan identidad, periodo, corte, estado, edición y resultado;
+- metadatos de reproducibilidad se agrupan progresivamente;
+- una exportación o suscripción no se ofrece como acción primaria si no está autorizada;
+- los estados `BLOQUEADO`, `DEGRADADO` y `NO EVALUADO` conservan lenguaje explícito;
+- el formato numérico no elimina signo, unidad, moneda o condición de ausencia.
+
+---
+
+#### 44. Dispositivos y superficies compactas
+
+En superficies compactas:
+
+1. no se intenta mostrar los diecinueve metadatos simultáneamente;
+2. la cabecera conserva artefacto, periodo, corte, edición, estado y calidad;
+3. una tabla amplia puede cambiar a filas apiladas sin alterar valores;
+4. la historia de ediciones puede presentarse como lista cronológica;
+5. comparación original/restated prioriza valor, diferencia, motivo y fecha;
+6. acciones de publicación o exportación no se esconden dentro de gestos ambiguos;
+7. la existencia de un restatement permanece visible aunque el detalle se abra aparte;
+8. el usuario no necesita obtener una copia para conocer versión y corte.
+
+---
+
+#### 45. Privacidad y poblaciones pequeñas
+
+La experiencia aplica A002 antes de exponer:
+
+- sujetos individuales;
+- segmentos pequeños;
+- numeradores o denominadores que permitan inferencia;
+- combinaciones de filtros que reduzcan demasiado la población;
+- metadatos que revelen identidad o actividad protegida;
+- nombres de destinatarios de suscripción;
+- evidencia de auditoría;
+- versiones históricas con clasificaciones diferentes.
+
+Una edición histórica no evade políticas actuales de acceso. Si la política actual exige mayor protección, la interfaz aplica la protección vigente al acto de consulta sin reescribir la edición histórica.
+
+---
+
+#### 46. Publicación, anotación y corrección
+
+UX007 mantiene acciones distintas:
+
+- una anotación agrega contexto y no cambia la edición;
+- una corrección de fuente modifica el origen autorizado, no el reporte directamente;
+- una reconstrucción recalcula una coordenada;
+- un restatement produce una nueva edición oficial cuando la decisión lo exige;
+- publicar una nueva edición no certifica las fuentes;
+- retirar una edición no borra el historial;
+- corregir una anotación no modifica valores;
+- una nota de un administrador no sustituye una decisión `PUBLISH` o `CERTIFY`.
+
+---
+
+#### 47. Política de versión en suscripciones
+
+Toda suscripción futura deberá adoptar explícitamente una política compatible con uno de estos patrones documentales, sin crear un enum técnico obligatorio:
+
+- versión fija de una métrica o artefacto mientras permanezca válida;
+- versión vigente compatible al momento de cada entrega;
+- edición oficial exacta referenciada;
+- política de transición gobernada entre versiones.
+
+Reglas:
+
+1. la política debe ser visible antes de activar la suscripción;
+2. cambiar la política conserva historia;
+3. una versión incompatible puede bloquear una entrega;
+4. una nueva versión semántica no se adopta silenciosamente si cambia comparabilidad;
+5. entregas históricas conservan la versión efectivamente utilizada;
+6. una futura entrega con nueva versión no reescribe las anteriores.
+
+---
+
+#### 48. Tratamiento de restatement en suscripciones
+
+Cuando una edición ya distribuida recibe restatement:
+
+- la entrega original permanece registrada;
+- la nueva edición queda vinculada;
+- la existencia de una nueva edición no implica redistribución automática;
+- la decisión de redistribuir debe estar gobernada y autorizada;
+- el destinatario actual se reevalúa antes de cualquier nueva entrega;
+- la evidencia debe permitir conocer qué edición recibió cada destinatario cuando la implementación futura lo materialice;
+- una corrección histórica no convierte una entrega fallida anterior en exitosa.
+
+---
+
+#### 49. Tratamiento de restatement en exportaciones
+
+Cuando una exportación se originó en una edición posteriormente restated:
+
+- el archivo histórico no se modifica;
+- la relación con la edición original permanece;
+- una nueva exportación corregida constituye una nueva generación;
+- la UI puede advertir que existe una edición más reciente;
+- obtener la nueva exportación exige autorización vigente;
+- los campos o población de la nueva salida se recalculan según la autorización actual;
+- una exportación histórica no se etiqueta como falsa; se identifica como correspondiente a la edición original.
+
+---
+
+#### 50. Tratamiento de restatement en reportes
+
+Cuando un reporte oficial cambia:
+
+1. se conserva la edición original;
+2. se crea o referencia la edición corregida;
+3. se documenta motivo;
+4. se muestra diferencia cuando sea válida;
+5. se indica no comparabilidad cuando corresponda;
+6. la fecha de publicación original no se cambia;
+7. la edición corregida conserva su propia fecha;
+8. la vista vigente puede abrir la anterior;
+9. la vista histórica puede advertir que existe una posterior;
+10. un cambio de layout sin cambio material no se presenta como restatement numérico.
+
+---
+
+#### 51. Tratamiento de restatement en snapshots
+
+Para snapshots oficiales:
+
+- el snapshot original permanece inmutable;
+- la reconstrucción se materializará en el componente técnico propietario futuro;
+- el restatement se representa como nueva edición vinculada;
+- la vista de historia conserva ambas;
+- no se sobrescribe el timestamp original;
+- la calidad original permanece registrada;
+- la nueva edición muestra su propia calidad;
+- la relación entre versiones semánticas queda explícita;
+- el usuario puede distinguir lo conocido entonces de lo reconstruido ahora.
+
+---
+
+#### 52. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                         | Propietario documental | Condición de salida                                                               |
+| -------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------- |
+| contratos físicos de eventos y lectura                               | `DATA-INT-001`         | antes de consumir fuentes productivas mediante eventos o contratos especializados |
+| capa semántica, consultas, caché, snapshots y rendimiento            | `DATA-INT-002`         | antes de generar o servir artefactos compartidos productivos                      |
+| crosswalks e identidades externas                                    | `DATA-INT-003`         | antes de reconciliar entidades externas en artefactos transversales               |
+| BI, hojas de cálculo, modelos analíticos e inteligencia artificial   | `DATA-INT-004`         | antes de conectar herramientas externas o automatizar generación analítica        |
+| protección por dominio, territorio, finalidad y recurso              | `DATA-AUTH-001`        | antes de exponer una edición o detalle restringido                                |
+| protección de poblaciones pequeñas, campos, comparaciones y salidas  | `DATA-AUTH-002`        | antes de mostrar o exportar detalle sensible                                      |
+| autorización de publicación, exportación, anotación y administración | `DATA-AUTH-003`        | antes de ejecutar cualquiera de esas acciones                                     |
+| auditoría de consulta, descarga, suscripción y otros usos            | `DATA-AUTH-004`        | antes de materializar evidencia productiva de uso analítico                       |
+| tableros por dominio                                                 | `DATA-UX-003`          | antes de rediseñar la superficie viva de tablero                                  |
+| investigación de anomalías y causas                                  | `DATA-UX-005`          | antes de convertir una señal del artefacto en diagnóstico                         |
+| objetivos y acciones de mejora                                       | `DATA-UX-006`          | antes de convertir un resultado en objetivo o intervención                        |
+| validación con usuarios reales                                       | `DATA-UX-008`          | antes de declarar usable el flujo analítico completo                              |
+| correcciones históricas y restatements                               | `DATA-DOM-017`         | antes de decidir reexpresión oficial de una edición publicada                     |
+
+No queda una decisión material de UX007 diferida sin propietario documental y condición de salida.
+
+---
+
+#### 53. Cobertura de requisitos de prueba vigente
+
+La experiencia queda protegida por requisitos vigentes ya identificados:
+
+- `TREQ-DATA-002` protege definición, versión, fórmula, población, unidad, moneda, fuente, calidad y comparabilidad de métricas y asigna expresamente UX007;
+- `TREQ-DATA-003` impide presentar como certificado un reporte oficial con fuente vencida, incompleta, degradada o sin reconciliar;
+- `TREQ-DATA-004` protege periodo, corte, zona horaria, filtros, dimensiones, unidad, moneda, frescura, cobertura, calidad, divulgación progresiva, drill-down y separación entre artefactos;
+- `TREQ-UX-001` protege claridad de tarea y siguiente acción;
+- `TREQ-UX-003` protege densidad, acciones y datos adecuados al actor y autorización;
+- `TREQ-UX-005` protege fuente de verdad, estado confirmado o pendiente, último cambio y trazabilidad de correcciones;
+- `TREQ-UX-010` protege contexto administrativo, versión, periodo, población, actor y la separación entre filtro, contexto y proyección.
+
+UX007 especializa la experiencia de consumo y versionado dentro de estas reglas. No cambia su regla protegida, prioridad, modalidad, estado, relaciones ni destino de implementación.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente la experiencia de reportes, exportaciones, suscripciones, snapshots, ediciones, calidad, autorización, restatements e historia dentro de requisitos vigentes que ya protegen semántica, publicación, versionado, calidad, autorización, trazabilidad y separación entre artefactos. No introduce comportamiento ejecutable, transición física, contrato técnico, autorización, dato, integración, job, distribución o cambio productivo nuevo.
+
+---
+
+#### 54. Criterios de aceptación
+
+1. UX007 materializa exactamente cuatro familias foco: reporte, exportación, suscripción y snapshot oficial;
+2. las seis familias D008 permanecen presentes y distinguibles;
+3. la reconciliación de familias D008 es 6 esperadas, 6 materializadas, 0 faltantes y 0 duplicadas;
+4. tablero permanece bajo la experiencia principal de DATA-UX-003;
+5. alerta permanece separada de diagnóstico, decisión y acción;
+6. vista viva, tablero, reporte oficial, exportación, suscripción, alerta, snapshot oficial y simulación permanecen conceptos distintos;
+7. publicado y certificado permanecen distintos;
+8. publicación y exportación permanecen acciones autorizables distintas;
+9. exportación no se presenta como fuente de verdad;
+10. suscripción no se presenta como acceso permanente;
+11. snapshot oficial no se presenta como respaldo técnico;
+12. snapshot oficial no se presenta como estado vivo;
+13. snapshot oficial no se presenta como restatement;
+14. se materializan los diecinueve componentes comunes de artefacto;
+15. una limitación material no se oculta únicamente en metadata secundaria;
+16. la puerta oficial contiene exactamente diez condiciones;
+17. una dependencia crítica `BLOQUEADO` impide publicación oficial dependiente;
+18. `NO EVALUADO` no se presenta como `CERTIFICADO`;
+19. `DEGRADADO` conserva su limitación;
+20. ausencia de dato no se convierte en cero;
+21. denominador inválido no se convierte en porcentaje cero;
+22. todo reporte oficial identifica periodo, corte y edición;
+23. una nueva edición de reporte no altera la anterior;
+24. un cambio de formato sin cambio semántico no se presenta como restatement numérico;
+25. una edición retirada permanece en historia;
+26. abrir un reporte no concede detalle fuente adicional;
+27. toda exportación conserva contexto suficiente de periodo, corte, filtros, dimensiones, versión y calidad;
+28. una exportación no amplía población o campos;
+29. una exportación ad hoc no se presenta como snapshot oficial;
+30. generación y obtención de una exportación permanecen hechos distinguibles cuando aplique;
+31. una suscripción declara artefacto, política de versión, ventana, filtros, cadencia, zona horaria, formato, audiencia y calidad mínima;
+32. cada entrega de suscripción reevalúa autorización;
+33. cambiar una suscripción no reescribe entregas previas;
+34. una dependencia bloqueada no produce silenciosamente una entrega oficial completa;
+35. cada snapshot oficial conserva corte, versiones, calidad y fecha de publicación;
+36. un snapshot oficial publicado permanece inmutable;
+37. dato tardío no sobrescribe silenciosamente un snapshot;
+38. reconstrucción y restatement producen representaciones vinculadas y distinguibles;
+39. se preservan exactamente ocho ejes de versión;
+40. versión semántica y edición de publicación permanecen separadas;
+41. versión técnica y versión semántica permanecen separadas;
+42. el selector de historia identifica edición vigente e históricas;
+43. “último” no sustituye la historia;
+44. se materializan exactamente seis operaciones históricas;
+45. reintento, replay, backfill, corrección, reconstrucción y restatement no se colapsan;
+46. una corrección de fuente no implica automáticamente restatement;
+47. una reconstrucción no se presenta como publicación original;
+48. un restatement conserva la edición original;
+49. la vista comparativa muestra original y restated por separado;
+50. una diferencia relativa no se calcula con denominador inválido;
+51. no existe umbral universal de materialidad inventado;
+52. se materializan treinta y dos elementos de reproducibilidad;
+53. la ausencia histórica de evidencia no se rellena por inferencia;
+54. divulgación progresiva no oculta una limitación crítica;
+55. `PUBLISH` y `EXPORT` requieren decisiones separadas;
+56. una persona autorizada a consultar no recibe publicación o exportación por inferencia;
+57. las seis familias A004 permanecen distinguibles;
+58. auditoría no se convierte en autorización ni fuente de verdad;
+59. se materializan las catorce métricas de asistencia exactamente una vez;
+60. la distribución de asistencia permanece 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+61. `missingCloseCount` permanece `BLOQUEADO`;
+62. `attendanceRate` permanece `BLOQUEADO`;
+63. `punctualityRate` permanece `BLOQUEADO`;
+64. UX007 no corrige el comportamiento técnico de las tres métricas bloqueadas;
+65. el JSON actual de asistencia no se declara publicación oficial certificada;
+66. el XLSX actual de asistencia no se declara publicación oficial completa mientras dependencias críticas sigan bloqueadas o no evaluadas;
+67. las cincuenta y cinco familias analíticas aparecen exactamente una vez en la matriz de elegibilidad;
+68. se conservan 11 familias comerciales;
+69. se conservan 12 familias de inventario y abastecimiento;
+70. se conservan 10 familias productivas;
+71. se conservan 12 familias de servicio y clientes;
+72. se conservan 10 familias económico-financieras;
+73. existen 55 decisiones UX007, 0 faltantes y 0 duplicadas;
+74. ninguna familia crea una métrica o reporte automático nuevo;
+75. una familia bloqueada no se libera por aparecer en un artefacto;
+76. navegación entre superficies reevalúa autorización;
+77. una alerta enlazada no se convierte en diagnóstico o acción;
+78. una búsqueda no revela metadatos de artefactos no autorizados;
+79. estados vacíos distinguen sin datos, bloqueado, degradado, no comparable, histórico y restatement disponible;
+80. el estado no depende únicamente de color;
+81. la existencia de restatement permanece perceptible en superficies compactas;
+82. una edición histórica continúa sujeta a autorización vigente de consulta;
+83. poblaciones pequeñas y sensibles consumen A002;
+84. una anotación no cambia edición, valor, calidad ni publicación;
+85. la política de versión de suscripción es explícita;
+86. una nueva versión semántica no se adopta silenciosamente cuando rompe comparabilidad;
+87. un restatement no redistribuye automáticamente una suscripción histórica;
+88. una exportación histórica no se modifica después de un restatement;
+89. el reporte original conserva su fecha de publicación;
+90. el snapshot original conserva su timestamp y calidad histórica;
+91. cada handoff tiene propietario documental y condición de salida;
+92. DATA-INT-001 a DATA-INT-004 permanecen no iniciadas y no son materializadas por UX007;
+93. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+94. no se ejecuta código, DDL, DML, migración, backfill, replay, reconstrucción productiva, publicación, job, distribución, despliegue ni cambio de Supabase;
+95. `DATA-UX-008` permanece únicamente reservada.
+
+---
+
+#### 55. Reconciliación final de diseño
+
+| Conjunto                                   | Esperado | Materializado | Faltantes | Duplicados |
+| ------------------------------------------ | -------: | ------------: | --------: | ---------: |
+| familias D008                              |        6 |             6 |         0 |          0 |
+| familias foco UX007                        |        4 |             4 |         0 |          0 |
+| componentes comunes de artefacto           |       19 |            19 |         0 |          0 |
+| condiciones de publicación oficial         |       10 |            10 |         0 |          0 |
+| ejes de versión                            |        8 |             8 |         0 |          0 |
+| operaciones históricas                     |        6 |             6 |         0 |          0 |
+| elementos de reproducibilidad              |       32 |            32 |         0 |          0 |
+| familias auditables A004                   |        6 |             6 |         0 |          0 |
+| métricas de asistencia                     |       14 |            14 |         0 |          0 |
+| métricas `NO EVALUADO`                     |       11 |            11 |         0 |          0 |
+| métricas `BLOQUEADO`                       |        3 |             3 |         0 |          0 |
+| familias analíticas                        |       55 |            55 |         0 |          0 |
+| requisitos de prueba creados o modificados |        0 |             0 |         0 |          0 |
+
+No se materializa ninguna integración, publicación, exportación productiva, suscripción operativa ni snapshot físico en esta fase.
+
+---
+
+#### 56. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
+
+TAREA ACTUAL APROBADA
+DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
+
+SIGUIENTE TAREA RESERVADA
+DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
+```
+
+
 ### [ ] DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales

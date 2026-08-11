@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **697** |
+| Aprobadas | **698** |
 | En propuesta | **0** |
-| No iniciadas | **897** |
+| No iniciadas | **896** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.73% (697/1594)** |
+| Porcentaje de completamiento | **43.79% (698/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-UX-006` — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | ✅ APROBADA |
-| Tarea actual | `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales | ⬜ NO INICIADA |
+| Última aprobada | `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados | ✅ APROBADA |
+| Tarea actual | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1586,7 +1586,7 @@
 | ✅ APROBADA | `DATA-UX-004` | Diseñar centro de calidad, frescura, conciliaciones y certificación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-005` | Diseñar espacio de investigación de variaciones, anomalías y causas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-006` | Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
-| ⬜ NO INICIADA | `DATA-UX-007` | Diseñar reportes, exportaciones, suscripciones y snapshots versionados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
+| ✅ APROBADA | `DATA-UX-007` | Diseñar reportes, exportaciones, suscripciones y snapshots versionados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-008` | Validar comprensión, tiempos y decisiones con usuarios reales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **697** |
+| Tareas aprobadas | **698** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **897** |
+| Tareas no iniciadas | **896** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **43.73% (697/1594)** |
+| Porcentaje de completamiento | **43.79% (698/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora** |
-| Tarea actual | **DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados** |
+| Última tarea aprobada | **DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados** |
+| Tarea actual | **DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales** |
+| Siguiente tarea | **DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 121 de 157 aprobadas; DATA-UX-007 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 122 de 157 aprobadas; DATA-UX-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-UX-006` — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora |
-| Tarea actual | `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados — **NO INICIADA** |
-| Siguiente tarea | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales |
+| Última aprobada | `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados |
+| Tarea actual | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales — **NO INICIADA** |
+| Siguiente tarea | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 121 DE 157 APROBADAS — ACTUAL DATA-UX-007** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 122 DE 157 APROBADAS — ACTUAL DATA-UX-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
-        ↓
-TAREA ACTUAL
 DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 121 de 157 tareas aprobadas
+CARRIL NEXO — 122 de 157 tareas aprobadas
 ```
