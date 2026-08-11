@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **687** |
+| Tareas aprobadas | **688** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **907** |
+| Tareas no iniciadas | **906** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **43.10% (687/1594)** |
+| Porcentaje de completamiento | **43.16% (688/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad** |
-| Tarea actual | **DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad** |
+| Última tarea aprobada | **DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad** |
+| Tarea actual | **DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down** |
+| Siguiente tarea | **DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 111 de 157 aprobadas; DATA-AUTH-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 112 de 157 aprobadas; DATA-AUTH-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad |
-| Tarea actual | `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad — **NO INICIADA** |
-| Siguiente tarea | `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down |
+| Última aprobada | `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad |
+| Tarea actual | `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down — **NO INICIADA** |
+| Siguiente tarea | `DATA-AUTH-003` — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 111 DE 157 APROBADAS — ACTUAL DATA-AUTH-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 112 DE 157 APROBADAS — ACTUAL DATA-AUTH-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
-        ↓
-TAREA ACTUAL
 DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 111 de 157 tareas aprobadas
+CARRIL NEXO — 112 de 157 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **687** |
+| Aprobadas | **688** |
 | En propuesta | **0** |
-| No iniciadas | **907** |
+| No iniciadas | **906** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.10% (687/1594)** |
+| Porcentaje de completamiento | **43.16% (688/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad | ✅ APROBADA |
-| Tarea actual | `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down | ⬜ NO INICIADA |
+| Última aprobada | `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | ✅ APROBADA |
+| Tarea actual | `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-AUTH-003` — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1576,7 +1576,7 @@
 | ✅ APROBADA | `DATA-DOM-015` | Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-016` | Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
 | ✅ APROBADA | `DATA-DOM-017` | Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/01_DOMINIO_DE_DATOS_MAESTROS_Y_ANALITICA.md` |
-| ⬜ NO INICIADA | `DATA-AUTH-001` | Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
+| ✅ APROBADA | `DATA-AUTH-001` | Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
 | ⬜ NO INICIADA | `DATA-AUTH-002` | Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
 | ⬜ NO INICIADA | `DATA-AUTH-003` | Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
 | ⬜ NO INICIADA | `DATA-AUTH-004` | Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
