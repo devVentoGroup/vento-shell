@@ -67,7 +67,7 @@ Queda materializado el contrato de autoridad de continuidad con los siguientes r
 7. catálogo materializado de decisiones que permanecen dentro del mandato y decisiones que exigen aprobación excepcional;
 8. regla de parada protectora predefinida que puede ejecutarse sin esperar una autorización que aumente el daño, sin conceder capacidad para eliminar controles;
 9. segregación entre propuesta, aprobación, ejecución, validación, comunicación y cierre;
-10. matriz de autoridad por severidad `SEV-C1_CONTROLADO` a `SEV-C4_CRITICO` sin convertir severidad en permiso;
+10. matriz de autoridad por severidad `SEV-C1_CONTROLADA` a `SEV-C4_CRITICA` sin convertir severidad en permiso;
 11. tratamiento explícito de sustitución, ausencia de aprobador y concentración de funciones en organización pequeña;
 12. protección de las siete clases de comunicación heredadas de `CONT-DOM-006`;
 13. separación entre preparación, aprobación y emisión de un mensaje;
@@ -209,7 +209,7 @@ Toda decisión protegida de esta tarea deberá poder evaluarse sobre una coorden
 | actor efectivo         | identifica a la persona que actúa y la función que ejerce en ese momento                                       |
 | función de continuidad | distingue director, sustituto, operación, técnica, protección, comunicación, bitácora y aprobación excepcional |
 | sustitución            | indica si existe suplencia vigente, su origen y su alcance                                                     |
-| severidad              | usa `SEV-C1_CONTROLADO` a `SEV-C4_CRITICO`; nunca sustituye autorización                                       |
+| severidad              | usa `SEV-C1_CONTROLADA` a `SEV-C4_CRITICA`; nunca sustituye autorización                                       |
 | alcance                | servicios, procesos, sedes, áreas, canales o dependencias afectados                                            |
 | estado actual          | impide decisiones imposibles para el estado vigente del incidente                                              |
 | modalidad              | distingue declaración, activación parcial, ampliada o empresarial protectora y desactivación                   |
@@ -338,10 +338,10 @@ La severidad limita la respuesta mínima, pero no crea permisos por sí sola.
 
 | Severidad           | Regla heredada                                                                  | Decisión de autoridad en esta tarea                                                                                                                   |
 | ------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SEV-C1_CONTROLADO` | puede no requerir activación; parcial solo si necesita coordinación transversal | director efectivo puede registrar `SIN_ACTIVACION_CONTINUIDAD` cuando sea compatible; toda activación protegida sigue la aprobación ejecutiva vigente |
-| `SEV-C2_ALTO`       | exige al menos activación parcial                                               | director propone; autoridad ejecutiva efectiva aprueba alcance y modo degradado aplicable                                                             |
+| `SEV-C1_CONTROLADA` | puede no requerir activación; parcial solo si necesita coordinación transversal | director efectivo puede registrar `SIN_ACTIVACION_CONTINUIDAD` cuando sea compatible; toda activación protegida sigue la aprobación ejecutiva vigente |
+| `SEV-C2_DEGRADADA`  | exige al menos activación parcial                                               | director propone; autoridad ejecutiva efectiva aprueba alcance y modo degradado aplicable                                                             |
 | `SEV-C3_MAYOR`      | exige activación ampliada y escalamiento ejecutivo                              | no puede reducirse a coordinación informal; activación y cambios materiales de alcance requieren aprobación ejecutiva vigente                         |
-| `SEV-C4_CRITICO`    | exige activación empresarial/protectora y máximo nivel de gobierno aplicable    | se aplica la autoridad ejecutiva de mayor alcance exigida por la delegación vigente; las medidas protectoras no pueden relajarse por presión temporal |
+| `SEV-C4_CRITICA`    | exige activación empresarial/protectora y máximo nivel de gobierno aplicable    | se aplica la autoridad ejecutiva de mayor alcance exigida por la delegación vigente; las medidas protectoras no pueden relajarse por presión temporal |
 
 No se preasigna severidad a un servicio antes de un incidente real.
 
@@ -932,10 +932,10 @@ La ausencia de evidencia operativa no reduce el resultado documental: impide dec
 32. Una simulación no concede autoridad real.
 33. Una activación simulada no produce activación real.
 34. Una decisión de no activar queda registrada expresamente.
-35. `SEV-C1_CONTROLADO` no obliga a una activación que el contrato no exige.
-36. `SEV-C2_ALTO` conserva al menos activación parcial.
+35. `SEV-C1_CONTROLADA` no obliga a una activación que el contrato no exige.
+36. `SEV-C2_DEGRADADA` conserva al menos activación parcial.
 37. `SEV-C3_MAYOR` conserva activación ampliada y escalamiento ejecutivo.
-38. `SEV-C4_CRITICO` conserva activación empresarial/protectora y gobierno máximo aplicable.
+38. `SEV-C4_CRITICA` conserva activación empresarial/protectora y gobierno máximo aplicable.
 39. Severidad no se interpreta como permiso.
 40. Criticidad BIA no se interpreta como permiso.
 41. Prioridad de recuperación no se interpreta como permiso.
