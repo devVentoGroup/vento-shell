@@ -1564,7 +1564,727 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos`
 
 
-### [ ] CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos
+### ✅ CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos` — APROBADA
+**Tarea siguiente:** `CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo` — RESERVADA
+**Tipo de tarea:** documental; materialización del mapa empresarial de dependencias y concentraciones de fallo por servicio BIA, con recursos candidatos, estado de evidencia y puertas de sustitución
+**Bloque:** AC - Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Cambios en código, DDL, DML, migraciones, datos, redes, dispositivos, proveedores, contratos, Supabase o producción:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar el mapa de dependencias de continuidad para los 69 servicios empresariales definidos en la tarea anterior, de modo que cada resultado protegido pueda responder de forma trazable:
+
+```text
+QUE RESULTADO EMPRESARIAL SE PROTEGE
+-> QUE PERSONAS Y FUNCIONES NECESITA
+-> QUE INFORMACION Y DOCUMENTOS NECESITA
+-> QUE APLICACION PROPIETARIA Y CONSUMIDORAS PARTICIPAN
+-> QUE CONTEXTO DE SEDE O TERRITORIO LE APLICA
+-> QUE DISPOSITIVOS, REDES, INSTALACIONES O SERVICIOS PUBLICOS PUEDEN SER NECESARIOS
+-> QUE INVENTARIO, INSUMOS, EQUIPOS O ACTIVOS PUEDEN SER NECESARIOS
+-> QUE PROVEEDOR O CANAL EXTERNO PUEDE SER NECESARIO
+-> DONDE EXISTE UNA CONCENTRACION QUE DEBE VALIDARSE COMO SPOF
+-> SI EXISTE O NO UN SUSTITUTO APROBADO
+-> QUIEN ES PROPIETARIO DE CERRAR LA EVIDENCIA O LA ALTERNATIVA
+```
+
+La tarea no convierte una dependencia semántica en un SPOF por intuición. Un SPOF exige una instancia real, impacto sobre el resultado mínimo y ausencia demostrada de una vía independiente o sustituto efectivo.
+
+---
+
+#### 2. Resultado material
+
+| Control                                                            |     Resultado |
+| ------------------------------------------------------------------ | ------------: |
+| Servicios BIA heredados                                            |   **69 / 69** |
+| Procesos `VPROC-*` reconciliados                                   |   **69 / 69** |
+| Referencias `BIA-VPROC-####-V1` conservadas                        |   **69 / 69** |
+| Dimensiones de dependencia evaluadas por servicio                  |         **8** |
+| Decisiones de dimensión materializadas                             | **552 / 552** |
+| Decisiones de estado SPOF por servicio                             |   **69 / 69** |
+| Decisiones de sustitución por servicio                             |   **69 / 69** |
+| Servicios con mapa especificado y evidencia de instancia pendiente |        **67** |
+| Servicios bloqueados por aplicación diferida AURA                  |         **2** |
+| SPOF de instancia confirmados documentalmente por esta tarea       |         **0** |
+| Sustitutos operativos aprobados por esta tarea                     |         **0** |
+| Ciclos de dependencia dura confirmados con evidencia suficiente    |         **0** |
+| Mapeos proveedor-específicos inventados                            |         **0** |
+| Cambios físicos                                                    |         **0** |
+| Cambios de requisitos de prueba                                    |         **0** |
+
+`0` SPOF confirmados no significa ausencia de SPOF. Significa que la evidencia vigente permite identificar vectores de concentración y dependencias funcionales, pero no demostrar para cada instancia que no exista redundancia, ruta independiente o sustituto efectivo.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume sin redefinir:
+
+1. `CONT-DOM-001`, que fija gobierno, funciones, límites y propietarios de las decisiones de continuidad;
+2. `CONT-DOM-002`, que fija 69 servicios `BCS-VPROC-0001` a `BCS-VPROC-0069`, sus BIA, criticidad, nivel mínimo y alcance territorial;
+3. el catálogo `VPROC-0001` a `VPROC-0069`, sus propósitos, propietarias, consumidoras, iniciadores, continuadores, entradas, salidas y evidencia;
+4. la estructura organizacional y territorial que reconoce cinco sedes operativas internas: `Oficina 1`, `Vento Café`, `Saudo`, `Molka` y `Centro de Producción y Distribución`;
+5. la clasificación de Vaila, Catering y puntos externos sin promoverlos a sedes internas;
+6. el contrato tecnológico de siete clases `ASSET`, `ENDPOINT`, `SHARED_DEVICE`, `NETWORK_RESOURCE`, `PRINTER`, `APPLICATION` y `TECH_SERVICE`;
+7. las quince relaciones tipadas de configuración, incluidas las dependencias de servicio hacia activo, endpoint, dispositivo compartido, red, impresora y aplicación;
+8. los once servicios `TI-SERVICE-*` y las fronteras de propiedad entre SHELL, NEXO, VISO, PRINT-ARC, ORIGO, NUMERA y proveedores;
+9. la evidencia canónica de que la materialización técnica transversal sigue incompleta para endpoint, topología de red y varias reconciliaciones físicas;
+10. el registro vigente de requisitos de continuidad e integración.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+DEPENDENCIA EMPRESARIAL != PROPIETARIO LOGICO != COMPONENTE FISICO != SPOF
+```
+
+```text
+FUENTE DE VERDAD UNICA != INSTANCIA UNICA != FALLO UNICO
+```
+
+```text
+APLICACION PROPIETARIA != PROVEEDOR DE INFRAESTRUCTURA != RUTA DE RECUPERACION
+```
+
+```text
+RECURSO NECESARIO != RECURSO CRITICO CONFIRMADO != RECURSO SIN SUSTITUTO
+```
+
+```text
+SUSTITUTO POSIBLE != SUSTITUTO APROBADO != SUSTITUTO PROBADO
+```
+
+```text
+DISPONIBILIDAD TECNICA != RESULTADO EMPRESARIAL RECUPERADO
+```
+
+La unicidad de una aplicación propietaria o de una fuente de verdad protege integridad y autoridad; no demuestra por si sola una concentración física de fallo.
+
+---
+
+#### 5. Dimensiones obligatorias del mapa
+
+| Dimensión                              | Regla                                                                                                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| personas y funciones                   | referencia iniciadores, continuadores, responsables y funciones necesarias; nunca inventa nombres de personas                |
+| información y documentos               | referencia entradas, salidas, registros y evidencia canonicamente requeridos por el proceso                                  |
+| aplicaciones                           | conserva una propietaria y solo las consumidoras declaradas; plataforma de persistencia no adquiere propiedad                |
+| sede y territorio                      | reutiliza el alcance de `BIA-VPROC-####-V1`; no crea una sede por conveniencia de continuidad                                |
+| dispositivo y periferico               | solo se vuelve dependencia de instancia cuando el proceso realmente necesita el endpoint, dispositivo compartido o impresora |
+| instalacion, energía y red             | se relaciona con la sede y topología reales; una clase o capacidad nominal no demuestra una ruta activa                      |
+| inventario, insumos, equipos y activos | se vinculan solo cuando su ausencia afecta el resultado mínimo del servicio                                                  |
+| proveedor o canal externo              | se registra por contrato/instancia cuando participa realmente; un tercero nunca se convierte en propietario interno          |
+
+Cada una de las ocho dimensiones recibe una decisión por los 69 servicios. Una decisión `CONDICIONAL` es una clasificación explicita: exige la variante o instancia concreta antes de considerarse dependencia vigente.
+
+---
+
+#### 6. Estados usados por este mapa
+
+Estos estados son documentales de esta tarea; no crean enums de base de datos ni estados técnicos de otra fuente.
+
+##### 6.1. Estado de una dimensión
+
+| Estado             | Significado                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `VINCULO_CANONICO` | La naturaleza del proceso exige esa clase de dependencia; la instancia concreta conserva su fuente propietaria.                      |
+| `CONDICIONAL`      | La dependencia existe solo para una sede, variante, canal, recurso o modalidad concreta.                                             |
+| `NO_DIRECTA`       | La clase no es requisito directo universal del resultado; puede aparecer aguas arriba o abajo sin convertirse en dependencia propia. |
+| `BLOQUEADO`        | La capacidad no puede presentar dependencia operativa como habilitada por existir una aplicación objetivo diferida.                  |
+
+##### 6.2. Estado de SPOF
+
+| Estado                              | Significado                                                                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `CANDIDATO_A_VALIDAR`               | Existe al menos un vector de concentración que debe verificarse contra instancias, redundancia y sustitutos; no es un SPOF confirmado. |
+| `SPOF_CONFIRMADO`                   | Solo puede usarse con evidencia de dependencia real, impacto sobre el mínimo y ausencia de vía independiente/sustituto.                |
+| `SIN_SPOF_DEMOSTRADO`               | Solo puede usarse cuando existen rutas independientes verificadas; no se presume.                                                      |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA` | No existe capacidad operativa habilitada suficiente para evaluar el fallo como una instancia productiva normal.                        |
+
+##### 6.3. Estado de sustitución
+
+| Estado                              | Significado                                                                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `SIN_SUSTITUTO_APROBADO`            | Esta tarea no dispone de evidencia aprobada de un sustituto que mantenga el resultado mínimo con autoridad y controles equivalentes. |
+| `SUSTITUTO_VERIFICADO`              | Exige identidad, alcance, capacidad, disponibilidad, autoridad, seguridad, datos, conciliacion y prueba suficientes.                 |
+| `NO_APLICA`                         | La dependencia no necesita sustitución porque no es requerida para el resultado en ese alcance.                                      |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA` | La estrategia de sustitución no se evalua como operativa antes de habilitar la capacidad objetivo.                                   |
+
+---
+
+#### 7. Prueba mínima para declarar un SPOF
+
+Un elemento solo se declara `SPOF_CONFIRMADO` cuando se demuestran conjuntamente:
+
+1. identidad concreta del elemento o función;
+2. relación vigente con el servicio BIA y su alcance;
+3. perdida del resultado mínimo si el elemento falla;
+4. ausencia de otra instancia independiente capaz de sostener el mismo resultado;
+5. ausencia de un sustituto aprobado y disponible;
+6. inexistencia de una ruta alternativa ya autorizada que elimine la concentración;
+7. evidencia fechada y propietario de la constatacion;
+8. tratamiento de dependencias compartidas que pudieran hacer falsa la aparente redundancia.
+
+La falta de inventario o de evidencia nunca se convierte en `SPOF_CONFIRMADO`; queda como `CANDIDATO_A_VALIDAR`.
+
+---
+
+#### 8. Prueba mínima para declarar un sustituto
+
+Un recurso alternativo no se considera sustituto por ser similar o estar disponible. Debe demostrar:
+
+1. que preserva el mismo resultado mínimo del BIA;
+2. que cubre la sede, horario, volumen y variante aplicables;
+3. que existe autoridad para activarlo;
+4. que las personas requeridas saben utilizarlo;
+5. que dispone de datos, documentos, insumos, configuración y credenciales necesarios;
+6. que conserva seguridad, privacidad, calidad, inocuidad, trazabilidad y auditoria aplicables;
+7. que no crea una segunda fuente de verdad;
+8. que los trabajos producidos pueden reincorporarse y conciliarse;
+9. que su dependencia de energía, red, proveedor o instalacion no comparte silenciosamente el mismo dominio de fallo;
+10. que existe evidencia de prueba cuando la estrategia requiera readiness.
+
+La selección concreta de modalidades de contingencia pertenece a `CONT-DOM-008`; la continuidad de proveedores y recursos alternativos pertenece a `CONT-DOM-013`.
+
+---
+
+#### 9. Reutilización del grafo tecnológico
+
+Para dependencias técnicas, este mapa reutiliza el contrato ya aprobado y no inventa una CMDB paralela:
+
+- `TECH_SERVICE -> ASSET`;
+- `TECH_SERVICE -> ENDPOINT`;
+- `TECH_SERVICE -> SHARED_DEVICE`;
+- `TECH_SERVICE -> NETWORK_RESOURCE`;
+- `TECH_SERVICE -> PRINTER`;
+- `TECH_SERVICE -> APPLICATION`.
+
+La evidencia canónica disponible documenta diez aplicaciones, dos dispositivos compartidos con cuatro vinculos dispositivo-aplicación y nueve impresoras documentadas, pero no una identidad transversal de endpoints ni una topología de red consolidada suficiente para declarar redundancia completa. Esos datos se usan como limite de evidencia, no como inventario operativo revalidado por esta tarea.
+
+Por tanto:
+
+1. no se deduce una dependencia por nombre, IP, MAC, serial, SSID, URL o ubicación textual;
+2. no se deduce redundancia porque existan dos objetos de la misma clase;
+3. no se deduce SPOF porque exista una sola propietaria lógica;
+4. no se deduce sustituto porque un equipo o proveedor parezca equivalente;
+5. la topología real conserva sus propietarios técnicos y requiere evidencia de instancia.
+
+---
+
+#### 10. Perfiles de dependencia materializados
+
+Los perfiles siguientes son agrupaciones de lectura dentro de esta tarea. No son nuevos identificadores empresariales y no modifican las identidades `VPROC-*`, `BCS-*` o `BIA-*`.
+
+| Perfil                                           | Personas / funciones                                                                               | Información / documentos                                                                      | Físico / técnico                                                                                      | Inventario / recursos                                                                 | Externo                                                                                        | Vector de concentración a validar                                                                        | Puerta de sustitución                                                                                                     |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Gobierno y estructura                            | autoridad empresarial, responsable del proceso y continuadores aprobados                           | decisiones, estructura, políticas, delegaciones, compromisos y evidencia                      | dispositivo, conectividad y contexto administrativo cuando sean necesarios para registrar o consultar | sin dependencia material universal; recursos concretos se vinculan solo con evidencia | asesoria o autoridad externa solo cuando el caso la involucre                                  | concentración de autoridad, conocimiento, expediente o acceso administrativo                             | `CONT-DOM-006` para suplencia humana; `CONT-DOM-008` para alternativa operativa; `CONT-DOM-013` si existe tercero crítico |
+| Personas y trabajo                               | trabajador, responsables laborales, aprobadores y continuadores del proceso                        | identidad laboral, vinculo, asignaciones, turnos, asistencia, novedades y documentos          | sede/area del BIA, dispositivo y conectividad cuando el paso sea digital                              | recursos de trabajo y devoluciones cuando el proceso los exija                        | nomina, banco, seguridad social u otro tercero solo en la variante que corresponda             | disponibilidad de persona clave, acceso a expediente, dispositivo/red y tercero laboral cuando aplique   | `CONT-DOM-006`, `CONT-DOM-008` y `CONT-DOM-013` segun la clase de concentración                                           |
+| SST, higiene y cumplimiento                      | responsable SST/cumplimiento, trabajadores, responsables de sede y continuadores                   | riesgos, inspecciones, incidente, controles, acciones y evidencia                             | instalacion, zona, dispositivo y conectividad segun el control o incidente                            | EPP, equipos, insumos de control y medios de emergencia cuando apliquen               | autoridades, prestadores o asesores cuando la obligacion los requiera                          | responsable especializado, instalacion, EPP/equipo, evidencia o contraparte externa                      | `CONT-DOM-006`, `CONT-DOM-008` y `CONT-DOM-013`                                                                           |
+| Producto, receta, oferta y especificación        | responsables de producto, receta, calidad, oferta y operadores que corresponda                     | maestro de producto, receta, especificación, restricciones, oferta y vigencias                | sede productiva o comercial, dispositivo/red y equipos solo cuando el resultado los necesite          | ingredientes, presentaciones, materiales y equipos cuando la variante sea productiva  | proveedor o canal solo si participa en el resultado concreto                                   | maestro/especificación, persona especializada, material/equipo o canal dependiente                       | `CONT-DOM-008` para estrategia; `CONT-DOM-013` para terceros/recursos externos                                            |
+| Compras y proveedores                            | solicitante, evaluador, aprobador, receptor y responsables de compra                               | necesidad, cotizacion, proveedor, orden, recepcion, diferencias y soporte                     | dispositivo/red y punto de recepcion cuando el proceso llegue a hecho físico                          | bien o servicio solicitado y recursos de recepcion cuando apliquen                    | proveedor y sus canales de cotizacion, orden, entrega o soporte                                | proveedor unico, aprobación concentrada, canal de compra o punto de recepcion                            | `CONT-DOM-008` para alternativa transitoria; `CONT-DOM-013` para proveedor y recurso alternativo                          |
+| Inventario y almacenamiento                      | custodios, operadores de inventario y responsables de validación                                   | ubicación, existencia, movimiento, conteo, condición, solicitud y recepcion interna           | sede, LOC/zona, condiciones de almacenamiento, dispositivo/red cuando apliquen                        | existencias, contenedores, almacenamiento y equipos requeridos por el objeto          | sin dependencia externa universal; proveedor o transporte solo por variante correlacionada     | ubicación unica, frio/servicio publico, equipo de almacenamiento, inventario o dispositivo de operación  | `CONT-DOM-008` para modalidad/alternativa; `CONT-DOM-013` cuando dependa de servicio o recurso externo                    |
+| Activos, vehiculos, reutilizables y contenedores | custodio, operador, conductor, responsable técnico o receptor segun proceso                        | activo, custodia, mantenimiento, condición, uso, kilometraje, retorno y completitud           | activo/vehiculo, sede o punto operativo, dispositivo/red cuando la trazabilidad sea digital           | activo, vehiculo, repuesto, combustible, reutilizable o contenedor correspondiente    | mantenimiento, garantia, combustible o tercero solo cuando la operación lo use                 | activo o vehiculo unico, custodio/conductor, repuesto/combustible o proveedor especializado              | `CONT-DOM-008` para recurso alterno; `CONT-DOM-013` para proveedor/abastecimiento alternativo                             |
+| Producción                                       | planificador, productor, responsable de calidad y continuadores autorizados                        | demanda, plan, receta, orden, lote, consumo, calidad, empaque, rendimiento y cierre           | sede productiva, servicios publicos aplicables, equipo, dispositivo/red cuando corresponda            | ingredientes, insumos, empaques, equipos y capacidad productiva                       | proveedores de insumos/servicios solo por dependencia real demostrada                          | equipo especializado, capacidad de sede, servicio publico, material crítico o conocimiento especializado | `CONT-DOM-008` para operación alternativa; `CONT-DOM-013` para energía, insumos o terceros                                |
+| Pedidos, ventas, pagos y caja                    | personal de servicio/caja, responsables comerciales y aprobadores cuando apliquen                  | oferta, pedido, preparacion, entrega, pago, soporte fiscal, caja y conciliacion               | sede/canal, terminal o dispositivo, red e impresion cuando la variante lo requiera                    | producto disponible, medios de caja y recursos de servicio                            | canal externo, adquirencia/pagos, facturacion o mensajeria cuando aplique                      | terminal/red, proveedor de pago, canal externo, impresora, caja o sede comercial                         | `CONT-DOM-008` para alternativa operativa; `CONT-DOM-013` para red, pagos, canales y proveedores                          |
+| Clientes, fidelización, reclamos y reservas      | cliente, personal de atencion y decisores de caso/compensacion cuando corresponda                  | identidad, consentimiento, ledger de fidelización, caso, compensacion, reserva y comunicación | dispositivo/red, sede o canal solo segun la interaccion                                               | capacidad reservable o recurso comprometido cuando exista                             | mensajeria, canal o proveedor de comunicación cuando la interaccion lo use                     | identidad/ledger, canal de contacto, decisor de compensacion o capacidad reservable                      | `CONT-DOM-008` para alternativa; `CONT-DOM-013` para canal/proveedor externo                                              |
+| Transporte y entregas                            | planificador, conductor/custodio, receptor y responsables de seguimiento                           | ruta, carga, custodia, entrega, rechazo, novedad, retorno y evidencia                         | vehiculo, sede/punto, dispositivo movil y conectividad cuando apliquen                                | vehiculo, carga, combustible, contenedores y medios de prueba                         | transportador o canal de entrega externo cuando la variante sea tercerizada                    | vehiculo/conductor, conectividad, combustible, prueba de entrega o transportador tercero                 | `CONT-DOM-008` para recurso/procedimiento alterno; `CONT-DOM-013` para transporte/proveedor alternativo                   |
+| Finanzas y obligaciones                          | responsables financieros, aprobadores y conciliadores autorizados                                  | hechos economicos, soportes, obligaciones, cartera, pagos, costos y cierres                   | dispositivo/red y contexto administrativo cuando sea necesario                                        | sin recurso físico universal; soportes y medios de pago se tratan por contrato        | banco, proveedor de pago, sistema contable/fiscal o contraparte cuando aplique                 | autoridad financiera, fuente documental, integración externa o canal bancario/contable                   | `CONT-DOM-006` para suplencia; `CONT-DOM-013` para bancos, pagos y sistemas externos                                      |
+| Instalaciones                                    | responsables de sede, mantenimiento, seguridad y proveedores autorizados                           | inspeccion, condición, mantenimiento, servicio, hallazgo, accion y cierre                     | instalacion, energía/servicios publicos, equipos, dispositivos y red cuando apliquen                  | repuestos, suministros, equipos de mantenimiento y recursos de seguridad              | mantenimiento, plagas, servicios publicos u otros prestadores aplicables                       | instalacion, servicio publico, equipo especializado o prestador unico                                    | `CONT-DOM-008` y `CONT-DOM-013`                                                                                           |
+| Mercadeo y oportunidades AURA                    | responsables de mercadeo, aprobadores y continuadores declarados                                   | contenido, campaña, audiencia, oportunidad, interaccion y evidencia                           | dispositivo, red y canal digital cuando la capacidad llegue a estar operativa                         | activos de contenido cuando existan y esten gobernados                                | canales y proveedores de comunicación/mercadeo segun contrato futuro                           | aplicación diferida, canal externo, dato de audiencia y capacidad de publicacion                         | primero cierre de la aplicación diferida; luego `CONT-DOM-008` y `CONT-DOM-013` segun estrategia                          |
+| Tecnología y acceso                              | responsable tecnológico, propietario del proceso, usuario y especialistas autorizados              | ticket, incidente, diagnostico, cambio, acceso, vigencia, revocacion y evidencia técnica      | endpoint, dispositivo compartido, red, aplicación, impresora o activo segun el caso                   | elemento tecnológico afectado y conocimiento técnico requerido                        | proveedor tecnológico o soporte especializado solo con alcance autorizado                      | conocimiento técnico, cuenta/credencial bajo custodia, red, aplicación o proveedor especializado         | `CONT-DOM-006` para suplencia; `CONT-DOM-008` para alternativa; `CONT-DOM-013` para proveedor/recurso                     |
+| Información y evidencia                          | propietario del expediente, custodios y responsables de autorización/evidencia                     | documentos, evidencia, metadatos, retencion, acceso, hold y disposición                       | almacenamiento, dispositivo y conectividad segun soporte; archivo físico cuando aplique               | soporte físico o almacenamiento protegido cuando corresponda                          | repositorio/proveedor o autoridad solo si forma parte del expediente aprobado                  | custodia, repositorio, clave de acceso, almacenamiento o conocimiento de recuperación                    | `CONT-DOM-008`, `CONT-DOM-011`, `CONT-DOM-012` y `CONT-DOM-013` segun soporte                                             |
+| Analitica y mejora                               | responsables de métrica, análisis, decisión y verificacion                                         | métricas, lineage, hallazgos, acciones, resultados y evidencia                                | dispositivo/red y plataforma de datos cuando el análisis sea digital                                  | sin recurso físico universal; depende de fuentes y capacidad analítica                | BI, hoja, modelo o proveedor solo bajo contrato aprobado                                       | fuente/lineage, herramienta analítica, conocimiento especializado o integración externa                  | `CONT-DOM-008` para alternativa de trabajo; `CONT-DOM-013` si existe proveedor crítico                                    |
+| Continuidad empresarial                          | responsable de continuidad, propietarios de proceso, responsables técnicos y decisores autorizados | BIA, incidente, decisiones, planes, registros de contingencia, reconciliación y evidencia     | todas las dependencias de sede, energía, red, dispositivos e infraestructura que afecten el alcance   | recursos mínimos de cada proceso afectado y medios de recuperación autorizados        | proveedores, canales y autoridades segun incidente                                             | concentraciones heredadas de todos los servicios afectados y de la coordinacion transversal              | `CONT-DOM-004` a `CONT-DOM-015`, `CONT-AUTH-*` y `CONT-INT-*` segun la decisión                                           |
+| Riesgo empresarial                               | propietario del riesgo, decisores y responsables de tratamiento                                    | riesgo, evaluación, tratamiento, aceptación, seguimiento y evidencia                          | dispositivo/red y contexto solo como soporte del registro                                             | el recurso bajo riesgo se referencia desde su dominio; no se duplica                  | asesor, aseguradora o autoridad solo cuando participe en el tratamiento                        | propietario del riesgo, evidencia, autoridad de aceptación o contraparte externa                         | `CONT-DOM-006`, `CONT-DOM-008` y `CONT-DOM-013` segun el riesgo                                                           |
+| Asesores y autoridades                           | responsable interno, asesor o interlocutor autorizado y aprobador                                  | requerimiento, concepto, entregable, vencimiento, comunicación y evidencia                    | dispositivo/red y canal seguro de intercambio cuando aplique                                          | sin recurso físico universal                                                          | asesor o autoridad es dependencia externa explicita del caso, sin transferir propiedad interna | contraparte externa, plazo, conocimiento especializado o canal de intercambio                            | `CONT-DOM-006` para suplencia interna; `CONT-DOM-013` para dependencia externa                                            |
+| Desempeno y desarrollo                           | trabajador, responsable de seguimiento y decisores autorizados                                     | objetivos, observaciones, retroalimentacion y decisiones sensibles                            | dispositivo/red y contexto laboral cuando aplique                                                     | sin recurso físico universal                                                          | no existe dependencia externa universal aprobada                                               | responsable de seguimiento, confidencialidad del expediente o acceso a la información                    | `CONT-DOM-006` y `CONT-DOM-008`                                                                                           |
+| Elementos de protección personal                 | responsable SST, trabajador, custodio y responsables de reposicion                                 | requisito, entrega, aceptación, vigencia, cambio, devolucion y evidencia                      | sede/area y dispositivo cuando la evidencia sea digital                                               | EPP requerido, stock, talla/especificación y medio de entrega                         | proveedor de EPP cuando la disponibilidad dependa de abastecimiento                            | EPP sin sustituto, stock insuficiente, proveedor o custodio unico                                        | `CONT-DOM-008` para recurso alterno; `CONT-DOM-013` para proveedor/abastecimiento                                         |
+| Kits y conjuntos                                 | custodio, armador, receptor y responsables del kit                                                 | definicion, instancia, componentes, completitud, prestamo, retorno y sustitución              | sede/LOC y dispositivo cuando el control sea digital                                                  | kit, componentes obligatorios/opcionales y contenedores relacionados                  | proveedor solo si un componente depende de abastecimiento externo                              | componente insustituible, kit unico, custodia o disponibilidad de reposicion                             | `CONT-DOM-008` para recurso sustituto; `CONT-DOM-013` para abastecimiento externo                                         |
+| Satisfaccion del cliente                         | cliente, responsable de medición y analista autorizado                                             | muestra, canal, consentimiento, respuesta, sesgo y resultado                                  | dispositivo/red o canal de captura cuando aplique                                                     | sin recurso físico universal                                                          | canal o proveedor de encuesta/mensajeria solo si forma parte de la medición                    | canal de captura, consentimiento, integridad de muestra o proveedor externo                              | `CONT-DOM-008` y `CONT-DOM-013` cuando exista dependencia externa                                                         |
+| Presupuesto                                      | responsables financieros, preparadores y aprobadores autorizados                                   | versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviacion       | dispositivo/red y plataforma de datos cuando aplique                                                  | sin recurso físico universal                                                          | fuentes externas solo si el presupuesto las consume mediante contrato aprobado                 | aprobador, fuente de supuestos, versión vigente o herramienta de consolidacion                           | `CONT-DOM-006` para suplencia; `CONT-DOM-008` para alternativa de trabajo                                                 |
+
+---
+
+#### 11. Matriz completa de dependencias por servicio
+
+Reglas de lectura:
+
+- `PERS` = personas/funciones; `INFO` = información/documentos; `APP` = aplicación propietaria + consumidoras declaradas; `SITE` = alcance territorial heredado del BIA;
+- `DEV` = dispositivo/periferico; `INFRA` = instalacion/energía/red; `RES` = inventario/insumo/equipo/activo; `EXT` = proveedor/canal externo;
+- `APP` no enumera copias: la propietaria se declara por fila y las consumidoras siguen exactamente el registro de consumidores del mismo `VPROC-*`;
+- `SITE` conserva por referencia el alcance de `BIA-VPROC-####-V1` y nunca lo amplifica;
+- un estado `CANDIDATO_A_VALIDAR` obliga a obtener evidencia, pero no afirma que el SPOF exista.
+
+| Servicio         | BIA                 | Proceso      | Propietaria | Perfil                                           | PERS               | INFO               | APP                | SITE               | DEV                | INFRA              | RES                | EXT                | SPOF                                | Sustitución                         | Estado del mapa                      |
+| ---------------- | ------------------- | ------------ | ----------- | ------------------------------------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ------------------ | ----------------------------------- | ----------------------------------- | ------------------------------------ |
+| `BCS-VPROC-0001` | `BIA-VPROC-0001-V1` | `VPROC-0001` | `viso`      | Gobierno y estructura                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0002` | `BIA-VPROC-0002-V1` | `VPROC-0002` | `viso`      | Gobierno y estructura                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0003` | `BIA-VPROC-0003-V1` | `VPROC-0003` | `viso`      | Gobierno y estructura                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0004` | `BIA-VPROC-0004-V1` | `VPROC-0004` | `viso`      | Gobierno y estructura                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0005` | `BIA-VPROC-0005-V1` | `VPROC-0005` | `viso`      | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0006` | `BIA-VPROC-0006-V1` | `VPROC-0006` | `viso`      | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0007` | `BIA-VPROC-0007-V1` | `VPROC-0007` | `viso`      | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0008` | `BIA-VPROC-0008-V1` | `VPROC-0008` | `anima`     | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0009` | `BIA-VPROC-0009-V1` | `VPROC-0009` | `viso`      | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0010` | `BIA-VPROC-0010-V1` | `VPROC-0010` | `numera`    | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0011` | `BIA-VPROC-0011-V1` | `VPROC-0011` | `viso`      | Personas y trabajo                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0012` | `BIA-VPROC-0012-V1` | `VPROC-0012` | `viso`      | SST, higiene y cumplimiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0013` | `BIA-VPROC-0013-V1` | `VPROC-0013` | `viso`      | SST, higiene y cumplimiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0014` | `BIA-VPROC-0014-V1` | `VPROC-0014` | `viso`      | SST, higiene y cumplimiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0015` | `BIA-VPROC-0015-V1` | `VPROC-0015` | `nexo`      | Producto, receta, oferta y especificación        | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0016` | `BIA-VPROC-0016-V1` | `VPROC-0016` | `fogo`      | Producto, receta, oferta y especificación        | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0017` | `BIA-VPROC-0017-V1` | `VPROC-0017` | `pulso`     | Producto, receta, oferta y especificación        | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0018` | `BIA-VPROC-0018-V1` | `VPROC-0018` | `nexo`      | Producto, receta, oferta y especificación        | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0019` | `BIA-VPROC-0019-V1` | `VPROC-0019` | `origo`     | Compras y proveedores                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0020` | `BIA-VPROC-0020-V1` | `VPROC-0020` | `origo`     | Compras y proveedores                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0021` | `BIA-VPROC-0021-V1` | `VPROC-0021` | `origo`     | Compras y proveedores                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0022` | `BIA-VPROC-0022-V1` | `VPROC-0022` | `origo`     | Compras y proveedores                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0023` | `BIA-VPROC-0023-V1` | `VPROC-0023` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0024` | `BIA-VPROC-0024-V1` | `VPROC-0024` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0025` | `BIA-VPROC-0025-V1` | `VPROC-0025` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0026` | `BIA-VPROC-0026-V1` | `VPROC-0026` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0027` | `BIA-VPROC-0027-V1` | `VPROC-0027` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0028` | `BIA-VPROC-0028-V1` | `VPROC-0028` | `nexo`      | Inventario y almacenamiento                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0029` | `BIA-VPROC-0029-V1` | `VPROC-0029` | `nexo`      | Activos, vehiculos, reutilizables y contenedores | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0030` | `BIA-VPROC-0030-V1` | `VPROC-0030` | `nexo`      | Activos, vehiculos, reutilizables y contenedores | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0031` | `BIA-VPROC-0031-V1` | `VPROC-0031` | `nexo`      | Activos, vehiculos, reutilizables y contenedores | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0032` | `BIA-VPROC-0032-V1` | `VPROC-0032` | `nexo`      | Activos, vehiculos, reutilizables y contenedores | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0033` | `BIA-VPROC-0033-V1` | `VPROC-0033` | `fogo`      | Producción                                       | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0034` | `BIA-VPROC-0034-V1` | `VPROC-0034` | `fogo`      | Producción                                       | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0035` | `BIA-VPROC-0035-V1` | `VPROC-0035` | `fogo`      | Producción                                       | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0036` | `BIA-VPROC-0036-V1` | `VPROC-0036` | `fogo`      | Producción                                       | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0037` | `BIA-VPROC-0037-V1` | `VPROC-0037` | `fogo`      | Producción                                       | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0038` | `BIA-VPROC-0038-V1` | `VPROC-0038` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0039` | `BIA-VPROC-0039-V1` | `VPROC-0039` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0040` | `BIA-VPROC-0040-V1` | `VPROC-0040` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0041` | `BIA-VPROC-0041-V1` | `VPROC-0041` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0042` | `BIA-VPROC-0042-V1` | `VPROC-0042` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0043` | `BIA-VPROC-0043-V1` | `VPROC-0043` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0044` | `BIA-VPROC-0044-V1` | `VPROC-0044` | `pulso`     | Pedidos, ventas, pagos y caja                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0045` | `BIA-VPROC-0045-V1` | `VPROC-0045` | `pass`      | Clientes, fidelización, reclamos y reservas      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0046` | `BIA-VPROC-0046-V1` | `VPROC-0046` | `pulso`     | Clientes, fidelización, reclamos y reservas      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0047` | `BIA-VPROC-0047-V1` | `VPROC-0047` | `pulso`     | Clientes, fidelización, reclamos y reservas      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0048` | `BIA-VPROC-0048-V1` | `VPROC-0048` | `nexo`      | Transporte y entregas                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0049` | `BIA-VPROC-0049-V1` | `VPROC-0049` | `nexo`      | Transporte y entregas                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0050` | `BIA-VPROC-0050-V1` | `VPROC-0050` | `pulso`     | Transporte y entregas                            | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0051` | `BIA-VPROC-0051-V1` | `VPROC-0051` | `numera`    | Finanzas y obligaciones                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0052` | `BIA-VPROC-0052-V1` | `VPROC-0052` | `numera`    | Finanzas y obligaciones                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0053` | `BIA-VPROC-0053-V1` | `VPROC-0053` | `numera`    | Finanzas y obligaciones                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0054` | `BIA-VPROC-0054-V1` | `VPROC-0054` | `numera`    | Finanzas y obligaciones                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0055` | `BIA-VPROC-0055-V1` | `VPROC-0055` | `nexo`      | Instalaciones                                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0056` | `BIA-VPROC-0056-V1` | `VPROC-0056` | `aura`      | Mercadeo y oportunidades AURA                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`  |
+| `BCS-VPROC-0057` | `BIA-VPROC-0057-V1` | `VPROC-0057` | `aura`      | Mercadeo y oportunidades AURA                    | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO`        | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`  |
+| `BCS-VPROC-0058` | `BIA-VPROC-0058-V1` | `VPROC-0058` | `viso`      | Tecnología y acceso                              | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0059` | `BIA-VPROC-0059-V1` | `VPROC-0059` | `viso`      | Tecnología y acceso                              | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0060` | `BIA-VPROC-0060-V1` | `VPROC-0060` | `viso`      | Información y evidencia                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0061` | `BIA-VPROC-0061-V1` | `VPROC-0061` | `numera`    | Analitica y mejora                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0062` | `BIA-VPROC-0062-V1` | `VPROC-0062` | `viso`      | Continuidad empresarial                          | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0063` | `BIA-VPROC-0063-V1` | `VPROC-0063` | `viso`      | Riesgo empresarial                               | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0064` | `BIA-VPROC-0064-V1` | `VPROC-0064` | `viso`      | Asesores y autoridades                           | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `VINCULO_CANONICO` | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0065` | `BIA-VPROC-0065-V1` | `VPROC-0065` | `viso`      | Desempeno y desarrollo                           | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `NO_DIRECTA`       | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0066` | `BIA-VPROC-0066-V1` | `VPROC-0066` | `viso`      | Elementos de protección personal                 | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0067` | `BIA-VPROC-0067-V1` | `VPROC-0067` | `nexo`      | Kits y conjuntos                                 | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0068` | `BIA-VPROC-0068-V1` | `VPROC-0068` | `pulso`     | Satisfaccion del cliente                         | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+| `BCS-VPROC-0069` | `BIA-VPROC-0069-V1` | `VPROC-0069` | `numera`    | Presupuesto                                      | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `VINCULO_CANONICO` | `CONDICIONAL`      | `CONDICIONAL`      | `NO_DIRECTA`       | `CONDICIONAL`      | `CANDIDATO_A_VALIDAR`               | `SIN_SUSTITUTO_APROBADO`            | `ESPECIFICADO_CON_EVIDENCIA_PARCIAL` |
+
+---
+
+#### 12. Reconciliación de la matriz
+
+La matriz conserva:
+
+- **69** servicios `BCS-*` unicos;
+- **69** procesos `VPROC-*` unicos;
+- **69** BIA `BIA-*` unicos;
+- **0** servicios sin perfil;
+- **0** servicios con propietaria multiple;
+- **0** servicios con sede inventada;
+- **67** filas `ESPECIFICADO_CON_EVIDENCIA_PARCIAL`;
+- **2** filas `BLOQUEADO_POR_APLICACION_DIFERIDA`, correspondientes exclusivamente a `VPROC-0056` y `VPROC-0057`;
+- **69** decisiones de SPOF;
+- **69** decisiones de sustitución;
+- **552** decisiones de clase de dependencia.
+
+Distribución de aplicaciones propietarias preservada:
+
+| Aplicación | Servicios |
+| ---------- | --------: |
+| `anima`    |     **1** |
+| `viso`     |    **20** |
+| `nexo`     |    **16** |
+| `fogo`     |     **6** |
+| `origo`    |     **4** |
+| `pulso`    |    **12** |
+| `numera`   |     **7** |
+| `aura`     |     **2** |
+| `pass`     |     **1** |
+| `shell`    |     **0** |
+| **Total**  |    **69** |
+
+---
+
+#### 13. Dependencias compartidas y concentraciones transversales
+
+Se consideran vectores compartidos que deben reconciliarse cuando varias filas materialicen la misma instancia:
+
+1. una misma sede o instalacion que soporte varios servicios;
+2. un mismo enlace, router, punto de acceso, segmento o recurso de red;
+3. un mismo endpoint o dispositivo compartido;
+4. una misma impresora o puente de impresion;
+5. una misma aplicación o dependencia técnica de aplicación;
+6. una misma fuente de datos o documento esencial;
+7. una misma persona que concentre conocimiento, custodia o autoridad sin suplencia vigente;
+8. un mismo activo, equipo especializado, camara, vehiculo o recurso de almacenamiento;
+9. un mismo servicio publico;
+10. un mismo proveedor, canal, banco, adquirente, transportador o prestador especializado;
+11. una misma credencial o conocimiento de recuperación bajo una sola custodia;
+12. una dependencia externa que se presente como dos alternativas pero comparta proveedor, infraestructura o dominio de fallo.
+
+Una instancia compartida se registra una sola vez en su fuente propietaria y se relaciona con todos los servicios afectados. No se duplica para simular independencia.
+
+---
+
+#### 14. Tratamiento de dependencias sin sustituto demostrado
+
+Para las 67 filas no bloqueadas, `SIN_SUSTITUTO_APROBADO` significa exclusivamente que esta tarea no dispone de evidencia suficiente para afirmar un sustituto validado. El cierre se distribuye por clase:
+
+| Clase                                                      | Propietario de la decisión posterior                                             | Condicion de salida                                                           |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| suplencia de persona o mando                               | `CONT-DOM-006`                                                                   | función primaria y sustituta con alcance, vigencia y autoridad suficientes    |
+| operación manual, offline, reducida o con recurso alterno  | `CONT-DOM-008`                                                                   | modalidad seleccionada por capacidad con límites y controles                  |
+| formularios o evidencia durante falla                      | `CONT-DOM-009`                                                                   | captura controlada con folio, custodia y estado                               |
+| reincorporación y conflictos                               | `CONT-DOM-010`                                                                   | retorno idempotente y conciliable                                             |
+| respaldo de información                                    | `CONT-DOM-011`                                                                   | cobertura, retencion, separacion de fallo y restaurabilidad definidas         |
+| recuperación, failover y orden técnico                     | `CONT-DOM-012`                                                                   | runbook, fuente, autoridad, validación y retorno definidos                    |
+| proveedor, energía, red, pagos, transporte o canal alterno | `CONT-DOM-013`                                                                   | alternativa real evaluada con contrato, capacidad, acceso y prueba aplicables |
+| endpoint, red, impresora o dependencia de aplicación       | fuentes `TI-DOM-003` a `TI-DOM-006`; estrategia en `CONT-DOM-008`, `012` o `013` | instancia reconciliada y alternativa/recuperación aprobada                    |
+| contrato de estado/health entre aplicaciones               | `CONT-INT-001`                                                                   | dependencia y estado degradado interoperables                                 |
+| dependencia externa                                        | `CONT-INT-003`                                                                   | contrato de continuidad externo correlacionado                                |
+
+---
+
+#### 15. Caso especial AURA
+
+`VPROC-0056` y `VPROC-0057` conservan sus servicios y BIA para trazabilidad, pero no se presentan como capacidades operativas habilitadas.
+
+Por ello:
+
+- sus dependencias conceptuales de personas e información permanecen identificadas;
+- la aplicación, sede operativa efectiva, recursos técnicos, proveedores y sustitutos no se declaran productivamente validados;
+- no se clasifica la aplicación diferida como SPOF;
+- no se declara un sustituto hasta que exista una capacidad operativa y una estrategia de continuidad autorizadas;
+- el bloqueo no se elimina mediante una aplicación distinta o un canal externo por conveniencia.
+
+---
+
+#### 16. Personas, conocimiento y concentración de autoridad
+
+Los registros de actores permiten saber que funciones deben intervenir, pero no demuestran cuantos ocupantes reales existen en cada sede, turno o fecha.
+
+Reglas:
+
+1. una función con un unico actor nominal no se inventa si no existe evidencia organizacional vigente;
+2. una persona que ejerza varias funciones puede constituir una concentración operativa, pero solo se confirma con asignacion real;
+3. suplencia documental sin disponibilidad real no elimina el SPOF;
+4. conocimiento no documentado o credencial bajo una sola custodia es vector de concentración, no hecho confirmado sin evidencia;
+5. la matriz de mando y sustitución durante incidente pertenece a `CONT-DOM-006`;
+6. la autorización de acciones protegidas pertenece a `CONT-AUTH-*`;
+7. un proveedor externo no sustituye la autoridad interna del proceso.
+
+---
+
+#### 17. Instalaciones, energía, red y dispositivos
+
+El alcance territorial reutiliza exclusivamente las cinco sedes internas aprobadas y el tratamiento de puntos externos ya existente.
+
+Para declarar independencia física se debe demostrar, segun aplique:
+
+- alimentacion electrica o respaldo independiente;
+- enlace o ruta de red independiente;
+- equipo, endpoint o dispositivo alternativo realmente disponible;
+- ubicación o instalacion distinta cuando la estrategia dependa de separacion física;
+- acceso y autorización operables durante la falla;
+- configuración compatible;
+- datos y evidencia accesibles;
+- ausencia de dependencia oculta en el mismo proveedor o componente aguas arriba.
+
+Dos dispositivos, dos enlaces o dos sedes no se consideran redundantes por conteo. La independencia debe demostrarse por dominio de fallo.
+
+---
+
+#### 18. Inventario, insumos, equipos y activos
+
+Un recurso físico adquiere condición de candidato crítico cuando el resultado mínimo del BIA no puede producirse sin ese recurso o una clase equivalente aprobada.
+
+Se conserva la propiedad de dominio:
+
+- NEXO mantiene activos, ubicación, custodia, inventario y movimientos;
+- FOGO mantiene ejecución productiva, lotes y calidad;
+- ORIGO mantiene compra, proveedor y aceptación comercial;
+- PULSO mantiene compromiso comercial, pedido, venta, pago y caja;
+- NUMERA mantiene efecto economico y conciliacion;
+- VISO mantiene el expediente transversal aplicable;
+- continuidad referencia esos hechos; no crea un ledger físico paralelo.
+
+Tiempo de reposicion, stock de seguridad, reserva física y compra de redundancia no se inventan en esta tarea.
+
+---
+
+#### 19. Proveedores y canales externos
+
+La matriz marca dependencia externa como `VINCULO_CANONICO`, `CONDICIONAL`, `NO_DIRECTA` o `BLOQUEADO`, pero no crea un proveedor específico cuando el inventario y contrato no estan evidenciados.
+
+Para una dependencia externa concreta se debera conservar: servicio, proveedor, contrato, alcance, contacto, horario, SLA cuando exista, credencial bajo custodia, datos recuperables, canal de escalamiento, concentración y alternativa. La evaluación y aprobación de esa continuidad pertenece a `CONT-DOM-013` y su contrato técnico a `CONT-INT-003`.
+
+---
+
+#### 20. Ciclos y efectos diferidos
+
+No se declara un ciclo de dependencia dura solo porque dos procesos intercambien eventos o se retroalimenten comercialmente.
+
+Un ciclo se confirma unicamente cuando:
+
+1. el servicio A requiere el resultado mínimo de B para continuar;
+2. B requiere simultaneamente el resultado mínimo de A;
+3. ambas relaciones estan vigentes en el mismo alcance temporal y territorial;
+4. no existe estado intermedio, snapshot, buffer, inventario o mecanismo autorizado que rompa el ciclo;
+5. la evidencia de instancia lo demuestra.
+
+Con la evidencia documental vigente esta tarea no confirma un ciclo duro. Los contratos de aplicaciones, colas, health y degradación que puedan revelar ciclos se materializan en `CONT-INT-001` y las estrategias se resuelven en `CONT-DOM-008` y `CONT-DOM-012`.
+
+Los efectos diferidos tambien se conservan: la falla de una dependencia puede no detener el proceso inmediatamente y, aun asi, agotar inventario, capacidad, vigencia, cola, bateria, efectivo, ventana contractual o plazo. La duracion cuantitativa y prioridad pertenecen a `CONT-DOM-004`.
+
+---
+
+#### 21. Autorización, seguridad y privacidad
+
+1. conocer una dependencia no concede acceso al recurso;
+2. el mapa no contiene secretos, tokens, claves privadas ni credenciales completas;
+3. un contacto externo no se publica fuera del alcance autorizado;
+4. la identidad de una persona no se expone si basta la función;
+5. la ruta de recuperación no puede usar una cuenta compartida o privilegio no autorizado como sustituto;
+6. la existencia de una copia no demuestra que pueda restaurarse ni que el actor pueda accederla;
+7. un endpoint alternativo no hereda permisos del endpoint fallido;
+8. una sede alternativa no hereda contexto territorial ni autorización;
+9. un proveedor alternativo no recibe datos o secretos por la sola declaración de continuidad;
+10. toda prueba posterior conserva privacidad, evidencia y segregacion.
+
+---
+
+#### 22. Handoffs obligatorios
+
+| Decision                                                            | Propietario documental                             | Condicion de salida                                                 |
+| ------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------- |
+| MTPD, RTO, RPO, MBCO y prioridad de recuperación                    | `CONT-DOM-004`                                     | antes de ordenar o dimensionar recuperación                         |
+| mando y sustitución durante incidente                               | `CONT-DOM-006`                                     | antes del primer ejercicio de mando                                 |
+| detalle de operación mínima                                         | `CONT-DOM-007`                                     | antes de habilitar modo degradado                                   |
+| modalidad manual, offline, reducida, física o de proveedor          | `CONT-DOM-008`                                     | antes de usar una alternativa                                       |
+| captura durante falla                                               | `CONT-DOM-009`                                     | antes de operar con folios o formularios                            |
+| reincorporación                                                     | `CONT-DOM-010`                                     | antes de devolver trabajo contingente a fuentes propietarias        |
+| respaldo                                                            | `CONT-DOM-011`                                     | antes de certificar cobertura                                       |
+| recuperación, failover, retorno y validación funcional              | `CONT-DOM-012`                                     | antes de ejecutar recuperación                                      |
+| proveedor, energía, red, pagos, transporte, canal y recurso alterno | `CONT-DOM-013`                                     | antes de aceptar una dependencia crítica sin alternativa suficiente |
+| dependencias y estado degradado entre aplicaciones                  | `CONT-INT-001`                                     | antes de orquestar degradación/recuperación automatizada            |
+| contratos externos de continuidad                                   | `CONT-INT-003`                                     | antes de integrar failover o escalamiento externo                   |
+| evidencia de endpoint, red, impresora y dependencia de aplicación   | `TI-DOM-003` a `TI-DOM-006` y sus fuentes técnicas | antes de afirmar una topología o redundancia de instancia           |
+
+Ningun pendiente material de esta tarea queda sin propietario documental y condición de salida.
+
+---
+
+#### 23. Cobertura de hallazgos heredados
+
+Esta tarea cierra documentalmente los hallazgos heredados que exigian un mapa extremo a extremo y una consolidacion de SPOF, con la siguiente precision:
+
+- el mapa extremo a extremo queda materializado para los 69 servicios y ocho dimensiones;
+- los vectores de concentración quedan explicitados por perfil y por servicio;
+- un SPOF concreto solo cambia de candidato a confirmado cuando exista evidencia de instancia suficiente;
+- la ausencia de esa evidencia queda con fuentes y puertas de resolucion exactas;
+- ninguna alternativa se declara aprobada antes de sus tareas propietarias.
+
+Por tanto, el cierre es documental del mapa y del metodo de decisión por instancia; no es certificacion de redundancia ni readiness físico.
+
+---
+
+#### 24. Cobertura de requisitos de prueba vigente
+
+La conducta de esta tarea ya esta protegida por `TREQ-CONT-001`, que exige análisis de impacto y dependencia versionado con producto/servicio, proceso, sede, propietario, consumidores, personas, datos, aplicaciones, dispositivos, instalaciones, proveedores, recursos y nivel mínimo, y por `TREQ-INTEGRATION-023`, que exige relacionar procesos, aplicaciones, datos, infraestructura, proveedores y canales durante degradación y recuperación.
+
+La tarea especializa esos contratos para los 69 servicios sin crear una conducta ejecutable nueva, una nueva modalidad de contingencia, un nuevo objetivo temporal o una nueva accion protegida.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el mapa, las reglas para confirmar concentraciones y la exigencia de sustitutos trazables quedan dentro de comportamientos de continuidad e integración ya registrados. La tarea no implementa failover, selección de proveedor, recuperación, activación, acceso de emergencia, restauración, reincorporación ni una accion ejecutable adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 25. Criterios de aceptación
+
+1. se preservan exactamente 69 servicios `BCS-VPROC-0001` a `BCS-VPROC-0069`;
+2. cada servicio conserva exactamente una referencia `BIA-VPROC-####-V1`;
+3. cada servicio conserva su `VPROC-*` sin renumeración;
+4. cada servicio conserva la aplicación propietaria aprobada;
+5. la distribución de propietarias suma 69 y coincide con el registro de procesos;
+6. SHELL conserva cero procesos propietarios sin perder sus responsabilidades transversales;
+7. cada fila clasifica personas y funciones;
+8. cada fila clasifica información y documentos;
+9. cada fila clasifica aplicación propietaria y consumidoras por referencia canónica;
+10. cada fila conserva alcance de sede por referencia al BIA;
+11. cada fila clasifica dispositivo o periferico;
+12. cada fila clasifica instalacion, energía y red;
+13. cada fila clasifica inventario, insumo, equipo o activo;
+14. cada fila clasifica proveedor o canal externo;
+15. las ocho dimensiones producen 552 decisiones explicitas;
+16. una dependencia condicional no se presenta como instancia vigente sin su condición;
+17. una clase técnica no se convierte automaticamente en recurso crítico;
+18. un recurso solo es crítico cuando su perdida afecta el resultado mínimo;
+19. la unicidad de la fuente de verdad no se interpreta como SPOF físico;
+20. la unicidad de la aplicación propietaria no se interpreta como SPOF físico;
+21. una aplicación almacenada en una plataforma compartida no transfiere propiedad a la plataforma;
+22. un proveedor externo no se convierte en propietario interno;
+23. un nombre, IP, MAC, serial, SSID o URL no crea una relación de dependencia;
+24. el mapa reutiliza las relaciones tecnológicas tipadas existentes;
+25. no se crea una CMDB paralela;
+26. no se crea un inventario paralelo de activos;
+27. no se crea un inventario paralelo de aplicaciones;
+28. no se crea un inventario paralelo de proveedores;
+29. se distinguen dependencia empresarial, recurso, instancia y SPOF;
+30. se distinguen sustituto posible, aprobado y probado;
+31. todo SPOF confirmado exige evidencia de instancia;
+32. todo SPOF confirmado exige impacto sobre el resultado mínimo;
+33. todo SPOF confirmado exige ausencia de ruta independiente suficiente;
+34. todo SPOF confirmado exige ausencia de sustituto efectivo;
+35. la falta de evidencia no se convierte en confirmacion de SPOF;
+36. la falta de evidencia no se convierte en confirmacion de redundancia;
+37. dos objetos de la misma clase no prueban redundancia;
+38. dos sedes no prueban independencia de energía, red, proveedor o datos;
+39. un sustituto exige autoridad y capacidad suficientes;
+40. un sustituto exige datos y controles equivalentes;
+41. un sustituto no crea una segunda fuente de verdad;
+42. un sustituto debe poder reincorporar y conciliar el trabajo cuando aplique;
+43. la tarea no selecciona modalidades concretas de contingencia;
+44. la tarea no fija MTPD;
+45. la tarea no fija RTO;
+46. la tarea no fija RPO;
+47. la tarea no fija MBCO;
+48. la tarea no fija prioridad de recuperación;
+49. la tarea no fija stock de seguridad;
+50. la tarea no fija tiempos de reposicion;
+51. la tarea no compra redundancia;
+52. la tarea no selecciona un proveedor alternativo;
+53. la tarea no crea una sede alternativa;
+54. la tarea no activa un incidente;
+55. la tarea no ejecuta failover;
+56. la tarea no ejecuta restauración;
+57. la tarea no ejecuta una prueba destructiva;
+58. las cinco sedes internas aprobadas permanecen sin ampliacion;
+59. Vaila no se convierte en sede por continuidad;
+60. Catering no se convierte en sede por continuidad;
+61. los puntos externos no se convierten en sedes ordinarias;
+62. `VPROC-0056` permanece bloqueado por aplicación AURA diferida;
+63. `VPROC-0057` permanece bloqueado por aplicación AURA diferida;
+64. AURA diferida no se clasifica como SPOF productivo;
+65. las 67 filas restantes conservan evidencia de instancia pendiente cuando corresponde;
+66. se identifican vectores de concentración humana sin inventar personas;
+67. se identifican vectores de concentración técnica sin inventar topología;
+68. se identifican vectores de concentración física sin inventar activos;
+69. se identifican vectores de concentración externa sin inventar proveedores;
+70. las dependencias compartidas conservan una unica identidad propietaria;
+71. no se confirma un ciclo duro por mera retroalimentacion entre procesos;
+72. los efectos diferidos se reconocen sin inventar duraciones;
+73. cada clase de pendiente tiene propietario documental y condición de salida;
+74. `CONT-DOM-004` conserva los objetivos cuantitativos;
+75. `CONT-DOM-006` conserva mando y suplencia durante incidente;
+76. `CONT-DOM-008` conserva modalidades y alternativas operativas;
+77. `CONT-DOM-011` conserva política de respaldo;
+78. `CONT-DOM-012` conserva runbooks, failover y retorno;
+79. `CONT-DOM-013` conserva proveedores y recursos alternativos;
+80. `CONT-INT-001` conserva contratos de dependencia y health entre aplicaciones;
+81. `CONT-INT-003` conserva contratos externos de continuidad;
+82. TI conserva sus fuentes técnicas de endpoint, red, impresion y aplicación;
+83. el mapa no concede acceso por mostrar una dependencia;
+84. el mapa no contiene secretos ni credenciales completas;
+85. un recurso alternativo no hereda permisos del recurso fallido;
+86. una sede alternativa no heredaria permisos por inferencia;
+87. se mantiene segregacion de funciones y fuentes de verdad;
+88. la tarea no modifica ningun requisito de prueba;
+89. la tarea no genera una copia innecesaria del registro de requisitos;
+90. la tarea no modifica código, datos, configuración ni Supabase;
+91. `CONT-DOM-004` permanece unicamente reservada.
+
+---
+
+#### 26. Balance de cierre
+
+| Control                                   |     Resultado |
+| ----------------------------------------- | ------------: |
+| Servicios materializados                  |   **69 / 69** |
+| Procesos materializados                   |   **69 / 69** |
+| BIA referenciados                         |   **69 / 69** |
+| Dimensiones por servicio                  |         **8** |
+| Decisiones de dimensión                   | **552 / 552** |
+| Perfiles de dependencia                   |        **25** |
+| Filas especificadas con evidencia parcial |        **67** |
+| Filas bloqueadas AURA                     |         **2** |
+| SPOF confirmados                          |         **0** |
+| Candidatos a validar                      |        **67** |
+| Sustitutos aprobados                      |         **0** |
+| Ciclos duros confirmados                  |         **0** |
+| Proveedores inventados                    |         **0** |
+| Criterios de aceptación                   |        **91** |
+| Cambios físicos                           |         **0** |
+| Requisitos de prueba creados/modificados  |         **0** |
+
+---
+
+#### 27. Límites de la tarea
+
+Esta tarea no:
+
+- declara que Vento carezca de redundancia;
+- declara que Vento ya tenga redundancia suficiente;
+- inventa un SPOF sin evidencia de instancia;
+- inventa una persona como responsable o suplente;
+- inventa un endpoint, red, impresora, proveedor, contrato o canal;
+- aprueba una sede, equipo, proveedor o canal sustituto;
+- define una modalidad de contingencia concreta;
+- fija MTPD, RTO, RPO, MBCO ni prioridades;
+- define capacidad o costo de redundancia;
+- modifica permisos o acceso de emergencia;
+- cambia inventario, activos, aplicaciones, configuración, topología o relaciones físicas;
+- ejecuta respaldo, restauración, failover, migracion, backfill, DDL, DML o prueba operativa;
+- modifica código, repositorios consumidores, datos productivos ni Supabase;
+- certifica readiness.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo`
+
+
 ### [ ] CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo
 ### [ ] CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad
 ### [ ] CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
