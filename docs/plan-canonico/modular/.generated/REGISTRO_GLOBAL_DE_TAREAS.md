@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **701** |
+| Aprobadas | **702** |
 | En propuesta | **0** |
-| No iniciadas | **893** |
+| No iniciadas | **892** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.98% (701/1594)** |
+| Porcentaje de completamiento | **44.04% (702/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | ✅ APROBADA |
-| Tarea actual | `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | ⬜ NO INICIADA |
+| Última aprobada | `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | ✅ APROBADA |
+| Tarea actual | `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1590,7 +1590,7 @@
 | ✅ APROBADA | `DATA-UX-008` | Validar comprensión, tiempos y decisiones con usuarios reales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ✅ APROBADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
-| ⬜ NO INICIADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
+| ✅ APROBADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `CONT-DOM-001` | Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |

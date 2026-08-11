@@ -2306,5 +2306,748 @@ SIGUIENTE TAREA RESERVADA
 `DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros`
 
 
-### [ ] DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros
+### ✅ DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento` — APROBADA
+**Tarea siguiente:** `DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal materializado de crosswalks, claves externas, resolución de identidad y reconciliación temporal de datos maestros y de referencia
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, merges, splits, correcciones de datos, escritura de crosswalks productivos, despliegues o cambios en Supabase:** no autorizados
+**Instancias proveedor-específicas:** no se declaran como conciliadas sin inventario y evidencia verificables
+**Requisitos de prueba creados o modificados:** 0
+
+#### 1. Propósito
+
+Definir cómo Vento OS relacionará identificadores provenientes de sistemas, autoridades, proveedores, canales, archivos o plataformas externas con las identidades canónicas de los **62 objetos** gobernados por el BLOQUE AB, sin convertir una coincidencia textual en identidad, sin crear una fuente de verdad paralela y sin perder la historia cuando una clave externa cambie, se reutilice, se retire o se descubra que estaba asociada al objeto incorrecto.
+
+La tarea debe dejar resuelto documentalmente:
+
+- qué es un crosswalk y qué no es;
+- qué coordenadas mínimas identifican una correspondencia;
+- qué estados puede atravesar un vínculo externo;
+- qué evidencia permite resolver una identidad y cuál solo produce un candidato;
+- cómo se manejan uno-a-uno, muchos-al-mismo, ambigüedades y conflictos;
+- cómo se conserva la vigencia efectiva y el tiempo de la decisión;
+- cómo se corrige una correspondencia sin reescribir historia;
+- cómo se integran fusión y separación de maestros con claves externas;
+- cómo consume la capa semántica una identidad reconciliada;
+- qué decisión aplica a cada uno de los 62 objetos heredados;
+- qué permanece bloqueado mientras no exista una fuente operativa habilitada;
+- qué pertenece a la futura integración proveedor-específica y no puede inventarse en esta tarea.
+
+El resultado es un contrato lógico completo y una matriz materializada por objeto. No prescribe todavía una tabla, schema, índice, UUID, constraint, trigger, RPC, endpoint o formato físico de persistencia.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato canónico de crosswalks e identidad externa con estos resultados:
+
+- **62/62 objetos** con decisión explícita de conciliación de claves externas;
+- distribución heredada preservada: **43 datos maestros + 19 datos de referencia**;
+- estado heredado preservado: **59 ESPECIFICADO + 3 BLOQUEADO**;
+- los tres objetos bloqueados continúan siendo exactamente `PERFIL_DE_MARCA`, `AUDIENCIA` y `ACTIVO_DE_MARCA`;
+- **11/11 identidades TECH_SERVICE** preservadas sin renumeración;
+- separación obligatoria entre identificador canónico, clave empresarial, clave técnica, código, alias externo, representación normalizada y credencial;
+- contrato lógico de **30 coordenadas mínimas** para una correspondencia reproducible;
+- ocho estados del vínculo de reconciliación, separados del ciclo de vida del maestro;
+- seis niveles de evidencia para resolución, desde identidad interna directa hasta sugerencia estadística;
+- reglas exhaustivas de cardinalidad, temporalidad, reasignación, conflicto, ambigüedad, fusión y separación;
+- procedimiento determinista y fail closed para resolver una clave externa;
+- tratamiento explícito de claves personales, registrales, fiscales, de proveedor, marketplace, catálogo, dispositivo, red, contabilidad y taxonomías;
+- preservación de `endpoint_id`, `device_id`, `device_code`, `app_code` y `TI-SERVICE-001` a `TI-SERVICE-011`;
+- frontera expresa con las tareas de integración externa que inventariarán sistemas concretos y sus mappings reales;
+- cero mappings proveedor-específicos inventados;
+- cero fusiones o separaciones ejecutadas;
+- cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+#### 3. Decisión principal
+
+Vento OS adopta un modelo de **identidad canónica interna con correspondencias externas versionadas y reconciliadas**.
+
+```text
+IDENTIDAD CANÓNICA
+→ pertenece al dominio propietario
+→ conserva autoridad y ciclo de vida interno
+
+CLAVE EXTERNA
+→ pertenece a un sistema/autoridad/namespace de origen
+→ conserva valor original, alcance y vigencia
+
+CROSSWALK
+→ declara la correspondencia gobernada entre una clave externa y una identidad canónica
+→ no crea la identidad
+→ no transfiere propiedad
+→ no concede autorización
+
+CANDIDATO
+→ puede surgir de una clave empresarial, forma normalizada o similitud
+→ no puede usarse como identidad oficial
+
+CONCILIACIÓN
+→ resuelve la correspondencia con evidencia y autoridad suficientes
+
+CONFLICTO / AMBIGÜEDAD
+→ fallan cerrados
+→ conservan evidencia y no fuerzan una elección
+```
+
+Regla cardinal:
+
+```text
+CLAVE EXTERNA ≠ IDENTIDAD CANÓNICA
+CROSSWALK ≠ FUENTE DE VERDAD
+COINCIDENCIA ≠ EQUIVALENCIA
+NORMALIZACIÓN ≠ FUSIÓN
+```
+
+#### 4. Fuentes y decisiones heredadas
+
+Esta tarea consume sin redefinir:
+
+- `DATA-DOM-001`: gobierno federado, fuente de verdad, propietario y stewardship;
+- `DATA-DOM-002`: catálogo materializado de 62 objetos, 43 maestros, 19 referencias y tres objetos AURA bloqueados;
+- `DATA-DOM-003`: identidad estable, claves, códigos, jerarquías, ciclo de vida, fusión/separación y regla de que el modelo de crosswalk corresponde a esta tarea;
+- `DATA-DOM-005`: tiempo del hecho, vigencias dimensionales, snapshots y comparabilidad histórica;
+- `DATA-DOM-006`: contratos de origen, ingestión, replay, backfill, transformación, reconciliación y linaje;
+- `DATA-DOM-007`: calidad, evidencia, duplicados, certificación y bloqueo;
+- `DATA-DOM-017`: versiones, reconstrucción, correcciones históricas, impacto, restatements y reproducibilidad;
+- `DATA-AUTH-001`: autorización por conjunto gobernado antes de agregación o consumo;
+- `DATA-AUTH-003`: segregación de capacidades de definición, certificación, publicación, exportación y administración;
+- `DATA-AUTH-004`: auditoría de uso analítico cuando corresponda;
+- `DATA-INT-001`: contratos de evento y lectura que transportan identidades sin transferir autoridad;
+- `DATA-INT-002`: capa semántica, joins gobernados, modelos, snapshots, caché y consultas;
+- `INT-EXT-001`: inventario futuro de sistemas externos, proveedores, propietarios y finalidad;
+- `INT-EXT-013`: mapeo proveedor-específico de identificadores externos y canónicos;
+- `INT-EXT-014`: conservación controlada del payload original;
+- `INT-EXT-017`: auditoría, métricas, alertas y conciliación de cada integración externa;
+- `TREQ-DATA-001`: protección preexistente de identidad, claves externas, fusión, separación, historia efectiva y crosswalks;
+- `TREQ-DATA-003`: protección preexistente de contratos de origen, claves, integridad, correcciones, reconciliación y linaje;
+- `TREQ-INTEGRATION-006`: captura única en la fuente propietaria y resolución trazable de diferencias entre fuentes.
+
+No se modifica ninguna de estas decisiones.
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+identificador canónico ≠ clave empresarial ≠ clave técnica ≠ código visible
+```
+
+```text
+alias externo ≠ representación normalizada ≠ credencial secreta
+```
+
+```text
+sistema externo ≠ dominio propietario interno
+```
+
+```text
+crosswalk ≠ maestro universal ≠ tabla dimensional ≠ caché
+```
+
+```text
+candidato ≠ conciliado
+```
+
+```text
+conciliado ≠ fusionado
+```
+
+```text
+misma etiqueta ≠ misma identidad
+```
+
+```text
+misma clave en namespaces distintos ≠ misma identidad
+```
+
+```text
+clave externa reutilizada en otro periodo ≠ equivalencia histórica permanente
+```
+
+```text
+mapeo actual ≠ mapeo aplicable al hecho histórico
+```
+
+```text
+secreto de integración ≠ identificador externo del maestro
+```
+
+#### 6. Coordenada mínima de una correspondencia
+
+Toda correspondencia materializable deberá poder resolver conceptualmente estas **30 coordenadas** cuando sean aplicables:
+
+1. sistema o autoridad externa de origen;
+2. integración o contexto de adquisición;
+3. namespace externo;
+4. tipo de objeto externo;
+5. clave externa original;
+6. representación normalizada de búsqueda, separada del original;
+7. versión o esquema del contrato externo;
+8. objeto canónico de destino;
+9. clase canónica del objeto;
+10. identificador canónico relacionado;
+11. dominio propietario interno;
+12. fuente de verdad lógica interna;
+13. alcance organizacional;
+14. entidad legal cuando sea material;
+15. territorio o sede cuando sea material;
+16. canal, marca u otra dimensión de scope cuando sea material;
+17. inicio de vigencia efectiva;
+18. fin de vigencia efectiva cuando exista;
+19. momento en que la clave externa fue observada;
+20. momento en que se tomó la decisión de conciliación;
+21. estado del vínculo;
+22. nivel/clase de evidencia utilizada;
+23. evidencia o procedencia verificable;
+24. steward responsable de revisión;
+25. propietario o autoridad que decide cuando corresponda;
+26. motivo de alta, corrección, sustitución o retiro;
+27. relación con correspondencia precedente o sucesora;
+28. referencia a conflicto, cuarentena o incidencia cuando exista;
+29. versión técnica o contractual suficiente para reproducir la resolución;
+30. impacto conocido sobre consumidores, hechos o derivados cuando una corrección cambie la correspondencia.
+
+No todas estas coordenadas requieren una columna física. Todas deberán poder resolverse cuando sean materiales para explicar la correspondencia.
+
+#### 7. Estados del vínculo de reconciliación
+
+Estos estados pertenecen al vínculo externo y **no** sustituyen el ciclo de vida del maestro definido por su dominio.
+
+| Estado          | Significado                                                                                                               | Uso permitido                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `NO_CONCILIADO` | La clave externa fue observada con procedencia suficiente, pero todavía no existe decisión de equivalencia.               | conservar, revisar y medir; no usar como join oficial por identidad   |
+| `CANDIDATO`     | Existe una o más identidades internas plausibles sustentadas por evidencia parcial.                                       | revisión de steward; nunca resolver automáticamente un uso oficial    |
+| `CONCILIADO`    | Una identidad canónica única fue confirmada para el sistema, namespace, alcance y vigencia declarados.                    | resolución determinista mientras todas las condiciones sigan vigentes |
+| `AMBIGUO`       | La evidencia permite más de una identidad plausible y no existe criterio autorizado para elegir.                          | fail closed; investigación y revisión                                 |
+| `CONFLICTO`     | Dos fuentes, reglas o mappings vigentes son incompatibles o una misma coordenada pretende resolver identidades distintas. | fail closed; resolución por steward/propietario                       |
+| `SUPERADO`      | La correspondencia dejó de ser vigente porque una corrección o decisión posterior la sustituyó.                           | historia y reproducción; no usos nuevos fuera de su vigencia          |
+| `RETIRADO`      | La clave o integración dejó de admitirse para nuevos usos sin ser sustituida por otra correspondencia.                    | historia y auditoría solamente                                        |
+| `BLOQUEADO`     | La fuente, objeto o evidencia no permite materializar ni usar la correspondencia.                                         | no resolución oficial hasta satisfacer la condición de salida         |
+
+Reglas:
+
+- el silencio no equivale a `CONCILIADO`;
+- `NO_CONCILIADO` no equivale a dato inexistente;
+- `CANDIDATO` no equivale a match aceptado;
+- `AMBIGUO` y `CONFLICTO` impiden la resolución oficial;
+- `SUPERADO` y `RETIRADO` conservan historia;
+- el estado del vínculo no eleva el estado de calidad del maestro, fuente o métrica.
+
+#### 8. Cardinalidad y unicidad
+
+La unidad de unicidad de una clave externa no es el valor textual aislado. Como mínimo se evalúa:
+
+```text
+sistema externo
++ namespace
++ tipo de objeto
++ valor original
++ alcance aplicable
++ vigencia
+```
+
+Reglas:
+
+1. una identidad canónica puede tener múltiples claves externas de distintos sistemas o namespaces;
+2. varias claves externas pueden resolver la misma identidad canónica si cada vínculo conserva procedencia propia;
+3. una misma coordenada externa activa no puede resolver dos identidades canónicas simultáneamente;
+4. si una clave externa es reutilizada legítimamente por el emisor en otro periodo, se cierra la vigencia anterior y se crea una nueva decisión; no se reescribe la historia;
+5. un mismo valor en sistemas diferentes no implica relación;
+6. un mismo valor en namespaces diferentes del mismo sistema no implica relación;
+7. una relación muchos-a-muchos empresarial no se representa como crosswalk de identidad;
+8. cuando dos clases canónicas distintas se relacionan, se conserva una relación tipada y no se fuerza equivalencia;
+9. el objeto canónico y la clase forman parte del control para impedir mapeos entre conceptos incompatibles;
+10. cualquier colisión no resoluble queda `CONFLICTO` o `AMBIGUO`, nunca “primero gana” ni “última escritura gana”.
+
+#### 9. Niveles de evidencia para resolución
+
+Se define una escala de **seis niveles de evidencia**. No es una probabilidad matemática ni una autorización automática.
+
+| Nivel                  | Evidencia                                                                                              | Decisión máxima                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `E0_INTERNA`           | El contrato interno ya transporta el identificador canónico válido.                                    | no requiere crosswalk para identificar ese objeto; se valida el contrato y autorización      |
+| `E1_MAPEO_VIGENTE`     | Existe correspondencia previa `CONCILIADO` para la misma coordenada y continúa vigente, sin conflicto. | resolución determinista a la identidad ya conciliada                                         |
+| `E2_AUTORIDAD_EXTERNA` | Clave emitida por autoridad/proveedor con semántica, namespace, alcance y vigencia verificables.       | puede sustentar una primera conciliación, sujeta al control de steward/propietario aplicable |
+| `E3_CLAVE_EMPRESARIAL` | Combinación fuerte de atributos empresariales controlados y compatibles.                               | candidato priorizado; no fusión automática                                                   |
+| `E4_REPRESENTACION`    | Nombre, correo, teléfono, dirección, serial, barcode, etiqueta u otra representación comparable.       | candidato para revisión; nunca resolución oficial por sí sola                                |
+| `E5_INFERENCIA`        | Fuzzy matching, recomendación estadística, heurística o modelo de IA.                                  | señal de investigación únicamente                                                            |
+
+Una evidencia de nivel más alto no omite controles de clase, alcance, vigencia, autorización o conflicto.
+
+#### 10. Orden determinista de resolución
+
+1. Identificar sistema, integración, namespace, tipo de objeto y valor original sin transformar destructivamente la entrada.
+2. Resolver el objeto/clase canónica que el contrato de integración pretende referenciar.
+3. Comprobar si el contrato ya transporta una identidad interna válida; si es así, validar esa identidad y no fabricar un crosswalk innecesario.
+4. Buscar una correspondencia `CONCILIADO` vigente por la coordenada externa completa.
+5. Si existe exactamente una y no hay conflicto, resolver la identidad canónica declarada.
+6. Si existen varias correspondencias activas incompatibles, marcar `CONFLICTO` y fallar cerrado.
+7. Si no existe mapping vigente, evaluar claves de autoridad y claves empresariales permitidas para producir candidatos.
+8. Aplicar normalización únicamente como representación de búsqueda y nunca como decisión.
+9. Si no hay candidato suficiente, conservar `NO_CONCILIADO` con procedencia.
+10. Si existe un candidato único pero la evidencia requiere revisión, conservar `CANDIDATO` hasta la decisión competente.
+11. Si existen varios candidatos plausibles, conservar `AMBIGUO`.
+12. El steward revisa claves, relaciones, vigencias, fuentes, historial y evidencia.
+13. El propietario funcional decide cuando el caso excede la delegación del steward o cambia una identidad/materialidad gobernada.
+14. La decisión de conciliación conserva evidencia, motivo, vigencia y relación con cualquier vínculo anterior.
+15. Los consumidores reciben la identidad mediante el contrato aprobado; no replican la lógica de matching localmente.
+16. Cualquier corrección posterior recorre impacto, linaje y reproducibilidad antes de alterar derivados oficiales.
+
+#### 11. Vigencia, bitemporalidad de la decisión e historia
+
+Toda correspondencia deberá distinguir al menos dos tiempos:
+
+- **vigencia efectiva:** desde cuándo la clave externa representa la identidad dentro del contrato externo;
+- **tiempo de conocimiento/decisión:** cuándo Vento recibió evidencia y aceptó, corrigió o retiró la correspondencia.
+
+Esto permite responder preguntas distintas:
+
+```text
+¿QUÉ IDENTIDAD REPRESENTABA LA CLAVE SEGÚN SU VIGENCIA?
+```
+
+```text
+¿QUÉ CORRESPONDENCIA CONOCÍA Y PODÍA USAR VENTO EN ESE MOMENTO?
+```
+
+Reglas:
+
+- una correspondencia posterior no se inserta retroactivamente en el expediente como si siempre hubiera sido conocida;
+- una corrección puede cambiar reconstrucciones actuales sin falsificar decisiones históricas;
+- una clave externa reutilizada conserva intervalos distintos;
+- una correspondencia retirada continúa resolviendo historia cuando el actor y la finalidad estén autorizados;
+- el corte de una publicación determina qué mapping, evidencia y estado eran conocidos;
+- la reconstrucción actual puede usar evidencia corregida, pero debe distinguirse de “como fue conocido/publicado”.
+
+#### 12. Corrección, sustitución, fusión y separación
+
+##### 12.1. Corrección de una correspondencia
+
+Cuando un crosswalk estaba asociado al objeto incorrecto:
+
+1. preservar el vínculo original;
+2. registrar la evidencia que demuestra el error;
+3. cerrar o superar su vigencia de uso según el caso;
+4. crear la decisión corregida con la identidad adecuada;
+5. identificar hechos, modelos, snapshots, reportes y decisiones potencialmente afectados mediante linaje;
+6. no mover hechos históricos por aproximación;
+7. ejecutar correcciones físicas únicamente mediante las tareas/paquetes autorizados;
+8. evaluar reconstrucción o restatement conforme al contrato histórico cuando una salida oficial cambie.
+
+##### 12.2. Fusión de maestros
+
+La existencia de dos crosswalks hacia dos identidades internas parecidas no autoriza una fusión. La fusión continúa gobernada por `DATA-DOM-003` y exige demostrar que los registros representan la misma identidad dentro de la misma clase.
+
+Cuando una fusión aprobada exista, los aliases externos de ambas identidades se conservan y se relacionan con la identidad superviviente de forma versionada, sin borrar qué identidad resolvían previamente.
+
+##### 12.3. Separación de maestros
+
+Una separación distribuye aliases y crosswalks únicamente con evidencia. No se redistribuyen hechos, pedidos, movimientos, sesiones, pagos, lotes o publicaciones por similitud.
+
+##### 12.4. Reutilización externa
+
+Si un proveedor reutiliza un código que antes identificaba otro objeto:
+
+- la vigencia anterior se cierra;
+- la nueva correspondencia conserva evidencia de reutilización;
+- el historial anterior no se reasigna;
+- la consulta histórica utiliza el intervalo aplicable;
+- si el proveedor no ofrece evidencia temporal suficiente, la correspondencia queda `AMBIGUO` o `CONFLICTO`.
+
+#### 13. Autorización, privacidad y seguridad
+
+1. Un crosswalk no concede permiso para leer la identidad interna ni la clave externa.
+2. La exposición de claves externas se somete a la autorización vigente por dominio, entidad, territorio y finalidad.
+3. Documento, correo, teléfono y otros identificadores personales se minimizan y no se publican como códigos empresariales.
+4. Una representación hash o tokenizada puede servir para comparación técnica cuando el contrato lo permita, pero no demuestra equivalencia por sí sola.
+5. La evidencia de conciliación puede contener información sensible y hereda clasificación, retención y auditoría aplicables.
+6. API key, client secret, access token, refresh token, certificado privado y service role son credenciales; **no** son claves externas de maestros.
+7. Un proveedor externo nunca recibe autoridad de escritura directa sobre el maestro interno por existir un crosswalk.
+8. Los logs de conciliación deben referenciar la evidencia sin registrar secretos completos ni ampliar la exposición de PII.
+9. Un consumidor autorizado para un agregado no adquiere acceso a los identificadores externos de los sujetos subyacentes.
+10. La historia de mappings se consulta bajo autorización vigente, no bajo el permiso histórico del actor que los creó.
+
+#### 14. Matriz materializada por los 62 objetos
+
+La matriz conserva exactamente el catálogo y estado heredados. La columna “Decisión de crosswalk” define qué puede aceptarse y qué queda prohibido para cada identidad; **no afirma que esas claves externas existan hoy**.
+
+|    # | Objeto canónico               | Clase             | Fuente lógica heredada                  | Decisión de crosswalk                                                                                                                                                                                      | Estado         |
+| ---: | ----------------------------- | ----------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | VISO                                    | Identificadores externos de organización se admiten solo con sistema, namespace, alcance y vigencia; no se deriva equivalencia desde nombre, titular, marca o sede.                                        | `ESPECIFICADO` |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | VISO                                    | Identificadores registrales o tributarios son claves externas de alta fuerza probatoria cuando la autoridad, jurisdicción y vigencia están acreditadas; nunca sustituyen la identidad interna.             | `ESPECIFICADO` |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | VISO                                    | Identificadores de registro, plataforma o proveedor pueden vincularse como aliases con procedencia; nombre comercial, dominio web o similitud visual no bastan para conciliar identidad.                   | `ESPECIFICADO` |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | VISO                                    | Matrículas y registros externos se concilian por autoridad, jurisdicción, alcance y vigencia; una denominación o dirección coincidente solo genera candidato.                                              | `ESPECIFICADO` |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | VISO                                    | Códigos externos de portafolio o clasificación requieren equivalencia semántica aprobada; una categoría externa no crea ni fusiona una línea de negocio.                                                   | `ESPECIFICADO` |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | VISO con operación NEXO                 | Referencias catastrales, contractuales o de proveedor pueden ser claves externas con procedencia; dirección, coordenadas o nombre del inmueble no son identidad suficiente.                                | `ESPECIFICADO` |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | VISO                                    | Identificadores de tienda, sucursal o ubicación de terceros se mapean a la sede solo con alcance y evidencia; no se confunden con PHYSICAL_FACILITY, área o establecimiento.                               | `ESPECIFICADO` |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | VISO                                    | Códigos de departamento o área externos se aceptan como aliases scoped; nombre, nivel jerárquico o centro de costo parecido no autoriza equivalencia.                                                      | `ESPECIFICADO` |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | NEXO con referencia VISO                | Códigos externos de zona se concilian dentro de la instalación o sede aplicable y con vigencia; la etiqueta espacial por sí sola no es identidad.                                                          | `ESPECIFICADO` |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | NEXO con contratos SHELL/AUTH-DEV       | Identificadores de terminal, estación o punto de proveedor son aliases de contexto; ENDPOINT, SHARED_DEVICE y etiquetas visibles permanecen identidades distintas.                                         | `ESPECIFICADO` |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | VISO con custodia NEXO                  | La referencia externa es admisible solo con fuente, finalidad, territorio, custodio y vigencia; no se promueve automáticamente a OPERATIONAL_SITE.                                                         | `ESPECIFICADO` |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | VISO                                    | Documento, identificador de autenticación o autoridad puede aportar evidencia; correo, teléfono, nombre o usuario nunca resuelven por sí solos una fusión y toda conciliación sensible exige autorización. | `ESPECIFICADO` |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | VISO                                    | Identificadores de nómina, RR. HH. o plataforma laboral se vinculan al perfil y a PERSON_IDENTITY/vínculo correctos; no crean una persona nueva ni fusionan vínculos.                                      | `ESPECIFICADO` |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | VISO                                    | Números de contrato, nómina o relación externos son aliases del vínculo exacto con vigencia; reingresos o vínculos distintos no se colapsan.                                                               | `ESPECIFICADO` |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | VISO                                    | Códigos de cargo de sistemas externos requieren equivalencia semántica y vigencia; nunca conceden permisos ni se mapean por etiqueta solamente.                                                            | `ESPECIFICADO` |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | SHELL / modelo canónico de autorización | No se admite traducción automática de roles externos a BASE_ROLE por nombre o permisos aparentes; cualquier equivalencia debe provenir de un contrato de autorización aprobado.                            | `ESPECIFICADO` |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | VISO con modelo de autorización         | Códigos externos de función operativa pueden ser aliases revisados; no crean herencia de permisos, jerarquía ni equivalencia con BASE_ROLE.                                                                | `ESPECIFICADO` |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | VISO                                    | Identificadores de asignación o programación externos se concilian con persona, sede, área, función y vigencia; el solapamiento temporal se conserva como conflicto cuando corresponda.                    | `ESPECIFICADO` |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | PASS                                    | Identificadores CRM, marketplace o canal son aliases de cliente; correo, teléfono, documento, QR o cuenta autenticada no bastan para resolver identidad sin evidencia.                                     | `ESPECIFICADO` |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | PASS                                    | Identificadores de contacto de proveedores pueden mapear el contacto exacto; el valor normalizado sirve para búsqueda/candidato, no para fusionar personas.                                                | `ESPECIFICADO` |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | PASS                                    | Identificadores de relación, membresía o cuenta externa se concilian por persona, marca/alcance, tipo y vigencia; no equivalen a consentimiento.                                                           | `ESPECIFICADO` |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | PASS                                    | Identificadores de perfil externo se vinculan al perfil exacto y a su persona/relación; cuenta técnica y CUSTOMER_PERSON permanecen separadas.                                                             | `ESPECIFICADO` |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | PASS                                    | Identificadores de preferencia o canal externo se conservan con tipo, alcance y vigencia; preferencia no se reconcilia como consentimiento ni autorización.                                                | `ESPECIFICADO` |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | PASS                                    | Número visible, QR, token o identificador de programa externo son referencias rotables; la cuenta canónica y su ledger conservan identidad e historia propias.                                             | `ESPECIFICADO` |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | PASS                                    | Códigos de regla o programa externos requieren versión, alcance y vigencia; versiones distintas no se fusionan por compartir descripción.                                                                  | `ESPECIFICADO` |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | NEXO                                    | SKU, barcode, identificador de proveedor o canal son aliases/crosswalks con namespace y vigencia; ningún código externo fusiona productos por sí solo.                                                     | `ESPECIFICADO` |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | NEXO                                    | Identificador externo de variante se concilia dentro del PRODUCTO_MAESTRO y contexto aplicables; atributos o nombres similares solo generan candidato.                                                     | `ESPECIFICADO` |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | NEXO                                    | SKU o código de empaque externo solo puede mapearse cuando cantidad, unidad, multiplicador, empaque, producto y contexto sean compatibles; etiqueta visible no basta.                                      | `ESPECIFICADO` |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | NEXO                                    | Código estándar o externo puede mapearse únicamente si dimensión y significado son equivalentes; símbolo o abreviatura coincidente no autoriza equivalencia.                                               | `ESPECIFICADO` |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | NEXO                                    | Taxonomías externas requieren correspondencia semántica explícita y versionada; códigos o etiquetas parecidas no se elevan automáticamente a equivalencia.                                                 | `ESPECIFICADO` |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | NEXO                                    | Clasificaciones externas de inventario se concilian por semántica, alcance y versión; comportamiento de stock similar no prueba identidad taxonómica.                                                      | `ESPECIFICADO` |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | NEXO                                    | Clasificaciones operacionales externas se mapean de manera explícita; nombre, prefijo o posición jerárquica solo apoyan revisión.                                                                          | `ESPECIFICADO` |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | NEXO                                    | Identificadores WMS, bodega o ubicación externa se concilian dentro de sede/instalación y vigencia; etiqueta o camino textual no sustituyen la identidad LOC.                                              | `ESPECIFICADO` |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | NEXO                                    | Serial, placa, fabricante o identificador patrimonial externo son claves auxiliares con procedencia; sustitución física y duplicidad registral no se resuelven por serial solamente.                       | `ESPECIFICADO` |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | NEXO                                    | Clases externas de activos requieren equivalencia semántica y versión; categoría parecida no reclasifica historia automáticamente.                                                                         | `ESPECIFICADO` |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | NEXO; FOGO cuando corresponda           | Referencias de ficha, proveedor o documento externo se vinculan a la identidad raíz, versión, alcance y vigencia de la especificación; el texto del documento no es identidad.                             | `ESPECIFICADO` |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | ORIGO                                   | Identificadores tributarios, registrales o de plataforma pueden ser claves externas fuertes cuando su autoridad y vigencia son verificables; nombre, banco, correo o contacto no bastan.                   | `ESPECIFICADO` |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | ORIGO                                   | Identificador de contacto externo se concilia con la persona/canal y proveedor correctos; correo o teléfono repetidos no fusionan proveedores ni contactos sin evidencia.                                  | `ESPECIFICADO` |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | ORIGO                                   | Código de artículo del proveedor o identificador de relación externa mapea la relación producto–proveedor y su alcance; no convierte ese código en identidad global de PRODUCTO_MAESTRO.                   | `ESPECIFICADO` |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | ORIGO                                   | Identificadores de contrato, lista o condición externa se concilian por proveedor/relación, tipo, alcance, versión y vigencia; importe o texto parecido no bastan.                                         | `ESPECIFICADO` |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | ORIGO                                   | Clasificaciones externas de abastecimiento requieren equivalencia semántica explícita; no se heredan automáticamente desde taxonomías de producto o inventario.                                            | `ESPECIFICADO` |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | FOGO                                    | Identificadores externos de fórmula/receta se vinculan a la identidad raíz y versión; nombre, ingredientes o producto de salida parecidos no prueban equivalencia.                                         | `ESPECIFICADO` |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | FOGO                                    | Códigos externos de familia productiva requieren mapeo semántico y versión; no se confunden con categorías de producto, compra o menú.                                                                     | `ESPECIFICADO` |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | FOGO                                    | Códigos externos de proceso o routing pueden ser aliases de la definición y versión correctas; secuencia de pasos parecida no autoriza fusión.                                                             | `ESPECIFICADO` |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | FOGO con referencia NEXO                | Identificadores externos de máquina/recurso pueden mapear el recurso funcional o relacionarlo con ACTIVO_FISICO; nunca fusionan ambas clases.                                                              | `ESPECIFICADO` |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | PULSO                                   | Identificadores de marketplace, web, mensajería u otro proveedor se mapean al canal dentro del namespace y alcance correctos; compartir proveedor no fusiona canales.                                      | `ESPECIFICADO` |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | PULSO                                   | Categorías externas de menú/marketplace se concilian por canal, marca/alcance, versión y semántica; etiqueta coincidente no basta.                                                                         | `ESPECIFICADO` |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | PULSO                                   | Identificador de listing, menú u oferta externa mapea OFERTA_COMERCIAL con producto/variante, sede, canal y vigencia; no mapea directamente PRODUCTO_MAESTRO por conveniencia.                             | `ESPECIFICADO` |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | NUMERA                                  | Código ERP/contable puede mapearse dentro de entidad, plan y vigencia; centro de costo no se reemplaza por sede, área, marca o canal aunque compartan código.                                              | `ESPECIFICADO` |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | NUMERA                                  | Código monetario de fuente autorizada puede resolver equivalencia semántica; símbolo o nombre parecido no basta y la fuente aplicable se conserva.                                                         | `ESPECIFICADO` |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | NUMERA                                  | Identificadores externos de periodo se concilian por calendario, alcance, inicio/fin y vigencia; compartir fechas no implica identidad.                                                                    | `ESPECIFICADO` |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | NUMERA o sistema contable autorizado    | Código o referencia del sistema contable se conserva con fuente, entidad, calendario y vigencia; no se confunde con PERIODO_ECONOMICO.                                                                     | `ESPECIFICADO` |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | NUMERA con autoridad externa aplicable  | Referencia fiscal externa se mapea únicamente dentro de autoridad, jurisdicción, calendario y vigencia aplicables; fechas iguales no fusionan periodos.                                                    | `ESPECIFICADO` |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | NUMERA                                  | Código de plan de cuentas o clasificación externa requiere estándar/versión, entidad y semántica; no reclasifica hechos históricos sin proceso gobernado.                                                  | `ESPECIFICADO` |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | AURA objetivo                           | Se define la política futura de aliases, pero no se admite crosswalk operativo ni equivalencia productiva mientras la fuente AURA permanezca diferida.                                                     | `BLOQUEADO`    |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | AURA objetivo                           | Identificadores de audiencia externos podrán mapear definiciones cuando exista fuente habilitada, finalidad y versión; listas o membresías coincidentes nunca prueban identidad.                           | `BLOQUEADO`    |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | AURA objetivo                           | Identificadores de Storage o proveedor serán referencias técnicas con procedencia; no existe crosswalk operativo habilitado mientras AURA permanezca diferida.                                             | `BLOQUEADO`    |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | BLOQUE Z / TI-DOM-002                   | endpoint_id permanece identidad canónica; IDs de MDM/proveedor pueden ser aliases. Hostname, IP, MAC, serial, user agent o fingerprint no bastan para fusionar endpoints.                                  | `ESPECIFICADO` |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | SHELL / AUTH-DEV                        | device_id permanece identidad y device_code código empresarial; identificadores de kiosk/proveedor son aliases con vigencia y no sustituyen endpoint, activo, estación ni actor.                           | `ESPECIFICADO` |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | BLOQUE Z                                | Identificadores de proveedor o inventario de red pueden ser aliases; IP, MAC, SSID, hostname o puerto son atributos observables y no identidad suficiente.                                                 | `ESPECIFICADO` |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | SHELL                                   | app_code permanece identidad canónica legible; IDs OAuth/proveedor/plataforma pueden ser aliases. Repositorio, URL, ambiente, despliegue o proveedor no identifican la aplicación.                         | `ESPECIFICADO` |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | BLOQUE Z / TI-DOM-001                   | TI-SERVICE-001 a TI-SERVICE-011 permanecen identidades canónicas; códigos de catálogo/proveedor solo pueden mapearse como aliases y nunca renumerar o fusionar familias.                                   | `ESPECIFICADO` |
+
+#### 15. Casos de identidad que requieren protección reforzada
+
+##### 15.1. Persona administrada y cliente
+
+`PERSON_IDENTITY` y `CUSTOMER_PERSON` pueden representar a la misma persona natural en contextos distintos, pero son clases canónicas diferentes. Un documento, correo o teléfono coincidente puede sostener una relación revisada entre ambas identidades cuando exista finalidad y autorización, pero **nunca** una fusión automática entre clases.
+
+##### 15.2. Producto, variante, presentación y unidad
+
+Un SKU de proveedor, barcode o listing puede referir a una oferta, variante, presentación o relación producto–proveedor según su contrato. El crosswalk debe declarar el objeto exacto. Queda prohibido mapear todo código externo directamente a `PRODUCTO_MAESTRO` para simplificar joins.
+
+##### 15.3. Sede, instalación, área, zona, LOC y estación
+
+Una dirección, código de tienda o etiqueta de bodega no determina por sí sola si el objeto es `OPERATIONAL_SITE`, `PHYSICAL_FACILITY`, `ORGANIZATIONAL_AREA`, `PHYSICAL_ZONE`, `LOC` o `WORKSTATION`. La clase forma parte obligatoria de la correspondencia.
+
+##### 15.4. Activo, endpoint y dispositivo compartido
+
+`ACTIVO_FISICO`, `ENDPOINT` y `SHARED_DEVICE` se relacionan, pero no son la misma identidad. Serial, MAC, IP o fingerprint solo pueden apoyar conciliación. Se conservan `endpoint_id`, `device_id` y `device_code` según sus contratos.
+
+##### 15.5. Aplicación
+
+`APPLICATION` conserva `app_code`. IDs OAuth, IDs de tienda, dominios, URLs, repositorios, ambientes y despliegues pueden relacionarse con la aplicación mediante contratos específicos, pero no sustituyen su identidad.
+
+##### 15.6. TECH_SERVICE
+
+Se preservan las once identidades vigentes:
+
+| Identidad        | Servicio                                                                | Decisión                                                                                                                 | Estado         |
+| ---------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | Identidad canónica preservada; cualquier código externo solo puede existir como alias scoped, versionado y reconciliado. | `ESPECIFICADO` |
+
+**Reconciliación TECH_SERVICE:** 11 esperadas; 11 preservadas; 0 faltantes; 0 duplicadas; 0 renumeradas.
+
+#### 16. Sistemas externos concretos y límite de evidencia
+
+Las fuentes canónicas actuales reservan `INT-EXT-001` para inventariar sistemas externos y `INT-EXT-013` para definir cada mapeo proveedor-específico. Mientras ese inventario no exista, esta tarea no puede afirmar de forma responsable:
+
+- qué proveedores entregan identificadores para cada uno de los 62 objetos;
+- qué namespaces reales utiliza cada API, archivo, webhook o plataforma;
+- qué claves son globales o scoped en cada proveedor;
+- qué IDs han sido efectivamente conciliados en datos reales;
+- qué mappings históricos ya existen físicamente;
+- qué payload concreto constituye evidencia suficiente por proveedor.
+
+La ausencia de ese inventario **no** deja incompleto el contrato transversal. La decisión material para cualquier clave externa recibida queda definida:
+
+```text
+SIN MAPPING VIGENTE VERIFICABLE
+→ conservar origen y valor
+→ NO_CONCILIADO
+→ resolver objeto y namespace
+→ evaluar evidencia
+→ CANDIDATO / AMBIGUO / CONFLICTO
+→ revisión competente
+→ CONCILIADO solo con decisión trazable
+```
+
+Handoffs exactos:
+
+| Necesidad                                                             | Propietario documental | Condición de salida                                                            |
+| --------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------ |
+| inventario de sistemas externos, proveedores, propietario y finalidad | `INT-EXT-001`          | antes de declarar cobertura proveedor-específica completa                      |
+| contrato de entrada/salida de cada integración                        | `INT-EXT-009`          | antes de interpretar campos o namespaces de un proveedor concreto              |
+| mapeo de identificadores externos y canónicos por integración         | `INT-EXT-013`          | antes de declarar un mapping proveedor-específico operativo                    |
+| conservación controlada del payload original                          | `INT-EXT-014`          | antes de depender del payload como evidencia reproducible                      |
+| auditoría, métricas, alertas y conciliación por integración           | `INT-EXT-017`          | antes de declarar operación controlada y observable de la conciliación externa |
+| ingestión, replay, backfill, transformación y reconciliación de datos | `DATA-DOM-006`         | antes de ejecutar correcciones o reconstrucciones físicas de datos             |
+| calidad/certificación de la fuente y del dato reconciliado            | `DATA-DOM-007`         | antes de declarar aptitud oficial del resultado dependiente                    |
+| impacto histórico, reconstrucción y restatement                       | `DATA-DOM-017`         | antes de reexpresar una publicación afectada por una corrección de identidad   |
+
+No se crea una tarea nueva ni queda un pendiente sin propietario exacto.
+
+#### 17. Consumo por la capa semántica
+
+La capa definida en `DATA-INT-002` deberá consumir la identidad así:
+
+```text
+HECHO / FUENTE
+→ clave interna canónica, cuando exista
+→ si solo existe clave externa: crosswalk vigente y autorizado
+→ identidad canónica resuelta
+→ dimensión efectiva aplicable
+→ modelo / métrica / consulta
+```
+
+Reglas:
+
+- un join oficial no usa nombre, etiqueta, correo, SKU externo o texto normalizado como sustituto del crosswalk;
+- `NO_CONCILIADO`, `AMBIGUO`, `CONFLICTO` o `BLOQUEADO` permanecen visibles como limitación de calidad/cobertura;
+- una fila no conciliada no se descarta silenciosamente para mejorar un porcentaje de cobertura;
+- tampoco se asigna a un miembro “desconocido” como si esa identidad fuera real; si una representación técnica de desconocido es necesaria, debe permanecer distinguible del maestro;
+- la corrección de un crosswalk invalida/reconstruye únicamente derivados alcanzados por linaje;
+- caché, snapshot y modelo no adquieren autoridad sobre el mapping;
+- una métrica dependiente de una población incompleta conserva la limitación de calidad correspondiente;
+- comparar periodos exige resolver la vigencia de mappings y dimensiones aplicable a cada hecho.
+
+#### 18. Reglas para archivos importados y cargas controladas
+
+Cuando una fuente externa llegue mediante archivo, exportación u otra carga controlada:
+
+1. el archivo/lote y su procedencia permanecen identificables;
+2. el valor original de la clave no se corrige destructivamente antes de conciliación;
+3. la normalización se almacena o calcula como representación separada;
+4. cada fila conserva la decisión de mapping utilizada o su estado no conciliado;
+5. una fila con identidad ambigua no se asigna al primer resultado de búsqueda;
+6. volver a cargar el mismo archivo no debe producir mappings divergentes por orden de procesamiento;
+7. una corrección del proveedor no borra la evidencia anterior;
+8. el archivo no se convierte en fuente de verdad del maestro;
+9. si faltan namespace, alcance o versión necesarios, la fila queda no conciliada o bloqueada según el contrato;
+10. la promoción a uso oficial requiere la calidad y autorización correspondientes.
+
+#### 19. Reconciliación de cobertura
+
+| Control                                        |   Resultado |
+| ---------------------------------------------- | ----------: |
+| Objetos esperados                              |      **62** |
+| Objetos con decisión de crosswalk              |      **62** |
+| Faltantes                                      |       **0** |
+| Duplicados por objeto canónico                 |       **0** |
+| Datos maestros                                 |      **43** |
+| Datos de referencia                            |      **19** |
+| Objetos `ESPECIFICADO`                         |      **59** |
+| Objetos `BLOQUEADO`                            |       **3** |
+| Objetos AURA habilitados por esta tarea        |       **0** |
+| Identidades TECH_SERVICE esperadas/preservadas | **11 / 11** |
+| Estados de vínculo definidos                   |       **8** |
+| Niveles de evidencia definidos                 |       **6** |
+| Coordenadas mínimas definidas                  |      **30** |
+| Fusiones automáticas autorizadas               |       **0** |
+| Fusiones entre clases distintas autorizadas    |       **0** |
+| Mappings proveedor-específicos inventados      |       **0** |
+| Fuentes de verdad transferidas                 |       **0** |
+| Cambios físicos                                |       **0** |
+| Requisitos de prueba creados/modificados       |       **0** |
+
+No se declara un número de crosswalks físicos existentes ni un porcentaje de conciliación real porque las fuentes consumidas no aportan un inventario proveedor-específico completo y verificable. Declarar esa cifra exigiría inventar evidencia.
+
+#### 20. Cobertura por requisitos vigentes
+
+La conducta de esta tarea ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-001` cubre identificador estable, claves empresariales y externas, jerarquías, vigencia, fusión/separación, historia efectiva y crosswalks, y asigna responsabilidad a esta tarea;
+- `TREQ-DATA-003` cubre contratos de origen, claves, integridad referencial, duplicados, correcciones, cuarentena, reconciliación y linaje, incluyendo esta tarea entre sus responsables;
+- `TREQ-INTEGRATION-006` cubre fuente propietaria única, propagación por contratos y resolución trazable de fuentes competidoras o conciliaciones.
+
+El contrato actual especializa y materializa esas obligaciones sin cambiar regla, prioridad, modalidad, estado, relación ni destino de implementación de ningún requisito existente.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las reglas de identidad, claves externas, crosswalks, reconciliación, historia, fuentes competidoras y linaje ya están protegidas por requisitos canónicos vigentes que asignan esta responsabilidad al dominio DATA y a sus integraciones. La tarea materializa el diseño documental sin introducir una conducta ejecutable nueva, cambiar un contrato físico o ejecutar una corrección de datos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+#### 21. Criterios de aceptación
+
+1. la tarea conserva el gobierno federado y ninguna clave externa transfiere la fuente de verdad;
+2. identificador canónico, clave empresarial, clave técnica, código, alias y clave externa permanecen conceptos distintos;
+3. un crosswalk representa una correspondencia gobernada y nunca una nueva identidad empresarial;
+4. se materializan decisiones para 62 de 62 objetos del catálogo;
+5. los 62 nombres canónicos aparecen exactamente una vez en la matriz;
+6. se conservan exactamente 43 datos maestros y 19 datos de referencia;
+7. se conservan exactamente 59 objetos ESPECIFICADO y 3 BLOQUEADO;
+8. PERFIL_DE_MARCA, AUDIENCIA y ACTIVO_DE_MARCA conservan el bloqueo heredado;
+9. no se declara operativa ninguna fuente AURA inexistente;
+10. se preservan las once identidades TI-SERVICE-001 a TI-SERVICE-011 sin renumeración;
+11. endpoint_id continúa siendo identidad canónica de ENDPOINT;
+12. device_id y device_code conservan sus funciones distintas en SHARED_DEVICE;
+13. app_code continúa siendo la identidad canónica legible de APPLICATION;
+14. un sistema externo y su namespace forman parte obligatoria de la coordenada de una clave externa;
+15. el valor original recibido se conserva separado de cualquier representación normalizada;
+16. la normalización solo apoya búsqueda y comparación y no crea equivalencia;
+17. cada correspondencia declara objeto canónico y clase compatibles;
+18. una correspondencia declara alcance cuando la clave no es global dentro de su sistema de origen;
+19. cada correspondencia declara vigencia efectiva y tiempo de decisión;
+20. la historia de una correspondencia retirada o sustituida permanece resoluble;
+21. una misma clave externa activa no puede resolver simultáneamente dos identidades canónicas dentro de la misma coordenada;
+22. un mismo objeto canónico puede tener múltiples aliases externos de sistemas distintos sin duplicar identidad;
+23. una relación muchos-a-muchos empresarial no se representa como crosswalk de identidad;
+24. una correspondencia entre clases canónicas distintas se representa como relación tipada, no como fusión;
+25. PERSON_IDENTITY y CUSTOMER_PERSON nunca se fusionan mediante crosswalk;
+26. PRODUCTO_MAESTRO, VARIANTE, PRESENTACION y UNIDAD_DE_MEDIDA permanecen separados;
+27. OPERATIONAL_SITE y PHYSICAL_FACILITY permanecen separados;
+28. ACTIVO_FISICO, ENDPOINT y SHARED_DEVICE permanecen separados;
+29. BASE_ROLE no se deriva de un rol externo por similitud de nombre o permisos aparentes;
+30. correo, teléfono, nombre, dirección, serial, IP, MAC, SSID, URL y barcode no bastan por sí solos para conciliar identidad;
+31. la evidencia de una autoridad externa conserva autoridad, jurisdicción y vigencia cuando corresponda;
+32. una primera correspondencia de clave externa fuerte requiere la decisión de reconciliación aplicable y no se autoconsagra por unicidad aparente;
+33. una correspondencia previamente conciliada puede resolverse de forma determinista solo mientras continúen válidos sistema, namespace, objeto, alcance, vigencia y ausencia de conflicto;
+34. una coincidencia de clave empresarial no aprobada solo genera candidato;
+35. una coincidencia normalizada o fuzzy solo genera candidato y nunca fusión automática;
+36. una sugerencia algorítmica o de IA nunca decide equivalencia por sí sola;
+37. CONFLICTO y AMBIGUO fallan cerrados para usos oficiales;
+38. NO_CONCILIADO no se interpreta como ausencia del objeto ni como cero;
+39. la cuarentena de una clave externa conserva el payload o evidencia necesaria según el contrato propietario;
+40. la corrección de una correspondencia no sobrescribe la decisión anterior;
+41. la reasignación legítima de una clave externa reutilizada por su emisor cierra una vigencia y abre otra con evidencia;
+42. los hechos históricos resuelven la correspondencia efectiva pertinente al hecho, corte y versión aplicables;
+43. una corrección tardía se propaga mediante linaje y evaluación de impacto, no mediante edición silenciosa de hechos;
+44. un restatement conserva original y reexpresión cuando la corrección altera una publicación oficial;
+45. la fusión de identidades sigue exigiendo evidencia, stewardship y autoridad del dominio propietario;
+46. la separación de identidades conserva procedencia, aliases y hechos sin reatribución aproximada;
+47. el steward puede revisar y proponer pero no adquiere por ello autorización técnica o autoridad universal;
+48. el propietario funcional resuelve conflictos que exceden la delegación del steward;
+49. el consumidor no puede crear un crosswalk local que compita con la decisión gobernada;
+50. la capa semántica consume únicamente identidades reconciliadas o conserva explícitamente el estado no conciliado;
+51. un join analítico no puede usar nombre o código externo como sustituto del crosswalk gobernado;
+52. la autorización se evalúa antes de exponer claves externas, candidatos, conflictos o evidencia;
+53. las claves con PII se minimizan y no se reutilizan como identificadores empresariales por conveniencia;
+54. un secreto, token de acceso o credencial de integración nunca se almacena ni modela como clave externa de maestro;
+55. los logs y evidencias no deben convertir valores sensibles en un nuevo canal de exposición;
+56. una exportación no se convierte en fuente de verdad ni en registro de crosswalk;
+57. la conciliación de un archivo importado conserva archivo/lote/origen y no convierte la fila importada en autoridad;
+58. las integraciones proveedor-específicas se inventarían solo si existiera evidencia; esta tarea no fabrica sistemas, namespaces ni mappings;
+59. INT-EXT-001 conserva la responsabilidad de inventariar sistemas externos concretos;
+60. INT-EXT-013 conserva la responsabilidad de definir el mapeo proveedor-específico de identificadores externos y canónicos;
+61. INT-EXT-014 conserva la responsabilidad sobre conservación controlada de payload original;
+62. INT-EXT-017 conserva auditoría, métricas, alertas y conciliación de cada integración externa;
+63. DATA-DOM-006 conserva ingestión, replay, backfill, transformación y reconciliación de datos;
+64. DATA-DOM-007 conserva calidad y certificación y un crosswalk no eleva calidad por sí mismo;
+65. DATA-DOM-017 conserva reconstrucción, corrección histórica, impacto y restatement;
+66. DATA-AUTH-001 conserva la construcción del conjunto autorizado antes de cualquier consumo analítico;
+67. DATA-AUTH-003 conserva segregación de capacidades sobre definición, certificación, publicación y administración;
+68. DATA-INT-002 consume crosswalks sin convertir modelos, caché o snapshots en autoridad;
+69. la tarea no prescribe tabla, schema, UUID, índice, constraint, trigger, función, RPC ni forma física;
+70. la tarea no ejecuta DDL, DML, migraciones, backfills, merges, splits ni correcciones productivas;
+71. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+72. la cobertura preexistente de requisitos DATA e INTEGRATION permanece suficiente para este contrato;
+73. no se declara validada ninguna correspondencia real que no tenga evidencia verificable;
+74. no se declara un conteo de instancias de crosswalk existente sin inventario canónico ejecutado;
+75. la ausencia de mapping verificable se conserva como estado explícito y con propietario de resolución;
+76. cada conflicto tiene propietario documental o de integración exacto y condición de salida;
+77. no queda un pendiente narrativo sin destino cuando surge de esta definición;
+78. la siguiente tarea permanece únicamente reservada;
+79. DATA-INT-004 no se inicia ni se modifica en esta tarea;
+80. la implementación física continúa prohibida durante la fase documental actual;
+81. el archivo contiene una sola tarea canónica y su continuidad inmediata;
+82. la matriz de objetos conserva cero duplicados y cero faltantes;
+83. las once familias TECH_SERVICE conservan cero duplicados y cero faltantes;
+84. el contrato de resolución fail closed impide usar candidatos ambiguos como claves de join oficial;
+85. la historia conserva tanto la clave externa observada entonces como la reconciliación conocida entonces;
+86. una reconciliación posterior no falsifica que una decisión histórica pudo haberse tomado con identidad no resuelta;
+87. las correcciones de crosswalk que afecten modelos analíticos obligan a reevaluar caché/snapshot por linaje, sin transferir autoridad;
+88. las claves externas pueden ser muchas por identidad canónica, pero cada una conserva su procedencia y alcance propios;
+89. una clave externa retirada no se reutiliza internamente como si siempre hubiera representado la identidad nueva;
+90. un crosswalk aprobado no autoriza escritura directa del sistema externo sobre la fuente interna;
+91. el adaptador externo sigue obligado a validar, transformar, mapear, deduplicar y auditar antes de afectar dominios;
+92. los contratos de eventos y lecturas de DATA-INT-001 conservan la identidad canónica y no dependen de aliases locales;
+93. la conciliación de identidades no cambia por sí sola la semántica de una métrica ni crea una fórmula nueva;
+94. la correspondencia de periodos, monedas y taxonomías exige equivalencia semántica además de coincidencia de código;
+95. el vínculo de OFERTA_COMERCIAL externa no se colapsa con PRODUCTO_MAESTRO;
+96. el código de artículo de proveedor se concilia con RELACION_PRODUCTO_PROVEEDOR cuando corresponda y no se promueve a SKU global sin contrato;
+97. los identificadores de marketplace se scoped a su canal, cuenta, marca o contexto cuando el proveedor lo requiera;
+98. una clave de autenticación empresarial se mantiene separada de la credencial secreta usada por una integración;
+99. la tarea queda documentalmente completa aunque el inventario proveedor-específico aún no exista, porque define la decisión transversal y el tratamiento de cada objeto sin fingir instancias.
+
+#### 22. Límites de la tarea
+
+Esta tarea **sí** define completamente:
+
+- el significado y la autoridad de un crosswalk;
+- la coordenada lógica de una clave externa;
+- estados de conciliación;
+- niveles de evidencia;
+- cardinalidad y unicidad;
+- procedimiento fail closed de resolución;
+- vigencia e historia;
+- corrección, sustitución, fusión y separación;
+- protección de PII y credenciales;
+- decisión individual para 62 objetos;
+- preservación de 11 TECH_SERVICE;
+- handoffs proveedor-específicos con propietario exacto.
+
+Esta tarea **no** ejecuta:
+
+- inventario real de proveedores aún no materializado por su tarea propietaria;
+- mapping concreto de IDs de una API/plataforma no inventariada;
+- migración o creación física de estructura de crosswalk;
+- escritura o corrección productiva de maestros;
+- merge o split de registros;
+- backfill o replay;
+- reatribución de hechos;
+- restatement;
+- cambio de autorización;
+- alta de secretos o credenciales;
+- creación de endpoints o adaptadores.
+
+Estas exclusiones son fronteras de fase y no reducen el resultado documental de DATA-INT-003.
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento`
+
+TAREA ACTUAL APROBADA
+`DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial`
+
+
 ### [ ] DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
