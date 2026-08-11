@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **690** |
+| Tareas aprobadas | **691** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **904** |
+| Tareas no iniciadas | **903** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **43.29% (690/1594)** |
+| Porcentaje de completamiento | **43.35% (691/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración** |
-| Tarea actual | **DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones** |
+| Última tarea aprobada | **DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones** |
+| Tarea actual | **DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol** |
+| Siguiente tarea | **DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 114 de 157 aprobadas; DATA-AUTH-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 115 de 157 aprobadas; DATA-UX-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-AUTH-003` — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración |
-| Tarea actual | `DATA-AUTH-004` — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones — **NO INICIADA** |
-| Siguiente tarea | `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol |
+| Última aprobada | `DATA-AUTH-004` — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones |
+| Tarea actual | `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol — **NO INICIADA** |
+| Siguiente tarea | `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 114 DE 157 APROBADAS — ACTUAL DATA-AUTH-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 115 DE 157 APROBADAS — ACTUAL DATA-UX-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración
-        ↓
-TAREA ACTUAL
 DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 114 de 157 tareas aprobadas
+CARRIL NEXO — 115 de 157 tareas aprobadas
 ```

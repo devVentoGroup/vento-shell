@@ -1823,4 +1823,697 @@ SIGUIENTE TAREA RESERVADA
 `DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones`
 
 
-### [ ] DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
+### ✅ DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración` — APROBADA
+**Tarea siguiente:** `DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de auditoría y trazabilidad para consumo, distribución y automatización analítica
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, grants, backfills, cambios de datos, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento OS conserva evidencia correlacionable y minimizada de las operaciones analíticas que pueden revelar, distribuir, transformar o influir sobre información gobernada, sin convertir el registro de auditoría en una nueva fuente de verdad, un repositorio de datos sensibles, un mecanismo de autorización o una prueba automática de calidad.
+
+La tarea cubre exactamente las seis familias expresadas en su título:
+
+1. consultas;
+2. descargas;
+3. suscripciones;
+4. alertas;
+5. modelos;
+6. recomendaciones.
+
+La auditoría deberá permitir reconstruir quién o qué proceso solicitó la operación, bajo qué autoridad y finalidad, sobre qué recurso y versión, qué población y contexto se utilizaron, qué decisión de autorización aplicó, qué resultado lógico ocurrió y cómo se relaciona con operaciones anteriores o posteriores, sin registrar más contenido del necesario para esa finalidad de evidencia.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializada la especialización analítica de trazabilidad con los siguientes resultados:
+
+- seis familias auditables definidas y separadas;
+- un sobre lógico de auditoría analítica compatible con `NFR-AUDIT-EVENT-ENVELOPE-001`;
+- separación entre operación empresarial, intento técnico, decisión de autorización, resultado analítico y efecto posterior;
+- correlación obligatoria entre consultas, artefactos portables, entregas de suscripción, ocurrencias de alerta, ejecuciones de modelos y recomendaciones derivadas;
+- registro de denegaciones, reintentos, fallos y operaciones administrativas sin convertir indisponibilidad técnica en una decisión empresarial falsa;
+- minimización del propio registro de auditoría para impedir que logs, trazas o metadatos recreen información protegida;
+- preservación de versión semántica, corte, población, dimensiones, filtros, calidad, regla de divulgación y artefacto cuando sean materiales para reproducir la operación;
+- separación entre generación de una exportación y ocurrencia de una descarga;
+- separación entre definición de una suscripción y cada evaluación o entrega;
+- separación entre evaluación de una regla de alerta, ocurrencia de la señal y entrega al destinatario;
+- separación entre ejecución de modelo, resultado predictivo o analítico, recomendación y eventual acción empresarial;
+- decisiones explícitas para 62 objetos, 14 métricas, 55 familias analíticas y seis familias de artefacto D008;
+- preservación de los tres objetos AURA bloqueados y de las tres métricas de asistencia bloqueadas;
+- cero permisos, roles, fuentes, métricas, modelos, recomendaciones o mecanismos físicos inventados;
+- cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+A004 consume sin redefinir:
+
+- `DATA-AUTH-001`, que forma el conjunto autorizado por dominio, entidad, territorio y finalidad;
+- `DATA-AUTH-002`, que protege campos, poblaciones pequeñas, comparaciones, exportaciones y drill-down;
+- `DATA-AUTH-003`, que separa definición, certificación, publicación, metas, anotación, exportación y administración;
+- `DATA-DOM-004` y `DATA-DOM-017`, para identidad y versión semántica e historia reproducible;
+- `DATA-DOM-007`, para estados de calidad y certificación;
+- `DATA-DOM-008`, para tablero, reporte, exportación, suscripción, alerta y snapshot oficial;
+- `DATA-DOM-009` a `DATA-DOM-013`, para las 55 familias analíticas;
+- `DATA-DOM-014`, para diagnóstico, modelos, confianza, causalidad y recomendaciones;
+- `DATA-DOM-015` y `DATA-DOM-016`, para metas, planes de medición, intervenciones y comprobación;
+- `INFO-AUTH-004`, para independencia, protección de logs, investigaciones, accesos extraordinarios y evidencia preservada;
+- `NFR-REQ-005`, para clasificación, minimización y protección de logs, métricas, trazas, exportaciones y metadatos;
+- `NFR-REQ-006`, para identidad de evento, recurso, correlación, causalidad, evidencia, retención e integridad;
+- `TREQ-AUTH-015`, `TREQ-SHELL-011`, `TREQ-DATA-004` y `TREQ-DATA-005` como cobertura de prueba ya vigente.
+
+A004 no modifica ninguna de esas decisiones y no sustituye a `DATA-INT-002` o `DATA-INT-004` para materialización técnica.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+AUDITORÍA ≠ AUTORIZACIÓN
+AUDITORÍA ≠ FUENTE DE VERDAD
+AUDITORÍA ≠ LOG COMPLETO DE PAYLOAD
+AUDITORÍA ≠ CERTIFICACIÓN
+AUDITORÍA ≠ PUBLICACIÓN
+AUDITORÍA ≠ CAUSALIDAD
+AUDITORÍA ≠ EJECUCIÓN DE UNA RECOMENDACIÓN
+```
+
+Reglas:
+
+1. registrar una operación no la vuelve autorizada;
+2. ausencia de evidencia requerida puede impedir considerar trazable una operación, pero no convierte un evento posterior en autorización retroactiva;
+3. un evento de auditoría nunca reemplaza el objeto, hecho, métrica, reporte, modelo o decisión que referencia;
+4. auditoría conserva evidencia de la decisión de autorización; no vuelve a decidir permisos por su cuenta;
+5. un evento técnico no se presenta como acción empresarial si el efecto empresarial no ocurrió;
+6. una denegación también conserva evidencia segura cuando el contrato transversal lo exige;
+7. la evidencia de un fallo técnico se distingue de una decisión `DENY` y no imputa falta de permiso al actor;
+8. un administrador de plataforma, base de datos, observabilidad o BI no obtiene por ello derecho a consultar o alterar evidencia analítica protegida;
+9. el actor investigado no puede borrar, sustituir o editar la evidencia para neutralizar la investigación;
+10. la propia auditoría hereda sensibilidad y retención conforme a INFO y NFR.
+
+---
+
+#### 5. Sobre lógico mínimo de auditoría analítica
+
+A004 especializa, sin reemplazarlo, el sobre `NFR-AUDIT-EVENT-ENVELOPE-001`. Según aplicabilidad, una operación analítica deberá poder conservar:
+
+| Dimensión            | Evidencia mínima                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------- |
+| identidad del evento | identificador estable del evento, tipo y versión del contrato de evento                                        |
+| tiempo               | ocurrencia, registro y zona horaria cuando sea material para interpretación                                    |
+| principal y actor    | principal autenticado, actor efectivo y principal técnico o proceso cuando actúe un job o servicio             |
+| contexto             | aplicación, dispositivo, sede, área, relación y demás contexto efectivo que haya condicionado la operación     |
+| acción               | familia auditable y acción exacta realmente solicitada o ejecutada                                             |
+| recurso              | tipo, identidad y versión del recurso, artefacto, métrica, modelo o recomendación                              |
+| finalidad            | propósito empresarial que justificó el acceso o procesamiento                                                  |
+| autorización         | referencia a la decisión aplicable, permiso exacto y versiones contractuales cuando existan                    |
+| alcance              | territorio, población, periodo, corte, filtros y dimensiones materiales                                        |
+| protección           | clasificación, política de campos, regla de divulgación y modo efectivo cuando hayan condicionado la salida    |
+| calidad              | estado D007, frescura, cobertura y bloqueo aplicables al resultado consumido                                   |
+| resultado            | resultado lógico y efecto realmente confirmado, sin inferir éxito a partir de una respuesta parcial            |
+| distribución         | destinatario, canal, destino o audiencia cuando exista entrega o salida                                        |
+| correlación          | solicitud, operación lógica, correlación, causalidad, intento e idempotencia cuando apliquen                   |
+| evidencia            | referencias protegidas, integridad, versión o huella necesaria para reproducir sin duplicar contenido sensible |
+| ciclo de vida        | corrección, supersesión, retención y hold mediante las referencias NFR aplicables                              |
+
+La ausencia de una dimensión que materialmente determine autorización, población, versión o resultado no podrá ocultarse sustituyéndola por `null`, un valor genérico o un texto libre no reproducible.
+
+---
+
+#### 6. Minimización del registro de auditoría
+
+El evento de auditoría conserva evidencia, no una segunda copia del dato consultado.
+
+Queda establecido:
+
+- secretos, tokens, PIN, credenciales, claves privadas y firmas completas nunca forman parte del payload ordinario de auditoría;
+- datos personales, laborales, financieros, médicos, comerciales o técnicos sensibles se conservan mediante referencias protegidas, identificadores opacos, redacción o evidencia separada cuando sea suficiente;
+- filtros sensibles no se registran como texto completo si una representación protegida permite reproducir la condición;
+- resultados de consultas no se almacenan fila por fila dentro del evento;
+- celdas suprimidas, poblaciones pequeñas y miembros excluidos por A002 no reaparecen en logs, métricas, tooltips de auditoría o metadatos;
+- prompts, features, embeddings, documentos y datasets de un modelo no se duplican por defecto en el evento; se conserva la referencia y versión necesarias;
+- una explicación o recomendación sensible puede requerir referencia protegida en lugar de texto completo;
+- conteos o metadatos cuya precisión permita inferencia se someten a la misma protección A002;
+- la evidencia más detallada, cuando sea necesaria, permanece separada y autorizada conforme a INFO/NFR.
+
+---
+
+#### 7. Matriz de las seis familias auditables
+
+|    # | Familia       | Unidad lógica auditada                                                         | Evidencia específica mínima                                                                                                                                                                        | Separación obligatoria                                                                                                                               |
+| ---: | ------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | consulta      | una solicitud analítica protegida y su resultado lógico                        | actor o proceso, finalidad, recurso, métricas/versiones, corte, población, filtros/dimensiones, autorización, protección, calidad y resultado                                                      | una consulta empresarial puede ejecutar varias operaciones técnicas; no se exige convertir cada sentencia interna en una acción empresarial distinta |
+|    2 | descarga      | la obtención efectiva de un artefacto portable o contenido autorizado          | artefacto/version, clasificación, corte, alcance, columnas o proyección, destinatario cuando aplique, integridad y resultado                                                                       | generar una exportación, emitir un enlace temporal y obtener el artefacto son hechos distinguibles y correlacionables                                |
+|    3 | suscripción   | configuración o cambio gobernado y cada evaluación o entrega                   | identidad de suscripción, artefacto o métricas, política de versión, cadencia o condición, destinatarios, canal, corte, autorización vigente y resultado                                           | crear o administrar la regla no congela permiso; cada entrega reevalúa y conserva su propia evidencia                                                |
+|    4 | alerta        | evaluación de regla, ocurrencia de señal y entrega cuando exista               | regla/version, métrica o condición, corte, alcance, calidad, valor o estado protegido necesario, destinatario, canal y resultado                                                                   | evaluación, señal, notificación, diagnóstico, recomendación y acción permanecen hechos distintos                                                     |
+|    5 | modelo        | ejecución o consumo de un modelo analítico o predictivo sobre datos gobernados | propósito, identidad/version del modelo, datos o snapshot de entrada por referencia, corte, variables o contrato de entrada, población autorizada, configuración/version, resultado y limitaciones | ejecución de modelo no certifica datos, no prueba causalidad y no concede una acción empresarial                                                     |
+|    6 | recomendación | generación, presentación o revisión de una recomendación gobernada             | origen diagnóstico/modelo/evidencia, versión/contexto, objetivo o proceso afectado, confianza y límites, destinatario y resultado de revisión cuando exista                                        | recomendación no equivale a decisión, meta, intervención ni ejecución                                                                                |
+
+**Reconciliación:** 6 familias esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 8. Consultas
+
+Toda consulta analítica protegida deberá dejar una unidad lógica correlacionable cuando el contrato de trazabilidad aplicable lo exija.
+
+Incluye, según el producto y la operación real:
+
+- carga o actualización de un tablero;
+- aplicación de filtros o dimensiones que cambien materialmente la población o el resultado;
+- búsqueda analítica protegida;
+- drill-down hacia otro nivel o recurso;
+- apertura de un reporte o snapshot restringido;
+- consulta server-side usada para un análisis, modelo o recomendación.
+
+Reglas:
+
+1. filtros del cliente solo reducen el conjunto autorizado y la evidencia debe poder demostrar esa frontera;
+2. cada salto de drill-down que constituya nueva solicitud conserva su decisión y correlación propias;
+3. una consulta denegada no registra títulos, nombres, fragmentos o metadatos que revelen el recurso protegido;
+4. paginación, búsqueda, conteos y metadatos no quedan fuera de la auditoría cuando sean materialmente sensibles;
+5. el registro conserva `metric_key` y versión semántica cuando una métrica participa, no una fórmula local de la pantalla;
+6. consultas internas que formen parte de una sola operación lógica pueden correlacionarse como intentos o efectos técnicos sin multiplicar artificialmente la acción empresarial;
+7. una herramienta BI o IA conserva el actor o principal técnico, la finalidad y el recurso empresarial; su credencial técnica no sustituye la autorización.
+
+---
+
+#### 9. Descargas y artefactos portables
+
+A004 distingue la autorización de exportación definida en A003 de la evidencia de una obtención material.
+
+Reglas:
+
+1. una consulta autorizada no prueba que exista autoridad para exportar o producir una copia portable;
+2. el evento de generación de una exportación y el evento de obtención del artefacto se correlacionan pero no se confunden;
+3. si se usa un enlace temporal, la emisión del vínculo no concede autoridad y la obtención efectiva conserva su propia evidencia cuando el mecanismo lo permita;
+4. el evento registra la proyección autorizada, no las columnas ocultas o celdas suprimidas;
+5. clasificación, corte, versiones, filtros y dimensiones del artefacto permanecen trazables después de cambiar de formato;
+6. una nueva generación o una nueva obtención no reescribe la evidencia de una anterior;
+7. un fallo después de iniciar transferencia no se presenta como entrega íntegra sin evidencia suficiente;
+8. integridad del artefacto se conserva mediante la referencia aprobada por NFR o el contrato físico futuro; A004 no inventa un algoritmo o almacenamiento concreto;
+9. el contenido del archivo no se duplica dentro del log ordinario.
+
+---
+
+#### 10. Suscripciones
+
+La suscripción tiene al menos dos planos auditables: gobierno de la regla y ejecuciones de entrega.
+
+Para la regla se conserva, según aplicabilidad:
+
+- identidad de la suscripción;
+- actor que la crea, modifica, pausa, reactiva o termina;
+- artefacto o métricas gobernadas;
+- política de versión;
+- cadencia o condición;
+- filtros, dimensiones y alcance;
+- destinatarios y canal;
+- finalidad;
+- autorización y versiones que permitieron el cambio.
+
+Para cada evaluación o entrega:
+
+- se resuelve nuevamente autorización, clasificación, población y calidad;
+- se conserva el corte y la versión realmente usados;
+- se registra si la entrega fue producida, suprimida, bloqueada o falló conforme al resultado real del mecanismo, sin convertir esos términos en un enum técnico obligatorio;
+- un destinatario retirado o sin autoridad vigente no conserva acceso por haber estado incluido antes;
+- reintentos se correlacionan con la misma entrega lógica y no justifican efectos duplicados;
+- una dependencia `BLOQUEADO` no se presenta como entrega oficial completa.
+
+---
+
+#### 11. Alertas
+
+La auditoría de alertas separa evaluación, señal y distribución.
+
+Debe poder responder:
+
+```text
+qué regla y versión se evaluaron
+qué métrica, dato o condición participaron
+qué periodo o instante y qué corte aplicaron
+qué población, territorio y dimensiones se evaluaron
+qué estado de calidad era vigente
+si la condición produjo o no una señal
+qué destinatario y canal recibieron una notificación, cuando ocurrió
+qué operación posterior se correlacionó, si existió
+```
+
+Reglas:
+
+1. cero, ausencia, desconocido, no recibido y dato pendiente no se colapsan en un mismo resultado;
+2. una alerta basada en datos degradados conserva ese estado;
+3. el evento no inventa un umbral; referencia la regla gobernada que fue evaluada;
+4. una alerta no constituye diagnóstico, causa, recomendación ni acción;
+5. la entrega a cada destinatario conserva autorización y resultado cuando esa separación sea material;
+6. una alerta sensible no reproduce en el texto de auditoría el dato o sujeto que A002 protege;
+7. reevaluar una regla no borra la ocurrencia anterior ni la convierte retrospectivamente en falsa.
+
+---
+
+#### 12. Modelos
+
+A004 gobierna evidencia de uso y resultado; `DATA-INT-004` conserva la integración técnica futura con BI, modelos externos e inteligencia artificial.
+
+Toda ejecución o consumo gobernado de un modelo deberá poder atribuir, cuando aplique:
+
+- propósito empresarial;
+- identidad y versión del modelo;
+- actor efectivo o proceso técnico responsable;
+- fuente, dataset, snapshot o conjunto de datos de entrada mediante referencia y versión;
+- corte y periodo;
+- población autorizada;
+- variables, features o contrato de entrada mediante referencia versionada;
+- configuración o versión de parámetros materialmente relevantes;
+- estado de calidad y limitaciones de las entradas;
+- resultado mediante referencia protegida;
+- nivel de confianza, limitaciones o condición de uso cuando el contrato del modelo los defina;
+- correlación con consulta, diagnóstico, alerta, objetivo o recomendación que lo consumió.
+
+Reglas:
+
+1. un modelo no recibe más población, campos o precisión por necesitar variables adicionales;
+2. una credencial de proveedor o `service_role` no es autoridad empresarial;
+3. prompts, features, embeddings y outputs pueden adquirir sensibilidad y se minimizan en la auditoría;
+4. el registro no declara causalidad por existir score, importancia de variable, explicación o precisión predictiva;
+5. un modelo no certifica su propio dataset ni su resultado;
+6. una ejecución automatizada conserva identidad técnica y finalidad, no un actor humano ficticio;
+7. cambios de modelo, versión, dataset o configuración material no se ocultan bajo una misma evidencia;
+8. si no puede reconstruirse la versión necesaria, la evidencia no se presenta como replay reproducible.
+
+---
+
+#### 13. Recomendaciones
+
+Una recomendación es un resultado informativo o asistido que puede orientar una evaluación o decisión; no es por sí misma una instrucción ejecutable.
+
+Toda recomendación gobernada deberá poder conservar, cuando aplique:
+
+- origen en diagnóstico, modelo, regla o evidencia;
+- versión y corte de sus fuentes;
+- finalidad y objetivo o proceso al que se dirige;
+- población y alcance sobre los que fue calculada;
+- confianza, incertidumbre y limitaciones disponibles;
+- guardrails o restricciones que deban acompañar su interpretación;
+- actor o proceso que la generó;
+- actor, audiencia o proceso al que fue presentada;
+- referencia protegida al contenido cuando el texto sea sensible;
+- decisión posterior de aceptar, rechazar, ignorar, investigar o convertir en propuesta cuando el proceso propietario produzca efectivamente ese resultado, sin imponer un enum técnico universal;
+- correlación con una acción o experimento D016 únicamente cuando esa acción exista de forma independiente y autorizada.
+
+Reglas:
+
+1. una recomendación no fija metas ni modifica una baseline;
+2. no eleva certificación o confianza de sus fuentes;
+3. no demuestra causalidad;
+4. no ejecuta cambios empresariales automáticamente;
+5. una IA no puede por sí sola certificar datos, declarar causa, fijar meta o aprobar una acción;
+6. contenido sensible se minimiza tanto en la presentación como en la evidencia;
+7. la decisión humana o empresarial posterior conserva actor, autoridad y proceso propios y no se atribuye al modelo por inferencia.
+
+---
+
+#### 14. Correlación, intentos, reintentos e idempotencia
+
+La auditoría deberá distinguir una operación lógica de sus intentos técnicos.
+
+- `correlation_id` y `causation_id` de NFR vinculan cadena y causa sin convertir una en la otra;
+- `request_id`, `command_id`, intento e idempotencia se conservan cuando existan en el contrato ejecutor;
+- un reintento conserva evidencia aunque no produzca un segundo efecto empresarial;
+- la misma operación lógica con respuesta perdida no se registra como dos entregas confirmadas si el mecanismo demuestra una sola;
+- un intento con payload, versión o precondición incompatible no se fusiona silenciosamente con la evidencia anterior;
+- rollback o compensación se registra como hecho posterior relacionado y no borra el evento original;
+- si no puede demostrarse si un efecto ocurrió, el registro conserva la incertidumbre y remite al proceso propietario de reconciliación; no inventa éxito ni rollback.
+
+---
+
+#### 15. Integridad, independencia y acceso a la propia auditoría
+
+A004 hereda las reglas de INFO-AUTH-004 y NFR-006:
+
+1. la evidencia cerrada no se edita para cambiar el pasado;
+2. correcciones y supersesiones se relacionan de forma aditiva;
+3. retención, hold, archivo, disposición y anonimización permanecen bajo políticas NFR/INFO aplicables;
+4. el actor que ejecutó una operación no obtiene por ello capacidad para administrar o retirar su evidencia;
+5. el custodio técnico puede mantener infraestructura sin adquirir derecho empresarial al contenido;
+6. la lectura, investigación, exportación o administración de la propia auditoría requieren autoridad diferenciada conforme al gobierno de información;
+7. una investigación no amplía el acceso a objetos, métricas o poblaciones fuera de su finalidad;
+8. evidencia preservada puede mantener referencia a un recurso retirado sin reactivar ese recurso o su acceso.
+
+---
+
+#### 16. Historia, correcciones y reproducibilidad
+
+- una corrección de datos o un restatement no altera silenciosamente el evento que documentó qué se conocía y usó entonces;
+- una reproducción posterior genera evidencia nueva vinculada al evento original y fija las versiones usadas;
+- un modelo reejecutado con una versión nueva no se presenta como la misma ejecución histórica;
+- una recomendación recalculada no sustituye la recomendación que fue presentada antes;
+- una alerta corregida puede generar nueva señal, anotación o relación, pero la ocurrencia original permanece;
+- una suscripción corregida no reescribe entregas anteriores;
+- una exportación o descarga posterior no altera el artefacto entregado antes;
+- la auditoría conserva diferencia entre resultado conocido entonces y resultado reconstruido ahora.
+
+---
+
+#### 17. Principios para herramientas BI, hojas, modelos externos e IA
+
+- BI consume únicamente la proyección protegida autorizada y sus consultas quedan bajo el mismo contrato de auditoría;
+- una hoja derivada no se convierte en autoridad ni permite retirar supresiones;
+- un modelo externo conserva proveedor o integración, versión y contrato de entrada cuando `DATA-INT-004` los materialice;
+- una IA no recibe datos adicionales por conveniencia técnica;
+- el proveedor técnico no se convierte en propietario ni destinatario autorizado por inferencia;
+- el registro no almacena secretos de integración ni contenido sensible completo para facilitar soporte;
+- herramientas externas no pueden mantener una auditoría paralela como única evidencia canónica si Vento OS necesita reconstruir la operación empresarial;
+- el contrato físico de integración, retorno de evidencia y conciliación pertenece a `DATA-INT-004`.
+
+---
+
+#### 18. Estados y bloqueos heredados
+
+A004 registra estados reales; no los mejora.
+
+- `NO EVALUADO` permanece `NO EVALUADO` hasta evidencia D007 suficiente;
+- `BLOQUEADO` permanece `BLOQUEADO` aunque exista una consulta, intento de publicación, descarga o ejecución técnica;
+- una investigación autorizada sobre un bloqueo conserva esa finalidad y no se convierte en publicación oficial;
+- los tres objetos AURA bloqueados no reciben fuente operativa mediante auditoría;
+- las tres métricas de asistencia bloqueadas no se presentan como oficiales por quedar registradas;
+- ausencia de evento no se interpreta automáticamente como ausencia de acción cuando la implementación de auditoría todavía no exista; A004 es documental y no certifica cobertura física.
+
+---
+
+#### 19. Matriz materializada para los 62 objetos maestros y de referencia
+
+Cada fila conserva identidad, clase, perfil A002 y estado heredados. A004 añade únicamente la decisión de evidencia.
+
+|    # | Objeto canónico               | Clase heredada    | Perfil A002              | Estado heredado | Decisión A004                                                                                                                                                                                                    |
+| ---: | ----------------------------- | ----------------- | ------------------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `ESPECIFICADO`  | Registrar recurso, versión y contexto comercial; términos, fórmulas, condiciones o contenido propietario se conservan mediante referencia protegida y no como payload ordinario.                                 |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `ESPECIFICADO`  | Registrar recurso, versión y contexto comercial; términos, fórmulas, condiciones o contenido propietario se conservan mediante referencia protegida y no como payload ordinario.                                 |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | `PERSONA_RELACIONADA`    | `ESPECIFICADO`  | Registrar referencia protegida, relación, finalidad y proyección aplicada; excluir identidad, contacto y atributos personales completos del evento ordinario salvo evidencia autorizada y minimizada.            |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `ESPECIFICADO`  | Registrar recurso, versión y contexto comercial; términos, fórmulas, condiciones o contenido propietario se conservan mediante referencia protegida y no como payload ordinario.                                 |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | `FINANCIERO_RESTRINGIDO` | `ESPECIFICADO`  | Registrar recurso, versión, periodo y decisión; saldos, importes, cuentas y detalle financiero no se reproducen en el evento ordinario salvo evidencia autorizada y minimizada.                                  |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `ESPECIFICADO`  | Registrar recurso, versión y contexto comercial; términos, fórmulas, condiciones o contenido propietario se conservan mediante referencia protegida y no como payload ordinario.                                 |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | `MAESTRO_OPERATIVO`      | `ESPECIFICADO`  | Registrar referencia del objeto y versión o vigencia que afectó la operación, actor, finalidad, alcance, decisión y resultado; no incorporar atributos completos cuando una referencia protegida sea suficiente. |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | `COMERCIAL_CONFIDENCIAL` | `ESPECIFICADO`  | Registrar recurso, versión y contexto comercial; términos, fórmulas, condiciones o contenido propietario se conservan mediante referencia protegida y no como payload ordinario.                                 |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | `FINANCIERO_RESTRINGIDO` | `ESPECIFICADO`  | Registrar recurso, versión, periodo y decisión; saldos, importes, cuentas y detalle financiero no se reproducen en el evento ordinario salvo evidencia autorizada y minimizada.                                  |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`              | `BLOQUEADO`     | Registrar únicamente el intento, bloqueo o decisión segura con referencias mínimas; no crear fuente, población, dato ni resultado operativo para superar el bloqueo heredado.                                    |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | `BLOQUEADO`              | `BLOQUEADO`     | Registrar únicamente el intento, bloqueo o decisión segura con referencias mínimas; no crear fuente, población, dato ni resultado operativo para superar el bloqueo heredado.                                    |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | `BLOQUEADO`              | `BLOQUEADO`     | Registrar únicamente el intento, bloqueo o decisión segura con referencias mínimas; no crear fuente, población, dato ni resultado operativo para superar el bloqueo heredado.                                    |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `ESPECIFICADO`  | Registrar identidad técnica estable y contexto; secretos, tokens, credenciales y configuración sensible no se almacenan en el evento ordinario.                                                                  |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `ESPECIFICADO`  | Registrar identidad técnica estable y contexto; secretos, tokens, credenciales y configuración sensible no se almacenan en el evento ordinario.                                                                  |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `ESPECIFICADO`  | Registrar identidad técnica estable y contexto; secretos, tokens, credenciales y configuración sensible no se almacenan en el evento ordinario.                                                                  |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | `TECNICO_SENSIBLE`       | `ESPECIFICADO`  | Registrar identidad técnica estable y contexto; secretos, tokens, credenciales y configuración sensible no se almacenan en el evento ordinario.                                                                  |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | `REFERENCIA_CONTROLADA`  | `ESPECIFICADO`  | Registrar clave y versión de referencia cuando influya en cálculo, filtro o decisión; no volcar el catálogo ni usar la referencia como permiso para hechos relacionados.                                         |
+
+**Reconciliación:** 62 esperados; 62 materializados; 0 faltantes; 0 duplicados; 43 `DATO_MAESTRO`; 19 `DATO_REFERENCIA`; tres objetos AURA preservados en `BLOQUEADO`.
+
+---
+
+#### 20. Reglas transversales para los 62 objetos
+
+- la identidad del objeto se registra mediante su referencia canónica; no se sustituye por etiqueta visible, nombre libre, correo, IP, archivo o valor normalizado;
+- el perfil A002 determina cómo se minimiza el evento y puede exigir referencias más restrictivas;
+- una consulta o modelo que cruza objetos de varios dominios conserva la intersección de autorizaciones y las referencias de cada fuente material;
+- un evento sobre un objeto de referencia no concede hechos, personas, saldos o expedientes relacionados;
+- el registro de un objeto sensible no debe permitir enumerar sus miembros mediante metadatos de auditoría;
+- cambios de versión, vigencia o clasificación producen nueva evidencia y no reinterpretan silenciosamente eventos anteriores.
+
+---
+
+#### 21. Matriz materializada para las 14 métricas de asistencia
+
+|    # | `metric_key`        | DQ heredado   | Estado A003    | Decisión A004                                                                                                                                                                                                                                                           |
+| ---: | ------------------- | ------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    2 | `attendedShifts`    | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    3 | `restDayCount`      | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    4 | `lateCount`         | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    5 | `noShowCount`       | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    6 | `openCount`         | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | `BLOQUEADO`    | Registrar `metric_key`, versión, corte, población, filtros/dimensiones, autorización, protección y estado `BLOQUEADO`; consultas de investigación pueden dejar evidencia, pero no se registra certificación o publicación oficial exitosa mientras persista el bloqueo. |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|    9 | `departureCount`    | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|   11 | `netMinutes`        | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|   12 | `incidentCount`     | `NO EVALUADO` | `ESPECIFICADO` | Registrar `metric_key`, versión semántica, corte, población, filtros/dimensiones materiales, autorización, protección, estado DQ y resultado; no incorporar filas laborales crudas o identidad de trabajadores cuando una referencia protegida sea suficiente.          |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | `BLOQUEADO`    | Registrar `metric_key`, versión, corte, población, filtros/dimensiones, autorización, protección y estado `BLOQUEADO`; consultas de investigación pueden dejar evidencia, pero no se registra certificación o publicación oficial exitosa mientras persista el bloqueo. |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | `BLOQUEADO`    | Registrar `metric_key`, versión, corte, población, filtros/dimensiones, autorización, protección y estado `BLOQUEADO`; consultas de investigación pueden dejar evidencia, pero no se registra certificación o publicación oficial exitosa mientras persista el bloqueo. |
+
+**Reconciliación:** 14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Las métricas `missingCloseCount`, `attendanceRate` y `punctualityRate` conservan su bloqueo D007. La auditoría de una investigación, consulta o intento no cambia su fórmula, calidad, certificación o posibilidad de publicación oficial.
+
+---
+
+#### 22. Matriz materializada para las 55 familias analíticas
+
+| Tarea propietaria |    # | Familia canónica                                        | Perfil A002            | Estado heredado | Decisión A004                                                                                                                                                                                      |
+| ----------------- | ---: | ------------------------------------------------------- | ---------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATA-DOM-009`    |    1 | ventas netas y brutas                                   | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    2 | pedidos y conversión                                    | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    3 | ticket y unidades                                       | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    4 | mezcla por producto, categoría, canal y sede            | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    5 | demanda por franja, día y temporada                     | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    6 | disponibilidad perdida                                  | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    7 | cancelaciones, devoluciones y descuentos                | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-009`    |    8 | promociones y efecto incremental                        | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-009`    |    9 | recurrencia y frecuencia                                | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-009`    |   10 | margen relacionado                                      | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-009`    |   11 | capacidad comercial no utilizada                        | `COMERCIAL_OPERATIVO`  | `ESPECIFICADO`  | Registrar familia, métricas concretas y versiones, corte, dimensiones o filtros materiales, autorización y resultado; el nombre de familia no se convierte en permiso ni se vuelcan filas fuente.  |
+| `DATA-DOM-010`    |    1 | existencia disponible y comprometida                    | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |    2 | cobertura y días de inventario                          | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |    3 | rotación y permanencia                                  | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |    4 | faltantes y quiebres                                    | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |    5 | vencimiento, daño y pérdida                             | `CALIDAD_OPERATIVA`    | `ESPECIFICADO`  | Registrar estado de calidad, versión, corte, anomalía o resultado aplicable; evidencia detallada se referencia sin convertir el evento en una copia del expediente.                                |
+| `DATA-DOM-010`    |    6 | diferencias de conteo                                   | `CALIDAD_OPERATIVA`    | `ESPECIFICADO`  | Registrar estado de calidad, versión, corte, anomalía o resultado aplicable; evidencia detallada se referencia sin convertir el evento en una copia del expediente.                                |
+| `DATA-DOM-010`    |    7 | cumplimiento de remisiones                              | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |    8 | lead time y cumplimiento de proveedores                 | `PROVEEDOR_COMERCIAL`  | `ESPECIFICADO`  | Registrar proveedor o relación mediante referencia protegida, periodo, finalidad y resultado; condiciones comerciales y contactos permanecen minimizados.                                          |
+| `DATA-DOM-010`    |    9 | compras urgentes                                        | `PROVEEDOR_COMERCIAL`  | `ESPECIFICADO`  | Registrar proveedor o relación mediante referencia protegida, periodo, finalidad y resultado; condiciones comerciales y contactos permanecen minimizados.                                          |
+| `DATA-DOM-010`    |   10 | consumo versus plan                                     | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-010`    |   11 | costo de inventario                                     | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-010`    |   12 | capacidad de almacenamiento                             | `INVENTARIO_OPERATIVO` | `ESPECIFICADO`  | Registrar versión, corte, sede o alcance y resultado; no usar la auditoría para reconstruir movimientos, existencias o ubicaciones fuera del conjunto autorizado.                                  |
+| `DATA-DOM-011`    |    1 | demanda planificada versus producción                   | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    2 | capacidad disponible y utilizada                        | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    3 | adherencia al programa                                  | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    4 | rendimiento teórico y real                              | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    5 | consumo estándar y real                                 | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    6 | merma, reproceso y aprovechamiento                      | `CALIDAD_OPERATIVA`    | `ESPECIFICADO`  | Registrar estado de calidad, versión, corte, anomalía o resultado aplicable; evidencia detallada se referencia sin convertir el evento en una copia del expediente.                                |
+| `DATA-DOM-011`    |    7 | calidad, retención y rechazo                            | `CALIDAD_OPERATIVA`    | `ESPECIFICADO`  | Registrar estado de calidad, versión, corte, anomalía o resultado aplicable; evidencia detallada se referencia sin convertir el evento en una copia del expediente.                                |
+| `DATA-DOM-011`    |    8 | tiempo de ciclo                                         | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |    9 | cumplimiento de liberación                              | `PRODUCCION_OPERATIVA` | `ESPECIFICADO`  | Registrar versión, lote o recurso mediante referencia cuando aplique, corte y resultado; recetas, consumos y detalle productivo permanecen fuera del evento ordinario salvo necesidad autorizada.  |
+| `DATA-DOM-011`    |   10 | costo y variación por lote, producto y sede             | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-012`    |    1 | cumplimiento de promesa                                 | `SERVICIO_OPERATIVO`   | `ESPECIFICADO`  | Registrar proceso o caso mediante referencia, periodo, finalidad y resultado; identidad de cliente, contenido de reclamo y detalle de pedido permanecen minimizados.                               |
+| `DATA-DOM-012`    |    2 | tiempos de preparación, despacho y entrega              | `SERVICIO_OPERATIVO`   | `ESPECIFICADO`  | Registrar proceso o caso mediante referencia, periodo, finalidad y resultado; identidad de cliente, contenido de reclamo y detalle de pedido permanecen minimizados.                               |
+| `DATA-DOM-012`    |    3 | pedidos completos                                       | `SERVICIO_OPERATIVO`   | `ESPECIFICADO`  | Registrar proceso o caso mediante referencia, periodo, finalidad y resultado; identidad de cliente, contenido de reclamo y detalle de pedido permanecen minimizados.                               |
+| `DATA-DOM-012`    |    4 | reclamos y tiempo de resolución                         | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |    5 | compensaciones                                          | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |    6 | satisfacción y feedback                                 | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |    7 | recurrencia, frecuencia y abandono                      | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |    8 | adquisición y activación                                | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |    9 | fidelización, puntos y redenciones                      | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |   10 | reputación y temas recurrentes                          | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |   11 | reservas, no-show y utilización                         | `CLIENTE_SENSIBLE`     | `ESPECIFICADO`  | Registrar referencias, versión, finalidad, población y regla de divulgación; no almacenar PII, texto libre completo, miembros de segmentos protegidos ni celdas suprimidas en el evento ordinario. |
+| `DATA-DOM-012`    |   12 | valor y rentabilidad del cliente cuando esté autorizado | `CLIENTE_FINANCIERO`   | `ESPECIFICADO`  | Aplicar simultáneamente protección de cliente y financiera; registrar autorización y versiones de ambos dominios mediante referencias, sin detalle personal o monetario ordinario.                 |
+| `DATA-DOM-013`    |    1 | costos estándar y reales                                | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    2 | variaciones                                             | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    3 | margen y contribución                                   | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    4 | gastos                                                  | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    5 | centros de costo                                        | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    6 | presupuesto y forecast                                  | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    7 | caja, bancos y tesorería                                | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    8 | cartera y obligaciones                                  | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |    9 | rentabilidad multidimensional                           | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+| `DATA-DOM-013`    |   10 | escenarios y simulaciones                               | `FINANCIERO`           | `ESPECIFICADO`  | Registrar versión, periodo o corte, dimensiones y decisión; no copiar saldos, importes, partidas, cuentas o componentes financieros detallados salvo evidencia autorizada.                         |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55`; 55 esperadas; 55 materializadas; 0 faltantes; 0 duplicadas.
+
+Reglas transversales:
+
+- el nombre de familia no sustituye la identidad/version de una métrica concreta;
+- cada consulta, modelo o recomendación conserva las métricas y fuentes realmente usadas;
+- una familia `CLIENTE_SENSIBLE`, `CLIENTE_FINANCIERO` o `FINANCIERO` no expone miembros o valores mediante auditoría;
+- una familia bloqueada o no certificable conserva ese estado en el evento que la consume;
+- cruces entre familias registran las fronteras y versiones necesarias para explicar el resultado sin duplicar los datasets;
+- recomendaciones y modelos sobre una familia no adquieren autoridad sobre el dominio propietario.
+
+---
+
+#### 23. Matriz materializada para las seis familias de artefacto D008
+
+|    # | Familia          | Estado heredado | Decisión A004                                                                                                                                                                            |
+| ---: | ---------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | tablero          | `ESPECIFICADO`  | Registrar consultas protegidas que materialmente cambien o recuperen resultados, incluidas actualizaciones, filtros y drill-down; una obtención portable se audita además como descarga. |
+|    2 | reporte          | `ESPECIFICADO`  | Conservar referencia a edición, periodo, corte, versiones y autorización de consulta; cada obtención portable queda correlacionada y no reescribe la edición.                            |
+|    3 | exportación      | `ESPECIFICADO`  | Correlacionar la generación autorizada por A003 con cada obtención material; registrar proyección, corte, clasificación, integridad y resultado sin duplicar el contenido.               |
+|    4 | suscripción      | `ESPECIFICADO`  | Auditar gobierno de la regla y cada evaluación o entrega con autorización vigente, destinatario, canal, corte, versión y resultado.                                                      |
+|    5 | alerta           | `ESPECIFICADO`  | Auditar evaluación de regla, ocurrencia de señal y distribución como hechos separados; no convertir la alerta en diagnóstico, recomendación o acción.                                    |
+|    6 | snapshot oficial | `ESPECIFICADO`  | Auditar consulta u obtención contra la identidad inmutable del snapshot, corte y versiones; una reconstrucción o restatement produce evidencia nueva vinculada.                          |
+
+**Reconciliación:** 6 esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 24. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                       | Propietario documental                                                  | Condición de salida                                                                         |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| experiencia del inicio ejecutivo, investigación, objetivos y artefactos analíticos | `DATA-UX-001` a `DATA-UX-008`                                           | antes de implementar superficies finales de consulta, investigación o distribución          |
+| contratos físicos de eventos y lectura                                             | `DATA-INT-001`                                                          | antes de producir integración productiva de eventos o fuentes compartidas                   |
+| capa semántica, consultas, modelos, caché, snapshots y rendimiento                 | `DATA-INT-002`                                                          | antes de materializar el contrato de consulta y trazabilidad en servicios o modelos físicos |
+| crosswalks e identidades externas                                                  | `DATA-INT-003`                                                          | antes de correlacionar físicamente identidades externas en consultas o modelos              |
+| BI, hojas, modelos externos e inteligencia artificial                              | `DATA-INT-004`                                                          | antes de integrar consumidores o proveedores analíticos externos y retornar su evidencia    |
+| retención, hold, disposición e integridad de evidencia                             | `NFR-REQ-006` y tareas INFO propietarias                                | al materializar almacenamiento y ciclo de vida físico de auditoría                          |
+| enforcement de autorización, RLS, RPC, persistencia y auditoría física en Supabase | E3/BLOQUE R y paquetes de implementación aplicables desde `vento-shell` | únicamente en la fase de implementación autorizada correspondiente                          |
+
+No queda una decisión material de A004 diferida sin propietario documental y condición de salida.
+
+---
+
+#### 25. Cobertura de requisitos de prueba vigente
+
+La conducta documental materializada por A004 ya está cubierta por requisitos vigentes:
+
+- `TREQ-AUTH-015` exige evidencia correlacionable de principal, actor efectivo, contexto, permiso, recurso, decisión, razones, versión y tiempo, incluida denegación, reintento, rollback y administración;
+- `TREQ-SHELL-011` exige identidad, finalidad, clasificación, recurso, relación, territorio, estado, destinatario y acción exacta en consulta, búsqueda, descarga, exportación y administración, además de protección frente a filtración por URL, búsqueda y metadatos;
+- `TREQ-DATA-004` asigna responsabilidad a `DATA-AUTH-004` y protege artefactos analíticos, corte, versiones, calidad, exportación, suscripción, alerta, drill-down e historia;
+- `TREQ-DATA-005` asigna responsabilidad a `DATA-AUTH-004` y protege la separación entre señal, diagnóstico, recomendación, acción, experimento, meta, resultado, confianza y aprendizaje;
+- `NFR-REQ-005` protege minimización de logs, trazas, métricas, exportaciones y evidencia sensible;
+- `NFR-REQ-006` ya define identidad de evento, recurso, correlación, causalidad, evidencia, integridad, retención, corrección y supersesión.
+
+A004 especializa esas obligaciones para las seis familias analíticas del título. No cambia la regla protegida, prioridad, estado, relación o destino de implementación de ningún requisito vigente y no introduce un algoritmo, permiso, modelo o comportamiento ejecutable adicional fuera de esa cobertura.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente la auditoría analítica usando obligaciones de trazabilidad, autorización, privacidad, artefactos y mejora basada en datos que ya cuentan con cobertura canónica. No implementa persistencia, logging, RLS, RPC, exportaciones, entregas, alertas, modelos o recomendaciones y no modifica el comportamiento ejecutable vigente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 26. Criterios de aceptación
+
+1. existen exactamente seis familias auditables: consulta, descarga, suscripción, alerta, modelo y recomendación;
+2. cada familia conserva finalidad y unidad lógica distintas;
+3. auditoría no se usa como autorización, fuente de verdad, certificación, publicación o causalidad;
+4. la operación empresarial y sus intentos técnicos permanecen separados;
+5. denegaciones, reintentos, rollback y administración conservan evidencia cuando el contrato transversal lo exige;
+6. un fallo técnico no se registra como `DENY` empresarial por inferencia;
+7. el evento conserva principal, actor efectivo y principal técnico cuando sean aplicables;
+8. finalidad, recurso, acción exacta, alcance y contexto material pueden reconstruirse;
+9. la evidencia de autorización conserva referencias y versiones suficientes para explicar la decisión;
+10. población, periodo, corte, filtros y dimensiones materiales permanecen trazables sin duplicar el dataset;
+11. clasificación, política de campos y regla de divulgación se conservan cuando afectan la salida;
+12. calidad, frescura y cobertura se conservan cuando condicionan el uso;
+13. la propia auditoría aplica minimización y sensibilidad;
+14. secretos, tokens y credenciales no aparecen en el evento ordinario;
+15. datos personales, financieros, médicos, comerciales y técnicos sensibles se referencian de forma protegida cuando sea suficiente;
+16. resultados de consulta no se almacenan fila por fila en el evento;
+17. celdas suprimidas y poblaciones protegidas no reaparecen mediante metadatos de auditoría;
+18. cada drill-down que sea nueva solicitud conserva evidencia propia;
+19. búsqueda, paginación, conteos y metadatos sensibles no evaden el contrato;
+20. generación de exportación y obtención del artefacto permanecen hechos distintos y correlacionables;
+21. un enlace temporal no constituye autoridad por sí mismo;
+22. una nueva obtención no reescribe una anterior;
+23. una transferencia incompleta no se presenta como entrega íntegra sin evidencia;
+24. gobierno de suscripción y ejecuciones de entrega permanecen separados;
+25. cada entrega de suscripción reevalúa autorización y conserva corte/version propios;
+26. reintentos de suscripción no justifican efectos duplicados;
+27. evaluación de alerta, señal y distribución permanecen separadas;
+28. alerta no equivale a diagnóstico, recomendación o acción;
+29. cero, ausencia y estados de dato no se colapsan en auditoría de alertas;
+30. una ejecución de modelo conserva propósito, identidad/version, entrada versionada, corte, población y resultado por referencia;
+31. un modelo no adquiere autoridad causal ni certifica sus entradas;
+32. una credencial técnica no sustituye autorización empresarial del modelo;
+33. prompts, features, embeddings y outputs sensibles se minimizan;
+34. recomendación conserva origen, contexto, confianza y limitaciones cuando existan;
+35. recomendación no fija meta, modifica baseline, certifica datos ni ejecuta acción;
+36. una acción D016 solo se correlaciona cuando existe como decisión independiente y autorizada;
+37. correcciones, supersesiones y restatements son aditivos y no reescriben eventos históricos;
+38. retención, hold y disposición permanecen bajo NFR/INFO y no se inventan duraciones locales;
+39. lectura o administración de la auditoría exige autoridad diferenciada;
+40. se materializan exactamente 62 objetos, con 43 maestros, 19 referencias y tres AURA bloqueados;
+41. cada uno de los 62 objetos tiene decisión A004 explícita;
+42. se materializan exactamente 14 métricas y se conservan 11 `NO EVALUADO` y 3 `BLOQUEADO`;
+43. cada una de las 14 métricas tiene decisión A004 explícita;
+44. se materializan exactamente 55 familias y se conserva `11 + 12 + 10 + 12 + 10`;
+45. cada una de las 55 familias tiene decisión A004 explícita;
+46. se materializan exactamente seis familias D008 con decisión A004 explícita;
+47. ningún evento eleva estado DQ, certificación, publicación o autoridad por existir;
+48. no se crea permiso, rol, fuente, métrica, modelo o recomendación;
+49. no se modifica código, DDL, DML, RLS, RPC, grants, datos, migraciones, backfills, despliegues o Supabase;
+50. no se crea ni modifica ningún requisito de prueba;
+51. `DATA-UX-001` permanece únicamente reservada.
+
+---
+
+#### 27. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración`
+
+TAREA ACTUAL APROBADA
+`DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol`
+
