@@ -1452,7 +1452,876 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad`
 
 
-### [ ] DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad
+### ✅ DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje` — APROBADA
+**Tarea siguiente:** `DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación` — RESERVADA
+**Tipo de tarea:** documental; diseño normativo y materializado de tableros analíticos por dominio, con filtros gobernados, comparación compatible, drill-down autorizado y trazabilidad reproducible
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, rutas físicas, componentes, DDL, DML, migraciones, RLS, RPC, grants, cambios de permisos, datos, backfills, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia analítica de profundidad de Vento OS para que un actor autorizado pueda pasar desde una señal o resultado resumido hasta un tablero de dominio que permita comprender tendencia, composición, comparación y trazabilidad sin redefinir métricas, fabricar poblaciones, ampliar autorización ni convertir el tablero en fuente de verdad.
+
+La tarea deberá permitir responder, para cada resultado visible:
+
+1. ¿qué métrica concreta estoy observando y qué versión la define?;
+2. ¿sobre qué población, territorio, periodo y corte fue calculada?;
+3. ¿qué filtros reducen el conjunto autorizado?;
+4. ¿contra qué referencia es legítimo compararla?;
+5. ¿qué dimensiones explican su composición sin alterar su significado?;
+6. ¿hasta qué nivel de detalle puedo profundizar?;
+7. ¿qué fuente, calidad, frescura, cobertura y linaje sostienen el resultado?;
+8. ¿qué versión histórica, snapshot o restatement estoy consultando?;
+9. ¿qué limitación impide una comparación o un detalle más profundo?;
+10. ¿cuál es el siguiente destino documental o analítico cuando el tablero detecta un problema de calidad, una anomalía, un objetivo o una salida distribuible?
+
+Principio rector:
+
+```text
+TABLERO DE DOMINIO
+=
+CONTEXTO EFECTIVO
++ MÉTRICAS CONCRETAS Y VERSIONADAS
++ CONJUNTO AUTORIZADO
++ FILTROS COMO REDUCCIÓN
++ COMPARACIÓN COMPATIBLE
++ DESGLOSE AUTORIZADO
++ DRILL-DOWN REAUTORIZADO
++ CALIDAD Y COBERTURA VISIBLES
++ TRAZABILIDAD REPRODUCIBLE
+
+NO
+
+FAMILIA ANALÍTICA = MÉTRICA
+FILTRO = AUTORIZACIÓN
+DELTA = CAUSALIDAD
+AGREGADO = DERECHO AL DETALLE
+TABLERO = FUENTE DE VERDAD
+PUBLICADO = EXPORTABLE
+BLOQUEADO = CERO
+NO EVALUADO = CERTIFICADO
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea materializa cinco artefactos lógicos coordinados:
+
+1. `DATA-DOMAIN-DASHBOARD-UX-CONTRACT-001`: contrato de composición, contexto, densidad, navegación, estados y límites de cada tablero analítico de dominio.
+2. `DATA-DASHBOARD-FILTER-COMPARISON-CONTRACT-001`: reglas de filtros, compatibilidad de comparaciones, referencias, cohortes y desgloses sin ampliar población ni reinterpretar métricas.
+3. `DATA-DASHBOARD-DRILLDOWN-TRACEABILITY-CONTRACT-001`: escalera de drill-down reautorizado, trazabilidad, procedencia, versión, corte y reproducción del resultado.
+4. `DATA-DASHBOARD-ANALYTIC-COVERAGE-MATRIX-001`: decisión explícita para las 55 familias analíticas heredadas de `DATA-DOM-009` a `DATA-DOM-013`.
+5. `DATA-ATTENDANCE-DASHBOARD-MATRIX-001`: decisión explícita para las 14 métricas de asistencia v1 ya incorporadas al registro canónico de métricas.
+
+Balance materializado:
+
+| Control                                          |                  Resultado |
+| ------------------------------------------------ | -------------------------: |
+| Tableros de familias de dominio                  |                  **5 / 5** |
+| Superficie especializada de asistencia           |                  **1 / 1** |
+| Familias analíticas reconciliadas                |                **55 / 55** |
+| Distribución D009–D013                           | **11 + 12 + 10 + 12 + 10** |
+| Métricas de asistencia reconciliadas             |                **14 / 14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO` preservadas |                 **11 / 3** |
+| Familias de artefacto D008 reconciliadas         |                  **6 / 6** |
+| Niveles conceptuales máximos de drill-down       |                      **5** |
+| Fórmulas o `metric_key` creados                  |                      **0** |
+| Permisos, roles o grants creados                 |                      **0** |
+| Cambios físicos                                  |                      **0** |
+| Requisitos de prueba creados o modificados       |                      **0** |
+
+Los cinco tableros de familias corresponden exclusivamente a los ámbitos ya materializados en `DATA-DOM-009` a `DATA-DOM-013`: comercial; inventario, abastecimiento, proveedores y logística; producción; servicio y clientes; y económico-financiero. La asistencia se presenta como una superficie especializada porque es el único conjunto actual con 14 métricas concretas versionadas ya incorporadas al registro inicial; no crea un sexto dominio analítico nuevo.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+`DATA-UX-003` consume sin redefinir:
+
+- `DATA-UX-001`, que reserva a esta tarea tendencias, comparaciones, filtros avanzados y análisis profundo desde el inicio ejecutivo;
+- `DATA-UX-002`, que entrega la experiencia de catálogo, definición, dueño, fuente, calidad, linaje e historia para métricas y datos maestros;
+- `DATA-DOM-004`, para identidad, versión, propósito, fórmula, numerador, denominador, unidad, dimensiones y registro canónico de métricas;
+- `DATA-DOM-005`, para grano, tiempo del hecho, periodo, corte, calendario, zona horaria, snapshots y comparabilidad histórica;
+- `DATA-DOM-006`, para origen, ingestión, transformación, backfill, reconciliación y linaje;
+- `DATA-DOM-007`, para calidad, frescura, cobertura, certificación y los estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008`, para tablero, reporte, exportación, suscripción, alerta y snapshot oficial como artefactos distintos;
+- `DATA-DOM-009` a `DATA-DOM-013`, para las 55 familias analíticas y sus fronteras de evidencia y certificación;
+- `DATA-DOM-014`, para separar señal, diagnóstico, hipótesis, confianza y recomendación;
+- `DATA-DOM-015`, para baseline, objetivo, meta, drivers y guardrails;
+- `DATA-DOM-016`, para intervención, experimento, medición, aprendizaje y decisión;
+- `DATA-DOM-017`, para versionado, correcciones, restatements, resultado conocido entonces y resultado reconstruido ahora;
+- `DATA-AUTH-001`, para construir el conjunto autorizado antes de filtros, agregación, comparación o cálculo;
+- `DATA-AUTH-002`, para protección de campos, poblaciones pequeñas, inferencia, comparación, exportación y cada nivel de drill-down;
+- `DATA-AUTH-003`, para separar `DEFINE`, `CERTIFY`, `PUBLISH`, `SET_TARGET`, `ANNOTATE`, `EXPORT` y `ADMINISTER`;
+- `DATA-AUTH-004`, para trazabilidad de consulta, descarga, suscripción, alerta, modelo y recomendación;
+- `UX-BASE-001` a `UX-BASE-015`, para carril analítico, contexto, relevancia, lenguaje humano, divulgación progresiva, densidad y recuperación;
+- `NFR-REQ-005` a `NFR-REQ-007`, para privacidad, trazabilidad, retención, accesibilidad y ergonomía;
+- los requisitos canónicos vigentes que protegen identidad/versionado de métricas, artefactos analíticos, fuente de verdad, autorización, densidad, contexto y drill-down.
+
+La tarea no define consultas físicas, modelos, índices, cachés, vistas, componentes, endpoints ni rutas. Esa materialización pertenece a `DATA-INT-002` y a los paquetes posteriores que implementen la experiencia aprobada.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+TABLERO ≠ HOME EJECUTIVA ≠ REPORTE ≠ SNAPSHOT ≠ EXPORTACIÓN
+```
+
+```text
+FAMILIA ANALÍTICA ≠ MÉTRICA ≠ KPI ≠ DIMENSIÓN
+```
+
+```text
+FILTRO ≠ ALCANCE ≠ TERRITORIO ≠ FINALIDAD
+```
+
+```text
+SEDE SELECCIONADA ≠ TERRITORIO AUTORIZADO
+```
+
+```text
+DESGLOSE ≠ DRILL-DOWN ≠ EXPORTACIÓN
+```
+
+```text
+COMPARACIÓN ≠ CAUSALIDAD
+```
+
+```text
+TENDENCIA ≠ PRONÓSTICO
+```
+
+```text
+CORRELACIÓN ≠ CAUSA
+```
+
+```text
+MÉTRICA VISIBLE ≠ FILAS FUENTE VISIBLES
+```
+
+```text
+DETALLE AUTORIZADO EN UN NIVEL ≠ AUTORIZACIÓN DEL NIVEL SIGUIENTE
+```
+
+```text
+FUENTE LÓGICA ≠ IMPLEMENTACIÓN TÉCNICA ≠ TABLERO
+```
+
+```text
+CALIDAD ≠ AUTORIZACIÓN ≠ PUBLICACIÓN
+```
+
+```text
+VERSIÓN ACTUAL ≠ VERSIÓN HISTÓRICA ≠ RESTATEMENT
+```
+
+```text
+SIN DATO ≠ CERO ≠ BLOQUEADO ≠ SUPRIMIDO
+```
+
+---
+
+#### 5. Contrato `DATA-DOMAIN-DASHBOARD-UX-CONTRACT-001`
+
+Todo tablero deberá poder resolver conceptualmente:
+
+```text
+actor efectivo
++ capacidad de consulta aplicable
++ finalidad
++ dominio y recurso
++ población autorizada
++ territorio real
++ periodo y corte
++ zona horaria y calendario aplicables
++ metric_key y versión
++ dimensiones permitidas por esa versión
++ filtros activos
++ referencia de comparación
++ unidad o moneda
++ estado DQ, frescura y cobertura
++ versión de publicación, snapshot o restatement cuando aplique
++ linaje hacia fuentes y transformaciones
+→ resultado analítico interpretable y reproducible
+```
+
+Reglas:
+
+1. el tablero consume únicamente métricas concretas registradas; una familia no aparece como cifra por carecer de fórmula propia;
+2. el conjunto autorizado se resuelve antes de aplicar cualquier filtro de usuario;
+3. todo filtro adicional solo puede reducir ese conjunto;
+4. las dimensiones ofrecidas deben estar permitidas por la versión de la métrica y ser divulgables para el actor;
+5. una comparación se construye únicamente después de validar compatibilidad semántica, temporal, poblacional, dimensional, de unidad y de versión;
+6. un drill-down vuelve a resolver autorización y protección en cada nivel;
+7. el tablero conserva el estado de calidad heredado y no puede elevarlo por diseño visual;
+8. la ausencia de dato no se representa como cero salvo que la definición de la métrica determine legítimamente un cero;
+9. una dependencia bloqueada no produce una cifra oficial substituta;
+10. la UI puede resumir metadatos, pero debe ofrecer navegación gobernada al catálogo de `DATA-UX-002` para definición y linaje;
+11. el tablero no corrige fuentes, no redefine fórmulas, no certifica, no fija metas y no ejecuta recomendaciones;
+12. una navegación hacia investigación, calidad, objetivo o salida conserva referencias de métrica, versión, periodo, corte y contexto sin transferir autoridad implícita.
+
+---
+
+#### 6. Arquitectura de información de un tablero profundo
+
+La superficie profunda se organiza en seis zonas lógicas. Son zonas funcionales, no nombres de componentes físicos:
+
+1. **Contexto efectivo y corte** — actor, alcance, territorio, periodo, corte, zona horaria, filtros materiales y condición de vista parcial.
+2. **Resultados y estado** — métricas concretas seleccionadas, valor protegido, unidad, DQ, frescura y cobertura.
+3. **Tendencia y comparación** — series o referencias compatibles con identificación explícita del comparador.
+4. **Composición y desglose** — distribución por dimensiones autorizadas y permitidas por la versión de la métrica.
+5. **Limitaciones y calidad** — bloqueos, cobertura parcial, cambios semánticos, datos faltantes, supresión o incompatibilidad que condicionen la lectura.
+6. **Drill-down y trazabilidad** — nivel disponible, fuente, definición, versión, linaje y navegación al siguiente detalle autorizado.
+
+Esta arquitectura profundiza la home de `DATA-UX-001`; no la duplica. La home conserva simplicidad y máximo un nivel de tendencia compacta, mientras esta tarea admite análisis comparativo y dimensional explícito.
+
+Reglas de densidad:
+
+- la densidad se justifica por trabajo analítico y no por disponibilidad de columnas;
+- el contexto y el estado DQ permanecen visibles aunque el usuario despliegue más detalle;
+- las tablas o visualizaciones extensas utilizan divulgación progresiva y no compiten con la interpretación principal;
+- un tablero puede mostrar múltiples métricas solo cuando comparten un contexto suficientemente compatible o cuando cada panel declara claramente su propio contexto;
+- no se obliga a alinear escalas incompatibles en un mismo eje;
+- una visualización no oculta valores, denominadores o limitaciones necesarias para interpretar el resultado;
+- el gráfico no es la única representación de un estado crítico: existe texto equivalente y semánticamente interpretable.
+
+---
+
+#### 7. Contrato de filtros
+
+Los filtros son transformaciones de selección sobre el conjunto ya autorizado. No son una segunda capa de seguridad ni una forma de cambiar el territorio real del recurso.
+
+Orden obligatorio:
+
+```text
+AUTORIZAR POBLACIÓN
+→ RESOLVER MÉTRICA Y VERSIÓN
+→ RESOLVER DIMENSIONES ELEGIBLES
+→ CONSTRUIR OPCIONES DE FILTRO AUTORIZADAS
+→ APLICAR FILTROS DEL USUARIO
+→ RECALCULAR RESULTADO
+→ REEVALUAR COMPARACIÓN Y DIVULGACIÓN
+```
+
+Reglas:
+
+1. una opción de filtro no podrá enumerar una sede, persona, cliente, proveedor, producto, recurso o valor que el actor no pueda conocer;
+2. una búsqueda dentro del filtro aplica la misma frontera de divulgación;
+3. cambiar periodo, territorio, población, dimensión o métrica recalcula el resultado y puede invalidar la comparación previa;
+4. los filtros conservan un estado reproducible asociado al resultado; no se infieren después desde la URL o el texto visible;
+5. una selección vacía, parcial o incompatible se muestra como estado de selección, no como cero;
+6. los filtros de alta cardinalidad utilizan búsqueda gobernada o selección progresiva; no requieren cargar todos los valores en cliente;
+7. filtros personales o sensibles no aparecen por defecto en superficies ejecutivas o compartidas;
+8. el rol base puede influir en orden de presentación heredado de `DATA-UX-001`, pero no constituye un filtro de seguridad;
+9. un filtro de calidad permite localizar resultados por su estado cuando el actor puede conocer esos metadatos, pero no cambia ni certifica el estado;
+10. los filtros no crean una dimensión que no esté permitida por la métrica.
+
+---
+
+#### 8. Matriz materializada de filtros por superficie
+
+| Superficie                                          | Filtros base visibles cuando apliquen                                               | Filtros dimensionales elegibles                                                                   | Regla de protección                                                                                                                            |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Comercial                                           | periodo, corte, territorio/sede autorizados                                         | producto, categoría, canal y otras dimensiones registradas por la métrica                         | canal, cliente o producto solo se enumeran dentro de la población autorizada; identidad de cliente requiere finalidad y protección específicas |
+| Inventario, abastecimiento, proveedores y logística | periodo/corte, territorio/sede autorizados                                          | producto, ubicación gobernada, proveedor y otras dimensiones registradas por la métrica           | LOC, proveedor, activos o referencias sensibles no se descubren mediante filtros fuera del acceso concedido                                    |
+| Producción                                          | periodo/corte, territorio/sede autorizados                                          | producto, receta/versión, lote o recurso únicamente cuando la métrica y autorización lo permitan  | lote, receta, costo técnico, calidad o recurso no amplían acceso por aparecer como dimensión                                                   |
+| Servicio y clientes                                 | periodo/corte, territorio/sede autorizados                                          | canal, segmento o dimensión cliente únicamente cuando esté gobernada, autorizada y sea divulgable | no se habilita exploración individual ni poblaciones pequeñas por tener un agregado visible                                                    |
+| Económico-financiera                                | periodo económico/contable/fiscal aplicable, corte, entidad o territorio autorizado | centro de costo, moneda y dimensiones aprobadas por la métrica                                    | clasificación financiera y precisión se protegen; centro de costo no equivale a sede, área, marca o canal                                      |
+| Asistencia                                          | periodo/corte y sede autorizada                                                     | trabajador autorizado solo cuando la finalidad y el nivel de detalle lo permitan                  | no existe ranking individual por defecto; la dimensión trabajador no concede expediente laboral ni otros datos personales                      |
+
+Los nombres de filtros físicos, widgets, URLs, parámetros y controles quedan fuera de esta tarea. La matriz define la experiencia y sus fronteras lógicas.
+
+---
+
+#### 9. Contrato de comparación
+
+Toda comparación deberá responder qué dos resultados se comparan y por qué son suficientemente compatibles.
+
+La comprobación mínima cubre once ejes:
+
+1. `metric_key` y versión semántica;
+2. fórmula, numerador y denominador cuando apliquen;
+3. grano;
+4. población y cobertura;
+5. periodo, corte y condición `AS OF`;
+6. calendario y zona horaria;
+7. dimensiones y filtros materiales;
+8. unidad, moneda y precisión;
+9. estado DQ, frescura y limitaciones materiales;
+10. identidad de snapshot, publicación o restatement cuando aplique;
+11. autorización y perfil de divulgación de ambos lados.
+
+Resultado de presentación:
+
+- cuando todos los ejes materiales son compatibles, se permite comparación directa;
+- cuando existe una diferencia conocida que no destruye el significado, la comparación puede mostrarse únicamente junto con la limitación que condiciona su interpretación;
+- cuando una diferencia altera significado, población, unidad, versión o protección de forma material, la comparación directa no se muestra;
+- la ausencia de un comparador válido no se reemplaza por un periodo arbitrario o una media global.
+
+Tipos de referencia admitidos cuando las entradas son compatibles:
+
+- periodo anterior equivalente;
+- periodo homólogo bajo calendario comparable;
+- territorio autorizado frente a otro territorio autorizado;
+- segmento o dimensión autorizada frente a otra de la misma definición;
+- resultado original frente a restatement o reconstrucción, conservando identidad de ambos;
+- valor observado frente a baseline, meta o guardrail solo cuando esos elementos existan bajo el contrato de `DATA-DOM-015` y la experiencia de `DATA-UX-006`.
+
+Una comparación no demuestra causalidad. Las causas, hipótesis, confianza y recomendaciones pertenecen a `DATA-UX-005`.
+
+---
+
+#### 10. Reglas especiales de agregación y comparación
+
+1. los conteos y sumas se agregan únicamente sobre conjuntos disjuntos o con deduplicación explícita y trazable;
+2. las tasas no se promedian entre sedes, personas, periodos o segmentos: se recomputan desde numerador y denominador sobre la población combinada;
+3. una participación o mezcla conserva el denominador del total reconciliado correspondiente;
+4. importes de monedas distintas no se suman sin una regla de conversión gobernada y temporalmente válida;
+5. unidades físicas incompatibles no se mezclan por conveniencia visual;
+6. un calendario modificado puede romper la comparación aunque los nombres de los periodos coincidan;
+7. un cambio de jerarquía o maestro utiliza la vigencia histórica aplicable al hecho; no se reagrupa silenciosamente la historia con la jerarquía actual;
+8. una fuente parcial no se compara como cobertura completa sin indicación explícita;
+9. `BLOQUEADO` en cualquiera de los componentes necesarios impide publicar una cifra oficial derivada de esa comparación;
+10. `NO EVALUADO` permanece visible y no se convierte en una señal verde por ausencia de defectos conocidos.
+
+---
+
+#### 11. Contrato de drill-down
+
+El drill-down se define como una escalera de detalle gobernado y no como un enlace libre hacia filas fuente.
+
+Niveles conceptuales máximos:
+
+| Nivel | Contenido                                                  | Condición de entrada                                                               | Resultado posible                                                    |
+| ----: | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+|     1 | tablero de dominio y métrica resumida                      | actor autorizado para el resultado agregado                                        | valor/estado y contexto general                                      |
+|     2 | tendencia o comparación de la métrica                      | comparabilidad y divulgación válidas                                               | serie, referencia y limitaciones                                     |
+|     3 | desglose por dimensión autorizada                          | dimensión permitida por versión y población divulgable                             | grupos/segmentos protegidos                                          |
+|     4 | hechos, eventos, casos o registros subyacentes autorizados | capacidad exacta de detalle, finalidad, territorio, campos y población reevaluados | detalle mínimo necesario                                             |
+|     5 | fuente, evidencia o expediente propietario                 | contrato del recurso fuente y autorización específica                              | evidencia o referencia de origen dentro de la aplicación propietaria |
+
+Reglas:
+
+1. no todas las métricas alcanzan los cinco niveles;
+2. el nivel máximo se determina por semántica, disponibilidad, autorización y protección, no por diseño del componente;
+3. cada transición reevalúa actor, recurso, territorio, finalidad, clasificación, campos y población;
+4. conocer un identificador no permite saltar niveles;
+5. un KPI visible no concede filas fuente;
+6. una celda suprimida no admite tooltip, deep link, búsqueda o metadato que revele sus miembros;
+7. un grupo pequeño puede generalizarse, suprimirse o detener el drill-down conforme a A002;
+8. el nivel fuente no permite corregir el dato desde el tablero; cualquier corrección ocurre mediante el proceso propietario;
+9. volver al nivel superior conserva el contexto del análisis sin conservar autoridad obsoleta para una acción diferente;
+10. si cambia actor, finalidad, periodo, recurso o autorización, el detalle incompatible se invalida y debe reconstruirse.
+
+---
+
+#### 12. Trazabilidad y reproducibilidad
+
+Cada resultado material del tablero deberá conservar suficientes referencias para reconstruir qué se mostró sin copiar innecesariamente el dataset.
+
+Contrato lógico mínimo:
+
+```text
+metric_key
+metric_version
+business_purpose_reference
+owner_and_steward_reference
+source_reference_set
+transformation_or_model_version_reference
+period
+cutoff
+business_timezone
+calendar_reference
+population_scope_reference
+territory_reference
+active_filter_snapshot
+active_dimension_set
+unit_or_currency
+quality_state
+freshness_reference
+coverage_reference
+publication_snapshot_or_restatement_reference
+lineage_reference
+query_or_interaction_correlation_reference_when_applicable
+```
+
+Reglas:
+
+- las referencias no exigen que exista una columna física con esos nombres;
+- la trazabilidad no registra PII, secretos o datasets completos cuando una referencia segura es suficiente;
+- el catálogo de `DATA-UX-002` es el destino para comprender definición, dueño, fuente y linaje lógico;
+- la implementación física de modelos, snapshots, caché, consulta y rendimiento pertenece a `DATA-INT-002`;
+- un fallo al resolver una referencia material se presenta como limitación o bloqueo y no se rellena con contexto actual por conveniencia;
+- el último cambio o versión relevante se muestra cuando la fuente lo permite; no se inventa una fecha de actualización ausente.
+
+---
+
+#### 13. Estado, calidad, frescura y cobertura
+
+El tablero conserva los cinco estados DQ vigentes:
+
+- `NO EVALUADO`;
+- `EN OBSERVACIÓN`;
+- `CERTIFICADO`;
+- `DEGRADADO`;
+- `BLOQUEADO`.
+
+Reglas de experiencia:
+
+1. el estado se muestra junto al resultado o mediante una referencia inequívoca visible sin depender solo de color;
+2. `NO EVALUADO` puede presentarse como resultado provisional cuando el contrato de dominio lo permite, pero nunca como oficial certificado;
+3. `EN OBSERVACIÓN` conserva la condición que exige vigilancia;
+4. `DEGRADADO` identifica que el resultado puede estar disponible bajo una limitación material y no oculta esa limitación;
+5. `BLOQUEADO` detiene el uso oficial que dependa del elemento bloqueado;
+6. una cifra bloqueada no se sustituye por cero, por el último valor conocido ni por una estimación local;
+7. frescura y cobertura se muestran cuando son materiales para interpretar el resultado;
+8. la resolución operativa de calidad, conciliación y certificación pertenece a `DATA-UX-004`; el tablero solo conserva y enlaza el estado gobernado.
+
+---
+
+#### 14. Matriz de cobertura — Comercial, 11/11
+
+Regla común: una familia es una categoría de análisis. Solo se convierte en contenido cuantitativo del tablero mediante una métrica concreta, registrada, versionada, autorizada y con estado heredado visible.
+
+|    # | Familia canónica                             | Decisión UX003                                                                                                                | Comparación y drill-down                                                                                                                      |
+| ---: | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | mostrar únicamente métricas que distingan base comercial/fiscal, descuentos, devoluciones e importes conforme a su definición | comparar periodos, sedes, productos o canales solo si la métrica permite esas dimensiones; no convertir venta en margen                       |
+|    2 | pedidos y conversión                         | separar conteo de pedidos de conversión; la conversión oficial permanece condicionada a numerador y denominador gobernados    | drill-down de conteo no concede la población de oportunidades; una tasa se recomputa desde sus componentes                                    |
+|    3 | ticket y unidades                            | mantener ticket y unidades como métricas distintas con población y unidad explícitas                                          | comparar ticket solo sobre transacciones elegibles compatibles; unidades se desglosan únicamente en unidades compatibles                      |
+|    4 | mezcla por producto, categoría, canal y sede | habilitar composición solo sobre dimensiones gobernadas y reconciliadas al total                                              | cada nivel reautoriza producto/categoría/canal/sede; una participación conserva su denominador                                                |
+|    5 | demanda por franja, día y temporada          | distinguir demanda observada de demanda total y mostrar cobertura histórica                                                   | comparaciones estacionales requieren calendario e historia suficientes; no fabricar estacionalidad con cobertura parcial                      |
+|    6 | disponibilidad perdida                       | mostrar bloqueo o resultado únicamente cuando intención y disponibilidad estén reconciliadas                                  | no inferir demanda perdida desde stock cero o ventas bajas; detalle conserva ventana, producto, oferta, sede y canal cuando estén autorizados |
+|    7 | cancelaciones, devoluciones y descuentos     | mantener los tres fenómenos separados                                                                                         | comparar cada fenómeno con su propio denominador y corte; causas o sujetos requieren detalle autorizado independiente                         |
+|    8 | promociones y efecto incremental             | distinguir descuento, promoción, exposición y efecto incremental                                                              | comparación before/after no prueba efecto causal; investigación causal se entrega a `DATA-UX-005`                                             |
+|    9 | recurrencia y frecuencia                     | mostrar únicamente sobre identidad y finalidad gobernadas                                                                     | cohortes y frecuencia no permiten reidentificar clientes excluidos; detalle individual requiere capacidad separada                            |
+|   10 | margen relacionado                           | consumir la definición económica gobernada; no calcular margen local en el tablero comercial                                  | comparación hereda método/costo D013 y su versión; drill-down no concede costos restringidos por mostrar ventas                               |
+|   11 | capacidad comercial no utilizada             | presentar solo con denominador de capacidad compatible                                                                        | ventas bajas no prueban capacidad ociosa; desglose conserva unidad, sede, canal y ventana del denominador aprobado                            |
+
+**Reconciliación:** 11 esperadas; 11 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 15. Matriz de cobertura — Inventario, abastecimiento, proveedores y logística, 12/12
+
+|    # | Familia canónica                        | Decisión UX003                                                                         | Comparación y drill-down                                                                                                   |
+| ---: | --------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | separar física, comprometida, bloqueada/cuarentena, tránsito y disponible              | comparar cortes equivalentes; drill-down por producto/ubicación no mezcla estados ni concede movimientos no autorizados    |
+|    2 | cobertura y días de inventario          | mostrar únicamente cuando existencia y tasa de demanda/consumo sean compatibles        | comparar horizontes con la misma unidad y definición; sin denominador válido no emitir valor numérico                      |
+|    3 | rotación y permanencia                  | mantener flujo, inventario medio y antigüedad/cohorte explícitos                       | comparación requiere historia suficiente; no aproximar permanencia desde último movimiento                                 |
+|    4 | faltantes y quiebres                    | distinguir faltante explícito de quiebre demostrado                                    | stock cero no prueba quiebre; drill-down exige necesidad elegible y disponibilidad correspondiente                         |
+|    5 | vencimiento, daño y pérdida             | mantener vencimiento, daño, pérdida, cuarentena y disposición separados                | comparación de pérdida conserva causa y población; detalle de lote o evidencia se reautoriza                               |
+|    6 | diferencias de conteo                   | conservar diferencia firmada, diferencia absoluta, corte y antes/después del ajuste    | desglose por producto/ubicación conserva signo; el tablero no ejecuta ajustes                                              |
+|    7 | cumplimiento de remisiones              | separar solicitado, preparado, despachado, recibido, faltante y cierre                 | porcentajes se recomputan sobre cantidades compatibles; detalle de remisión se autoriza como recurso propio                |
+|    8 | lead time y cumplimiento de proveedores | mostrar solo con evento inicial contractual y recepción aceptada comparables           | separar tiempo, cantidad, promesa, rechazo y parcialidad; proveedor/contacto sensible no se expone por agregado            |
+|    9 | compras urgentes                        | contar únicamente hechos explícitamente clasificados bajo el carril gobernado          | una recepción de emergencia no se etiqueta automáticamente como compra urgente canónica; detalle conserva motivo protegido |
+|   10 | consumo versus plan                     | exigir plan explícito de la misma población, unidad, sede y ventana                    | requisición, OC, remisión o forecast no sustituyen el plan; comparación se bloquea sin base compatible                     |
+|   11 | costo de inventario                     | distinguir costo observado de compra y valoración oficial                              | valoración oficial consume definición D013; drill-down no revela condiciones comerciales restringidas sin autorización     |
+|   12 | capacidad de almacenamiento             | mostrar ocupación/utilización solo con capacidad física utilizable y unidad compatible | no mezclar volumen, peso, posiciones, pallets o unidades; ubicación técnica no se enumera fuera de acceso                  |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 16. Matriz de cobertura — Producción, 10/10
+
+|    # | Familia canónica                            | Decisión UX003                                                                      | Comparación y drill-down                                                                                                   |
+| ---: | ------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+|    1 | demanda planificada versus producción       | comparar únicamente plan FOGO aceptado con producción elegible compatible           | señal, pedido o remisión no sustituyen el plan; preservar producto, versión/unidad, sede, ventana y revisión               |
+|    2 | capacidad disponible y utilizada            | mantener denominador y uso en la misma unidad                                       | no mezclar horas, kg, lotes, estaciones o personas sin puente explícito; recurso físico exige autorización de detalle      |
+|    3 | adherencia al programa                      | mostrar únicamente sobre programa publicado/versionado y hitos reales               | inicio, finalización y cantidad se comparan por separado antes de un compuesto                                             |
+|    4 | rendimiento teórico y real                  | reconciliar receta/versión, escala, unidad y salida real                            | el costo o rendimiento técnico no se convierte en resultado económico; historia requiere versiones compatibles             |
+|    5 | consumo estándar y real                     | comparar estándar aprobado con consumo real por ingrediente/unidad compatibles      | sustituciones permanecen visibles; el desglose no reescribe receta ni consumo fuente                                       |
+|    6 | merma, reproceso y aprovechamiento          | exigir hechos explícitos y denominadores propios                                    | no inferir merma como residuo de rendimiento; genealogía y evidencia requieren drill-down autorizado                       |
+|    7 | calidad, retención y rechazo                | separar control, resultado, conformidad, retención, rechazo, reproceso y liberación | tasas usan población inspeccionada/elegible declarada; detalle de calidad respeta sensibilidad y caso                      |
+|    8 | tiempo de ciclo                             | construir duración solo entre hitos reales y compatibles                            | espera, preparación, ejecución, pausa, retención y liberación permanecen separables; una fecha genérica no prueba duración |
+|    9 | cumplimiento de liberación                  | distinguir terminado de liberado y usar autoridad válida                            | drill-down al lote o expediente de liberación no se concede por el agregado                                                |
+|   10 | costo y variación por lote, producto y sede | separar costo técnico observado de costo/variación económica oficial                | comparación económica consume D013; detalle conserva lote, asignación y versión sin exponer costos fuera de finalidad      |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 17. Matriz de cobertura — Servicio y clientes, 12/12
+
+|    # | Familia canónica                                        | Decisión UX003                                                                           | Comparación y drill-down                                                                            |
+| ---: | ------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | comparar compromiso aceptado/versionado contra evento terminal elegible                  | solicitud o ventana pedida no equivale a promesa; detalle de pedido conserva estados y autorización |
+|    2 | tiempos de preparación, despacho y entrega              | mantener cada fase y sus hitos reales separados                                          | no usar duración total como sustituto de fases; ausencia de hito se muestra como limitación         |
+|    3 | pedidos completos                                       | exigir cumplimiento línea a línea, cantidades, revisiones y sustituciones aceptadas      | `delivered` no prueba completitud; drill-down no revela cliente por defecto                         |
+|    4 | reclamos y tiempo de resolución                         | usar expediente explícito, recepción, resolución y SLA/version aplicable                 | chat o contacto no sustituyen reclamo; caso individual exige finalidad y acceso propios             |
+|    5 | compensaciones                                          | separar devolución, reembolso, descuento, cortesía, cupón y puntos                       | comparar por tipo/política compatibles; valor individual o causa se protege en detalle              |
+|    6 | satisfacción y feedback                                 | distinguir feedback interno, invitación y reputación externa                             | estadísticos muestran sesgo/cobertura; tasa de respuesta exige denominador de invitaciones          |
+|    7 | recurrencia, frecuencia y abandono                      | reutilizar identidad gobernada; abandono exige población, ventana y observación completa | ausencia no prueba abandono; cohortes pequeñas aplican protección contra reidentificación           |
+|    8 | adquisición y activación                                | exigir origen gobernado y eventos de adquisición/activación versionados                  | crear cuenta o iniciar sesión no equivale a activación; origen sensible no se infiere localmente    |
+|    9 | fidelización, puntos y redenciones                      | separar `earn`, `spend`, `adjust`, redenciones y saldo                                   | saldo es proyección del ledger; drill-down a movimientos requiere acceso específico                 |
+|   10 | reputación y temas recurrentes                          | distinguir fuente pública gobernada de feedback interno y clasificación temática         | temas no prueban causa; fuentes externas y detalle textual conservan protección y procedencia       |
+|   11 | reservas, no-show y utilización                         | separar reserva, cancelación, asistencia y no-show; utilización exige capacidad          | comparación requiere capacidad compatible; reserva individual se reautoriza                         |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | permitir solo sobre identidad/finalidad autorizadas y definición económica D013          | no recalcular margen local; el agregado no concede perfil, compras ni rentabilidad individual       |
+
+**Reconciliación:** 12 esperadas; 12 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 18. Matriz de cobertura — Económico-financiera, 10/10
+
+|    # | Familia canónica              | Decisión UX003                                                                                | Comparación y drill-down                                                                                                      |
+| ---: | ----------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | separar bases estándar y reales con método, versión, unidad, moneda y periodo                 | comparación oficial queda condicionada al método económico gobernado; detalle de componentes respeta clasificación financiera |
+|    2 | variaciones                   | mantener cada base de comparación explícita                                                   | costo, presupuesto, forecast, precio y cantidad no se colapsan en una variación genérica                                      |
+|    3 | margen y contribución         | exigir ingreso realizado y costo/costo variable trazables                                     | cada porcentaje conserva denominador; ventas no sustituyen margen y el drill-down de costo se protege                         |
+|    4 | gastos                        | separar capturado, reconocido, aprobado, pagado, anulado y conciliado                         | comparar solo estados elegibles equivalentes; detalle documental no se concede desde el total                                 |
+|    5 | centros de costo              | utilizarlo como dimensión económica gobernada, no como KPI autónomo                           | centro no equivale a sede, área, marca o canal; reparenting usa vigencia histórica                                            |
+|    6 | presupuesto y forecast        | mantener presupuesto aprobado, revisión, forecast, escenario y real como artefactos distintos | comparar versiones sin sobrescribirlas; hipótesis no se presentan como dato observado                                         |
+|    7 | caja, bancos y tesorería      | distinguir posición reconciliada, flujo realizado y proyección                                | saldos y disponibilidad requieren fuentes reconciliadas; detalle bancario permanece restringido                               |
+|    8 | cartera y obligaciones        | derivar saldo abierto desde reconocimiento y aplicaciones válidas                             | pago/cobro sin aplicación no cierra saldo; aging conserva corte y vencimiento                                                 |
+|    9 | rentabilidad multidimensional | exigir ingreso realizado, costos trazables, asignaciones y residuo no atribuible visibles     | dimensiones sensibles y combinaciones de baja población se protegen; no recalcular con costo actual la historia               |
+|   10 | escenarios y simulaciones     | mantener supuestos/versiones y línea base inmutable                                           | resultado simulado no sustituye real, presupuesto, forecast ni evidencia observada                                            |
+
+**Reconciliación:** 10 esperadas; 10 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 19. Reconciliación global de las 55 familias
+
+| Dominio de familias                                 | Esperadas | Materializadas | Faltantes | Duplicadas |
+| --------------------------------------------------- | --------: | -------------: | --------: | ---------: |
+| Comercial                                           |        11 |             11 |         0 |          0 |
+| Inventario, abastecimiento, proveedores y logística |        12 |             12 |         0 |          0 |
+| Producción                                          |        10 |             10 |         0 |          0 |
+| Servicio y clientes                                 |        12 |             12 |         0 |          0 |
+| Económico-financiera                                |        10 |             10 |         0 |          0 |
+| **Total**                                           |    **55** |         **55** |     **0** |      **0** |
+
+Regla global: ninguna de estas 55 filas crea una métrica nominal. El tablero solo materializa un valor cuando existe una métrica concreta con `metric_key`, versión, definición y fuente gobernadas. Los estados mixtos o bloqueos de `DATA-DOM-009` a `DATA-DOM-013` se resuelven en la métrica concreta y no se simplifican a un estado ficticio de familia.
+
+---
+
+#### 20. Superficie especializada de asistencia — 14/14 métricas
+
+Las 14 métricas v1 conservan exactamente su identidad, dimensiones permitidas y estado DQ heredado.
+
+|    # | `metric_key`        | DQ heredado   | Presentación UX003                                                              | Comparación y drill-down                                                                                                                                |
+| ---: | ------------------- | ------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | valor provisional con estado visible                                            | comparar por sede/periodo y trabajador autorizado cuando proceda; detalle a turnos programados solo con acceso de detalle                               |
+|    2 | `attendedShifts`    | `NO EVALUADO` | valor provisional con estado visible                                            | comparar poblaciones equivalentes; drill-down a turno/sesión reautoriza datos laborales                                                                 |
+|    3 | `restDayCount`      | `NO EVALUADO` | valor provisional con estado visible                                            | conservar clasificación de descanso y periodo; detalle a turno programado autorizado                                                                    |
+|    4 | `lateCount`         | `NO EVALUADO` | valor provisional con gracia/contexto trazables                                 | comparar solo con misma regla o versión de gracia; detalle conserva inicio programado, check-in y zona horaria                                          |
+|    5 | `noShowCount`       | `NO EVALUADO` | valor provisional `AS OF` corte                                                 | solo contar turnos cuyo fin ocurrió al corte; detalle reautoriza turno y ausencia asociada                                                              |
+|    6 | `openCount`         | `NO EVALUADO` | valor provisional `AS OF` corte                                                 | no confundir sesión abierta con falta de cierre; drill-down a sesión requiere acceso específico                                                         |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | mostrar bloqueo y definición; no publicar cifra oficial                         | no sustituir por `openCount`; navegación prioritaria hacia calidad/limitación y definición                                                              |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | valor provisional con mecanismo de autocierre distinguido                       | comparar periodos compatibles; detalle de sesión conserva evidencia de autocierre                                                                       |
+|    9 | `departureCount`    | `NO EVALUADO` | valor provisional con protección reforzada del detalle                          | evento geográfico no se expone por el agregado; drill-down exige finalidad y autorización específicas                                                   |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | suma provisional en minutos; horas solo como presentación derivada              | comparar misma regla de descanso y unidad; detalle a turnos autorizados                                                                                 |
+|   11 | `netMinutes`        | `NO EVALUADO` | suma provisional en minutos                                                     | conservar sesión y descansos superpuestos; no reconstruir desde estado actual del trabajador                                                            |
+|   12 | `incidentCount`     | `NO EVALUADO` | conteo compuesto provisional, máximo una incidencia agregada por turno elegible | el compuesto no concede automáticamente las señales individuales; cada detalle se protege                                                               |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | mostrar bloqueo y componentes cuando sean autorizados; no emitir KPI oficial    | nunca promediar porcentajes; recomputar desde `attendedShifts / scheduledShifts` solo cuando exista denominador positivo y la divergencia esté resuelta |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | mostrar bloqueo y componentes cuando sean autorizados; no emitir KPI oficial    | recomputar desde su numerador y `attendedShifts`; sin denominador positivo no emitir valor numérico                                                     |
+
+**Reconciliación:** 14 esperadas; 14 materializadas; 14 únicas; 0 faltantes; 0 duplicadas; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Reglas adicionales:
+
+- dimensiones v1: sede, trabajador autorizado y periodo, conforme a la definición de cada métrica;
+- trabajador es una dimensión sensible y no implica ranking, comparación individual o acceso al expediente laboral;
+- tasas se agregan mediante numeradores y denominadores, no mediante promedio simple de porcentajes;
+- `noShowCount`, `openCount` y `missingCloseCount` dependen del corte;
+- la zona horaria efectiva se conserva en cada resultado; no se infiere una zona universal para historia o comparaciones;
+- `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen bloqueadas hasta que sus condiciones canónicas de salida estén resueltas por sus tareas propietarias.
+
+---
+
+#### 21. Familias de artefacto D008 — cobertura 6/6
+
+|    # | Familia          | Papel en UX003                                                           | Límite                                                                                         |
+| ---: | ---------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+|    1 | tablero          | artefacto principal de esta tarea para análisis interactivo gobernado    | no redefine fórmula, no certifica y no se convierte en fuente de verdad                        |
+|    2 | reporte          | puede ser destino o referencia de una edición gobernada                  | experiencia de edición, versionado y distribución pertenece a `DATA-UX-007`                    |
+|    3 | exportación      | puede aparecer como acción separada solo cuando `EXPORT` esté autorizado | consultar o publicar no concede exportación ni detalle adicional                               |
+|    4 | suscripción      | puede conservar vínculo con el tablero o resultado gobernado             | configuración y entrega pertenecen a `DATA-UX-007`; cada entrega conserva autorización vigente |
+|    5 | alerta           | puede señalar una condición gobernada y servir como entrada de análisis  | alerta no equivale a diagnóstico, causa, meta, recomendación ni acción automática              |
+|    6 | snapshot oficial | puede compararse con resultado vivo o restatement bajo reglas D017       | es inmutable como edición publicada; publicación, certificación y exportación siguen separadas |
+
+**Reconciliación:** 6 esperadas; 6 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 22. Navegación entre tablero, catálogo y calidad
+
+La experiencia preserva destinos distintos:
+
+```text
+¿QUÉ SIGNIFICA ESTA MÉTRICA?
+→ DATA-UX-002
+
+¿CÓMO CAMBIÓ Y DÓNDE SE CONCENTRA?
+→ DATA-UX-003
+
+¿PUEDO CONFIAR EN SU CALIDAD, FRESCURA O RECONCILIACIÓN?
+→ DATA-UX-004
+
+¿POR QUÉ CAMBIÓ O QUÉ HIPÓTESIS EXPLICA LA VARIACIÓN?
+→ DATA-UX-005
+
+¿CONTRA QUÉ OBJETIVO, META, DRIVER O GUARDRAIL SE GESTIONA?
+→ DATA-UX-006
+
+¿CÓMO SE PUBLICA, DISTRIBUYE O PRESERVA COMO SALIDA?
+→ DATA-UX-007
+```
+
+Un mismo actor puede navegar entre destinos solo si cada superficie resuelve nuevamente su autorización. La continuidad visual no es continuidad de privilegios.
+
+---
+
+#### 23. Autorización, privacidad y segregación
+
+Reglas obligatorias:
+
+1. A001 construye la población autorizada antes del cálculo;
+2. los filtros de UX003 nunca amplían esa población;
+3. A002 protege campos, precisión, grupos pequeños, comparaciones, tooltips, búsquedas, metadatos y cada nivel de drill-down;
+4. una métrica agregada no concede acceso a sus sujetos, hechos o documentos;
+5. una dimensión sensible puede ocultarse aunque la métrica agregada sea visible;
+6. un resultado parcial se identifica como parcial cuando no representa toda la población organizacional;
+7. no se usa total menos subtotal para inferir una población excluida;
+8. no se muestran rankings de trabajadores, clientes o proveedores por defecto;
+9. `PUBLISH` no concede `EXPORT`;
+10. `CERTIFY` no concede `PUBLISH`;
+11. `ANNOTATE` no cambia fórmula, calidad, meta, publicación ni historia;
+12. `ADMINISTER` no es superpermiso;
+13. el tablero no ofrece una mutación de fuente por tener acceso a detalle;
+14. al abrir una acción distinta se exige la capacidad exacta correspondiente;
+15. una opción no pertinente o no autorizada no se expone como pista de una capacidad sensible.
+
+---
+
+#### 24. Auditoría y correlación
+
+`DATA-AUTH-004` mantiene seis familias auditables: consulta, descarga, suscripción, alerta, modelo y recomendación.
+
+Para UX003:
+
+- la apertura o reconstrucción material de un tablero se considera consumo analítico sujeto al contrato de consulta aplicable;
+- un cambio de filtros que materialmente cambie población, periodo, recurso o resultado puede constituir una nueva consulta lógica conforme al contrato de auditoría;
+- la transición de un agregado a un detalle conserva correlación cuando el contrato transversal lo exige;
+- una navegación a modelo o recomendación no convierte el tablero en propietario de ese artefacto;
+- la auditoría registra referencias y contexto suficiente, no datasets o PII por defecto;
+- auditoría no constituye autorización, certificación, fuente de verdad, publicación ni prueba causal;
+- un fallo técnico de consulta no se registra como denegación empresarial por inferencia.
+
+---
+
+#### 25. Historia, snapshots, correcciones y restatements
+
+1. toda comparación histórica conserva la versión semántica aplicable a cada lado;
+2. el resultado conocido en un corte anterior permanece distinguible del resultado reconstruido posteriormente;
+3. una corrección de fuente no reescribe silenciosamente un snapshot o publicación previa;
+4. un restatement conserva referencia al resultado anterior y explica qué versión o dependencia cambió cuando esa información esté disponible;
+5. un restatement no hereda automáticamente certificación de la versión anterior;
+6. una serie que cruza una ruptura semántica no dibuja continuidad falsa: separa tramos, muestra limitación o utiliza una reconstrucción gobernada compatible;
+7. cambios de maestros o jerarquías utilizan vigencia histórica y no reagrupan hechos pasados con relaciones actuales por defecto;
+8. comparar original y restatement exige autorización vigente para ambos resultados;
+9. un snapshot oficial sigue siendo un artefacto distinto del valor vivo actual;
+10. exportar una versión histórica requiere `EXPORT` y no se deriva de la capacidad de comparar.
+
+---
+
+#### 26. Accesibilidad, ergonomía y comportamiento visual
+
+Los tableros son superficies analíticas/administrativas y pueden utilizar mayor densidad que una estación operativa, pero deben conservar la línea base de accesibilidad y ergonomía vigente.
+
+Reglas:
+
+- orden semántico y visual coherentes;
+- navegación por teclado y foco visible cuando corresponda;
+- nombres, estados, valores y relaciones programáticamente determinables cuando aplique;
+- color, forma o posición no son la única señal de calidad, tendencia o selección;
+- zoom y reflow no deben exigir scroll horizontal ordinario para interpretar el contexto principal;
+- visualizaciones disponen de resumen textual o tabla accesible cuando sea necesario para entender el resultado;
+- tooltips no son el único lugar donde existe información esencial;
+- filtros y controles conservan etiquetas inequívocas y estado seleccionado;
+- cambios de filtros no desplazan el foco de forma impredecible;
+- carga progresiva no cambia silenciosamente el significado del resultado;
+- en pantallas estrechas se priorizan contexto, métrica y estado antes de visualizaciones secundarias;
+- una superficie táctil, si posteriormente se habilita, deberá aplicar además el perfil táctil correspondiente; esta tarea no declara una estación física ni un dispositivo objetivo.
+
+La validación con usuarios y contextos reales corresponde a `DATA-UX-008`.
+
+---
+
+#### 27. Estados de ausencia, supresión y bloqueo
+
+La experiencia distingue al menos estos significados sin crear un estado de dominio nuevo:
+
+| Presentación        | Significado                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| valor `0`           | la métrica produjo legítimamente cero bajo su definición                                                 |
+| sin dato disponible | no existe un valor suficiente para el contexto solicitado                                                |
+| resultado parcial   | la cobertura o el alcance no representa el universo completo                                             |
+| contenido suprimido | el resultado existe o podría existir, pero la política de divulgación impide mostrarlo en esa proyección |
+| función no mostrada | la opción no es pertinente o no puede exponerse al actor actual                                          |
+| `BLOQUEADO`         | una condición DQ o de dependencia impide el uso gobernado correspondiente                                |
+
+No se utiliza la diferencia entre mensajes para revelar la existencia de un recurso secreto. La redacción concreta de bloqueos consume la gramática de `UX-BASE-006`.
+
+---
+
+#### 28. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                                  | Propietario documental | Condición de salida                                                               |
+| ----------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------- |
+| ficha de definición, dueño, fuente, calidad, linaje e historia                | `DATA-UX-002`          | cuando el usuario necesite comprender el significado o procedencia del elemento   |
+| centro de calidad, frescura, conciliaciones y certificación                   | `DATA-UX-004`          | antes de materializar workflows de resolución DQ desde una limitación del tablero |
+| investigación de variaciones, anomalías, hipótesis y causas                   | `DATA-UX-005`          | antes de convertir una señal o delta en investigación explicativa                 |
+| objetivos, baseline, metas, drivers, guardrails y acciones de mejora          | `DATA-UX-006`          | antes de gestionar desempeño contra objetivos desde una métrica                   |
+| reportes, exportaciones, suscripciones y snapshots versionados                | `DATA-UX-007`          | antes de materializar salida, distribución o edición oficial desde un análisis    |
+| validación de comprensión, tiempos, densidad y decisiones con usuarios reales | `DATA-UX-008`          | antes de declarar readiness de la experiencia analítica                           |
+| contratos de eventos y lectura con aplicaciones y fuentes externas            | `DATA-INT-001`         | antes de implementar una lectura o evento físico que alimente el tablero          |
+| modelos semánticos, snapshots, caché, consultas y rendimiento                 | `DATA-INT-002`         | antes de implementar cálculo, consulta o materialización física de UX003          |
+| crosswalks, claves externas e identidad/reconciliación de maestros            | `DATA-INT-003`         | antes de unir dimensiones cuya identidad externa no esté resuelta                 |
+| BI, hojas de cálculo, modelos analíticos e inteligencia artificial            | `DATA-INT-004`         | antes de permitir consumidores o herramientas externas del tablero                |
+
+No queda una brecha de UX003 sin propietario documental exacto.
+
+---
+
+#### 29. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por `DATA-UX-003` ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-002` exige identidad/versionado de métricas, propósito, propietario, fórmula, granularidad, dimensiones, filtros, unidad, tiempo, fuente, calidad, certificación, drill-down y comparación, y asigna responsabilidad a `DATA-UX-001` a `DATA-UX-003`;
+- `TREQ-DATA-003` protege contratos de origen, tiempo, granularidad, cobertura, correcciones, reconciliación y linaje;
+- `TREQ-DATA-004` exige que tableros y otras salidas declaren versión, periodo, zona horaria, filtros, dimensiones, unidad/moneda, corte, frescura, cobertura y calidad, con divulgación progresiva y drill-down autorizado, y asigna responsabilidad a `DATA-UX-001` a `DATA-UX-008`;
+- `TREQ-UX-003` exige información, acciones y densidad adecuadas a tarea y autorización, con minimización de información sensible;
+- `TREQ-UX-005` exige fuente de verdad, estado, actor y último cambio visibles cuando apliquen y evita copias competidoras;
+- `TREQ-UX-010` exige contexto administrativo de territorio, periodo, versión, estado, población, actor, permiso, segregación e impacto cuando apliquen, y prohíbe tratar un filtro como contexto operativo o una proyección como fuente de verdad.
+
+La presente tarea especializa esas obligaciones para tableros por dominio, filtros, comparación, drill-down y trazabilidad. No introduce una regla ejecutable independiente fuera de esa cobertura ni cambia la semántica de los requisitos existentes.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento verificable de identidad y versión de métricas, filtros gobernados, comparación compatible, contexto, protección de población, divulgación progresiva, drill-down autorizado, fuente de verdad y trazabilidad ya está protegido por los requisitos canónicos vigentes enumerados en la sección de cobertura anterior. La tarea materializa su aplicación a tableros analíticos de profundidad sin crear una regla ejecutable adicional fuera de esa cobertura.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 30. Criterios de aceptación
+
+`DATA-UX-003` se considera documentalmente completa cuando se compruebe que:
+
+1. el tablero se define como artefacto analítico derivado y no como fuente de verdad;
+2. la experiencia profunda no duplica la home ejecutiva de `DATA-UX-001`;
+3. definición, dueño, fuente y linaje permanecen gobernados por `DATA-UX-002`;
+4. existen cinco tableros de familias correspondientes a D009–D013 y una superficie especializada de asistencia sin crear un dominio nuevo;
+5. la arquitectura lógica del tablero contiene contexto, resultados, tendencia/comparación, composición/desglose, calidad/limitaciones y drill-down/trazabilidad;
+6. toda cifra visible proviene de una métrica concreta y versionada;
+7. una familia analítica nunca se convierte en métrica por aparecer en el tablero;
+8. el conjunto autorizado se construye antes de filtros y cálculo;
+9. un filtro solo reduce el conjunto autorizado;
+10. las opciones de filtro no enumeran recursos o valores no autorizados;
+11. la sede seleccionada no sustituye territorio real;
+12. una dimensión solo aparece cuando la versión de la métrica la permite;
+13. cambiar contexto material recalcula el resultado y reevalúa comparación/divulgación;
+14. el estado de filtros queda asociado al resultado reproducible;
+15. existen once ejes mínimos de compatibilidad de comparación;
+16. una comparación incompatible no se fuerza por conveniencia visual;
+17. una diferencia material conocida puede mostrarse solo junto con su limitación;
+18. un delta nunca se interpreta como causalidad;
+19. tasas agregadas se recomputan desde numerador y denominador;
+20. importes de monedas o unidades incompatibles no se suman sin contrato gobernado;
+21. cambios de calendario, zona horaria, cobertura o versión pueden invalidar una comparación;
+22. jerarquías históricas usan la vigencia aplicable al hecho;
+23. existen cinco niveles conceptuales máximos de drill-down;
+24. cada nivel reevalúa actor, recurso, territorio, finalidad, clasificación, campos y población;
+25. conocer un identificador no permite saltar niveles;
+26. un KPI o agregado visible no concede filas fuente;
+27. una celda suprimida no revela miembros por tooltip, búsqueda, conteo o deep link;
+28. el nivel fuente no permite corregir datos desde el tablero;
+29. cada resultado conserva metric key, versión, periodo, corte, zona horaria, filtros, dimensiones, unidad/moneda, DQ, frescura, cobertura y referencias de linaje cuando apliquen;
+30. trazabilidad no exige copiar PII o datasets completos en logs;
+31. los cinco estados DQ vigentes conservan su semántica;
+32. `NO EVALUADO` no se presenta como `CERTIFICADO`;
+33. `BLOQUEADO` no se presenta como cero, último valor conocido o estimación oficial;
+34. se materializan exactamente 55 familias analíticas;
+35. se conserva la distribución exacta 11 + 12 + 10 + 12 + 10;
+36. las 55 familias aparecen una sola vez y no faltan identidades;
+37. se materializan exactamente 14 métricas de asistencia;
+38. las 14 claves son únicas y conservan versión semántica v1;
+39. se preservan exactamente 11 métricas `NO EVALUADO` y 3 `BLOQUEADO`;
+40. `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen bloqueadas;
+41. `openCount` y `missingCloseCount` permanecen semánticamente separados;
+42. `noShowCount`, `openCount` y `missingCloseCount` conservan semántica dependiente del corte;
+43. `attendanceRate` y `punctualityRate` nunca se agregan por promedio simple de porcentajes;
+44. la dimensión trabajador no habilita ranking individual por defecto;
+45. se materializan exactamente seis familias de artefacto D008;
+46. tablero, reporte, exportación, suscripción, alerta y snapshot oficial permanecen artefactos distintos;
+47. publicación no concede exportación;
+48. el tablero no certifica, define fórmulas, fija metas, administra fuentes ni ejecuta recomendaciones;
+49. consultas, filtros y drill-down conservan trazabilidad A004 cuando corresponda;
+50. historia, snapshot, original y restatement permanecen distinguibles;
+51. un restatement no hereda automáticamente certificación previa;
+52. una ruptura semántica no se oculta mediante una serie continua engañosa;
+53. privacidad, grupos pequeños, precisión y exposición indirecta aplican también a filtros y metadatos;
+54. color no es la única señal de tendencia, calidad o selección;
+55. la experiencia conserva teclado, foco, semántica, reflow y representación accesible cuando apliquen;
+56. no se crean rutas, componentes, endpoints, modelos físicos, cachés, vistas o nombres técnicos de implementación;
+57. no se crean ni asignan permisos, roles, grants o excepciones;
+58. no se modifica código, DDL, DML, RLS, RPC, datos, migraciones, backfills, despliegues o Supabase;
+59. no se crea ni modifica ningún requisito de prueba;
+60. cada decisión fuera de alcance tiene un propietario documental exacto;
+61. `DATA-UX-004` permanece únicamente reservada como siguiente tarea.
+
+---
+
+#### 31. Balance de cierre
+
+| Control                                       |   Resultado |
+| --------------------------------------------- | ----------: |
+| Tableros de familias de dominio               |   **5 / 5** |
+| Superficie especializada de asistencia        |   **1 / 1** |
+| Familias comerciales                          | **11 / 11** |
+| Familias inventario/abastecimiento            | **12 / 12** |
+| Familias producción                           | **10 / 10** |
+| Familias servicio/clientes                    | **12 / 12** |
+| Familias económico-financieras                | **10 / 10** |
+| Familias analíticas totales                   | **55 / 55** |
+| Métricas de asistencia                        | **14 / 14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO`          |  **11 / 3** |
+| Familias de artefacto D008                    |   **6 / 6** |
+| Ejes mínimos de compatibilidad de comparación |      **11** |
+| Niveles conceptuales máximos de drill-down    |       **5** |
+| Identidades nuevas de métrica                 |       **0** |
+| Permisos, roles o grants creados              |       **0** |
+| Cambios físicos                               |       **0** |
+| Requisitos TREQ nuevos o modificados          |       **0** |
+
+---
+
+#### 32. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación`
+
+
 ### [ ] DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
 ### [ ] DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
 ### [ ] DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora

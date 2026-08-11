@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **693** |
+| Tareas aprobadas | **694** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **901** |
+| Tareas no iniciadas | **900** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **43.48% (693/1594)** |
+| Porcentaje de completamiento | **43.54% (694/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje** |
-| Tarea actual | **DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad** |
+| Última tarea aprobada | **DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad** |
+| Tarea actual | **DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación** |
+| Siguiente tarea | **DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 117 de 157 aprobadas; DATA-UX-003 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 118 de 157 aprobadas; DATA-UX-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje |
-| Tarea actual | `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad — **NO INICIADA** |
-| Siguiente tarea | `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación |
+| Última aprobada | `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad |
+| Tarea actual | `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación — **NO INICIADA** |
+| Siguiente tarea | `DATA-UX-005` — Diseñar espacio de investigación de variaciones, anomalías y causas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 117 DE 157 APROBADAS — ACTUAL DATA-UX-003** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 118 DE 157 APROBADAS — ACTUAL DATA-UX-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje
-        ↓
-TAREA ACTUAL
 DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 117 de 157 tareas aprobadas
+CARRIL NEXO — 118 de 157 tareas aprobadas
 ```
