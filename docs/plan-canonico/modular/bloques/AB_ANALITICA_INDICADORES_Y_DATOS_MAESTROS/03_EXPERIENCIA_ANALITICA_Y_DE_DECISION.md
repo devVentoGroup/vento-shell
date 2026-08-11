@@ -749,7 +749,709 @@ SIGUIENTE TAREA RESERVADA
 `DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje`
 
 
-### [ ] DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje
+### ✅ DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol` — APROBADA
+**Tarea siguiente:** `DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad` — RESERVADA
+**Tipo de tarea:** documental; diseño materializado de la experiencia de catálogo gobernado para métricas, datos maestros y datos de referencia con definición, gobierno, fuente, calidad, linaje e historia
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, grants, backfills, cambios de datos, despliegues o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar y materializar la experiencia de un catálogo gobernado que permita localizar y comprender una métrica, un dato maestro o un dato de referencia sin depender de nombres de tablas, fórmulas locales, conocimiento tribal o navegación por aplicaciones propietarias.
+
+La persona autorizada deberá poder responder, desde una única experiencia conceptual:
+
+```text
+qué es este elemento
+qué identidad y versión tiene
+quién responde por su definición
+quién ejerce stewardship
+cuál es su fuente de verdad lógica
+qué calidad o bloqueo tiene hoy
+qué linaje puede demostrarse
+qué consumidores o usos dependen de él
+qué cambió históricamente
+qué detalle adicional puede consultar con su autorización actual
+```
+
+El catálogo es una superficie de gobierno, descubrimiento y navegación. No es una base maestra universal, no es la capa semántica física, no es un editor genérico, no certifica calidad por presentar un estado y no concede acceso al contenido fuente por mostrar metadatos.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el diseño del catálogo con los siguientes resultados:
+
+- una arquitectura de información única con dos colecciones gobernadas: métricas/indicadores y datos maestros/de referencia;
+- una ficha de catálogo que separa definición, gobierno, fuente, calidad, linaje e historia;
+- búsqueda y filtros sobre metadatos previamente autorizados, sin usar opciones de filtro como canal de enumeración;
+- separación entre fuente de verdad lógica, implementación técnica observada y consumidor;
+- separación entre estado documental y estado de calidad/certificación;
+- linaje lógico navegable que conserva origen, versiones y derivados sin convertirlo en permiso de acceso al detalle;
+- decisiones explícitas para los **62 objetos** heredados del catálogo maestro: **43 maestros, 19 referencias, 58 dimensiones compartidas y 3 objetos AURA bloqueados**;
+- calidad visible para esos 62 objetos: **59 `NO EVALUADO` y 3 `BLOQUEADO`** en la coordenada DQ vigente;
+- decisiones explícitas para las **14 métricas de asistencia v1** del registro canónico inicial;
+- calidad visible para esas métricas: **11 `NO EVALUADO` y 3 `BLOQUEADO`**;
+- preservación de `missingCloseCount`, `attendanceRate` y `punctualityRate` como bloqueadas para certificación;
+- cero métricas nuevas inventadas para las 55 familias analíticas que todavía no tienen una definición concreta incorporada al registro de métricas;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume sin redefinir:
+
+- `DATA-UX-001`, que reserva explícitamente a esta tarea la navegación de definición y linaje desde el inicio ejecutivo;
+- `DATA-DOM-001`, para gobierno federado, propietario funcional, steward, custodio, consumidor y fuente de verdad lógica;
+- `DATA-DOM-002`, para el inventario materializado de 62 objetos, clases, rol dimensional, fuentes, propietarios, stewards, consumidores, estados y fronteras;
+- `DATA-DOM-003`, para identidad, claves, códigos, jerarquías, vigencia, ciclo de vida, fusión y separación;
+- `DATA-DOM-004`, para identidad/versionado de métricas y el registro inicial de 14 métricas reales de asistencia;
+- `DATA-DOM-005`, para grano, tiempo, corte, dimensiones y comparabilidad histórica;
+- `DATA-DOM-006`, para origen, ingestión, transformación, reconciliación y linaje hasta evidencia/versiones aplicadas;
+- `DATA-DOM-007`, para calidad, frescura, cobertura, certificación y estados DQ;
+- `DATA-DOM-017`, para versionado, correcciones, restatements e historia reproducible;
+- `DATA-AUTH-001`, para conjunto autorizado por actor, recurso, dominio, territorio, finalidad, vigencia y población;
+- `DATA-AUTH-002`, para minimización, metadatos sensibles, poblaciones pequeñas, comparaciones y detalle;
+- `DATA-AUTH-003`, para segregación entre definición, certificación, publicación, metas, anotación, exportación y administración;
+- `DATA-AUTH-004`, para trazabilidad de consultas y navegación analítica;
+- los requisitos DATA y UX vigentes que ya protegen maestros gobernados, registro canónico de métricas, linaje, calidad visible, fuente de verdad y superficies administrativas.
+
+El catálogo proyecta estas decisiones; no crea un modelo paralelo de identidad, calidad, propiedad, autorización o linaje.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+CATÁLOGO ≠ FUENTE DE VERDAD
+CATÁLOGO ≠ TABLA MAESTRA UNIVERSAL
+CATÁLOGO ≠ CAPA SEMÁNTICA FÍSICA
+CATÁLOGO ≠ EDITOR GENÉRICO
+CATÁLOGO ≠ MOTOR DE CERTIFICACIÓN
+CATÁLOGO ≠ AUTORIZACIÓN
+CATÁLOGO ≠ INVENTARIO DE TABLAS
+```
+
+```text
+DEFINICIÓN ≠ VALOR OBSERVADO
+DUEÑO ≠ STEWARD ≠ CUSTODIO ≠ CERTIFICADOR
+FUENTE LÓGICA ≠ TABLA FÍSICA ≠ COPIA ANALÍTICA
+ESTADO DOCUMENTAL ≠ ESTADO DQ
+LINAJE ≠ PERMISO DE DRILL-DOWN
+DIMENSIÓN COMPARTIDA ≠ NUEVA IDENTIDAD
+MÉTRICA ≠ KPI ≠ META ≠ ALERTA ≠ DASHBOARD
+```
+
+Reglas:
+
+1. un registro del catálogo referencia la autoridad canónica y no duplica el estado de negocio como nueva verdad;
+2. mostrar un dueño no concede al dueño acceso técnico irrestricto;
+3. mostrar una fuente no convierte al consumidor en propietario;
+4. mostrar linaje no permite abrir nodos o filas que el actor no esté autorizado a conocer;
+5. una fórmula visible se toma de la versión canónica de la métrica y nunca de código local de una pantalla;
+6. `ESPECIFICADO` documentalmente no significa `CERTIFICADO` en calidad;
+7. `NO EVALUADO` no se presenta como error, degradación ni aprobación;
+8. `BLOQUEADO` conserva la causa y no se reemplaza por un dato aproximado;
+9. el nombre físico de una tabla, función o archivo no sustituye el nombre empresarial y la identidad canónica;
+10. una familia analítica no crea una métrica por el solo hecho de aparecer en el catálogo de dominios.
+
+---
+
+#### 5. Arquitectura de información
+
+La experiencia se organiza en dos colecciones hermanas bajo una misma entrada conceptual:
+
+| Colección                      | Contenido materializado actual | Regla                                                                                                    |
+| ------------------------------ | -----------------------------: | -------------------------------------------------------------------------------------------------------- |
+| Métricas e indicadores         |   14 métricas de asistencia v1 | cada entrada es una identidad semántica versionada; fórmulas y estados se consumen del registro canónico |
+| Datos maestros y de referencia |                     62 objetos | cada entrada conserva su identidad federada, clase, fuente, dueño, steward, calidad y rol dimensional    |
+
+No se fusionan ambas colecciones en una tabla indiferenciada. Comparten patrones de búsqueda, gobierno, calidad, linaje e historia, pero mantienen metadatos específicos.
+
+Las 55 familias analíticas de ventas, inventario, producción, servicio/cliente y finanzas funcionan como contexto de descubrimiento cuando una métrica concreta las referencie. No se crean 55 métricas nominales ni fórmulas vacías para llenar la interfaz.
+
+---
+
+#### 6. Vista de catálogo
+
+La vista principal del catálogo deberá permitir comprender cada resultado sin abrir inmediatamente su detalle.
+
+##### 6.1. Campos comunes mínimos
+
+Cada resultado autorizado muestra, según aplicabilidad:
+
+- nombre empresarial o identidad canónica;
+- tipo: métrica, dato maestro o dato de referencia;
+- versión o vigencia resoluble;
+- propietario funcional;
+- steward;
+- fuente de verdad lógica;
+- estado DQ vigente;
+- indicación de bloqueo cuando exista;
+- rol de dimensión compartida para maestros/referencias;
+- fecha o corte únicamente cuando exista una referencia temporal confiable;
+- acceso al detalle gobernado.
+
+No se muestra un falso `Actualizado hoy` si la fuente no aporta una referencia temporal válida.
+
+##### 6.2. Campos específicos de métrica
+
+Una fila de métrica puede mostrar además:
+
+- unidad;
+- tipo de métrica;
+- propósito o definición breve;
+- dimensiones permitidas de la versión;
+- estado de certificación;
+- existencia de una divergencia o limitación conocida.
+
+La fórmula completa, numerador/denominador, inclusiones, exclusiones, grano, calendario, zona horaria y dependencias se presentan por divulgación progresiva en la ficha.
+
+##### 6.3. Campos específicos de maestro o referencia
+
+Una fila de dato gobernado puede mostrar además:
+
+- clase base;
+- si desempeña rol de dimensión compartida;
+- frontera funcional breve;
+- aplicación o contrato que conserva la fuente lógica;
+- estado documental separado del estado DQ.
+
+Claves, aliases, jerarquías y ciclo de vida se muestran únicamente cuando existan en los contratos de identidad vigentes; la interfaz no inventa esos metadatos cuando no estén materializados.
+
+---
+
+#### 7. Búsqueda, filtros y ordenamiento
+
+La búsqueda opera sobre el universo de metadatos que el actor puede conocer, nunca sobre un índice más amplio filtrado después en el cliente.
+
+Filtros conceptuales permitidos cuando existan valores autorizados:
+
+- colección: métricas / maestros / referencias;
+- dominio o fuente lógica;
+- propietario funcional;
+- steward;
+- estado DQ;
+- bloqueado / no bloqueado;
+- dimensión compartida: sí / no;
+- versión o vigencia;
+- consumidor o uso relacionado cuando esa relación sea visible;
+- familia analítica únicamente para métricas realmente vinculadas a ella.
+
+Reglas:
+
+1. una opción de filtro no revela la existencia de un objeto no autorizado;
+2. combinar filtros reduce el conjunto visible;
+3. limpiar filtros vuelve al universo autorizado, no al universo global;
+4. ordenar por calidad no convierte el estado DQ en una puntuación inventada;
+5. la búsqueda por nombre técnico puede existir como alias secundario solo cuando el identificador esté canónicamente reconocido y autorizado;
+6. resultados bloqueados pueden seguir siendo visibles como metadato de gobierno si el actor está autorizado a conocer su existencia, pero su bloqueo no habilita datos operativos;
+7. conteos de resultados, autocomplete y sugerencias aplican la misma protección que las filas visibles.
+
+---
+
+#### 8. Ficha de detalle
+
+Toda ficha de catálogo se divide conceptualmente en seis zonas:
+
+1. **Definición** — qué significa, identidad, clase o tipo, versión/vigencia y frontera semántica.
+2. **Gobierno** — propietario funcional, steward, custodio o certificador cuando sean relevantes, sin confundir funciones.
+3. **Fuente** — fuente de verdad lógica y, solo cuando esté documentada y autorizada, implementación técnica observada.
+4. **Calidad** — estado DQ, frescura/cobertura resolubles, bloqueos y limitaciones; no calcula certificación local.
+5. **Linaje** — origen/evidencia, transformaciones/versiones conocidas, identidad gobernada y derivados/consumidores autorizados.
+6. **Historia** — versiones, vigencias, correcciones y restatements que el actor esté autorizado a consultar.
+
+La ficha no presenta una pestaña de edición universal. Cualquier mutación, certificación, publicación, anotación o administración se dirige al flujo propietario y reevalúa la capacidad exacta correspondiente.
+
+---
+
+#### 9. Definición
+
+Para una métrica, la zona de definición puede exponer:
+
+```text
+metric_key
+nombre empresarial
+versión semántica
+propósito de decisión
+fórmula
+numerador / denominador
+unidad / moneda
+precisión
+inclusiones / exclusiones
+grano
+dimensiones permitidas
+filtros canónicos
+calendario
+zona horaria
+reglas de comparación
+```
+
+Solo se muestran los campos realmente definidos por la versión vigente. Una tasa sin denominador positivo no se explica como `0`.
+
+Para un maestro o referencia, la zona de definición puede exponer:
+
+```text
+objeto canónico
+clase base
+rol de dimensión compartida
+frontera semántica
+identidad / claves / códigos ya gobernados
+jerarquías y vigencia cuando apliquen
+ciclo de vida y relaciones canónicas disponibles
+```
+
+La coincidencia de etiqueta, nombre, correo, código o valor normalizado nunca se presenta como identidad suficiente para fusionar objetos.
+
+---
+
+#### 10. Dueño y stewardship
+
+La experiencia distingue siempre:
+
+| Función               | Presentación                                                    | No significa                                 |
+| --------------------- | --------------------------------------------------------------- | -------------------------------------------- |
+| propietario funcional | responsable de semántica y decisión empresarial                 | permiso técnico automático                   |
+| steward               | responsable de metadatos, calidad y triage dentro de delegación | acceso irrestricto o certificación universal |
+| custodio técnico      | responsable de infraestructura y soporte                        | propiedad empresarial                        |
+| certificador          | responsable de la decisión de certificación cuando corresponda  | dueño, publicador o administrador universal  |
+| consumidor            | uso autorizado del dato o métrica                               | propiedad, edición o detalle fuente          |
+
+Si la responsabilidad es compartida por atributo, la ficha lo muestra como frontera explícita; no aplana la autoridad en un único “owner” visual.
+
+---
+
+#### 11. Fuente
+
+El campo principal de fuente muestra la **fuente de verdad lógica** o contrato propietario.
+
+Reglas:
+
+- una tabla física no sustituye a la fuente lógica;
+- una vista, caché, reporte, snapshot o dataset analítico se presenta como derivado cuando corresponda;
+- una fuente externa conserva su procedencia y no se presenta como autoridad interna más amplia de la que posee;
+- una implementación técnica observada puede aparecer como evidencia secundaria si existe en los contratos vigentes y el actor puede conocerla;
+- una fuente no resoluble no se completa por similitud de nombres;
+- los objetos de AURA conservan `AURA objetivo` y su bloqueo, sin inventar una fuente operativa vigente.
+
+---
+
+#### 12. Calidad
+
+El catálogo presenta exactamente los estados DQ definidos por `DATA-DOM-007`:
+
+```text
+NO EVALUADO
+EN OBSERVACIÓN
+CERTIFICADO
+DEGRADADO
+BLOQUEADO
+```
+
+Reglas de presentación:
+
+1. el estado se acompaña de texto, no solo color;
+2. `NO EVALUADO` significa que falta evidencia suficiente para certificar, no que el dato sea falso;
+3. `EN OBSERVACIÓN` conserva la condición que requiere seguimiento;
+4. `CERTIFICADO` solo aparece si existe decisión de certificación vigente;
+5. `DEGRADADO` conserva la limitación y el alcance afectado;
+6. `BLOQUEADO` impide presentar el elemento como oficial cuando el bloqueo afecta ese uso;
+7. la ficha puede explicar controles o evidencia disponible, pero la evaluación profunda y su workflow pertenecen a `DATA-UX-004`;
+8. un cambio de calidad produce una nueva proyección del catálogo; no reescribe la historia de lo que estaba vigente en un corte anterior.
+
+---
+
+#### 13. Linaje
+
+El catálogo muestra linaje en capas, con divulgación progresiva:
+
+```text
+FUENTE / EVIDENCIA
+→ MECANISMO DE ENTRADA O PROYECCIÓN
+→ TRANSFORMACIÓN Y VERSIÓN CUANDO APLIQUE
+→ OBJETO O MÉTRICA CANÓNICA + VERSIÓN/VIGENCIA
+→ DERIVADOS, ARTEFACTOS O CONSUMIDORES AUTORIZADOS
+```
+
+Para métricas se añaden:
+
+- versión de métrica;
+- corte;
+- dimensiones y filtros;
+- hechos y maestros participantes;
+- snapshot o modelo cuando forme parte del resultado;
+- métricas base cuando una tasa o compuesto derive de ellas.
+
+Reglas:
+
+1. el linaje no concede acceso al contenido de un nodo;
+2. nodos sensibles se minimizan o se representan mediante referencias protegidas;
+3. la ausencia de una transformación física materializada se muestra como ausencia de evidencia técnica, no se inventa un paso;
+4. una copia derivada no se eleva a fuente de verdad;
+5. una corrección o restatement crea una relación histórica adicional y no borra el origen previo;
+6. la materialización física de consultas, modelos, cachés y contratos técnicos pertenece a `DATA-INT-002`;
+7. crosswalks e identidades externas pertenecen a `DATA-INT-003`;
+8. contratos de eventos y lectura pertenecen a `DATA-INT-001`.
+
+---
+
+#### 14. Historia y versionado
+
+- las 14 métricas actuales conservan versión semántica `1`;
+- un cambio material de significado exige una versión posterior y no reemplaza silenciosamente v1;
+- una corrección de datos no cambia retrospectivamente la definición de la métrica;
+- un objeto maestro conserva vigencias, fusiones, separaciones y relaciones según `DATA-DOM-003`;
+- una reconstrucción o restatement conserva la relación con la versión/corte anterior;
+- la ficha distingue “vigente ahora” de “vigente en el corte consultado”;
+- un elemento retirado puede permanecer visible históricamente cuando la autorización y finalidad lo permitan;
+- una versión antigua no se presenta como actual por ser la última que el cliente almacenó en caché.
+
+---
+
+#### 15. Autorización, privacidad y metadatos
+
+El catálogo se construye después de aplicar autorización a su propio universo de metadatos.
+
+Reglas:
+
+1. conocer el nombre de un objeto, fuente, dueño, relación o consumidor puede ser información sensible;
+2. filtros, autocomplete, conteos, errores, títulos y linaje aplican la misma clasificación efectiva;
+3. el catálogo no recupera metadatos globales para ocultarlos solo en interfaz;
+4. acceso a una métrica no concede las filas fuente;
+5. acceso a un maestro no concede hechos que lo referencian;
+6. acceso a definición no concede certificación, publicación, anotación, exportación o administración;
+7. un actor no autorizado no recibe pistas diferenciadas sobre la existencia de un recurso sensible;
+8. un drill-down de linaje o definición reevalúa actor, recurso, finalidad, clasificación y alcance;
+9. campos personales, financieros, técnicos o comerciales sensibles se minimizan conforme a la protección vigente;
+10. los tres objetos AURA bloqueados no exponen una población o dataset operativo inexistente.
+
+---
+
+#### 16. Matriz materializada de los 62 objetos
+
+Cada fila consume el catálogo de `DATA-DOM-002` y la coordenada DQ de `DATA-DOM-007`. `Estado doc.` y `DQ` son deliberadamente columnas distintas.
+
+|    # | Objeto                        | Clase             | Dim. compartida | Fuente lógica                                                | Dueño / steward                                                                         | Estado doc. / DQ               | Definición o frontera                                                                                            | Linaje visible                                                                                                                   |
+| ---: | ----------------------------- | ----------------- | :-------------: | ------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Dirección / gobierno organizacional / `RESPONSABLE_DEL_PROCESO`                         | `ESPECIFICADO` / `NO EVALUADO` | Paraguas interno; no equivale a persona jurídica.                                                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Dirección / Contabilidad según atributo / `RESPONSABLE_DEL_PROCESO`                     | `ESPECIFICADO` / `NO EVALUADO` | La condición jurídica exige evidencia externa; la fuente interna conserva el estado empresarial reconciliado.    | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Dirección / responsable de marca / `RESPONSABLE_DE_MARCA`                               | `ESPECIFICADO` / `NO EVALUADO` | Marca no equivale a titular, establecimiento ni sede.                                                            | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Dirección / Contabilidad / `RESPONSABLE_DEL_PROCESO`                                    | `ESPECIFICADO` / `NO EVALUADO` | Solo se considera verificado con evidencia externa aplicable.                                                    | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Dirección / Gerencia General / `RESPONSABLE_DEL_PROCESO`                                | `ESPECIFICADO` / `NO EVALUADO` | Una línea de negocio no crea automáticamente sede ni titular.                                                    | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    |      `SI`       | VISO con operación NEXO                                      | Gerencia General / Operaciones / `RESPONSABLE_DE_INSTALACIONES`                         | `ESPECIFICADO` / `NO EVALUADO` | Instalación física y sede operativa permanecen separadas.                                                        | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Gerencia General / Operaciones / `RESPONSABLE_DEL_PROCESO`                              | `ESPECIFICADO` / `NO EVALUADO` | Unidad territorial primaria; capacidades se declaran por contrato, no por nombre.                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Gerencia / Operaciones / `RESPONSABLE_DEL_PROCESO`                                      | `ESPECIFICADO` / `NO EVALUADO` | Área funcional; no equivale a zona física ni estación.                                                           | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    |      `SI`       | NEXO con referencia VISO                                     | Operaciones / Instalaciones / `RESPONSABLE_DE_INSTALACIONES`                            | `ESPECIFICADO` / `NO EVALUADO` | Subdivisión espacial sin autoridad funcional implícita.                                                          | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    |      `SI`       | NEXO con contratos SHELL/AUTH-DEV cuando aplique             | Operaciones / `RESPONSABLE_DEL_PROCESO`                                                 | `ESPECIFICADO` / `NO EVALUADO` | Punto de ejecución; no equivale a área, dispositivo o actor.                                                     | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    |      `SI`       | VISO con custodia NEXO                                       | Operaciones / `RESPONSABLE_DEL_PROCESO`                                                 | `ESPECIFICADO` / `NO EVALUADO` | Punto externo temporal o privado con finalidad y vigencia; no se promueve a sede por inferencia.                 | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    |      `SI`       | VISO para identidad empresarial de persona administrada      | Administración de personas / `RESPONSABLE_DE_PERSONAS`                                  | `ESPECIFICADO` / `NO EVALUADO` | No se duplica por nueva vinculación; la relación con CUSTOMER_PERSON no autoriza fusión automática.              | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Administración laboral / `RESPONSABLE_DE_PERSONAS`                                      | `ESPECIFICADO` / `NO EVALUADO` | Proyección laboral del vínculo vigente; no sustituye identidad ni relación histórica.                            | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Administración laboral / `RESPONSABLE_DE_PERSONAS`                                      | `ESPECIFICADO` / `NO EVALUADO` | Vínculo versionado con vigencia; acceso técnico permanece separado.                                              | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` |      `SI`       | VISO                                                         | Administración laboral / `RESPONSABLE_DE_PERSONAS`                                      | `ESPECIFICADO` / `NO EVALUADO` | Denominación contractual/administrativa; no concede permisos.                                                    | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` |      `NO`       | SHELL / modelo canónico de autorización                      | Gobierno de autorización / `RESPONSABLE_DEL_PROCESO`                                    | `ESPECIFICADO` / `NO EVALUADO` | Rol base de autorización; no se confunde con cargo ni función operativa.                                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` |      `SI`       | VISO con consumo del modelo de autorización                  | Operaciones / propietario del proceso / `RESPONSABLE_DEL_PROCESO`                       | `ESPECIFICADO` / `NO EVALUADO` | Función efectiva; su activación contextual no crea una identidad nueva.                                          | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    |      `SI`       | VISO                                                         | Administración laboral / Gerencia / `RESPONSABLE_DE_PERSONAS`                           | `ESPECIFICADO` / `NO EVALUADO` | Asignación vigente o histórica a sede, área, función o cobertura.                                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Persona cliente independiente de cuenta autenticada; coincidencia de contacto no prueba identidad.               | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    |      `NO`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Correo/teléfono con tipo, verificación, fuente y vigencia; no es identidad suficiente.                           | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Relación por marca/alcance; no equivale a consentimiento.                                                        | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Perfil de autoservicio; no contiene decisiones internas no autoadministrables.                                   | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Preferencia no equivale a autorización o consentimiento.                                                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | La cuenta de fidelización es distinta del saldo y de los movimientos del ledger.                                 | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` |      `SI`       | PASS                                                         | Relación con clientes / `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`                             | `ESPECIFICADO` / `NO EVALUADO` | Reglas versionadas de beneficio; movimientos y redenciones son hechos, no referencias.                           | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    |      `SI`       | NEXO                                                         | Catálogo empresarial / `RESPONSABLE_DE_CATALOGO`                                        | `ESPECIFICADO` / `NO EVALUADO` | Identidad estable del elemento; admite roles múltiples sin duplicación.                                          | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    |      `SI`       | NEXO                                                         | Catálogo empresarial / `RESPONSABLE_DE_CATALOGO`                                        | `ESPECIFICADO` / `NO EVALUADO` | Configuración diferenciada del producto; no equivale a presentación.                                             | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    |      `SI`       | NEXO                                                         | Catálogo empresarial / `RESPONSABLE_DE_CATALOGO`                                        | `ESPECIFICADO` / `NO EVALUADO` | Representa empaque o forma física de compra, recepción, stock, remisión o venta; no es unidad.                   | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` |      `SI`       | NEXO                                                         | Catálogo empresarial / `RESPONSABLE_DE_CATALOGO`                                        | `ESPECIFICADO` / `NO EVALUADO` | Código y dimensión controlados; no se inventan unidades para servicios o empaques.                               | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` |      `SI`       | NEXO                                                         | Catálogo empresarial / `RESPONSABLE_DE_CATALOGO`                                        | `ESPECIFICADO` / `NO EVALUADO` | Distingue producto, servicio, ingrediente, preparación y empaque.                                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` |      `SI`       | NEXO                                                         | Inventario / Bodega / `BODEGA_Y_ABASTECIMIENTO`                                         | `ESPECIFICADO` / `NO EVALUADO` | Clasifica comportamiento de stock, medición, lote y vencimiento; no sustituye identidad.                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` |      `SI`       | NEXO                                                         | Operaciones de catálogo e inventario / `RESPONSABLE_DE_CATALOGO`                        | `ESPECIFICADO` / `NO EVALUADO` | Agrupa búsqueda, almacenamiento, remisión y operación; no controla menú.                                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   33 | `LOC`                         | `DATO_MAESTRO`    |      `SI`       | NEXO                                                         | Inventario / Instalaciones según objeto / `BODEGA_Y_ABASTECIMIENTO`                     | `ESPECIFICADO` / `NO EVALUADO` | Ubicación lógica/física de inventario; no equivale a sede, área o instalación completa.                          | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    |      `SI`       | NEXO                                                         | Activos / Instalaciones / `RESPONSABLE_DE_INSTALACIONES`                                | `ESPECIFICADO` / `NO EVALUADO` | NEXO conserva identidad física, ubicación, condición, custodia, mantenimiento y retiro.                          | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` |      `SI`       | NEXO                                                         | Activos / `RESPONSABLE_DE_INSTALACIONES`                                                | `ESPECIFICADO` / `NO EVALUADO` | Clasificación controlada; no crea por sí sola identidad ni política de mantenimiento.                            | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    |      `NO`       | NEXO; FOGO para especificación productiva cuando corresponda | Catálogo / Calidad / `RESPONSABLE_DE_CATALOGO con RESPONSABLE_DE_CALIDAD_E_INOCUIDAD`   | `ESPECIFICADO` / `NO EVALUADO` | Objeto versionado y vigente; no reescribe recepciones o lotes históricos.                                        | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    |      `SI`       | ORIGO                                                        | Compras / Gerencia según sensibilidad / `RESPONSABLE_DE_COMPRAS`                        | `ESPECIFICADO` / `NO EVALUADO` | Proveedor y contacto son conceptos distintos; datos sensibles se minimizan.                                      | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    |      `NO`       | ORIGO                                                        | Compras / `RESPONSABLE_DE_COMPRAS`                                                      | `ESPECIFICADO` / `NO EVALUADO` | Persona o canal de relación; no sustituye identidad del proveedor.                                               | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    |      `SI`       | ORIGO                                                        | Compras / `RESPONSABLE_DE_COMPRAS`                                                      | `ESPECIFICADO` / `NO EVALUADO` | Declara capacidad de suministro; no equivale a oferta, contrato o precio vigente.                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    |      `SI`       | ORIGO                                                        | Compras / Gerencia según sensibilidad / `RESPONSABLE_DE_COMPRAS`                        | `ESPECIFICADO` / `NO EVALUADO` | Condición versionada con vigencia y contexto; órdenes conservan snapshot de lo aprobado.                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` |      `SI`       | ORIGO                                                        | Compras / `RESPONSABLE_DE_COMPRAS`                                                      | `ESPECIFICADO` / `NO EVALUADO` | Agrupación de abastecimiento; no sustituye taxonomías de inventario, producto o costo.                           | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    |      `SI`       | FOGO                                                         | Producción / `RESPONSABLE_PRODUCTIVO`                                                   | `ESPECIFICADO` / `NO EVALUADO` | Identidad estable del conocimiento; versiones publicadas y ejecuciones permanecen separadas.                     | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` |      `SI`       | FOGO                                                         | Producción / `RESPONSABLE_PRODUCTIVO`                                                   | `ESPECIFICADO` / `NO EVALUADO` | Taxonomía productiva; no sustituye categoría de producto, compra o menú.                                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    |      `SI`       | FOGO                                                         | Producción / `RESPONSABLE_PRODUCTIVO`                                                   | `ESPECIFICADO` / `NO EVALUADO` | Ruta o proceso productivo reutilizable; ejecución y lote siguen siendo hechos.                                   | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    |      `SI`       | FOGO con referencia a activos NEXO cuando corresponda        | Producción / `RESPONSABLE_PRODUCTIVO`                                                   | `ESPECIFICADO` / `NO EVALUADO` | Recurso funcional productivo; el activo físico relacionado mantiene identidad NEXO.                              | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` |      `SI`       | PULSO                                                        | Comercial / `RESPONSABLE_COMERCIAL`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Canal comercial; no equivale a sede, marca, pedido ni cuenta externa.                                            | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` |      `SI`       | PULSO                                                        | Comercial / `RESPONSABLE_COMERCIAL`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Taxonomía de navegación/oferta; no controla stock ni clasificación operativa.                                    | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    |      `SI`       | PULSO                                                        | Comercial / `RESPONSABLE_COMERCIAL`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Configuración vendible versionada por contexto; precio, disponibilidad y venta permanecen objetos distintos.     | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    |      `SI`       | NUMERA                                                       | Finanzas / `RESPONSABLE_FINANCIERO`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Centro económico; no equivale a sede, área, marca o canal.                                                       | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` |      `SI`       | NUMERA                                                       | Finanzas / `RESPONSABLE_FINANCIERO`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Código o unidad monetaria controlada; conversiones y tasas tienen vigencia separada.                             | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` |      `SI`       | NUMERA                                                       | Finanzas / `RESPONSABLE_FINANCIERO`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Periodo económico separado de operación, contabilidad y fiscalidad.                                              | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` |      `SI`       | NUMERA o sistema contable autorizado según alcance vigente   | Finanzas / Contabilidad / `RESPONSABLE_FINANCIERO`                                      | `ESPECIFICADO` / `NO EVALUADO` | No se confunde con periodo económico ni operativo.                                                               | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` |      `SI`       | NUMERA con autoridad externa aplicable                       | Finanzas / Contabilidad / `RESPONSABLE_FINANCIERO`                                      | `ESPECIFICADO` / `NO EVALUADO` | La autoridad oficial externa se conserva cuando aplique.                                                         | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` |      `SI`       | NUMERA                                                       | Finanzas / `RESPONSABLE_FINANCIERO`                                                     | `ESPECIFICADO` / `NO EVALUADO` | Clasificación de gasto, costo, ingreso u otras categorías económicas; no redefine hechos operativos.             | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    |      `SI`       | AURA objetivo                                                | Marca / Comercial / `RESPONSABLE_DE_MARCA`                                              | `BLOQUEADO` / `BLOQUEADO`      | Fuente lógica objetivo; no existe fuente operativa AURA habilitada.                                              | Mostrar fuente objetivo → objeto gobernado y bloqueo; no representar un tramo operativo AURA inexistente.                        |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    |      `SI`       | AURA objetivo                                                | Marca / Comercial / `RESPONSABLE_DE_MARCA`                                              | `BLOQUEADO` / `BLOQUEADO`      | Debe respetar finalidad, consentimiento y exclusiones; activación depende de AURA habilitada.                    | Mostrar fuente objetivo → objeto gobernado y bloqueo; no representar un tramo operativo AURA inexistente.                        |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    |      `SI`       | AURA objetivo bajo gobierno documental                       | Marca / `RESPONSABLE_DE_MARCA`                                                          | `BLOQUEADO` / `BLOQUEADO`      | Originales y derivados conservan derechos, uso, vigencia y relación; AURA no operativa impide autoridad vigente. | Mostrar fuente objetivo → objeto gobernado y bloqueo; no representar un tramo operativo AURA inexistente.                        |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    |      `SI`       | BLOQUE Z / contrato TI-DOM-002                               | Tecnología / `RESPONSABLE_TECNOLOGICO`                                                  | `ESPECIFICADO` / `NO EVALUADO` | Instalación técnica administrada; distinta de activo físico y dispositivo compartido.                            | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    |      `SI`       | SHELL / contratos AUTH-DEV consumidos por BLOQUE Z           | Gobierno de dispositivo compartido / `RESPONSABLE_TECNOLOGICO`                          | `ESPECIFICADO` / `NO EVALUADO` | Dispositivo lógico empresarial; no equivale a actor, endpoint, activo o estación.                                | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    |      `SI`       | BLOQUE Z                                                     | Tecnología / `RESPONSABLE_TECNOLOGICO`                                                  | `ESPECIFICADO` / `NO EVALUADO` | Clase técnica de conectividad; IP, MAC o SSID aislados no crean identidad.                                       | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    |      `SI`       | SHELL                                                        | Gobierno transversal de aplicaciones / `funciones propietarias de SHELL según contrato` | `ESPECIFICADO` / `NO EVALUADO` | Aplicación no equivale a repositorio, URL, ambiente, despliegue o servicio.                                      | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` |      `SI`       | BLOQUE Z / TI-DOM-001                                        | Tecnología / `RESPONSABLE_TECNOLOGICO`                                                  | `ESPECIFICADO` / `NO EVALUADO` | Familia estable de servicio; conserva las once identidades TI-SERVICE-001 a 011.                                 | Mostrar fuente lógica → objeto/vigencia → derivados o consumidores autorizados; ampliar solo con evidencia de linaje disponible. |
+
+
+**Reconciliación de objetos:** 62 esperados; 62 materializados; 0 faltantes; 0 duplicados; 43 `DATO_MAESTRO`; 19 `DATO_REFERENCIA`; 58 con rol de dimensión compartida; 59 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Los tres bloqueados son exactamente `PERFIL_DE_MARCA`, `AUDIENCIA` y `ACTIVO_DE_MARCA`. El catálogo puede mostrar su existencia y gobierno solo al actor autorizado; no simula fuente operativa, población, calidad certificada ni linaje de ejecución.
+
+---
+
+#### 17. Matriz materializada de las 14 métricas de asistencia
+
+Las 14 entradas conservan versión semántica `1`. El propietario empresarial de la definición es `RESPONSABLE_DE_PERSONAS`; el stewardship corresponde a `RESPONSABLE_DE_PERSONAS`, con participación de `RESPONSABLE_DE_PROGRAMACION_LABORAL` cuando la definición depende del turno programado. La fuente lógica de programación permanece VISO y la de hechos de asistencia permanece ANIMA.
+
+| `metric_key`        | Nombre empresarial                                 | Tipo             | Definición canónica v1                                                                                                               | Unidad                                       | Fuente lógica | Entradas de linaje                                                    | DQ            | Decisión de catálogo                                                                                                           |
+| ------------------- | -------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- | ------------- | --------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `scheduledShifts`   | Turnos programados computables                     | conteo           | contar turnos programados del contexto que no sean descanso                                                                          | turnos                                       | VISO          | `scheduled_shifts`                                                    | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `attendedShifts`    | Turnos con asistencia registrada                   | conteo           | contar turnos programados computables con check-in asociado                                                                          | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions`                              | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `restDayCount`      | Turnos clasificados como descanso                  | conteo           | contar turnos cuya clasificación vigente corresponda a descanso                                                                      | turnos                                       | VISO          | `scheduled_shifts`                                                    | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `lateCount`         | Turnos con llegada tardía                          | conteo           | contar turnos computables con check-in posterior al inicio programado más la gracia de tardanza aplicable                            | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions`                              | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `noShowCount`       | Turnos finalizados sin asistencia                  | conteo           | contar turnos computables cuyo fin programado ya ocurrió al corte y que no tienen sesión de asistencia asociada                      | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions`                              | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `openCount`         | Turnos con sesión de asistencia abierta            | conteo           | contar turnos computables con sesión de asistencia aún abierta al corte                                                              | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions`                              | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `missingCloseCount` | Turnos vencidos sin cierre                         | conteo           | contar turnos computables cuyo fin programado ya ocurrió al corte y cuya sesión de asistencia continúa abierta                       | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions`                              | `BLOQUEADO`   | Mostrar definición v1 y bloqueo de certificación; no presentar como KPI oficial ni ocultar la divergencia conocida.            |
+| `autoCloseCount`    | Turnos cerrados automáticamente                    | conteo           | contar turnos computables cuya sesión asociada fue cerrada mediante el mecanismo de autocierre                                       | turnos                                       | ANIMA         | `attendance_sessions`                                                 | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `departureCount`    | Turnos con salida de sede detectada durante sesión | conteo           | contar turnos computables con evento de salida de sede correlacionado a la sesión                                                    | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions + attendance_geofence_events` | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `scheduledMinutes`  | Minutos netos programados                          | suma             | sumar los minutos netos programados de los turnos computables, descontando descanso programado conforme al turno                     | minutos                                      | VISO          | `scheduled_shifts`                                                    | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `netMinutes`        | Minutos netos registrados                          | suma             | sumar minutos de sesión registrados menos minutos de descanso superpuestos válidos, limitados a valores no negativos                 | minutos                                      | ANIMA         | `attendance_sessions + attendance_breaks`                             | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `incidentCount`     | Turnos con señal de incidencia de asistencia       | conteo compuesto | contar una vez cada turno computable que presente al menos tardanza, ausencia, sesión abierta, autocierre o salida de sede detectada | turnos                                       | VISO + ANIMA  | `scheduled_shifts + attendance_sessions + attendance_geofence_events` | `NO EVALUADO` | Mostrar definición v1, dueño, fuente, DQ y linaje; puede presentarse como provisional con estado visible, no como certificado. |
+| `attendanceRate`    | Tasa de asistencia                                 | tasa             | attendedShifts / scheduledShifts cuando existe denominador positivo; sin denominador no se emite valor numérico                      | proporción; presentación porcentual derivada | VISO + ANIMA  | `attendedShifts + scheduledShifts`                                    | `BLOQUEADO`   | Mostrar definición v1 y bloqueo de certificación; no presentar como KPI oficial ni ocultar la divergencia conocida.            |
+| `punctualityRate`   | Tasa de puntualidad entre turnos asistidos         | tasa             | (attendedShifts - lateCount) / attendedShifts cuando existe denominador positivo; sin denominador no se emite valor numérico         | proporción; presentación porcentual derivada | VISO + ANIMA  | `attendedShifts + lateCount`                                          | `BLOQUEADO`   | Mostrar definición v1 y bloqueo de certificación; no presentar como KPI oficial ni ocultar la divergencia conocida.            |
+
+
+**Reconciliación de métricas:** 14 esperadas; 14 materializadas; 14 claves únicas; 0 faltantes; 0 duplicadas; 9 conteos; 2 sumas; 2 tasas; 1 conteo compuesto; 11 `NO EVALUADO`; 3 `BLOQUEADO`.
+
+Las tres métricas bloqueadas son exactamente:
+
+- `missingCloseCount`: la definición v1 exige turno vencido al corte con sesión aún abierta; su certificación permanece bloqueada mientras la implementación observada no se alinee con esa semántica;
+- `attendanceRate`: no se emite tasa numérica cuando `scheduledShifts = 0`;
+- `punctualityRate`: no se emite tasa numérica cuando `attendedShifts = 0`.
+
+El catálogo no corrige esas divergencias ni modifica fórmulas; las presenta de forma explícita y dirige el análisis de calidad al propietario documental correspondiente.
+
+---
+
+#### 18. Relación entre métricas y datos maestros
+
+El catálogo permite navegar relaciones semánticas sin crear joins de autoridad:
+
+- una métrica puede declarar las dimensiones maestras permitidas por su versión;
+- una dimensión apunta al objeto maestro o referencia vigente, no a una copia editable;
+- una relación visible no concede acceso a los miembros de la dimensión;
+- una métrica no puede añadir una dimensión no aprobada en su versión;
+- `BASE_ROLE`, `CUSTOMER_CONTACT`, `ESPECIFICACION_PRODUCTO` y `CONTACTO_PROVEEDOR` conservan `Dimensión compartida = NO` en el inventario actual;
+- producto, variante, presentación y unidad permanecen identidades distintas aunque aparezcan en una misma cadena de análisis;
+- persona, trabajador, cliente y contactos permanecen separados; el catálogo no propone fusiones por coincidencia textual;
+- fuente, dueño y calidad se resuelven por el objeto o métrica concreto y no se heredan ciegamente desde una familia analítica.
+
+---
+
+#### 19. Navegación y acciones
+
+Desde una fila o ficha, la experiencia puede ofrecer únicamente destinos que correspondan al actor y al estado actual, por ejemplo:
+
+- ver definición completa;
+- ver gobierno y responsabilidades;
+- ver calidad y limitaciones;
+- explorar linaje autorizado;
+- consultar historia/versiones;
+- abrir el análisis o tablero propietario cuando exista;
+- abrir el centro de calidad para una incidencia autorizada;
+- abrir la fuente propietaria o el flujo de gobierno cuando una capacidad separada lo permita.
+
+La acción de “editar” no aparece como capacidad universal del catálogo. Definir, certificar, publicar, fijar metas, anotar, exportar y administrar permanecen operaciones segregadas y reautorizadas.
+
+---
+
+#### 20. Estados incompletos, bloqueos y ausencia de evidencia
+
+La interfaz deberá distinguir:
+
+```text
+METADATO NO AUTORIZADO
+≠ METADATO AUSENTE
+≠ DATO NO EVALUADO
+≠ DATO DEGRADADO
+≠ DATO BLOQUEADO
+≠ FUENTE NO RESOLUBLE
+≠ LINAJE TÉCNICO AÚN NO MATERIALIZADO
+```
+
+Reglas:
+
+- un valor ausente no se reemplaza por “no aplica” sin contrato que lo determine;
+- una fuente no resoluble no se adivina desde tabla, aplicación consumidora o nombre parecido;
+- un nodo de linaje no observado se identifica como evidencia no materializada y no como un salto invisible;
+- un bloqueo muestra la causa segura y el propietario de resolución cuando esa información sea autorizada;
+- una dependencia técnica fallida no degrada por inferencia el estado DQ empresarial;
+- un estado DQ no se recalcula en el frontend.
+
+---
+
+#### 21. Accesibilidad y densidad
+
+- el listado debe poder operarse con teclado y foco visible cuando corresponda;
+- estado DQ, clase y bloqueo no dependen exclusivamente de color;
+- columnas extensas se condensan en la lista y se expanden en la ficha, sin ocultar semántica necesaria;
+- la fórmula de una métrica mantiene una representación textual comprensible además de cualquier notación compacta;
+- el linaje tiene representación textual equivalente a un eventual grafo;
+- el orden semántico conserva nombre, estado, dueño, fuente y acción principal;
+- en superficies estrechas se priorizan identidad, tipo, calidad, fuente y dueño; el resto pasa a divulgación progresiva;
+- los términos empresariales preceden a identificadores técnicos, aunque el identificador canónico permanezca disponible para trazabilidad.
+
+---
+
+#### 22. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                           | Propietario documental | Condición de salida                                                          |
+| ---------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| tableros por dominio, filtros, comparación y drill-down analítico      | `DATA-UX-003`          | antes de materializar la experiencia de análisis profundo por dominio        |
+| centro de calidad, frescura, conciliaciones y certificación            | `DATA-UX-004`          | antes de materializar workflows de evaluación o resolución DQ                |
+| investigación de variaciones, anomalías y causas                       | `DATA-UX-005`          | antes de convertir una señal del catálogo en investigación analítica         |
+| objetivos, metas, drivers, guardrails y acciones de mejora             | `DATA-UX-006`          | antes de convertir métricas en un flujo de objetivo o intervención           |
+| reportes, exportaciones, suscripciones y snapshots versionados         | `DATA-UX-007`          | antes de materializar salidas o distribución desde el catálogo               |
+| validación de comprensión, tiempos y decisiones con usuarios reales    | `DATA-UX-008`          | antes de declarar readiness de esta experiencia                              |
+| contratos físicos de eventos y lectura                                 | `DATA-INT-001`         | antes de materializar linaje físico basado en eventos o fuentes compartidas  |
+| capa semántica, consultas, modelos, caché, snapshots y rendimiento     | `DATA-INT-002`         | antes de materializar consultas, grafo técnico o almacenamiento del catálogo |
+| crosswalks, claves externas, identidad y reconciliación                | `DATA-INT-003`         | antes de navegar identidades externas o equivalencias físicas                |
+| BI, hojas, modelos externos e IA                                       | `DATA-INT-004`         | antes de exponer el catálogo a herramientas analíticas externas              |
+| claves, códigos, jerarquías, vigencia, fusión y separación de maestros | `DATA-DOM-003`         | cuando la ficha necesite esos metadatos; se consumen sin redefinirlos        |
+| calidad, frescura, cobertura y certificación                           | `DATA-DOM-007`         | siempre que se proyecte un estado DQ; el catálogo no recalcula la decisión   |
+| linaje, ingestión, transformación y reconciliación                     | `DATA-DOM-006`         | siempre que se proyecte procedencia; solo se muestran pasos documentados     |
+| historia, correcciones y restatements                                  | `DATA-DOM-017`         | siempre que se consulte una versión o corte histórico                        |
+
+No queda una decisión material de `DATA-UX-002` diferida sin propietario documental y condición de salida.
+
+---
+
+#### 23. Cobertura de requisitos de prueba vigente
+
+La conducta materializada por esta tarea ya está protegida por requisitos canónicos vigentes:
+
+- `TREQ-DATA-001` exige identificador estable, propietario funcional, steward, fuente de verdad, claves, jerarquías, estados, vigencia, ciclo de vida e historia para maestros y referencias, y asigna responsabilidad a `DATA-UX-002`;
+- `TREQ-DATA-002` exige registro canónico versionado de métricas con nombre, propósito, propietario, fórmula, numerador, denominador, grano, dimensiones, filtros, unidad, tiempo, fuente, calidad, certificación, drill-down y comparación, y asigna responsabilidad a `DATA-UX-001` a `DATA-UX-003`;
+- `TREQ-DATA-003` protege contratos de origen, transformaciones, reconciliación y linaje y prohíbe certificación oficial sin calidad suficiente;
+- `TREQ-DATA-004` protege versión, corte, frescura, cobertura, calidad, divulgación progresiva y drill-down autorizado en las superficies analíticas;
+- los requisitos UX vigentes sobre fuente de verdad, estado, versión, población, contexto, densidad y no exposición indirecta continúan aplicando al catálogo.
+
+`DATA-UX-002` especializa esas reglas como experiencia de descubrimiento y gobierno y no introduce un comportamiento verificable independiente que carezca de cobertura.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** los requisitos canónicos vigentes ya cubren de forma directa la identidad y gobierno de maestros, el registro versionado de métricas, la fuente de verdad, el estado de calidad, el linaje, la divulgación progresiva y la protección de metadatos. La tarea materializa su experiencia de catálogo sin crear una regla de negocio, cálculo, autorización, transición, integración o comportamiento ejecutable adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 24. Criterios de aceptación
+
+1. existe una sola experiencia conceptual de catálogo con colecciones separadas para métricas y datos maestros/referencia;
+2. el catálogo no se convierte en fuente de verdad, maestro universal, capa semántica física o editor genérico;
+3. definición, gobierno, fuente, calidad, linaje e historia aparecen como zonas distintas;
+4. propietario, steward, custodio, certificador y consumidor permanecen funciones separadas;
+5. la fuente principal presentada es la fuente de verdad lógica y no una tabla elegida por conveniencia técnica;
+6. la implementación técnica solo aparece cuando esté documentada y autorizada;
+7. estado documental y estado DQ permanecen separados;
+8. se conservan exactamente los cinco estados DQ vigentes sin crear equivalencias nuevas;
+9. `NO EVALUADO` no se presenta como error ni certificación;
+10. `BLOQUEADO` no se reemplaza por dato aproximado o estimado;
+11. el linaje conserva fuente/evidencia, transformaciones/versiones conocidas, identidad gobernada y derivados autorizados;
+12. un nodo de linaje no concede acceso automático a su contenido;
+13. búsquedas, filtros, autocomplete y conteos se calculan únicamente sobre metadatos autorizados;
+14. una opción de filtro no revela recursos no autorizados;
+15. acceso a métrica no concede filas fuente;
+16. acceso a maestro no concede hechos que lo referencian;
+17. definición no concede certificación, publicación, meta, anotación, exportación o administración;
+18. las 55 familias analíticas no generan métricas nominales sin definición concreta;
+19. se materializan exactamente 62 objetos de catálogo;
+20. la reconciliación de objetos conserva 43 maestros y 19 referencias;
+21. se conservan exactamente 58 objetos con rol de dimensión compartida;
+22. `BASE_ROLE`, `CUSTOMER_CONTACT`, `ESPECIFICACION_PRODUCTO` y `CONTACTO_PROVEEDOR` conservan dimensión compartida `NO`;
+23. cada uno de los 62 objetos tiene fuente lógica, dueño/steward, estado documental, DQ, definición/frontera y decisión de linaje explícitos;
+24. los 59 objetos no AURA conservan DQ `NO EVALUADO` hasta evidencia suficiente;
+25. `PERFIL_DE_MARCA`, `AUDIENCIA` y `ACTIVO_DE_MARCA` permanecen `BLOQUEADO`;
+26. ningún objeto AURA recibe fuente operativa o cadena de linaje de ejecución inventada;
+27. `TECH_SERVICE` conserva la referencia a sus once identidades tecnológicas aprobadas sin crear aliases nuevos;
+28. se materializan exactamente 14 métricas de asistencia;
+29. las 14 métricas conservan versión semántica `1`;
+30. el registro conserva 9 conteos, 2 sumas, 2 tasas y 1 conteo compuesto;
+31. cada métrica muestra definición canónica, unidad, dueño, fuente, entradas de linaje y estado DQ;
+32. `scheduledShifts`, `restDayCount` y `scheduledMinutes` preservan programación VISO como fuente lógica principal;
+33. `autoCloseCount` y `netMinutes` preservan hechos de asistencia ANIMA como fuente lógica principal;
+34. las métricas que combinan programación y asistencia preservan ambas fuentes sin convertir la proyección analítica en autoridad;
+35. `attendanceRate` y `punctualityRate` conservan numerador y denominador y no representan ausencia de denominador como cero;
+36. `openCount` y `missingCloseCount` permanecen semánticamente separados;
+37. `missingCloseCount`, `attendanceRate` y `punctualityRate` permanecen `BLOQUEADO` para certificación;
+38. las otras 11 métricas permanecen `NO EVALUADO` y no se presentan como certificadas;
+39. una dimensión consume el objeto gobernado vigente y no crea otra identidad editable;
+40. persona, trabajador, cliente, proveedor y contactos no se fusionan por coincidencia textual;
+41. el catálogo distingue vigencia actual de vigencia en el corte histórico;
+42. correcciones y restatements no reescriben silenciosamente versiones previas;
+43. un elemento retirado solo conserva consulta histórica bajo autorización y finalidad compatibles;
+44. la ficha no expone campos sensibles, secretos o topología técnica por ser “solo metadata”;
+45. un actor no autorizado no recibe diferencias de error que revelen existencia de recursos sensibles;
+46. calidad profunda navega a `DATA-UX-004` sin recalcular DQ localmente;
+47. análisis profundo navega a `DATA-UX-003` sin convertir el catálogo en dashboard;
+48. linaje físico y capa semántica se mantienen en `DATA-INT-001` a `DATA-INT-003` según su responsabilidad exacta;
+49. validación con usuarios queda asignada a `DATA-UX-008`;
+50. no queda un pendiente narrativo sin propietario documental exacto;
+51. no se crean rutas, componentes, tablas, vistas, modelos, permisos, roles, grants o excepciones;
+52. no se modifica código, DDL, DML, RLS, RPC, datos, migraciones, backfills, despliegues o Supabase;
+53. no se crea ni modifica ningún requisito de prueba;
+54. `DATA-UX-003` permanece únicamente reservada.
+
+---
+
+#### 25. Balance de cierre
+
+| Control                                                |         Resultado |
+| ------------------------------------------------------ | ----------------: |
+| Objetos maestros/referencia esperados / materializados |       **62 / 62** |
+| Datos maestros / referencias                           |       **43 / 19** |
+| Dimensiones compartidas SI / NO                        |        **58 / 4** |
+| Objetos DQ `NO EVALUADO` / `BLOQUEADO`                 |        **59 / 3** |
+| Objetos AURA bloqueados                                |         **3 / 3** |
+| Métricas esperadas / materializadas                    |       **14 / 14** |
+| Versiones semánticas de métricas preservadas en v1     |       **14 / 14** |
+| Métricas `NO EVALUADO` / `BLOQUEADO`                   |        **11 / 3** |
+| Conteos / sumas / tasas / compuesto                    | **9 / 2 / 2 / 1** |
+| Métricas nuevas inventadas para familias analíticas    |             **0** |
+| Permisos, roles o grants creados                       |             **0** |
+| Cambios físicos                                        |             **0** |
+| Requisitos TREQ nuevos o modificados                   |             **0** |
+
+---
+
+#### 26. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol`
+
+TAREA ACTUAL APROBADA
+`DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje`
+
+SIGUIENTE TAREA RESERVADA
+`DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad`
+
+
 ### [ ] DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad
 ### [ ] DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
 ### [ ] DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
