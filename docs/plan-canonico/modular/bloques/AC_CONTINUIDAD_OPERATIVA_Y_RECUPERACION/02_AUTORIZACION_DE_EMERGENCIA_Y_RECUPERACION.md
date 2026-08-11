@@ -1927,5 +1927,1007 @@ CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formulario
 ```
 
 
-### [ ] CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia
+### ✅ CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia
+
+**Estado:** APROBADA  
+**Tarea anterior:** `CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación` — APROBADA  
+**Tarea siguiente:** `CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de autorización, minimización, custodia, exposición, transferencia y protección de la información sensible utilizada por continuidad, incluidos respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md`  
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`  
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, buckets, RLS, RPC, funciones, Edge Functions, migraciones, datos, permisos, grants, secretos, llaves, certificados, respaldos, runbooks productivos, contactos reales, formularios productivos, folios emitidos, almacenamiento local, archivos, sesiones, proveedores, infraestructura ni configuración de Supabase  
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar una única regla de protección para el contenido que continuidad necesita consultar, transportar, custodiar o producir durante interrupciones y recuperación, de modo que la urgencia no amplíe acceso, la custodia no se convierta en permiso, un respaldo o runbook no exponga secretos, un contacto no se publique fuera de finalidad, una evidencia no pierda integridad y un formulario o dato contingente no se transforme en fuente paralela de verdad.
+
+---
+
+#### 1. Resultado sustantivo
+
+`CONT-AUTH-003` queda definida con las siguientes decisiones obligatorias:
+
+1. **La información de continuidad conserva clasificación, finalidad, autorización, minimización, retención, integridad y trazabilidad durante una emergencia.** La interrupción no rebaja esos controles.
+2. Se protegen seis familias de objeto: respaldos, runbooks, contactos, evidencia, formularios/folios y datos de contingencia.
+3. La existencia, ubicación, custodia, disponibilidad técnica o conocimiento de un objeto no conceden derecho a leerlo, modificarlo, exportarlo, compartirlo, restaurarlo, eliminarlo ni utilizarlo para producir un efecto empresarial.
+4. La autoridad de mando de `CONT-AUTH-001` no concede lectura universal sobre información sensible del incidente.
+5. El acceso extraordinario de `CONT-AUTH-002` no concede contenido por sí solo; debe seguir existiendo autorización sobre la acción y el objeto concretos.
+6. La protección de información reutiliza el modelo canónico de identidad, actor efectivo, finalidad, clasificación, recurso, relación, territorio, estado, permiso, denegaciones y auditoría. No se crea un evaluador paralelo para continuidad.
+7. Cada acción se autoriza de forma independiente. Leer no concede exportar; custodiar no concede leer; restaurar no concede consultar todos los datos restaurados; ejecutar un runbook no concede administrar los recursos que describe.
+8. El expediente transversal de continuidad conserva referencias y datos mínimos cuando la fuente propietaria puede mantener el contenido sensible. No se crea una biblioteca paralela de documentos, secretos, contactos o evidencia.
+9. Los secretos, tokens, contraseñas, códigos de recuperación, claves privadas y llaves completas no se incorporan a respaldos de configuración, runbooks, listas de contacto, formularios, bitácoras ni paquetes de evidencia en texto plano.
+10. La recuperación de material sensible permanece gobernada por `CONT-AUTH-002`; esta tarea gobierna quién puede conocer, proyectar, transportar o custodiar el contenido y sus referencias.
+11. Un respaldo conserva separadas las capacidades de inventariar, leer, restaurar, validar, promover y eliminar. Ninguna de ellas se infiere de otra.
+12. Un restore autorizado no habilita consulta indiscriminada del contenido restaurado y no puede reactivar sesiones, permisos, excepciones o accesos revocados.
+13. Un runbook conserva versión, finalidad, audiencia y clasificación; su lectura no equivale a autoridad de ejecución.
+14. Un runbook no almacena secretos completos y cualquier referencia a credenciales o llaves apunta al mecanismo protegido correspondiente.
+15. Los contactos de continuidad se resuelven desde fuentes protegidas vigentes. Cuando basta una función, no se expone identidad nominal.
+16. Nombre, teléfono, correo, canal personal, turno, disponibilidad o dato contractual de un contacto solo se revelan cuando la finalidad y el alcance lo requieren.
+17. Una lista de contactos no se convierte en directorio general ni en fuente de autoridad sobre personas o proveedores.
+18. La evidencia original se preserva; una copia, captura, miniatura, exportación, transcripción o resumen hereda la protección necesaria y no rebaja silenciosamente la sensibilidad de la fuente.
+19. Producir evidencia no concede derecho a aprobarla, alterarla, descartarla o cerrar el expediente relacionado.
+20. La evidencia necesaria para auditoría, investigación, conciliación o revisión no puede eliminarse para simplificar el cierre operativo o liberar espacio.
+21. Los formularios, folios y medios contingentes conservan versión, identidad, custodia, finalidad y trazabilidad. Poseer un formulario vacío o un rango de folios no concede autoridad para producir un efecto empresarial.
+22. Las correcciones de un formulario preservan el original; una anulación queda trazable; un folio no se reutiliza para otra intención.
+23. El dato capturado durante contingencia es una representación temporal o pendiente de incorporación; no se convierte en fuente empresarial definitiva por haber sido registrado en papel, dispositivo, archivo local o medio alterno.
+24. Los datos contingentes se minimizan al conjunto necesario para mantener el resultado permitido y la posterior reincorporación, sin aprovechar la falla para capturar información adicional.
+25. La información local/offline se aísla por actor, dispositivo, contexto, sede, área, operación e incidente cuando esas dimensiones sean aplicables.
+26. La reconexión o recuperación del sistema no autoriza automáticamente la transferencia de datos contingentes; la incorporación conserva autorización fresca, idempotencia, conflicto y conciliación bajo sus contratos propietarios.
+27. Las obtenciones de copia, impresiones, exportaciones, comparticiones, copias físicas y transferencias de información sensible requieren decisión propia sobre destinatario, finalidad, minimización y destino.
+28. Una URL firmada, archivo conocido, índice, enlace interno, bucket, copia, captura, canal alterno o posesión física no sustituyen autorización.
+29. Los mensajes de error, búsquedas, listados y metadatos no deben revelar nombres, títulos, contactos, fragmentos, ubicaciones o identificadores sensibles a actores no autorizados.
+30. Un proveedor o técnico externo recibe únicamente la información mínima necesaria para su intervención y no adquiere autoridad sobre otros dominios por participar en recuperación.
+31. Las comunicaciones de crisis conservan la separación entre contenido autorizado y canal de transporte. Cambiar de canal no amplía audiencia ni detalle permitido.
+32. Una simulación o ejercicio utiliza información aislada o controlada conforme a su alcance; no convierte material de prueba en información productiva disponible para uso posterior.
+33. La exposición accidental de información sensible durante incidente, ejercicio o recuperación se registra, contiene y deriva al propietario de seguridad, privacidad o información aplicable sin borrar la evidencia del evento.
+34. El acceso de emergencia a información sensible es mínimo, temporal, justificable, auditable, revocable y revisable conforme al contrato vigente de gobierno de información.
+35. `H-CAP-SCOPE-018-032` queda tratado documentalmente mediante autorización exacta, minimización, protección de destinatario/canal, conservación de integridad y prohibición de exposición por urgencia.
+36. La tarea no modifica la clasificación corporativa de información, las 332 identidades documentales, las políticas de retención, los permisos canónicos ni la propiedad funcional de los procesos.
+37. La tarea no declara que existan hoy controles físicos completos sobre todos los respaldos, runbooks, contactos, formularios o medios contingentes; las instancias reales conservan sus estados de evidencia.
+38. La tarea no crea formularios productivos, no emite rangos de folios, no abre respaldos, no publica contactos, no recupera secretos y no ejecuta restauraciones.
+39. La separación entre ejecución, validación, reincorporación, conciliación, cierre y revisión posterior permanece en `CONT-AUTH-004`.
+40. Se generan **cero cambios TREQ** porque las conductas protegidas ya están cubiertas por requisitos vigentes de continuidad, autorización e información.
+
+---
+
+#### 2. Entradas canónicas conservadas
+
+La tarea consume sin redefinir:
+
+- `VPROC-0062 — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje`;
+- `CONT-DOM-001`, incluida la regla de que una emergencia no elimina autorización, privacidad, integridad, evidencia ni segregación;
+- `CONT-DOM-005` y `CONT-DOM-006`, para incidente, severidad, mando, bitácora, comunicaciones y resolución de contactos desde fuentes protegidas;
+- `CONT-DOM-007` y `CONT-DOM-008`, para resultado mínimo y modalidad de contingencia sin ampliar los datos necesarios;
+- `CONT-DOM-009`, para registro, folios, evidencia, custodia, `local_operation_id`, `idempotency_key`, referencias de evidencia y trabajo ejecutado durante la falla;
+- `CONT-DOM-010`, para reincorporación, conflictos, idempotencia y conciliación posteriores;
+- `CONT-DOM-011`, para inventario de objetos recuperables, política de seguridad de copias, acceso mínimo y separación entre configuración y secreto;
+- `CONT-DOM-012`, para runbooks, orden de recuperación, restore, failover, retorno y validación funcional;
+- `CONT-DOM-013`, para proveedores, canales, energía, red, pagos, transporte y recursos alternativos;
+- `CONT-DOM-014` y `CONT-DOM-015`, para ejercicios, evidencia vigente, revisión posterior y actualización de contactos/runbooks;
+- `CONT-AUTH-001`, que preserva autoridad de mando sin conceder lectura universal sobre objetos sensibles;
+- `CONT-AUTH-002`, que gobierna acceso de emergencia y material de recuperación sin convertir la credencial en permiso sobre el contenido;
+- `INFO-AUTH-001` a `INFO-AUTH-004`, para clasificación, finalidad, recurso, relación, territorio, estado, salida, segregación, auditoría, investigación y acceso de emergencia a información;
+- `EVID-ARC-001` a `EVID-ARC-010`, como arquitectura propietaria de persistencia y enlace de evidencia cuando sea implementada;
+- `NFR-REQ-004`, para operación local, aislamiento, identidad, tiempos, evidencia y sincronización;
+- `NFR-REQ-005` y `NFR-REQ-006`, para sensibilidad y retención concretas de los medios cuando sean materializadas;
+- el modelo canónico de identidad, actor efectivo, permiso, alcance, recurso, contexto, denegaciones, decisión y auditoría;
+- los requisitos vigentes de continuidad, autorización, SHELL, privacidad, evidencia e integración aplicables.
+
+No se crea una segunda clasificación de información, un segundo repositorio de evidencia, un directorio paralelo de contactos, un catálogo paralelo de permisos ni una fuente de verdad de contingencia.
+
+---
+
+#### 3. Familias protegidas y frontera de propiedad
+
+| Familia protegida         | Contenido incluido                                                                                                         | Fuente o dominio propietario preservado                                                 | Decisión de `CONT-AUTH-003`                                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Respaldos**             | copias de datos, archivos, objetos, configuraciones, metadatos, artefactos, colas y referencias de material recuperable    | inventario y política en `CONT-DOM-011`; fuentes técnicas y de información propietarias | proteger inventario sensible, lectura, restauración, validación, promoción, transferencia y eliminación como acciones separadas |
+| **Runbooks**              | pasos de recuperación, dependencias, checkpoints, referencias de acceso, validaciones y retorno                            | `CONT-DOM-012` y propietarios técnicos/funcionales                                      | controlar lectura, versión, distribución, copia y uso sin convertir el documento en autoridad técnica                           |
+| **Contactos**             | funciones, referencias nominales cuando sean necesarias, teléfonos, correos, canales, escalamiento y disponibilidad        | fuentes organizacionales, laborales, de proveedor y comunicación propietarias           | revelar únicamente la proyección necesaria para función, incidente, finalidad y audiencia                                       |
+| **Evidencia**             | documentos, fotografías, capturas, hashes, receipts, registros, auditoría, mediciones y referencias                        | expediente o arquitectura de evidencia propietaria; `CONT-DOM-009`; INFO                | preservar original, clasificación, integridad, custodia, derivaciones y salidas autorizadas                                     |
+| **Formularios y folios**  | formularios físicos/digitales, rangos, folios, páginas asociadas, anulaciones y medios de captura                          | `CONT-DOM-009`, paquete propietario y experiencia de estación aplicable                 | proteger emisión, custodia, uso, corrección, traslado y retiro sin otorgar autoridad empresarial por posesión                   |
+| **Datos de contingencia** | borradores, capturas locales, operaciones offline, snapshots autorizados, registros manuales y pendientes de incorporación | dominio funcional propietario + contrato local/offline aplicable                        | minimizar, aislar, cifrar/proteger, limitar acceso y mantener estado pendiente hasta incorporación autorizada                   |
+
+El contrato protege las seis familias sin trasladar su propiedad a continuidad.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+Se fijan las siguientes separaciones:
+
+```text
+CUSTODIAR
+≠
+LEER
+≠
+MODIFICAR
+≠
+EXPORTAR
+≠
+ELIMINAR
+```
+
+```text
+CONOCER LA UBICACION DE UN OBJETO
+≠
+TENER AUTORIZACION SOBRE SU CONTENIDO
+```
+
+```text
+RESPALDO DISPONIBLE
+≠
+RESPALDO LEGIBLE POR CUALQUIER ACTOR
+≠
+RESTAURACION AUTORIZADA
+```
+
+```text
+RESTAURAR DATOS
+≠
+OBTENER PERMISO PARA CONSULTARLOS
+```
+
+```text
+RUNBOOK LEGIBLE
+≠
+AUTORIDAD PARA EJECUTARLO
+```
+
+```text
+CONTACTO CONOCIDO
+≠
+DIRECTORIO PUBLICO
+≠
+AUTORIDAD DEL CONTACTO
+```
+
+```text
+EVIDENCIA PRODUCIDA
+≠
+EVIDENCIA APROBADA
+≠
+AUTORIDAD PARA ALTERARLA O ELIMINARLA
+```
+
+```text
+FOLIO ASIGNADO
+≠
+EFECTO EMPRESARIAL CONFIRMADO
+```
+
+```text
+DATO CONTINGENTE CAPTURADO
+≠
+HECHO EMPRESARIAL DEFINITIVO
+```
+
+```text
+ACCESO DE EMERGENCIA
+≠
+ACCESO UNIVERSAL A INFORMACION
+```
+
+```text
+URL FIRMADA O ARCHIVO CONOCIDO
+≠
+AUTORIZACION
+```
+
+---
+
+#### 5. Coordenada mínima para autorizar información de continuidad
+
+Toda acción protegida deberá resolver, cuando sea aplicable:
+
+| Dimensión                           | Regla                                                                                                                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| incidente, recuperación o ejercicio | la necesidad se correlaciona con un contexto real o controlado; no existe acceso flotante por “continuidad”                                                                        |
+| acción exacta                       | consultar metadata, leer contenido, crear/capturar, modificar, custodiar, transferir, imprimir, exportar, compartir, restaurar, validar, anular o eliminar se evalúan por separado |
+| principal y actor efectivo          | la sesión, dispositivo, proveedor o credencial técnica no sustituyen identidad humana cuando la acción exige actor humano                                                          |
+| función ejercida                    | describe el propósito operacional, pero no concede permiso por el nombre de la función                                                                                             |
+| finalidad                           | debe ser necesaria para continuidad, recuperación, protección, conciliación, auditoría, investigación o comunicación aprobada según el objeto                                      |
+| clasificación                       | se consume la clasificación efectiva vigente; una copia o medio alterno no rebaja la clase                                                                                         |
+| recurso                             | objeto, colección, backup, runbook, contacto, evidencia, folio o conjunto exacto desde fuente autoritativa                                                                         |
+| relación                            | participación, propiedad funcional, custodia, sujeto o vínculo exigido por el contrato cuando aplique                                                                              |
+| territorio                          | sede/área real del recurso y alcance del actor cuando la información esté territorializada                                                                                         |
+| estado y versión                    | vigencia, versión, preservación, estado de incidente y transición deben ser compatibles con la acción                                                                              |
+| destinatario o destino              | obligatorio para compartir, transferir, imprimir, exportar, restaurar o publicar                                                                                                   |
+| política de campos                  | se entrega únicamente la proyección mínima compatible con la finalidad                                                                                                             |
+| permiso y modalidad                 | capacidad exacta y prerrequisitos canónicos; no se infiere de rol, aplicación o canal                                                                                              |
+| denegaciones                        | toda denegación prevalente conserva su efecto                                                                                                                                      |
+| evidencia                           | la decisión y el efecto quedan correlacionables sin registrar secretos completos                                                                                                   |
+
+Una dimensión obligatoria desconocida, ambigua, conflictiva o no verificable produce bloqueo; no se interpreta como alcance global.
+
+---
+
+#### 6. Matriz de acciones protegidas
+
+| Acción conceptual     | Resultado permitido                                                        | Condición adicional                                                         | Prohibición principal                                         |
+| --------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `CONSULTAR_METADATA`  | conocer existencia, estado o metadatos mínimos autorizados                 | la metadata misma debe ser segura para el actor                             | no enumerar objetos sensibles mediante metadata               |
+| `LEER_CONTENIDO`      | conocer el contenido mínimo necesario                                      | finalidad, clasificación, recurso, relación y proyección compatibles        | acceso a metadata no concede contenido                        |
+| `CAPTURAR_O_CREAR`    | producir registro, evidencia o dato contingente                            | actor, medio, versión, finalidad y estado permitidos                        | crear no confirma el efecto empresarial                       |
+| `MODIFICAR`           | corregir o actualizar objeto mutable permitido                             | transición y campos autorizados; historial preservado                       | no alterar original preservado ni evidencia inmutable         |
+| `CUSTODIAR`           | asumir responsabilidad de conservación o traslado                          | cadena de custodia y alcance explícitos                                     | custodia no concede lectura ilimitada                         |
+| `TRANSFERIR`          | entregar un objeto o medio a otro custodio o sistema                       | destinatario, canal, integridad y aceptación verificables                   | no transferir por conveniencia ni a audiencia amplia          |
+| `IMPRIMIR`            | generar copia física necesaria                                             | impresora/destino, audiencia, clasificación y retiro controlados            | una impresora accesible no vuelve imprimible el contenido     |
+| `EXPORTAR`            | producir una salida controlada                                             | capacidad de salida, destinatario, minimización, formato y propósito        | lectura no concede exportación                                |
+| `COMPARTIR`           | habilitar acceso a tercero o equipo autorizado                             | destinatario exacto, vigencia y alcance                                     | un vínculo conocido no concede acceso                         |
+| `RESTAURAR`           | reconstruir una copia o conjunto autorizado                                | autoridad técnica, ambiente aislado/permitido y control de acceso posterior | restore no concede lectura masiva ni recuperación empresarial |
+| `VALIDAR`             | comprobar integridad, completitud o resultado autorizado                   | método y evidencia definidos                                                | validar técnicamente no aprueba el proceso empresarial        |
+| `ANULAR`              | marcar folio, formulario o registro como no utilizable sin borrar historia | razón, actor y referencia conservados                                       | anular no libera el identificador para reutilización          |
+| `ELIMINAR_O_DISPONER` | ejecutar una disposición ya autorizada por el gobierno propietario         | retención/hold, autoridad, evidencia y alcance resueltos                    | continuidad no crea una facultad de borrado por urgencia      |
+
+Estas etiquetas son semántica documental y no crean claves de permiso nuevas.
+
+---
+
+#### 7. Protección de respaldos
+
+`CONT-DOM-011` conserva inventario, cobertura, frecuencia, retención, cifrado, separación de dominio de falla, inmutabilidad, monitoreo y restaurabilidad. Esta tarea protege el acceso y la exposición.
+
+##### 7.1. Capacidades separadas
+
+Para un respaldo o cadena recuperable deberán distinguirse, como mínimo:
+
+- inventariar o consultar estado;
+- configurar política;
+- ejecutar copia;
+- leer contenido;
+- seleccionar punto recuperable;
+- restaurar;
+- validar integridad;
+- promover el resultado restaurado;
+- transferir o replicar a otro dominio autorizado;
+- eliminar o expirar conforme a política.
+
+Ninguna capacidad implica las demás.
+
+##### 7.2. Reglas obligatorias
+
+1. conocer que existe un backup no concede acceso a su contenido;
+2. administrar el job no concede leer los datos copiados;
+3. restaurar en un ambiente autorizado no concede exportar o navegar datos fuera de finalidad;
+4. validar integridad puede utilizar hashes, conteos o metadatos suficientes sin abrir contenido cuando el método lo permita;
+5. las copias de configuración conservan referencias de secreto y no valores completos;
+6. una copia que contenga material sensible accidental se trata según la clasificación real del contenido, no según el nombre del archivo;
+7. el acceso de emergencia a una copia sigue el contrato de `CONT-AUTH-002` y la autorización de información aplicable;
+8. un proveedor de backup no recibe por contrato comercial derecho a conocer el contenido;
+9. el restore de Auth, configuración o datos no reactiva sesiones, permisos, dispositivos o excepciones revocados;
+10. una prueba de restauración conserva ambiente, actor, datos usados, finalidad, evidencia y disposición posterior.
+
+##### 7.3. Línea base heredada sin reinterpretación
+
+Se conserva la evidencia actual ya inventariada por `CONT-DOM-011`:
+
+- Storage observado con **14 buckets**, **1101 objetos** y **750891333 bytes** en la fotografía técnica heredada;
+- **24 Edge Functions** activas observadas, con reconstrucción completa pendiente de evidencia;
+- **7 jobs pg_cron** activos observados;
+- esquema `vault` presente sin reproducir ni inventariar valores secretos;
+- managed backup y PITR sin visibilidad suficiente en la lectura autorizada disponible;
+- al menos una definición cron con material de autenticación embebido, cuyo valor sensible no se reproduce y cuya copia segura permanece bloqueada hasta separar configuración recuperable y secreto.
+
+Esta tarea no reabre esos objetos ni convierte su existencia en cobertura o acceso demostrado.
+
+---
+
+#### 8. Protección de runbooks
+
+Un runbook es una instrucción versionada de recuperación; no es un paquete de privilegios.
+
+##### 8.1. Contenido permitido
+
+Puede incluir, según necesidad:
+
+- identidad y versión del procedimiento;
+- objetivo, alcance y prerequisitos;
+- dependencias y checkpoints;
+- referencias de servicios, recursos y ambientes;
+- pasos técnicos y funcionales autorizados;
+- condiciones de abortado;
+- referencias a mecanismos protegidos de credenciales o llaves;
+- criterios de validación y retorno;
+- handoffs y propietarios funcionales;
+- referencias de evidencia.
+
+No incorpora contraseñas, tokens, códigos de recuperación, claves privadas ni secretos completos.
+
+##### 8.2. Control de distribución
+
+1. el lector debe requerir el runbook por su función y finalidad concreta;
+2. la versión vigente debe ser inequívoca;
+3. una copia offline o impresa conserva versión y clasificación;
+4. una copia retirada o sustituida no se presenta como vigente;
+5. la distribución a proveedor se limita a las secciones necesarias para su alcance;
+6. una persona puede conocer el procedimiento sin tener autoridad para ejecutar las acciones descritas;
+7. los endpoints administrativos, topología sensible y referencias de seguridad se minimizan cuando no son necesarias para la función receptora;
+8. cambios materiales disparan revisión conforme al mantenimiento del plan vigente.
+
+---
+
+#### 9. Protección de contactos
+
+Los contactos de continuidad se gobiernan por **función antes que identidad nominal** cuando la operación lo permita.
+
+##### 9.1. Proyección mínima
+
+| Necesidad                     | Proyección permitida                                                                                 |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------- |
+| localizar una función interna | función, estado de disponibilidad y canal corporativo autorizado cuando sea suficiente               |
+| escalar a responsable nominal | identidad mínima y canal necesario para el incidente                                                 |
+| contactar proveedor           | organización/servicio, referencia de soporte, persona o canal solo cuando sea necesario y autorizado |
+| informar a cliente o tercero  | canal y destinatario definidos por el proceso propietario; no se expone el directorio interno        |
+| coordinar autoridad o asesor  | referencia del expediente y contacto estrictamente necesario conforme al dominio propietario         |
+
+##### 9.2. Reglas obligatorias
+
+1. nombre, teléfono, correo y otros datos personales no se duplican en documentos generales si pueden resolverse desde la fuente protegida vigente;
+2. un árbol de comunicación puede conservar funciones y referencias sin publicar datos nominales;
+3. el acceso a contactos se limita por audiencia, incidente, finalidad y relación;
+4. un proveedor no recibe contactos de otros proveedores o trabajadores por conveniencia;
+5. un trabajador no recibe un directorio completo por participar en una contingencia;
+6. los datos de contacto no se reutilizan para fines comerciales, laborales o analíticos distintos sin fundamento y autorización propios;
+7. una lista exportada o impresa mantiene protección y debe retirarse o disponerse conforme al gobierno aplicable;
+8. la falta de respuesta se escala sin ampliar automáticamente la audiencia ni revelar más información;
+9. el estado de un contacto no se presenta como autoridad empresarial por el solo hecho de estar disponible.
+
+---
+
+#### 10. Protección de evidencia
+
+La evidencia de continuidad debe preservar integridad, contexto y cadena de custodia sin convertirse en un repositorio de datos excesivos.
+
+##### 10.1. Regla raíz
+
+```text
+EVIDENCIA ORIGINAL
++
+IDENTIDAD Y ORIGEN
++
+CLASIFICACION
++
+INTEGRIDAD
++
+CONTEXTO Y VERSION
++
+CUSTODIA
++
+ACCESO MINIMO
++
+HISTORIA DE DERIVACIONES
+=
+EVIDENCIA UTILIZABLE SIN PERDER PROTECCION
+```
+
+##### 10.2. Invariantes
+
+1. el original no se sobrescribe para incorporar una interpretación posterior;
+2. una corrección, anotación o conclusión referencia el original;
+3. una fotografía o captura no elimina la custodia del original físico;
+4. un hash demuestra integridad únicamente dentro de su método y no concede autorización sobre el contenido;
+5. la miniatura, transcripción o resumen no se clasifica automáticamente como menos sensible;
+6. obtener una copia de evidencia no concede derecho a compartirla;
+7. exportar evidencia exige destinatario y finalidad propios;
+8. el actor que produjo una evidencia no obtiene control exclusivo sobre su validación o preservación;
+9. una investigación o legal hold aplicable prevalece sobre una disposición ordinaria;
+10. las denegaciones, abortos, resultados inciertos y fallos de recuperación también son evidencia y no se omiten para mejorar el resultado;
+11. la evidencia de ejercicio se distingue de la evidencia de operación real;
+12. una captura con secreto o dato excesivo se contiene y trata como incidente de exposición, no se normaliza como evidencia aceptable.
+
+---
+
+#### 11. Protección de formularios, folios y medios de captura
+
+`CONT-DOM-009` conserva la identidad y la cadena de custodia del trabajo contingente. Esta tarea añade el control de acceso y exposición.
+
+##### 11.1. Identidades que permanecen separadas
+
+```text
+REFERENCIA DE INCIDENTE
+≠
+FOLIO DE CONTINGENCIA
+≠
+local_operation_id
+≠
+idempotency_key
+≠
+evidence_ref
+≠
+REFERENCIA EMPRESARIAL DEFINITIVA
+```
+
+##### 11.2. Reglas de formulario y folio
+
+1. el medio solo captura los campos mínimos aprobados para la modalidad;
+2. la versión del formulario debe ser identificable;
+3. el folio es estable y no reutilizable;
+4. un folio anulado conserva razón, actor y relación con el inventario;
+5. los folios no usados permanecen bajo control y no se consideran trabajo ejecutado;
+6. las páginas adicionales permanecen ligadas al folio principal;
+7. una corrección conserva el valor anterior según el mecanismo aprobado;
+8. la posesión de formularios o rangos no concede autorización para registrar una operación fuera del turno, sede, área, recurso o finalidad aplicables;
+9. una firma o fotografía se solicita únicamente cuando el proceso la requiere y conserva su sensibilidad propia;
+10. no se utiliza un medio improvisado inseguro porque el medio preferido esté indisponible;
+11. un formulario físico no se fotografía y abandona sin conservar la custodia que corresponda;
+12. una copia digital de un formulario no confirma que el original haya sido incorporado a la fuente empresarial.
+
+##### 11.3. Estado físico vigente
+
+La línea base se conserva sin inventar materializaciones:
+
+```text
+FORMULARIOS PRODUCTIVOS IMPLEMENTADOS = 0
+RANGOS FISICOS REALMENTE EMITIDOS = 0
+REGISTROS DE CONTINGENCIA EJECUTADOS POR ESTA TAREA = 0
+```
+
+La disponibilidad física, stock, cifrado local, emisión de rangos y prueba en estación permanecen pendientes de evidencia en sus propietarios ya asignados.
+
+---
+
+#### 12. Protección de datos de contingencia
+
+Los datos producidos durante una falla son temporales respecto de su incorporación, pero no pierden clasificación ni controles.
+
+##### 12.1. Datos mínimos comunes
+
+Cuando el contrato propietario los requiera, se preservan por referencia o captura mínima dimensiones como:
+
+- servicio y estrategia;
+- tipo y referencia del registro fuente;
+- folio de contingencia;
+- `local_operation_id`;
+- `idempotency_key`;
+- hash de payload cuando aplique;
+- principal y actor;
+- contexto original;
+- turno y check-in cuando apliquen;
+- recursos y versiones observadas;
+- referencia del sobre de autorización;
+- secuencia;
+- fuente y versión;
+- hora real observada;
+- referencias de evidencia.
+
+La presencia de estos campos en el contrato no autoriza a capturarlos si una modalidad o finalidad concreta no los necesita.
+
+##### 12.2. Aislamiento y minimización
+
+1. el almacenamiento local no mezcla actores o contextos sin un contrato que preserve separación;
+2. un dispositivo compartido no expone el trabajo pendiente de un actor al siguiente trabajador;
+3. la sede o área del dispositivo no reemplaza el territorio real del recurso;
+4. los datos de otras sedes o áreas no se copian “por si acaso” durante una falla;
+5. una operación offline conserva actor y hora real diferenciados de la hora de sincronización;
+6. un dato sensible no se almacena localmente si el modo autorizado no dispone de protección compatible;
+7. secretos y tokens no se incorporan al payload de contingencia como mecanismo de recuperación;
+8. una copia local no se conserva indefinidamente después de incorporación únicamente por conveniencia;
+9. la disposición posterior respeta retención, evidencia, investigación y confirmación de incorporación;
+10. un borrador local no se presenta al usuario como efecto empresarial confirmado.
+
+##### 12.3. Reincorporación
+
+La recuperación de conectividad no transforma el trabajo pendiente en una escritura autorizada automática.
+
+Antes del efecto se reevalúan:
+
+- identidad y actor;
+- autorización vigente;
+- recurso y estado actual;
+- idempotencia;
+- duplicados;
+- conflictos;
+- vigencia de la operación;
+- evidencia y secuencia;
+- efectos parciales o resultados externos inciertos.
+
+La lógica de reincorporación y conciliación permanece en `CONT-DOM-010` y `CONT-INT-004`.
+
+---
+
+#### 13. Funciones de continuidad y proyección mínima
+
+Las funciones siguientes describen necesidades típicas, **no permisos**. Toda acción continúa sujeta a la decisión canónica exacta.
+
+| Función                          | Información mínima normalmente necesaria                                                                                       | Información que no obtiene por la función                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `RESPONSABLE_DE_CONTINUIDAD`     | estado, impacto, decisiones, pendientes, referencias de evidencia, contactos funcionales y versiones necesarias para coordinar | secretos, contenido completo de respaldos, expedientes sensibles ajenos o directorios completos     |
+| `CONTINUADOR_DE_CONTINUIDAD`     | misma proyección de mando únicamente durante sustitución efectiva y dentro del alcance delegado                                | acceso adicional por ser sustituto o información fuera del alcance del relevo                       |
+| `RESPONSABLE_DEL_PROCESO`        | datos y evidencia necesarios para validar su resultado empresarial y pendientes propios                                        | contenido técnico o de otros procesos sin necesidad y autorización                                  |
+| `COORDINACION_DE_OPERACIONES`    | estado operativo, recursos, tareas, contactos funcionales y registros del alcance coordinado                                   | datos personales o secretos no necesarios para coordinar                                            |
+| `RESPONSABLE_TECNOLOGICO`        | runbooks, health, dependencias, metadata de backup y evidencia técnica necesaria                                               | acceso universal a datos empresariales o información personal por ser técnico                       |
+| `CUSTODIO_DOCUMENTAL`            | metadata, clasificación, retención, custodia, integridad y referencias necesarias                                              | lectura sustantiva ilimitada cuando la custodia puede ejercerse sin ella                            |
+| función de seguridad/privacidad  | información necesaria para evaluar exposición, control, incidente o excepción de su ámbito                                     | acceso transversal a expedientes no relacionados                                                    |
+| `GERENCIA_O_SUPERVISION_DE_SEDE` | impacto, estado, acciones y contactos necesarios del territorio autorizado                                                     | información de otras sedes o detalle técnico no necesario                                           |
+| `EQUIPO_OPERATIVO_DEL_AREA`      | instrucciones, formulario o datos mínimos para ejecutar la contingencia aprobada                                               | directorios, backups, secretos, investigación o evidencia fuera de su tarea                         |
+| proveedor o tercero              | runbook parcial, referencia de caso, recurso, síntomas y evidencia estrictamente necesarios                                    | directorio interno, secretos de otros dominios, datos completos del proceso o autoridad empresarial |
+
+La función permite justificar necesidad; el permiso, alcance, recurso y contexto determinan la autorización.
+
+---
+
+#### 14. Acceso de emergencia a información sensible
+
+Se consumen conjuntamente `CONT-AUTH-002` e `INFO-AUTH-004`.
+
+Una concesión de acceso de emergencia a información debe conservar, como mínimo:
+
+- referencia única de la concesión;
+- actor y autoridad;
+- razón y justificación;
+- incidente, recuperación, investigación o caso correlacionado;
+- acción exacta;
+- objeto o colección exactos;
+- clasificación y finalidad;
+- alcance y campos permitidos;
+- inicio y expiración;
+- destinatario/destino cuando exista salida;
+- decisión y razones;
+- evidencia de uso;
+- revocación o cierre del acceso;
+- revisión posterior aplicable.
+
+Reglas:
+
+1. la concesión no se expresa como rol permanente ni permiso general;
+2. la activación de continuidad no crea la concesión;
+3. una concesión de break-glass técnico no implica autorización de lectura;
+4. extender el acceso exige autoridad y justificación vigentes;
+5. no existe renovación silenciosa;
+6. revocar conserva auditoría y evidencia del uso;
+7. un actor investigado no utiliza la emergencia para alterar evidencia relacionada consigo mismo;
+8. la emergencia nunca permite borrar auditoría, investigación o evidencia preservada;
+9. los resultados de una consulta de emergencia siguen sujetos a minimización y salida controlada.
+
+---
+
+#### 15. Obtención de copia, exportación, impresión, compartición y canales
+
+Toda salida crea una nueva superficie de exposición y debe conservar protección.
+
+##### 15.1. Controles mínimos
+
+Antes de producir una salida se resuelven:
+
+- actor;
+- acción de salida exacta;
+- fuente;
+- clasificación;
+- finalidad;
+- destinatario;
+- campos y periodo;
+- volumen;
+- formato;
+- destino o canal;
+- protección en tránsito y reposo aplicable;
+- expiración o retiro cuando corresponda;
+- evidencia de emisión/entrega;
+- restricciones de reenvío o redistribución cuando procedan.
+
+##### 15.2. Prohibiciones
+
+- exportar el universo completo cuando basta una proyección;
+- imprimir información sensible en una impresora o ubicación no gobernada;
+- usar mensajería personal para evitar un control del canal aprobado;
+- enviar capturas con secretos o datos no necesarios;
+- publicar listas nominales de contacto en una superficie amplia;
+- compartir un backup o runbook completo con un proveedor cuando basta un fragmento;
+- convertir una URL temporal en enlace permanente por reenvío;
+- usar un error o resultado de búsqueda para confirmar la existencia de un objeto no autorizado.
+
+La salida queda sujeta al gobierno de información y a la comunicación de crisis aplicable.
+
+---
+
+#### 16. Copias físicas, offline y dispositivos compartidos
+
+1. una copia física conserva clasificación, versión, custodio y condición de retiro;
+2. dejar una hoja visible en una estación compartida no constituye custodia aceptable;
+3. un dispositivo compartido debe impedir que el siguiente actor herede datos, archivos, previews o formularios del anterior;
+4. un archivo local de contingencia no se considera protegido solo por estar dentro de una aplicación;
+5. cifrado, bloqueo y almacenamiento técnico deben corresponder a la sensibilidad del contenido y al mecanismo aprobado;
+6. una copia offline retirada de uso debe quedar invalidada como versión operativa y disponerse según la política aplicable;
+7. una fotografía tomada para evidencia no se mantiene en galerías, chats o servicios personales no autorizados;
+8. una impresora o scanner no adquiere autoridad por estar dentro de la sede;
+9. el traslado físico entre custodios registra entrega y recepción cuando la sensibilidad o medio lo requieren;
+10. la pérdida de un medio físico o dispositivo con datos contingentes se trata como evento de seguridad/privacidad y continuidad, no como simple faltante operativo.
+
+---
+
+#### 17. Frescura, versiones y mantenimiento
+
+Los objetos de continuidad pueden volverse inseguros por obsolescencia aunque no cambie su clasificación.
+
+Disparan revisión, según el objeto:
+
+- cambio de persona, función, vínculo o contacto;
+- cambio de proveedor o canal;
+- cambio de aplicación, ambiente, recurso o endpoint administrativo;
+- cambio de clasificación o finalidad;
+- cambio de runbook, estrategia o dependencia;
+- cambio de política de backup o mecanismo de recuperación;
+- cambio de formulario, campos, folio, impresión o medio local;
+- hallazgo de ejercicio o incidente;
+- exposición de información;
+- cambio de retención, hold o requisito regulatorio;
+- sustitución de secreto, certificado o llave referenciada;
+- vencimiento de una revisión basada en riesgo.
+
+Una versión nueva no reescribe qué versión fue utilizada durante un incidente o ejercicio anterior.
+
+Los contactos y runbooks no se consideran vigentes por existir; deben conservar evidencia de revisión conforme al mantenimiento definido por `CONT-DOM-015`.
+
+---
+
+#### 18. Estado documental y AS-IS reconciliado
+
+| Materia                                          | Evidencia canónica actual                                                                 | Estado posterior a esta tarea                                     | Condición de salida                                                          |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| gobierno de acceso a las seis familias           | reglas de continuidad, autorización e información vigentes                                | `ESPECIFICADO`                                                    | implementación posterior bajo paquetes propietarios                          |
+| clasificación y finalidad corporativas           | gobierno INFO aprobado                                                                    | `ESPECIFICADO` y reutilizado                                      | no se crea clasificación paralela                                            |
+| política de seguridad de respaldos               | `CONT-DOM-011` definida                                                                   | `ESPECIFICADO` documentalmente                                    | controles físicos y pruebas según propietarios técnicos                      |
+| acceso real al contenido de backups              | no se acredita inventario completo de actores/capacidades productivas en esta tarea       | `PENDIENTE_DE_EVIDENCIA`                                          | bindings reales, permisos, ambientes y pruebas de acceso mínimo              |
+| managed backup / PITR                            | visibilidad insuficiente en la lectura autorizada heredada                                | `PENDIENTE_DE_EVIDENCIA`                                          | configuración, alcance y prueba acreditados por fuente propietaria           |
+| material sensible embebido en configuración cron | evidencia heredada de al menos una definición con material sensible, valor no reproducido | `BLOQUEADO` para copia segura mientras no exista separación       | separar secreto de configuración recuperable y probar el mecanismo protegido |
+| Vault/secretos                                   | esquema observado sin inventario de valores reproducido                                   | `PENDIENTE_DE_EVIDENCIA`                                          | inventario protegido y mecanismo de recuperación autorizado                  |
+| runbooks                                         | contrato de recuperación definido; vigencia física depende de instancias y evidencia      | `ESPECIFICADO`; instancias reales `PENDIENTE_DE_EVIDENCIA`        | versiones publicadas, accesibles a funciones correctas y probadas            |
+| contactos de continuidad                         | modelo funcional definido; datos nominales no se duplican en el plan                      | `ESPECIFICADO`; instancias reales dependen de fuentes protegidas  | contactos vigentes, revisados y resolubles en ejercicio/incidente autorizado |
+| evidencia de contingencia                        | contrato documental y referencias definidos                                               | `ESPECIFICADO`; persistencia transversal `PENDIENTE_DE_EVIDENCIA` | arquitectura EVID y consumidoras implementadas/probadas                      |
+| formularios productivos                          | línea base heredada: cero formatos productivos materializados por continuidad             | `PENDIENTE_DE_EVIDENCIA`                                          | formato consumible, inventario y prueba en estación por paquete propietario  |
+| rangos físicos de folios                         | línea base heredada: cero rangos realmente emitidos                                       | `PENDIENTE_DE_EVIDENCIA`                                          | rangos emitidos, inventariados, custodiados y probados                       |
+| datos locales/offline                            | contratos de identidad, aislamiento y reincorporación definidos                           | `PENDIENTE_DE_EVIDENCIA` por paquete/dispositivo                  | almacenamiento, cifrado, reautorización y prueba de reinicio/reconexión      |
+| acceso de emergencia a información               | contrato INFO y break-glass vigente                                                       | `ESPECIFICADO`; ejecución real no creada aquí                     | implementación y evidencia de concesión/revocación en ambiente autorizado    |
+| exposición real causada por esta tarea           | ninguna                                                                                   | `NO_EJECUTADO_POR_ESTA_TAREA`                                     | no aplica a cierre documental                                                |
+
+La ausencia de evidencia de una instancia no se interpreta como inexistencia física; únicamente impide declararla implementada o validada.
+
+---
+
+#### 19. Tratamiento de `H-CAP-SCOPE-018-032`
+
+Hallazgo:
+
+`H-CAP-SCOPE-018-032 — Información sensible del incidente puede divulgarse indebidamente.`
+
+Tratamiento materializado:
+
+- la información del incidente conserva clasificación y finalidad;
+- el mando no obtiene lectura universal;
+- cada acción y salida exige autorización propia;
+- el expediente transversal usa referencias y proyecciones mínimas cuando la fuente propietaria puede conservar el contenido;
+- contactos nominales se revelan solo cuando la función y finalidad lo requieren;
+- backups, runbooks, evidencia, formularios y datos contingentes conservan control por objeto y acción;
+- URLs, archivos conocidos, búsquedas, buckets, dispositivos, copias o posesión física no otorgan acceso;
+- canales alternos no amplían audiencia;
+- exportaciones, impresiones y comparticiones limitan destinatario, campos, periodo y volumen;
+- secretos completos no se incorporan a la documentación operativa;
+- el acceso de emergencia es temporal, mínimo, justificado, auditado y revocable;
+- una evidencia o copia derivada no pierde protección por cambiar de formato;
+- una exposición accidental se contiene, preserva como evidencia y se deriva al propietario correspondiente.
+
+**Estado documental:** `ESPECIFICADO`; implementación física, bindings reales y evidencia operativa permanecen en los propietarios técnicos y paquetes autorizados.
+
+---
+
+#### 20. Fronteras y handoffs obligatorios
+
+| Materia fuera del resultado físico de esta tarea                                         | Propietario                                          | Condición de salida                                                      |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------ |
+| acceso técnico extraordinario, break-glass, credenciales, llaves y revocación            | `CONT-AUTH-002`                                      | antes de liberar privilegio o material de recuperación real              |
+| separación entre ejecución, validación, reincorporación, conciliación, cierre y revisión | `CONT-AUTH-004`                                      | antes de certificar cierre operacional                                   |
+| inventario, frecuencia, retención, cifrado y cobertura de respaldos                      | `CONT-DOM-011`                                       | antes de afirmar cobertura recuperable                                   |
+| restore, runbook técnico, failover, failback y validación funcional                      | `CONT-DOM-012`                                       | antes de ejecutar recuperación real                                      |
+| formularios, folios, identidad y custodia de trabajo contingente                         | `CONT-DOM-009` y paquetes propietarios               | antes de operar un medio productivo                                      |
+| reincorporación, conflicto e idempotencia                                                | `CONT-DOM-010`, `CONT-INT-004`                       | antes de convertir trabajo contingente en hecho empresarial              |
+| clasificación, privacidad, retención, auditoría e investigación                          | BLOQUE AA y gobierno documental vigente              | antes de abrir, exportar, preservar o disponer información según el caso |
+| persistencia y enlace de evidencia                                                       | `EVID-ARC-001` a `EVID-ARC-010` y paquete consumidor | antes de declarar evidencia transversal materializada                    |
+| experiencia de ejecución de runbooks                                                     | `CONT-UX-003`                                        | antes de implementar guía interactiva por función/proceso/sede           |
+| captura y reincorporación                                                                | `CONT-UX-004`                                        | antes de implementar experiencia de medios contingentes                  |
+| seguimiento de backup/restore                                                            | `CONT-UX-005`                                        | antes de implementar superficie de estado y pendientes                   |
+| comunicaciones y contactos                                                               | `CONT-UX-006`                                        | antes de implementar plantillas y canales de crisis                      |
+| ejercicios y readiness                                                                   | `CONT-DOM-014`, `CONT-UX-007`, BLOQUE U              | antes de declarar protección ejecutable y vigente                        |
+
+No queda un pendiente material identificado por esta tarea sin propietario y condición de salida.
+
+---
+
+#### 21. Cobertura vigente de prueba
+
+La conducta protegida ya dispone de cobertura canónica suficiente:
+
+- el requisito de incidentes de continuidad ya protege responsables, decisiones, comunicaciones, autoridad, cronología y exposición sensible;
+- el requisito de contingencia ya exige datos mínimos, formularios o identificadores controlados, vigencia, custodia y seguridad sin segunda fuente de verdad;
+- el requisito de respaldos ya exige inventario, cifrado, acceso mínimo, separación de falla, integridad, restauración y recuperación segura de secretos;
+- el requisito de reincorporación ya exige origen, actor, tiempo real, versión, evidencia, secuencia, conflictos y conciliación;
+- el requisito de ejercicios ya exige seguridad, evidencia, pendientes, actualización de contactos/runbooks y readiness vigente;
+- la autorización transversal ya impide bypass por interfaz, URL, API o RPC y exige evidencia correlacionable de cada decisión;
+- el gobierno SHELL de información ya protege consulta, búsqueda, impresión, exportación, compartición, clasificación, finalidad, recurso, destinatario y acceso extraordinario mínimo;
+- el gobierno de información ya protege auditoría, investigaciones, logs, evidencia preservada y acceso de emergencia sin privilegio permanente.
+
+`CONT-AUTH-003` materializa esas reglas para las seis familias de continuidad sin introducir una conducta protegida distinta.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para continuidad controles ya registrados sobre autorización por acción y recurso, minimización, custodia, seguridad de medios contingentes, acceso a respaldos, protección de evidencia, salidas de información, acceso extraordinario temporal y auditoría. No introduce una conducta verificable nueva fuera de esa cobertura ni cambia el significado de un requisito vigente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 22. Estados documentales de cierre
+
+| Materia                                              | Estado                                                                      |
+| ---------------------------------------------------- | --------------------------------------------------------------------------- |
+| protección transversal de las seis familias          | `ESPECIFICADO`                                                              |
+| separación custodia / lectura / salida / eliminación | `ESPECIFICADO`                                                              |
+| protección de respaldos                              | `ESPECIFICADO`; bindings reales `PENDIENTE_DE_EVIDENCIA`                    |
+| protección de runbooks                               | `ESPECIFICADO`; distribución real `PENDIENTE_DE_EVIDENCIA`                  |
+| protección de contactos                              | `ESPECIFICADO`; disponibilidad nominal real depende de fuentes propietarias |
+| protección de evidencia                              | `ESPECIFICADO`; persistencia transversal `PENDIENTE_DE_EVIDENCIA`           |
+| protección de formularios y folios                   | `ESPECIFICADO`; materialización física `PENDIENTE_DE_EVIDENCIA`             |
+| protección de datos contingentes                     | `ESPECIFICADO`; almacenamiento por paquete `PENDIENTE_DE_EVIDENCIA`         |
+| material sensible embebido en configuración cron     | `BLOQUEADO` para copia segura hasta separación                              |
+| acceso de emergencia a información                   | `ESPECIFICADO`; ejecución real no creada por esta tarea                     |
+| `H-CAP-SCOPE-018-032`                                | `ESPECIFICADO` documentalmente                                              |
+| implementación física                                | `PENDIENTE_DE_EVIDENCIA`; no autorizada en esta fase                        |
+| incidentes, restores o ejercicios reales ejecutados  | `NO_EJECUTADO_POR_ESTA_TAREA`                                               |
+
+---
+
+#### 23. Criterios de aceptación
+
+1. La tarea conserva `CONT-AUTH-002` como anterior aprobada.
+2. La tarea reserva únicamente `CONT-AUTH-004` como siguiente.
+3. La tarea permanece exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No crea código, migraciones, DDL, DML, RLS, RPC, datos ni configuración.
+5. No abre ni modifica respaldos reales.
+6. No ejecuta restore.
+7. No ejecuta failover ni failback.
+8. No recupera secretos reales.
+9. No publica contactos reales.
+10. No crea formularios productivos.
+11. No emite rangos físicos de folios.
+12. No ejecuta captura real de contingencia.
+13. No declara readiness operativo.
+14. Se protegen exactamente seis familias de objeto.
+15. Las seis familias conservan sus propietarios originales.
+16. Continuidad no crea una biblioteca paralela de información.
+17. Custodia permanece distinta de lectura.
+18. Lectura permanece distinta de modificación.
+19. Lectura permanece distinta de exportación.
+20. Lectura permanece distinta de compartición.
+21. Lectura permanece distinta de impresión.
+22. Custodia permanece distinta de eliminación.
+23. Conocer la ubicación de un objeto no concede su contenido.
+24. Conocer un identificador no concede el recurso.
+25. Una URL firmada no sustituye autorización.
+26. Un archivo conocido no sustituye autorización.
+27. Un bucket conocido no sustituye autorización.
+28. Una búsqueda no puede enumerar información sensible a actor no autorizado.
+29. Un mensaje de error no revela contenido sensible innecesario.
+30. La urgencia no rebaja clasificación.
+31. La urgencia no elimina finalidad.
+32. La urgencia no amplía territorio.
+33. La urgencia no crea permiso.
+34. El mando no obtiene lectura universal.
+35. Break-glass técnico no concede lectura universal.
+36. Cada acción protegida se resuelve por separado.
+37. La acción exacta conserva recurso exacto.
+38. La acción exacta conserva actor efectivo.
+39. La acción exacta conserva finalidad.
+40. La acción exacta conserva clasificación.
+41. La acción exacta conserva estado y versión.
+42. La acción exacta conserva destinatario cuando existe salida.
+43. La acción exacta conserva política de campos.
+44. Las denegaciones aplicables continúan prevaleciendo.
+45. Un valor desconocido no significa alcance global.
+46. Un valor ambiguo no significa acceso permitido.
+47. Un valor conflictivo bloquea el efecto protegido.
+48. La metadata sensible recibe protección propia.
+49. Consultar metadata no concede contenido.
+50. Leer contenido no concede modificarlo.
+51. Crear un registro no confirma efecto empresarial.
+52. Modificar un objeto no permite alterar un original preservado.
+53. Custodiar no concede uso para otra finalidad.
+54. Transferir exige destinatario y canal autorizados.
+55. Imprimir exige destino físico autorizado.
+56. Exportar exige capacidad de salida propia.
+57. Compartir exige destinatario y alcance explícitos.
+58. Restaurar no concede navegación masiva de datos.
+59. Validar técnicamente no declara recuperación empresarial.
+60. Anular un folio no libera su identidad para reutilización.
+61. Eliminar o disponer exige autoridad del gobierno propietario.
+62. Administrar un job de backup no concede leer el backup.
+63. Ejecutar una copia no concede restaurarla.
+64. Restaurar una copia no concede promoverla.
+65. Promover una restauración no declara recuperación empresarial.
+66. La validación de integridad minimiza contenido cuando el método lo permite.
+67. Configuración recuperable y secreto permanecen separados.
+68. Un manifiesto no contiene secretos completos.
+69. Un runbook no contiene contraseñas completas.
+70. Un runbook no contiene tokens completos.
+71. Un runbook no contiene códigos de recuperación completos.
+72. Un runbook no contiene claves privadas completas.
+73. Un runbook legible no concede autoridad de ejecución.
+74. Una copia offline de runbook conserva versión.
+75. Una copia offline de runbook conserva clasificación.
+76. Una versión sustituida no se presenta como vigente.
+77. Un proveedor recibe solo la sección del runbook necesaria.
+78. El contacto se representa por función cuando la identidad nominal no es necesaria.
+79. Un contacto nominal solo se expone cuando la finalidad lo requiere.
+80. Una lista de contactos no se convierte en directorio general.
+81. Participar en un incidente no concede directorio completo.
+82. Un proveedor no recibe contactos ajenos por conveniencia.
+83. Los datos de contacto no se reutilizan para otra finalidad por inferencia.
+84. Una lista física de contactos conserva protección.
+85. Una lista exportada de contactos conserva protección.
+86. Falta de respuesta no amplía automáticamente audiencia.
+87. La disponibilidad de un contacto no crea autoridad empresarial.
+88. La evidencia original se preserva.
+89. Una corrección referencia el original.
+90. Una anotación posterior no reescribe el hecho original.
+91. Fotografiar un original no elimina su custodia.
+92. Un hash no concede acceso al contenido.
+93. Una transcripción conserva protección derivada.
+94. Un resumen conserva protección suficiente según su contenido.
+95. Obtener una copia de evidencia no concede compartirla.
+96. Exportar evidencia exige destinatario y finalidad.
+97. El productor de evidencia no obtiene control exclusivo sobre su validación.
+98. Un hold o investigación aplicable bloquea disposición ordinaria.
+99. Una denegación también se conserva como evidencia cuando corresponde.
+100. Un ejercicio abortado conserva evidencia del abortado.
+101. Evidencia de ejercicio se distingue de evidencia real.
+102. Una captura con secreto no se normaliza como evidencia aceptable.
+103. El folio permanece distinto de la referencia de incidente.
+104. El folio permanece distinto de `local_operation_id`.
+105. El folio permanece distinto de `idempotency_key`.
+106. `evidence_ref` permanece distinto del identificador de trabajo.
+107. La referencia empresarial definitiva aparece solo cuando el dominio propietario confirma el hecho.
+108. Un receipt externo no se inventa.
+109. El formulario conserva versión identificable.
+110. El folio es estable.
+111. El folio no se reutiliza.
+112. La anulación de folio conserva razón y actor.
+113. Los folios no usados permanecen controlados.
+114. Las páginas adicionales quedan ligadas al folio principal.
+115. Las correcciones conservan el dato anterior según el mecanismo aprobado.
+116. Poseer un formulario no concede autoridad para operar.
+117. Poseer un rango de folios no concede autoridad para operar.
+118. Una firma solo se captura cuando el proceso la requiere.
+119. Una fotografía solo se captura cuando el proceso la requiere.
+120. La indisponibilidad del medio preferido no autoriza un medio inseguro.
+121. Una copia digital no confirma incorporación del original.
+122. Los formularios productivos materializados por esta tarea permanecen en cero.
+123. Los rangos físicos emitidos por esta tarea permanecen en cero.
+124. Los registros de contingencia ejecutados por esta tarea permanecen en cero.
+125. Los datos contingentes no se convierten en fuente empresarial definitiva.
+126. El almacenamiento local conserva aislamiento del actor cuando aplica.
+127. El almacenamiento local conserva aislamiento del dispositivo cuando aplica.
+128. El almacenamiento local conserva aislamiento del contexto cuando aplica.
+129. El almacenamiento local conserva aislamiento territorial cuando aplica.
+130. El siguiente trabajador no hereda datos del actor anterior en dispositivo compartido.
+131. La sede del dispositivo no sustituye el territorio del recurso.
+132. No se copian datos de otras sedes por conveniencia.
+133. `observed_at` no se sustituye por la hora de sincronización.
+134. Un dato sensible no se almacena localmente sin protección compatible.
+135. Un token no se incorpora al payload contingente como mecanismo de recuperación.
+136. Una copia local no se conserva indefinidamente por conveniencia.
+137. La disposición local espera confirmación y reglas de retención aplicables.
+138. Un borrador local no se muestra como efecto confirmado.
+139. La reconexión no ejecuta automáticamente trabajo pendiente.
+140. La reincorporación reevalúa autorización antes del efecto.
+141. La reincorporación conserva idempotencia.
+142. La reincorporación detecta duplicados.
+143. La reincorporación detecta conflictos.
+144. La reincorporación conserva evidencia y secuencia.
+145. Un resultado externo incierto no se repite ciegamente.
+146. La función de continuidad no sustituye permiso.
+147. `RESPONSABLE_DE_CONTINUIDAD` recibe solo la proyección necesaria para coordinar.
+148. `RESPONSABLE_TECNOLOGICO` no obtiene acceso universal por su función.
+149. `CUSTODIO_DOCUMENTAL` no obtiene lectura sustantiva ilimitada por custodiar.
+150. Un proveedor recibe únicamente información necesaria para su intervención.
+151. El acceso de emergencia a información es una concesión concreta y temporal.
+152. Activar continuidad no crea acceso de emergencia a información.
+153. Extender acceso de emergencia exige nueva autoridad y justificación vigente.
+154. Revocar acceso de emergencia conserva evidencia de uso.
+155. La emergencia no permite borrar auditoría o evidencia preservada.
+156. Un actor investigado no usa la emergencia para alterar evidencia relacionada consigo mismo.
+157. Toda salida sensible resuelve fuente y clasificación.
+158. Toda salida sensible resuelve finalidad y destinatario.
+159. Toda salida sensible limita campos, periodo y volumen.
+160. Una impresora accesible no vuelve imprimible cualquier contenido.
+161. Un canal personal no sustituye el canal gobernado por conveniencia.
+162. Una captura no debe transportar datos innecesarios.
+163. Un proveedor no recibe un backup completo cuando basta una proyección.
+164. Un vínculo temporal no se convierte en acceso permanente por reenvío.
+165. Una copia física conserva custodio y condición de retiro.
+166. Una estación compartida no deja información sensible visible al siguiente actor.
+167. Una galería o chat personal no se usa como repositorio de evidencia.
+168. El traslado físico conserva entrega/recepción cuando corresponde.
+169. La pérdida de un medio sensible se trata como evento de seguridad/privacidad y continuidad.
+170. Un cambio de contacto dispara revisión aplicable.
+171. Un cambio de proveedor o canal dispara revisión aplicable.
+172. Un cambio de clasificación o finalidad dispara revisión aplicable.
+173. Un cambio material de runbook dispara revisión aplicable.
+174. Un cambio de mecanismo de backup o recuperación dispara revisión aplicable.
+175. Un cambio de formulario o medio local dispara revisión aplicable.
+176. Un hallazgo de ejercicio o incidente puede disparar revisión.
+177. Una exposición de información dispara revisión.
+178. Una versión nueva no reescribe la versión usada históricamente.
+179. Un contacto no se considera vigente solo por existir.
+180. Un runbook no se considera vigente solo por existir.
+181. La fotografía técnica heredada de Storage no se interpreta como permiso de acceso.
+182. Los 14 buckets heredados no se declaran recuperables por su mera existencia.
+183. Los 24 Edge Functions heredados no se declaran reconstruibles sin evidencia.
+184. Los 7 jobs pg_cron heredados no se declaran seguros por estar definidos.
+185. El esquema `vault` no implica inventario completo de secretos.
+186. Managed backup no se declara ausente ni habilitado sin evidencia.
+187. PITR no se declara ausente ni habilitado sin evidencia.
+188. El material sensible embebido en configuración cron permanece bloqueado para copia segura hasta separación.
+189. `H-CAP-SCOPE-018-032` queda tratado documentalmente.
+190. La implementación física permanece pendiente de la fase autorizada correspondiente.
+191. `CONT-AUTH-004` conserva separación de ejecución, validación, conciliación, cierre y revisión.
+192. `CONT-DOM-011` conserva inventario y política de respaldos.
+193. `CONT-DOM-012` conserva restore, runbooks, failover y retorno.
+194. `CONT-DOM-009` conserva identidad, folios y custodia del trabajo contingente.
+195. `CONT-DOM-010` y `CONT-INT-004` conservan reincorporación y conciliación.
+196. BLOQUE AA conserva clasificación, privacidad, auditoría, retención e investigación.
+197. EVID conserva persistencia y enlace técnico de evidencia.
+198. La tarea no crea un segundo catálogo de permisos.
+199. La tarea no crea una segunda clasificación de información.
+200. La tarea no crea un repositorio paralelo de contactos o evidencia.
+201. La tarea no crea cuentas, roles o credenciales nuevas.
+202. La tarea no inventa identidades nominales de contacto.
+203. La tarea no inventa secretos, tokens o llaves.
+204. La tarea no inventa resultados de restauración.
+205. La tarea no inventa evidencia de ejercicio o incidente real.
+206. La tarea crea cero requisitos de prueba.
+207. La tarea modifica cero requisitos de prueba.
+208. La tarea difiere cero requisitos de prueba.
+209. La tarea descarta cero requisitos de prueba.
+210. La tarea vuelve obsoletos cero requisitos de prueba.
+211. No se genera una copia innecesaria del registro canónico de requisitos.
+212. La tarea deja `CONT-AUTH-004` únicamente reservada.
+
+---
+
+#### 24. Balance de cierre
+
+| Control                                    |                         Resultado |
+| ------------------------------------------ | --------------------------------: |
+| familias protegidas                        |                         **6 / 6** |
+| acciones conceptuales diferenciadas        |                            **13** |
+| hallazgo propietario tratado               | **1 / 1** (`H-CAP-SCOPE-018-032`) |
+| formularios productivos creados            |                             **0** |
+| rangos físicos emitidos                    |                             **0** |
+| respaldos abiertos o restaurados           |                             **0** |
+| contactos nominales incorporados           |                             **0** |
+| secretos reproducidos                      |                             **0** |
+| incidentes o ejercicios reales ejecutados  |                             **0** |
+| cambios físicos                            |                             **0** |
+| requisitos de prueba creados o modificados |                             **0** |
+| criterios de aceptación                    |                           **212** |
+
+---
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación`
+
+TAREA ACTUAL APROBADA
+
+`CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior`
+
+
 ### [ ] CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior

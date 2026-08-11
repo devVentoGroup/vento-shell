@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **720** |
+| Tareas aprobadas | **721** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **874** |
+| Tareas no iniciadas | **873** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.17% (720/1594)** |
+| Porcentaje de completamiento | **45.23% (721/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación** |
-| Tarea actual | **CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia** |
+| Última tarea aprobada | **CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia** |
+| Tarea actual | **CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior** |
+| Siguiente tarea | **CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 144 de 157 aprobadas; CONT-AUTH-003 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 145 de 157 aprobadas; CONT-AUTH-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-AUTH-002` — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación |
-| Tarea actual | `CONT-AUTH-003` — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia — **NO INICIADA** |
-| Siguiente tarea | `CONT-AUTH-004` — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior |
+| Última aprobada | `CONT-AUTH-003` — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia |
+| Tarea actual | `CONT-AUTH-004` — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior — **NO INICIADA** |
+| Siguiente tarea | `CONT-UX-001` — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 144 DE 157 APROBADAS — ACTUAL CONT-AUTH-003** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 145 DE 157 APROBADAS — ACTUAL CONT-AUTH-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-AUTH-002 — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación
-        ↓
-TAREA ACTUAL
 CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 144 de 157 tareas aprobadas
+CARRIL NEXO — 145 de 157 tareas aprobadas
 ```
