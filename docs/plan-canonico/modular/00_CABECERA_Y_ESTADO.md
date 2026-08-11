@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **683** |
+| Tareas aprobadas | **684** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **911** |
+| Tareas no iniciadas | **910** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **42.85% (683/1594)** |
+| Porcentaje de completamiento | **42.91% (684/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios** |
-| Tarea actual | **DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza** |
+| Última tarea aprobada | **DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza** |
+| Tarea actual | **DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición** |
+| Siguiente tarea | **DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 107 de 157 aprobadas; DATA-DOM-014 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 108 de 157 aprobadas; DATA-DOM-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios |
-| Tarea actual | `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza — **NO INICIADA** |
-| Siguiente tarea | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición |
+| Última aprobada | `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza |
+| Tarea actual | `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición — **NO INICIADA** |
+| Siguiente tarea | `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 107 DE 157 APROBADAS — ACTUAL DATA-DOM-014** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 108 DE 157 APROBADAS — ACTUAL DATA-DOM-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
-        ↓
-TAREA ACTUAL
 DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 107 de 157 tareas aprobadas
+CARRIL NEXO — 108 de 157 tareas aprobadas
 ```

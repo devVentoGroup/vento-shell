@@ -8485,7 +8485,1059 @@ DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunid
 ```
 
 
-### [ ] DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+### ✅ DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios` — APROBADA
+**Tarea siguiente:** `DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de diagnóstico transversal, investigación de variaciones y anomalías, causalidad, oportunidades y confianza
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, backfills, cambios de datos, modelos productivos, automatizaciones, experimentos, despliegues o acciones empresariales:** no autorizados
+
+#### 1. Propósito
+
+Definir cómo Vento OS convierte una señal analítica en una investigación explicable sin confundir variación con anomalía, correlación con causa, hipótesis con conclusión, oportunidad con acción ni confianza metodológica con certificación de datos.
+
+La tarea cierra documentalmente `CAP-17.10 — Identificar problemas y oportunidades` y deberá permitir que cualquier diagnóstico transversal responda, como mínimo:
+
+```text
+qué cambió
+respecto de qué referencia cambió
+cuánto cambió
+qué población, periodo y dimensiones están afectadas
+qué estado de calidad tienen las fuentes
+qué factores candidatos se investigaron
+qué evidencia apoya y contradice cada hipótesis
+qué explicaciones alternativas siguen abiertas
+qué relación temporal existe entre factor y resultado
+qué impacto observado o potencial puede sostenerse
+qué nivel de confianza tiene cada afirmación
+qué lenguaje causal está autorizado
+qué oportunidades quedan identificadas
+quién es propietario de la interpretación empresarial
+qué debe ocurrir antes de convertir la oportunidad en meta, acción o experimento
+```
+
+D014 no crea un motor físico de anomalías, un modelo predictivo, una recomendación automática ni una plataforma de BI. Define el contrato empresarial que esos componentes deberán respetar cuando sean materializados por sus tareas propietarias.
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato diagnóstico transversal con los siguientes resultados:
+
+- las **55 familias analíticas** heredadas de `DATA-DOM-009` a `DATA-DOM-013` quedan preservadas como entradas posibles de investigación: 11 comerciales, 12 de inventario y abastecimiento, 10 productivas, 12 de servicio y clientes y 10 económico-financieras;
+- reconciliación del inventario heredado: **55 esperadas; 55 materializadas; 0 faltantes; 0 duplicadas**;
+- separación canónica entre métrica, señal, variación, anomalía, incidente de calidad, diferencia de reconciliación, hipótesis, diagnóstico, causa, oportunidad, objetivo, acción, experimento y resultado;
+- ruta canónica de investigación desde señal hasta oportunidad sin ejecución automática;
+- ocho patrones diagnósticos permitidos para describir desviaciones sin inventar causalidad;
+- seis niveles canónicos de confianza diagnóstica, desde `NO_EVALUABLE` hasta `EFECTO_COMPROBADO`;
+- ocho dimensiones mínimas de evidencia que condicionan el nivel de confianza;
+- reglas de tope que impiden elevar confianza cuando faltan calidad, comparabilidad, precedencia temporal, evidencia o control de explicaciones alternativas;
+- separación entre calidad/certificación de datos de `DATA-DOM-007` y confianza diagnóstica de esta tarea;
+- reglas explícitas para impacto, oportunidades, priorización, lenguaje causal, modelos estadísticos, BI e inteligencia artificial;
+- cinco rutas de investigación transversal que conectan comercial, inventario, producción, servicio y finanzas sin transferir propiedad de los hechos;
+- handoffs exactos hacia `DATA-DOM-015`, `DATA-DOM-016`, `DATA-DOM-017`, `DATA-UX-005`, `DATA-AUTH-003`, `DATA-AUTH-004` y `DATA-INT-001` a `DATA-INT-004`;
+- cero cambios físicos y cero cambios de requisitos de prueba.
+
+#### 3. Decisión principal
+
+Vento OS adopta un modelo de **diagnóstico trazable por afirmaciones**.
+
+```text
+FUENTE PROPIETARIA
+→ conserva hechos, maestros, eventos y expedientes
+
+CAPA SEMÁNTICA
+→ conserva definición, población, granularidad, dimensiones y versión de métricas
+
+CALIDAD / CERTIFICACIÓN
+→ determina si las entradas son utilizables para la coordenada solicitada
+
+SEÑAL
+→ indica que existe algo que merece observarse o investigar
+
+INVESTIGACIÓN
+→ localiza, compara, segmenta, contrasta y reúne evidencia
+
+HIPÓTESIS
+→ propone una explicación comprobable
+
+DIAGNÓSTICO
+→ registra qué explicación está respaldada, qué alternativas permanecen y con qué confianza
+
+OPORTUNIDAD
+→ expresa un espacio de mejora, protección o captura de valor
+→ no ejecuta una acción
+
+DATA-DOM-015
+→ define objetivos, líneas base, metas, drivers, guardrails y plan de medición
+
+DATA-DOM-016
+→ define acciones, experimentos, responsables, seguimiento y comprobación
+
+DATA-DOM-017
+→ gobierna correcciones históricas, restatements y reproducibilidad
+```
+
+Ningún dashboard, modelo, algoritmo, herramienta BI, hoja de cálculo o sistema de inteligencia artificial adquiere autoridad empresarial por detectar una anomalía o proponer una explicación.
+
+#### 4. Fuentes y decisiones heredadas
+
+D014 consume sin redefinir:
+
+- `DATA-DOM-001` a `DATA-DOM-003` para propiedad, identidad, dimensiones, jerarquías, aliases, vigencias y fuentes de verdad;
+- `DATA-DOM-004` para registro, semántica, fórmula, denominadores, unidad, moneda, calendario, propietario y versión de métricas;
+- `DATA-DOM-005` para granularidad, tiempo, dimensiones, comparabilidad y snapshots analíticos;
+- `DATA-DOM-006` para ingestión, transformación, reconciliación, datos tardíos, backfills y linaje;
+- `DATA-DOM-007` para calidad, frescura, cobertura, integridad, reconciliación y los estados `NO EVALUADO`, `EN OBSERVACIÓN`, `CERTIFICADO`, `DEGRADADO` y `BLOQUEADO`;
+- `DATA-DOM-008` para reportes, tableros, alertas, exportaciones, suscripciones y snapshots;
+- `DATA-DOM-009` para las once familias comerciales;
+- `DATA-DOM-010` para las doce familias de inventario, abastecimiento, proveedores y logística;
+- `DATA-DOM-011` para las diez familias productivas;
+- `DATA-DOM-012` para las doce familias de servicio, clientes, fidelización, reputación y experiencia;
+- `DATA-DOM-013` para las diez familias económico-financieras;
+- `CAP-SCOPE-017` para la obligación de construir diagnóstico transversal, variaciones, anomalías, oportunidades explicables, impacto, confianza, restricciones y ruta de investigación;
+- `TREQ-DATA-005` como protección preexistente de la separación entre señal, diagnóstico, hipótesis, acción, experimento, confianza, aprendizaje y decisión;
+- `DATA-UX-005` como superficie futura de investigación de variaciones, anomalías y causas;
+- `DATA-INT-004` como frontera futura para BI, hojas de cálculo, modelos analíticos e inteligencia artificial.
+
+Las fuentes anteriores conservan sus estados y bloqueos. D014 no convierte una entrada `NO EVALUADO`, `DEGRADADO` o `BLOQUEADO` en información certificada.
+
+#### 5. Fronteras conceptuales obligatorias
+
+```text
+métrica ≠ señal ≠ variación ≠ anomalía
+```
+
+```text
+anomalía de negocio ≠ incidente de calidad de datos
+```
+
+```text
+diferencia de reconciliación ≠ caída de desempeño
+```
+
+```text
+alerta ≠ diagnóstico ≠ recomendación ≠ acción
+```
+
+```text
+correlación ≠ causalidad ≠ hipótesis respaldada ≠ efecto comprobado
+```
+
+```text
+factor candidato ≠ causa principal ≠ causa raíz
+```
+
+```text
+impacto observado ≠ impacto potencial ≠ beneficio realizado
+```
+
+```text
+oportunidad ≠ objetivo ≠ meta ≠ plan ≠ experimento
+```
+
+```text
+confianza diagnóstica ≠ certificación de datos ≠ probabilidad estadística
+```
+
+```text
+explicación generada por modelo ≠ evidencia fuente
+```
+
+```text
+escenario simulado ≠ contrafactual observado ≠ resultado real
+```
+
+```text
+incumplimiento de meta ≠ anomalía estadística
+```
+
+Un mismo hecho puede participar en varias métricas, pero no se tratará como evidencia independiente varias veces por aparecer en distintos agregados derivados.
+
+#### 6. Autoridad funcional y segregación
+
+| Responsabilidad                                | Autoridad o propietario lógico                             | Regla                                                                                    |
+| ---------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| hechos operativos y maestros                   | aplicación propietaria de cada dominio                     | conserva la fuente de verdad; el diagnóstico no reescribe el hecho                       |
+| definición de métrica                          | propietario de la definición + gobierno de BLOQUE AB       | ninguna investigación redefine fórmulas localmente                                       |
+| calidad y certificación de entradas            | steward/certificador conforme a D007 y autorización futura | estado de calidad se consume, no se inventa en el diagnóstico                            |
+| semántica diagnóstica y confianza              | BLOQUE AB                                                  | define contrato común, niveles y lenguaje permitido                                      |
+| interpretación empresarial de una causa        | propietario funcional del dominio afectado                 | valida que la interpretación tenga sentido empresarial y preserve fronteras de propiedad |
+| investigación transversal                      | BLOQUE AB + VISO + propietarios                            | VISO puede alojar el expediente futuro sin adquirir propiedad de hechos                  |
+| publicación de conclusión                      | rol autorizado por `DATA-AUTH-003`                         | investigar no concede permiso para certificar o publicar                                 |
+| auditoría de consultas/modelos/recomendaciones | `DATA-AUTH-004`                                            | toda automatización o consulta sensible conserva trazabilidad                            |
+| objetivo y meta                                | `DATA-DOM-015`                                             | no se fijan por inferencia desde una anomalía                                            |
+| acción o experimento                           | `DATA-DOM-016`                                             | una oportunidad no ejecuta cambios por sí sola                                           |
+
+Un analista, modelo o sistema puede formular una hipótesis. La aprobación de una interpretación empresarial permanece separada de la capacidad técnica para calcularla.
+
+#### 7. Coordenada mínima de todo diagnóstico
+
+Cada conclusión diagnóstica deberá declarar, como mínimo:
+
+| Coordenada            | Contenido obligatorio                                                               |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| objeto investigado    | métrica, hecho, proceso o familia analítica afectada                                |
+| versión semántica     | versión de métrica, fórmula, población e inclusiones/exclusiones                    |
+| periodo y corte       | ventana observada y fecha/hora de corte                                             |
+| granularidad          | unidad de observación y agregación                                                  |
+| dimensiones           | empresa, sede, área, canal, producto, cliente, centro, proveedor u otras aplicables |
+| referencia            | periodo, plan, presupuesto, peer, distribución o modelo contra el que se compara    |
+| fuentes               | hechos y maestros propietarios utilizados                                           |
+| calidad               | estado D007 de cada dependencia crítica                                             |
+| cobertura             | qué población está incluida y qué queda fuera                                       |
+| evidencia             | elementos que apoyan, contradicen o limitan la conclusión                           |
+| factores candidatos   | explicaciones investigadas y relación propuesta                                     |
+| alternativas          | explicaciones plausibles todavía abiertas o descartadas con evidencia               |
+| impacto               | magnitud observada o potencial, unidad y método                                     |
+| confianza             | nivel D014 con justificación y límites                                              |
+| propietario           | función responsable de la interpretación empresarial                                |
+| estado de publicación | exploratorio, interno controlado u oficial según autorización futura                |
+
+Dos diagnósticos no se consideran comparables si difieren materialmente en versión, población, periodo, granularidad, dimensiones, moneda, unidad, referencia o cobertura sin una reconciliación explícita.
+
+#### 8. Inventario heredado: 55 familias disponibles para investigación
+
+Las familias se conservan exactamente con los nombres aprobados en D009 a D013. La columna **Rol diagnóstico** no cambia su semántica; únicamente define cómo puede participar en una investigación.
+
+##### 8.1. Comercial — 11 familias de DATA-DOM-009
+
+|    # | Familia canónica                             | Rol diagnóstico autorizado                      | Límite obligatorio                                                           |
+| ---: | -------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------- |
+|    1 | ventas netas y brutas                        | señal, resultado e impacto comercial            | ingreso o venta no prueba margen ni causa                                    |
+|    2 | pedidos y conversión                         | señal de volumen/funnel y segmentación          | conversión requiere denominador gobernado antes de cuantificar causa         |
+|    3 | ticket y unidades                            | señal de intensidad y mezcla                    | ticket y unidades comparten población solo cuando la definición lo demuestra |
+|    4 | mezcla por producto, categoría, canal y sede | localización de cambio composicional            | cambio de mezcla puede explicar agregados, pero no es causa por sí mismo     |
+|    5 | demanda por franja, día y temporada          | patrón temporal y referencia comparable         | estacionalidad robusta exige cobertura suficiente                            |
+|    6 | disponibilidad perdida                       | factor candidato de demanda no satisfecha       | permanece bloqueada sin intención y disponibilidad reconciliadas             |
+|    7 | cancelaciones, devoluciones y descuentos     | factor, resultado o impacto según el expediente | no colapsar cancelación, devolución y descuento                              |
+|    8 | promociones y efecto incremental             | hipótesis de intervención comercial             | descuento o before/after no prueba promoción ni efecto causal                |
+|    9 | recurrencia y frecuencia                     | comportamiento longitudinal                     | identidad y finalidad autorizadas son requisito previo                       |
+|   10 | margen relacionado                           | impacto económico consumido                     | no recalcular margen fuera de D013                                           |
+|   11 | capacidad comercial no utilizada             | restricción o capacidad candidata               | venta baja no prueba capacidad ociosa                                        |
+
+##### 8.2. Inventario, abastecimiento, proveedores y logística — 12 familias de DATA-DOM-010
+
+|    # | Familia canónica                        | Rol diagnóstico autorizado                                | Límite obligatorio                                                                |
+| ---: | --------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+|    1 | existencia disponible y comprometida    | contexto de disponibilidad y restricción                  | disponible/comprometida global hereda sus bloqueos de fuente                      |
+|    2 | cobertura y días de inventario          | señal de exposición y restricción                         | no existe cobertura sin consumo/demanda compatible                                |
+|    3 | rotación y permanencia                  | señal de movimiento, obsolescencia o capital inmovilizado | requiere historia y cohorte/lote comparables                                      |
+|    4 | faltantes y quiebres                    | evento o factor candidato                                 | stock cero no prueba faltante o quiebre sin necesidad elegible                    |
+|    5 | vencimiento, daño y pérdida             | hecho de pérdida/calidad e impacto                        | causa debe provenir de evidencia explícita, no de diferencia residual             |
+|    6 | diferencias de conteo                   | señal de integridad física/reconciliación                 | diferencia de conteo puede ser causa operativa o síntoma; debe investigarse       |
+|    7 | cumplimiento de remisiones              | señal de cumplimiento interno                             | preparación, despacho, recepción y faltante permanecen separados                  |
+|    8 | lead time y cumplimiento de proveedores | factor temporal y de abastecimiento                       | lead time requiere evento contractual de inicio y recepción aceptada              |
+|    9 | compras urgentes                        | señal de excepción                                        | recepción de emergencia no equivale automáticamente a compra urgente regularizada |
+|   10 | consumo versus plan                     | relación entre consumo real y base planificada            | bloqueado si no existe plan compatible                                            |
+|   11 | costo de inventario                     | impacto económico                                         | valoración oficial consume D013; memoria de costo no es fórmula financiera        |
+|   12 | capacidad de almacenamiento             | restricción física candidata                              | exige denominador físico utilizable y unidad compatible                           |
+
+##### 8.3. Producción, rendimiento, capacidad, merma y calidad — 10 familias de DATA-DOM-011
+
+|    # | Familia canónica                            | Rol diagnóstico autorizado                       | Límite obligatorio                                                         |
+| ---: | ------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+|    1 | demanda planificada versus producción       | señal plan-real y localización de brecha         | señal, pedido o remisión no sustituyen el plan aceptado                    |
+|    2 | capacidad disponible y utilizada            | restricción o factor candidato                   | no mezclar unidades de capacidad sin puente explícito                      |
+|    3 | adherencia al programa                      | señal temporal de ejecución                      | exige programa publicado y versionado                                      |
+|    4 | rendimiento teórico y real                  | señal de rendimiento y posible factor productivo | versión de receta, escala y unidad deben ser comparables                   |
+|    5 | consumo estándar y real                     | variación de consumo por ingrediente             | sustituciones y unidades deben preservarse                                 |
+|    6 | merma, reproceso y aprovechamiento          | pérdida, retrabajo o recuperación observada      | no derivar merma automáticamente de una diferencia de rendimiento          |
+|    7 | calidad, retención y rechazo                | señal/resultado de calidad                       | control, conformidad, retención, rechazo y liberación permanecen separados |
+|    8 | tiempo de ciclo                             | señal temporal y cuello de botella candidato     | requiere hitos reales; una fecha genérica no prueba duración de fases      |
+|    9 | cumplimiento de liberación                  | resultado de calidad/cumplimiento                | producción terminada no equivale a liberada                                |
+|   10 | costo y variación por lote, producto y sede | impacto económico/productivo                     | costo técnico FOGO no se eleva a costo económico oficial                   |
+
+##### 8.4. Servicio, clientes, fidelización, reputación y experiencia — 12 familias de DATA-DOM-012
+
+|    # | Familia canónica                                        | Rol diagnóstico autorizado                    | Límite obligatorio                                                          |
+| ---: | ------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------- |
+|    1 | cumplimiento de promesa                                 | señal de servicio y resultado de cumplimiento | promesa solicitada no equivale a promesa aceptada                           |
+|    2 | tiempos de preparación, despacho y entrega              | localización temporal del deterioro           | no fabricar fase cuando falta un hito real                                  |
+|    3 | pedidos completos                                       | resultado de cumplimiento                     | estado terminal no prueba completitud línea a línea                         |
+|    4 | reclamos y tiempo de resolución                         | señal de problema y expediente de impacto     | reclamo requiere expediente; contacto o chat no lo sustituyen               |
+|    5 | compensaciones                                          | impacto y respuesta de servicio               | devolución, refund, descuento, cortesía, cupón y puntos no son equivalentes |
+|    6 | satisfacción y feedback                                 | señal perceptual                              | sesgo de respuesta y denominador de invitaciones deben permanecer visibles  |
+|    7 | recurrencia, frecuencia y abandono                      | comportamiento longitudinal                   | ausencia no prueba abandono sin población y ventana elegibles               |
+|    8 | adquisición y activación                                | señal de entrada y progresión                 | cuenta creada o login no equivalen a activación                             |
+|    9 | fidelización, puntos y redenciones                      | señal de comportamiento de fidelización       | saldo no sustituye el ledger de movimientos                                 |
+|   10 | reputación y temas recurrentes                          | señal temática o reputacional                 | feedback interno no equivale a reputación pública; drivers requieren D014   |
+|   11 | reservas, no-show y utilización                         | señal de capacidad/servicio                   | utilización requiere capacidad compatible                                   |
+|   12 | valor y rentabilidad del cliente cuando esté autorizado | impacto económico por población autorizada    | rentabilidad consume D013 y detalle sensible consume DATA-AUTH              |
+
+##### 8.5. Costos, rentabilidad, liquidez, presupuesto y escenarios — 10 familias de DATA-DOM-013
+
+|    # | Familia canónica              | Rol diagnóstico autorizado                 | Límite obligatorio                                                                |
+| ---: | ----------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
+|    1 | costos estándar y reales      | señal base-real e impacto                  | costo económico oficial permanece bloqueado hasta método y reconciliación         |
+|    2 | variaciones                   | señal diagnóstica primaria                 | cada variación conserva su base; no mezclar costo, presupuesto, precio y cantidad |
+|    3 | margen y contribución         | impacto y resultado económico              | exige ingreso realizado y costo/costo variable trazables                          |
+|    4 | gastos                        | señal e impacto económico                  | gasto capturado no equivale automáticamente a reconocido o pagado                 |
+|    5 | centros de costo              | dimensión de localización                  | centro no equivale a sede, área, marca o canal                                    |
+|    6 | presupuesto y forecast        | comparador planificado o pronosticado      | presupuesto, forecast, revisión, escenario y real permanecen separados            |
+|    7 | caja, bancos y tesorería      | señal de liquidez y restricción financiera | posición real exige saldos reconciliados y disponibilidad                         |
+|    8 | cartera y obligaciones        | señal de exposición y flujo futuro         | pago/cobro sin aplicación no cierra saldo                                         |
+|    9 | rentabilidad multidimensional | impacto económico transversal              | exige ingreso realizado, costo trazable y asignaciones aprobadas                  |
+|   10 | escenarios y simulaciones     | comparador hipotético y exploración        | un escenario no constituye evidencia observada ni prueba causal                   |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55` familias. **55 esperadas; 55 materializadas; 0 faltantes; 0 duplicadas.**
+
+#### 9. Regla de herencia de estado
+
+D014 nunca mejora el estado de certificación de una entrada por utilizarla en una investigación.
+
+Reglas:
+
+1. una familia `BLOQUEADO` puede aparecer como brecha, restricción o tema de investigación, pero no producir una cifra oficial que dependa del dato bloqueado;
+2. una familia `NO EVALUADO` puede soportar exploración con estado visible, pero no se presenta como evidencia certificada;
+3. una fuente `DEGRADADO` conserva la degradación en toda conclusión dependiente;
+4. una fuente `EN OBSERVACIÓN` no se transforma en `CERTIFICADO` por triangulación informal;
+5. solo una entrada `CERTIFICADO` puede presentarse como certificada para el uso, periodo, versión y corte concretos que cubre;
+6. combinar varias fuentes débiles no produce automáticamente una fuente fuerte;
+7. un diagnóstico oficial hereda el peor estado material de sus dependencias críticas conforme a D007.
+
+#### 10. Unidad diagnóstica
+
+La unidad mínima de investigación es una **afirmación diagnóstica trazable**, no un dashboard completo ni una narrativa libre.
+
+Cada afirmación deberá vincular:
+
+```text
+SEÑAL
+→ REFERENCIA
+→ POBLACIÓN
+→ EVIDENCIA
+→ FACTOR O HIPÓTESIS
+→ ALTERNATIVAS
+→ IMPACTO
+→ CONFIANZA
+→ PROPIETARIO
+→ CONCLUSIÓN
+```
+
+Un mismo expediente puede contener múltiples afirmaciones con niveles de confianza distintos. No se asignará un único porcentaje de confianza a toda una investigación para ocultar diferencias entre conclusiones.
+
+#### 11. Señal
+
+Una señal es un hecho analítico que merece atención, por ejemplo:
+
+- una variación material observada;
+- un patrón fuera de la referencia esperada;
+- una ruptura de relación histórica;
+- una diferencia de reconciliación;
+- una concentración o dispersión inusual;
+- una recurrencia de excepción;
+- un deterioro de cobertura o calidad;
+- una restricción demostrada;
+- una oportunidad cuantificable bajo una definición aprobada.
+
+Una señal no requiere haber identificado causa.
+
+Una señal deberá declarar:
+
+- métrica o hecho fuente;
+- versión;
+- valor observado;
+- referencia;
+- magnitud absoluta y relativa cuando ambas sean válidas;
+- población;
+- dimensiones;
+- periodo y corte;
+- calidad/certificación;
+- método que produjo la señal;
+- si fue detectada manualmente, por regla, por estadística o por modelo.
+
+#### 12. Variación
+
+Una variación es una diferencia entre un valor observado y una base comparable.
+
+Formas permitidas incluyen:
+
+```text
+observado - referencia
+```
+
+```text
+(observado - referencia) / |referencia|
+```
+
+solo cuando el denominador sea válido y la métrica permita comparación relativa.
+
+La referencia puede ser:
+
+- periodo anterior comparable;
+- mismo periodo de una temporada anterior;
+- plan o programa aprobado;
+- presupuesto publicado;
+- forecast publicado antes del resultado;
+- segmento comparable;
+- distribución histórica compatible;
+- rango técnico gobernado;
+- modelo esperado versionado y autorizado.
+
+No se inventa una referencia universal. La referencia debe ser declarada y defendible para la métrica investigada.
+
+Una diferencia respecto de una meta futura pertenece al seguimiento de `DATA-DOM-015`; no se denomina automáticamente anomalía.
+
+#### 13. Ocho patrones diagnósticos de anomalía
+
+D014 reconoce ocho patrones descriptivos. Ninguno implica causalidad por sí mismo.
+
+|    # | Patrón                                     | Definición                                                             | Ejemplo de uso                                                  |
+| ---: | ------------------------------------------ | ---------------------------------------------------------------------- | --------------------------------------------------------------- |
+|    1 | desviación de nivel                        | el valor difiere materialmente de una referencia compatible            | venta, costo, tiempo o merma por encima/debajo del comparador   |
+|    2 | cambio de tendencia                        | cambia dirección o pendiente respecto de una trayectoria comparable    | caída sostenida de recurrencia o crecimiento de gasto           |
+|    3 | cambio de volatilidad                      | aumenta o disminuye dispersión/variabilidad                            | variabilidad de rendimiento, tiempos o demanda                  |
+|    4 | cambio de distribución o mezcla            | cambia la composición entre categorías o segmentos                     | mezcla de canal, producto, proveedor o tipo de gasto            |
+|    5 | ruptura temporal o estacional              | el patrón esperado por hora, día, semana o temporada deja de repetirse | demanda o cumplimiento fuera de estacionalidad comparable       |
+|    6 | divergencia entre segmentos                | poblaciones comparables evolucionan de forma diferente                 | sedes, canales, productos o cohortes con trayectoria divergente |
+|    7 | ruptura de relación o reconciliación       | una relación que debería conciliar deja residuo o pierde consistencia  | venta-pago, orden-recepción, plan-producción, stock-conteo      |
+|    8 | recurrencia o concentración de excepciones | excepciones se concentran en una dimensión o se repiten con patrón     | faltantes, rechazos, reclamos, urgencias o reprocesos           |
+
+El método de detección deberá declarar su versión, población, mínimo de observaciones aplicable, tratamiento de faltantes, estacionalidad, outliers y sensibilidad. D014 no fija un umbral estadístico universal.
+
+#### 14. Anomalía de negocio, calidad y reconciliación
+
+Antes de investigar desempeño deberá clasificarse la señal:
+
+| Clase                     | Pregunta                                                                               | Tratamiento                                                                      |
+| ------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| comportamiento de negocio | ¿el hecho cambió realmente en la operación?                                            | investigar factores empresariales                                                |
+| calidad de datos          | ¿la señal puede provenir de fuente vencida, faltante, duplicada, inválida o degradada? | priorizar D007/flujo de remediación antes de causalidad                          |
+| reconciliación            | ¿dos representaciones del mismo proceso no concilian?                                  | conservar diferencia y resolver fuentes/contratos antes de interpretar desempeño |
+| cambio semántico          | ¿cambió fórmula, población, dimensión o versión?                                       | no comparar como continuidad hasta reconciliar versiones                         |
+| cambio de cobertura       | ¿entró o salió una fuente, sede, canal o población?                                    | explicar cobertura antes de atribuir cambio a la operación                       |
+
+Una anomalía aparente producida por una ruptura de datos no se presenta como problema empresarial.
+
+#### 15. Ruta canónica de investigación
+
+Toda investigación seguirá el orden lógico mínimo:
+
+1. **confirmar la señal**: reproducir el resultado con la versión, corte y población declarados;
+2. **verificar calidad**: revisar D007, cobertura, frescura, integridad y reconciliación;
+3. **clasificar la señal**: negocio, calidad, reconciliación, semántica o cobertura;
+4. **localizar la variación**: segmentar únicamente por dimensiones autorizadas y compatibles;
+5. **establecer temporalidad**: identificar qué ocurrió antes, durante y después del cambio;
+6. **enumerar factores candidatos**: incluir factores internos, externos y restricciones conocidas;
+7. **enumerar alternativas**: registrar explicaciones plausibles que compiten con la hipótesis principal;
+8. **reunir evidencia**: conservar evidencia favorable, contradictoria y faltante;
+9. **comprobar dependencia entre evidencias**: no contar dos derivados del mismo hecho como confirmaciones independientes;
+10. **asignar confianza**: aplicar la escala y sus topes;
+11. **estimar impacto**: solo con métricas y unidades gobernadas;
+12. **formular oportunidades**: describir espacio de mejora sin ejecutar solución;
+13. **transferir**: a D015 cuando requiera objetivo/medición o a D016 cuando exista acción/experimento candidato.
+
+La investigación puede concluir legítimamente en `SIN_CAUSA_RESUELTA`. La presión por producir una explicación no justifica inventar una causa dominante.
+
+#### 16. Factores candidatos y causalidad
+
+Un **factor candidato** es una variable, evento, condición o restricción que podría contribuir al resultado observado.
+
+Cada factor deberá declarar:
+
+- mecanismo empresarial propuesto;
+- relación temporal con el resultado;
+- población donde debería observarse el efecto;
+- evidencia favorable;
+- evidencia contradictoria;
+- explicaciones alternativas;
+- condiciones bajo las cuales no aplicaría;
+- nivel de confianza alcanzado;
+- propietario funcional capaz de validar la interpretación.
+
+Tipos de relación admitidos en una investigación:
+
+```text
+coincidencia temporal
+asociación descriptiva
+factor contribuyente plausible
+hipótesis respaldada
+relación con evidencia causal
+intervención con efecto comprobado
+```
+
+El tipo de relación se comunica expresamente; no se sustituye por una etiqueta genérica de “causa”.
+
+#### 17. Causa explícita de expediente
+
+Cuando un proceso propietario registra una causa mediante un expediente gobernado —por ejemplo un motivo aprobado, investigación de incidente, rechazo, devolución, diferencia o problema— D014 puede consumir esa afirmación como **evidencia de causa declarada por el proceso**.
+
+Eso no significa que:
+
+- la causa declarada explique todos los efectos posteriores;
+- el código de motivo sea verdadero por definición;
+- una categoría de cierre sustituya evidencia;
+- la misma causa se generalice a otras sedes, productos, periodos o poblaciones.
+
+La fuente, actor, fecha, versión y evidencia del expediente deberán permanecer trazables.
+
+#### 18. Regla de precedencia temporal
+
+Una causa propuesta debe preceder al efecto en el mecanismo analizado.
+
+Reglas:
+
+1. una variable registrada después del resultado no se presenta como causa del resultado por mera correlación;
+2. un estado de cierre puede describir el resultado de una investigación, pero no prueba cuándo se originó la condición causal;
+3. variables agregadas en el mismo periodo requieren suficiente resolución temporal para establecer orden cuando la causalidad dependa de él;
+4. un patrón simultáneo solo permite asociación salvo que exista diseño adicional que identifique dirección;
+5. cambios de precio, promoción, disponibilidad, capacidad, receta, proveedor, proceso o política deberán usar la vigencia realmente aplicable al hecho.
+
+#### 19. Explicaciones alternativas y confusión
+
+Ninguna hipótesis alcanzará un nivel causal alto si ignora explicaciones alternativas materiales conocidas.
+
+Como mínimo, según el caso deberán evaluarse:
+
+- cambio de cobertura o fuente;
+- cambio de fórmula o definición;
+- estacionalidad/calendario;
+- precio o promoción;
+- mezcla de producto/canal/sede/cliente;
+- disponibilidad de inventario;
+- capacidad productiva o logística;
+- cambio de proveedor o lead time;
+- calidad, rechazo o liberación;
+- cambio de servicio o promesa;
+- presupuesto, forecast o escenario usado como referencia;
+- eventos extraordinarios externos documentados;
+- datos tardíos, backfills o restatements;
+- sesgo de selección, identidad o población;
+- otra intervención simultánea.
+
+Descartar una alternativa exige evidencia, no ausencia de una etiqueta.
+
+#### 20. Seis niveles canónicos de confianza diagnóstica
+
+La confianza diagnóstica es ordinal y explicable. No representa una probabilidad universal.
+
+| Nivel                  | Semántica                                                                                                       | Condiciones mínimas                                                                                                               | Lenguaje permitido                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `NO_EVALUABLE`         | no existe base suficiente para interpretar la señal                                                             | falta una dependencia crítica, comparador, calidad mínima o evidencia esencial                                                    | “no evaluable”, “información insuficiente”, “causa no resuelta”                   |
+| `SEÑAL_DESCRIPTIVA`    | el cambio observado es reproducible, pero no se atribuye a un factor                                            | señal reproducida, población/corte declarados y limitaciones visibles                                                             | “se observó”, “aumentó/disminuyó”, “se concentra en”                              |
+| `ASOCIACION`           | existe relación reproducible entre resultado y factor, sin identificación causal                                | comparabilidad razonable, relación consistente y dependencia de evidencias reconocida                                             | “está asociado con”, “coincide con”, “es compatible con”                          |
+| `HIPOTESIS_RESPALDADA` | múltiples evidencias apoyan un mecanismo y las alternativas materiales fueron investigadas                      | precedencia temporal, mecanismo plausible, triangulación no redundante, evidencia contradictoria tratada                          | “la evidencia respalda la hipótesis de que”, sin declarar causa demostrada        |
+| `EVIDENCIA_CAUSAL`     | existe una estrategia de identificación capaz de separar razonablemente el factor de explicaciones alternativas | datos aptos, temporalidad, comparador/control o diseño cuasi-experimental/causal gobernado, supuestos y sensibilidad explícitos   | “la evidencia apoya un efecto causal bajo estos supuestos y contexto”             |
+| `EFECTO_COMPROBADO`    | una intervención o experimento gobernado observó el efecto bajo un diseño previamente definido                  | evidencia producida conforme a `DATA-DOM-016`, población y guardrails definidos, resultado reproducible y limitaciones declaradas | “el efecto fue comprobado en la población, ventana y condiciones del experimento” |
+
+`EFECTO_COMPROBADO` no significa verdad universal ni autoriza generalización automática a otra sede, población, canal, producto o periodo.
+
+#### 21. Confianza diagnóstica no equivale a calidad de datos
+
+Los estados de D007 y los niveles de D014 son ejes distintos:
+
+| Eje                        | Pregunta                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| calidad/certificación D007 | ¿los datos y resultados son suficientemente confiables para el uso declarado? |
+| confianza diagnóstica D014 | ¿qué tan respaldada está la afirmación sobre relación, mecanismo o efecto?    |
+
+Un dato puede ser `CERTIFICADO` y solo permitir `SEÑAL_DESCRIPTIVA` si no existe evidencia causal. Una relación metodológicamente sofisticada no puede compensar una dependencia crítica `BLOQUEADO`.
+
+#### 22. Ocho dimensiones mínimas de evidencia para confianza
+
+Cada afirmación diagnóstica deberá evaluarse al menos en estas ocho dimensiones:
+
+| Dimensión                   | Pregunta obligatoria                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| calidad de fuente           | ¿las dependencias críticas tienen estado D007 compatible con el uso?                          |
+| cobertura                   | ¿la población observada representa el alcance de la conclusión?                               |
+| comparabilidad              | ¿resultado y referencia comparten definición, unidad, granularidad, calendario y dimensiones? |
+| precedencia temporal        | ¿el factor ocurre antes del efecto cuando el mecanismo lo exige?                              |
+| mecanismo                   | ¿existe una explicación empresarial coherente y verificable del vínculo?                      |
+| alternativas                | ¿se investigaron explicaciones materiales competidoras?                                       |
+| estabilidad/replicación     | ¿la relación persiste en ventanas, segmentos o repeticiones compatibles cuando corresponde?   |
+| intervención/identificación | ¿existe diseño que permita separar efecto de correlación cuando se usa lenguaje causal?       |
+
+La evidencia no se promedia mecánicamente. Una falla crítica puede limitar el nivel completo.
+
+#### 23. Topes obligatorios de confianza
+
+1. una dependencia crítica `BLOQUEADO` fuerza `NO_EVALUABLE` para la conclusión que dependa de ella;
+2. una diferencia no reproducible fuerza `NO_EVALUABLE`;
+3. sin referencia comparable, el máximo es `SEÑAL_DESCRIPTIVA`;
+4. sin precedencia temporal demostrable, el máximo es `ASOCIACION` para afirmaciones causales;
+5. sin investigación de alternativas materiales, el máximo es `ASOCIACION`;
+6. evidencia redundante derivada del mismo hecho no eleva el nivel por multiplicidad;
+7. un output de IA o de un modelo predictivo por sí solo no eleva por encima de `ASOCIACION`;
+8. un p-value, score, feature importance, SHAP value, correlación o precisión predictiva por sí solos no demuestran causalidad;
+9. `EVIDENCIA_CAUSAL` exige fuentes aptas para el uso, estrategia de identificación y supuestos explícitos;
+10. `EFECTO_COMPROBADO` solo puede consumir evidencia de intervención/experimento gobernada por `DATA-DOM-016`;
+11. un diagnóstico no puede tener mayor alcance territorial, temporal o poblacional que la evidencia que lo sustenta;
+12. si la fórmula o definición de la métrica cambió dentro de la ventana, la comparabilidad debe resolverse antes de elevar confianza.
+
+#### 24. Prohibición de score universal de confianza
+
+D014 no crea un porcentaje universal de confianza ni una fórmula fija ponderada.
+
+Una implementación futura podrá calcular scores auxiliares si:
+
+- la fórmula está versionada;
+- sus componentes y pesos son explicables;
+- el score no sustituye el nivel ordinal ni sus puertas obligatorias;
+- un componente crítico ausente no puede compensarse con otros valores altos;
+- la precisión del modelo no se presenta como probabilidad de causalidad;
+- la versión del modelo y del dataset quedan trazables.
+
+#### 25. Dependencia entre métricas y evidencia no independiente
+
+La investigación deberá usar linaje para evitar falsa triangulación.
+
+Ejemplos:
+
+- ventas netas, ticket y margen pueden compartir las mismas ventas de origen;
+- cobertura, quiebre y disponibilidad pueden depender del mismo snapshot de inventario;
+- rendimiento, merma y costo técnico pueden compartir el mismo lote;
+- satisfacción, recurrencia y valor de cliente pueden compartir la misma población identificada;
+- margen, rentabilidad y punto de equilibrio pueden compartir los mismos componentes económicos.
+
+Tres métricas derivadas del mismo hecho no equivalen a tres fuentes independientes.
+
+#### 26. Impacto observado
+
+El impacto observado cuantifica una diferencia ya ocurrida.
+
+Deberá declarar:
+
+- resultado afectado;
+- población;
+- periodo y corte;
+- magnitud absoluta;
+- magnitud relativa cuando el denominador sea válido;
+- unidad o moneda;
+- método de atribución, si existe;
+- incertidumbre o rango cuando el método lo produzca;
+- parte no atribuible o residual;
+- calidad y confianza aplicables.
+
+Reglas:
+
+1. el impacto comercial no se monetiza sin una base económica gobernada cuando sea necesaria;
+2. margen, costo y rentabilidad consumen D013;
+3. merma física no se convierte automáticamente en costo financiero;
+4. reclamo o rating no se convierte automáticamente en pérdida de cliente;
+5. falta de inventario no se convierte automáticamente en venta perdida;
+6. una correlación no autoriza atribuir el 100 % de una variación a un factor;
+7. el residuo no explicado permanece visible.
+
+#### 27. Impacto potencial
+
+El impacto potencial es una estimación de lo que podría evitarse, recuperarse o capturarse. No es un beneficio realizado.
+
+Se permite cuando declara:
+
+- línea de referencia;
+- supuesto o escenario;
+- horizonte;
+- población;
+- mecanismo;
+- límites;
+- sensibilidad;
+- confianza;
+- dependencia de D013 cuando sea monetario.
+
+Un escenario D013 puede apoyar una estimación potencial, pero no se presenta como evidencia de que el efecto ocurrirá.
+
+#### 28. Oportunidad
+
+Una oportunidad es un espacio de mejora, protección o captura de valor suficientemente descrito para evaluar una intervención futura.
+
+La oportunidad deberá contener:
+
+- señal o diagnóstico que la origina;
+- población y contexto;
+- resultado empresarial afectado;
+- impacto observado o potencial;
+- factor o mecanismo relevante;
+- nivel de confianza;
+- restricciones y dependencias;
+- propietario funcional;
+- riesgos de actuar y de no actuar;
+- información faltante;
+- ruta siguiente: medición/objetivos en D015 o acción/experimento en D016.
+
+Una oportunidad se redacta en términos de resultado, por ejemplo:
+
+```text
+reducir exposición a faltantes en la población X
+```
+
+no como una orden de ejecución como:
+
+```text
+subir automáticamente el stock mínimo
+```
+
+La elección de la acción pertenece a D016.
+
+#### 29. Priorización de oportunidades
+
+D014 no crea una fórmula universal de prioridad.
+
+Toda priorización futura deberá mostrar por separado:
+
+- impacto potencial;
+- urgencia o ventana de decisión;
+- confianza;
+- riesgo;
+- reversibilidad;
+- esfuerzo o dependencia conocida;
+- disponibilidad de medición;
+- restricciones legales, de seguridad, calidad o capacidad.
+
+Una oportunidad de alto impacto y baja confianza no se oculta detrás de un score único. Puede priorizarse para **investigación**, no necesariamente para ejecución.
+
+#### 30. Cinco rutas transversales de investigación
+
+Estas rutas son guías de exploración y no cadenas causales predefinidas.
+
+##### 30.1. Comercial y demanda
+
+```text
+ventas / pedidos / ticket / demanda
+→ revisar cobertura y mezcla
+→ revisar disponibilidad y quiebres
+→ revisar capacidad productiva cuando aplique
+→ revisar promesa, tiempos y servicio
+→ revisar precio, descuento, promoción y margen
+→ separar asociación, restricción y causa
+```
+
+##### 30.2. Inventario y abastecimiento
+
+```text
+existencia / cobertura / faltante / vencimiento
+→ revisar demanda y consumo
+→ revisar remisiones y proveedores
+→ revisar plan productivo y capacidad
+→ revisar costos de inventario y liquidez
+→ identificar restricción, excepción o problema de datos
+```
+
+##### 30.3. Producción y calidad
+
+```text
+plan / capacidad / rendimiento / consumo / merma / calidad
+→ revisar disponibilidad de insumos
+→ revisar receta, versión, ruta y programa
+→ revisar liberación y ciclo
+→ revisar efecto en servicio y venta
+→ revisar costo y variación económica
+```
+
+##### 30.4. Servicio y cliente
+
+```text
+promesa / tiempos / completitud / reclamos / satisfacción
+→ revisar pedido y canal
+→ revisar inventario y producción
+→ revisar logística y cumplimiento
+→ revisar compensaciones, recurrencia y reputación
+→ revisar impacto económico solo con D013
+```
+
+##### 30.5. Económica y financiera
+
+```text
+costo / variación / margen / gasto / liquidez / rentabilidad
+→ descender hasta ventas, compras, inventario, producción y servicio
+→ separar real, presupuesto, forecast y escenario
+→ revisar asignaciones y reconciliaciones
+→ conservar residuo no explicado
+→ no convertir diferencia económica en causa operacional sin evidencia
+```
+
+#### 31. Diagnóstico de promociones y cambios deliberados
+
+Para promociones, precios, procesos, políticas u otras intervenciones deliberadas:
+
+1. debe existir identidad y versión de la intervención;
+2. debe conocerse población expuesta y periodo;
+3. un descuento observado no prueba exposición a promoción;
+4. before/after simple produce, como máximo, evidencia descriptiva o asociativa si no controla cambios concurrentes;
+5. estacionalidad, disponibilidad, canal, mezcla, capacidad y otras intervenciones simultáneas son alternativas materiales;
+6. un contrafactual o grupo comparable debe estar gobernado antes de usar lenguaje causal;
+7. la comprobación experimental pertenece a `DATA-DOM-016`.
+
+#### 32. Diagnóstico de restricciones
+
+Una restricción puede explicar que un resultado no alcance un valor esperado, pero deberá probarse en la misma población y ventana.
+
+Ejemplos de restricciones posibles:
+
+- inventario disponible;
+- capacidad productiva;
+- capacidad de almacenamiento;
+- capacidad comercial gobernada;
+- lead time;
+- liberación de calidad;
+- disponibilidad logística;
+- liquidez o obligación financiera;
+- autorización o cumplimiento cuando afecte ejecución.
+
+Una restricción nominal no es evidencia de que haya sido vinculante en el caso investigado.
+
+#### 33. Diagnóstico de eventos raros y poblaciones pequeñas
+
+Un hallazgo sobre pocas observaciones puede ser operacionalmente importante y estadísticamente inestable al mismo tiempo.
+
+Reglas:
+
+- declarar tamaño de población y cobertura;
+- no ocultar inestabilidad por usar porcentajes;
+- no inferir rasgos individuales desde agregados;
+- aplicar `DATA-AUTH-002` antes de exponer grupos pequeños o sensibles;
+- conservar la posibilidad de revisión cualitativa mediante expediente cuando la estadística no sea suficiente;
+- no aumentar confianza por severidad del impacto.
+
+#### 34. Modelos estadísticos y predictivos
+
+Un modelo puede:
+
+- detectar patrones;
+- estimar una expectativa;
+- segmentar;
+- clasificar;
+- pronosticar;
+- sugerir factores para investigar.
+
+Un modelo predictivo no adquiere por ello autoridad causal.
+
+Todo uso deberá conservar:
+
+- objetivo del modelo;
+- versión;
+- dataset y corte;
+- variables de entrada;
+- exclusiones;
+- población de entrenamiento y evaluación;
+- métricas de desempeño;
+- sesgos/limitaciones conocidas;
+- fecha de entrenamiento o actualización;
+- responsable;
+- linaje hacia fuentes gobernadas.
+
+La integración física y gobierno de modelos corresponde a `DATA-INT-004`.
+
+#### 35. Inteligencia artificial y recomendaciones
+
+Una herramienta de inteligencia artificial puede asistir en:
+
+- resumir evidencia;
+- proponer preguntas;
+- sugerir segmentaciones;
+- identificar inconsistencias para revisión;
+- generar hipótesis candidatas;
+- explicar una consulta o visualización.
+
+No puede por sí sola:
+
+- certificar datos;
+- declarar una causa;
+- aprobar una oportunidad;
+- fijar una meta;
+- ejecutar una acción empresarial;
+- modificar una fuente de verdad;
+- ocultar evidencia contradictoria;
+- reemplazar al propietario funcional.
+
+Toda recomendación asistida debe poder mostrar fuentes, contexto y limitaciones. `DATA-INT-004` gobierna su integración y `DATA-AUTH-004` su auditoría.
+
+#### 36. Lenguaje causal autorizado
+
+La redacción deberá corresponder al nivel de confianza.
+
+| Situación            | Lenguaje recomendado                                            | Lenguaje prohibido sin evidencia adicional                 |
+| -------------------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
+| señal descriptiva    | “se observó una caída de…”                                      | “X causó la caída”                                         |
+| asociación           | “la caída está asociada con…”                                   | “la caída se debe a…”                                      |
+| hipótesis respaldada | “la evidencia respalda la hipótesis de…”                        | “la causa confirmada es…”                                  |
+| evidencia causal     | “la evidencia apoya un efecto causal bajo…”                     | “X siempre causa Y”                                        |
+| efecto comprobado    | “el efecto fue observado bajo las condiciones del experimento…” | generalizar fuera de población/ventana sin nueva evidencia |
+
+La incertidumbre no se oculta mediante lenguaje categórico.
+
+#### 37. Evidencia favorable, contradictoria y faltante
+
+Cada conclusión deberá conservar tres conjuntos separados:
+
+```text
+EVIDENCIA FAVORABLE
+EVIDENCIA CONTRADICTORIA
+EVIDENCIA FALTANTE O NO DISPONIBLE
+```
+
+Reglas:
+
+- evidencia contradictoria no se elimina para elevar confianza;
+- falta de evidencia no se registra como evidencia en contra;
+- ausencia de una causa alternativa observada no demuestra que no exista;
+- una evidencia posterior puede reducir la confianza de una conclusión anterior;
+- si una conclusión oficial cambia, D017 deberá gobernar la corrección o restatement aplicable.
+
+#### 38. Auditoría y reproducibilidad del diagnóstico
+
+Todo expediente deberá conservar:
+
+- actor o proceso que inició la investigación;
+- fecha/hora;
+- señal original;
+- consultas o modelos utilizados;
+- versiones de métricas;
+- fuentes y cortes;
+- filtros y dimensiones;
+- evidencia incorporada;
+- hipótesis creadas, descartadas o revisadas;
+- cambios de nivel de confianza y motivo;
+- propietario funcional que revisó la interpretación;
+- oportunidad resultante, si existe;
+- relación con acciones o experimentos posteriores.
+
+La materialización técnica de logs, modelos, consultas y recomendaciones pertenece a `DATA-AUTH-004`, `DATA-INT-002` y `DATA-INT-004`.
+
+#### 39. Publicación y drill-down
+
+Un diagnóstico publicado deberá mostrar, como mínimo:
+
+- conclusión;
+- nivel de confianza;
+- estado de calidad de entradas críticas;
+- periodo y corte;
+- población y dimensiones;
+- impacto;
+- principales evidencias favorables;
+- alternativas materiales no resueltas;
+- límites de generalización;
+- propietario;
+- ruta de drill-down autorizada.
+
+La publicación consume `DATA-DOM-008`. El detalle sensible o de poblaciones pequeñas consume `DATA-AUTH-001` y `DATA-AUTH-002`.
+
+Un resultado exploratorio no se estiliza como conclusión oficial.
+
+#### 40. Handoffs con propietario documental exacto
+
+| Decisión o materialización fuera del alcance                             | Propietario documental     | Condición de salida                                                    |
+| ------------------------------------------------------------------------ | -------------------------- | ---------------------------------------------------------------------- |
+| objetivos, líneas base, metas, drivers y guardrails                      | `DATA-DOM-015`             | antes de convertir oportunidad en objetivo medible                     |
+| acciones, experimentos, responsables y comprobación                      | `DATA-DOM-016`             | antes de ejecutar o declarar efecto de una intervención                |
+| correcciones históricas, restatements y reproducibilidad publicada       | `DATA-DOM-017`             | antes de reexpresar una conclusión oficial histórica                   |
+| experiencia de investigación de variaciones, anomalías y causas          | `DATA-UX-005`              | antes de implementar la superficie de investigación                    |
+| experiencia de objetivos y acciones de mejora                            | `DATA-UX-006`              | antes de implementar seguimiento de mejora                             |
+| segregación de definición, certificación, publicación, metas y anotación | `DATA-AUTH-003`            | antes de conceder capacidades sobre diagnósticos y conclusiones        |
+| auditoría de consultas, modelos y recomendaciones                        | `DATA-AUTH-004`            | antes de automatizar o registrar investigación productiva              |
+| contratos de eventos y lectura                                           | `DATA-INT-001`             | antes de ingestión productiva de evidencia especializada               |
+| capa semántica, consultas, modelos, snapshots y rendimiento              | `DATA-INT-002`             | antes de materializar cálculo y navegación diagnóstica                 |
+| crosswalks e identidades externas                                        | `DATA-INT-003`             | antes de atribuir diferencias entre fuentes a una misma entidad        |
+| BI, hojas, modelos analíticos e inteligencia artificial                  | `DATA-INT-004`             | antes de conectar herramientas externas o modelos a diagnósticos       |
+| causas explícitas de incidentes/problemas tecnológicos                   | `TI-DOM-007`, `TI-DOM-008` | antes de reutilizar una causa TI como evidencia transversal            |
+| causas y diferencias económico-financieras                               | `NUMERA-DOM-014`           | antes de certificar conciliaciones o causas financieras de diferencias |
+
+No queda una decisión material de D014 diferida sin propietario documental exacto y condición de salida.
+
+#### 41. Cobertura de requisitos de prueba vigente
+
+La semántica de esta tarea ya está protegida por requisitos vigentes:
+
+- `TREQ-DATA-005` exige separar señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador, drivers, guardrails, ventana, segmentos, resultado, confianza, aprendizaje y decisión; además prohíbe presentar correlación como causa demostrada y prohíbe que una recomendación ejecute cambios por sí sola;
+- `TREQ-DATA-002` protege definición, fórmula, población, granularidad, dimensiones, unidad, moneda, fuente, calidad, versión y comparación de métricas;
+- `TREQ-DATA-003` protege cobertura, duplicados, integridad, datos tardíos, reconciliación, linaje y separación entre ausencia y cero;
+- `TREQ-DATA-004` protege alertas, publicación, corte, calidad, snapshots, drill-down y separación entre artefactos analíticos;
+- los requisitos propietarios de cada dominio continúan protegiendo sus hechos y comportamientos operativos.
+
+D014 especializa el contrato diagnóstico dentro de estas reglas ya identificadas. No cambia su alcance, estado, prioridad, modalidad, relaciones ni destino de implementación.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente el diagnóstico transversal, la escala de confianza, las reglas de causalidad, impacto y oportunidades dentro de requisitos vigentes que ya protegen la separación entre señal, diagnóstico, hipótesis, acción, experimento, confianza, calidad, publicación y causalidad. No introduce comportamiento ejecutable, contrato físico, autorización, dato, integración ni modelo productivo nuevo.
+
+#### 42. Criterios de aceptación
+
+1. las 55 familias heredadas de D009 a D013 están presentes exactamente una vez;
+2. la reconciliación es 55 esperadas, 55 materializadas, 0 faltantes y 0 duplicadas;
+3. se preservan exactamente los nombres de las 11 familias comerciales;
+4. se preservan exactamente los nombres de las 12 familias de inventario/abastecimiento;
+5. se preservan exactamente los nombres de las 10 familias productivas;
+6. se preservan exactamente los nombres de las 12 familias de servicio/clientes;
+7. se preservan exactamente los nombres de las 10 familias económico-financieras;
+8. D014 no mejora ni sobrescribe el estado de certificación heredado de ninguna familia;
+9. métrica, señal, variación y anomalía permanecen conceptos distintos;
+10. anomalía de negocio, calidad de datos, reconciliación, cambio semántico y cambio de cobertura se clasifican antes de causalidad;
+11. alerta, diagnóstico, recomendación y acción permanecen separados;
+12. correlación no se presenta como causa;
+13. hipótesis respaldada no equivale a efecto comprobado;
+14. causa explícita de expediente conserva fuente, actor, fecha y alcance;
+15. una causa declarada no se generaliza por inferencia;
+16. precedencia temporal es obligatoria cuando el mecanismo causal la exige;
+17. una variable posterior no se usa como causa por mera correlación;
+18. explicaciones alternativas materiales se registran y evalúan;
+19. ausencia de evidencia no se convierte en evidencia en contra;
+20. evidencia contradictoria permanece visible;
+21. se definen exactamente ocho patrones diagnósticos descriptivos;
+22. los patrones de anomalía no implican causalidad;
+23. no existe un umbral estadístico universal inventado;
+24. todo método de detección declara versión, población y tratamiento de faltantes;
+25. se definen exactamente seis niveles de confianza diagnóstica;
+26. `NO_EVALUABLE` es el nivel mínimo cuando falta evidencia esencial;
+27. `SEÑAL_DESCRIPTIVA` no atribuye factores;
+28. `ASOCIACION` no autoriza lenguaje causal;
+29. `HIPOTESIS_RESPALDADA` exige temporalidad, mecanismo y alternativas investigadas;
+30. `EVIDENCIA_CAUSAL` exige estrategia de identificación y supuestos explícitos;
+31. `EFECTO_COMPROBADO` exige evidencia gobernada por D016;
+32. confianza diagnóstica permanece separada de certificación D007;
+33. una fuente `CERTIFICADO` no crea por sí sola evidencia causal;
+34. una fuente crítica `BLOQUEADO` impide evaluar la conclusión dependiente;
+35. sin referencia comparable, el máximo es `SEÑAL_DESCRIPTIVA`;
+36. sin precedencia temporal, el máximo causal es `ASOCIACION`;
+37. sin evaluar alternativas materiales, el máximo es `ASOCIACION`;
+38. outputs derivados del mismo hecho no se cuentan como evidencias independientes;
+39. un output de IA no eleva por sí solo confianza causal;
+40. correlación, p-value, feature importance, SHAP o precisión predictiva no prueban causa por sí solos;
+41. no se crea un porcentaje universal de confianza;
+42. impacto observado y potencial permanecen separados;
+43. impacto económico consume las definiciones de D013;
+44. falta de inventario no se convierte automáticamente en venta perdida;
+45. merma física no se convierte automáticamente en pérdida monetaria;
+46. reclamo o rating no se convierte automáticamente en abandono;
+47. el residuo no atribuido permanece visible;
+48. escenario simulado no se presenta como evidencia observada;
+49. oportunidad no equivale a acción;
+50. una oportunidad declara impacto, confianza, restricciones, propietario y ruta siguiente;
+51. priorización no oculta impacto, confianza, riesgo y esfuerzo dentro de un score opaco;
+52. las cinco rutas transversales son guías de investigación, no cadenas causales predefinidas;
+53. promoción exige identidad/exposición antes de atribución;
+54. before/after simple no demuestra efecto causal;
+55. una restricción debe probarse como vinculante en la misma población y ventana;
+56. grupos pequeños conservan tamaño, inestabilidad y protección de DATA-AUTH-002;
+57. un modelo predictivo no adquiere autoridad causal;
+58. IA puede asistir pero no certificar datos, declarar causa, fijar meta ni ejecutar acción;
+59. lenguaje causal se ajusta al nivel de confianza;
+60. toda conclusión conserva evidencia favorable, contradictoria y faltante;
+61. todo expediente conserva fuentes, cortes, consultas/modelos, versiones y cambios de confianza;
+62. la publicación muestra confianza, calidad, periodo, población, impacto, alternativas y límites;
+63. cada handoff tiene tarea propietaria exacta y condición de salida;
+64. no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba;
+65. no se ejecuta código, DDL, DML, migración, backfill, modelo, experimento, acción empresarial ni cambio de Supabase;
+66. `DATA-DOM-015` permanece únicamente reservada.
+
+#### 43. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+
+TAREA ACTUAL APROBADA
+DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+
+SIGUIENTE TAREA RESERVADA
+DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+```
+
+
 ### [ ] DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
 ### [ ] DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
 ### [ ] DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
