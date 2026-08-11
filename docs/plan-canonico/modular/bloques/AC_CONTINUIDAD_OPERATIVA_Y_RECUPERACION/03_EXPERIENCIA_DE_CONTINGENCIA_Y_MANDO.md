@@ -1392,7 +1392,1530 @@ SIGUIENTE TAREA RESERVADA
 `CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación`
 
 
-### [ ] CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación
+### ✅ CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones` — APROBADA
+**Tarea siguiente:** `CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de experiencia para centro de mando de continuidad, línea de tiempo autoritativa, servicios y procesos afectados, coordinación de recuperación, decisiones, bloqueos y handoffs
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md`
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, columnas, enums, RLS, RPC, funciones, Edge Functions, migraciones, datos, permisos, grants, sesiones, secretos, respaldos, restauraciones, colas, integraciones, rutas de aplicación ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia canónica del centro de mando de un incidente de continuidad para que las funciones autorizadas puedan coordinar, comprender y reconstruir un incidente activo sin depender de conversaciones dispersas, paneles técnicos aislados o interpretaciones informales.
+
+La superficie deberá permitir responder de forma determinista y progresiva:
+
+```text
+qué incidente se está coordinando
+cuál es su estado empresarial vigente
+qué severidad, impacto, urgencia y modalidad aplican
+qué servicios, procesos y sedes están afectados
+qué resultado mínimo debe preservarse
+qué recuperación está en curso por servicio o proceso
+qué está técnicamente restablecido y qué aún no está validado funcionalmente
+quién dirige efectivamente el incidente
+quién ejerce cada función material de mando
+qué decisiones se tomaron y cuáles siguen pendientes
+qué hechos ocurrieron y en qué secuencia
+qué información llegó tarde o fue corregida
+qué bloqueos, conflictos o resultados desconocidos permanecen abiertos
+qué siguiente coordinación es prioritaria
+qué referencias conducen a runbooks, evidencia, comunicaciones o trabajos especializados
+qué dato es autoritativo y qué proyección está desactualizada
+```
+
+El centro de mando es una **proyección coordinadora de fuentes propietarias**. No se convierte en una segunda fuente de verdad, no fabrica autoridad, no declara recuperación total por estado visual y no sustituye los expedientes propietarios de cada dominio.
+
+---
+
+#### 2. Resultado sustantivo
+
+`CONT-UX-002` queda materializada con las siguientes decisiones:
+
+1. el centro de mando se define como profundidad operativa del inicio ejecutivo de `CONT-UX-001`, no como una portada competidora;
+2. la experiencia se organiza en ocho zonas semánticas obligatorias;
+3. la cabecera conserva identidad del incidente, estado, severidad, modalidad, alcance y frescura de la información;
+4. se presenta una sola dirección efectiva del incidente por alcance y momento;
+5. las funciones de mando se muestran separadas de los permisos técnicos y de las identidades nominales cuando la función sea suficiente;
+6. servicios, procesos y sedes afectados se materializan como proyecciones vinculadas a sus fuentes propietarias;
+7. cada fila afectada separa impacto empresarial, prioridad de recuperación, estado técnico, validación funcional, reincorporación y bloqueos;
+8. un estado técnico favorable no produce semáforo empresarial favorable por inferencia;
+9. la recuperación se presenta como una secuencia de hitos verificables y no como porcentaje inventado;
+10. la línea de tiempo conserva hechos, decisiones, acciones, validaciones, comunicaciones y correcciones sin reescribir historia;
+11. hora efectiva y hora de registro pueden mostrarse separadas cuando difieran;
+12. la llegada tardía de un evento no cambia retroactivamente el orden factual sin dejar evidencia;
+13. una corrección crea una relación visible con el elemento previo y no lo elimina;
+14. las decisiones protegidas se muestran con autoridad requerida, actor proponente, estado autoritativo, alcance, vigencia, evidencia y condición siguiente;
+15. una acción visual de aprobación solo puede existir si la autorización efectiva la habilita y siempre debe resolverse del lado autoritativo;
+16. filtros, búsqueda, orden y agrupación no modifican alcance, prioridad, estado ni autoridad;
+17. `RESULT_UNKNOWN`, `CONFLICT`, `QUARANTINED` y `RECONCILIATION_REQUIRED` se presentan como bloqueos explícitos cuando existan;
+18. incertidumbre no se representa como estado normal ni como ausencia de impacto;
+19. se distingue información actual, última información conocida e información cuya frescura no puede acreditarse;
+20. la pérdida de actualización en vivo degrada frescura, no cambia el estado del incidente;
+21. la superficie conserva el siguiente punto crítico de coordinación sin convertirlo en permiso;
+22. el centro de mando enlaza a runbooks y checklists sin definirlos, responsabilidad de `CONT-UX-003`;
+23. el centro de mando resume trabajo contingente y reincorporación sin absorber la experiencia detallada de `CONT-UX-004`;
+24. el centro de mando resume restore, failover y validaciones sin absorber el seguimiento detallado de `CONT-UX-005`;
+25. el centro de mando muestra estado de comunicaciones y aprobaciones sin absorber plantillas, canales y confirmaciones de `CONT-UX-006`;
+26. el centro de mando distingue incidente real de ejercicio, pero la experiencia de ejercicios y revisión permanece en `CONT-UX-007`;
+27. la experiencia conserva minimización de información sensible y reautoriza cada handoff protegido;
+28. una referencia visible a evidencia no concede lectura de la evidencia;
+29. el centro de mando no muestra secretos, tokens, credenciales o datos sensibles completos para acelerar la coordinación;
+30. la experiencia define comportamiento responsive para escritorio, tablet y móvil sin cambiar semántica;
+31. color, posición o animación nunca son el único portador de severidad, estado o bloqueo;
+32. actualizaciones materiales no deben destruir el foco de teclado ni desplazar de forma inesperada la decisión que una persona está revisando;
+33. la vista permite distinguir simulación, ejercicio e incidente real antes de cualquier acción protegida;
+34. la vista no inventa ETA, porcentaje de recuperación, riesgo cero, readiness ni salud empresarial agregada;
+35. una fuente externa o proveedor puede aportar estado y evidencia, pero su estado no sustituye recuperación empresarial de Vento;
+36. la recuperación total y el cierre aparecen como decisiones empresariales protegidas, no como conclusión visual automática;
+37. `DESACTIVADO` puede mostrarse con pendientes asignados cuando el contrato lo permita;
+38. `CERRADO` no puede representarse como válido si existe un bloqueo que el contrato de cierre prohíbe;
+39. la experiencia conserva referencias de origen, versión y último cambio para evitar decisiones sobre datos obsoletos;
+40. la interfaz distingue hechos observados, interpretaciones, hipótesis y decisiones cuando esa diferencia sea material;
+41. la vista de un servicio o proceso nunca modifica el expediente por el solo hecho de filtrarlo o expandirlo;
+42. el centro de mando admite profundidad progresiva sin convertir el primer nivel en una tabla técnica saturada;
+43. el diseño mantiene compatibilidad semántica con `VPROC-0062`, cuyo expediente transversal pertenece a VISO;
+44. las aplicaciones y dominios propietarios conservan sus hechos; el centro de mando únicamente coordina su proyección;
+45. toda navegación a una superficie propietaria conserva referencia del incidente y vuelve a resolver autorización;
+46. un contador agregado no puede revelar objetos, incidentes, servicios o evidencia fuera del alcance autorizado;
+47. la experiencia se diseña para operación normal de mando, degradación de conectividad y actualización diferida sin fabricar datos;
+48. toda afirmación de recuperación debe poder rastrearse hasta evidencia técnica, validación funcional y autoridad aplicable cuando correspondan;
+49. la tarea no introduce nuevos estados de negocio, severidades, prioridades, permisos o catálogos de eventos;
+50. la tarea materializa diseño documental completo y produce cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas conservadas
+
+Esta tarea consume sin redefinir:
+
+- `VPROC-0062 — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje` como proceso transversal propietario de VISO;
+- `CONT-DOM-002` a `CONT-DOM-004` para impacto empresarial, dependencias, objetivos y prioridad de recuperación;
+- `CONT-DOM-005` para taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre;
+- `CONT-DOM-006` para mando, sustitución, bitácora cronológica, decisiones y coordinación de comunicaciones;
+- `CONT-DOM-007` y `CONT-DOM-008` para operación mínima y estrategias de contingencia;
+- `CONT-DOM-009` y `CONT-DOM-010` para trabajo durante la falla, folios, evidencia, reincorporación, conflicto y conciliación;
+- `CONT-DOM-011` y `CONT-DOM-012` para respaldo, recuperación, restore, failover, retorno, validación técnica y validación funcional;
+- `CONT-DOM-013` para dependencias externas, proveedores, recursos alternativos y receipts;
+- `CONT-DOM-014` y `CONT-DOM-015` para ejercicios, revisión, acciones y readiness;
+- `CONT-AUTH-001` para declaración, activación, mando, excepciones, comunicación y desactivación;
+- `CONT-AUTH-002` para acceso extraordinario, break-glass, recuperación privilegiada, expiración y revocación;
+- `CONT-AUTH-003` para protección de respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia;
+- `CONT-AUTH-004` para separar ejecución, validación, reincorporación, conciliación, recuperación total, cierre y revisión posterior;
+- `CONT-UX-001` para el inicio ejecutivo, sus jerarquías, taxonomías y regla de drill-down;
+- los contratos canónicos de identidad, actor efectivo, autorización, contexto, recurso, información, evidencia, idempotencia, integración y auditoría;
+- las taxonomías vigentes de severidad, impacto, urgencia, activación, estado de incidente y prioridad de recuperación.
+
+Esta tarea no modifica los valores propietarios de ninguna de esas entradas.
+
+---
+
+#### 4. Decisión principal de experiencia
+
+Vento OS adopta un centro de mando de continuidad basado en una **proyección operacional autoritativamente enlazada**.
+
+```text
+FUENTES PROPIETARIAS
+→ producen hechos, estados, decisiones, evidencia y validaciones
+
+EXPEDIENTE TRANSVERSAL VPROC-0062
+→ correlaciona incidente, mando, decisiones y continuidad
+
+CENTRO DE MANDO
+→ presenta y coordina la situación
+→ conserva enlaces, versiones y frescura
+→ no se vuelve propietario de los hechos de dominio
+
+HANDOFF
+→ abre la superficie especializada aplicable
+→ conserva incidente y alcance
+→ vuelve a resolver autorización
+```
+
+Regla cardinal:
+
+```text
+VISIBLE EN EL CENTRO DE MANDO
+≠
+AUTORIDAD PARA MODIFICAR EL HECHO
+```
+
+La experiencia puede facilitar una acción protegida, pero la pantalla no es la fuente de la autoridad.
+
+---
+
+#### 5. Fronteras con el inicio ejecutivo
+
+`CONT-UX-001` y `CONT-UX-002` forman dos niveles de una misma experiencia de continuidad:
+
+| Materia         | Inicio ejecutivo                  | Centro de mando                                      |
+| --------------- | --------------------------------- | ---------------------------------------------------- |
+| propósito       | orientar decisión ejecutiva       | coordinar evolución operacional del incidente        |
+| densidad        | síntesis                          | detalle operativo progresivo                         |
+| estado          | resumen transversal               | estado y cambios correlacionados                     |
+| impacto         | síntesis priorizada               | desglose por servicio, proceso y sede                |
+| mando           | responsable y autoridad principal | composición efectiva, sustitución y handoffs         |
+| decisiones      | pendientes y recientes            | historial, contexto, autoridad y condición siguiente |
+| línea de tiempo | último cambio relevante           | secuencia cronológica material                       |
+| recuperación    | síntesis                          | hitos por servicio/proceso y validaciones            |
+| bloqueos        | críticos                          | críticos y operativos con trazabilidad               |
+| navegación      | entrada                           | coordinación y salto a superficies especializadas    |
+
+El centro de mando no duplica una portada ejecutiva separada ni exige al usuario reconstruir el contexto desde cero.
+
+---
+
+#### 6. Ocho zonas semánticas obligatorias
+
+El centro de mando se compone de ocho zonas semánticas. Su posición física puede adaptarse al dispositivo, pero su prioridad y significado no se alteran.
+
+| Zona                         | Contenido mínimo                                                                                     | Pregunta que resuelve                                |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `Z1_IDENTIDAD_Y_ESTADO`      | incidente, naturaleza, estado, severidad, modalidad, alcance, frescura                               | ¿qué caso estoy coordinando y en qué condición está? |
+| `Z2_MANDO_EFECTIVO`          | director, sustitución, funciones de mando, autoridad aplicable, último handoff                       | ¿quién dirige y quién debe decidir?                  |
+| `Z3_AFECTACION`              | servicios, procesos, sedes, impacto, prioridad, MBCO/objetivos referenciados                         | ¿qué está afectado y qué importa primero?            |
+| `Z4_RECUPERACION`            | hitos, estado técnico, validación funcional, reincorporación, conciliación                           | ¿qué se ha recuperado realmente y qué falta?         |
+| `Z5_LINEA_DE_TIEMPO`         | hechos, decisiones, acciones, validaciones, comunicaciones, correcciones                             | ¿qué ocurrió, cuándo y en qué secuencia?             |
+| `Z6_DECISIONES`              | decisiones abiertas/recientes, autoridad, vigencia, evidencia y condición siguiente                  | ¿qué decisión requiere atención?                     |
+| `Z7_BLOQUEOS_Y_DESCONOCIDOS` | conflictos, resultados desconocidos, cuarentena, evidencia faltante, frescura                        | ¿qué impide avanzar o confiar?                       |
+| `Z8_COORDINACION_Y_HANDOFFS` | siguiente coordinación, referencias a runbooks, evidencia, comunicaciones y superficies propietarias | ¿qué debe coordinarse ahora y dónde continúa?        |
+
+Ninguna zona constituye un repositorio nuevo. Todas consumen referencias y proyecciones de fuentes vigentes.
+
+---
+
+#### 7. Jerarquía inicial del centro de mando
+
+Al entrar desde `CONT-UX-001` o mediante una referencia válida, la primera jerarquía visible debe priorizar:
+
+1. identidad inequívoca del incidente;
+2. indicador de incidente real o contexto de simulación;
+3. estado empresarial vigente;
+4. severidad y modalidad activada;
+5. nivel de frescura y último cambio autoritativo;
+6. bloqueos protectores o resultados desconocidos que requieran atención inmediata;
+7. dirección efectiva y sustitución activa cuando exista;
+8. tres a cinco elementos de mayor prioridad operacional cuando existan y estén autorizados;
+9. decisión protegida pendiente de mayor urgencia cuando exista;
+10. acceso a la línea de tiempo y al inventario completo de afectación.
+
+La primera jerarquía no se transforma en un dashboard de infraestructura ni desplaza el impacto empresarial por métricas técnicas.
+
+---
+
+#### 8. Cabecera del incidente
+
+La cabecera materializa el contexto de coordinación y deberá poder presentar, cuando la fuente lo suministre y el actor esté autorizado:
+
+| Campo                   | Regla de presentación                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| referencia de incidente | estable, visible y copiable sin exponer información sensible adicional                        |
+| título humano           | describe el hecho o afectación sin sustituir la clasificación propietaria                     |
+| naturaleza              | utiliza clasificación vigente; no se deduce por apariencia                                    |
+| estado                  | proyecta el estado canónico vigente                                                           |
+| severidad               | usa `SEV-C1_CONTROLADA`, `SEV-C2_DEGRADADA`, `SEV-C3_MAYOR` o `SEV-C4_CRITICA` cuando aplique |
+| impacto                 | conserva la dimensión empresarial separada de severidad                                       |
+| urgencia                | conserva la dimensión temporal separada de severidad                                          |
+| modalidad               | muestra la activación vigente sin inferir permisos                                            |
+| alcance                 | resume procesos, sedes, servicios o dependencias incluidas                                    |
+| inicio                  | conserva tiempo autoritativo de declaración o referencia correspondiente                      |
+| último cambio           | identifica momento y referencia del último cambio material                                    |
+| frescura                | muestra cuándo se obtuvo la proyección y si sigue siendo acreditable                          |
+| simulación              | identifica de forma inequívoca si no es un incidente productivo real                          |
+
+La cabecera no usa un único color como significado de severidad, impacto o estado.
+
+---
+
+#### 9. Estados y transiciones visibles
+
+El centro de mando consume los estados del ciclo definidos por `CONT-DOM-005`. No crea una taxonomía paralela.
+
+Reglas de presentación:
+
+- una transición material debe quedar perceptible y vinculada a su entrada cronológica;
+- un estado previo no se borra de la historia al cambiar el actual;
+- el estado visible no se calcula desde una suma de métricas técnicas;
+- `DESACTIVADO` no se presenta como sinónimo de `CERRADO`;
+- `CERRADO` no se infiere de la ausencia de actividad reciente;
+- una transición bloqueada conserva razón y condición de reevaluación;
+- una actualización tardía no cambia el estado actual sin pasar por la fuente propietaria y la autoridad aplicable;
+- el historial permite reconstruir cuándo cada estado estuvo vigente.
+
+---
+
+#### 10. Mando efectivo y sustitución
+
+`Z2_MANDO_EFECTIVO` presenta funciones, no una jerarquía decorativa de cargos.
+
+Como mínimo, podrá proyectar cuando sean aplicables:
+
+- director efectivo del incidente;
+- sustituto efectivo y razón de sustitución;
+- coordinación de operaciones;
+- responsable técnico;
+- responsable protector aplicable;
+- responsable de comunicaciones;
+- custodio de bitácora;
+- autoridad excepcional o ejecutiva requerida para la decisión material vigente;
+- propietario funcional de cada proceso afectado;
+- enlace con proveedor o tercero cuando exista dependencia material.
+
+Para cada función visible se conserva:
+
+- función ejercida;
+- identidad nominal solo cuando sea necesaria y autorizada;
+- alcance;
+- inicio de vigencia;
+- referencia de asignación o sustitución;
+- estado de disponibilidad cuando esté documentado;
+- último handoff aplicable.
+
+Reglas cardinales:
+
+```text
+FUNCIÓN MOSTRADA ≠ PERMISO TÉCNICO
+```
+
+```text
+PRESENCIA EN EL INCIDENTE ≠ AUTORIDAD PARA APROBAR
+```
+
+```text
+SUSTITUTO DESIGNADO ≠ SEGUNDO DIRECTOR SIMULTÁNEO
+```
+
+---
+
+#### 11. Handoff de mando
+
+Cuando exista transferencia de mando, la experiencia conserva:
+
+- incidente y alcance;
+- función transferida;
+- actor saliente;
+- actor entrante;
+- tiempo efectivo;
+- motivo;
+- autoridad o fuente de la transferencia;
+- estado del incidente al momento del handoff;
+- decisiones abiertas;
+- bloqueos materiales;
+- próxima coordinación requerida;
+- evidencia o referencia asociada.
+
+El handoff se registra como cambio cronológico. No reescribe quién ejerció el mando antes de la transferencia.
+
+---
+
+#### 12. Tablero de afectación empresarial
+
+`Z3_AFECTACION` materializa una fila o unidad visual por cada servicio, proceso o capacidad afectada que el actor esté autorizado a consultar.
+
+La unidad de afectación conserva, cuando aplique:
+
+| Dimensión           | Contenido                                                                    |
+| ------------------- | ---------------------------------------------------------------------------- |
+| identidad           | referencia propietaria y nombre humano                                       |
+| propietario         | función responsable del resultado empresarial                                |
+| alcance territorial | sedes, áreas o población materialmente afectada                              |
+| impacto             | síntesis del impacto empresarial vigente                                     |
+| prioridad           | prioridad de recuperación vigente                                            |
+| objetivo            | referencias a MBCO, RTO, MTPD o RPO solo cuando ya existan y sean aplicables |
+| modalidad           | estrategia o modalidad vigente cuando esté decidida                          |
+| operación           | condición empresarial actual proyectada desde su dominio                     |
+| técnica             | resumen de recuperación técnica sin elevarlo a recuperación empresarial      |
+| funcional           | estado de validación funcional cuando exista                                 |
+| contingencia        | presencia de trabajo contingente o pendientes relevantes                     |
+| conciliación        | situación resumida cuando sea material para recuperación                     |
+| bloqueo             | principal bloqueo o incertidumbre aplicable                                  |
+| responsable actual  | función que posee el siguiente resultado esperado                            |
+| último cambio       | tiempo y referencia del último cambio autoritativo                           |
+| siguiente hito      | siguiente resultado verificable, no una promesa inventada                    |
+| referencias         | evidencia, decisión, runbook o expediente propietario según autorización     |
+
+No se inventan objetivos numéricos para completar una fila incompleta.
+
+---
+
+#### 13. Agrupación de afectación
+
+La experiencia permite agrupar la afectación por:
+
+- prioridad de recuperación;
+- proceso;
+- servicio;
+- sede o territorio;
+- propietario funcional;
+- estado empresarial;
+- presencia de bloqueo;
+- etapa de recuperación.
+
+Estas agrupaciones son únicamente proyecciones visuales. Agrupar por sede no concede autoridad territorial, agrupar por propietario no concede acceso a sus recursos y ordenar por prioridad no modifica la prioridad canónica.
+
+---
+
+#### 14. Estado de recuperación por unidad afectada
+
+La experiencia separa explícitamente cinco dimensiones que suelen confundirse:
+
+```text
+EJECUCIÓN TÉCNICA
+≠ VALIDACIÓN TÉCNICA
+≠ VALIDACIÓN FUNCIONAL
+≠ REINCORPORACIÓN / CONCILIACIÓN
+≠ RECUPERACIÓN EMPRESARIAL
+```
+
+Una unidad afectada puede mostrar simultáneamente:
+
+- recuperación técnica iniciada o completada según su fuente;
+- validación técnica pendiente o registrada;
+- validación funcional pendiente, condicionada, positiva o negativa según fuente propietaria;
+- trabajo contingente pendiente de tratamiento;
+- conciliación material pendiente;
+- recuperación total aún no aprobada.
+
+La experiencia no colapsa esas dimensiones en un único porcentaje.
+
+---
+
+#### 15. Hitos de recuperación
+
+`Z4_RECUPERACION` presenta hitos verificables en vez de progreso ficticio.
+
+Un hito de recuperación deberá poder conservar:
+
+- referencia del hito o acción propietaria;
+- servicio, proceso o recurso afectado;
+- objetivo o condición que intenta satisfacer;
+- función responsable;
+- estado propietario vigente;
+- tiempo de inicio o decisión cuando exista;
+- tiempo de resultado cuando exista;
+- evidencia o receipt referenciado;
+- dependencia de otro hito;
+- bloqueo actual;
+- validación técnica relacionada;
+- validación funcional relacionada;
+- efecto sobre el siguiente paso de coordinación.
+
+Cuando no exista un hito autoritativo, la interfaz no inventa uno a partir de actividad técnica.
+
+---
+
+#### 16. Sin porcentajes de recuperación inferidos
+
+Queda prohibido presentar como hecho:
+
+- porcentaje de recuperación calculado por número de servicios en verde;
+- porcentaje de recuperación basado solo en health checks;
+- porcentaje de continuidad derivado de tickets cerrados;
+- ETA calculada mediante extrapolación visual sin fuente autoritativa;
+- riesgo cero por ausencia de alertas;
+- readiness por existencia de un plan o runbook;
+- recuperación empresarial por restore exitoso;
+- cierre por inactividad reciente.
+
+Si un dominio propietario define una métrica aprobada en el futuro, la experiencia podrá proyectarla con referencia de definición, versión, fuente y alcance, sin convertirla en regla universal.
+
+---
+
+#### 17. Línea de tiempo autoritativa
+
+`Z5_LINEA_DE_TIEMPO` es una proyección cronológica del expediente y de referencias propietarias. No es un segundo ledger.
+
+Debe poder representar, como familias de presentación y sin crear nuevos identificadores de negocio:
+
+- señales y detecciones;
+- declaraciones y activaciones;
+- cambios de severidad, impacto, alcance o modalidad;
+- asignaciones y transferencias de mando;
+- decisiones y excepciones;
+- acciones de contención o continuidad;
+- hitos de recuperación;
+- validaciones técnicas;
+- validaciones funcionales;
+- bloqueos, conflictos y resultados desconocidos;
+- comunicaciones materiales;
+- reincorporaciones o conciliaciones relevantes;
+- desactivación, recuperación total o cierre cuando ocurran;
+- correcciones y aclaraciones posteriores.
+
+Las familias de presentación no sustituyen las categorías canónicas de las fuentes propietarias.
+
+---
+
+#### 18. Contrato visual de una entrada cronológica
+
+Cada entrada material de la línea de tiempo deberá poder proyectar, cuando aplique:
+
+| Campo              | Regla                                                                  |
+| ------------------ | ---------------------------------------------------------------------- |
+| referencia         | identidad correlacionable con la fuente                                |
+| tiempo efectivo    | momento en que ocurrió o fue observado el hecho                        |
+| tiempo de registro | momento en que el sistema recibió o registró la entrada cuando difiera |
+| secuencia          | orden correlacionable dentro del expediente                            |
+| familia visual     | ayuda a leer el evento sin crear una taxonomía propietaria nueva       |
+| fuente             | dominio, aplicación, proveedor o expediente de origen                  |
+| actor              | persona o principal técnico que produjo el hecho cuando corresponda    |
+| función            | función ejercida en el incidente cuando sea material                   |
+| alcance            | servicio, proceso, sede, recurso o población afectada                  |
+| estado previo      | referencia cuando la transición lo requiera                            |
+| estado posterior   | referencia cuando la transición lo requiera                            |
+| severidad          | contexto vigente en ese momento cuando aplique                         |
+| resumen            | lenguaje humano, factual y minimizado                                  |
+| decisión           | referencia a decisión protegida cuando exista                          |
+| autoridad          | referencia a autoridad o aprobador cuando corresponda                  |
+| evidencia          | referencias, nunca secreto completo                                    |
+| incertidumbre      | condición explícita si el hecho no está confirmado                     |
+| corrección         | referencia a entrada corregida o aclarada                              |
+| relación           | causal, dependiente, supersede o respuesta cuando la fuente la conozca |
+| frescura           | calidad temporal de la proyección visible                              |
+
+Una entrada puede omitir campos no aplicables, pero no puede fabricar valores para aparentar completitud.
+
+---
+
+#### 19. Orden temporal y llegada tardía
+
+La experiencia distingue:
+
+```text
+TIEMPO EFECTIVO DEL HECHO
+≠
+TIEMPO DE REGISTRO
+≠
+TIEMPO DE VISUALIZACIÓN
+```
+
+Reglas:
+
+1. la línea principal se organiza por tiempo efectivo cuando la fuente lo proporciona;
+2. si el hecho llega tarde, se identifica como registro posterior sin ocultar su tiempo efectivo;
+3. una entrada tardía puede cambiar la comprensión del incidente, pero no reescribe silenciosamente entradas previas;
+4. si el tiempo efectivo no es confiable, la incertidumbre se muestra;
+5. la hora de sincronización no sustituye la hora observada;
+6. un desfase material debe ser visible en detalle;
+7. la UI puede ofrecer orden por registro para diagnóstico, pero no lo presenta como secuencia factual por defecto.
+
+---
+
+#### 20. Correcciones y aclaraciones
+
+Cuando una entrada cronológica deba corregirse:
+
+- se conserva la entrada original;
+- se crea o proyecta la corrección como un elemento relacionado;
+- se identifica la razón de corrección cuando la fuente la tenga;
+- se conserva el actor o fuente que emitió la corrección;
+- la vista actual puede destacar la interpretación vigente sin borrar la historia;
+- una corrección no modifica evidencia propietaria fuera de su dominio;
+- una corrección sensible conserva los mismos controles de acceso que el contenido relacionado.
+
+---
+
+#### 21. Hecho, interpretación, hipótesis y decisión
+
+El centro de mando evita presentar inferencias como hechos.
+
+Cuando sea material, la experiencia distingue:
+
+| Clase semántica        | Significado                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| hecho observado        | dato o evento respaldado por fuente identificada              |
+| interpretación         | lectura humana o técnica sobre hechos disponibles             |
+| hipótesis              | explicación no confirmada que requiere evidencia adicional    |
+| decisión               | elección autoritativa con actor, autoridad, alcance y razones |
+| recomendación asistida | propuesta de sistema o automatización que no posee autoridad  |
+
+Una recomendación asistida nunca se presenta con la misma semántica visual que una decisión aprobada.
+
+---
+
+#### 22. Panel de decisiones
+
+`Z6_DECISIONES` materializa decisiones abiertas, recientemente tomadas o materialmente relacionadas con la coordinación actual.
+
+Cada unidad de decisión deberá poder proyectar:
+
+- referencia de decisión;
+- categoría propietaria cuando exista;
+- resumen humano;
+- incidente y alcance;
+- estado autoritativo de la decisión;
+- función que propone;
+- actor proponente cuando sea necesario;
+- autoridad requerida;
+- autoridad efectiva resuelta cuando corresponda;
+- aprobador cuando exista decisión tomada;
+- razones y evidencia referenciada;
+- vigencia o expiración cuando aplique;
+- condiciones o límites;
+- condición siguiente si fue denegada o permanece bloqueada;
+- relación con una acción, comunicación, excepción o recuperación;
+- tiempo efectivo y último cambio.
+
+El panel no inventa estados de decisión. Consume los estados propietarios disponibles.
+
+---
+
+#### 23. Acciones protegidas desde el centro de mando
+
+Una acción protegida puede ser iniciada desde esta experiencia únicamente si:
+
+1. existe contrato canónico para la acción;
+2. el actor efectivo está autenticado;
+3. el contexto aplicable está vigente;
+4. el recurso exacto está identificado;
+5. la autoridad se evalúa por el mecanismo propietario;
+6. el estado del incidente permite la acción;
+7. el alcance no excede la decisión vigente;
+8. la acción no depende de un filtro visual como fuente de autoridad;
+9. la decisión se ejecuta en la superficie o servicio propietario;
+10. el resultado vuelve con referencia correlacionable.
+
+Ocultar un botón no sustituye enforcement. Mostrar un botón tampoco constituye allow.
+
+---
+
+#### 24. Decisiones pendientes y bloqueo de autoridad
+
+Cuando una decisión no pueda resolverse porque falta autoridad, delegación vigente, evidencia o condición previa, la experiencia muestra:
+
+- decisión requerida;
+- motivo del bloqueo;
+- autoridad o función que debe resolverla cuando esté identificada;
+- alcance afectado;
+- condición verificable de salida;
+- tiempo desde el último cambio cuando sea útil;
+- efecto sobre recuperación o continuidad;
+- enlace autorizado a la evidencia o superficie correspondiente.
+
+La ausencia del aprobador no se traduce en aprobación por silencio.
+
+---
+
+#### 25. Bloqueos y desconocidos
+
+`Z7_BLOQUEOS_Y_DESCONOCIDOS` prioriza condiciones que impiden confiar en la recuperación o avanzar a una transición protegida.
+
+Cuando existan, la vista debe hacer visibles de forma inequívoca:
+
+- `RESULT_UNKNOWN`;
+- `CONFLICT`;
+- `QUARANTINED`;
+- `RECONCILIATION_REQUIRED`;
+- validación técnica obligatoria ausente;
+- validación funcional obligatoria ausente;
+- evidencia obligatoria no enlazada;
+- control protector incumplido;
+- dependencia externa sin estado suficiente;
+- autoridad requerida no resoluble;
+- fuente desactualizada o frescura no acreditable;
+- efecto downstream material pendiente;
+- trabajo contingente sin destino cuando sea relevante para recuperación;
+- diferencia material entre fuentes propietarias.
+
+Un bloqueo conserva propietario y condición de salida cuando esa información exista en la fuente.
+
+---
+
+#### 26. Tratamiento de `RESULT_UNKNOWN`
+
+`RESULT_UNKNOWN` nunca se representa como fallo simple ni como éxito implícito.
+
+La experiencia debe:
+
+- identificar la operación o efecto cuya resolución es desconocida;
+- impedir que el estado visual sugiera repetición segura sin verificación;
+- mostrar la referencia de correlación disponible;
+- presentar la acción de recuperación o investigación únicamente cuando el contrato propietario la habilite;
+- conservar la relación con decisiones y conciliaciones posteriores;
+- mantener el bloqueo material hasta resolución o disposición autoritativa.
+
+---
+
+#### 27. Tratamiento de conflicto y conciliación
+
+Un `CONFLICT` o `RECONCILIATION_REQUIRED` material se presenta con:
+
+- dominios o efectos involucrados;
+- referencia de los hechos en disputa;
+- propietario de cada extremo cuando esté disponible;
+- estado de resolución;
+- decisión requerida;
+- evidencia relacionada;
+- impacto sobre recuperación o cierre;
+- siguiente condición verificable.
+
+El centro de mando no resuelve un conflicto mediante preferencia visual entre dos fuentes.
+
+---
+
+#### 28. Frescura de información
+
+Toda proyección material deberá permitir distinguir:
+
+- información obtenida recientemente de su fuente;
+- último valor conocido cuya antigüedad es visible;
+- fuente temporalmente no accesible;
+- información que llegó tarde;
+- información cuya versión fue superada;
+- dato corregido después de la primera observación.
+
+Reglas:
+
+```text
+SIN ACTUALIZACIÓN
+≠ SIN CAMBIOS
+```
+
+```text
+SIN ALERTAS NUEVAS
+≠ OPERACIÓN NORMAL
+```
+
+```text
+ÚLTIMO DATO CONOCIDO
+≠ DATO ACTUAL CONFIRMADO
+```
+
+La pérdida de conexión o de actualización en vivo genera una señal de frescura degradada, no un cambio de estado empresarial.
+
+---
+
+#### 29. Actualización en vivo
+
+Cuando una implementación futura utilice mecanismos en vivo, la experiencia deberá conservar estas reglas documentales:
+
+1. la actualización recibida se correlaciona por identidad antes de reflejarse;
+2. un duplicado no crea otra entrada material;
+3. una llegada fuera de orden conserva tiempos efectivos;
+4. el foco del usuario no salta de forma destructiva por cada actualización;
+5. una decisión en revisión no cambia de posición sin indicar que recibió un cambio material;
+6. una reconexión vuelve a validar sesión y autorización;
+7. una reconexión no reejecuta automáticamente mutaciones fallidas;
+8. la ausencia de canal en vivo se muestra como problema de frescura;
+9. una actualización no autoaprueba decisiones;
+10. una actualización no reemplaza la fuente propietaria.
+
+Esta tarea no selecciona ni implementa una tecnología de tiempo real.
+
+---
+
+#### 30. Coordinación siguiente
+
+`Z8_COORDINACION_Y_HANDOFFS` destaca el siguiente resultado material que requiere coordinación, no una lista genérica de tareas.
+
+Puede proyectar, según contexto:
+
+- decisión pendiente;
+- hito de recuperación;
+- validación técnica;
+- validación funcional;
+- intervención protectora;
+- resolución de conflicto;
+- conciliación;
+- comunicación pendiente de aprobación;
+- revisión de runbook;
+- entrega de mando;
+- verificación de dependencia externa;
+- tratamiento de evidencia faltante.
+
+La coordinación siguiente identifica función responsable y fuente propietaria. No crea un permiso nuevo para ejecutar la acción.
+
+---
+
+#### 31. Handoffs especializados
+
+El centro de mando mantiene enlaces semánticos hacia materias que pertenecen a tareas posteriores del mismo mini-bloque.
+
+| Materia                                    | Handoff propietario             | Qué conserva el centro de mando                                              |
+| ------------------------------------------ | ------------------------------- | ---------------------------------------------------------------------------- |
+| runbooks y checklists                      | `CONT-UX-003`                   | referencia, versión aplicable, rol/proceso/sede/modalidad y estado de uso    |
+| captura durante la falla y reincorporación | `CONT-UX-004`                   | conteos, bloqueos, referencias y estado resumido                             |
+| backup, restore, failover y validación     | `CONT-UX-005`                   | hitos, estado resumido, validaciones y pendientes                            |
+| comunicaciones                             | `CONT-UX-006`                   | audiencia, estado de preparación/aprobación/emisión y referencia             |
+| ejercicios, revisión y readiness           | `CONT-UX-007`                   | contexto de simulación y referencia, sin absorber la experiencia propietaria |
+| health y degradación entre aplicaciones    | `CONT-INT-001` y `CONT-INT-002` | proyección correlacionada del estado recibido                                |
+| dependencias externas                      | `CONT-INT-003`                  | estado, receipt y bloqueo relevante                                          |
+| replay, reincorporación y retorno normal   | `CONT-INT-004`                  | resumen de pendientes, conflictos y conciliación                             |
+
+Cada handoff conserva incidente, alcance y referencia que originó la navegación. La superficie destino vuelve a resolver autorización.
+
+---
+
+#### 32. Runbooks dentro del centro de mando
+
+El centro de mando puede mostrar:
+
+- runbook aplicable;
+- versión;
+- proceso o servicio relacionado;
+- rol o función destinataria;
+- modalidad o escenario aplicable;
+- último estado conocido de ejecución;
+- evidencia o referencias de pasos materiales cuando la fuente las suministre.
+
+No define pasos, checklists ni contratos de ejecución de runbooks; esa responsabilidad permanece en `CONT-UX-003`.
+
+---
+
+#### 33. Trabajo contingente y reincorporación
+
+El centro de mando puede sintetizar:
+
+- unidades de trabajo contingente detectadas;
+- unidades admitidas;
+- unidades pendientes de decisión;
+- conflictos;
+- resultados desconocidos;
+- conciliaciones requeridas;
+- bloqueos de retorno normal.
+
+No implementa la captura, corrección, admisión o reincorporación detallada; esa experiencia permanece en `CONT-UX-004` y los contratos propietarios.
+
+---
+
+#### 34. Restore y failover
+
+El centro de mando puede proyectar:
+
+- recurso o servicio en recuperación;
+- estrategia autorizada;
+- estado técnico informado;
+- validación técnica;
+- validación funcional;
+- fuente activa cuando sea relevante;
+- bloqueo o riesgo de retorno;
+- evidencia o receipt referenciado;
+- impacto sobre el proceso empresarial.
+
+No se convierte en consola de respaldo, restore, failover o failback. El detalle permanece en `CONT-UX-005`.
+
+---
+
+#### 35. Comunicaciones
+
+El centro de mando puede mostrar, de forma minimizada:
+
+- clase o propósito de comunicación;
+- audiencia o grupo funcional;
+- estado propietario;
+- responsable de preparación;
+- autoridad de aprobación cuando aplique;
+- momento de última emisión;
+- confirmación o escalamiento pendiente;
+- referencia a la comunicación.
+
+No contiene la experiencia completa de plantillas, edición, canales, confirmación o escalamiento; esa materia pertenece a `CONT-UX-006`.
+
+---
+
+#### 36. Proveedores y dependencias externas
+
+Una dependencia externa se presenta con:
+
+- proveedor o función externa mínima necesaria;
+- servicio/dependencia afectada;
+- alcance del impacto;
+- estado informado por el tercero;
+- tiempo y fuente de la última actualización;
+- receipt o evidencia referenciada cuando exista;
+- responsable interno de aceptación;
+- efecto sobre continuidad y recuperación;
+- siguiente coordinación requerida.
+
+Regla cardinal:
+
+```text
+PROVEEDOR RESTABLECIDO
+≠ PROCESO VENTO RECUPERADO
+```
+
+El estado de un tercero es un insumo, no una aprobación empresarial.
+
+---
+
+#### 37. Evidencia
+
+Las referencias a evidencia dentro del centro de mando deben:
+
+- usar identificadores o referencias protegidas;
+- mostrar metadatos mínimos necesarios;
+- conservar clasificación y propósito;
+- volver a resolver autorización al abrir el contenido;
+- evitar miniaturas o fragmentos sensibles cuando no sean necesarios;
+- impedir que un contador revele evidencia fuera de alcance;
+- preservar la relación entre decisión, evento, validación y evidencia;
+- distinguir evidencia disponible de evidencia validada;
+- conservar origen e integridad cuando la fuente lo permita.
+
+El centro de mando no es un repositorio paralelo de evidencia.
+
+---
+
+#### 38. Búsqueda y filtros
+
+La búsqueda y los filtros pueden operar sobre el universo ya autorizado y visible.
+
+Filtros permitidos conceptualmente incluyen:
+
+- servicio o proceso;
+- sede o territorio;
+- prioridad;
+- severidad contextual;
+- etapa de recuperación;
+- tipo de evento visual;
+- función responsable;
+- estado de decisión;
+- presencia de bloqueo;
+- periodo de tiempo.
+
+Reglas:
+
+- un filtro no crea contexto operativo;
+- un filtro no aumenta alcance;
+- una búsqueda no revela títulos, fragmentos, nombres o contadores de elementos no autorizados;
+- seleccionar una sede no concede autoridad sobre esa sede;
+- limpiar filtros no amplía automáticamente el universo autorizado;
+- las vistas guardadas son preferencias de presentación, no decisiones de continuidad.
+
+---
+
+#### 39. Densidad y divulgación progresiva
+
+La experiencia adopta tres niveles de profundidad:
+
+1. **situación inmediata:** cabecera, mando, bloqueos, prioridades y siguiente coordinación;
+2. **coordinación operacional:** afectación, recuperación, decisiones y línea de tiempo resumida;
+3. **detalle trazable:** referencias, tiempos, evidencia, autoridad, relaciones y handoffs propietarios.
+
+El nivel inicial evita tablas masivas. El detalle se revela por selección explícita sin ocultar los bloqueos críticos.
+
+---
+
+#### 40. Estado vacío y ausencia de datos
+
+La experiencia diferencia:
+
+- no existen elementos dentro del alcance;
+- existen elementos pero el actor no está autorizado a verlos;
+- la fuente no responde;
+- la fuente responde sin datos actuales;
+- la información aún no fue materializada por su dominio;
+- un filtro oculta resultados;
+- existe un error técnico de proyección.
+
+Nunca se usa `0` como sustituto universal ante una falla de lectura.
+
+---
+
+#### 41. Errores y degradación de la experiencia
+
+Un fallo parcial debe comunicar en lenguaje humano:
+
+- qué parte no pudo actualizarse;
+- qué información permanece disponible;
+- qué antigüedad tiene el último dato conocido;
+- si una acción protegida sigue disponible o debe revalidarse;
+- cómo actualizar o continuar por la superficie propietaria cuando exista alternativa autorizada;
+- qué no debe asumirse del estado actual.
+
+Un error de red no elimina el incidente ni transforma un bloqueo en normalidad.
+
+---
+
+#### 42. Responsive y dispositivos
+
+La jerarquía semántica se conserva entre tamaños.
+
+**Escritorio:**
+- permite coexistencia de afectación, recuperación, decisiones y línea de tiempo;
+- puede usar panel de detalle lateral o contextual sin perder cabecera y bloqueos.
+
+**Tablet:**
+- prioriza cabecera, mando, bloqueos y afectación;
+- permite alternar recuperación, decisiones y cronología con contexto persistente.
+
+**Móvil:**
+- apila en orden: identidad/estado, bloqueos, siguiente coordinación, mando, afectación prioritaria, decisiones, recuperación y cronología;
+- evita mostrar una tabla técnica completa comprimida;
+- preserva texto explícito de severidad y estado.
+
+Ningún dispositivo obtiene más autoridad por su factor de forma.
+
+---
+
+#### 43. Accesibilidad
+
+La experiencia debe diseñarse para:
+
+- navegación completa por teclado;
+- foco visible y estable;
+- lectura estructurada por tecnologías asistivas;
+- encabezados y regiones semánticas;
+- severidad y bloqueos expresados con texto además de color;
+- estados no dependientes de animación;
+- timestamps legibles y con contexto temporal;
+- controles críticos con etiquetas inequívocas;
+- zoom sin pérdida de acciones o información material;
+- anuncios no intrusivos de cambios materiales cuando una implementación en vivo los incorpore;
+- tablas o listas con equivalentes legibles en pantallas reducidas.
+
+---
+
+#### 44. Protección de información sensible
+
+El centro de mando aplica minimización por defecto.
+
+No se muestran en la primera jerarquía:
+
+- secretos completos;
+- tokens;
+- credenciales;
+- llaves de recuperación;
+- contenido íntegro de evidencia sensible;
+- listas nominales completas de contacto cuando basta la función;
+- datos personales no necesarios para coordinar;
+- detalles de investigación cuya divulgación no sea necesaria;
+- mensajes externos completos cuando una referencia y estado sean suficientes.
+
+El acceso a detalle sensible se resuelve en su superficie propietaria con finalidad, actor, recurso y acción exacta.
+
+---
+
+#### 45. Autoridad y acciones visibles
+
+La experiencia separa tres capas:
+
+```text
+VISIBILIDAD
+→ qué puede conocer el actor
+
+CAPACIDAD DE INICIAR
+→ qué acción puede solicitar desde la experiencia
+
+AUTORIDAD EFECTIVA
+→ qué decisión puede producir válidamente el sistema propietario
+```
+
+No se deriva autoridad desde:
+
+- cargo;
+- presencia en el mando;
+- rol local;
+- acceso a VISO;
+- uso de un dispositivo compartido;
+- haber creado el incidente;
+- haber ejecutado la recuperación;
+- ser propietario técnico;
+- ser proveedor;
+- haber recibido una notificación.
+
+---
+
+#### 46. Recuperación total, desactivación y cierre
+
+La experiencia presenta separadamente:
+
+- estado de recuperación por proceso;
+- recuperación total propuesta;
+- recuperación total aprobada cuando exista;
+- desactivación de coordinación extraordinaria;
+- cierre del incidente;
+- revisión posterior cuando corresponda.
+
+Reglas:
+
+```text
+RECUPERACIÓN TÉCNICA ≠ RECUPERACIÓN TOTAL
+```
+
+```text
+RECUPERACIÓN TOTAL ≠ DESACTIVACIÓN
+```
+
+```text
+DESACTIVACIÓN ≠ CIERRE
+```
+
+```text
+CIERRE ≠ REVISIÓN POSTERIOR CONCLUIDA
+```
+
+El centro de mando no habilita una apariencia de cierre si existen bloqueos materiales que el contrato prohíbe.
+
+---
+
+#### 47. Condiciones que deben impedir una apariencia de cierre sano
+
+Si cualquiera de las siguientes condiciones existe y es material para el alcance, debe permanecer visible y no puede ocultarse mediante agrupación, filtro o estado técnico favorable:
+
+- `RESULT_UNKNOWN` abierto;
+- `CONFLICT` abierto;
+- `QUARANTINED` sin decisión;
+- `RECONCILIATION_REQUIRED` abierto;
+- efecto empresarial sin representación o disposición;
+- evidencia obligatoria faltante;
+- efecto downstream material pendiente;
+- trabajo contingente sin destino;
+- validación funcional obligatoria ausente;
+- control protector incumplido;
+- recuperación total requerida aún no aprobada;
+- autoridad de cierre no vigente o no resoluble.
+
+La experiencia puede mostrar una condición de salida, pero no puede degradar el bloqueo para liberar visualmente el incidente.
+
+---
+
+#### 48. Incidente real y simulación
+
+La superficie debe distinguir inequívocamente:
+
+- incidente real;
+- ejercicio;
+- simulación técnica;
+- demostración o entorno no productivo cuando el contexto lo identifique.
+
+En simulación:
+
+- la autoridad simulada no se interpreta como permiso productivo;
+- los estados simulados no se mezclan con incidentes reales;
+- una acción real accidental se trata mediante los procesos reales aplicables;
+- la experiencia de diseño y revisión del ejercicio permanece en `CONT-UX-007`.
+
+---
+
+#### 49. Métricas permitidas y límites
+
+El centro de mando puede mostrar conteos o medidas solo cuando:
+
+- existe definición propietaria;
+- la población está clara;
+- el alcance está autorizado;
+- la fuente y la frescura están disponibles;
+- el valor no implica por sí solo una conclusión empresarial que la fuente no haya declarado.
+
+Ejemplos admisibles son conteos de unidades abiertas, servicios afectados o decisiones pendientes dentro del alcance autorizado. Un conteo no se convierte en porcentaje de recuperación si no existe contrato aprobado para ese indicador.
+
+---
+
+#### 50. Estados documentales de esta tarea
+
+| Elemento                                        | Estado documental  | Alcance                                            |
+| ----------------------------------------------- | ------------------ | -------------------------------------------------- |
+| arquitectura de información del centro de mando | `ESPECIFICADO`     | definida por esta tarea                            |
+| jerarquía y zonas semánticas                    | `ESPECIFICADO`     | 8 zonas obligatorias                               |
+| contrato de afectación                          | `ESPECIFICADO`     | proyección por servicio/proceso/sede               |
+| contrato de recuperación                        | `ESPECIFICADO`     | separación técnica, funcional y empresarial        |
+| contrato de cronología                          | `ESPECIFICADO`     | eventos y decisiones correlacionados               |
+| contrato de mando                               | `ESPECIFICADO`     | funciones, sustitución y handoff                   |
+| contrato de bloqueos                            | `ESPECIFICADO`     | desconocidos, conflicto, cuarentena y conciliación |
+| implementación de interfaz                      | `FUERA_DE_ALCANCE` | no autorizada en esta tarea documental             |
+| integración en vivo                             | `FUERA_DE_ALCANCE` | no autorizada en esta tarea documental             |
+| ejecución de incidentes reales                  | `FUERA_DE_ALCANCE` | no se realiza en esta tarea                        |
+| evidencia operativa nueva                       | `FUERA_DE_ALCANCE` | no se fabrica ni ejecuta                           |
+
+No se declara `IMPLEMENTADO` ni `VALIDADO` ningún comportamiento físico.
+
+---
+
+#### 51. Matriz de información por función
+
+La densidad se adapta a la función ejercida y a la autorización efectiva.
+
+| Función                          | Prioridad de información                                                        | No implica                                 |
+| -------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------ |
+| `RESPONSABLE_DE_CONTINUIDAD`     | estado, mando, impacto, decisiones, bloqueos, recuperación, cronología          | autoridad universal sobre dominios         |
+| `CONTINUADOR_DE_CONTINUIDAD`     | mismo alcance funcional solo durante sustitución vigente                        | coexistencia automática de dos directores  |
+| `GERENCIA_GENERAL`               | impacto, prioridades, decisiones protegidas, recuperación total, cierre         | ejecución técnica                          |
+| `GOBIERNO_Y_PROPIEDAD`           | impacto material, decisiones de gobierno, riesgo y cierre según autoridad       | validación funcional de todos los procesos |
+| `COORDINACION_DE_OPERACIONES`    | operación mínima, afectación por sede/proceso, bloqueos y handoffs              | aprobación ejecutiva por defecto           |
+| `RESPONSABLE_TECNOLOGICO`        | dependencias técnicas, recuperación, validación técnica y evidencias aplicables | recuperación empresarial                   |
+| `RESPONSABLE_DEL_PROCESO`        | resultado empresarial, MBCO, validación funcional, contingencia y conciliación  | autoridad sobre otros procesos             |
+| `GERENCIA_O_SUPERVISION_DE_SEDE` | afectación territorial y coordinación aplicable                                 | alcance global por usar la pantalla        |
+| `EQUIPO_OPERATIVO_DEL_AREA`      | tareas y estado mínimo necesario para ejecutar su parte                         | acceso al expediente ejecutivo completo    |
+| proveedor o tercero              | dependencia y evidencia de su contrato                                          | autoridad empresarial de Vento             |
+
+La matriz describe prioridad de experiencia, no permisos físicos.
+
+---
+
+#### 52. Casos de lectura determinista
+
+La experiencia debe permitir interpretar correctamente los siguientes escenarios sin mezclar conceptos:
+
+| Escenario                                        | Presentación requerida                                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| servicio técnico arriba, proceso no validado     | técnico favorable + validación funcional pendiente; no recuperado empresarialmente        |
+| restore completado, conciliación abierta         | hito técnico completado + bloqueo de conciliación                                         |
+| proveedor estable, dependencia interna bloqueada | estado externo favorable + proceso Vento aún afectado                                     |
+| incidente desactivado con acción de mejora       | `DESACTIVADO` + pendiente posterior identificado; no implica cierre si faltan condiciones |
+| `RESULT_UNKNOWN` en operación material           | bloqueo explícito, correlación e investigación/decisión pendiente                         |
+| información en vivo interrumpida                 | último dato conocido + frescura degradada; sin cambio de estado inferido                  |
+| nuevo director efectivo                          | handoff cronológico + función actual; historia preservada                                 |
+| decisión denegada                                | decisión visible con razones y condición de reevaluación                                  |
+| dato corregido                                   | entrada original + corrección relacionada                                                 |
+| simulación                                       | contexto inequívoco; acciones simuladas no habilitan producción                           |
+
+---
+
+#### 53. Prohibiciones de experiencia
+
+Queda prohibido diseñar el centro de mando de forma que:
+
+- mezcle severidad con prioridad de recuperación;
+- mezcle impacto con urgencia;
+- use health técnico como estado empresarial;
+- calcule recuperación total por mayoría de indicadores;
+- oculte desconocidos para simplificar la vista;
+- borre eventos corregidos;
+- ordene únicamente por llegada técnica y lo presente como historia factual;
+- permita que un filtro modifique autoridad;
+- muestre evidencia sensible sin nueva autorización;
+- convierta el rol mostrado en permiso;
+- convierta proveedor en aprobador;
+- convierta automatización en autoridad empresarial;
+- permita que el ejecutor se autocertifique por la misma acción crítica;
+- trate una acción mutante fallida como segura para repetición automática;
+- muestre un cero cuando la fuente no respondió;
+- muestre verde global por ausencia de alertas;
+- invente ETA;
+- invente objetivos de recuperación;
+- invente nombres de servicios o procesos;
+- invente personas responsables;
+- invente timestamps;
+- invente evidencia;
+- cree un segundo registro de incidente desconectado de `VPROC-0062`.
+
+---
+
+#### 54. Handoffs obligatorios de esta tarea
+
+| Materia posterior                                                   | Propietario                     | Condición de salida documental                                           |
+| ------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------ |
+| pasos guiados, runbooks y checklists por rol/proceso/sede/modalidad | `CONT-UX-003`                   | antes de diseñar interacción detallada de ejecución guiada               |
+| captura controlada y reincorporación humana                         | `CONT-UX-004`                   | antes de diseñar formularios y revisión detallada de trabajo contingente |
+| backup, restore, failover, validación y pendientes                  | `CONT-UX-005`                   | antes de diseñar seguimiento especializado de recuperación técnica       |
+| comunicación interna/externa, plantillas, canales y confirmación    | `CONT-UX-006`                   | antes de diseñar interacción especializada de comunicaciones             |
+| ejercicios, revisión, acciones y readiness                          | `CONT-UX-007`                   | antes de diseñar experiencia de simulación y aprendizaje                 |
+| health, degradación y propagación de incidente                      | `CONT-INT-001` y `CONT-INT-002` | antes de automatizar proyecciones entre aplicaciones                     |
+| dependencias y proveedores externos                                 | `CONT-INT-003`                  | antes de automatizar estados/receipts externos                           |
+| replay, reincorporación, idempotencia, conciliación y retorno       | `CONT-INT-004`                  | antes de automatizar retorno productivo del trabajo contingente          |
+
+No se crea ninguna tarea nueva y no queda un pendiente documental sin propietario entre las materias detectadas.
+
+---
+
+#### 55. Cobertura vigente de prueba
+
+La conducta que esta tarea proyecta ya dispone de cobertura vigente:
+
+- `TREQ-CONT-001` protege análisis de impacto, dependencias, objetivos y prioridad de recuperación y asigna responsabilidad a `CONT-UX-002`;
+- `TREQ-CONT-002` protege clasificación del incidente, responsables, decisiones, escalamiento, estado, recuperación, autoridad, sustitución y bitácora y asigna responsabilidad a `CONT-UX-002`;
+- `TREQ-UX-001` protege comprensión de estado, tarea y siguiente acción;
+- `TREQ-UX-002` protege errores, bloqueos, reintentos y recuperación sin duplicar efectos;
+- `TREQ-UX-003` protege minimización, densidad y acciones adecuadas al actor y su autorización;
+- `TREQ-UX-005` protege fuente de verdad, estado confirmado o pendiente, actor, último cambio y ausencia de copias competidoras;
+- `TREQ-UX-006` protege continuidad de experiencia ante fallos de red, energía, sesión, dispositivo o proveedor;
+- `TREQ-UX-010` protege contexto, versión, estado, actor, segregación e impacto en superficies administrativas cuando apliquen.
+
+Esta tarea especializa la presentación y coordinación de esas obligaciones en el centro de mando sin introducir un comportamiento ejecutable nuevo fuera de la cobertura existente.
+
+---
+
+#### 56. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea define una proyección documental de estados, impacto, mando, cronología, recuperación, bloqueos y decisiones que ya están protegidos por requisitos vigentes de continuidad y experiencia. No introduce un nuevo efecto empresarial, transición, permiso, integración, cálculo o regla de integridad que requiera un requisito adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 57. Criterios de aceptación
+
+1. La tarea conserva `CONT-UX-001` como anterior aprobada.
+2. La tarea reserva únicamente `CONT-UX-003` como siguiente.
+3. La tarea permanece exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. La tarea no crea código.
+5. La tarea no crea migraciones.
+6. La tarea no crea DDL.
+7. La tarea no crea DML.
+8. La tarea no crea RLS.
+9. La tarea no crea RPC.
+10. La tarea no crea datos productivos.
+11. La tarea no crea permisos.
+12. La tarea no crea roles.
+13. La tarea no crea secretos.
+14. La tarea no ejecuta incidentes reales.
+15. La tarea no ejecuta restore.
+16. La tarea no ejecuta failover.
+17. La tarea no ejecuta comunicaciones reales.
+18. La tarea no declara readiness.
+19. La tarea no declara recuperación real.
+20. La tarea no declara validación operativa inexistente.
+21. El centro de mando es profundidad operacional del inicio ejecutivo.
+22. El centro de mando no crea otra portada ejecutiva competidora.
+23. El centro de mando consume `VPROC-0062` como expediente transversal.
+24. VISO conserva propiedad del expediente transversal de continuidad.
+25. Los dominios conservan propiedad de sus hechos.
+26. La vista es una proyección coordinadora y no una fuente de verdad nueva.
+27. Se materializan exactamente ocho zonas semánticas obligatorias.
+28. La posición física de las zonas puede variar por dispositivo.
+29. El significado de las zonas no varía por dispositivo.
+30. La identidad del incidente permanece visible en la primera jerarquía.
+31. El contexto real o de simulación permanece visible en la primera jerarquía.
+32. El estado empresarial vigente permanece visible en la primera jerarquía.
+33. La severidad permanece visible en la primera jerarquía.
+34. La modalidad de activación permanece distinguible.
+35. La frescura permanece visible cuando sea material.
+36. Un bloqueo protector crítico no queda oculto por el layout.
+37. La dirección efectiva del incidente puede identificarse.
+38. La sustitución activa puede identificarse.
+39. La función se presenta antes que la identidad nominal cuando sea suficiente.
+40. La identidad nominal se minimiza cuando no es necesaria.
+41. La función visible no concede permiso técnico.
+42. Presencia en el incidente no concede aprobación.
+43. Un sustituto no crea dos directores efectivos para el mismo alcance y momento.
+44. Un handoff conserva actor saliente.
+45. Un handoff conserva actor entrante.
+46. Un handoff conserva tiempo efectivo.
+47. Un handoff conserva motivo cuando la fuente lo tenga.
+48. Un handoff conserva alcance.
+49. Un handoff conserva decisiones abiertas relevantes.
+50. Un handoff no reescribe la historia del mando previo.
+51. Cada unidad afectada conserva una identidad propietaria.
+52. Cada unidad afectada conserva propietario funcional cuando aplique.
+53. Cada unidad afectada conserva alcance territorial cuando aplique.
+54. Cada unidad afectada conserva impacto empresarial cuando aplique.
+55. Cada unidad afectada conserva prioridad de recuperación cuando aplique.
+56. MBCO se muestra solo si existe en la fuente y aplica.
+57. RTO se muestra solo si existe en la fuente y aplica.
+58. MTPD se muestra solo si existe en la fuente y aplica.
+59. RPO se muestra solo si existe en la fuente y aplica.
+60. Ningún objetivo numérico se inventa para completar una fila.
+61. Estado técnico y estado empresarial permanecen separados.
+62. Validación técnica y validación funcional permanecen separadas.
+63. Reincorporación y validación funcional permanecen separadas.
+64. Conciliación y recuperación total permanecen separadas.
+65. Restore exitoso no equivale a recuperación empresarial.
+66. Health favorable no equivale a recuperación empresarial.
+67. Receipt externo no equivale a recuperación empresarial.
+68. Una validación técnica positiva no sustituye la funcional.
+69. Una validación funcional pendiente permanece visible cuando es material.
+70. Trabajo contingente pendiente puede permanecer visible cuando afecta recuperación.
+71. Conciliación pendiente puede permanecer visible cuando afecta recuperación.
+72. Recuperación total no se infiere de componentes individuales.
+73. Los hitos de recuperación se basan en resultados verificables.
+74. Un hito conserva recurso o proceso relacionado.
+75. Un hito conserva función responsable cuando la fuente la define.
+76. Un hito conserva evidencia o receipt referenciado cuando existe.
+77. Un hito conserva bloqueo cuando existe.
+78. Un hito no se inventa desde actividad técnica no contractual.
+79. No se calcula porcentaje de recuperación por servicios en verde.
+80. No se calcula porcentaje de recuperación por tickets cerrados.
+81. No se calcula salud empresarial por health técnico.
+82. No se inventa ETA por extrapolación visual.
+83. No se declara riesgo cero por ausencia de alertas.
+84. No se declara readiness por existencia documental.
+85. La línea de tiempo no se convierte en un segundo ledger.
+86. Cada entrada cronológica conserva referencia a su fuente.
+87. Cada entrada material puede conservar tiempo efectivo.
+88. Cada entrada material puede conservar tiempo de registro separado.
+89. Tiempo de visualización no sustituye tiempo efectivo.
+90. Una llegada tardía conserva su tiempo efectivo.
+91. Una llegada tardía se identifica como registrada posteriormente cuando aplique.
+92. Una entrada tardía no reescribe silenciosamente el historial.
+93. Una corrección conserva la entrada original.
+94. Una corrección crea una relación con la entrada previa.
+95. Una corrección conserva fuente o actor cuando estén disponibles.
+96. La vista puede destacar la interpretación vigente sin borrar historia.
+97. Las familias visuales no crean un catálogo de eventos nuevo.
+98. La línea de tiempo puede proyectar señales.
+99. La línea de tiempo puede proyectar declaraciones y activaciones.
+100. La línea de tiempo puede proyectar cambios de severidad.
+101. La línea de tiempo puede proyectar cambios de alcance.
+102. La línea de tiempo puede proyectar handoffs de mando.
+103. La línea de tiempo puede proyectar decisiones y excepciones.
+104. La línea de tiempo puede proyectar acciones de continuidad.
+105. La línea de tiempo puede proyectar hitos de recuperación.
+106. La línea de tiempo puede proyectar validaciones técnicas.
+107. La línea de tiempo puede proyectar validaciones funcionales.
+108. La línea de tiempo puede proyectar bloqueos y desconocidos.
+109. La línea de tiempo puede proyectar comunicaciones materiales.
+110. La línea de tiempo puede proyectar conciliaciones relevantes.
+111. La línea de tiempo puede proyectar desactivación y cierre cuando ocurran.
+112. Hechos observados pueden distinguirse de interpretaciones.
+113. Interpretaciones pueden distinguirse de hipótesis.
+114. Hipótesis pueden distinguirse de decisiones.
+115. Recomendaciones asistidas se distinguen de decisiones autoritativas.
+116. Una automatización no se presenta como aprobador empresarial.
+117. El panel de decisiones conserva referencia de decisión.
+118. El panel de decisiones conserva alcance.
+119. El panel de decisiones conserva estado autoritativo cuando exista.
+120. El panel de decisiones conserva función proponente cuando corresponda.
+121. El panel de decisiones conserva autoridad requerida cuando corresponda.
+122. El panel de decisiones conserva aprobador cuando exista.
+123. El panel de decisiones conserva vigencia cuando aplique.
+124. El panel de decisiones conserva condición siguiente cuando esté bloqueada o denegada.
+125. El panel de decisiones no crea estados propietarios nuevos.
+126. Mostrar una acción no equivale a autorizarla.
+127. Ocultar una acción no sustituye enforcement.
+128. Una acción protegida vuelve a resolver autenticación y contexto aplicables.
+129. Una acción protegida identifica el recurso exacto.
+130. Una acción protegida evalúa autoridad por el mecanismo propietario.
+131. Un filtro visual no sirve como fuente de autoridad.
+132. Una decisión protegida no se aprueba por silencio.
+133. Una decisión bloqueada conserva motivo.
+134. Una decisión bloqueada conserva condición verificable de salida cuando existe.
+135. `RESULT_UNKNOWN` se presenta explícitamente.
+136. `RESULT_UNKNOWN` no se convierte en éxito implícito.
+137. `RESULT_UNKNOWN` no se convierte en repetición automática segura.
+138. `CONFLICT` se presenta explícitamente cuando es material.
+139. `QUARANTINED` se presenta explícitamente cuando es material.
+140. `RECONCILIATION_REQUIRED` se presenta explícitamente cuando es material.
+141. Validación técnica obligatoria ausente puede bloquear la confianza visual.
+142. Validación funcional obligatoria ausente puede bloquear la confianza visual.
+143. Evidencia obligatoria faltante puede permanecer visible.
+144. Un control protector incumplido no se oculta.
+145. Una autoridad no resoluble no se representa como disponible.
+146. Una fuente desactualizada no se representa como actual.
+147. Un efecto downstream pendiente puede permanecer visible.
+148. Un conflicto no se resuelve por preferencia visual entre fuentes.
+149. `SIN ACTUALIZACIÓN` no se interpreta como `SIN CAMBIOS`.
+150. `SIN ALERTAS NUEVAS` no se interpreta como `OPERACIÓN NORMAL`.
+151. El último dato conocido indica su antigüedad cuando sea material.
+152. La pérdida de actualización en vivo degrada frescura.
+153. La pérdida de actualización en vivo no cambia el estado empresarial por inferencia.
+154. Una actualización duplicada no crea otro evento material.
+155. Una llegada fuera de orden conserva sus tiempos.
+156. Una actualización no autoaprueba decisiones.
+157. Una reconexión revalida sesión y autorización.
+158. Una reconexión no reejecuta automáticamente mutaciones fallidas.
+159. Una actualización material no destruye el foco de teclado.
+160. El siguiente punto crítico de coordinación puede identificarse.
+161. El siguiente punto crítico conserva función responsable cuando exista.
+162. La coordinación siguiente no crea permiso para ejecutarla.
+163. El centro de mando enlaza runbooks sin definir sus pasos.
+164. `CONT-UX-003` conserva runbooks y checklists detallados.
+165. El centro de mando resume trabajo contingente sin absorber captura detallada.
+166. `CONT-UX-004` conserva captura y reincorporación detalladas.
+167. El centro de mando resume backup y restore sin absorber su seguimiento especializado.
+168. `CONT-UX-005` conserva backup, restore, failover, validación y pendientes detallados.
+169. El centro de mando resume comunicaciones sin absorber plantillas y canales.
+170. `CONT-UX-006` conserva comunicaciones detalladas.
+171. El centro de mando distingue ejercicio e incidente real.
+172. `CONT-UX-007` conserva ejercicios, revisión y readiness.
+173. `CONT-INT-001` y `CONT-INT-002` conservan automatización de health y degradación entre aplicaciones.
+174. `CONT-INT-003` conserva dependencias externas.
+175. `CONT-INT-004` conserva replay, reincorporación y retorno normal.
+176. Todo handoff conserva referencia del incidente.
+177. Todo handoff conserva alcance relevante.
+178. Todo handoff vuelve a resolver autorización.
+179. Una referencia a evidencia no concede lectura de evidencia.
+180. El centro de mando no almacena secretos completos.
+181. El centro de mando no almacena tokens completos.
+182. El centro de mando no almacena credenciales completas.
+183. La primera jerarquía minimiza datos personales.
+184. La primera jerarquía minimiza evidencia sensible.
+185. Un contador no revela objetos no autorizados.
+186. Una búsqueda no enumera información sensible fuera de alcance.
+187. Un error de autorización no revela fragmentos sensibles.
+188. Agrupar por sede no concede autoridad territorial.
+189. Agrupar por responsable no concede permisos de su dominio.
+190. Ordenar por prioridad no modifica prioridad canónica.
+191. Una vista guardada es preferencia, no decisión.
+192. La experiencia distingue fuente sin datos de fuente inaccesible.
+193. La experiencia distingue filtro vacío de universo vacío.
+194. Un error de lectura no se representa como cero.
+195. Un fallo parcial indica qué información permanece disponible.
+196. Un fallo parcial indica la antigüedad del último dato cuando sea material.
+197. Un fallo parcial no borra el incidente.
+198. Escritorio conserva coordinación multizona sin saturación técnica.
+199. Tablet conserva cabecera, mando, bloqueos y afectación prioritaria.
+200. Móvil conserva identidad, bloqueos y siguiente coordinación antes del detalle.
+201. Móvil no comprime una tabla técnica ilegible como solución principal.
+202. Color no es el único indicador de severidad.
+203. Color no es el único indicador de bloqueo.
+204. El foco visible se conserva en navegación por teclado.
+205. El zoom no oculta información material.
+206. La experiencia usa regiones semánticas legibles por tecnologías asistivas.
+207. Los controles críticos tienen etiquetas explícitas.
+208. La simulación se identifica inequívocamente.
+209. Una simulación no concede permisos productivos.
+210. Datos simulados no se mezclan silenciosamente con incidentes reales.
+211. Un proveedor no valida MBCO de Vento por declarar su servicio estable.
+212. Un proveedor no aprueba recuperación total de Vento.
+213. Un proveedor no aprueba cierre de Vento.
+214. Recuperación técnica permanece separada de recuperación total.
+215. Recuperación total permanece separada de desactivación.
+216. Desactivación permanece separada de cierre.
+217. Cierre permanece separado de revisión posterior.
+218. Un bloqueo material de cierre no se oculta por estado técnico favorable.
+219. La tarea crea cero requisitos de prueba.
+220. La tarea modifica cero requisitos de prueba.
+221. La tarea difiere cero requisitos de prueba.
+222. La tarea descarta cero requisitos de prueba.
+223. La tarea vuelve obsoletos cero requisitos de prueba.
+224. No se genera una copia innecesaria del registro canónico de requisitos.
+225. La tarea distingue `ESPECIFICADO` de `IMPLEMENTADO`.
+226. La tarea distingue `ESPECIFICADO` de `VALIDADO`.
+227. Ningún comportamiento físico se declara implementado.
+228. Ninguna evidencia operativa se inventa.
+229. Ningún servicio afectado se inventa.
+230. Ningún responsable nominal se inventa.
+231. Ningún timestamp de incidente se inventa.
+232. Ninguna prioridad se inventa.
+233. Ningún objetivo MBCO/RTO/MTPD/RPO se inventa.
+234. Ninguna métrica de recuperación se inventa.
+235. La tarea no inicia `CONT-UX-003`.
+236. `CONT-UX-003` permanece únicamente reservada.
+
+---
+
+#### 58. Balance de cierre
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| zonas semánticas obligatorias              |     **8** |
+| niveles de profundidad de información      |     **3** |
+| dimensiones separadas de recuperación      |     **5** |
+| escenarios deterministas materializados    |    **10** |
+| decisiones sustantivas de diseño           |    **50** |
+| criterios de aceptación                    |   **236** |
+| cambios físicos                            |     **0** |
+| requisitos de prueba creados o modificados |     **0** |
+
+---
+
+#### 59. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones`
+
+TAREA ACTUAL APROBADA
+
+`CONT-UX-002 — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad`
+
+
 ### [ ] CONT-UX-003 — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad
 ### [ ] CONT-UX-004 — Diseñar captura controlada durante la falla y reincorporación posterior
 ### [ ] CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes
