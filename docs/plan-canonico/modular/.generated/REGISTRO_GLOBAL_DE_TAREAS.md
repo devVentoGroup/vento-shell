@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **691** |
+| Aprobadas | **692** |
 | En propuesta | **0** |
-| No iniciadas | **903** |
+| No iniciadas | **902** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.35% (691/1594)** |
+| Porcentaje de completamiento | **43.41% (692/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-AUTH-004` — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones | ✅ APROBADA |
-| Tarea actual | `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje | ⬜ NO INICIADA |
+| Última aprobada | `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol | ✅ APROBADA |
+| Tarea actual | `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1580,7 +1580,7 @@
 | ✅ APROBADA | `DATA-AUTH-002` | Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
 | ✅ APROBADA | `DATA-AUTH-003` | Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
 | ✅ APROBADA | `DATA-AUTH-004` | Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/02_AUTORIZACION_DE_DATOS_Y_METRICAS.md` |
-| ⬜ NO INICIADA | `DATA-UX-001` | Diseñar inicio ejecutivo simple y accionable por rol | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
+| ✅ APROBADA | `DATA-UX-001` | Diseñar inicio ejecutivo simple y accionable por rol | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-002` | Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-003` | Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ⬜ NO INICIADA | `DATA-UX-004` | Diseñar centro de calidad, frescura, conciliaciones y certificación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
