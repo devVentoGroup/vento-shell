@@ -2873,7 +2873,885 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad`
 
 
-### [ ] CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad
+### ✅ CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo` — APROBADA
+**Tarea siguiente:** `CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materialización del ciclo empresarial de incidentes de continuidad, su taxonomía, clasificación por alcance/impacto/urgencia/severidad, declaración, activación, escalamiento, desactivación y cierre
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Activación real de continuidad, cambios de permisos, acceso de emergencia, interrupciones, failover, restauraciones, cambios de proveedores, código, DDL, DML, migraciones, RLS, RPC, datos, backfills o cambios en Supabase:** no autorizados
+**Servicios BIA con perfil de incidente reconciliado:** 69 de 69
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir un contrato empresarial único para reconocer, clasificar y gobernar un incidente de continuidad sin mezclarlo con el expediente que originó la afectación y sin permitir que la prioridad de un ticket, la criticidad BIA o el tamaño técnico de una falla decidan por sí solos la severidad empresarial.
+
+La tarea materializa las decisiones necesarias para responder de forma determinista:
+
+- cuándo una señal o un incidente de dominio debe relacionarse con continuidad;
+- qué naturaleza y alcance empresarial tiene la afectación;
+- cómo se evalúan impacto y urgencia contra MBCO, RTO y MTPD;
+- qué severidad corresponde al incidente real;
+- cuándo se declara formalmente un incidente de continuidad;
+- cuándo la declaración requiere activación parcial, ampliada o empresarial;
+- qué hechos obligan a escalar y qué evidencia permite desescalar;
+- cuándo puede desactivarse el gobierno extraordinario de continuidad;
+- qué condiciones deben cumplirse antes del cierre empresarial;
+- cómo se conservan separados, pero correlacionados, los incidentes tecnológicos, laborales, SST, de información, de proveedor y de continuidad;
+- qué decisiones se transfieren a mando, autorización, operación mínima, contingencia, recuperación, conciliación y revisión posterior.
+
+El resultado es un contrato documental. No declara ni activa un incidente real, no asigna personas concretas, no concede permisos y no sustituye las tareas de mando o autorización.
+
+---
+
+#### 2. Resultado material
+
+| Control                                           |                           Resultado |
+| ------------------------------------------------- | ----------------------------------: |
+| Servicios BIA heredados                           |                         **69 / 69** |
+| Perfiles de disparo por servicio                  |                         **69 / 69** |
+| Categorías de naturaleza                          |                              **10** |
+| Niveles de alcance                                |                               **6** |
+| Niveles de impacto                                |                               **4** |
+| Clases de urgencia                                |                               **3** |
+| Niveles de severidad de continuidad               |                               **4** |
+| Modalidades de activación                         |                               **3** |
+| Estados principales del ciclo                     | **10 + 1 salida de no continuidad** |
+| Servicios con baseline operativo especificado     |                              **67** |
+| Servicios AURA bloqueados por aplicación diferida |                               **2** |
+| Severidades preasignadas por criticidad BIA       |                               **0** |
+| Incidentes reales declarados por esta tarea       |                               **0** |
+| Activaciones reales ejecutadas                    |                               **0** |
+| Desactivaciones o cierres reales ejecutados       |                               **0** |
+| Cambios físicos                                   |                               **0** |
+| Cambios de requisitos de prueba                   |                               **0** |
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume sin redefinir:
+
+1. `CONT-DOM-001`, que fija gobierno, propiedad federada, separación entre continuidad empresarial y recuperación técnica, y reserva autoridad detallada a las tareas de autorización;
+2. `CONT-DOM-002`, que fija los 69 servicios BIA, cuatro clases de criticidad y cuatro niveles mínimos funcionales, y prohíbe confundir criticidad BIA con severidad de incidente;
+3. `CONT-DOM-003`, que fija 69 mapas de dependencia, 67 candidatos de concentración pendientes de evidencia, dos bloqueos AURA, cero SPOF confirmados, cero sustitutos aprobados y cero ciclos duros confirmados;
+4. `CONT-DOM-004`, que fija cuatro perfiles de MTPD/RTO/RPO/MBCO y prioridad de recuperación, 67 objetivos activos aún no validados, dos bloqueos AURA, cero riesgos aceptados y cero capacidades certificadas;
+5. `CAP-SCOPE-018`, que exige separar incidentes laborales, tecnológicos, de seguridad de información y de continuidad, clasificar por impacto y prioridad empresarial, y gobernar activación parcial o total;
+6. `VPROC-0062`, proceso empresarial de continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje;
+7. el registro vigente de requisitos de continuidad, integración y autorización que ya protege clasificación, trazabilidad, autoridad, escalamiento y cierre;
+8. las fuentes propietarias de incidentes de cada dominio, que conservan su identidad, evidencia, causa y estados aunque exista un expediente de continuidad relacionado.
+
+Ninguna clasificación de esta tarea convierte una dependencia candidata en SPOF confirmado, un recurso en sustituto aprobado o un objetivo temporal en capacidad demostrada.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+SEÑAL O ALERTA
+!= INCIDENTE DE DOMINIO
+!= INCIDENTE DE CONTINUIDAD
+!= CRISIS EMPRESARIAL
+```
+
+```text
+INCIDENTE LABORAL
+!= INCIDENTE SST
+!= INCIDENTE TECNOLOGICO
+!= INCIDENTE DE INFORMACION O SEGURIDAD
+!= INCIDENTE DE CONTINUIDAD
+```
+
+```text
+CRITICIDAD BIA
+!= SEVERIDAD DEL INCIDENTE
+!= PRIORIDAD DE RECUPERACION
+!= PRIORIDAD DE TICKET
+```
+
+```text
+DECLARAR
+!= ACTIVAR
+!= ESCALAR
+!= DESACTIVAR
+!= CERRAR
+```
+
+```text
+SERVICIO TECNICAMENTE RESTAURADO
+!= MBCO RECUPERADO
+!= PROCESO EMPRESARIAL VALIDADO
+!= INCIDENTE CERRADO
+```
+
+```text
+DESACTIVACION
+!= CIERRE
+```
+
+```text
+CAUSA TECNICA RESUELTA
+!= EFECTOS RECONCILIADOS
+!= APRENDIZAJE CERRADO
+```
+
+Un mismo hecho puede originar varios expedientes relacionados. La correlación conserva identidades y responsabilidades; no fusiona expedientes ni transfiere propiedad.
+
+---
+
+#### 5. Unidad canónica de evaluación del incidente
+
+La unidad documental mínima de un incidente de continuidad es:
+
+```text
+hecho o señal origen
++ referencias a incidentes de dominio relacionados
++ servicios BCS afectados o amenazados
++ BIA y procesos VPROC relacionados
++ sede, área, canal o alcance empresarial aplicable
++ naturaleza
++ impacto
++ urgencia
++ severidad
++ MBCO actual
++ RTO y MTPD aplicables
++ decisiones de declaración y activación
++ cambios de alcance o severidad
++ contención y recuperación
++ pendientes y conciliación
++ desactivación
++ cierre
++ evidencia y versión
+```
+
+La identidad física del expediente, su esquema de datos y contratos entre aplicaciones se materializan en las tareas de integración e implementación correspondientes. Esta tarea define la semántica y las decisiones que esa identidad deberá preservar.
+
+---
+
+#### 6. Taxonomía de naturaleza
+
+Las diez categorías mínimas de `CAP-SCOPE-018` se adoptan como clasificación documental de naturaleza. Un incidente puede tener una naturaleza primaria y varias relacionadas; la primaria describe el mecanismo dominante que amenaza el resultado empresarial, no el equipo que primero reportó el problema.
+
+| Naturaleza                                 | Cobertura                                                                                      | Frontera                                                                       |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `PERSONAS_Y_DISPONIBILIDAD_LABORAL`        | ausencia, incapacidad de cobertura, indisponibilidad de función o conocimiento material        | no sustituye expediente laboral ni SST                                         |
+| `SALUD_SEGURIDAD_O_EMERGENCIA_FISICA`      | vida, SST, inocuidad, emergencia o condición física protectora                                 | prioridad protectora prevalece sobre continuidad aparente                      |
+| `INSTALACION_ENERGIA_O_SERVICIOS_PUBLICOS` | sede, espacio, energía, agua u otro servicio físico esencial                                   | instalación afectada no demuestra por sí sola alcance empresarial              |
+| `RED_DISPOSITIVO_IMPRESORA_O_APLICACION`   | conectividad, endpoint, dispositivo compartido, impresión, aplicación o servicio técnico       | conserva incidente tecnológico relacionado                                     |
+| `DATOS_PRIVACIDAD_O_CIBERSEGURIDAD`        | disponibilidad, integridad, confidencialidad, evidencia, privacidad o seguridad de información | conserva expediente de información/seguridad y mínimo necesario en continuidad |
+| `INVENTARIO_PRODUCCION_O_CALIDAD`          | existencia, custodia, frío, insumo, equipo, lote, producción, calidad o trazabilidad física    | conserva hechos en NEXO/FOGO y dominios propietarios                           |
+| `VENTA_PAGO_O_CANAL_COMERCIAL`             | pedido, venta, caja, pago, fiscalidad o canal de atención/venta                                | conserva efectos comerciales y financieros en sus propietarios                 |
+| `PROVEEDOR_TRANSPORTE_O_ABASTECIMIENTO`    | tercero, suministro, transporte, mensajería, soporte o canal externo                           | proveedor no adquiere autoridad interna                                        |
+| `REPUTACION_Y_COMUNICACION`                | comunicación material, desinformación, promesa pública, reputación o incapacidad de informar   | no habilita AURA ni publica mensajes automáticamente                           |
+| `EVENTO_MULTIPLE_O_REGIONAL`               | combinación de varias naturalezas, varias sedes o una causa externa compartida                 | no elimina las naturalezas y expedientes componentes                           |
+
+Reglas:
+
+1. la categoría no asigna severidad automáticamente;
+2. la naturaleza puede cambiar o ampliarse con nueva evidencia sin reescribir la clasificación histórica anterior;
+3. un incidente técnico puede producir un incidente de continuidad de naturaleza `RED_DISPOSITIVO_IMPRESORA_O_APLICACION`, pero ambos expedientes permanecen separados;
+4. una emergencia física puede requerir detener operación; la continuidad no se utiliza para mantener actividad insegura;
+5. un evento múltiple conserva todas las referencias fuente para evitar una causa narrativa única no demostrada.
+
+---
+
+#### 7. Clasificación de alcance
+
+| Alcance                   | Definición                                                                                                     | Escalamiento mínimo esperado                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `RESULTADO_UNICO`         | un servicio BCS y un contexto operativo acotado                                                                | permanece en coordinación acotada mientras no cumpla criterios superiores          |
+| `SEDE_O_PUNTO_CONTROLADO` | uno o más resultados dentro de una sola sede o punto externo controlado                                        | involucra al gobierno territorial aplicable sin ampliar otras sedes por inferencia |
+| `MULTIPROCESO_MISMA_SEDE` | varios procesos o servicios de una sede comparten la afectación                                                | exige coordinación entre propietarios afectados                                    |
+| `MULTISEDE`               | la misma causa o dependencia afecta dos o más sedes internas                                                   | exige coordinación transversal y evaluación de dependencia compartida              |
+| `EMPRESARIAL`             | el impacto compromete resultados de empresa, gobierno, múltiples dominios o capacidad transversal              | exige escalamiento ejecutivo conforme al contrato de autoridad                     |
+| `EXTERNO_O_REGIONAL`      | proveedor, autoridad, evento físico o cadena externa afecta varios puntos, canales o partes de la organización | exige correlación externa sin convertir terceros en sedes ni autoridades internas  |
+
+El alcance describe la extensión del incidente. No reemplaza la severidad: una afectación de un único resultado protector puede ser más severa que una afectación multisitio diferible.
+
+---
+
+#### 8. Clasificación de impacto
+
+| Impacto                            | Criterio empresarial                                                                                                       | Consecuencia de clasificación                                                                        |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `I0_SIN_AFECTACION_DE_CONTINUIDAD` | no existe afectación material ni amenaza creíble al MBCO, RTO, MTPD, integridad u obligación del resultado                 | permanece en el expediente de dominio; continuidad puede conservar referencia sin declarar incidente |
+| `I1_DEGRADACION_CONTROLADA`        | existe afectación material o riesgo creíble, pero MBCO se mantiene y la recuperación continúa razonablemente dentro de RTO | puede declararse `SEV-C1_CONTROLADA` para seguimiento empresarial                                    |
+| `I2_MBCO_COMPROMETIDO`             | MBCO está amenazado o incumplido, o la recuperación prevista excede RTO sin haber alcanzado todavía impacto inaceptable    | exige al menos evaluación `SEV-C2_DEGRADADA`; puede ser superior por alcance o reversibilidad        |
+| `I3_INACEPTABLE_O_IRREVERSIBLE`    | MTPD fue alcanzado/superado, el MBCO protector no puede asegurarse o existe efecto no dispensable/irreversible material    | exige `SEV-C4_CRITICA` y actuación protectora autorizada                                             |
+
+El impacto se determina por hechos y pronóstico razonado. La ausencia de información suficiente no reduce el impacto; obliga a conservar incertidumbre y elevar la urgencia cuando esa incertidumbre impida asegurar un control protector.
+
+---
+
+#### 9. Clasificación de urgencia
+
+| Urgencia         | Criterio                                                                                                                                      | Regla                                                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `U1_CONTROLADA`  | MBCO permanece protegido, no existe efecto irreversible y la recuperación prevista es igual o anterior al RTO                                 | monitoreo activo y decisión documentada; no obliga por sí sola a activar continuidad |
+| `U2_PRIORITARIA` | MBCO está amenazado o degradado, o el pronóstico supera RTO pero aún existe una vía razonable de recuperación antes de MTPD                   | decisión de continuidad prioritaria y preparación/activación del alcance aplicable   |
+| `U3_INMEDIATA`   | no puede asegurarse el MBCO protector, el pronóstico no llega antes de MTPD, MTPD ya fue superado o existe efecto irreversible/no dispensable | decisión inmediata; no se espera a agotar RTO para escalar                           |
+
+Urgencia no es severidad. Urgencia expresa cuánto puede esperar la decisión; severidad expresa el nivel empresarial del incidente una vez combinados impacto, alcance, reversibilidad, obligaciones y tiempo.
+
+##### 9.1. Relojes empresariales heredados
+
+Los valores siguientes se consumen de `CONT-DOM-004` y no se modifican en esta tarea:
+
+| Perfil         | Criticidad BIA         |   MTPD |    RTO |    RPO | MBCO                           | Prioridad de recuperación |
+| -------------- | ---------------------- | -----: | -----: | -----: | ------------------------------ | ------------------------- |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   | 30 min | 15 min | 15 min | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION`         |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |    4 h |    2 h |    1 h | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`           |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |   24 h |    8 h |    4 h | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`            |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |   72 h |   24 h |   24 h | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`          |
+
+RPO no se convierte en severidad por sí solo. Influye en impacto cuando la edad del estado recuperable puede impedir integridad, conciliación, trazabilidad, autorización u obligación del resultado empresarial.
+
+---
+
+#### 10. Niveles de severidad de continuidad
+
+La severidad no se suma mediante una fórmula aritmética. Se asigna el **nivel más alto cuyo criterio material esté demostrado**. Puede saltarse niveles si la evidencia lo exige.
+
+| Severidad           | Condiciones mínimas                                                                                                                                                                                          | Activación mínima                                                                  | Frontera                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `SEV-C1_CONTROLADA` | incidente de continuidad declarado, alcance acotado, MBCO conservado, recuperación prevista dentro de RTO y sin control no dispensable comprometido                                                          | seguimiento de continuidad; activación parcial solo si la coordinación lo requiere | no equivale a incidente técnico menor ni a criticidad baja                            |
+| `SEV-C2_DEGRADADA`  | MBCO amenazado o incumplido, o recuperación prevista posterior a RTO pero todavía recuperable antes de MTPD, sin criterio de nivel superior                                                                  | `ACTIVACION_PARCIAL` para servicios/sede afectados                                 | no espera a que MTPD se acerque para comenzar recuperación                            |
+| `SEV-C3_MAYOR`      | afectación multiproceso/multisede/empresarial, dependencia compartida o cascada material, alternativa relevante fallida/no disponible, o pronóstico que no permite recuperar antes de MTPD                   | `ACTIVACION_AMPLIADA` y escalamiento ejecutivo                                     | un pronóstico de incumplimiento de MTPD basta para escalar antes del daño inaceptable |
+| `SEV-C4_CRITICA`    | MTPD alcanzado/superado, MBCO `PROTEGER_Y_DETENER` no asegurado, o riesgo inmediato/irreversible de vida, SST, inocuidad, integridad, autorización, privacidad, custodia o efecto empresarial no dispensable | `ACTIVACION_EMPRESARIAL_PROTECTORA` y máximo nivel de gobierno aplicable           | puede exigir detener operación; continuidad nunca justifica operar de forma insegura  |
+
+Reglas cardinales:
+
+1. `CRITICA_PROTECCION` no preasigna `SEV-C4`; solo llega a ese nivel si el control protector resulta amenazado o indisponible según los criterios anteriores;
+2. un proceso `DIFERIBLE_CONTROLADA` puede alcanzar severidad alta si el backlog, vencimiento, privacidad, cumplimiento o alcance se vuelve materialmente inaceptable;
+3. un ticket tecnológico de alta prioridad no crea severidad de continuidad sin impacto empresarial;
+4. una falla técnica aparentemente pequeña puede producir `SEV-C3` o `SEV-C4` si bloquea un resultado empresarial protector o un conjunto de resultados esenciales;
+5. la prioridad `PR-0` a `PR-3` de recuperación organiza el orden de recuperación; no sustituye esta severidad.
+
+---
+
+#### 11. Matriz de decisión impacto + urgencia + alcance + severidad
+
+| Situación demostrada                                                                 | Impacto                            | Urgencia mínima  | Severidad mínima    | Decisión                                                                    |
+| ------------------------------------------------------------------------------------ | ---------------------------------- | ---------------- | ------------------- | --------------------------------------------------------------------------- |
+| señal sin amenaza material a continuidad                                             | `I0_SIN_AFECTACION_DE_CONTINUIDAD` | `U1_CONTROLADA`  | no aplica           | conservar vínculo al expediente fuente; no declarar continuidad             |
+| degradación material con MBCO conservado y recuperación dentro de RTO                | `I1_DEGRADACION_CONTROLADA`        | `U1_CONTROLADA`  | `SEV-C1_CONTROLADA` | declarar si se requiere seguimiento empresarial; no activar por automatismo |
+| MBCO amenazado/incumplido o pronóstico posterior a RTO                               | `I2_MBCO_COMPROMETIDO`             | `U2_PRIORITARIA` | `SEV-C2_DEGRADADA`  | declarar y activar parcialmente                                             |
+| varios procesos/sedes, dependencia compartida, cascada o pronóstico posterior a MTPD | `I2_MBCO_COMPROMETIDO`             | `U3_INMEDIATA`   | `SEV-C3_MAYOR`      | ampliar activación y escalar gobierno                                       |
+| MTPD superado o control protector no asegurado                                       | `I3_INACEPTABLE_O_IRREVERSIBLE`    | `U3_INMEDIATA`   | `SEV-C4_CRITICA`    | activar gobierno protector y detener/contener cuando corresponda            |
+
+Cuando varias filas sean aplicables prevalece la de mayor severidad. La incertidumbre sobre tiempo, integridad o control protector se registra; no se transforma en una clasificación tranquilizadora por ausencia de evidencia.
+
+---
+
+#### 12. Detección y triage
+
+Toda señal que pueda afectar continuidad seguirá, documentalmente, esta secuencia:
+
+```text
+SEÑAL, ALERTA O REPORTE
+→ CORRELACIONAR EXPEDIENTE FUENTE
+→ IDENTIFICAR SERVICIOS BCS Y CONTEXTO
+→ CLASIFICAR NATURALEZA Y ALCANCE
+→ EVALUAR MBCO, RTO, MTPD E IMPACTO
+→ DETERMINAR URGENCIA
+→ DECIDIR SI EXISTE INCIDENTE DE CONTINUIDAD
+```
+
+Durante triage:
+
+- reportar no concede autoridad para declarar;
+- una alerta automática puede iniciar evaluación, pero no aprobar declaración ni activación;
+- la falta de telemetría se distingue de salud confirmada;
+- si el hecho es únicamente de dominio, se conserva como tal y continuidad solo mantiene la referencia necesaria;
+- si todavía no se conoce causa, se registra `CAUSA_NO_CONFIRMADA`; no se inventa una explicación;
+- la clasificación puede revisarse cuando aparezca evidencia nueva, conservando la historia de cambios.
+
+---
+
+#### 13. Criterios de declaración
+
+Se declara un incidente de continuidad cuando al menos una de estas condiciones esté demostrada o sea razonablemente previsible con evidencia suficiente:
+
+1. un servicio activo queda por debajo de su MBCO;
+2. el MBCO está materialmente amenazado y el dominio no puede garantizar su preservación con controles ordinarios;
+3. la recuperación prevista excede RTO y el impacto empresarial requiere coordinación de continuidad;
+4. un control de `PROTEGER_Y_DETENER` no puede asegurarse;
+5. una dependencia compartida amenaza varios servicios, procesos o sedes;
+6. una dependencia externa sin sustituto demostrado amenaza el MBCO;
+7. existe riesgo de pérdida, duplicidad, corrupción, falta de autorización o imposibilidad de reconciliar efectos empresariales;
+8. la afectación requiere coordinar varios dominios, una sede completa o más de una sede;
+9. una obligación legal, laboral, sanitaria, contractual, fiscal, de privacidad o de seguridad puede incumplirse por la duración o forma de recuperación;
+10. una estrategia de contingencia necesita ser activada y gobernada fuera del manejo ordinario del dominio.
+
+La declaración deberá registrar servicio(s), alcance, naturaleza, impacto, urgencia, severidad inicial, MBCO, objetivos temporales aplicables, evidencia y razón. No concede por sí sola permiso para ejecutar acciones protegidas.
+
+---
+
+#### 14. Modalidades de activación
+
+| Modalidad                           | Alcance                                                           | Regla de uso                                                                                                       |
+| ----------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `ACTIVACION_PARCIAL`                | servicio(s), proceso(s), sede/área o dependencia concretos        | nivel mínimo para `SEV-C2`; puede usarse en `SEV-C1` si la coordinación empresarial lo exige                       |
+| `ACTIVACION_AMPLIADA`               | varios procesos, dominios, sedes o dependencia compartida         | nivel mínimo para `SEV-C3`; incorpora coordinación ejecutiva sin declarar afectación empresarial total por defecto |
+| `ACTIVACION_EMPRESARIAL_PROTECTORA` | alcance empresarial, crisis o necesidad de protección transversal | nivel mínimo para `SEV-C4`; prioriza protección, contención y decisiones de gobierno aplicables                    |
+
+Reglas:
+
+1. declaración y activación son decisiones diferentes y tienen timestamps diferentes cuando ocurren en momentos distintos;
+2. una activación puede ampliarse o reducirse sin crear otro incidente si conserva identidad y evidencia de la decisión;
+3. la activación no autoriza por sí sola accesos de emergencia, failover, cambios de proveedor, restauraciones, pagos, movimientos, producción o escrituras fuera de permisos ordinarios;
+4. el actor y permiso exactos para cada decisión se materializan en `CONT-AUTH-001` y tareas relacionadas;
+5. `GERENCIA_GENERAL` y `GOBIERNO_Y_PROPIEDAD` conservan la aprobación/aceptación ejecutiva que el proceso de continuidad ya exige según severidad; esta tarea no asigna personas ni credenciales;
+6. un proveedor, técnico, dispositivo o automatización puede reportar estado, pero no activar continuidad empresarial en nombre de Vento.
+
+---
+
+#### 15. Escalamiento
+
+Un incidente se escala sin esperar el siguiente hito temporal cuando se demuestre cualquiera de estos disparadores:
+
+1. cambio a un impacto o urgencia de nivel superior;
+2. ampliación de un resultado a múltiples procesos, sedes o dominios;
+3. MBCO pasa de amenazado a incumplido;
+4. el pronóstico deja de cumplir RTO;
+5. el pronóstico indica que no podrá recuperarse antes de MTPD;
+6. MTPD es alcanzado o superado;
+7. se pierde un control protector o aparece riesgo irreversible/no dispensable;
+8. falla una alternativa que formaba parte del plan o se descubre que comparte el mismo dominio de fallo;
+9. aparece una dependencia compartida o cascada material;
+10. existe incertidumbre de integridad, autorización, privacidad, custodia o reconciliación que impide afirmar un estado seguro;
+11. un proveedor, canal o recurso externo no responde dentro de la ventana necesaria para el resultado empresarial;
+12. la comunicación, obligación o contraparte externa requiere una autoridad superior a la disponible en el alcance actual;
+13. aparecen órdenes contradictorias, falta de responsable o imposibilidad de sostener mando autorizado.
+
+Se conserva siempre severidad anterior, severidad nueva, motivo, evidencia, actor/función que propuso, autoridad que decidió y timestamp. Un incidente puede pasar directamente de `SEV-C1` a `SEV-C4` cuando la evidencia lo justifique.
+
+---
+
+#### 16. Desescalamiento
+
+El desescalamiento solo procede con evidencia de que los criterios del nivel superior dejaron de ser ciertos. Requiere:
+
+- MBCO conocido y controlado;
+- pronóstico actualizado compatible con RTO/MTPD o una decisión protectora válida;
+- alcance estabilizado;
+- ausencia de un nuevo efecto irreversible;
+- dependencias críticas del alcance conocidas;
+- decisión autorizada y registrada;
+- comunicación de cambio de estado a los consumidores que corresponda.
+
+No se desescala para reducir presión operativa, ocultar un vencimiento, evitar escalamiento ejecutivo o presentar recuperación técnica como recuperación empresarial. El desescalamiento conserva la severidad máxima alcanzada para auditoría y revisión posterior.
+
+---
+
+#### 17. Estados del ciclo documental
+
+Los siguientes estados son semántica documental de esta tarea; no crean por sí solos enums, tablas o workflows físicos:
+
+| Estado                           | Significado                                                                                                    | Transiciones permitidas principales                                                 |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `DETECTADO`                      | existe señal/reporte correlacionable                                                                           | `EN_TRIAGE`                                                                         |
+| `EN_TRIAGE`                      | se evalúan naturaleza, alcance, servicios, impacto y urgencia                                                  | `NO_DECLARADO_COMO_CONTINUIDAD` o `DECLARADO`                                       |
+| `NO_DECLARADO_COMO_CONTINUIDAD`  | el hecho permanece en su expediente fuente sin criterios materiales de continuidad                             | terminal para este ciclo; puede originar una nueva evaluación si cambian los hechos |
+| `DECLARADO`                      | existe incidente empresarial de continuidad con severidad y alcance                                            | monitoreo, activación o escalamiento                                                |
+| `ACTIVADO_PARCIAL`               | plan/gobierno de continuidad activo en alcance acotado                                                         | ampliar, contener/recuperar o estabilizar                                           |
+| `ACTIVADO_AMPLIADO`              | coordinación activa multiproceso/multisede                                                                     | ampliar a empresarial, contener/recuperar o desescalar                              |
+| `ACTIVADO_EMPRESARIAL_PROTECTOR` | gobierno protector transversal activo                                                                          | contener/recuperar o desescalar con evidencia                                       |
+| `EN_CONTENCION_Y_RECUPERACION`   | se preserva MBCO, se contiene expansión y se recuperan resultados                                              | `ESTABILIZADO` o nueva escalada                                                     |
+| `ESTABILIZADO`                   | expansión detenida y resultados/pendientes conocidos                                                           | `DESACTIVADO` o retorno a recuperación si reaparece criterio activo                 |
+| `DESACTIVADO`                    | ya no se requiere gobierno extraordinario de activación, pero puede continuar conciliación o cierre documental | `CERRADO`                                                                           |
+| `CERRADO`                        | criterios empresariales de cierre satisfechos y evidencia preservada                                           | cierre histórico; nueva afectación requiere nueva decisión correlacionada           |
+
+Un `SEV-C1` declarado puede pasar de `DECLARADO` a `ESTABILIZADO` y `CERRADO` sin una activación formal si nunca fue necesaria una modalidad activa. En ese caso se registra explícitamente que no hubo activación.
+
+---
+
+#### 18. Contención y recuperación
+
+Durante un incidente declarado:
+
+- contención evita expansión, pérdida de integridad o nuevos efectos;
+- operación mínima pertenece a `CONT-DOM-007`;
+- estrategia concreta de contingencia pertenece a `CONT-DOM-008`;
+- captura de trabajo durante falla pertenece a `CONT-DOM-009`;
+- reincorporación y conflictos pertenecen a `CONT-DOM-010`;
+- respaldo pertenece a `CONT-DOM-011`;
+- runbooks, restauración y failover pertenecen a `CONT-DOM-012`;
+- continuidad externa pertenece a `CONT-DOM-013`.
+
+Esta tarea solo gobierna cómo esos resultados afectan severidad, activación, escalamiento, desactivación y cierre. No selecciona ni ejecuta una modalidad de recuperación.
+
+---
+
+#### 19. Criterios de desactivación
+
+Una activación puede desactivarse únicamente cuando, para el alcance afectado:
+
+1. no existe un criterio vigente que exija mantener la modalidad de activación actual;
+2. todos los servicios afectados tienen MBCO conocido y se encuentran por encima de él o en un estado protector aprobado que impide nuevos efectos inseguros;
+3. la expansión o cascada está contenida;
+4. responsables de proceso y funciones técnicas han reportado el estado de recuperación que les corresponde;
+5. las acciones extraordinarias que deban cesar tienen transición controlada;
+6. los pendientes de recuperación, reincorporación o conciliación están identificados, referenciados y tienen propietario;
+7. la desactivación no elimina accesos, colas, datos, evidencia o trabajos mediante una inferencia; cada recurso sigue su contrato propietario;
+8. existe decisión autorizada con alcance, razón, timestamp y comunicación aplicable.
+
+Desactivar no declara causa eliminada ni efectos conciliados. Un incidente puede permanecer abierto en estado desactivado mientras termina conciliación y cierre documental.
+
+---
+
+#### 20. Criterios de cierre
+
+El cierre empresarial exige conjuntamente:
+
+1. identidad, naturaleza, alcance, severidad máxima y línea de tiempo consolidados;
+2. toda activación aplicable desactivada de forma controlada;
+3. estado final conocido para cada servicio BCS afectado;
+4. validación funcional del resultado por el propietario de cada proceso afectado; un health check técnico no basta;
+5. MBCO recuperado o resultado formalmente protegido/detenido conforme al contrato aplicable;
+6. transacciones, inventario, producción, ventas, pagos, asistencia, documentos, colas y comunicaciones aplicables conciliados según sus dominios;
+7. ningún trabajo o pendiente de continuidad sin propietario;
+8. conflictos, operaciones vencidas, duplicados, pérdidas o efectos parciales identificados y tratados por su contrato propietario;
+9. accesos excepcionales, si existieron por otras tareas autorizadas, revocados o transferidos al estado que corresponda;
+10. proveedores y dependencias externas con estado final registrado cuando hayan participado;
+11. comunicaciones de cierre o corrección emitidas por el responsable autorizado cuando apliquen;
+12. evidencia, decisiones y timestamps preservados sin sobrescritura silenciosa;
+13. causa confirmada o, si sigue abierta en otro proceso, referencia explícita al expediente que la investiga;
+14. acciones residuales de mejora transferidas a `CONT-DOM-015` o tarea propietaria con responsable y condición de salida;
+15. aceptación del cierre por la autoridad correspondiente a la máxima severidad/activación alcanzada, conforme a `CONT-AUTH-004`.
+
+No se exige que toda acción de mejora a largo plazo esté ejecutada antes del cierre operativo, pero ninguna acción residual puede quedar huérfana y ninguna conciliación necesaria para afirmar el resultado empresarial puede omitirse.
+
+---
+
+#### 21. Relaciones con incidentes de dominio
+
+1. un incidente tecnológico conserva su expediente en BLOQUE Z aunque origine continuidad;
+2. un incidente laboral o SST conserva su expediente y sensibilidad propias;
+3. un incidente de información, privacidad o seguridad conserva evidencia y acceso en su dominio;
+4. una afectación de proveedor conserva contrato, escalamiento y hechos externos en su fuente propietaria;
+5. un incidente de continuidad puede correlacionar múltiples incidentes fuente;
+6. un incidente fuente puede afectar múltiples servicios BCS;
+7. cerrar un ticket o incidente técnico no cierra automáticamente continuidad;
+8. cerrar continuidad no cierra automáticamente un problema técnico, investigación SST, privacidad, seguridad, causa raíz o acción de mejora;
+9. continuidad conserva referencias y la información mínima necesaria; no copia diagnósticos sensibles por conveniencia;
+10. ninguna causa se presenta como confirmada porque un proveedor o una alerta la sugiera.
+
+---
+
+#### 22. Contrato mínimo del expediente de continuidad
+
+Cada expediente deberá poder conservar, cuando aplique:
+
+- identificador estable único de incidente de continuidad;
+- referencias a señales, eventos e incidentes fuente;
+- fecha/hora de detección;
+- fecha/hora de declaración;
+- fecha/hora de cada activación o cambio de alcance;
+- fecha/hora de cada cambio de severidad;
+- fecha/hora de estabilización, desactivación y cierre;
+- naturaleza primaria y relacionadas;
+- alcance vigente y máximo alcanzado;
+- servicios `BCS-*`, BIA, procesos y sedes afectados;
+- MBCO, RTO, MTPD y prioridad de recuperación aplicables por referencia;
+- impacto, urgencia, severidad actual y severidad máxima;
+- estado operativo por servicio;
+- incertidumbres y supuestos explícitos;
+- funciones responsables y referencias a autoridad sin exponer secretos;
+- decisiones, razones, actor/función, versión y timestamp;
+- referencias a contención, operación mínima y contingencia;
+- dependencias, proveedores y recursos afectados por referencia propietaria;
+- comunicaciones y audiencias por referencia;
+- trabajos generados durante la falla;
+- reconciliaciones, conflictos y pendientes;
+- evidencia de recuperación funcional;
+- decisión y evidencia de desactivación;
+- checklist y decisión de cierre;
+- referencia a revisión posterior y acciones.
+
+Los contactos sensibles, secretos, credenciales y datos de salud no se copian al expediente transversal salvo que su exposición esté expresamente autorizada y sea estrictamente necesaria.
+
+---
+
+#### 23. Baseline materializado para los 69 servicios
+
+Cada servicio conserva su criticidad y objetivo aprobados, pero recibe un perfil de disparo de incidente. **Ninguna fila recibe severidad preasignada**: la severidad se calcula con los hechos del incidente.
+
+|    # | Servicio         | BIA                 | Proceso      | Propietaria | Criticidad BIA         | Perfil objetivo | MBCO                           | Perfil de disparo         | Severidad previa | Regla de declaración/escalamiento                                                                                                                                         | Estado                              |
+| ---: | ---------------- | ------------------- | ------------ | ----------- | ---------------------- | --------------- | ------------------------------ | ------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+|    1 | `BCS-VPROC-0001` | `BIA-VPROC-0001-V1` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    2 | `BCS-VPROC-0002` | `BIA-VPROC-0002-V1` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    3 | `BCS-VPROC-0003` | `BIA-VPROC-0003-V1` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    4 | `BCS-VPROC-0004` | `BIA-VPROC-0004-V1` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    5 | `BCS-VPROC-0005` | `BIA-VPROC-0005-V1` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Backlog, vencimiento, trazabilidad o capacidad de reanudación amenazan RTO/MTPD o dejan de ser controlables: declarar y evaluar activación.                               | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    6 | `BCS-VPROC-0006` | `BIA-VPROC-0006-V1` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    7 | `BCS-VPROC-0007` | `BIA-VPROC-0007-V1` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    8 | `BCS-VPROC-0008` | `BIA-VPROC-0008-V1` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|    9 | `BCS-VPROC-0009` | `BIA-VPROC-0009-V1` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   10 | `BCS-VPROC-0010` | `BIA-VPROC-0010-V1` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   11 | `BCS-VPROC-0011` | `BIA-VPROC-0011-V1` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   12 | `BCS-VPROC-0012` | `BIA-VPROC-0012-V1` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   13 | `BCS-VPROC-0013` | `BIA-VPROC-0013-V1` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   14 | `BCS-VPROC-0014` | `BIA-VPROC-0014-V1` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   15 | `BCS-VPROC-0015` | `BIA-VPROC-0015-V1` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   16 | `BCS-VPROC-0016` | `BIA-VPROC-0016-V1` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   17 | `BCS-VPROC-0017` | `BIA-VPROC-0017-V1` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   18 | `BCS-VPROC-0018` | `BIA-VPROC-0018-V1` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   19 | `BCS-VPROC-0019` | `BIA-VPROC-0019-V1` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   20 | `BCS-VPROC-0020` | `BIA-VPROC-0020-V1` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   21 | `BCS-VPROC-0021` | `BIA-VPROC-0021-V1` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   22 | `BCS-VPROC-0022` | `BIA-VPROC-0022-V1` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   23 | `BCS-VPROC-0023` | `BIA-VPROC-0023-V1` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   24 | `BCS-VPROC-0024` | `BIA-VPROC-0024-V1` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   25 | `BCS-VPROC-0025` | `BIA-VPROC-0025-V1` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   26 | `BCS-VPROC-0026` | `BIA-VPROC-0026-V1` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   27 | `BCS-VPROC-0027` | `BIA-VPROC-0027-V1` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   28 | `BCS-VPROC-0028` | `BIA-VPROC-0028-V1` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   29 | `BCS-VPROC-0029` | `BIA-VPROC-0029-V1` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   30 | `BCS-VPROC-0030` | `BIA-VPROC-0030-V1` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   31 | `BCS-VPROC-0031` | `BIA-VPROC-0031-V1` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   32 | `BCS-VPROC-0032` | `BIA-VPROC-0032-V1` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   33 | `BCS-VPROC-0033` | `BIA-VPROC-0033-V1` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   34 | `BCS-VPROC-0034` | `BIA-VPROC-0034-V1` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   35 | `BCS-VPROC-0035` | `BIA-VPROC-0035-V1` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   36 | `BCS-VPROC-0036` | `BIA-VPROC-0036-V1` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   37 | `BCS-VPROC-0037` | `BIA-VPROC-0037-V1` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   38 | `BCS-VPROC-0038` | `BIA-VPROC-0038-V1` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   39 | `BCS-VPROC-0039` | `BIA-VPROC-0039-V1` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   40 | `BCS-VPROC-0040` | `BIA-VPROC-0040-V1` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   41 | `BCS-VPROC-0041` | `BIA-VPROC-0041-V1` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   42 | `BCS-VPROC-0042` | `BIA-VPROC-0042-V1` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   43 | `BCS-VPROC-0043` | `BIA-VPROC-0043-V1` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   44 | `BCS-VPROC-0044` | `BIA-VPROC-0044-V1` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   45 | `BCS-VPROC-0045` | `BIA-VPROC-0045-V1` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   46 | `BCS-VPROC-0046` | `BIA-VPROC-0046-V1` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   47 | `BCS-VPROC-0047` | `BIA-VPROC-0047-V1` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   48 | `BCS-VPROC-0048` | `BIA-VPROC-0048-V1` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   49 | `BCS-VPROC-0049` | `BIA-VPROC-0049-V1` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   50 | `BCS-VPROC-0050` | `BIA-VPROC-0050-V1` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   51 | `BCS-VPROC-0051` | `BIA-VPROC-0051-V1` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   52 | `BCS-VPROC-0052` | `BIA-VPROC-0052-V1` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   53 | `BCS-VPROC-0053` | `BIA-VPROC-0053-V1` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   54 | `BCS-VPROC-0054` | `BIA-VPROC-0054-V1` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   55 | `BCS-VPROC-0055` | `BIA-VPROC-0055-V1` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   56 | `BCS-VPROC-0056` | `BIA-VPROC-0056-V1` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Perfil de política conservado; no se habilita activación operativa de AURA mientras la aplicación permanezca diferida.                                                    | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   57 | `BCS-VPROC-0057` | `BIA-VPROC-0057-V1` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Perfil de política conservado; no se habilita activación operativa de AURA mientras la aplicación permanezca diferida.                                                    | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   58 | `BCS-VPROC-0058` | `BIA-VPROC-0058-V1` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002`  | `MANTENER_RESULTADO_ESENCIAL`  | `RESULTADO_ESENCIAL`      | `NO_PREASIGNADA` | Resultado esencial afectado o recuperación prevista posterior al RTO: declarar y evaluar activación; si no se prevé recuperar antes de MTPD, escalar a SEV-C3 o superior. | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   59 | `BCS-VPROC-0059` | `BIA-VPROC-0059-V1` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   60 | `BCS-VPROC-0060` | `BIA-VPROC-0060-V1` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   61 | `BCS-VPROC-0061` | `BIA-VPROC-0061-V1` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Backlog, vencimiento, trazabilidad o capacidad de reanudación amenazan RTO/MTPD o dejan de ser controlables: declarar y evaluar activación.                               | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   62 | `BCS-VPROC-0062` | `BIA-VPROC-0062-V1` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   63 | `BCS-VPROC-0063` | `BIA-VPROC-0063-V1` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   64 | `BCS-VPROC-0064` | `BIA-VPROC-0064-V1` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   65 | `BCS-VPROC-0065` | `BIA-VPROC-0065-V1` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Backlog, vencimiento, trazabilidad o capacidad de reanudación amenazan RTO/MTPD o dejan de ser controlables: declarar y evaluar activación.                               | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   66 | `BCS-VPROC-0066` | `BIA-VPROC-0066-V1` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001`  | `PROTEGER_Y_DETENER`           | `PROTECCION_INMEDIATA`    | `NO_PREASIGNADA` | MBCO protector amenazado o indisponible: declarar; si el control protector no puede asegurarse, escalar inmediatamente a SEV-C4.                                          | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   67 | `BCS-VPROC-0067` | `BIA-VPROC-0067-V1` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   68 | `BCS-VPROC-0068` | `BIA-VPROC-0068-V1` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004`  | `DIFERIR_CON_TRAZABILIDAD`     | `DIFERIMIENTO_CONTROLADO` | `NO_PREASIGNADA` | Backlog, vencimiento, trazabilidad o capacidad de reanudación amenazan RTO/MTPD o dejan de ser controlables: declarar y evaluar activación.                               | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+|   69 | `BCS-VPROC-0069` | `BIA-VPROC-0069-V1` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003`  | `MANTENER_CONTROL_Y_EVIDENCIA` | `CONTROL_Y_EVIDENCIA`     | `NO_PREASIGNADA` | Autoridad, evidencia, conciliación, vencimiento o control material comprometidos, o recuperación prevista posterior al RTO: declarar y evaluar activación.                | `BASELINE_INCIDENTE_ESPECIFICADO`   |
+
+---
+
+#### 24. Reconciliación de la matriz
+
+La materialización conserva:
+
+- **69** servicios `BCS-*` únicos;
+- **69** BIA únicos;
+- **69** procesos `VPROC-*` únicos;
+- **0** faltantes;
+- **0** duplicados;
+- **0** severidades preasignadas;
+- **67** servicios con baseline de incidente operativo especificado;
+- **2** servicios bloqueados por aplicación AURA diferida;
+- distribución de propietarias: `anima` 1, `viso` 20, `nexo` 16, `fogo` 6, `origo` 4, `pulso` 12, `numera` 7, `aura` 2, `pass` 1, `shell` 0;
+- distribución BIA: `CRITICA_PROTECCION` 12, `CRITICA_OPERACIONAL` 20, `ALTA_CONTROL` 31, `DIFERIBLE_CONTROLADA` 6;
+- perfiles objetivo heredados: 12 `CONT-OBJ-001`, 20 `CONT-OBJ-002`, 31 `CONT-OBJ-003`, 6 `CONT-OBJ-004`;
+- ninguna dependencia candidata se promovió a SPOF;
+- ningún sustituto fue aprobado;
+- ningún incidente real fue inventado.
+
+---
+
+#### 25. Caso AURA
+
+`VPROC-0056` y `VPROC-0057` conservan BIA, objetivo y perfil documental de incidente para trazabilidad, pero su estado operativo permanece `BLOQUEADO_POR_APLICACION_DIFERIDA`.
+
+Por tanto:
+
+1. una falla de una futura superficie AURA no se modela como incidente operativo habilitado mientras la aplicación siga diferida;
+2. una afectación real de canal, proveedor, comunicación o proceso comercial se registra en el dominio activo que posea el hecho y puede originar continuidad por ese dominio;
+3. no se utiliza otra aplicación para simular que AURA ya tiene capacidad productiva;
+4. la habilitación futura de AURA obliga a revalidar dependencias, objetivos, estrategias y autoridad antes de usar este ciclo en producción.
+
+---
+
+#### 26. Gobierno de autoridad y segregación
+
+Esta tarea define **qué decisiones requieren autoridad**, no implementa permisos ni asigna personas:
+
+| Decisión                                         | Requisito de gobierno                                                                          | Propietario posterior del detalle        |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| declarar incidente                               | actor autorizado para el alcance, con evidencia de servicio/impacto/severidad                  | `CONT-AUTH-001`                          |
+| activar parcialmente                             | autoridad de continuidad válida para el alcance y funciones afectadas                          | `CONT-AUTH-001`; mando en `CONT-DOM-006` |
+| ampliar activación                               | autoridad correspondiente al nuevo alcance/severidad                                           | `CONT-AUTH-001`; mando en `CONT-DOM-006` |
+| activar empresarial/protectora                   | escalamiento ejecutivo conforme a severidad y gobierno vigente                                 | `CONT-AUTH-001` y gobierno aplicable     |
+| ejecutar acceso excepcional                      | nunca se deduce de la activación                                                               | `CONT-AUTH-002`                          |
+| acceder a runbooks/contactos/evidencia sensibles | mínimo privilegio y finalidad                                                                  | `CONT-AUTH-003`                          |
+| desactivar                                       | autoridad coherente con el máximo alcance activo                                               | `CONT-AUTH-001` / `CONT-AUTH-004`        |
+| cerrar                                           | autoridad coherente con la máxima severidad y segregada de ejecución/validación cuando aplique | `CONT-AUTH-004`                          |
+
+Una organización pequeña puede concentrar funciones, pero siempre registra la función ejercida, el alcance y la decisión; una cuenta técnica o proveedor no sustituye una autoridad humana.
+
+---
+
+#### 27. Handoffs obligatorios
+
+| Decisión posterior                                                                                | Propietario documental            | Condición de salida                                                    |
+| ------------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------- |
+| director del incidente, funciones de mando, sustitutos, bitácora detallada y coordinación externa | `CONT-DOM-006`                    | antes del primer ejercicio de mando o uso operacional                  |
+| operación mínima cuantificada por proceso/sede/horario/temporada/duración                         | `CONT-DOM-007`                    | antes de sostener MBCO en modo degradado                               |
+| modalidad manual, offline, reducida, física o de proveedor                                        | `CONT-DOM-008`                    | antes de activar una alternativa operativa                             |
+| folios, captura y custodia del trabajo durante falla                                              | `CONT-DOM-009`                    | antes de producir registros contingentes                               |
+| reincorporación, conflictos y conciliación                                                        | `CONT-DOM-010`                    | antes de afirmar cierre de efectos empresariales                       |
+| cobertura de respaldo                                                                             | `CONT-DOM-011`                    | antes de afirmar capacidad de recuperación de información              |
+| runbooks, restauración, failover, retorno y validación funcional                                  | `CONT-DOM-012`                    | antes de ejecutar recuperación técnica/funcional                       |
+| continuidad de proveedores, energía, red, pagos, transporte y canales                             | `CONT-DOM-013`                    | antes de depender de alternativas externas en un plan                  |
+| ejercicios, tiempos observados y evidencia de readiness                                           | `CONT-DOM-014`                    | antes de afirmar que el ciclo funciona bajo escenarios controlados     |
+| revisión posterior, acciones, eficacia y actualización                                            | `CONT-DOM-015`                    | después de incidentes/ejercicios y ante cambios materiales             |
+| permiso de declarar, activar, escalar, desactivar o aceptar decisiones excepcionales              | `CONT-AUTH-001` a `CONT-AUTH-004` | antes de cualquier ejecución real                                      |
+| superficies ejecutivas y centro de mando                                                          | `CONT-UX-001` y `CONT-UX-002`     | antes de implementar operación visual del ciclo                        |
+| comunicaciones internas/externas                                                                  | `CONT-UX-006` y `CONT-DOM-006`    | antes de emitir mensajes de crisis gobernados                          |
+| contratos entre aplicaciones, estado de salud, degradación e incidente                            | `CONT-INT-001` y `CONT-INT-002`   | antes de automatizar correlación o cambio de estado entre aplicaciones |
+| continuidad externa                                                                               | `CONT-INT-003`                    | antes de automatizar escalamiento/failover con terceros                |
+| replay, retorno y conciliación                                                                    | `CONT-INT-004`                    | antes de automatizar reincorporación productiva                        |
+
+No queda una decisión material identificada en esta tarea sin propietario documental y condición de salida.
+
+---
+
+#### 28. Cobertura de hallazgos heredados
+
+Esta tarea cierra documentalmente, dentro de su alcance:
+
+- `H-CAP-SCOPE-018-008`: se establece una taxonomía que relaciona, pero no fusiona, incidentes laborales, SST, tecnológicos, de información y de continuidad;
+- `H-CAP-SCOPE-018-009`: se establecen criterios comunes y separados de declaración, activación, escalamiento, desactivación y cierre;
+- `H-CAP-SCOPE-018-010`: se materializa una matriz común de naturaleza, alcance, impacto, urgencia y severidad empresarial.
+
+No se apropia de `H-CAP-SCOPE-018-011` ni `H-CAP-SCOPE-018-012`, que permanecen en `CONT-DOM-006` y autorización; tampoco de comunicación de crisis, folios, respaldos, runbooks, proveedores o ejercicios, que conservan sus tareas propietarias.
+
+---
+
+#### 29. Cobertura de requisitos vigente
+
+La conducta definida aquí ya está protegida por `TREQ-CONT-002`, que exige clasificación por naturaleza, alcance, impacto, urgencia y severidad y conserva detección, declaración, activación, responsables, decisiones, escalamiento, comunicaciones, contención, recuperación y desactivación con autoridad explícita y bitácora.
+
+El cierre se encuentra además protegido por `TREQ-CONT-005`, que exige conciliación de los efectos aplicables y ausencia de pendientes sin propietario. `TREQ-INTEGRATION-023` protege la correlación entre incidente, procesos, aplicaciones, datos, infraestructura, proveedores, estados, mecanismos alternos y retorno sin activaciones contradictorias. `TREQ-AUTH-015` protege la evidencia correlacionable de actor, decisión, razones, versión y timestamp.
+
+Esta tarea especializa esos comportamientos documentales sin introducir una nueva acción ejecutable, permiso, integración física, modalidad de contingencia o efecto empresarial.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la taxonomía, severidad, ciclo de declaración/activación, escalamiento, desactivación y cierre desarrollados aquí materializan obligaciones ya registradas para continuidad, conciliación, integración y auditoría. No se crea una conducta ejecutable nueva ni se modifica el estado, prioridad, implementación o evidencia de un requisito vigente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 30. Criterios de aceptación
+
+1. existe una única semántica empresarial para incidentes de continuidad;
+2. señal, alerta, incidente de dominio e incidente de continuidad permanecen conceptos distintos;
+3. un incidente de continuidad puede relacionar varios expedientes sin fusionarlos;
+4. incidente laboral e incidente de continuidad permanecen separados;
+5. incidente SST e incidente de continuidad permanecen separados;
+6. incidente tecnológico e incidente de continuidad permanecen separados;
+7. incidente de información/seguridad e incidente de continuidad permanecen separados;
+8. cerrar un ticket técnico no cierra continuidad;
+9. cerrar continuidad no cierra automáticamente problema, SST, privacidad, seguridad o causa raíz;
+10. se adoptan exactamente diez categorías de naturaleza mínimas heredadas;
+11. una naturaleza no preasigna severidad;
+12. un evento múltiple conserva sus expedientes componentes;
+13. existen seis niveles documentales de alcance;
+14. alcance y severidad permanecen distintos;
+15. existen cuatro niveles de impacto;
+16. impacto `I0` no obliga a declarar continuidad;
+17. impacto `I1` conserva MBCO;
+18. impacto `I2` reconoce MBCO amenazado/incumplido o RTO comprometido;
+19. impacto `I3` representa daño inaceptable/irreversible, MTPD superado o control protector indisponible;
+20. existen tres clases de urgencia;
+21. urgencia se deriva de capacidad de esperar la decisión y no de prioridad de ticket;
+22. existen cuatro niveles de severidad de continuidad;
+23. severidad se decide por el criterio material más alto demostrado;
+24. no existe fórmula aritmética que esconda un criterio protector;
+25. criticidad BIA no equivale a severidad;
+26. prioridad de recuperación no equivale a severidad;
+27. prioridad de ticket no equivale a severidad;
+28. ningún servicio recibe severidad antes de un incidente real;
+29. las 69 filas declaran `NO_PREASIGNADA` como severidad previa;
+30. `SEV-C1` exige MBCO conservado y recuperación prevista dentro de RTO;
+31. `SEV-C2` cubre MBCO amenazado/incumplido o RTO previsto excedido sin criterio superior;
+32. `SEV-C3` cubre cascada, multialcance o pronóstico que no recupera antes de MTPD;
+33. `SEV-C4` cubre MTPD superado, control protector indisponible o efecto irreversible/no dispensable;
+34. `CRITICA_PROTECCION` no preasigna automáticamente `SEV-C4`;
+35. `DIFERIBLE_CONTROLADA` puede escalar si deja de ser diferible de forma controlada;
+36. un incidente puede saltar directamente a una severidad superior;
+37. la incertidumbre no se interpreta como salud confirmada;
+38. el reloj empresarial se basa en MBCO/RTO/MTPD y no en apertura de ticket;
+39. un incidente puede declararse antes de incumplir MBCO si existe amenaza material demostrada;
+40. declarar y activar permanecen decisiones distintas;
+41. declaración conserva razón, alcance, severidad y evidencia;
+42. declaración no concede permisos de ejecución;
+43. existen tres modalidades de activación;
+44. `ACTIVACION_PARCIAL` mantiene alcance acotado;
+45. `ACTIVACION_AMPLIADA` cubre varios procesos/sedes o dependencia compartida;
+46. `ACTIVACION_EMPRESARIAL_PROTECTORA` cubre crisis/alcance empresarial;
+47. una activación puede ampliarse con decisión auditada;
+48. una activación puede reducirse solo con evidencia;
+49. un proveedor no activa continuidad empresarial;
+50. una automatización no activa continuidad empresarial;
+51. acceso de emergencia no se deduce de la activación;
+52. failover no se deduce de la activación;
+53. restauración no se deduce de la activación;
+54. cambio de proveedor no se deduce de la activación;
+55. existen disparadores explícitos de escalamiento;
+56. pérdida de MBCO obliga a reevaluar severidad;
+57. pronóstico posterior a RTO obliga a reevaluar urgencia/activación;
+58. pronóstico posterior a MTPD obliga a escalar antes del daño inaceptable;
+59. MTPD superado impide mantener una severidad inferior por conveniencia;
+60. pérdida de control protector fuerza criterio crítico;
+61. expansión multisede/multiproceso obliga a reevaluar alcance y severidad;
+62. dependencia compartida se usa solo cuando está demostrada;
+63. alternativa fallida se registra sin inventar otra;
+64. conflicto de integridad/autorización/privacidad puede escalar el incidente;
+65. toda escalada conserva estado anterior y motivo;
+66. desescalamiento requiere evidencia;
+67. desescalamiento conserva severidad máxima histórica;
+68. no se desescala para ocultar vencimientos o presión operativa;
+69. se materializa un ciclo documental desde detección hasta cierre;
+70. existe salida explícita `NO_DECLARADO_COMO_CONTINUIDAD`;
+71. un hecho no declarado conserva su expediente fuente;
+72. un `SEV-C1` puede cerrarse sin activación si nunca requirió plan activo;
+73. contención y recuperación permanecen distinguibles;
+74. operación mínima permanece en `CONT-DOM-007`;
+75. modalidad de contingencia permanece en `CONT-DOM-008`;
+76. captura durante falla permanece en `CONT-DOM-009`;
+77. reincorporación permanece en `CONT-DOM-010`;
+78. respaldos permanecen en `CONT-DOM-011`;
+79. runbooks/failover permanecen en `CONT-DOM-012`;
+80. continuidad externa permanece en `CONT-DOM-013`;
+81. ejercicios permanecen en `CONT-DOM-014`;
+82. revisión posterior permanece en `CONT-DOM-015`;
+83. desactivación y cierre permanecen decisiones distintas;
+84. desactivación exige MBCO conocido o estado protector aprobado;
+85. desactivación exige expansión/cascada contenida;
+86. desactivación no elimina pendientes por inferencia;
+87. desactivación deja pendientes con propietario explícito;
+88. cierre conserva severidad máxima y línea de tiempo;
+89. cierre exige estado final por servicio BCS afectado;
+90. cierre exige validación funcional del propietario de proceso;
+91. health check técnico no basta para cierre empresarial;
+92. cierre exige tratamiento de conciliaciones aplicables;
+93. cierre prohíbe pendientes de continuidad sin propietario;
+94. cierre trata duplicados, conflictos, vencimientos y efectos parciales;
+95. cierre registra estado de proveedores relevantes;
+96. cierre conserva comunicaciones finales cuando apliquen;
+97. cierre conserva actor, decisión, razones, versión y timestamp;
+98. causa no confirmada no se inventa para cerrar;
+99. acciones de mejora residuales tienen tarea/propietario y salida;
+100. cierre requiere autoridad acorde con la máxima severidad alcanzada;
+101. se preservan exactamente 69 servicios `BCS-*`;
+102. se preservan exactamente 69 BIA;
+103. se preservan exactamente 69 procesos `VPROC-*`;
+104. no existen servicios faltantes ni duplicados;
+105. la distribución de propietarias suma 69;
+106. la distribución de criticidad permanece 12/20/31/6;
+107. las dos filas AURA permanecen bloqueadas;
+108. las otras 67 filas conservan baseline de incidente especificado;
+109. AURA diferida no recibe activación operativa por esta tarea;
+110. Vaila, Catering y puntos externos no se convierten en sedes por un incidente;
+111. no se confirma ningún SPOF nuevo;
+112. no se aprueba ningún sustituto nuevo;
+113. no se acepta ningún riesgo nuevo;
+114. no se declara ninguna capacidad validada;
+115. no se declara ningún incidente real;
+116. no se ejecuta ninguna activación, desactivación o cierre real;
+117. la autoridad física/digital permanece en `CONT-AUTH-*`;
+118. el mando, sustitución y bitácora detallada permanecen en `CONT-DOM-006`;
+119. no se modifica ningún requisito de prueba;
+120. no se modifica código, DDL, DML, datos, configuración, infraestructura, proveedor ni Supabase;
+121. no se ejecuta respaldo, restauración, failover, interrupción ni prueba destructiva;
+122. `CONT-DOM-006` permanece únicamente reservada.
+
+---
+
+#### 31. Balance de cierre
+
+| Control                                         |                                   Resultado |
+| ----------------------------------------------- | ------------------------------------------: |
+| Servicios con baseline de incidente             |                                 **69 / 69** |
+| Naturalezas                                     |                                      **10** |
+| Alcances                                        |                                       **6** |
+| Impactos                                        |                                       **4** |
+| Urgencias                                       |                                       **3** |
+| Severidades                                     |                                       **4** |
+| Modalidades de activación                       |                                       **3** |
+| Criterios de declaración                        |                                      **10** |
+| Disparadores de escalamiento                    |                                      **13** |
+| Criterios de desactivación                      |                                       **8** |
+| Criterios de cierre                             |                                      **15** |
+| Criterios de aceptación documental              |                                     **122** |
+| Hallazgos propietarios cerrados documentalmente | **3** — `H-CAP-SCOPE-018-008`, `009`, `010` |
+| Incidentes reales creados                       |                                       **0** |
+| Riesgos aceptados                               |                                       **0** |
+| Cambios físicos                                 |                                       **0** |
+| Requisitos de prueba creados/modificados        |                                       **0** |
+
+---
+
+#### 32. Límites de la tarea
+
+Esta tarea no:
+
+- asigna personas como director, sustituto o responsable nominal;
+- implementa permisos para declarar, activar, desactivar o cerrar;
+- crea acceso de emergencia;
+- envía comunicaciones reales;
+- define plantillas o árbol de comunicaciones de crisis;
+- activa operación mínima;
+- elige modalidad manual, offline, snapshot, sede o proveedor alternativo;
+- crea folios o formularios operativos;
+- reincorpora trabajo contingente;
+- modifica respaldos;
+- ejecuta restauraciones;
+- ejecuta failover;
+- cambia proveedores, contratos, energía, red o transporte;
+- ejecuta ejercicios;
+- declara readiness;
+- cambia la criticidad BIA o los objetivos MTPD/RTO/RPO/MBCO aprobados;
+- cambia datos, código, configuración, migraciones, RLS, RPC o Supabase.
+
+---
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa`
+
+
 ### [ ] CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
 ### [ ] CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
 ### [ ] CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor

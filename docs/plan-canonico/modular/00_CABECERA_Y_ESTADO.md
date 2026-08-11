@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **707** |
+| Tareas aprobadas | **708** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **887** |
+| Tareas no iniciadas | **886** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **44.35% (707/1594)** |
+| Porcentaje de completamiento | **44.42% (708/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo** |
-| Tarea actual | **CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad** |
+| Última tarea aprobada | **CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad** |
+| Tarea actual | **CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa** |
+| Siguiente tarea | **CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 131 de 157 aprobadas; CONT-DOM-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 132 de 157 aprobadas; CONT-DOM-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-DOM-004` — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo |
-| Tarea actual | `CONT-DOM-005` — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad — **NO INICIADA** |
-| Siguiente tarea | `CONT-DOM-006` — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa |
+| Última aprobada | `CONT-DOM-005` — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad |
+| Tarea actual | `CONT-DOM-006` — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa — **NO INICIADA** |
+| Siguiente tarea | `CONT-DOM-007` — Definir operación mínima viable por proceso, sede, horario, temporada y duración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 131 DE 157 APROBADAS — ACTUAL CONT-DOM-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 132 DE 157 APROBADAS — ACTUAL CONT-DOM-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo
-        ↓
-TAREA ACTUAL
 CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 131 de 157 tareas aprobadas
+CARRIL NEXO — 132 de 157 tareas aprobadas
 ```
