@@ -11293,4 +11293,982 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan`
 
 
-### [ ] CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan
+### ✅ CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos` — APROBADA
+**Tarea siguiente:** `CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de revisión posterior, aprendizaje, acciones propietarias, verificación de eficacia, mantenimiento versionado y actualización periódica del sistema de continuidad
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Incidentes, ejercicios, restauraciones, failover, failback, cambios de proveedor, cambios de infraestructura, acciones correctivas reales, código, DDL, DML, migraciones, RLS, RPC, secretos, backfills o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el cierre de aprendizaje de continuidad de Vento Group para que todo incidente, ejercicio, restauración, desviación o cambio material pueda convertirse en una revisión trazable, una lección sustentada, una acción con propietario y una comprobación de eficacia, sin reescribir la historia y sin confundir documentación actualizada con capacidad demostrada.
+
+La tarea establece un ciclo verificable que debe responder:
+
+```text
+que ocurrio y que evidencia lo demuestra
+que resultado empresarial se afecto o estuvo en riesgo
+que se esperaba que ocurriera segun la version vigente
+que desviaciones, causas e incertidumbres permanecen
+que lecciones son realmente accionables
+que accion trata cada hallazgo
+quien responde por la accion y cual es su condicion de salida
+como se comprueba que la accion funciona
+que artefactos de continuidad deben cambiar
+como se mantiene la historia de versiones
+cuando vuelve a revisarse cada servicio
+que estado de readiness puede afirmarse con la evidencia disponible
+```
+
+El resultado es un contrato documental de mantenimiento y aprendizaje. No afirma que haya ocurrido un incidente, que se haya ejecutado un ejercicio, que exista una accion real cerrada o que la eficacia de algun control haya sido validada.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda definido `CONT-DOM-015` con los siguientes resultados:
+
+1. contrato post-evento aplicable a incidentes, ejercicios, restauraciones y cambios materiales;
+2. cadena obligatoria `HECHO -> OBSERVACION -> HALLAZGO -> LECCION -> ACCION -> IMPLEMENTACION -> EFICACIA -> ACTUALIZACION`;
+3. separacion entre evidencia historica, interpretacion posterior y decision de mejora;
+4. taxonomia de estados para revisiones, hallazgos, acciones, eficacia y vigencia documental;
+5. reglas de analisis causal sin atribucion automatica de causa raiz;
+6. contrato minimo de una revision posterior y de sus evidencias;
+7. contrato minimo de una accion con propietario, prioridad, vencimiento o condicion temporal, dependencia, salida y evidencia;
+8. regla cardinal `ACCION_IMPLEMENTADA != ACCION_EFICAZ`;
+9. metodos permitidos de verificacion de eficacia segun el tipo de riesgo;
+10. tratamiento obligatorio de acciones ineficaces, parciales, vencidas, bloqueadas o canceladas;
+11. propagacion controlada de cambios hacia BIA, dependencias, objetivos, incidentes, contingencia, respaldos, runbooks, proveedores, ejercicios, autorizacion, experiencia e integraciones;
+12. mantenimiento de contactos, dependencias, runbooks y supuestos sin inventar vigencia;
+13. versionado append-only de historia sustantiva y reconstruccion de la version vigente al momento de cada hecho;
+14. revision periodica basada en riesgo, alineada con las ventanas aprobadas del programa de ejercicios;
+15. disparadores extraordinarios que obligan a revisar antes de la siguiente ventana;
+16. reglas para suspender readiness cuando una brecha invalida una afirmacion previa;
+17. catalogo de metricas de aprendizaje y mantenimiento sin valores ficticios;
+18. matriz materializada de mantenimiento para los 69 servicios BIA;
+19. tratamiento documental de `H-CAP-SCOPE-018-036` y `H-CAP-SCOPE-018-037`;
+20. cero incidentes, ejercicios, acciones, cierres o eficacias inventados;
+21. cero cambios fisicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume sin redefinir:
+
+- `CONT-DOM-001`, para gobierno federado, mantenimiento versionado, revisiones por cambio, excepciones y preservacion historica;
+- `CONT-DOM-002`, para el universo de 69 servicios BIA y sus propietarios;
+- `CONT-DOM-003`, para dependencias, concentraciones y sustitutos;
+- `CONT-DOM-004`, para MTPD, RTO, RPO, MBCO, prioridad y aceptacion de riesgo;
+- `CONT-DOM-005`, para severidad, declaracion, activacion y cierre de incidentes;
+- `CONT-DOM-006`, para mando, decisiones, sustitucion, bitacora y comunicacion;
+- `CONT-DOM-007`, para operacion minima por servicio;
+- `CONT-DOM-008`, para estrategias de contingencia;
+- `CONT-DOM-009`, para folios, evidencia, custodia y trabajo durante falla;
+- `CONT-DOM-010`, para reincorporacion, idempotencia, conflictos, conciliacion y pendientes;
+- `CONT-DOM-011`, para inventario y politica de respaldos;
+- `CONT-DOM-012`, para runbooks, restauracion, failover, retorno y validacion funcional;
+- `CONT-DOM-013`, para proveedores, energia, red, pagos, transporte, canales y recursos alternativos;
+- `CONT-DOM-014`, para modalidades, escenarios, recurrencia, evidencia y resultados de ejercicios;
+- `CAP-SCOPE-018`, incluidos los hallazgos asignados a aprendizaje y mantenimiento;
+- los requisitos vigentes de continuidad, datos, integracion, experiencia, informacion y tecnologia que ya protegen prueba, evidencia, acciones y actualizacion.
+
+No se altera ninguna decision heredada sobre servicio, propietaria, BIA, perfil, objetivo, estrategia, dependencia, runbook, proveedor, alternativa, ejercicio o readiness.
+
+---
+
+#### 4. Decisión principal
+
+Vento OS adopta un modelo de **aprendizaje cerrado con eficacia demostrable y mantenimiento versionado**.
+
+```text
+HECHO OBSERVADO
+-> se conserva como historia inmutable
+
+REVISION POSTERIOR
+-> compara lo esperado con lo observado
+-> identifica desviaciones, causas confirmadas e incertidumbres
+
+LECCION
+-> sintetiza que debe cambiar o preservarse
+-> no altera por si sola el sistema
+
+ACCION
+-> tiene propietario, prioridad, condicion de salida y evidencia
+-> se implementa en el contrato o dominio propietario
+
+EFICACIA
+-> comprueba si la accion redujo el riesgo o corrigio el fallo
+-> puede exigir reejercicio o evidencia operativa
+
+ACTUALIZACION DEL PLAN
+-> publica una nueva version coherente de los artefactos afectados
+-> preserva las versiones historicas
+
+READINESS
+-> solo cambia cuando la evidencia aplicable lo permite
+```
+
+Reglas cardinales:
+
+```text
+LECCION IDENTIFICADA != MEJORA IMPLEMENTADA
+ACCION IMPLEMENTADA != ACCION EFICAZ
+PLAN ACTUALIZADO != READINESS VALIDADO
+RESULTADO HISTORICO != INTERPRETACION POSTERIOR
+```
+
+---
+
+#### 5. Definiciones normativas
+
+| Concepto                    | Definicion                                                                                                             |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `REVISION_POSTERIOR`        | expediente que analiza un hecho ya ocurrido sin modificar su evidencia historica                                       |
+| `OBSERVACION`               | hecho o condicion registrada directamente a partir de evidencia                                                        |
+| `HALLAZGO`                  | desviacion, debilidad, incumplimiento, oportunidad o riesgo sustentado por una o mas observaciones                     |
+| `LECCION`                   | conclusion versionada sobre que debe conservarse, cambiarse, verificarse o dejar de asumirse                           |
+| `ACCION`                    | tratamiento propietario con alcance, responsable, prioridad, salida y evidencia                                        |
+| `IMPLEMENTACION_DE_ACCION`  | materializacion del tratamiento en su dominio propietario                                                              |
+| `EFICACIA`                  | evidencia de que el tratamiento produjo el resultado de control esperado en el alcance definido                        |
+| `RIESGO_RESIDUAL`           | exposicion que permanece despues del tratamiento y que debe quedar visible                                             |
+| `ACTUALIZACION_MATERIAL`    | cambio que altera comportamiento, objetivo, dependencia, autoridad, estrategia, recuperacion o afirmacion de readiness |
+| `CORRECCION_ADMINISTRATIVA` | correccion que no altera significado, autoridad, alcance, comportamiento o decision material                           |
+| `VIGENCIA`                  | condicion de una version que puede usarse como referencia actual dentro de su alcance                                  |
+| `READINESS`                 | estado de capacidad demostrado por evidencia; no se obtiene por mera existencia de documentos                          |
+
+---
+
+#### 6. Disparadores obligatorios de revisión
+
+Se abre o reabre una revision cuando ocurra cualquiera de estas condiciones:
+
+1. incidente de continuidad cerrado o estabilizado suficientemente para analizarlo;
+2. ejercicio `WALKTHROUGH`, `TABLETOP`, `SIMULACION_TECNICA`, `RESTAURACION_AISLADA`, `EJERCICIO_OPERATIVO` o `EJERCICIO_INTEGRADO` con hallazgos materiales;
+3. resultado `EJECUTADO_CON_DESVIACIONES`, `FALLIDO`, `ABORTADO_POR_SEGURIDAD` o `BLOQUEADO_POR_EVIDENCIA`;
+4. restauracion, failover, failback o retorno que exceda objetivo, produzca inconsistencia o revele dependencia no contemplada;
+5. cambio material en proceso, aplicacion, datos, sede, horario, personal clave, autoridad, dispositivo, red, energia o infraestructura;
+6. cambio de proveedor, contrato, pago, transporte, canal, recurso alternativo o dependencia externa material;
+7. cambio de BIA, MTPD, RTO, RPO, MBCO, prioridad o estrategia;
+8. vencimiento, fallo o perdida de evidencia de un control cuya afirmacion de readiness dependia de ella;
+9. hallazgo de auditoria, seguridad, privacidad, SST, calidad, inocuidad o cumplimiento que afecte continuidad;
+10. accion critica vencida, ineficaz o recurrente;
+11. vencimiento de la ventana periodica aplicable por prioridad;
+12. cambio de estado de una aplicacion diferida que altere la aplicabilidad de su continuidad.
+
+El disparador identifica la necesidad de revisar. No presupone la causa, el responsable ni la solucion.
+
+---
+
+#### 7. Contrato del expediente de revisión posterior
+
+Cada revision materializada debera conservar como minimo:
+
+| Campo                      | Regla                                                                   |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `review_id`                | identidad estable e inmutable                                           |
+| `trigger_type`             | incidente, ejercicio, cambio, auditoria, vencimiento o evidencia        |
+| `source_ref`               | referencia al hecho original; nunca lo sustituye                        |
+| `scope`                    | servicios, procesos, sedes, aplicaciones, terceros y recursos afectados |
+| `baseline_version_refs[]`  | versiones vigentes usadas para comparar expectativa y realidad          |
+| `observed_evidence_refs[]` | evidencia observada y preservada                                        |
+| `expected_result`          | resultado esperado segun contrato vigente                               |
+| `observed_result`          | resultado observado sin reinterpretacion retrospectiva                  |
+| `deviations[]`             | diferencia entre esperado y observado                                   |
+| `cause_hypotheses[]`       | hipotesis claramente identificadas como tales                           |
+| `confirmed_causes[]`       | causas confirmadas con evidencia suficiente                             |
+| `unknowns[]`               | incertidumbres que no deben cerrarse por inferencia                     |
+| `findings[]`               | hallazgos derivados y su riesgo                                         |
+| `lessons[]`                | lecciones confirmadas o descartadas con razon                           |
+| `action_refs[]`            | acciones propietarias resultantes                                       |
+| `residual_risk`            | riesgo que permanece despues de decisiones tomadas                      |
+| `plan_change_refs[]`       | versiones o cambios documentales derivados                              |
+| `review_state`             | estado del expediente                                                   |
+| `review_authority`         | funcion autorizada que concluye la revision                             |
+| `closed_at`                | fecha real solo cuando exista cierre                                    |
+
+---
+
+#### 8. Estados de la revisión
+
+| Estado                            | Semantica                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| `PENDIENTE_DE_REVISION`           | existe disparador y falta iniciar analisis                                |
+| `EN_REVISION`                     | evidencia y desviaciones estan siendo analizadas                          |
+| `BLOQUEADA_POR_EVIDENCIA`         | falta evidencia material y se conserva el bloqueo explicito               |
+| `REVISION_CONCLUIDA_SIN_ACCIONES` | no quedaron acciones materiales y existe justificacion                    |
+| `REVISION_CONCLUIDA_CON_ACCIONES` | hallazgos y acciones quedaron vinculados                                  |
+| `CERRADA_CON_RIESGO_RESIDUAL`     | la revision concluyo pero persiste riesgo residual expresamente gobernado |
+
+Cerrar la revision no cierra automaticamente sus acciones.
+
+---
+
+#### 9. Cadena de observación, hallazgo y lección
+
+La cadena minima es:
+
+```text
+EVIDENCIA
+-> OBSERVACION
+-> HALLAZGO
+-> LECCION
+-> ACCION O DECISION JUSTIFICADA DE NO ACCION
+```
+
+Reglas:
+
+- una observacion describe; no asigna culpa;
+- un hallazgo explica la desviacion o riesgo que la observacion soporta;
+- una leccion resume el cambio de entendimiento que debe conservarse;
+- una leccion puede exigir una o mas acciones;
+- varias lecciones pueden compartir una accion solamente si el alcance y la evidencia siguen trazables;
+- una leccion sin accion debe justificar por que no requiere tratamiento y que riesgo residual permanece;
+- no se elimina una observacion porque una hipotesis causal posterior resulte falsa.
+
+---
+
+#### 10. Análisis causal
+
+El analisis causal considera, cuando aplique:
+
+- diseño del proceso;
+- claridad de autoridad y decision;
+- disponibilidad y conocimiento de personas;
+- datos, calidad, version y secuencia;
+- aplicacion, configuracion e integracion;
+- infraestructura, red, energia y dispositivo;
+- proveedor o tercero;
+- instalacion y recurso fisico;
+- capacidad, carga y ventana temporal;
+- respaldo, restauracion o runbook;
+- comunicacion y experiencia degradada;
+- control preventivo, detectivo, protector o compensatorio;
+- supuesto incorrecto o evidencia obsoleta.
+
+Estados causales permitidos:
+
+| Estado                           | Regla                                                            |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `HIPOTESIS`                      | explicacion posible aun no demostrada                            |
+| `CAUSA_CONTRIBUYENTE_CONFIRMADA` | factor confirmado que contribuyo al resultado                    |
+| `CAUSA_PRINCIPAL_CONFIRMADA`     | factor confirmado con relacion suficiente al resultado analizado |
+| `CAUSA_NO_CONFIRMADA`            | evidencia insuficiente; no se fuerza una conclusion              |
+
+---
+
+#### 11. Contrato de acción
+
+Toda accion material debera conservar:
+
+| Campo                     | Regla                                                               |
+| ------------------------- | ------------------------------------------------------------------- |
+| `action_id`               | identidad estable                                                   |
+| `finding_refs[]`          | hallazgos que trata                                                 |
+| `lesson_refs[]`           | lecciones que materializa                                           |
+| `owner_function`          | funcion interna responsable del resultado                           |
+| `execution_owner`         | ejecutor cuando sea distinto del propietario                        |
+| `domain_owner`            | contrato, proceso o dominio donde se materializa                    |
+| `priority`                | derivada del riesgo y criticidad; no de conveniencia administrativa |
+| `scope`                   | servicios, procesos, sedes, aplicaciones o terceros cubiertos       |
+| `target_at_or_condition`  | fecha objetivo real o condicion temporal verificable                |
+| `dependencies[]`          | prerequisitos y bloqueos                                            |
+| `expected_control_result` | resultado observable que debe producir el tratamiento               |
+| `exit_condition`          | condicion verificable para terminar implementacion                  |
+| `efficacy_method`         | metodo definido para comprobar eficacia                             |
+| `evidence_refs[]`         | evidencia de implementacion y de eficacia, diferenciadas            |
+| `residual_risk`           | riesgo restante                                                     |
+| `state`                   | estado actual de la accion                                          |
+
+---
+
+#### 12. Ciclo de vida de acciones
+
+```text
+ABIERTA
+-> PLANIFICADA
+-> EN_EJECUCION
+-> IMPLEMENTADA_PENDIENTE_DE_EFICACIA
+-> EFICAZ
+```
+
+Desvios posibles:
+
+```text
+ABIERTA / PLANIFICADA / EN_EJECUCION
+-> BLOQUEADA
+-> reanuda cuando cumple condicion de salida del bloqueo
+
+IMPLEMENTADA_PENDIENTE_DE_EFICACIA
+-> EFICACIA_PARCIAL
+-> requiere tratamiento restante
+
+IMPLEMENTADA_PENDIENTE_DE_EFICACIA
+-> INEFICAZ_REQUIERE_RETRABAJO
+-> nueva ejecucion o accion relacionada
+
+cualquier estado abierto
+-> CANCELADA_CON_DECISION_Y_RIESGO_RESIDUAL
+```
+
+Una accion no llega a `EFICAZ` por cierre administrativo, antiguedad, despliegue o aceptacion de riesgo.
+
+---
+
+#### 13. Priorización de acciones
+
+La prioridad considera:
+
+1. afectacion de un MBCO protector;
+2. riesgo de superar MTPD o RTO;
+3. riesgo de perdida superior a RPO;
+4. seguridad, SST, inocuidad, privacidad, autorizacion o cumplimiento;
+5. repeticion o tendencia del hallazgo;
+6. amplitud de servicios, sedes o terceros afectados;
+7. ausencia de alternativa o compensacion;
+8. probabilidad de recurrencia antes de la siguiente oportunidad de prueba;
+9. dependencia de otra accion para recuperar readiness.
+
+Una prioridad alta no autoriza saltar controles propietarios.
+
+---
+
+#### 14. Evidencia de implementación y evidencia de eficacia
+
+Se mantienen separadas:
+
+| Evidencia                      | Demuestra                                | No demuestra por si sola                             |
+| ------------------------------ | ---------------------------------------- | ---------------------------------------------------- |
+| cambio documental              | que una version fue modificada           | que el cambio funciona                               |
+| cambio de codigo/configuracion | que se materializo una implementacion    | que el proceso se recupera                           |
+| compra/instalacion             | que existe un recurso                    | que tiene capacidad o readiness                      |
+| contrato con proveedor         | que existe una obligacion acordada       | que el tercero respondera correctamente en un evento |
+| backup exitoso                 | que una tarea de copia termino           | que la copia restaura correctamente                  |
+| restauracion tecnica           | que el componente puede restaurarse      | que el resultado empresarial queda conciliado        |
+| ejercicio                      | comportamiento observado en el escenario | comportamiento universal fuera del alcance probado   |
+| operacion real                 | comportamiento en condiciones reales     | ausencia total de riesgo futuro                      |
+
+---
+
+#### 15. Verificación de eficacia
+
+Cada accion define uno o mas metodos aplicables:
+
+- `REEJERCICIO_CONTROLADO`;
+- `RESTAURACION_AISLADA`;
+- `PRUEBA_TECNICA`;
+- `PRUEBA_FUNCIONAL`;
+- `PRUEBA_DE_RECONCILIACION`;
+- `INSPECCION_DOCUMENTADA`;
+- `EVIDENCIA_OPERATIVA`;
+- `REVISION_DE_CONFIGURACION`;
+- `VALIDACION_DE_TERCERO_CORRELACIONADA`.
+
+La eficacia se evalua contra el resultado de control esperado y el alcance real de la accion. Cuando el metodo requiere un ejercicio, su ejecucion vuelve a `CONT-DOM-014`; esta tarea conserva el contrato de cierre y aprendizaje.
+
+---
+
+#### 16. Estados de eficacia
+
+| Estado                        | Regla                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `SIN_EVIDENCIA_DE_EFICACIA`   | no existe prueba suficiente                                                |
+| `EFICACIA_PENDIENTE`          | la accion esta implementada y espera comprobacion                          |
+| `EFICACIA_PARCIAL`            | parte del resultado fue demostrada y queda alcance abierto                 |
+| `EFICAZ`                      | el resultado de control se demostro para el alcance definido               |
+| `INEFICAZ_REQUIERE_RETRABAJO` | la evidencia demuestra que el tratamiento no alcanza el resultado esperado |
+| `NO_VERIFICABLE_AUN`          | existe dependencia temporal o material explicita que impide comprobar      |
+
+`NO_VERIFICABLE_AUN` debe conservar el bloqueo, propietario y condicion de salida.
+
+---
+
+#### 17. Propagación de cambios al sistema de continuidad
+
+| Cambio detectado                            | Artefacto propietario que debe revisarse | Condicion minima                                       |
+| ------------------------------------------- | ---------------------------------------- | ------------------------------------------------------ |
+| resultado empresarial, criticidad o alcance | BIA de `CONT-DOM-002`                    | nueva version aprobada y trazable                      |
+| dependencia, concentracion o sustituto      | mapa de `CONT-DOM-003`                   | relacion actualizada y evidencia                       |
+| MTPD/RTO/RPO/MBCO/prioridad                 | `CONT-DOM-004`                           | decision de riesgo aprobada; sin relajacion silenciosa |
+| severidad, trigger o cierre de incidente    | `CONT-DOM-005`                           | regla versionada                                       |
+| mando, suplencia o comunicacion             | `CONT-DOM-006`                           | autoridad y alcance actualizados                       |
+| operacion minima                            | `CONT-DOM-007`                           | MBCO preservado                                        |
+| estrategia de contingencia                  | `CONT-DOM-008`                           | limites, abandono y evidencia actualizados             |
+| captura, folio o custodia                   | `CONT-DOM-009`                           | historia e identificacion preservadas                  |
+| reincorporacion o conciliacion              | `CONT-DOM-010`                           | idempotencia y conflictos tratados                     |
+| respaldo                                    | `CONT-DOM-011`                           | cobertura y restaurabilidad revisadas                  |
+| runbook, restore, failover o retorno        | `CONT-DOM-012`                           | version, autoridad y validacion funcional actualizadas |
+| proveedor o recurso alternativo             | `CONT-DOM-013`                           | acreditacion, capacidad y dependencia revisadas        |
+| escenario, modalidad o recurrencia          | `CONT-DOM-014`                           | programa actualizado y nueva evidencia cuando aplique  |
+| acceso o decision excepcional               | `CONT-AUTH-*` aplicable                  | autoridad, vigencia y revocacion gobernadas            |
+| mensaje o experiencia degradada             | `CONT-UX-*` aplicable                    | estado y limitaciones coherentes                       |
+| integracion o reconciliacion externa        | `CONT-INT-*` aplicable                   | health, aislamiento, idempotencia y retorno coherentes |
+
+Esta tarea gobierna el gatillo y la trazabilidad del cambio; cada contrato propietario conserva la autoridad sobre su contenido.
+
+---
+
+#### 18. Vigencia de contactos, dependencias y runbooks
+
+Los siguientes elementos no pueden considerarse vigentes por mera existencia:
+
+- contactos de responsables o proveedores;
+- cadenas de escalamiento;
+- dependencias y endpoints;
+- credenciales o procedimientos de acceso de emergencia;
+- runbooks y precondiciones;
+- inventarios de respaldo;
+- rutas de failover/failback;
+- alternativas fisicas o de proveedor;
+- formularios, folios, consumibles y medios de evidencia;
+- escenarios y datos de ejercicio.
+
+Cada elemento debe conservar fuente, version o fecha de comprobacion real cuando exista, propietario y proxima condicion de revision. Si falta evidencia de vigencia, se registra `PENDIENTE_DE_EVIDENCIA`.
+
+---
+
+#### 19. Versionado e historia
+
+El mantenimiento sigue estas reglas:
+
+1. la version vigente se identifica de forma inequivoca;
+2. una nueva version registra motivo, alcance, autor y autoridad aplicable;
+3. la version anterior deja de ser activa sin ser borrada de la historia;
+4. incidentes y ejercicios conservan referencia a la version usada en su momento;
+5. una correccion administrativa no cambia silenciosamente una decision material;
+6. un cambio material crea una nueva decision versionada;
+7. consumidores afectados reciben o registran la propagacion necesaria;
+8. una contradiccion material entre artefactos impide declarar la actualizacion coherente;
+9. una version documental nueva no eleva readiness sin evidencia aplicable.
+
+---
+
+#### 20. Revisión periódica basada en riesgo
+
+La periodicidad no es universal. Se conserva el criterio aprobado por prioridad y se adelanta ante cualquier disparador extraordinario:
+
+| Prioridad         | Ventana documental maxima          | Regla extraordinaria                                                                           |
+| ----------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `PR-0_PROTECCION` | `<= 6 meses`                       | revisar antes si existe incidente, ejercicio material, cambio protector o perdida de evidencia |
+| `PR-1_ESENCIAL`   | `<= 12 meses`                      | revisar antes si cambia capacidad, dependencia, objetivo, proveedor o evidencia                |
+| `PR-2_CONTROL`    | `<= 12 meses`                      | revisar antes si cambia control, evidencia, conciliacion, dependencia o recuperabilidad        |
+| `PR-3_DIFERIBLE`  | `<= 12 meses`                      | revisar antes si cambia backlog, vencimiento, aplicabilidad o capacidad de reanudacion         |
+| AURA diferida     | sin ventana de readiness operativo | revisar aplicabilidad cuando cambie su estado y durante el gobierno documental que la afecte   |
+
+La ventana se calcula desde la ultima revision valida o desde el evento material posterior que exija una nueva revision. Cuando la fecha base no esta demostrada, el estado es `PENDIENTE_DE_EVIDENCIA`; no se inventa una fecha.
+
+---
+
+#### 21. Estado de vigencia documental
+
+| Estado                   | Semantica                                                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| `VIGENTE`                | version aplicable con revision no vencida y sin brecha material conocida que la invalide |
+| `VIGENTE_CON_BRECHA`     | puede usarse como referencia, pero existe brecha visible y propietaria                   |
+| `REVISION_REQUERIDA`     | disparador o ventana exige nueva revision                                                |
+| `EN_REVISION`            | cambio en evaluacion; la version previa conserva su historia                             |
+| `SUSTITUIDO`             | existe version posterior vigente                                                         |
+| `RETIRADO`               | ya no aplica; conserva historia y razon                                                  |
+| `PENDIENTE_DE_EVIDENCIA` | no puede afirmarse vigencia suficiente con la evidencia disponible                       |
+
+---
+
+#### 22. Readiness y mantenimiento
+
+La revision posterior puede mantener, suspender o dejar sin validar una afirmacion; no puede elevarla sin evidencia:
+
+```text
+READINESS_NO_VALIDADO
+-> permanece NO VALIDADO hasta ejercicio/evidencia aplicable
+
+READINESS_VALIDADO_CON_EVIDENCIA
+-> puede pasar a READINESS_SUSPENDIDO si una brecha invalida la evidencia
+
+READINESS_SUSPENDIDO
+-> requiere tratar la causa
+-> requiere revalidacion proporcional al riesgo
+-> solo vuelve a validado con evidencia nueva suficiente
+```
+
+En la linea base actual consumida de `CONT-DOM-014`, esta tarea no dispone de ejecucion acreditada para elevar readiness de ningun servicio.
+
+---
+
+#### 23. Métricas de aprendizaje y mantenimiento
+
+Se definen las siguientes metricas sin asignar valores actuales:
+
+| Metrica                                | Definicion                                          | Interpretacion prohibida                          |
+| -------------------------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| `REVIEWS_DUE`                          | revisiones cuyo trigger o ventana exige tratamiento | no equivale a fallos confirmados                  |
+| `REVIEWS_OVERDUE`                      | revisiones vencidas segun regla aplicable           | no se oculta reiniciando fecha sin revision       |
+| `ACTIONS_OPEN`                         | acciones no cerradas                                | no equivale a acciones ineficaces                 |
+| `ACTIONS_OVERDUE`                      | acciones abiertas fuera de su objetivo temporal     | no se corrige cambiando fecha sin decision        |
+| `ACTIONS_IMPLEMENTED_PENDING_EFFICACY` | tratamientos materializados aun no comprobados      | no cuenta como eficaz                             |
+| `ACTIONS_EFFECTIVE`                    | acciones con eficacia demostrada                    | solo para el alcance verificado                   |
+| `ACTIONS_INEFFECTIVE`                  | acciones cuya comprobacion fallo                    | exige retrabajo o nueva decision                  |
+| `FINDING_RECURRENCE`                   | hallazgos relacionados que reaparecen               | requiere relacion historica sustentada            |
+| `STALE_ARTIFACTS`                      | artefactos cuya vigencia no puede demostrarse       | no equivale a contenido necesariamente incorrecto |
+| `READINESS_SUSPENSIONS`                | afirmaciones suspendidas por evidencia invalidada   | no se confunde con indisponibilidad actual        |
+
+Los valores reales y su explotacion analitica pertenecen a los contratos de datos y metricas aplicables.
+
+---
+
+#### 24. Tratamiento de acciones bloqueadas, vencidas o ineficaces
+
+| Situacion                  | Tratamiento obligatorio                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| accion bloqueada           | registrar bloqueo, propietario, dependencia y condicion de salida                  |
+| accion vencida             | conservar vencimiento, escalar por riesgo y mantener visible                       |
+| accion parcialmente eficaz | separar alcance demostrado de alcance pendiente                                    |
+| accion ineficaz            | reabrir tratamiento; conservar evidencia del fallo                                 |
+| accion cancelada           | conservar autoridad, razon y riesgo residual                                       |
+| proveedor no responde      | mantener responsabilidad interna y activar escalamiento contractual aplicable      |
+| evidencia insuficiente     | no declarar cierre ni eficacia; registrar `NO_VERIFICABLE_AUN` o bloqueo aplicable |
+| control temporal           | conservar vencimiento y ruta a control permanente o retiro                         |
+
+---
+
+#### 25. Revision de aprendizaje despues de incidentes
+
+La revision de un incidente conserva, sin reescribir:
+
+- deteccion, declaracion, severidad y alcance observados;
+- decisiones de mando y escalamiento;
+- comunicaciones emitidas y su evidencia;
+- estado operativo y MBCO preservado o perdido;
+- tiempos reales cuando existan;
+- trabajo contingente y pendientes;
+- restauracion y validacion funcional;
+- reincorporacion y conciliacion;
+- resultados desconocidos y excepciones;
+- cierre original y riesgo residual conocido en ese momento.
+
+La revision posterior agrega analisis y acciones. No cambia retrospectivamente el hecho registrado.
+
+---
+
+#### 26. Revision de aprendizaje despues de ejercicios
+
+Para un ejercicio, se conserva el resultado aprobado en `CONT-DOM-014` y se analizan:
+
+- objetivos alcanzados y no alcanzados;
+- supuestos que resultaron validos o falsos;
+- tiempos observados frente a objetivos;
+- decisiones y handoffs;
+- evidencia faltante o ambigua;
+- seguridad y limites del escenario;
+- reconciliacion funcional y de datos;
+- capacidad real de personas, terceros y recursos;
+- fallos de runbook, contactos o dependencias;
+- acciones y metodo de revalidacion necesario.
+
+Un ejercicio fallido puede ser muy valioso como evidencia; no se convierte en aprobado para mejorar una metrica.
+
+---
+
+#### 27. Revisión de cambios materiales
+
+Todo cambio material debe evaluar si altera:
+
+1. el universo BIA o su propietaria;
+2. una dependencia o concentracion;
+3. MTPD, RTO, RPO o MBCO;
+4. severidad o trigger de continuidad;
+5. autoridad, suplencia o comunicacion;
+6. operacion minima;
+7. estrategia manual/offline/degradada;
+8. folios, captura o evidencia;
+9. reincorporacion o conciliacion;
+10. respaldo o restaurabilidad;
+11. runbook, failover o retorno;
+12. proveedor, energia, red, pagos, transporte o canal;
+13. escenario o periodicidad de ejercicio;
+14. autorizacion, UX o integracion de continuidad.
+
+La revision produce referencias a los contratos afectados; no los modifica silenciosamente desde esta tarea.
+
+---
+
+#### 28. Matriz de mantenimiento por servicio — 69 / 69
+
+Cada servicio recibe una decision explicita de mantenimiento. El estado actual refleja exclusivamente la evidencia disponible en el expediente documental consumido; no afirma ejecucion inexistente.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Perfil         | Prioridad         | Ventana de revision                                  | Revision post-evento actual            | Eficacia actual                     | Readiness actual                    |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | ----------------- | ---------------------------------------------------- | -------------------------------------- | ----------------------------------- | ----------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_POR_CAMBIO_DE_ESTADO_Y_GOBIERNO_APLICABLE` | `BLOQUEADO_POR_APLICACION_DIFERIDA`    | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_POR_CAMBIO_DE_ESTADO_Y_GOBIERNO_APLICABLE` | `BLOQUEADO_POR_APLICACION_DIFERIDA`    | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `REVISION_MAX_6_MESES_O_EVENTO`                      | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `REVISION_MAX_12_MESES_O_EVENTO`                     | `SIN_REVISION_POST_EVENTO_INSTANCIADA` | `SIN_EVIDENCIA_DE_EFICACIA`         | `READINESS_NO_VALIDADO`             |
+
+---
+
+#### 29. Reconciliacion de la matriz
+
+Distribucion preservada:
+
+| Dimension                                            | Resultado |
+| ---------------------------------------------------- | --------: |
+| servicios BIA                                        |    **69** |
+| servicios activos                                    |    **67** |
+| AURA bloqueados                                      |     **2** |
+| `CRITICA_PROTECCION`                                 |    **12** |
+| `CRITICA_OPERACIONAL`                                |    **20** |
+| `ALTA_CONTROL`                                       |    **31** |
+| `DIFERIBLE_CONTROLADA`                               |     **6** |
+| `PR-0_PROTECCION`                                    |    **12** |
+| `PR-1_ESENCIAL`                                      |    **20** |
+| `PR-2_CONTROL`                                       |    **31** |
+| `PR-3_DIFERIBLE`                                     |     **6** |
+| revisiones post-evento reales creadas por esta tarea |     **0** |
+| acciones reales creadas por esta tarea               |     **0** |
+| acciones con eficacia acreditada por esta tarea      |     **0** |
+| servicios elevados a readiness validado              |     **0** |
+
+No se deduce ausencia historica de incidentes o acciones. Se declara solamente que esta tarea documental no dispone de evidencia canonica suficiente para instanciar hechos reales adicionales.
+
+---
+
+#### 30. Tratamiento de AURA
+
+`BCS-VPROC-0056` y `BCS-VPROC-0057` conservan `BLOQUEADO_POR_APLICACION_DIFERIDA`.
+
+Mientras AURA permanezca diferida:
+
+- no se inicia una ventana de readiness operativo;
+- no se inventan incidentes, ejercicios, acciones o resultados;
+- el cambio de estado de la aplicacion es un trigger de revision de aplicabilidad;
+- antes de habilitar operacion se deberan reconciliar BIA, dependencias, objetivos, estrategia, evidencia, integraciones y programa de ejercicios aplicables.
+
+---
+
+#### 31. Hallazgos CAP-SCOPE tratados
+
+| Hallazgo              | Tratamiento documental en esta tarea                                                                                         | Estado de evidencia                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `H-CAP-SCOPE-018-036` | se obliga la cadena `hallazgo -> leccion -> accion -> propietario -> eficacia`, con estados y condiciones de salida          | `ESPECIFICADO`; implementacion y eficacia dependen de acciones futuras reales |
+| `H-CAP-SCOPE-018-037` | se establecen triggers de vigencia y actualizacion para contactos, dependencias, runbooks, proveedores, recursos y versiones | `ESPECIFICADO`; vigencia real requiere comprobaciones futuras                 |
+
+Ningun hallazgo se declara fisicamente cerrado por la sola aprobacion documental de este contrato.
+
+---
+
+#### 32. Brechas de evidencia y condiciones de salida
+
+| Brecha                                      | Estado                   | Propietario documental                                              | Condicion de salida                                                      |
+| ------------------------------------------- | ------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| historial real de revisiones post-incidente | `PENDIENTE_DE_EVIDENCIA` | propietario del expediente de continuidad y del incidente aplicable | revisiones reales identificadas, vinculadas y verificables               |
+| backlog real de lecciones y acciones        | `PENDIENTE_DE_EVIDENCIA` | propietarios funcionales y de continuidad                           | inventario real con acciones, propietarios, fechas/condiciones y estados |
+| eficacia real de acciones                   | `PENDIENTE_DE_EVIDENCIA` | propietario de cada accion y validador aplicable                    | prueba posterior suficiente segun metodo de eficacia                     |
+| vigencia real de contactos                  | `PENDIENTE_DE_EVIDENCIA` | responsables de continuidad, TI y dominios aplicables               | fuente y comprobacion de vigencia verificables                           |
+| vigencia real de dependencias               | `PENDIENTE_DE_EVIDENCIA` | propietarios de proceso, TI e integraciones aplicables              | reconciliacion contra estado real y evidencia                            |
+| vigencia real de runbooks                   | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012`, TI y propietarios funcionales                       | version desplegable/usable y evidencia de comprobacion                   |
+| readiness posterior a acciones              | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014` y propietario funcional                              | ejercicio o evidencia proporcional al riesgo con resultado suficiente    |
+| metricas reales de aprendizaje              | `PENDIENTE_DE_EVIDENCIA` | dominio de datos/analitica aplicable                                | fuentes, reglas de calculo, lineage y resultados medidos                 |
+
+No queda una brecha material de esta tarea sin propietario documental y condicion de salida.
+
+---
+
+#### 33. Handoffs obligatorios
+
+| Materia                                    | Contrato o tarea propietaria         | Frontera                                                                             |
+| ------------------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| reejercicio y nueva evidencia de readiness | `CONT-DOM-014`                       | esta tarea define por que revalidar; el programa de ejercicios gobierna la ejecucion |
+| reincorporacion y conciliacion             | `CONT-DOM-010`                       | una accion de mejora no reescribe los efectos originales                             |
+| respaldos                                  | `CONT-DOM-011`                       | eficacia de cobertura exige restaurabilidad real                                     |
+| runbooks, restore, failover y retorno      | `CONT-DOM-012`                       | cambios tecnicos permanecen en su contrato propietario                               |
+| proveedores y recursos alternativos        | `CONT-DOM-013`                       | cambios de tercero requieren su acreditacion aplicable                               |
+| autorizacion y segregacion                 | `CONT-AUTH-*`                        | revision no concede autoridad excepcional                                            |
+| experiencia y comunicacion                 | `CONT-UX-*`                          | cambios de mensajes/estado se implementan en su contrato propietario                 |
+| integraciones y reconciliacion             | `CONT-INT-*`                         | idempotencia, health, aislamiento y retorno no se redefinen aqui                     |
+| acciones y metricas de mejora              | dominio de datos/analitica aplicable | esta tarea define semantica; la medicion real conserva lineage y fuente              |
+| cambios TI derivados                       | tareas TI propietarias aplicables    | evidencia tecnica y ejecucion permanecen en TI                                       |
+| gobierno de informacion                    | tareas INFO propietarias aplicables  | retencion, privacidad, evidencia y versionado conservan su autoridad                 |
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificacion:** el registro vigente ya protege la revision posterior a incidentes y ejercicios, la creacion de acciones con propietario y referencia temporal, la comprobacion de eficacia, la actualizacion de dependencias, contactos, runbooks, metricas y capacitacion, y la prohibicion de declarar listo un plan sin prueba vigente. Esta tarea materializa ese contrato documental para el universo de continuidad sin introducir un comportamiento ejecutable nuevo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 35. Criterios de aceptacion
+
+1. La tarea consume `CONT-DOM-014` como tarea anterior aprobada y no modifica su evidencia historica.
+2. La tarea reserva `CONT-AUTH-001` y no inicia su desarrollo.
+3. La tarea permanece exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No se modifica codigo, DDL, DML, migraciones, RLS, RPC, Edge Functions, secretos, datos ni configuracion desplegada.
+5. El alcance conserva exactamente 69 servicios BIA.
+6. Los 69 servicios conservan identificador `BCS-VPROC-*` y proceso `VPROC-*` sin renombramiento.
+7. La distribucion de propietarias permanece 1 ANIMA, 20 VISO, 16 NEXO, 6 FOGO, 4 ORIGO, 12 PULSO, 7 NUMERA, 2 AURA y 1 PASS.
+8. La distribucion BIA permanece 12 `CRITICA_PROTECCION`, 20 `CRITICA_OPERACIONAL`, 31 `ALTA_CONTROL` y 6 `DIFERIBLE_CONTROLADA`.
+9. Los perfiles `CONT-OBJ-001` a `CONT-OBJ-004` se consumen sin modificar sus objetivos.
+10. Los dos servicios AURA permanecen bloqueados por aplicacion diferida.
+11. Una revision posterior se vincula a un incidente, ejercicio, cambio o evidencia concreta; no se inventa un evento para completar el expediente.
+12. El resultado historico del incidente o ejercicio permanece inmutable.
+13. Una correccion posterior se registra como nueva evidencia enlazada y no como sobrescritura del hecho original.
+14. La revision separa hechos observados, interpretaciones, causas, decisiones, lecciones y acciones.
+15. Una observacion no se eleva a causa confirmada sin evidencia suficiente.
+16. Una hipotesis causal permanece identificada como hipotesis hasta su confirmacion.
+17. La revision evita convertir automaticamente una desviacion humana en causa raiz.
+18. La revision conserva factores de proceso, informacion, tecnologia, proveedor, instalacion, capacidad, autorizacion y contexto cuando sean relevantes.
+19. La revision no sustituye investigacion laboral, SST, seguridad, privacidad, calidad o cumplimiento cuando estas disciplinas sean propietarias del caso.
+20. Cada hallazgo material tiene alcance, evidencia, riesgo, propietario documental y condicion de salida.
+21. Una leccion identificada no equivale a una mejora aplicada.
+22. Una accion abierta no equivale a un control implementado.
+23. Una accion implementada no equivale a una accion eficaz.
+24. Una accion eficaz exige evidencia posterior suficiente para el riesgo que pretende reducir.
+25. Las acciones conservan identificador estable y no se reutilizan para hallazgos distintos.
+26. Cada accion conserva responsable funcional, fecha objetivo o condicion temporal, prioridad, dependencia y evidencia requerida.
+27. La asignacion de una accion a un proveedor externo no transfiere la responsabilidad interna del resultado.
+28. Una accion sin propietario no puede declararse cerrada.
+29. Una accion sin condicion de salida no puede declararse cerrada.
+30. Una accion vencida permanece visible y escala segun impacto; no se elimina del backlog.
+31. Una accion bloqueada identifica el insumo faltante, propietario del bloqueo y condicion de desbloqueo.
+32. Una accion cancelada conserva la autoridad, motivo y evaluacion del riesgo residual.
+33. La aceptacion de riesgo no se usa como sinonimo de eficacia.
+34. La aceptacion de riesgo conserva autoridad, alcance, vigencia y controles compensatorios cuando apliquen.
+35. La eficacia puede verificarse mediante reejercicio, restauracion, prueba tecnica, prueba funcional, conciliacion, inspeccion o evidencia operativa segun el riesgo.
+36. El metodo de eficacia se define antes de declarar la accion eficaz.
+37. La evidencia de eficacia es posterior o independiente de la implementacion cuando el control requiera comprobar comportamiento real.
+38. Una prueba que solo demuestra disponibilidad tecnica no acredita eficacia empresarial cuando el hallazgo afecta proceso o conciliacion.
+39. Una eficacia parcial se registra como parcial y deja trabajo restante con propietario.
+40. Una accion ineficaz vuelve a tratamiento y no se marca como cerrada por antiguedad.
+41. La repeticion del mismo fallo obliga a evaluar si la accion anterior fue insuficiente o mal enfocada.
+42. Un hallazgo recurrente conserva relacion con acciones y revisiones anteriores.
+43. El plan no se considera actualizado solo porque se edito un documento.
+44. Una actualizacion material identifica artefactos afectados, version anterior, version nueva, autoridad y motivo.
+45. Los cambios de BIA se gobiernan en su contrato propietario y no se hacen silenciosamente desde esta tarea.
+46. Los cambios de MTPD, RTO, RPO o MBCO se gobiernan en su contrato propietario y requieren nueva decision versionada.
+47. Los cambios de dependencias o concentraciones se propagan al mapa de dependencias propietario.
+48. Los cambios de estrategia de contingencia se propagan al contrato propietario correspondiente.
+49. Los cambios de captura, folios o custodia se propagan al contrato de trabajo durante falla.
+50. Los cambios de reincorporacion o conciliacion se propagan al contrato propietario.
+51. Los cambios de respaldo se propagan al inventario y politica de respaldo.
+52. Los cambios de restauracion, failover o retorno se propagan a runbooks y validacion funcional.
+53. Los cambios de proveedor o recurso alternativo se propagan al contrato de continuidad externa.
+54. Los cambios de escenario o modalidad de ejercicio se propagan al programa de ejercicios.
+55. Los cambios de autoridad o acceso excepcional se propagan a los contratos de autorizacion aplicables.
+56. Los cambios de mensajes o experiencia degradada se propagan a los contratos de experiencia aplicables.
+57. Los cambios de integracion, health, aislamiento o reconciliacion se propagan a los contratos de integracion aplicables.
+58. Un dato de contacto no se presenta como vigente si no existe evidencia de vigencia.
+59. Un contacto vencido o no confirmado provoca revision del artefacto que lo consume.
+60. Un runbook modificado queda asociado a la causa del cambio y a la version que sustituye.
+61. Una dependencia modificada obliga a revisar los escenarios y ejercicios que la asumian.
+62. Un proveedor cambiado obliga a revisar credenciales, contactos, integraciones, datos, retorno y evidencia aplicables.
+63. Una sede, equipo, red o fuente energetica cambiados obligan a revisar los procedimientos que dependan de ellos.
+64. Un cambio de aplicacion o version que altere recuperacion obliga a revisar runbook, compatibilidad y evidencia.
+65. La revision periodica es basada en riesgo y usa las ventanas heredadas del programa de ejercicios.
+66. Los servicios `PR-0_PROTECCION` usan una ventana maxima documental de seis meses o un evento material anterior.
+67. Los servicios `PR-1_ESENCIAL`, `PR-2_CONTROL` y `PR-3_DIFERIBLE` usan una ventana maxima documental de doce meses o un evento material anterior.
+68. Los servicios AURA no reciben una ventana de readiness operativo mientras permanezcan diferidos.
+69. El cambio de estado de AURA dispara revision de aplicabilidad antes de cualquier readiness operativo.
+70. Un incidente material dispara revision sin esperar la ventana periodica.
+71. Un ejercicio con desviaciones, fallo, aborto por seguridad o bloqueo de evidencia dispara revision.
+72. Una restauracion o failover que exceda el objetivo o muestre inconsistencia dispara revision.
+73. Un cambio material de proveedor, red, energia, pagos, transporte, canal o recurso dispara revision.
+74. Un cambio material de proceso, aplicacion, datos, sede, rol o dependencia dispara revision.
+75. Una auditoria, hallazgo o cambio normativo aplicable puede disparar revision extraordinaria.
+76. El vencimiento de una accion critica no espera al siguiente ciclo periodico para escalar.
+77. Un plan con revision vencida queda identificado como no vigente para la afirmacion afectada.
+78. Una version nueva no borra la version usada durante un incidente o ejercicio anterior.
+79. La trazabilidad permite reconstruir que version estaba vigente en la fecha del hecho.
+80. La publicacion de una version nueva identifica que consumidores requieren adopcion o confirmacion.
+81. La version anterior se retira de uso activo sin eliminar su historia.
+82. Los artefactos relacionados no se actualizan de forma parcial cuando el cambio produce una contradiccion material.
+83. Una actualizacion bloqueada por una dependencia pendiente conserva el plan en estado visible de brecha.
+84. Una brecha protectora no se oculta mediante una nueva version documental.
+85. Una brecha que invalida una afirmacion de readiness suspende dicha afirmacion hasta nueva evidencia.
+86. `READINESS_NO_VALIDADO` no se convierte en validado mediante revision documental.
+87. `READINESS_SUSPENDIDO` requiere resolver la causa y obtener evidencia de revalidacion aplicable.
+88. La eficacia de una accion de restauracion o continuidad puede requerir un ejercicio posterior gobernado por `CONT-DOM-014`.
+89. La eficacia de una accion de reconciliacion conserva la propiedad de `CONT-DOM-010` y contratos de integracion aplicables.
+90. La eficacia de una accion de respaldo conserva la propiedad de `CONT-DOM-011` y su evidencia de restaurabilidad.
+91. La eficacia de una accion sobre terceros no se deduce de una promesa contractual; requiere evidencia aplicable.
+92. Las metricas definidas por esta tarea no se presentan como valores medidos si no existe evidencia.
+93. El backlog de acciones puede medirse por estado, antiguedad, prioridad, dominio y vencimiento sin mezclarlo con eficacia.
+94. La tasa de acciones implementadas se mantiene separada de la tasa de acciones eficaces.
+95. La recurrencia de hallazgos se mide con relaciones historicas y no por coincidencia textual simple.
+96. La cobertura de revisiones se mide contra el universo aplicable de 69 servicios y sus estados.
+97. La vigencia de runbooks, contactos y dependencias se mide contra versiones y comprobaciones reales.
+98. La revision de eficacia conserva evidencia suficiente para auditoria.
+99. La evidencia sensible mantiene los controles de autorizacion, privacidad, retencion y custodia aplicables.
+100. No se copian secretos, tokens o credenciales completas al expediente de revision.
+101. Un proveedor puede aportar evidencia, pero no aprueba por si solo el cierre empresarial.
+102. El propietario funcional confirma el efecto empresarial cuando la accion modifica un proceso.
+103. La funcion tecnica confirma el resultado tecnico cuando la accion modifica una dependencia tecnica.
+104. La segregacion evita que la misma ejecucion sea su unica evidencia de eficacia cuando el riesgo requiere validacion independiente.
+105. La automatizacion puede detectar vencimientos, agrupar evidencia o proponer relaciones, pero no aprueba eficacia por si sola.
+106. Cada pendiente material queda vinculado a una tarea o contrato propietario y una condicion de salida.
+107. `H-CAP-SCOPE-018-036` recibe tratamiento documental mediante la cadena obligatoria hallazgo-leccion-accion-propietario-eficacia.
+108. `H-CAP-SCOPE-018-037` recibe tratamiento documental mediante triggers de vigencia para contactos, dependencias y runbooks.
+109. La tarea no declara resueltos fisicamente esos hallazgos sin evidencia futura.
+110. No se inventan incidentes, ejercicios, acciones, fechas de cierre, metricas o resultados de eficacia.
+111. No se ejecuta un incidente, ejercicio, restauracion, failover, failback, cambio de proveedor ni prueba operativa desde esta tarea.
+112. No se modifica el estado real de ningun servicio por ausencia de evidencia.
+113. Los 67 servicios activos permanecen sin readiness validado en ausencia de ejercicio acreditado.
+114. Los 2 servicios AURA permanecen bloqueados y no se simulan como operativos.
+115. La tarea no crea una fuente de verdad paralela para acciones o planes.
+116. La historia de revisiones permanece append-only en lo sustantivo.
+117. Una leccion puede cerrarse como no accionable solo con razon documentada y autoridad adecuada.
+118. Una accion agrupada conserva relacion con todos los hallazgos que pretende tratar.
+119. Una accion comun no elimina la necesidad de comprobar eficacia por alcance afectado.
+120. Un hallazgo de alta criticidad no se degrada de prioridad para cumplir una fecha administrativa.
+121. Una accion temporal conserva vencimiento y ruta hacia control permanente o retiro.
+122. Un workaround no se presenta como correccion permanente por defecto.
+123. La eliminacion de un workaround requiere comprobar que la condicion que lo justificaba dejo de aplicar.
+124. La revision posterior puede identificar necesidad de capacitacion, pero la evidencia de aprendizaje pertenece al contrato formativo aplicable.
+125. La revision posterior puede identificar necesidad de cambio de datos o metrica, pero su definicion material pertenece al dominio de datos aplicable.
+126. La revision posterior puede identificar necesidad de cambio TI, pero su ejecucion pertenece al dominio tecnico aplicable.
+127. La revision posterior no altera retrospectivamente la severidad o los tiempos observados del incidente.
+128. Una reclasificacion analitica posterior queda como interpretacion versionada y conserva el dato observado original.
+129. Las decisiones de cierre conservan riesgo residual y pendientes conocidos.
+130. No se declara cero pendientes si no existe reconciliacion suficiente para la afirmacion.
+131. El cierre documental de la revision no fuerza el cierre de acciones aun abiertas.
+132. El cierre de todas las acciones no fuerza readiness validado sin evidencia de eficacia.
+133. El plan periodico conserva un calendario o due date calculable por prioridad y ultimo evento/revision aplicable, sin inventar fechas historicas.
+134. La ausencia de una fecha historica se representa como evidencia pendiente, no como fecha inferida.
+135. La tarea materializa una decision explicita de mantenimiento para cada uno de los 69 servicios.
+136. No existen servicios faltantes ni duplicados en la matriz de mantenimiento.
+137. La matriz conserva los perfiles y prioridades aprobados.
+138. El estado actual de eficacia no se eleva por inferencia.
+139. El estado actual de readiness no se eleva por inferencia.
+140. La tarea no modifica requisitos de prueba existentes.
+141. La ausencia de cambios de requisitos impide generar una nueva revision del registro 04A.
+142. La siguiente tarea queda solamente reservada.
+
+---
+
+#### 36. Balance de cierre
+
+| Control                                      |   Resultado |
+| -------------------------------------------- | ----------: |
+| servicios con decision de mantenimiento      | **69 / 69** |
+| servicios activos                            | **67 / 67** |
+| AURA bloqueados                              |   **2 / 2** |
+| clases BIA preservadas                       |   **4 / 4** |
+| perfiles objetivo preservados                |   **4 / 4** |
+| estados de revision definidos                |       **6** |
+| estados de eficacia definidos                |       **6** |
+| metricas de aprendizaje definidas            |      **10** |
+| hallazgos CAP-SCOPE tratados documentalmente |   **2 / 2** |
+| revisiones post-evento reales creadas        |       **0** |
+| acciones reales creadas                      |       **0** |
+| eficacias reales acreditadas                 |       **0** |
+| readiness nuevos acreditados                 |       **0** |
+| criterios de aceptacion                      |     **142** |
+| cambios fisicos o contractuales ejecutados   |       **0** |
+| requisitos de prueba creados/modificados     |       **0** |
+
+---
+
+#### 37. Limites de la tarea
+
+- no ejecuta incidentes, ejercicios, restauraciones, failover o failback;
+- no abre ni cierra acciones operativas reales;
+- no asigna personas concretas ni fechas ficticias;
+- no modifica BIA, MTPD, RTO, RPO o MBCO;
+- no modifica estrategias, respaldos, runbooks o proveedores reales;
+- no modifica contactos, credenciales, secretos o accesos;
+- no cambia codigo, infraestructura, red, energia, pagos, transporte o canales;
+- no modifica Supabase, Storage, Edge Functions, cron, datos o configuracion desplegada;
+- no declara eficacia sin evidencia;
+- no eleva readiness por revision documental;
+- no inicia `CONT-AUTH-001` ni ninguna tarea posterior.
+
+---
+
+#### 38. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos`
+
+TAREA ACTUAL APROBADA
+
+`CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación`
+

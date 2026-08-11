@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **717** |
+| Aprobadas | **718** |
 | En propuesta | **0** |
-| No iniciadas | **877** |
+| No iniciadas | **876** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.98% (717/1594)** |
+| Porcentaje de completamiento | **45.04% (718/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-DOM-014` — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos | ✅ APROBADA |
-| Tarea actual | `CONT-DOM-015` — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-AUTH-001` — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación | ⬜ NO INICIADA |
+| Última aprobada | `CONT-DOM-015` — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | ✅ APROBADA |
+| Tarea actual | `CONT-AUTH-001` — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-AUTH-002` — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1606,7 +1606,7 @@
 | ✅ APROBADA | `CONT-DOM-012` | Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-013` | Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-014` | Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-DOM-015` | Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-DOM-015` | Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-AUTH-001` | Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-AUTH-002` | Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-AUTH-003` | Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
