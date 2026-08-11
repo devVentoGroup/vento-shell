@@ -5314,7 +5314,657 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor`
 
 
-### [ ] CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor
+### ✅ CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración` — APROBADA
+**Tarea siguiente:** `CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla` — RESERVADA
+**Tipo de tarea:** documental; selección de estrategia de contingencia por servicio BIA y proceso, con fronteras offline/manuales, tratamiento de servicio reducido o diferido y puertas de admisión para alternativas físicas y de proveedor
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Activación real de contingencia, operación offline productiva, formularios físicos, compras, traslado de sedes, cambios de proveedor, contratos, credenciales, redes, dispositivos, pagos, datos, código, DDL, DML, migraciones, RLS, RPC, backfills, despliegues o cambios en Supabase:** no autorizados
+**Servicios evaluados:** 69 / 69
+**Estrategias documentales especificadas:** 67 / 67 servicios activos; 2 / 2 servicios AURA bloqueados
+**Alternativas físicas concretas aprobadas:** 0
+**Alternativas de proveedor o canal concretas aprobadas:** 0
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Seleccionar y materializar, para cada uno de los 69 servicios BIA vinculados a `VPROC-0001` a `VPROC-0069`, la estrategia documental de contingencia que limita qué puede continuar, prepararse, capturarse, ejecutarse de forma acotada, realizarse manualmente, reducirse, diferirse o bloquearse cuando una dependencia necesaria no está disponible.
+
+La tarea convierte el mínimo operativo de `CONT-DOM-007` en una decisión de contingencia por identidad sin afirmar que la estrategia esté implementada, probada o disponible en producción.
+
+```text
+ESTRATEGIA DOCUMENTAL SELECCIONADA
+≠ CAPACIDAD IMPLEMENTADA
+≠ RECURSO ALTERNO DISPONIBLE
+≠ PROVEEDOR SUSTITUTO CONTRATADO
+≠ READINESS PROBADO
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados los siguientes resultados:
+
+- 69 decisiones de estrategia, una por servicio BIA/proceso canónico;
+- 67 estrategias activas en estado `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` y 2 bloqueos AURA;
+- un catálogo documental de diez estrategias con relación explícita al sobre offline vigente;
+- una frontera por proceso que identifica qué efecto queda permitido, pendiente, diferido o bloqueado;
+- una regla común para servicio reducido que nunca amplía el sobre offline ya aprobado;
+- una regla común para autorización offline finita que impide convertir una lease en permiso permanente;
+- un contrato de operación manual que preserva atribución, secuencia, seguridad y posterior incorporación sin crear una segunda fuente de verdad;
+- puertas de admisión para recursos/ubicaciones físicas alternas sin afirmar que alguna de las cinco sedes sea redundante;
+- puertas de admisión para proveedores/canales sustitutos sin inventar nombres, contratos, capacidad o disponibilidad;
+- criterios comunes de activación, abandono, escalamiento, retorno y revisión;
+- handoffs explícitos hacia captura/evidencia, reincorporación, continuidad de terceros, ejercicios y validación;
+- cierre documental de la brecha de selección de modalidad de contingencia, manteniendo pendientes probatorios con propietario y condición de salida;
+- cero cambios físicos, cero cambios productivos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+- `CONT-DOM-001` para política federada, primacía del resultado empresarial, seguridad, autorización persistente, fuente de verdad única y prueba antes de confianza;
+- `CONT-DOM-002` para los 69 servicios BIA, sus cinco sedes internas canónicas y las dos filas AURA diferidas;
+- `CONT-DOM-003` para dependencias, candidatos de concentración, cero SPOF confirmados y cero sustitutos aprobados;
+- `CONT-DOM-004` para MTPD, RTO, RPO, MBCO y prioridad de recuperación por servicio;
+- `CONT-DOM-005` para declaración, severidad, activación, escalamiento, desactivación y cierre de incidentes;
+- `CONT-DOM-006` para mando funcional, sustitución, bitácora y comunicaciones;
+- `CONT-DOM-007` para los cuatro perfiles OMV y el mínimo por cada proceso, sede/contexto y duración;
+- `NFR-REQ-001` para modos de degradación y separación entre disponibilidad empresarial y técnica;
+- `NFR-REQ-002` para el estado `CLASS_ONLY` de capacidad, que prohíbe inventar volumen, concurrencia, headcount o stock;
+- `NFR-REQ-004` para las clases `OF0` a `OF5`, `SYNC-0` a `SYNC-4`, límites de cola/draft/captura/lease/manual e incorporación posterior;
+- `CAP-SCOPE-018` para las brechas de modalidad, fuente paralela, alternativas de recursos/servicios y prueba de continuidad;
+- el registro canónico vigente de requisitos para comprobar cobertura previa del comportamiento de contingencia, continuidad e integración.
+
+No se modifican identidades, propietarios de proceso, aplicaciones, BIA, objetivos de recuperación, clases offline, sincronización ni decisiones previamente aprobadas.
+
+---
+
+#### 4. Frontera de esta tarea
+
+Esta tarea **selecciona estrategia documental**. No ejecuta la estrategia.
+
+La estrategia seleccionada define qué está permitido conceptualmente durante una interrupción y qué debe permanecer bloqueado o pendiente. La disponibilidad real de personas, papel controlado, almacenamiento local, energía, red, batería, dispositivo, periférico, espacio, vehículo, insumo, contrato, tercero o canal exige evidencia posterior.
+
+En particular:
+
+- una caché no se presume existente por seleccionar referencia versionada;
+- un borrador no se presume persistente o cifrado por seleccionar borrador local;
+- una captura local no se presume idempotente ni incorporable por seleccionar captura pendiente;
+- una autorización offline finita no se presume emitida, almacenada o válida por seleccionar ejecución offline acotada;
+- un procedimiento manual no se presume documentado, abastecido o entrenado por seleccionarlo;
+- una segunda sede no se presume alternativa por existir en el catálogo de sedes;
+- un segundo dispositivo no se presume redundante por existir físicamente;
+- un proveedor alterno no se presume contratado, habilitado ni independiente por existir en el mercado;
+- una estrategia de contingencia no relaja SST, inocuidad, calidad, privacidad, autorización, segregación, integridad, fiscalidad ni trazabilidad.
+
+---
+
+#### 5. Catálogo documental de estrategias
+
+| Código                                           | Estrategia                              | Regla canónica                                                                                                                                              |
+| ------------------------------------------------ | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`                     | Bloquear Y Proteger                     | Bloquear el efecto no demostrable y conservar únicamente acciones protectoras, consulta o preparación que no afirmen un resultado empresarial.              |
+| `CTG-02_REFERENCIA_VERSIONADA`                   | Referencia Versionada                   | Mantener consulta de una referencia versionada con origen y frescura visibles; la referencia no se edita ni adquiere propiedad empresarial.                 |
+| `CTG-03_BORRADOR_LOCAL`                          | Borrador Local                          | Preparar información local sin transición de estado, aprobación, publicación, asiento, compromiso ni efecto autoritativo.                                   |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`                 | Captura Local Pendiente                 | Registrar observación, evidencia o hecho físico como pendiente de aceptación/revisión; la captura no afirma por sí misma el efecto empresarial.             |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`               | Ejecucion Offline Acotada               | Ejecutar únicamente dentro de una autorización finita preemitida, con alcance, vigencia, recurso, causalidad e idempotencia delimitados.                    |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`         | Procedimiento Manual Controlado         | Mantener una acción física/manual gobernada, atribuible y reconciliable; el medio manual nunca se convierte en fuente paralela de verdad.                   |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`            | Servicio Reducido Controlado            | Mantener solo el subconjunto del MBCO permitido por el sobre offline ya aprobado; todo efecto excluido queda bloqueado o pendiente.                         |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`                 | Diferimiento Controlado                 | Suspender ejecución nueva conservando cola/backlog, propietario, antigüedad, vencimiento y condición explícita de reanudación.                              |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`          | Alternativa Fisica Condicional          | Usar otro recurso o ubicación únicamente después de demostrar independencia de falla, seguridad, capacidad, acceso, controles y aptitud para el mismo MBCO. |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CANAL_CONDICIONAL` | Alternativa Proveedor Canal Condicional | Usar un tercero/canal sustituto únicamente después de demostrar contrato, autorización, capacidad, independencia, datos, conciliación y retorno.            |
+
+Los códigos `CTG-*` son vocabulario documental local de `CONT-DOM-008`; no crean tablas, enums, permisos ni maestros persistentes.
+
+---
+
+#### 6. Relación obligatoria con el sobre offline vigente
+
+| Estrategia                                       | Base permitida                                                            | Restricción                                                                                                       |
+| ------------------------------------------------ | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`                     | bloqueo protector + cualquier consulta/preparación que la fila ya permita | nunca convierte un modo de apoyo en efecto confirmado                                                             |
+| `CTG-02_REFERENCIA_VERSIONADA`                   | `OF1_CACHED_REFERENCE`                                                    | exige versión, origen, vigencia/frescura visible y uso solo de lectura                                            |
+| `CTG-03_BORRADOR_LOCAL`                          | `OF2_LOCAL_DRAFT`                                                         | no produce transición, aprobación, publicación, asiento, compromiso o resultado                                   |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`                 | `OF3_LOCAL_CAPTURE`                                                       | captura observación/evidencia; aceptación y efecto siguen pendientes                                              |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`               | `OF4_LEASED_EXECUTION`                                                    | requiere autorización finita preemitida; no amplía alcance, recurso, vigencia ni cantidad autorizada              |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`         | `OF5_MANUAL_CONTINGENCY`                                                  | procedimiento físico gobernado, atribuible, numerable cuando aplique y reconciliable                              |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`            | combinación de modos ya presentes en la fila                              | no agrega `OF1` a `OF5` ausentes; mantiene solo el MBCO autorizado                                                |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`                 | `PAUSE_SAFELY`/backlog gobernado y modos de preparación admitidos         | ejecución nueva puede caer a cero, pero el trabajo no pierde dueño, edad, vencimiento ni condición de reanudación |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`          | requiere decisión física posterior                                        | no está acreditada por esta tarea                                                                                 |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CANAL_CONDICIONAL` | requiere decisión de tercero posterior                                    | no está acreditada por esta tarea                                                                                 |
+
+Regla inviolable: una estrategia `CTG-*` nunca amplía el sobre `OF*` de `NFR-REQ-004`. Si la fila no contiene el modo necesario, ese modo permanece prohibido hasta un cambio canónico explícito.
+
+---
+
+#### 7. Estados documentales
+
+| Estado                                | Significado                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` | la modalidad y su frontera están definidas, pero no existe evidencia suficiente para declarar implementación/readiness    |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA`   | la identidad se conserva, pero no se habilita una contingencia operativa mientras la aplicación propietaria siga diferida |
+| `ALTERNATIVA_NO_PRESELECCIONADA`      | la clase de sustitución fue considerada, pero no existe evidencia canónica para nombrar o aprobar una instancia concreta  |
+| `VALIDADA`                            | reservado para evidencia posterior; esta tarea no asigna este estado a ninguna fila                                       |
+
+---
+
+#### 8. Invariantes universales de contingencia
+
+1. La fuente de verdad propietaria no cambia por una falla.
+2. Todo efecto que no pueda demostrarse permanece `PENDIENTE`, `DESCONOCIDO` o bloqueado según su contrato; nunca se fabrica una confirmación.
+3. Una copia, caché, captura, hoja, papel, mensaje o archivo local no adquiere propiedad empresarial por usarse durante contingencia.
+4. Una operación manual no elimina identidad de actor, autoridad, territorio, finalidad, segregación o evidencia.
+5. La estrategia debe conservar el MBCO del perfil aplicable o detener de forma protectora cuando no pueda hacerlo.
+6. Cruzar RTO no autoriza bypass; activa escalamiento y evaluación de estrategia.
+7. Aproximarse a MTPD exige escalamiento y, cuando el mínimo no pueda sostenerse, detención protectora o decisión de crisis autorizada.
+8. RPO limita la antigüedad de estado recuperable; no permite inventar hechos posteriores a la copia conocida.
+9. `SYNC-0_BLOCKING` exige reconciliación antes de continuar el efecto encadenado protegido.
+10. Un timeout de pago, proveedor, fiscalidad, acceso o integración no prueba éxito ni fracaso; el resultado incierto permanece incierto.
+11. No se reintenta a ciegas una operación cuyo efecto pueda haberse producido.
+12. Una autorización offline finita debe incluir identidad, alcance, recurso, límites, vigencia, versión y condición de agotamiento/revocación.
+13. Una autorización offline vencida, agotada, corrupta, no verificable o fuera de contexto equivale a no autorización.
+14. El servicio reducido nunca ofrece una capacidad que la fila normal no posea ni salta un control obligatorio.
+15. El diferimiento controlado conserva backlog ordenable, propietario, antigüedad, fecha/condición de reanudación y cierre posterior.
+16. La capacidad física o humana se trata como `PENDIENTE_DE_EVIDENCIA` mientras no exista prueba de disponibilidad y suficiencia.
+17. Una sede existente no constituye sitio alternativo sin demostrar independencia de falla y aptitud para el mismo resultado mínimo.
+18. Un recurso similar no constituye sustituto sin demostrar compatibilidad, capacidad, seguridad, custodia y dominio de falla independiente.
+19. Un proveedor diferente no constituye alternativa si comparte el mismo upstream crítico, credencial, canal, adquirente, red, plataforma o causa común.
+20. La activación de una estrategia no cambia automáticamente la severidad del incidente ni el propietario funcional del proceso.
+21. El retorno a operación normal exige estado autoritativo suficiente y no se deduce de que un componente técnico vuelva a responder.
+22. Todo trabajo contingente que deba incorporarse conserva origen, actor, hora real, secuencia y relación con el incidente.
+23. La reconciliación posterior no reescribe silenciosamente hechos autoritativos creados durante la falla.
+24. La confidencialidad y minimización de datos se mantienen en medios manuales, locales, físicos y de terceros.
+25. La contingencia nunca habilita almacenamiento de secretos o credenciales fuera de mecanismos autorizados.
+26. No se declara readiness mientras estrategia, recursos, personas, datos, suministros, seguridad, capacidad y prueba no estén demostrados.
+
+---
+
+#### 9. Contrato de referencia versionada
+
+Cuando una fila utilice `CTG-02_REFERENCIA_VERSIONADA`, la referencia solo será utilizable si puede demostrarse: identidad del conjunto, versión, origen propietario, instante de generación o actualización, alcance, integridad, política de frescura y condición de invalidez.
+
+Si la frescura deja de ser suficiente para el MBCO —por ejemplo especificaciones, alérgenos, ubicación, receta, acceso, oferta o estado de un tercero— la estrategia cambia a bloqueo protector o al modo inferior ya permitido; nunca se sigue operando fingiendo vigencia.
+
+---
+
+#### 10. Contrato de borrador, captura y ejecución offline acotada
+
+`CTG-03_BORRADOR_LOCAL` solo prepara intención. `CTG-04_CAPTURA_LOCAL_PENDIENTE` registra una observación o evidencia. `CTG-05_EJECUCION_OFFLINE_ACOTADA` es la única estrategia de esta tarea que puede permitir un efecto local dentro de un sobre de autorización finito.
+
+La autorización finita deberá poder demostrar, antes de su uso:
+
+- identidad del actor o dispositivo autorizado;
+- proceso, operación y recurso exactos;
+- alcance territorial y funcional;
+- versión de reglas/maestros requeridos;
+- límite de cantidad, secuencia, lote, caja, remisión, recorrido u otra unidad natural aplicable;
+- vigencia temporal y condición de revocación;
+- idempotency/correlation key o mecanismo equivalente cuando exista efecto repetible;
+- estado previo necesario y restricciones de encadenamiento;
+- capacidad de registrar uso, agotamiento y pendientes;
+- mecanismo de incorporación y conflicto posterior.
+
+La mera existencia de caché local, token, sesión abierta o dispositivo previamente autenticado no satisface estas condiciones.
+
+---
+
+#### 11. Contrato de procedimiento manual controlado
+
+`CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` mantiene acciones físicas imprescindibles sin fingir el resultado digital. Su especificación operativa deberá conservar como mínimo activación, función responsable, medio controlado, identificación/serie cuando aplique, datos mínimos, actor, hora real, custodia, protección, control de duplicado, condición de abandono, responsable de incorporación y cierre.
+
+`CONT-DOM-009` materializará el contrato de registro, folios, evidencia y custodia. Por ello esta tarea selecciona el uso manual pero no inventa formularios, numeraciones, campos físicos ni stock documental.
+
+---
+
+#### 12. Servicio reducido y diferimiento controlado
+
+`CTG-07_SERVICIO_REDUCIDO_CONTROLADO` es una composición del sobre ya aprobado para sostener únicamente el MBCO. No es un modo offline nuevo. Una fila en servicio reducido deberá publicar qué resultado mínimo conserva, qué trabajo no recibe, qué efectos quedan pendientes y qué condición obliga a detener.
+
+`CTG-08_DIFERIMIENTO_CONTROLADO` se usa cuando la operación puede suspender ejecución nueva sin perder trazabilidad. El backlog será parte del estado de continuidad y no una lista informal fuera de gobierno.
+
+---
+
+#### 13. Puerta para alternativa física
+
+Ninguna de las cinco sedes internas, dispositivo, impresora, vehículo, equipo, almacenamiento, energía, red, material o puesto de trabajo queda aprobado como sustituto por esta tarea.
+
+Una alternativa física solo podrá promoverse desde `ALTERNATIVA_NO_PRESELECCIONADA` cuando exista evidencia simultánea de:
+
+- identidad concreta y propietario del recurso alterno;
+- relación exacta con el servicio BIA y el proceso;
+- dominio de falla suficientemente independiente del recurso primario;
+- acceso físico y autorización vigentes;
+- personal y funciones mínimas disponibles;
+- energía, red, espacio, frío, ventilación, seguridad o servicios necesarios según el proceso;
+- dispositivos, periféricos, materiales, insumos, vehículo o herramientas aplicables;
+- capacidad suficiente bajo el escenario y temporada aplicables;
+- compatibilidad de datos, configuración y versión;
+- SST, inocuidad, calidad, seguridad de información, privacidad y custodia;
+- tiempo de activación compatible con RTO/MTPD;
+- procedimiento de retorno y reconciliación;
+- prueba o ejercicio con resultado y evidencia vigentes.
+
+La existencia de varios sitios o recursos reduce concentración solo después de demostrar que no comparten la causa de falla relevante.
+
+---
+
+#### 14. Puerta para alternativa de proveedor o canal
+
+No se nombra ni aprueba proveedor, banco, adquirente, transportador, ISP, canal, nube, mensajería, servicio técnico o tercero sustituto en esta tarea.
+
+Una alternativa de tercero solo podrá promoverse cuando exista evidencia de:
+
+- identidad contractual y servicio exacto;
+- autoridad para activar o cambiar el tercero;
+- contrato, término, costo, vigencia y condición de uso aplicables;
+- capacidad, cuotas, límites, horario y soporte compatibles con el escenario;
+- independencia de dominio de falla frente al proveedor primario;
+- credenciales, configuración, certificados, llaves o integraciones disponibles por medios autorizados;
+- compatibilidad de datos, formatos, idempotencia y correlación;
+- tratamiento de privacidad, seguridad, propiedad, retención y evidencia;
+- mecanismo para resultados inciertos, duplicados y efectos parciales;
+- conciliación entre proveedor primario, alterno y fuente de verdad interna;
+- criterio de retorno y cierre sin doble operación;
+- prueba o ejercicio vigente.
+
+La selección concreta y el tratamiento de continuidad de terceros permanece en `CONT-DOM-013`; esta tarea define la puerta que esa selección deberá superar.
+
+---
+
+#### 15. Activación, abandono y escalamiento de una estrategia
+
+Una estrategia solo podrá activarse para un incidente real cuando exista autoridad conforme al ciclo de `CONT-DOM-005`/`CONT-DOM-006` y se demuestre que los prerrequisitos documentados de esa modalidad están disponibles.
+
+La modalidad deberá abandonarse, bloquearse o escalarse cuando ocurra cualquiera de estas condiciones:
+
+- no puede sostenerse el MBCO;
+- un control protector deja de estar disponible o demostrable;
+- la versión de referencia deja de ser suficientemente fresca;
+- el medio local pierde integridad, cifrado, atribución o capacidad de almacenamiento;
+- la autorización offline finita vence, se agota, no puede verificarse o sale de su alcance;
+- la cola o backlog deja de ser controlable dentro de RTO/MTPD;
+- el mismo recurso puede recibir operaciones contradictorias sin mecanismo de serialización/lease;
+- un resultado de pago, acceso, fiscalidad, proveedor o integración queda incierto y un nuevo intento podría duplicarlo;
+- el personal, material, energía, red, frío, vehículo, dispositivo o instalación necesaria deja de estar disponible;
+- una alternativa física o de tercero no puede demostrar independencia de la falla;
+- la estrategia aumenta riesgo de vida, SST, inocuidad, fraude, privacidad, integridad o incumplimiento;
+- la duración real o prevista alcanza un umbral que exige escalamiento según el perfil de continuidad;
+- la reincorporación posterior ya no puede garantizarse sin pérdida, duplicación o conflicto material.
+
+---
+
+#### 16. Matriz materializada de estrategia por servicio
+
+La matriz siguiente selecciona una estrategia primaria por identidad. El sobre `OF*` y la clase `SYNC-*` se consumen sin modificarse. `Físico` y `Tercero` indican que la clase de sustitución fue evaluada, pero ninguna instancia concreta queda acreditada.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Objetivo       | OMV                               | Sobre offline                                                                        | Sync                 | Estrategia primaria                      | Físico                           | Tercero                          | Frontera de la decisión                                                                                                                                   | Estado                                |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | --------------------------------- | ------------------------------------------------------------------------------------ | -------------------- | ---------------------------------------- | -------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se preparan decisiones y compromisos como borrador; aprobación, asignación final y cierre requieren autoridad vigente.                                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE`                                                               | `SYNC-4_DEFERRED`    | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La estructura vigente puede consultarse; los cambios se difieren y no se publica una estructura nueva durante la contingencia.                            | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE`                                                               | `SYNC-1_URGENT`      | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta la política/delegación versionada; editar, delegar o revocar exige fuente autoritativa.                                                       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-2_OPERATIONAL` | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se prepara el handoff local; aceptación, cambio de propietario y cierre quedan pendientes de confirmación y conciliación.                                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-4_DEFERRED`    | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se difiere selección/publicación; solo se preserva contexto de vacante/candidato como borrador controlado.                                                | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-3_CYCLE`       | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura evidencia de incorporación; identidad laboral, habilitación y acceso no se confirman localmente.                                               | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se mantiene coordinación mínima con referencia y borrador; publicación de turnos y sustituciones exige confirmación autoritativa.                         | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                                           | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura el hecho de asistencia con actor, tiempo y contexto; corrección y aprobación quedan pendientes.                                                | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-2_OPERATIONAL` | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se conserva el caso y evidencia de ausencia/reemplazo; aprobación y reasignación efectiva requieren confirmación.                                         | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se prepara el paquete; cálculo final, aprobación, emisión y conciliación se difieren hasta fuente autoritativa.                                           | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF5_MANUAL_CONTINGENCY`                                        | `SYNC-1_URGENT`      | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se protege mediante contención y consulta; una revocación digital nunca se simula como realizada offline.                                                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-2_OPERATIONAL` | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se ejecuta control/inspección manual gobernado; hallazgo crítico activa contención y el cierre/aceptación de riesgo permanece autoritativo.               | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                                           | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La respuesta física inmediata continúa; expediente y evidencia se incorporan conservando hora real, actor y secuencia.                                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se sostienen higiene e inocuidad con procedimiento/versiones verificables; si no puede demostrarse el control, se detiene la actividad afectada.          | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE`                                                               | `SYNC-3_CYCLE`       | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Solo se consulta maestro versionado; crear, modificar o publicar producto/unidad/equivalencia permanece bloqueado.                                        | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-1_URGENT`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se mantiene lectura de receta aprobada y preparación limitada; aprobar o publicar una versión nueva exige fuente autoritativa.                            | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE`                                             | `SYNC-1_URGENT`      | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se conserva referencia de oferta y captura de agotados/estado; precio, disponibilidad publicada u oferta nueva requieren confirmación.                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE`                                                               | `SYNC-1_URGENT`      | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Solo puede usarse una especificación cuya versión y vigencia sean demostrables; ante duda de alérgeno/restricción, se bloquea el resultado.               | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE`                                                                  | `SYNC-3_CYCLE`       | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se capturan necesidades como pendientes identificados; priorización y consolidación autoritativa ocurren al sincronizar.                                  | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-4_DEFERRED`    | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se preparan comparaciones en borrador; selección, aprobación y compromiso económico no se ejecutan localmente.                                            | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-0_BLOCKING`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se bloquea emisión/aprobación de compra; únicamente puede prepararse borrador sin efecto contractual o económico.                                         | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se registra observación física y evidencia mediante procedimiento controlado; recepción final y efecto económico esperan conciliación.                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE`                                                               | `SYNC-1_URGENT`      | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta topología/ubicación vigente; cambios de LOC, zona, posición o condición autoritativa permanecen bloqueados.                                   | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                                             | `SYNC-0_BLOCKING`    | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Solo se permite movimiento dentro de una autorización finita preemitida; agotado el alcance, el siguiente movimiento espera conciliación.                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY`                      | `SYNC-0_BLOCKING`    | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Solo se permite retiro/consumo/traslado dentro de autorización finita; no se encadenan consumos ni se promete stock antes de conciliar.                   | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE`                                                                  | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | El conteo físico se captura como observación; investigación, aprobación y ajuste permanecen separados y autoritativos.                                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Cuarentena, aislamiento y protección física continúan; liberación, disposición y ajuste exigen autoridad y posterior conciliación.                        | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                                             | `SYNC-1_URGENT`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La ejecución se limita a etapas cubiertas por autorización finita; cada entrega/recepción conserva handoff y debe reconciliarse.                          | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                        | `SYNC-1_URGENT`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura custodia y ubicación; una transferencia solo puede ejecutarse offline si existe autorización finita válida y aceptación trazable.              | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se inmoviliza/protege el activo y se documenta físicamente; cierre, disposición y garantía se confirman posteriormente.                                   | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-2_OPERATIONAL` | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se mantiene control esencial de vehículo e incidencias mediante referencia/captura/manual; habilitación o asignación nueva se reconcilia.                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY`                      | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se observa entrega/retorno/completitud físicamente; la custodia digital solo cambia tras conciliación o autorización finita válida.                       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta demanda/plan vigente y se prepara replanificación; publicación de un plan nuevo requiere datos autoritativos actuales.                        | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                        | `SYNC-1_URGENT`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se produce solo bajo receta versionada, lote conocido y autorización finita; consumos, mediciones y resultados conservan causalidad para reconciliar.     | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-0_BLOCKING`    | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La retención física se ejecuta aun sin sistema; liberar o rechazar definitivamente exige autoridad y estado autoritativo.                                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                        | `SYNC-1_URGENT`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se empaca/etiqueta solo bajo lote y autorización finita; una impresión local no equivale a registro confirmado.                                           | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION`                                             | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se capturan rendimiento, merma y reproceso dentro del alcance permitido; cierre del lote y efectos de inventario esperan conciliación.                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY`                   | `SYNC-0_BLOCKING`    | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se conserva un subconjunto de servicio dentro de autorización finita; pago, soporte fiscal, cierre y estados inciertos nunca se confirman localmente.     | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY`                   | `SYNC-0_BLOCKING`    | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se conserva venta/entrega solo dentro de autorización finita y controles manuales; un cobro sin respuesta queda desconocido y no se reintenta a ciegas.   | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE`                                                               | `SYNC-1_URGENT`      | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se usa únicamente referencia local; aceptar, deduplicar y transferir pedido externo requiere conectividad con el canal/propietario.                       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se prepara cotización y coordinación con referencia/borrador; aprobación de capacidad, factura o compromiso contractual sigue autoritativa.               | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-0_BLOCKING`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se bloquea modificación/cancelación/anulación/devolución con efecto; solo se prepara la solicitud sin afirmar resultado.                                  | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF5_MANUAL_CONTINGENCY`                                                             | `SYNC-0_BLOCKING`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se bloquea confirmación de pago o efecto fiscal cuando el proveedor/servicio no responde; cualquier resultado incierto permanece desconocido.             | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                           | `SYNC-0_BLOCKING`    | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se capturan conteos y evidencia manual; cierre de caja y cambio de custodio solo se confirman tras conciliación autoritativa.                             | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-0_BLOCKING`    | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta referencia de cliente/beneficio solo si es vigente; saldo, acumulación, redención o ajuste no se confirman desde caché o borrador.            | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-3_CYCLE`       | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura reclamo y evidencia; devolución/compensación con efecto permanece pendiente, con escalamiento protector cuando corresponda.                    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se prepara reserva/evento; la confirmación requiere capacidad autoritativa y receipt, por lo que un borrador no crea compromiso.                          | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se prepara planificación con referencia disponible; liberar despacho, asignar vehículo o cambiar plan exige estado autoritativo actual.                   | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY` | `SYNC-1_URGENT`      | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Durante recorrido activo se usa autorización finita para preservar custodia y captura de entrega/rechazo/novedad/retorno; todo efecto se reconcilia.      | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-2_OPERATIONAL` | `CTG-02_REFERENCIA_VERSIONADA`           | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta estado conocido y se prepara seguimiento; una observación manual no se presenta como estado emitido por el tercero.                           | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF3_LOCAL_CAPTURE`                                                                  | `SYNC-1_URGENT`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se capturan hechos económicos/eventos como pendientes trazables; el asiento o efecto económico autoritativo se produce después de reconciliar.            | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-0_BLOCKING`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se bloquea aprobación/pago/cancelación bancaria; solo puede prepararse un borrador sin afirmar efecto financiero.                                         | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-1_URGENT`      | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura evidencia de recaudo/diferencia; aplicación, compensación y conciliación financiera permanecen autoritativas.                                  | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta referencia y prepara cálculo/borrador; publicación, cierre y versión presupuestal/costo definitivos esperan datos reconciliados.              | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Continúan controles físicos de limpieza, plagas, servicios y seguridad; un hallazgo que impide apertura se reconcilia con prioridad.                      | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-4_DEFERRED`    | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `BLOQUEADO`                      | `BLOQUEADO`                      | AURA permanece diferida; no se habilita una contingencia operativa de contenido/promoción.                                                                | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-3_CYCLE`       | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `BLOQUEADO`                      | `BLOQUEADO`                      | AURA permanece diferida; no se habilita una contingencia operativa de oportunidades/canales digitales.                                                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `OMV-P2_RESULTADO_ESENCIAL`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se ejecuta contención técnica manual gobernada y se captura evidencia; asignación, resolución/cierre y conocimiento se reconcilian.                       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF5_MANUAL_CONTINGENCY`                                        | `SYNC-0_BLOCKING`    | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se protege mediante contención; otorgar, cambiar o revocar acceso digital requiere sistema autoritativo y no se simula manualmente.                       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura documento/evidencia como pendiente con metadatos mínimos; archivo local/parcial no equivale a evidencia incorporada.                           | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-4_DEFERRED`    | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se difiere análisis/mejora preservando backlog, propietario y vencimiento; decisiones se retoman sobre datos reconciliados.                               | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La coordinación de continuidad puede operar manualmente; recuperar componentes no permite declarar recuperación empresarial sin conciliación.             | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                             | `SYNC-3_CYCLE`       | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura riesgo, evidencia y borrador de tratamiento; aceptar riesgo, cambiar tratamiento o cerrar acción conserva autoridad explícita.                 | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                             | `SYNC-3_CYCLE`       | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura requerimiento/evidencia y se prepara respuesta; radicación/receipt externo solo se confirma con evidencia del canal correspondiente.           | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF2_LOCAL_DRAFT`                                                                    | `SYNC-4_DEFERRED`    | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se difiere el proceso sensible; un borrador local solo es admisible bajo controles de confidencialidad vigentes y nunca publica una decisión.             | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `OMV-P1_PROTEGER_Y_DETENER`       | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF5_MANUAL_CONTINGENCY`                      | `SYNC-1_URGENT`      | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | La entrega física de EPP puede continuar bajo procedimiento controlado; habilitación del trabajo exige evidencia reconciliable de requisito y entrega.    | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF3_LOCAL_CAPTURE+OF4_LEASED_EXECUTION+OF5_MANUAL_CONTINGENCY` | `SYNC-2_OPERATIONAL` | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se captura completitud/custodia del kit y, si existe autorización finita, el movimiento acotado; préstamo/retorno/sustitución se reconcilian causalmente. | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `OMV-P4_DIFERIR_CON_TRAZABILIDAD` | `OF2_LOCAL_DRAFT+OF3_LOCAL_CAPTURE`                                                  | `SYNC-4_DEFERRED`    | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se difiere medición/incentivo preservando respuestas pendientes; compensaciones y cambios de consentimiento quedan autoritativos.                         | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `OMV-P3_CONTROL_Y_EVIDENCIA`      | `OF1_CACHED_REFERENCE+OF2_LOCAL_DRAFT`                                               | `SYNC-3_CYCLE`       | `CTG-03_BORRADOR_LOCAL`                  | `ALTERNATIVA_NO_PRESELECCIONADA` | `ALTERNATIVA_NO_PRESELECCIONADA` | Se consulta referencia y prepara presupuesto/proyección; aprobación, vigencia, consumo reservado y cierre de versión requieren fuente autoritativa.       | `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA` |
+
+---
+
+#### 17. Reconciliación cuantitativa
+
+| Control                                     |   Resultado |
+| ------------------------------------------- | ----------: |
+| servicios evaluados                         | **69 / 69** |
+| estrategias activas especificadas           | **67 / 67** |
+| AURA bloqueados                             |   **2 / 2** |
+| alternativas físicas concretas aprobadas    |       **0** |
+| alternativas de tercero concretas aprobadas |       **0** |
+| estrategias validadas/readiness             |       **0** |
+| cambios físicos                             |       **0** |
+| requisitos de prueba creados/modificados    |       **0** |
+
+Distribución BIA preservada:
+
+| BIA                    | Servicios |
+| ---------------------- | --------: |
+| `CRITICA_PROTECCION`   |    **12** |
+| `CRITICA_OPERACIONAL`  |    **20** |
+| `ALTA_CONTROL`         |    **31** |
+| `DIFERIBLE_CONTROLADA` |     **6** |
+| **Total**              |    **69** |
+
+Distribución de propietarias preservada:
+
+| Aplicación | Servicios |
+| ---------- | --------: |
+| `anima`    |     **1** |
+| `viso`     |    **20** |
+| `nexo`     |    **16** |
+| `fogo`     |     **6** |
+| `origo`    |     **4** |
+| `pulso`    |    **12** |
+| `numera`   |     **7** |
+| `aura`     |     **2** |
+| `pass`     |     **1** |
+| `shell`    |     **0** |
+| **Total**  |    **69** |
+
+Distribución de estrategias primarias entre los 67 servicios activos:
+
+| Estrategia                               | Servicios |
+| ---------------------------------------- | --------: |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`             |     **6** |
+| `CTG-02_REFERENCIA_VERSIONADA`           |     **8** |
+| `CTG-03_BORRADOR_LOCAL`                  |     **8** |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`         |    **15** |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`       |     **6** |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` |    **11** |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    |     **9** |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`         |     **4** |
+| **Total**                                |    **67** |
+
+Distribución de sincronización entre los 67 servicios activos:
+
+| Clase                | Servicios |
+| -------------------- | --------: |
+| `SYNC-0_BLOCKING`    |    **12** |
+| `SYNC-1_URGENT`      |    **23** |
+| `SYNC-2_OPERATIONAL` |    **11** |
+| `SYNC-3_CYCLE`       |    **15** |
+| `SYNC-4_DEFERRED`    |     **6** |
+| **Total**            |    **67** |
+
+---
+
+#### 18. Brechas de evidencia y condiciones de salida
+
+| Brecha                                                                                                                  | Estado                   | Propietario documental                               | Condición de salida                                                                     |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| formularios, folios, campos mínimos, fotografías, firmas, custodia y digitalización de trabajo contingente              | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-009`                                       | contrato de registro/custodia materializado por modalidad y proceso aplicable           |
+| idempotencia, conflicto, secuencia y reincorporación de trabajo contingente                                             | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-010`                                       | contrato de incorporación/reconciliación materializado y probado                        |
+| cobertura real de respaldos y copias recuperables                                                                       | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011`                                       | inventario y política de respaldo aprobados con cobertura demostrable                   |
+| restauración, failover, retorno y validación funcional                                                                  | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012`                                       | runbooks y orden de recuperación materializados con evidencia                           |
+| proveedores, energía, red, pagos, transporte, canales y recursos alternativos concretos                                 | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-013`                                       | alternativa concreta evaluada contra las puertas de esta tarea y aprobada con evidencia |
+| readiness de estrategias y tiempos reales                                                                               | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                       | walkthrough/tabletop/simulación/ejercicio aplicable ejecutado y comparado con objetivos |
+| capacidad cuantitativa, headcount, stock, throughput y concurrencia para el escenario                                   | `PENDIENTE_DE_EVIDENCIA` | paquete propietario y tareas de capacidad aplicables | medición reproducible o estimación sustentada antes de declarar suficiencia             |
+| disponibilidad real de caché, almacenamiento local, lease, medio manual, batería, impresora, dispositivo u otro recurso | `PENDIENTE_DE_EVIDENCIA` | propietario técnico/operativo y paquete propietario  | inventario, configuración, disponibilidad y prueba verificables                         |
+
+No queda una brecha narrativa sin propietario ni condición de salida.
+
+---
+
+#### 19. Handoffs obligatorios
+
+| Decisión posterior                                                         | Tarea propietaria       | Frontera conservada                                                                     |
+| -------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------- |
+| registro, folios, evidencia, custodia y trabajo durante falla              | `CONT-DOM-009`          | define medios y expediente sin cambiar la estrategia seleccionada salvo cambio canónico |
+| reincorporación, idempotencia, conflictos y conciliación                   | `CONT-DOM-010`          | acepta trabajo contingente solo mediante contrato controlado                            |
+| respaldo                                                                   | `CONT-DOM-011`          | no se trata sincronización/caché/exportación como backup                                |
+| restauración, failover, retorno y validación funcional                     | `CONT-DOM-012`          | restaurar componente no declara proceso recuperado                                      |
+| terceros, energía, red, pagos, transporte, canales y recursos alternativos | `CONT-DOM-013`          | selecciona instancias concretas contra las puertas físicas/de tercero de esta tarea     |
+| ejercicios y readiness                                                     | `CONT-DOM-014`          | demuestra que estrategia, recursos y personas funcionan dentro del escenario            |
+| autorización excepcional                                                   | `CONT-AUTH-*` aplicable | una emergencia no concede permiso implícito                                             |
+| experiencia degradada/contingente                                          | `CONT-UX-*` aplicable   | comunica estado, pendientes y límites sin prometer efectos no confirmados               |
+| dependencias e integración degradada                                       | `CONT-INT-*` aplicable  | conserva salud, estado, reintentos, deduplicación y reconciliación                      |
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente la selección de contingencia, sus fronteras offline/manuales y las puertas de sustitución dentro de comportamientos de continuidad, operación degradada e integración que ya están protegidos por el registro vigente. No implementa una nueva transición ejecutable, permiso, mecanismo de sincronización, proveedor, failover, formato físico, reconciliación o acción productiva adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 21. Criterios de aceptación
+
+1. La tarea conserva exactamente 69 servicios BIA y 69 procesos `VPROC`.
+2. Cada servicio tiene una decisión explícita de estrategia o bloqueo.
+3. No existen servicios faltantes ni duplicados.
+4. La distribución de aplicaciones propietarias coincide con el catálogo aprobado.
+5. La distribución BIA permanece 12/20/31/6.
+6. Los cuatro objetivos empresariales se consumen sin modificación.
+7. Los cuatro perfiles OMV se consumen sin modificación.
+8. Los 67 servicios activos quedan `ESTRATEGIA_ESPECIFICADA_NO_VALIDADA`.
+9. Los dos servicios AURA quedan `BLOQUEADO_POR_APLICACION_DIFERIDA`.
+10. Ninguna fila se marca `VALIDADA`.
+11. El catálogo `CTG-*` se declara documental y no persistente.
+12. Cada estrategia tiene una semántica inequívoca.
+13. `CTG-02` exige referencia versionada y frescura visible.
+14. `CTG-03` no produce efectos empresariales.
+15. `CTG-04` separa captura de aceptación.
+16. `CTG-05` exige autorización finita preemitida.
+17. `CTG-06` no convierte el medio manual en fuente de verdad.
+18. `CTG-07` no amplía el sobre offline de la fila.
+19. `CTG-08` conserva backlog, propietario, antigüedad y condición de reanudación.
+20. `CTG-09` no acredita automáticamente una ubicación o recurso físico.
+21. `CTG-10` no acredita automáticamente un tercero o canal.
+22. Cada fila conserva exactamente el sobre `OF*` aprobado por el contrato offline vigente.
+23. Cada fila conserva exactamente su clase `SYNC-*` aprobada.
+24. No se agrega un modo offline ausente del sobre de la fila.
+25. Las filas `SYNC-0_BLOCKING` no encadenan el efecto protegido antes de reconciliar.
+26. Un borrador local nunca se interpreta como aprobación.
+27. Una captura local nunca se interpreta como resultado autoritativo.
+28. Una caché nunca se interpreta como maestro editable.
+29. Una sesión previa nunca se interpreta como autorización offline finita.
+30. Una lease vencida o agotada bloquea nueva ejecución.
+31. La estrategia exige registro de uso/agotamiento de una autorización finita.
+32. Los efectos repetibles consideran idempotencia o correlación antes de permitir ejecución offline.
+33. Los resultados inciertos no se convierten en éxito por timeout.
+34. Los resultados inciertos no se reintentan a ciegas.
+35. Pagos no se confirman localmente cuando la fila los mantiene autoritativos.
+36. Efectos fiscales no se confirman localmente cuando la fila los mantiene autoritativos.
+37. Altas, cambios o revocaciones de acceso no se simulan manualmente.
+38. Compras y compromisos económicos no se emiten desde borradores.
+39. Aprobaciones de calidad no se inventan durante falla.
+40. Una retención protectora puede mantenerse aunque el sistema digital esté indisponible.
+41. SST e inocuidad prevalecen sobre disponibilidad aparente.
+42. Ante especificación/alérgeno no verificable se bloquea el resultado afectado.
+43. El inventario offline no permite prometer stock no reconciliado.
+44. Los movimientos offline no se encadenan más allá de la autorización finita.
+45. La custodia física y la custodia digital se distinguen durante contingencia.
+46. Una impresión local no se interpreta como registro confirmado.
+47. Una observación del estado de un tercero no se interpreta como evento del tercero.
+48. Una reserva no se confirma sin capacidad/receipt autoritativo cuando el contrato lo exige.
+49. Un cierre de caja no se confirma sin conciliación autoritativa.
+50. Un saldo o redención de fidelización no se inventa desde caché.
+51. Una compensación o devolución con efecto conserva su autoridad y evidencia.
+52. Una radicación externa no se confirma sin receipt del canal aplicable.
+53. El proceso de continuidad no declara recuperación empresarial solo por recuperación técnica.
+54. Cada alternativa física concreta permanece no preseleccionada.
+55. Cada alternativa de tercero concreta permanece no preseleccionada.
+56. No se presentan las cinco sedes como cinco redundancias.
+57. Una alternativa física exige identidad y propietario concretos.
+58. Una alternativa física exige independencia de dominio de falla.
+59. Una alternativa física exige acceso y autoridad.
+60. Una alternativa física exige personas y recursos mínimos.
+61. Una alternativa física exige controles de SST/inocuidad/seguridad aplicables.
+62. Una alternativa física exige capacidad suficiente demostrada.
+63. Una alternativa física exige activación compatible con RTO/MTPD.
+64. Una alternativa física exige retorno y reconciliación.
+65. Una alternativa física exige prueba vigente antes de readiness.
+66. Un proveedor alterno exige identidad contractual concreta.
+67. Un proveedor alterno exige autoridad de activación/cambio.
+68. Un proveedor alterno exige capacidad, cuotas y soporte compatibles.
+69. Un proveedor alterno exige independencia de falla.
+70. Un proveedor alterno exige credenciales/configuración autorizadas.
+71. Un proveedor alterno exige compatibilidad de datos e idempotencia.
+72. Un proveedor alterno exige privacidad, seguridad y retención adecuadas.
+73. Un proveedor alterno exige tratamiento de resultados inciertos y duplicados.
+74. Un proveedor alterno exige conciliación y retorno.
+75. Un proveedor alterno exige prueba vigente antes de readiness.
+76. No se nombra un proveedor concreto sin evidencia.
+77. No se nombra un sitio alternativo concreto sin evidencia.
+78. No se inventa headcount mínimo.
+79. No se inventa stock mínimo.
+80. No se inventa throughput o concurrencia.
+81. No se inventa disponibilidad de dispositivo o batería.
+82. No se inventa disponibilidad de red o energía.
+83. No se inventa existencia de papel, impresora o suministros.
+84. No se inventa existencia de caché o almacenamiento local.
+85. No se inventa una autorización offline preemitida.
+86. No se inventa readiness.
+87. Los prerrequisitos no demostrados permanecen `PENDIENTE_DE_EVIDENCIA`.
+88. Toda brecha material tiene propietario y condición de salida.
+89. La captura/folio/custodia se entrega a `CONT-DOM-009` sin iniciarla.
+90. La reincorporación se entrega a `CONT-DOM-010` sin iniciarla.
+91. El respaldo se entrega a `CONT-DOM-011` sin iniciarla.
+92. Los runbooks se entregan a `CONT-DOM-012` sin iniciarla.
+93. La selección concreta de recursos/terceros se entrega a `CONT-DOM-013` sin iniciarla.
+94. La prueba/readiness se entrega a `CONT-DOM-014` sin iniciarla.
+95. La autorización excepcional conserva tareas propietarias separadas.
+96. La experiencia degradada conserva tareas propietarias separadas.
+97. La integración degradada conserva tareas propietarias separadas.
+98. La estrategia puede abandonarse cuando el MBCO deja de sostenerse.
+99. La estrategia puede abandonarse cuando el control protector deja de demostrarse.
+100. La estrategia puede abandonarse por frescura insuficiente.
+101. La estrategia puede abandonarse por pérdida de integridad/atribución local.
+102. La estrategia puede abandonarse por autorización finita vencida o agotada.
+103. La estrategia puede abandonarse por backlog no controlable.
+104. La estrategia puede abandonarse por riesgo de duplicación de resultado incierto.
+105. La estrategia puede abandonarse por ausencia de recurso humano/físico necesario.
+106. La estrategia puede abandonarse por falla común de la alternativa.
+107. La estrategia puede abandonarse por aumento material de riesgo de seguridad o cumplimiento.
+108. Cruzar RTO no concede bypass.
+109. Aproximarse a MTPD exige escalamiento según el perfil aplicable.
+110. El retorno a normalidad no se deduce de disponibilidad técnica.
+111. El trabajo contingente conserva origen, actor, hora y secuencia para incorporación posterior.
+112. La historia autoritativa no se sobrescribe silenciosamente al reconciliar.
+113. La tarea cierra documentalmente la selección de modalidad de contingencia por los servicios activos.
+114. La parte de fuente paralela queda gobernada aquí y se completa con registro/evidencia en la siguiente tarea reservada.
+115. Las alternativas concretas de energía, red, pagos, transporte, canales y otros recursos permanecen con su tarea propietaria posterior.
+116. No se ejecuta ninguna contingencia real.
+117. No se modifica proveedor, contrato, red, hardware, sede o infraestructura.
+118. No se modifica autorización, permiso o RLS.
+119. No se modifica código, DDL, DML, migración, dato o Supabase.
+120. No se modifica ningún requisito de prueba.
+121. No se genera un registro 04A nuevo por ausencia de cambios de requisitos.
+122. La siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 22. Balance de cierre
+
+| Control                                             |   Resultado |
+| --------------------------------------------------- | ----------: |
+| servicios evaluados                                 | **69 / 69** |
+| decisiones de estrategia                            | **69 / 69** |
+| servicios activos especificados                     | **67 / 67** |
+| servicios AURA bloqueados                           |   **2 / 2** |
+| estrategias documentales del catálogo               |      **10** |
+| criterios de aceptación                             |     **122** |
+| alternativas físicas concretas aprobadas            |       **0** |
+| alternativas de proveedor/canal concretas aprobadas |       **0** |
+| estrategias validadas/readiness                     |       **0** |
+| cambios físicos                                     |       **0** |
+| requisitos de prueba creados/modificados            |       **0** |
+
+---
+
+#### 23. Límites de la tarea
+
+- no crea formularios, folios o numeraciones de contingencia;
+- no crea una fuente paralela de verdad;
+- no ejecuta captura real durante una falla;
+- no implementa colas, cachés, almacenamiento local o leases;
+- no implementa reincorporación o conciliación;
+- no modifica política de respaldo;
+- no ejecuta restauración, failover o retorno;
+- no selecciona una sede alterna concreta;
+- no selecciona un dispositivo, impresora, vehículo, equipo o material sustituto concreto;
+- no selecciona un proveedor o canal alterno concreto;
+- no modifica contratos, credenciales ni integraciones;
+- no ejecuta ejercicio operativo;
+- no declara readiness;
+- no modifica aplicación, código, datos, autorización, red, infraestructura o Supabase;
+- no inicia `CONT-DOM-009`.
+
+---
+
+#### 24. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla`
+
+
 ### [ ] CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
 ### [ ] CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes
 ### [ ] CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos

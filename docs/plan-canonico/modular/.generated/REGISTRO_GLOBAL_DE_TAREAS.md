@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **710** |
+| Aprobadas | **711** |
 | En propuesta | **0** |
-| No iniciadas | **884** |
+| No iniciadas | **883** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.54% (710/1594)** |
+| Porcentaje de completamiento | **44.60% (711/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-DOM-007` — Definir operación mínima viable por proceso, sede, horario, temporada y duración | ✅ APROBADA |
-| Tarea actual | `CONT-DOM-008` — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-DOM-009` — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla | ⬜ NO INICIADA |
+| Última aprobada | `CONT-DOM-008` — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor | ✅ APROBADA |
+| Tarea actual | `CONT-DOM-009` — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-010` — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1599,7 +1599,7 @@
 | ✅ APROBADA | `CONT-DOM-005` | Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-006` | Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-007` | Definir operación mínima viable por proceso, sede, horario, temporada y duración | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-DOM-008` | Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-DOM-008` | Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-009` | Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-010` | Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-011` | Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
