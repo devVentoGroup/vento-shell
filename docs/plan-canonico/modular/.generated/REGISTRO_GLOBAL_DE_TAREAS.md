@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **699** |
+| Aprobadas | **700** |
 | En propuesta | **0** |
-| No iniciadas | **895** |
+| No iniciadas | **894** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **43.85% (699/1594)** |
+| Porcentaje de completamiento | **43.91% (700/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales | ✅ APROBADA |
-| Tarea actual | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | ⬜ NO INICIADA |
+| Última aprobada | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | ✅ APROBADA |
+| Tarea actual | `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1588,7 +1588,7 @@
 | ✅ APROBADA | `DATA-UX-006` | Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-007` | Diseñar reportes, exportaciones, suscripciones y snapshots versionados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
 | ✅ APROBADA | `DATA-UX-008` | Validar comprensión, tiempos y decisiones con usuarios reales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/03_EXPERIENCIA_ANALITICA_Y_DE_DECISION.md` |
-| ⬜ NO INICIADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
+| ✅ APROBADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |

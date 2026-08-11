@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **699** |
+| Tareas aprobadas | **700** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **895** |
+| Tareas no iniciadas | **894** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **43.85% (699/1594)** |
+| Porcentaje de completamiento | **43.91% (700/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales** |
-| Tarea actual | **DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas** |
+| Última tarea aprobada | **DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas** |
+| Tarea actual | **DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento** |
+| Siguiente tarea | **DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 123 de 157 aprobadas; DATA-INT-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 124 de 157 aprobadas; DATA-INT-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales |
-| Tarea actual | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas — **NO INICIADA** |
-| Siguiente tarea | `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento |
+| Última aprobada | `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas |
+| Tarea actual | `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento — **NO INICIADA** |
+| Siguiente tarea | `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 123 DE 157 APROBADAS — ACTUAL DATA-INT-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 124 DE 157 APROBADAS — ACTUAL DATA-INT-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
-        ↓
-TAREA ACTUAL
 DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 123 de 157 tareas aprobadas
+CARRIL NEXO — 124 de 157 tareas aprobadas
 ```
