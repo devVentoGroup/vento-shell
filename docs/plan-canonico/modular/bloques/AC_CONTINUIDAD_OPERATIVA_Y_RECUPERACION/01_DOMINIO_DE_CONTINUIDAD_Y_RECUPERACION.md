@@ -8471,7 +8471,895 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional`
 
 
-### [ ] CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional
+### ✅ CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos` — APROBADA
+**Tarea siguiente:** `CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos` — RESERVADA
+**Tipo de tarea:** documental; definición materializada de runbooks de recuperación, grafo de dependencias, selección y restauración de puntos, failover condicional, retorno controlado, validación técnica y validación funcional por servicio BIA
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Servicios evaluados:** 69 / 69
+**Servicios activos con decisión documental de recuperación:** 67 / 67
+**Servicios AURA bloqueados:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VENTO recuperará de forma ordenada y verificable sus resultados empresariales después de una interrupción, utilizando los objetos, políticas de respaldo, RTO, RPO, MTPD, MBCO, estrategias de contingencia y reglas de reincorporación ya aprobados, sin convertir un restore técnico en cierre empresarial y sin asumir que existe failover, PITR, réplica, copia o proveedor alterno donde la evidencia actual no lo demuestra.
+
+La tarea materializa el contrato de runbook y el orden de recuperación que deberá permitir responder, para cada servicio y grupo técnico:
+
+```text
+qué debe recuperarse primero
+qué dependencia bloquea el siguiente paso
+qué punto puede usarse
+dónde se restaura primero
+qué efectos permanecen suprimidos
+quién ejecuta técnicamente
+quién valida empresarialmente
+cuándo puede habilitarse un consumidor
+cuándo procede failover
+cómo se evita split-brain
+qué debe comprobarse antes del retorno
+qué trabajo posterior debe reincorporarse y conciliarse
+qué evidencia falta antes de afirmar readiness
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados:
+
+1. un contrato común de runbook con entradas, decisiones, responsables, checkpoints, rollback y evidencia;
+2. el grafo canónico de trece etapas de recuperación ya aprobado en `NFR-REQ-010`;
+3. reglas de precedencia que combinan dependencias reales con las prioridades `PR-0_PROTECCION` a `PR-3_DIFERIBLE`;
+4. selección gobernada del punto de recuperación y tratamiento del intervalo potencialmente perdido;
+5. restauración inicial en ambiente aislado con efectos externos suprimidos;
+6. un runbook técnico materializado para base de datos, Auth, políticas, Storage, secretos, código, Edge Functions, cron, colas, estado offline, endpoints, red y periféricos;
+7. una decisión explícita de recuperación para los catorce buckets observados;
+8. una decisión explícita de reconstrucción para las veinticuatro Edge Functions activas observadas;
+9. una decisión explícita para los siete jobs `pg_cron` activos observados;
+10. una decisión explícita de reconstrucción para los doce repositorios VENTO inventariados;
+11. un contrato de restore granular que preserva grupos de consistencia, historia y efectos derivados;
+12. un contrato de failover condicional que prohíbe afirmar capacidad alterna sin evidencia y evita doble fuente activa;
+13. un contrato de retorno y failback que impide reactivar el primario solo porque vuelva a responder;
+14. validación técnica separada de validación empresarial;
+15. tres corredores transversales de validación y conciliación para venta, abastecimiento y producción;
+16. una matriz 69 / 69 que conserva propietaria, perfil, MTPD, RTO, RPO, MBCO y prioridad y asigna una decisión de runbook por servicio;
+17. un registro de brechas de ejecución y evidencia con propietario documental y condición de salida;
+18. tratamiento documental del riesgo de conocimiento o credenciales concentrados sin inventar personas ni credenciales;
+19. cero restores ejecutados, cero failovers ejecutados, cero cambios físicos y cero cambios TREQ.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+- `CONT-DOM-001` para gobierno federado, propiedad funcional, funciones, suplencia y separación entre recuperación técnica y empresarial;
+- `CONT-DOM-002` para los 69 servicios BIA y sus propietarias;
+- `CONT-DOM-003` para dependencias y la línea base vigente de cero sustitutos concretos aprobados;
+- `CONT-DOM-004` para `CONT-OBJ-001` a `CONT-OBJ-004`, MTPD, RTO, RPO, MBCO y prioridades `PR-*`;
+- `CONT-DOM-005` y `CONT-DOM-006` para incidente, autoridad, mando, bitácora y comunicación;
+- `CONT-DOM-007` y `CONT-DOM-008` para nivel mínimo y estrategia de contingencia;
+- `CONT-DOM-009` para registro, evidencia, folio y custodia del trabajo durante la falla;
+- `CONT-DOM-010` para reincorporación, idempotencia, conflicto, orden causal y conciliación;
+- `CONT-DOM-011` para inventario recuperable, política, frecuencia, retención, seguridad y estado de evidencia;
+- `NFR-REQ-010` para conceptos, orden de recuperación, clean room, validación, failover, retorno y restore granular;
+- `TI-DOM-011` para arquitectura técnica de backup y recuperación;
+- `TREQ-CONT-004` a `TREQ-CONT-006` y `TREQ-PROC-529` a `TREQ-PROC-540` para cobertura de prueba ya existente;
+- la huella remota actual del proyecto Supabase VENTO accesible y la línea base actual de repositorios de `CONT-DOM-011`.
+
+No se redefine ninguna identidad, prioridad, objetivo, estrategia de contingencia, política de respaldo, retención, autorización o semántica de reincorporación ya aprobada.
+
+---
+
+#### 4. Fronteras obligatorias
+
+```text
+BACKUP DISPONIBLE
+!= PUNTO ELEGIBLE
+
+PUNTO ELEGIBLE
+!= RESTORE TECNICO VALIDADO
+
+RESTORE TECNICO VALIDADO
+!= MBCO EMPRESARIAL VERIFICADO
+
+MBCO VERIFICADO
+!= REINCORPORACION COMPLETA
+
+REINCORPORACION COMPLETA
+!= NORMALIZACION TOTAL
+
+FAILOVER
+!= RESTORE
+
+PRIMARIO RESPONDE
+!= RETORNO AUTORIZADO
+```
+
+La recuperación termina por capas. Ninguna capa posterior se presume por el éxito de una anterior.
+
+---
+
+#### 5. Objetivos y prioridad de recuperación heredados
+
+| Perfil         | BIA                    |       MTPD |        RTO |        RPO | MBCO                           | Prioridad         | Decisión de runbook                                                                                                                               |
+| -------------- | ---------------------- | ---------: | ---------: | ---------: | ------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   | **30 min** | **15 min** | **15 min** | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | proteger o detener antes de buscar disponibilidad aparente; toda dependencia necesaria para el control protector puede adelantarse por causalidad |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |    **4 h** |    **2 h** |    **1 h** | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | recuperar el resultado esencial dentro del RTO objetivo, preservando integridad y alternativa controlada mientras exista                          |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |   **24 h** |    **8 h** |    **4 h** | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | recuperar control, evidencia y capacidad de conciliación antes de normalizar trabajo diferido                                                     |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |   **72 h** |   **24 h** |   **24 h** | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | mantener trazabilidad, dueño y vencimiento; reanudar sin saltar dependencias ni abandonar backlog                                                 |
+
+Regla de orden: la prioridad `PR-*` ordena trabajo causalmente elegible. Una dependencia necesaria de un servicio `PR-0` o `PR-1` puede recuperarse antes aunque su propio proceso tenga una prioridad menor. No existe FIFO global de recuperación.
+
+---
+
+#### 6. Contrato común de runbook
+
+Cada runbook deberá resolver, cuando aplique:
+
+```text
+incidente_o_ejercicio
+alcance_y_servicios_afectados
+propietarios_funcionales
+responsable_de_continuidad
+responsable_tecnologico
+autoridad_de_recuperacion
+dependencias_y_grafo
+MBCO_MTPD_RTO_RPO_referenciados
+objetos_y_grupos_de_consistencia
+fuente_y_punto_de_recuperacion
+intervalo_potencialmente_perdido
+ambiente_destino
+credenciales_y_llaves_por_referencia
+controles_de_aislamiento
+efectos_externos_suprimidos
+version_de_esquema_y_migraciones
+version_de_codigo_y_contratos
+orden_y_checkpoints
+criterio_de_avance
+criterio_de_bloqueo
+rollback_del_restore_o_failback
+validacion_tecnica
+validacion_empresarial
+reincorporacion_y_conciliacion
+condicion_de_retorno
+retiro_de_accesos_temporales
+evidencia_y_pendientes
+```
+
+No se incluyen secretos, tokens o credenciales en texto plano dentro del runbook.
+
+---
+
+#### 7. Funciones y segregación en recuperación
+
+| Función canónica                       | Responsabilidad en el runbook                                                                  | Frontera                                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `RESPONSABLE_DE_CONTINUIDAD`           | coordina secuencia, estado, dependencias, decisiones y expediente transversal                  | no sustituye al propietario del proceso ni adquiere privilegios técnicos por la función |
+| `RESPONSABLE_TECNOLOGICO`              | prepara o ejecuta la recuperación técnica autorizada, verifica componentes y reporta evidencia | no declara por sí solo recuperado el proceso empresarial                                |
+| `RESPONSABLE_DEL_PROCESO`              | define qué resultado debe ser verificable y valida el MBCO y las obligaciones del proceso      | no se convierte en administrador de infraestructura                                     |
+| `CUSTODIO_DOCUMENTAL`                  | preserva versión, evidencia, manifiestos, decisiones y trazabilidad documental aplicable       | no decide el resultado empresarial ni el acceso privilegiado                            |
+| autoridad aplicable de `CONT-AUTH-*`   | autoriza las acciones sensibles, excepciones y accesos de recuperación que correspondan        | no se inventa una aprobación ni una identidad nominal en esta tarea                     |
+| proveedor o técnico externo autorizado | ejecuta únicamente trabajo contratado o especializado dentro del alcance concedido             | no se convierte en fuente de autoridad ni valida el cierre empresarial                  |
+
+El mismo individuo podrá desempeñar varias funciones solo cuando el gobierno vigente lo permita y quede explícito qué función ejerce en cada decisión. La ausencia de suplente, credencial o conocimiento demostrable permanece como brecha; no se rellena con una persona ficticia.
+
+---
+
+#### 8. Grafo canónico de recuperación — trece etapas
+
+| Etapa | Recuperación                                       | Condición mínima para avanzar                                                                                               |
+| ----: | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+|     1 | mando, autorización y comunicaciones               | incidente o motivo identificado, autoridad aplicable, alcance y responsables funcionales reconocibles                       |
+|     2 | identidad técnica, llaves y acceso de recuperación | identidades y material criptográfico utilizables por mecanismo autorizado, sin reutilizar secretos revocados                |
+|     3 | infraestructura, red, DNS y reloj                  | conectividad técnica mínima, resolución y tiempo suficientemente confiables para la siguiente dependencia                   |
+|     4 | base de datos, esquema y configuración             | punto seleccionado, restore aislado, compatibilidad de esquema y controles de integridad suficientes                        |
+|     5 | Storage y evidencia                                | contenido y referencias recuperables o una excepción que no falsee evidencia                                                |
+|     6 | colas, eventos, jobs y deduplicación               | estado de consumo, checkpoints e idempotencia conocidos; sin reemisión ciega                                                |
+|     7 | aplicaciones propietarias                          | versión compatible desplegable sobre dependencias validadas y efectos externos aún gobernados                               |
+|     8 | aplicaciones consumidoras                          | fuentes propietarias disponibles y contratos compatibles; ningún consumidor adelanta hechos                                 |
+|     9 | integraciones y proveedores                        | credenciales, contrato, estado y punto de conciliación verificables; habilitación externa autorizada                        |
+|    10 | dispositivos y periféricos                         | configuración, red, identidad de estación y dependencias suficientes para un efecto controlado                              |
+|    11 | validación empresarial                             | propietario del proceso confirma MBCO, obligaciones, estados y controles relevantes                                         |
+|    12 | reincorporación y conciliación                     | pendientes offline/manuales tratados bajo CONT-DOM-010 y efectos derivados conciliados                                      |
+|    13 | retorno a operación normal                         | fuente activa, backlog, accesos temporales, efectos externos y normalización bajo control y sin pendientes críticos ocultos |
+
+El grafo puede omitir una etapa solo cuando sea demostrablemente no aplicable al servicio o grupo concreto; nunca porque el componente parezca disponible. Puede repetir una etapa o retroceder cuando una validación descubra incompatibilidad, corrupción o dependencia faltante.
+
+---
+
+#### 9. Checkpoints y reglas de avance
+
+1. ningún consumidor avanza antes de su fuente autoritativa cuando depende de ella;
+2. una etapa fallida deja el siguiente trabajo bloqueado o redirigido al rollback aplicable;
+3. una validación técnica positiva no omite la validación del propietario;
+4. un objeto sin punto recuperable verificable bloquea el restore de su grupo cuando sea fuente crítica;
+5. un objeto reconstruible solo puede omitirse de restore cuando su reconstrucción está demostrada;
+6. una discrepancia de versión, esquema, RLS, contrato o llave debe resolverse antes de promoción;
+7. un efecto externo no se habilita por el solo hecho de que el endpoint responda;
+8. el progreso se registra por checkpoint y no por porcentaje subjetivo;
+9. un checkpoint no reescribe qué versión o punto se utilizó;
+10. un rollback de restauración o failback no borra la evidencia de lo intentado.
+
+---
+
+#### 10. Solicitud, autorización y selección del punto
+
+Toda restauración deberá partir de un motivo identificable y declarar alcance, daño que se intenta corregir, riesgo de sobrescritura, datos posteriores potencialmente afectados, ambiente destino, autoridad aplicable, plan de validación, supresión de efectos y rollback de la propia restauración.
+
+El punto se selecciona considerando:
+
+- integridad conocida;
+- proximidad al impacto sin reintroducir corrupción;
+- compatibilidad de esquema y aplicación;
+- consistencia del grupo;
+- disponibilidad de llaves;
+- hechos posteriores recuperables por replay o conciliación;
+- riesgo de duplicación;
+- retención, hold y obligaciones de evidencia.
+
+El runbook identifica el intervalo potencialmente perdido y qué clase de hecho posterior se recuperará, reconstruirá, reincorporará, conciliará, corregirá o mantendrá bloqueada. Un punto no verificable no se transforma en seguro por ser el más reciente.
+
+---
+
+#### 11. Recuperación aislada y supresión de efectos
+
+La primera restauración de prueba, investigación o copia sospechosa utiliza un ambiente aislado con credenciales separadas, acceso mínimo, datos identificados, logging y control de destrucción posterior.
+
+Por defecto permanecen suprimidos:
+
+- pagos y reembolsos;
+- webhooks;
+- correo, mensajería y notificaciones;
+- impresión real;
+- movimientos de inventario real;
+- pedidos, compras o comunicaciones externas;
+- rotación de credenciales productivas;
+- sincronización automática de dispositivos;
+- jobs programados con efecto;
+- cualquier otro efecto que pueda modificar una fuente o proveedor productivo.
+
+La habilitación se realiza por efecto y dependencia, después de validación y autoridad aplicable. No existe una acción universal de habilitar todo.
+
+---
+
+#### 12. Runbook de Supabase y base de datos
+
+La observación remota actual conserva `vento-os-dev` como proyecto VENTO accesible, 19 esquemas no de sistema y una base PostgreSQL cuyo tamaño observado en esta revisión es **142707859 bytes**. El tamaño es telemetría temporal; no define prioridad, RTO, RPO ni alcance de respaldo.
+
+| Componente                             | Decisión de recuperación                                                                                                                                                      | Checkpoint                                                         | Estado de evidencia actual                                |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
+| base PostgreSQL                        | seleccionar un punto verificable; restaurar primero en aislamiento; comprobar integridad, esquema, restricciones, secuencias, relaciones y consistencia antes de consumidores | punto y restore técnico verificables                               | `PENDIENTE_DE_EVIDENCIA` de managed backup/PITR y restore |
+| 19 esquemas no de sistema              | incluirlos según su función técnica o empresarial; no asumir que todos son fuentes de verdad                                                                                  | esquema y dependencias compatibles                                 | `ESPECIFICADO` con ejecución pendiente                    |
+| 550 migraciones                        | reconstruir la versión de esquema compatible; no usarlas como backup de hechos empresariales                                                                                  | última versión observada `20260731082600` reconciliada con release | `ESPECIFICADO`                                            |
+| Auth                                   | recuperar estructura e identidades necesarias sin reactivar sesiones, dispositivos o privilegios revocados                                                                    | autenticación controlada y relaciones vigentes                     | `PENDIENTE_DE_EVIDENCIA`                                  |
+| RLS, grants, RPC, funciones y triggers | reconstruir o restaurar con la versión compatible y comprobar comportamiento autorizado                                                                                       | validación de permisos y contratos                                 | `PENDIENTE_DE_EVIDENCIA`                                  |
+| Storage                                | recuperar después del grupo de datos aplicable y reconciliar contenido, metadatos, permisos y referencias                                                                     | objeto y referencia coherentes                                     | `PENDIENTE_DE_EVIDENCIA`                                  |
+| Vault, secretos, certificados y llaves | usar mecanismo separado; no copiar texto plano ni asumir que el backup de datos los recupera                                                                                  | acceso temporal y prueba controlada del material requerido         | `PENDIENTE_DE_EVIDENCIA`                                  |
+| managed backup                         | no se declara existencia ni ausencia sin evidencia del proveedor                                                                                                              | política, punto, integridad y restore demostrados                  | `PENDIENTE_DE_EVIDENCIA`                                  |
+| PITR                                   | no se declara capacidad ni ventana sin evidencia del proveedor y restore verificable                                                                                          | punto temporal restaurado y validado                               | `PENDIENTE_DE_EVIDENCIA`                                  |
+
+Toda modificación futura de Supabase perteneciente a VENTO permanece versionada y gobernada desde `vento-shell`.
+
+---
+
+#### 13. Runbook materializado de Storage — 14 / 14
+
+| Bucket                   | Bandera técnica | Objetos observados | Bytes observados | Decisión de recuperación                                                                                                                                       | Checkpoint funcional                                                                               | Estado                   |
+| ------------------------ | --------------- | -----------------: | ---------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------ |
+| `commercial-menu-images` | publico         |                 51 |          2800621 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `documents`              | publico         |                164 |        152907573 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `employee-photos`        | publico         |                 26 |         39118553 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `nexo-ai-documents`      | privado         |                  1 |           312532 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `nexo-catalog-images`    | publico         |                790 |        172881585 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `pass-satellite-logos`   | publico         |                 11 |           685743 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `product-images`         | publico         |                 45 |        378566937 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `public-documents`       | publico         |                  9 |          3250029 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `recipe-media`           | privado         |                  0 |                0 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `recipe-step-photos`     | publico         |                  4 |           367760 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `talento-cv`             | privado         |                  0 |                0 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `talento-documents`      | privado         |                  0 |                0 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `talento-medical`        | privado         |                  0 |                0 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+| `website-media`          | privado         |                  0 |                0 | recuperar contenido y metadatos en destino aislado; reconstruir configuración y permisos aplicables; reconciliar referencias con la base antes de consumidores | ninguna referencia obligatoria queda huérfana y el propietario puede acceder bajo autoridad válida | `PENDIENTE_DE_EVIDENCIA` |
+
+Total observado: **14 buckets**, **1101 objetos**, **750891333 bytes**. Un bucket con cero objetos todavía puede requerir recuperación de su definición, políticas y vínculos; cero objetos no equivale a `NO_APLICA`.
+
+---
+
+#### 14. Reconstrucción de software y repositorios — 12 / 12
+
+| Repositorio     | Alcance                                             | Decisión de reconstrucción                                                                                                                                                                          | Estado                                                    |
+| --------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `vento-anima`   | ANIMA                                               | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-fogo`    | FOGO                                                | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `Vento-Group`   | web corporativa                                     | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-nexo`    | NEXO                                                | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-numera`  | NUMERA                                              | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-origo`   | ORIGO                                               | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-pass`    | PASS                                                | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-pulso`   | PULSO                                               | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-shell`   | SHELL y fuente versionada de cambios Supabase VENTO | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-talento` | TALENTO                                             | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-viso`    | VISO                                                | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+| `vento-vital`   | VITAL                                               | reconstruir desde revisión identificable, dependencias bloqueadas, build reproducible, configuración no secreta, contratos y release compatible; validar contra datos restaurados antes de promover | `PENDIENTE_DE_EVIDENCIA` de rebuild o copia independiente |
+
+El remoto Git actual sirve como fuente versionada, pero no se declara por sí solo una copia independiente frente a eliminación, compromiso de cuenta o pérdida del servicio. La recuperación de datos sin una aplicación compatible no satisface el resultado empresarial.
+
+---
+
+#### 15. Reconstrucción de Edge Functions — 24 / 24
+
+| Edge Function activa observada | Decisión de recuperación                                                                                                       | Habilitación posterior                                                                     | Estado                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------ |
+| `wallet-pass`                  | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `attendance-report`            | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `staff-invitations-create`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `staff-invitations-accept`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `document-alerts`              | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `request-account-deletion`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `account-deletion`             | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `process-account-deletions`    | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `register-push-token`          | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `announcement-notify`          | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `employee-delete`              | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `payments-create-intent`       | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `payments-webhook`             | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `staff-invitations-resend`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `staff-invitations-cancel`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `shift-publish-notify`         | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `shift-runtime-processor`      | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `pass-delivery-quote`          | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `pass-address-search`          | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `support-message-notify`       | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `payments-return`              | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `pass-register-push-token`     | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `order-message-notify`         | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+| `delivery-portal`              | reconstruir versión compatible desde código y configuración no secreta; resolver referencias de secreto por mecanismo separado | mantener efectos externos suprimidos hasta dependencias, validación y autoridad aplicables | `PENDIENTE_DE_EVIDENCIA` |
+
+La existencia de la función desplegada hoy no prueba que pueda reconstruirse después de pérdida del entorno. El runbook exige reconstrucción reproducible y validación contra la versión restaurada de datos y contratos.
+
+---
+
+#### 16. Reconstrucción de jobs pg_cron — 7 / 7
+
+| Job activo observado                                 | Programación observada | Decisión de recuperación                                                                                                                                                                                                                                                                  | Estado                   |
+| ---------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `document-alerts-daily`                              | `0 14 * * *`           | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos. La configuración sensible asociada permanece separada y no puede reintroducirse en texto plano. | `PENDIENTE_DE_EVIDENCIA` |
+| `auto-close-attendance`                              | `59 4 * * *`           | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *`          | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`           | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`            | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`           | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *`          | reconstruir definición y dependencias; mantener ejecución suprimida en ambiente aislado; habilitar únicamente después de validar función destino, estado recuperado y efectos permitidos.                                                                                                 | `PENDIENTE_DE_EVIDENCIA` |
+
+El horario observado no se interpreta como evidencia de respaldo, RPO, readiness ni recuperación. Un job restaurado no se ejecuta automáticamente mientras el ambiente permanezca aislado.
+
+---
+
+#### 17. Colas, eventos, jobs, integraciones y estado offline
+
+El runbook conserva las decisiones de `CONT-DOM-010`:
+
+1. outbox, inbox, jobs, checkpoints y dead-letter preservan identidad y estado de consumo;
+2. deduplicación e idempotency keys se recuperan o reconstruyen antes de cualquier replay;
+3. un elemento ya confirmado no se reemite;
+4. `RESULT_UNKNOWN` obliga a consultar receipt, recurso y estado antes de decidir;
+5. un pendiente offline se compara con el punto restaurado y con la autoridad vigente antes de sincronizar;
+6. una rama con conflicto se detiene sin obligar a detener ramas independientes;
+7. el propietario del hecho se confirma antes de propagar efectos derivados;
+8. proveedor o consumidor externo no recibe replay ciego;
+9. evidencia manual u offline conserva origen, hora real y vínculo con el registro de contingencia;
+10. el retorno del backend habilita evaluación de reincorporación, no un envío automático de toda la cola.
+
+---
+
+#### 18. Endpoints, red, reloj, impresión y periféricos
+
+Antes de habilitar una estación o periférico para efectos reales se comprueba, según aplique:
+
+- identidad y vinculación del dispositivo;
+- configuración y versión esperadas;
+- fuente de tiempo suficientemente confiable;
+- red, DNS y resolución necesarias;
+- autenticación y autorización de la aplicación;
+- cola local o pendiente no conciliado;
+- driver, firmware o adaptador aplicable;
+- impresora, datáfono, escáner, báscula o periférico con resultado comprobable;
+- ausencia de actor o sesión heredados;
+- fallback o bloqueo si la capacidad física no está disponible.
+
+Un dispositivo encendido, una red conectada o una impresión emitida no prueban por sí solos que el proceso empresarial quedó recuperado.
+
+---
+
+#### 19. Restauración granular
+
+La restauración granular sigue esta secuencia:
+
+```text
+aislar copia o fuente
+→ identificar el hecho y su grupo de consistencia
+→ localizar historia, dependencias y efectos derivados
+→ comparar el estado actual con el punto recuperado
+→ elegir restauración, corrección, compensación o reconstrucción bajo la autoridad propietaria
+→ preservar el original y la evidencia
+→ actualizar o reproyectar derivados de forma controlada
+→ validar invariantes y consumidores
+→ conciliar pendientes posteriores
+```
+
+Si no puede preservarse consistencia en una fila, documento, objeto, tabla, cuenta, configuración o periodo, el alcance se amplía al grupo necesario. La granularidad no justifica sobrescritura destructiva.
+
+---
+
+#### 20. Failover condicional y fuente activa
+
+La línea base canónica conserva **cero sustitutos concretos aprobados**. Por tanto, esta tarea define el contrato de failover, pero no declara que exista una capacidad alterna disponible para ninguno de los 69 servicios.
+
+Una rama de failover solo puede utilizarse cuando exista una capacidad alterna acreditada y se resuelvan:
+
+1. condición de activación;
+2. autoridad;
+3. punto de datos y RPO alcanzable;
+4. limitaciones del entorno alterno;
+5. identificación inequívoca de la fuente activa;
+6. bloqueo, aislamiento o modo seguro de la fuente que deja de ser activa;
+7. prevención de split-brain;
+8. estado de integraciones, colas y dispositivos;
+9. validación técnica;
+10. validación empresarial del MBCO;
+11. mecanismo de reintegración;
+12. condición de retorno y rollback del failback.
+
+La existencia de alta disponibilidad administrada, réplica, segundo endpoint, caché o proveedor redundante no se presenta como failover empresarial hasta que esas condiciones sean demostrables.
+
+---
+
+#### 21. Retorno, failback y normalización
+
+El retorno al primario nunca es automático. Antes de promoverlo se deberá:
+
+- identificar qué fuente estuvo activa y en qué intervalo;
+- congelar o controlar nuevas mutaciones durante el punto de cambio cuando corresponda;
+- comparar delta, secuencia, integridad y efectos posteriores;
+- reconciliar autorizaciones, revocaciones, disposiciones y hechos creados durante la operación alterna;
+- validar esquema, aplicación, contratos, llaves, Storage, colas e integraciones;
+- establecer un checkpoint y rollback del failback cuando aplique;
+- repetir validación técnica relevante;
+- obtener validación empresarial del propietario;
+- reanudar efectos externos de forma controlada;
+- retirar accesos, rutas y capacidades temporales;
+- conservar backlog y normalización pendiente con dueño y condición de salida.
+
+El primario que vuelve a responder puede permanecer como fuente no activa hasta completar estas condiciones.
+
+---
+
+#### 22. Validación técnica
+
+La validación técnica cubre, según el grupo:
+
+- manifiestos, integridad, apertura y lectura;
+- constraints, secuencias, índices y referencias;
+- esquema, migraciones y compatibilidad de código;
+- RLS, RPC, grants y autenticación controlada;
+- Storage, objetos y vínculos;
+- colas, checkpoints y deduplicación;
+- health checks, observabilidad y capacidad mínima;
+- configuración, secretos por referencia y llaves utilizables;
+- ausencia de conexiones productivas no autorizadas;
+- supresión de efectos externos durante la validación.
+
+Un resultado técnico positivo habilita la siguiente validación; no cierra el incidente ni satisface el MBCO por sí mismo.
+
+---
+
+#### 23. Validación funcional y empresarial
+
+El `RESPONSABLE_DEL_PROCESO` o la función propietaria aplicable comprueba:
+
+- que el resultado mínimo `MBCO` pueda ejecutarse o demostrarse;
+- obligaciones abiertas y estados;
+- saldos, cantidades y secuencias aplicables;
+- documentos y evidencia;
+- pedidos, pagos, producción, remisiones, entregas o hechos equivalentes según el proceso;
+- actores, permisos y contexto vigentes;
+- hechos manuales u offline;
+- hechos posteriores al punto recuperado;
+- duplicados, faltantes y conflictos;
+- aceptación de consumidores cuando corresponda;
+- backlog, trabajo diferido y plan de normalización.
+
+El servicio alcanza su objetivo de recuperación únicamente cuando el resultado empresarial mínimo es verificable. La normalización completa puede continuar después, siempre que el pendiente quede controlado y no se falsee el estado.
+
+---
+
+#### 24. Corredores transversales de validación y conciliación
+
+Se preservan los corredores ya aprobados en `CONT-DOM-010`:
+
+```text
+PULSO confirma venta
+→ NEXO aplica salida
+→ PASS aplica puntos cuando corresponda
+→ NUMERA registra efecto economico
+```
+
+```text
+ORIGO confirma compra o recepcion empresarial
+→ NEXO aplica entrada fisica
+→ NUMERA registra obligacion
+```
+
+```text
+FOGO confirma lote y resultado productivo
+→ NEXO aplica consumos y salida de producto
+→ NUMERA calcula costo
+```
+
+El restore no invierte la propiedad de estos hechos. Si una consumidora queda adelantada, atrasada o divergente, la conciliación corrige la relación sin reescribir silenciosamente la fuente propietaria.
+
+---
+
+#### 25. Matriz empresarial de runbook y validación — 69 / 69
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Perfil         |     MTPD |      RTO |      RPO | MBCO                           | Prioridad         | Orden de recuperación                                                                                                            | Validación funcional                                                                                                                | Estado de evidencia                 |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | -------: | -------: | -------: | ------------------------------ | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y los hechos de personas aplicables; despues se concilian consumidores y pendientes     | `PENDIENTE_DE_EVIDENCIA`            |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma compra, recepcion u obligacion de abastecimiento aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma compra, recepcion u obligacion de abastecimiento aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma compra, recepcion u obligacion de abastecimiento aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma compra, recepcion u obligacion de abastecimiento aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma lote, produccion, calidad o resultado productivo aplicable; despues se concilian efectos derivados             | `PENDIENTE_DE_EVIDENCIA`            |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el hecho PASS aplicable y su vinculo con la fuente empresarial; despues se concilian efectos derivados         | `PENDIENTE_DE_EVIDENCIA`            |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | perfil conservado; no se habilita recuperacion operativa AURA                                                                    | sin validacion operativa AURA mientras la aplicacion permanezca diferida                                                            | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | perfil conservado; no se habilita recuperacion operativa AURA                                                                    | sin validacion operativa AURA mientras la aplicacion permanezca diferida                                                            | `BLOQUEADO_POR_APLICACION_DIFERIDA` |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma el resultado del VPROC y el expediente aplicable; despues se verifican dependencias y pendientes transversales | `PENDIENTE_DE_EVIDENCIA`            |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma cantidades, ubicacion, custodia o estado fisico aplicable; despues se concilian consumidores y pendientes      | `PENDIENTE_DE_EVIDENCIA`            |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma pedido, venta, servicio o hecho comercial aplicable; despues se concilian efectos derivados                    | `PENDIENTE_DE_EVIDENCIA`            |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    | grafos y dependencias primero; entre trabajo elegible aplica la prioridad heredada; validacion propietaria antes de conciliacion | propietaria confirma efecto economico, saldo, obligacion o control financiero aplicable; despues se concilian fuentes relacionadas  | `PENDIENTE_DE_EVIDENCIA`            |
+
+---
+
+#### 26. Matriz de grupos técnicos de recuperación
+
+| Grupo                                | Orden base | Restauración o reconstrucción                                                          | Criterio antes de consumidor                                           | Failover actual                  | Estado                   |
+| ------------------------------------ | ---------: | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------- | ------------------------ |
+| mando y autorización                 |          1 | reconstruir contexto del incidente, alcance, funciones y autoridad aplicable           | autoridad y alcance resolubles                                         | no aplica como sustituto técnico | `ESPECIFICADO`           |
+| identidad técnica, llaves y acceso   |          2 | recuperar por mecanismos autorizados y separados                                       | identidad y llaves utilizables sin revivir privilegios revocados       | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| infraestructura, red, DNS y reloj    |          3 | recuperar baseline y conectividad mínima                                               | servicios técnicos necesarios y tiempo suficientemente confiable       | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| base de datos y esquema              |          4 | restore de punto verificable en aislamiento, compatibilidad y consistencia             | fuente autoritativa e invariantes verificables                         | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| Storage y evidencia                  |          5 | restore de contenido, metadatos, políticas y vínculos                                  | archivo y referencia coherentes                                        | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| colas, eventos, jobs y deduplicación |          6 | restaurar o reconstruir estado de consumo y checkpoints                                | no existe replay ciego ni duplicación conocida                         | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| aplicaciones propietarias            |          7 | rebuild o despliegue compatible sobre fuente restaurada                                | propietaria puede validar MBCO sin efectos externos accidentales       | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| aplicaciones consumidoras            |          8 | rebuild o despliegue compatible                                                        | fuente propietaria confirmada y contratos compatibles                  | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| integraciones y proveedores          |          9 | recuperar configuración, receipts, credenciales por referencia y punto de conciliación | habilitación externa autorizada y deduplicable                         | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| dispositivos y periféricos           |         10 | baseline, red, identidad, drivers y configuración aplicables                           | efecto físico controlado y asociado al proceso correcto                | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+| validación empresarial               |         11 | propietario comprueba MBCO, obligaciones y consistencia                                | resultado mínimo verificable                                           | no aplica                        | `PENDIENTE_DE_EVIDENCIA` |
+| reincorporación y conciliación       |         12 | consumir CONT-DOM-010                                                                  | pendientes y efectos derivados con resultado o disposición propietaria | no aplica                        | `PENDIENTE_DE_EVIDENCIA` |
+| retorno y normalización              |         13 | controlar fuente activa, efectos, backlog y accesos temporales                         | sin pendientes críticos ocultos y retorno validado                     | `PENDIENTE_DE_EVIDENCIA`         | `PENDIENTE_DE_EVIDENCIA` |
+
+---
+
+#### 27. Brechas de evidencia y condiciones de salida
+
+| Brecha                                                         | Estado                   | Propietario documental                                                         | Condición de salida                                                                                  |
+| -------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| fuente real de restore de PostgreSQL, managed backup y/o PITR  | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011`; arquitectura Supabase aplicable; `CONT-DOM-014` para ejercicio | punto verificable disponible y restore aislado ejecutado con evidencia                               |
+| restore de los 14 buckets Storage                              | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012`; arquitectura Storage aplicable; `CONT-DOM-014`                 | contenido, metadatos, permisos y vínculos restaurados en ejercicio aislado                           |
+| rebuild completo de 24 Edge Functions                          | `PENDIENTE_DE_EVIDENCIA` | paquetes técnicos propietarios; `CONT-DOM-014`                                 | build/despliegue aislado compatible y pruebas sin efectos productivos                                |
+| reconstrucción segura de siete jobs cron                       | `PENDIENTE_DE_EVIDENCIA` | bloque tecnológico propietario; `CONT-AUTH-003` cuando exista secreto          | definiciones reconstruidas, secretos separados y activación controlada probada                       |
+| recuperación de secretos, certificados y llaves                | `PENDIENTE_DE_EVIDENCIA` | `CONT-AUTH-002`; `CONT-AUTH-003`                                               | mecanismo autorizado y prueba controlada de uso o descifrado                                         |
+| conocimiento o credenciales concentrados en una persona        | `PENDIENTE_DE_EVIDENCIA` | `CONT-AUTH-002`; `CONT-DOM-012`; `CONT-DOM-014`                                | suplencia, acceso de recuperación y ejecución del runbook demostrados sin dependencia personal única |
+| rebuild o copia independiente de los doce repositorios         | `PENDIENTE_DE_EVIDENCIA` | paquetes de build/release y `TI-DOM-011`                                       | reconstrucción limpia o copia separada demostrada frente a pérdida del remoto primario               |
+| replay de colas y estado offline                               | `PENDIENTE_DE_EVIDENCIA` | `CONT-INT-004`; paquetes propietarios; `CONT-DOM-014`                          | restore/replay controlado sin duplicación ni pérdida                                                 |
+| baseline recuperable de endpoint, red, impresión y periféricos | `PENDIENTE_DE_EVIDENCIA` | bloque tecnológico aplicable; `CONT-DOM-014`                                   | estación recuperada y validada en entorno representativo                                             |
+| alternativa real para failover por servicio o dependencia      | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-013`; `CONT-INT-003`                                                 | recurso, proveedor o capacidad alterna acreditados con autoridad, límites y prueba                   |
+| separación real del dominio de falla                           | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011`; `CONT-INT-003`                                                 | cuenta, credencial, ubicación, política o proveedor suficientemente independientes demostrados       |
+| tiempos reales frente a RTO y WRT                              | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-004`; `CONT-DOM-014`                                                 | ejercicio con hitos y duraciones reproducibles                                                       |
+| programa vigente de restores, failover y retorno               | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                                                 | calendario y ejercicios ejecutados con evidencia y acciones resultantes                              |
+
+No existe un pendiente sin propietario documental o condición de salida.
+
+---
+
+#### 28. Tratamiento de hallazgos de continuidad
+
+- `H-CAP-SCOPE-018-023` permanece pendiente de ejecución en `CONT-DOM-014`: esta tarea define runbooks, pero no crea un programa de restores probados;
+- `H-CAP-SCOPE-018-024` permanece pendiente de evidencia en `CONT-DOM-004` y `CONT-DOM-014`: los RTO están definidos, pero no se inventan tiempos reales;
+- `H-CAP-SCOPE-018-025` recibe tratamiento documental en esta tarea mediante funciones, suplencia, segregación y contrato de runbook; la evidencia de que credenciales y conocimiento no dependen de una sola persona permanece `PENDIENTE_DE_EVIDENCIA` en `CONT-AUTH-002` y ejercicios aplicables;
+- `H-CAP-SCOPE-018-026` permanece pendiente de evidencia bajo `CONT-DOM-011` y `CONT-INT-003`: esta tarea no inventa una segunda copia o dominio alterno.
+
+Los dos hallazgos cerrados documentalmente por `CONT-DOM-011` no se reabren: el inventario y la separación conceptual entre backup, réplica, job y sincronización se consumen sin modificación.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la selección del punto, restauración aislada, compatibilidad, orden de dependencias, supresión de efectos, validación técnica, validación empresarial, failover, failback, restore granular, conciliación y ejercicios ya están protegidos por los requisitos vigentes derivados de `NFR-REQ-010` — en particular `TREQ-PROC-529` a `TREQ-PROC-540` — y por `TREQ-CONT-004` a `TREQ-CONT-006`. `CONT-DOM-012` materializa el runbook documental y la decisión por identidad sin implementar un comportamiento ejecutable nuevo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 30. Criterios de aceptación
+
+1. La continuidad vigente es CONT-DOM-011 aprobada, CONT-DOM-012 actual y CONT-DOM-013 reservada.
+2. La tarea permanece exclusivamente documental dentro de CONDITIONAL_DESIGN_ARTIFACTS.
+3. No se ejecuta restauracion real, failover real, failback real ni cambio productivo.
+4. No se modifica codigo, DDL, DML, migraciones, RLS, RPC, Edge Functions, datos, secretos o configuracion desplegada.
+5. El runbook comun conserva mando, autorizacion y comunicaciones como primera capa.
+6. El runbook comun conserva identidad tecnica, llaves y acceso de recuperacion antes de usar componentes protegidos.
+7. El runbook comun conserva infraestructura, red, DNS y reloj antes de depender de servicios de aplicacion.
+8. Base de datos, esquema y configuracion se recuperan antes de consumidores que dependan de sus hechos.
+9. Storage y evidencia se recuperan y validan con sus referencias antes de declarar completo un expediente.
+10. Colas, eventos, jobs y deduplicacion conservan estado antes de reanudar consumidores.
+11. Las aplicaciones propietarias se habilitan antes de aplicaciones consumidoras cuando exista dependencia causal.
+12. Las integraciones y proveedores no se habilitan antes de tener fuente, credenciales y estado conciliable.
+13. Los dispositivos y perifericos no se habilitan para efectos reales antes de dependencias y validacion aplicables.
+14. La validacion empresarial precede la reincorporacion y conciliacion final cuando corresponda.
+15. La reincorporacion reutiliza CONT-DOM-010 y no crea un segundo contrato de replay.
+16. El retorno a operacion normal ocurre solo despues de validacion, pendientes y condiciones de retorno.
+17. La lista de trece pasos se trata como grafo adaptable y no como FIFO universal.
+18. Una prioridad PR-0 a PR-3 no permite adelantar una dependencia no recuperada.
+19. Una dependencia de menor prioridad puede recuperarse primero si es prerrequisito de un servicio mas critico.
+20. Los objetivos CONT-OBJ-001 a CONT-OBJ-004 permanecen sin cambios.
+21. CONT-OBJ-001 conserva MTPD 30 min, RTO 15 min y RPO 15 min.
+22. CONT-OBJ-002 conserva MTPD 4 h, RTO 2 h y RPO 1 h.
+23. CONT-OBJ-003 conserva MTPD 24 h, RTO 8 h y RPO 4 h.
+24. CONT-OBJ-004 conserva MTPD 72 h, RTO 24 h y RPO 24 h.
+25. Los cuatro MBCO se conservan sin reinterpretacion.
+26. Las cuatro prioridades PR-0 a PR-3 se conservan sin reinterpretacion.
+27. RTO se mide hasta MBCO verificado y no hasta un simple reinicio tecnico.
+28. WRT permanece sin valor numerico inventado y se trata como tiempo posterior necesario para validar, conciliar y reanudar.
+29. Cuando aplique, RTO mas WRT debe caber dentro de MTPD.
+30. La seleccion del punto de recuperacion registra integridad, cercania, contaminacion, compatibilidad, consistencia y hechos posteriores.
+31. La seleccion del punto identifica el intervalo potencialmente perdido.
+32. Una copia COMPLETED_UNVERIFIED no se trata como punto restaurable.
+33. Una copia en cuarentena no se promueve sin evaluacion.
+34. La primera restauracion de una copia sospechosa se mantiene en ambiente aislado.
+35. El ambiente aislado usa credenciales separadas y no rutas productivas por defecto.
+36. El ambiente aislado suprime pagos, mensajes, webhooks, impresion, movimientos y otros efectos reales por defecto.
+37. La promocion accidental desde el ambiente aislado queda prohibida.
+38. Antes de promover se verifican esquema, migraciones, contratos, SDK, RLS, grants, funciones, configuracion y secretos aplicables.
+39. Los datos restaurados no se promueven con una version de aplicacion incompatible.
+40. Las migraciones sobre datos restaurados requieren idempotencia o checkpoint y rollback.
+41. La base PostgreSQL se trata como grupo de consistencia tecnico, no como unico objeto empresarial.
+42. Se conserva la observacion actual de 19 esquemas no de sistema.
+43. Se conserva la observacion actual de 550 migraciones y version mas reciente 20260731082600.
+44. El tamano actual de base se registra solo como observacion temporal y no como parametro de politica.
+45. Managed backup permanece PENDIENTE_DE_EVIDENCIA y no se declara habilitado ni deshabilitado.
+46. PITR permanece PENDIENTE_DE_EVIDENCIA y no se declara habilitado ni deshabilitado.
+47. Auth, RLS, grants, RPC, triggers y politicas se incluyen en la compatibilidad de recuperacion.
+48. Restaurar datos no reactiva sesiones, dispositivos, permisos o excepciones revocados.
+49. Vault, secretos, certificados y llaves se recuperan por mecanismo separado.
+50. Los secretos no se copian en texto plano dentro de runbooks o configuraciones ordinarias.
+51. Se preservan exactamente 14 buckets Storage.
+52. Se preservan exactamente 1101 objetos Storage observados.
+53. Se preservan exactamente 750891333 bytes Storage observados.
+54. Cada bucket tiene una decision explicita de recuperacion.
+55. Un bucket vacio sigue requiriendo reconstruccion de configuracion y permisos aplicables.
+56. Storage se restaura con contenido, metadatos, vinculo, version, retencion, hold y permisos aplicables.
+57. Referencia sin archivo o archivo sin referencia bloquea la validacion funcional aplicable.
+58. La bandera tecnica publica o privada no se usa como clasificacion empresarial.
+59. Se preservan exactamente 24 Edge Functions activas observadas.
+60. Cada Edge Function tiene decision explicita de reconstruccion y habilitacion posterior.
+61. Ninguna Edge Function se declara recuperada por existir desplegada actualmente.
+62. Las Edge Functions se reconstruyen con codigo, release, configuracion no secreta y dependencias compatibles.
+63. Los efectos externos de una Edge Function restaurada permanecen suprimidos hasta autorizacion aplicable.
+64. Se preservan exactamente siete jobs pg_cron activos observados.
+65. Cada job cron tiene decision explicita de reconstruccion.
+66. Los jobs restaurados permanecen sin ejecucion automatica en el ambiente aislado.
+67. La configuracion cron que contiene material sensible mantiene bloqueo hasta separar secreto y configuracion recuperable.
+68. El valor sensible detectado previamente no se reproduce en el documento.
+69. Se preservan exactamente doce repositorios VENTO inventariados por CONT-DOM-011.
+70. Cada repositorio tiene decision explicita de reconstruccion reproducible.
+71. Git remoto no se declara copia independiente por si solo.
+72. Los datos restaurados requieren codigo, dependencias, migraciones y contratos compatibles.
+73. vento-shell conserva la fuente versionada de cambios Supabase pertenecientes a VENTO.
+74. Colas, outbox, inbox, jobs, checkpoints y dead-letter no se reemiten ciegamente despues del restore.
+75. El estado de consumo y las claves de deduplicacion se preservan antes de reanudar colas.
+76. Un resultado externo desconocido se consulta o concilia antes de repetir.
+77. El estado offline se compara con el punto restaurado antes de sincronizar.
+78. Trabajo local confirmado, desconocido, vencido o conflictivo no recibe el mismo tratamiento.
+79. La recuperacion de un dispositivo no convierte su almacenamiento local en fuente autoritativa.
+80. Configuracion de endpoints, red e impresion requiere baseline compatible antes de volver a efectos reales.
+81. La recuperacion de impresoras no usa una impresion de prueba como prueba del hecho empresarial restaurado.
+82. La restauracion granular identifica primero el grupo de consistencia aplicable.
+83. Una restauracion granular no sobrescribe historia para forzar coincidencia.
+84. Si no puede garantizarse consistencia granular se amplia el grupo y se concilia.
+85. Failover y restore permanecen decisiones separadas.
+86. No se declara capacidad de failover actual por la sola existencia de un servicio administrado.
+87. La linea base actual conserva cero sustitutos concretos aprobados.
+88. Una rama de failover solo se habilita si existe capacidad alterna acreditada y autoridad aplicable.
+89. El failover mantiene una unica fuente activa y control de split-brain.
+90. La fuente secundaria no se convierte en primaria por volver a responder o por estar saludable.
+91. El retorno al primario no es automatico.
+92. Antes del retorno se compara delta, integridad, autoridad, compatibilidad y trabajo posterior.
+93. El failback exige checkpoint y rollback propios cuando aplique.
+94. Despues del failback se repite validacion tecnica y funcional relevante.
+95. Los accesos y capacidades temporales de recuperacion se retiran al cerrar la fase aplicable.
+96. La validacion tecnica cubre integridad, lectura, constraints, secuencias, indices, referencias, esquema, RLS, RPC y permisos.
+97. La validacion tecnica cubre Storage, colas, observabilidad, capacidad minima y ausencia de conexiones productivas no autorizadas.
+98. Superar validacion tecnica no declara recuperacion empresarial.
+99. La validacion empresarial pertenece al propietario del proceso.
+100. La validacion empresarial comprueba obligaciones abiertas y estados aplicables.
+101. La validacion empresarial comprueba saldos, cantidades y secuencias aplicables.
+102. La validacion empresarial comprueba documentos y evidencia aplicables.
+103. La validacion empresarial comprueba hechos manuales u offline.
+104. La validacion empresarial compara hechos posteriores al punto restaurado.
+105. La validacion empresarial trata duplicados, faltantes y conflictos.
+106. La validacion empresarial confirma capacidad de operar el MBCO.
+107. La validacion empresarial deja backlog y plan de normalizacion identificados.
+108. PULSO confirma el hecho de venta antes de efectos derivados de NEXO, PASS y NUMERA cuando ese corredor aplique.
+109. ORIGO confirma compra o recepcion antes de entrada fisica NEXO y obligacion NUMERA cuando ese corredor aplique.
+110. FOGO confirma lote o resultado productivo antes de consumos/salidas NEXO y costo NUMERA cuando ese corredor aplique.
+111. Los corredores no autorizan escrituras cruzadas ni transfieren propiedad.
+112. La conciliacion posterior reutiliza exactamente CONT-DOM-010.
+113. Un servicio tecnicamente disponible puede seguir con conciliacion pendiente.
+114. No se declara normalizacion completa mientras existan RESULT_UNKNOWN, CONFLICT, QUARANTINED o RECONCILIATION_REQUIRED aplicables.
+115. No se declara normalizacion completa con evidencia obligatoria sin vincular o trabajo sin propietario.
+116. Se preservan exactamente 69 servicios BIA y 69 procesos VPROC.
+117. No existen identificadores repetidos en la matriz de servicios.
+118. Se preserva la distribucion BIA 12/20/31/6.
+119. Se preserva la distribucion de propietarias 1/20/16/6/4/12/7/2/1 para anima/viso/nexo/fogo/origo/pulso/numera/aura/pass.
+120. Los 67 servicios activos reciben decision documental de runbook y validacion.
+121. Los dos servicios AURA permanecen BLOQUEADO_POR_APLICACION_DIFERIDA.
+122. AURA no adquiere capacidad operativa por aparecer en la matriz.
+123. Cada fila conserva su CONT-OBJ, MTPD, RTO, RPO, MBCO y prioridad heredados.
+124. Cada fila identifica a la propietaria como validora funcional del hecho de su proceso.
+125. Cada fila conserva PENDIENTE_DE_EVIDENCIA mientras no exista ejecucion y evidencia del runbook.
+126. Un runbook especificado no se presenta como runbook probado.
+127. Un punto de recuperacion disponible no se presenta como restore probado.
+128. Un restore tecnico no se presenta como MBCO validado.
+129. Un MBCO validado no se presenta como conciliacion completa.
+130. Una conciliacion completa no se presenta automaticamente como normalizacion total si quedan tareas controladas de retorno.
+131. H-CAP-SCOPE-018-023 permanece con CONT-DOM-014 para programa de restores probados.
+132. H-CAP-SCOPE-018-024 permanece con CONT-DOM-004 y CONT-DOM-014 para tiempos reales frente a RTO.
+133. H-CAP-SCOPE-018-025 queda con tratamiento documental de suplencia y runbook, pero su evidencia de credenciales y ejecucion permanece con CONT-AUTH-002 y ejercicios aplicables.
+134. H-CAP-SCOPE-018-026 permanece pendiente de evidencia de dominio de falla con CONT-DOM-011 y CONT-INT-003.
+135. Las alternativas concretas de proveedor, energia, red, pagos, transporte o canal no se inventan en esta tarea.
+136. CONT-DOM-013 permanece reservado y no se ejecuta.
+137. CONT-DOM-014 permanece reservado y no se ejecuta.
+138. CONT-DOM-015 permanece reservado y no se ejecuta.
+139. No se crea ni modifica ningun requisito TREQ.
+140. No se genera una copia nueva de 04A.
+
+---
+
+#### 31. Balance de cierre
+
+| Control                                   |   Resultado |
+| ----------------------------------------- | ----------: |
+| servicios BIA con decisión                | **69 / 69** |
+| procesos VPROC con decisión               | **69 / 69** |
+| servicios activos                         | **67 / 67** |
+| AURA bloqueados                           |   **2 / 2** |
+| `CRITICA_PROTECCION` / `PR-0_PROTECCION`  |      **12** |
+| `CRITICA_OPERACIONAL` / `PR-1_ESENCIAL`   |      **20** |
+| `ALTA_CONTROL` / `PR-2_CONTROL`           |      **31** |
+| `DIFERIBLE_CONTROLADA` / `PR-3_DIFERIBLE` |       **6** |
+| etapas del grafo común                    | **13 / 13** |
+| buckets Storage con decisión              | **14 / 14** |
+| Edge Functions con decisión               | **24 / 24** |
+| jobs pg_cron con decisión                 |   **7 / 7** |
+| repositorios con decisión                 | **12 / 12** |
+| restores ejecutados                       |       **0** |
+| failovers ejecutados                      |       **0** |
+| failbacks ejecutados                      |       **0** |
+| validaciones funcionales ejecutadas       |       **0** |
+| cambios físicos                           |       **0** |
+| requisitos TREQ creados/modificados       |       **0** |
+
+---
+
+#### 32. Límites de la tarea
+
+Esta tarea no:
+
+- ejecuta un restore;
+- ejecuta PITR;
+- activa o cambia managed backup;
+- ejecuta failover o failback;
+- selecciona un proveedor, enlace, sede o recurso alterno concreto;
+- crea una segunda instancia, réplica o región;
+- crea un ambiente de recuperación;
+- copia o rota secretos;
+- ejecuta migraciones o cambios de esquema;
+- despliega Edge Functions;
+- modifica jobs cron;
+- activa pagos, webhooks, mensajería, impresión o movimientos reales;
+- modifica datos o resuelve una conciliación productiva;
+- declara RTO, RPO, WRT o MTPD cumplidos;
+- declara un runbook probado;
+- declara readiness;
+- modifica autorización o permisos;
+- modifica código, DDL, DML, RLS, RPC, Storage, infraestructura o Supabase;
+- inicia `CONT-DOM-013`;
+- inicia `CONT-DOM-014`;
+- inicia `CONT-DOM-015`.
+
+---
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos`
+
+TAREA ACTUAL APROBADA
+
+`CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos`
+
+
 ### [ ] CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
 ### [ ] CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos
 ### [ ] CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan

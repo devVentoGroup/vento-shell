@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **714** |
+| Aprobadas | **715** |
 | En propuesta | **0** |
-| No iniciadas | **880** |
+| No iniciadas | **879** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.79% (714/1594)** |
+| Porcentaje de completamiento | **44.86% (715/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-DOM-011` — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos | ✅ APROBADA |
-| Tarea actual | `CONT-DOM-012` — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-DOM-013` — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos | ⬜ NO INICIADA |
+| Última aprobada | `CONT-DOM-012` — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | ✅ APROBADA |
+| Tarea actual | `CONT-DOM-013` — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-014` — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1603,7 +1603,7 @@
 | ✅ APROBADA | `CONT-DOM-009` | Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-010` | Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-DOM-011` | Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-DOM-012` | Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-DOM-012` | Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-013` | Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-014` | Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-015` | Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
