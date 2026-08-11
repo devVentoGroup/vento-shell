@@ -3752,7 +3752,871 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa`
 
 
-### [ ] CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
+### ✅ CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad` — APROBADA
+**Tarea siguiente:** `CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración` — RESERVADA
+**Tipo de tarea:** documental; materialización del modelo de mando de incidentes de continuidad, sustitución funcional, bitácora cronológica de decisiones, árbol funcional de comunicación de crisis y coordinación externa
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Activaciones reales, comunicaciones reales, cambios de permisos, accesos de emergencia, restauraciones, failover, cambios de proveedor, código, DDL, DML, migraciones, RLS, RPC, datos, backfills o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el sistema de mando mediante el cual un incidente de continuidad ya clasificado conforme a `CONT-DOM-005` puede ser coordinado sin órdenes contradictorias, sin dependencia silenciosa de una sola persona, sin transferencias implícitas de autoridad y sin comunicaciones que presenten como confirmados hechos, causas o tiempos que todavía no lo están.
+
+La tarea materializa de forma determinista:
+
+- qué funciones forman el mando de un incidente;
+- cómo cambia la composición mínima del mando según la severidad y el alcance;
+- cómo se sustituye una función cuando el titular asignado no está disponible;
+- qué límites conserva una sustitución;
+- cómo se registra cada decisión y su corrección sin reescribir la historia;
+- qué clases de comunicación existen y quién prepara, verifica y emite cada una;
+- cómo se conserva un árbol funcional de comunicación versionado sin publicar contactos sensibles;
+- cómo se coordina con proveedores, servicios públicos, pagos, transporte, canales, asesores y autoridades sin transferir propiedad ni autoridad interna;
+- qué decisiones protegidas siguen requiriendo autorización en las tareas `CONT-AUTH-*`;
+- qué elementos pertenecen expresamente a las tareas posteriores del bloque.
+
+Esta tarea no asigna nombres de personas, teléfonos, correos, credenciales, proveedores concretos ni canales físicos no demostrados. Define el contrato documental que deberán cumplir las asignaciones y comunicaciones reales cuando sean materializadas por sus fuentes propietarias.
+
+---
+
+#### 2. Resultado material
+
+| Control                                             | Resultado |
+| --------------------------------------------------- | --------: |
+| Responsabilidades conceptuales de mando heredadas   | **8 / 8** |
+| Funciones organizacionales canónicas reutilizadas   |    **10** |
+| Perfiles de mando por severidad                     | **4 / 4** |
+| Clases de comunicación de crisis                    | **7 / 7** |
+| Clases de coordinación externa                      |     **7** |
+| Categorías de decisión que deben quedar en bitácora |    **12** |
+| Campos mínimos de cada entrada de decisión          |    **25** |
+| Campos mínimos de cada comunicación                 |    **15** |
+| Hallazgos propietarios cerrados documentalmente     |     **4** |
+| Personas nominales inventadas                       |     **0** |
+| Contactos reales inventados                         |     **0** |
+| Proveedores concretos inventados                    |     **0** |
+| Comunicaciones reales emitidas                      |     **0** |
+| Activaciones o sustituciones reales ejecutadas      |     **0** |
+| Cambios físicos                                     |     **0** |
+| Cambios de requisitos de prueba                     |     **0** |
+
+La tarea materializa el mando por incidente. Los 69 servicios `BCS-*` continúan siendo el universo de resultados que un incidente puede afectar, pero no se duplica una matriz por servicio porque el mando depende del incidente, su severidad, alcance y funciones afectadas, no de una asignación fija diferente para cada servicio.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume sin redefinir:
+
+1. `CONT-DOM-001`, que establece gobierno federado, funciones permanentes, concentración compatible con organización pequeña, registro de responsabilidades y suplencia, segregación y derechos de decisión;
+2. `CONT-DOM-005`, que establece naturaleza, alcance, impacto, urgencia, `SEV-C1_CONTROLADA` a `SEV-C4_CRITICA`, modalidades de activación, escalamiento, desescalamiento, desactivación y cierre;
+3. `CAP-SCOPE-018`, que exige director del incidente, responsables operativos, responsable técnico, responsable de datos y evidencia, responsable de comunicación, enlace con proveedores, aprobador de decisiones excepcionales, sustitutos y escalamiento;
+4. `VPROC-0062`, cuyo expediente transversal permanece en VISO sin absorber los hechos propietarios de los dominios;
+5. los 69 servicios BIA, sus MBCO, RTO, MTPD y prioridades por referencia a las tareas ya aprobadas;
+6. la separación entre incidentes de continuidad y expedientes tecnológicos, laborales, SST, de información, seguridad y proveedores;
+7. las siete clases de comunicación exigidas por `CAP-SCOPE-018`;
+8. la cobertura vigente de continuidad, autorización, auditoría e integración transversal.
+
+La tarea no cambia criticidad BIA, severidad, MTPD, RTO, RPO, MBCO, prioridad de recuperación, propiedad de proceso, aplicación propietaria ni estado de AURA.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+MANDO DEL INCIDENTE
+≠ AUTORIDAD IRRESTRICTA
+≠ PROPIEDAD DE TODOS LOS PROCESOS
+```
+
+```text
+DIRECTOR DEL INCIDENTE
+≠ GERENCIA GENERAL
+≠ PROPIETARIO DEL PROCESO
+≠ RESPONSABLE TECNICO
+```
+
+```text
+SUSTITUCION DE FUNCION
+≠ TRANSFERENCIA AUTOMATICA DE PERMISOS
+≠ HERENCIA DE CREDENCIALES
+```
+
+```text
+PREPARAR UNA DECISION
+≠ APROBARLA
+≠ EJECUTARLA
+≠ VALIDAR SU RESULTADO
+```
+
+```text
+RESTAURACION TECNICA
+≠ VALIDACION FUNCIONAL
+≠ CIERRE EMPRESARIAL
+```
+
+```text
+ALERTA TECNICA
+≠ INSTRUCCION OPERATIVA
+≠ COMUNICACION EXTERNA
+```
+
+```text
+HECHO CONFIRMADO
+≠ HIPOTESIS
+≠ CAUSA PRELIMINAR
+≠ CAUSA CONFIRMADA
+```
+
+```text
+PRONOSTICO DE RECUPERACION
+≠ COMPROMISO PUBLICO DE RECUPERACION
+```
+
+```text
+PROVEEDOR O AUTORIDAD EXTERNA
+≠ AUTORIDAD INTERNA DE VENTO
+```
+
+---
+
+#### 5. Modelo de mando del incidente
+
+El mando opera como una estructura funcional temporal vinculada al mismo incidente de continuidad y a su versión de severidad y alcance.
+
+```text
+INCIDENTE DECLARADO
+→ DIRECCION DEL INCIDENTE
+→ COORDINACION DE PROCESOS Y SEDES AFECTADOS
+→ ESPECIALISTAS TECNICOS / DATOS / EVIDENCIA SEGUN NATURALEZA
+→ COMUNICACION DE CRISIS
+→ ENLACE EXTERNO SEGUN DEPENDENCIA
+→ AUTORIDAD PROTEGIDA CUANDO LA DECISION LO EXIJA
+→ EJECUCION POR CADA DOMINIO PROPIETARIO
+→ VALIDACION DEL RESULTADO POR CADA PROPIETARIO
+```
+
+Reglas:
+
+1. el mando coordina un resultado común; no se convierte en dueño de ventas, inventario, producción, personas, tecnología, documentos o finanzas;
+2. el director del incidente mantiene visión transversal, prioridades, decisiones y dependencias, pero no adquiere permisos de los dominios;
+3. cada propietario de proceso conserva la decisión funcional sobre su resultado y valida su recuperación;
+4. cada especialista técnico conserva únicamente la recuperación y evidencia de su dominio;
+5. una decisión que requiera una acción protegida sigue la autoridad física/digital definida por `CONT-AUTH-*`;
+6. un incidente puede tener varios responsables operativos por proceso o sede, pero una única función de dirección transversal vigente a la vez;
+7. transferir la dirección exige una decisión registrada; no ocurre por ausencia informal, cambio de turno o aparición de un actor de mayor cargo;
+8. la severidad máxima histórica no se reduce por cambiar quién dirige el incidente.
+
+---
+
+#### 6. Responsabilidades conceptuales de mando
+
+Las ocho responsabilidades heredadas de `CAP-SCOPE-018` quedan materializadas así:
+
+| Responsabilidad conceptual               | Resultado exigido durante el incidente                                                                                                             | Fuente funcional canónica                                                                                | Límite                                                                    |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| director del incidente                   | conservar visión integral, convocar funciones necesarias, ordenar coordinación, mantener prioridades y asegurar que toda decisión quede registrada | `RESPONSABLE_DE_CONTINUIDAD` o su sustitución vigente para el alcance                                    | coordinar no concede autoridad universal ni propiedad de procesos         |
+| responsable operativo por proceso o sede | declarar estado real del resultado, capacidad local, riesgos, pendientes y ejecución autorizada                                                    | `RESPONSABLE_DEL_PROCESO`, `COORDINACION_DE_OPERACIONES`, `GERENCIA_O_SUPERVISION_DE_SEDE` según alcance | no modifica hechos de otro dominio ni aprueba recuperación ajena          |
+| responsable técnico                      | aportar salud técnica, diagnóstico, recuperación técnica, dependencias y evidencia                                                                 | `RESPONSABLE_TECNOLOGICO`                                                                                | disponibilidad técnica no declara recuperación empresarial                |
+| responsable de datos y evidencia         | preservar integridad, referencias, versiones, decisiones, evidencia y restricciones de acceso                                                      | `CUSTODIO_DOCUMENTAL` con propietarios de información afectados                                          | no amplía acceso ni copia información sensible por conveniencia           |
+| responsable de comunicación              | preparar y coordinar mensajes según audiencia, hechos confirmados, instrucciones autorizadas y siguiente actualización                             | función de incidente asignada entre actores internos autorizados                                         | redactar no equivale a aprobar ni publicar externamente                   |
+| enlace con proveedores                   | mantener un único punto interno de coordinación por dependencia externa afectada y conservar estado, compromisos y evidencia                       | función de incidente asignada desde el propietario interno de la dependencia                             | proveedor no dirige el incidente ni valida recuperación empresarial       |
+| aprobador de decisiones excepcionales    | resolver únicamente las decisiones que exigen autoridad protegida según capacidad, severidad y alcance                                             | autoridad definida por `CONT-AUTH-*`, gobierno y riesgo aplicables                                       | esta tarea no materializa permisos ni credenciales                        |
+| sustitutos y escalamiento                | asegurar continuidad de cada función crítica, transferencia explícita y escalamiento cuando no exista actor habilitado suficiente                  | registro de responsabilidades y suplencia de `CONT-DOM-001`                                              | sustitución no elimina segregación ni transfiere permisos automáticamente |
+
+Estas son funciones de incidente, no nuevos roles base ni permisos.
+
+---
+
+#### 7. Relación con las funciones organizacionales canónicas
+
+Se reutilizan diez funciones internas ya definidas:
+
+| Función canónica                    | Uso durante mando                                                                                               | Frontera                                                   |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `GOBIERNO_Y_PROPIEDAD`              | interviene cuando una decisión material excede el mando ordinario y requiere gobierno según el contrato vigente | no ejecuta automáticamente el incidente                    |
+| `GERENCIA_GENERAL`                  | escalamiento ejecutivo, patrocinio de capacidad y decisiones ejecutivas que correspondan por severidad          | no absorbe propiedad de todos los procesos                 |
+| `RESPONSABLE_DE_CONTINUIDAD`        | dirección y coordinación transversal del incidente cuando exista asignación vigente                             | no se autoatribuye permisos protegidos                     |
+| `RESPONSABLE_DEL_PROCESO`           | estado, necesidad, decisión funcional y validación del resultado de su proceso                                  | no decide recuperación técnica de otro dominio             |
+| `RESPONSABLE_DE_RIESGO_EMPRESARIAL` | evaluación de exposición, excepción y riesgo residual cuando corresponda                                        | no aprueba su propia evaluación final por conveniencia     |
+| `CUSTODIO_DOCUMENTAL`               | integridad, versiones, evidencia y referencias del expediente                                                   | no decide severidad o recuperación por custodiar evidencia |
+| `COORDINACION_DE_OPERACIONES`       | coordinación de dependencias, traspasos y consistencia operativa entre áreas/sedes                              | no adquiere ownership del proceso coordinado               |
+| `RESPONSABLE_TECNOLOGICO`           | estado y recuperación técnica                                                                                   | no declara recuperación empresarial                        |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`    | coordinación territorial y ejecución/supervisión local autorizada                                               | no obtiene alcance empresarial por cargo                   |
+| `EQUIPO_OPERATIVO_DEL_AREA`         | ejecución de instrucciones y procedimientos autorizados para su contexto                                        | no declara, amplía ni cierra continuidad por sí mismo      |
+
+Un proveedor, prestador externo o automatización asistiva puede informar, detectar, resumir o ejecutar una obligación autorizada, pero no ocupa por inferencia ninguna de estas funciones internas.
+
+---
+
+#### 8. Perfil de mando por severidad
+
+La severidad no crea permisos. Define qué funciones deben estar presentes en la coordinación y qué nivel de escalamiento es obligatorio.
+
+| Severidad           | Dirección transversal                                                  | Procesos/sedes                                                              | Técnica y evidencia                                                                       | Comunicación                                                                      | Externo                                                 | Escalamiento ejecutivo/gobierno                                                                               |
+| ------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `SEV-C1_CONTROLADA` | requerida para el incidente declarado                                  | responsable del resultado afectado                                          | evidencia requerida; especialista técnico solo si la naturaleza lo exige                  | cuando exista instrucción o audiencia que deba actualizarse                       | solo si una dependencia externa participa               | cuando una decisión exceda el alcance ordinario o aparezca obligación material                                |
+| `SEV-C2_DEGRADADA`  | requerida                                                              | responsables de todos los resultados/sedes dentro de la activación parcial  | evidencia requerida; especialistas de la naturaleza afectada                              | requerida para las audiencias afectadas por la activación                         | requerido si la dependencia externa afecta MBCO/RTO     | informar/escalar cuando la decisión, obligación o riesgo requiera autoridad superior                          |
+| `SEV-C3_MAYOR`      | requerida de forma continua mientras permanezca la activación ampliada | todos los propietarios y responsables territoriales materialmente afectados | especialistas relevantes y custodia de evidencia requeridos                               | responsable de comunicación requerido                                             | enlace requerido para cada dependencia externa material | `GERENCIA_GENERAL` participa en el escalamiento ejecutivo; gobierno/riesgo cuando la decisión lo exija        |
+| `SEV-C4_CRITICA`    | requerida mientras exista gobierno protector                           | todos los propietarios afectados y funciones protectoras aplicables         | especialistas protectores, técnicos y de evidencia necesarios para mantener estado seguro | responsable de comunicación requerido con control reforzado de hechos y audiencia | enlace requerido para toda dependencia externa material | máximo nivel de gobierno aplicable a la decisión; ninguna espera de mando puede justificar operación insegura |
+
+Un incidente puede saltar entre perfiles conforme a `CONT-DOM-005`. El cambio de perfil no reemplaza la decisión de activación ni su autoridad.
+
+---
+
+#### 9. Formación y transferencia del mando
+
+Al declararse un incidente deberá quedar determinado, antes de ejecutar una decisión protegida:
+
+1. quién ejerce la función de dirección del incidente;
+2. qué alcance organizacional/territorial cubre esa función;
+3. qué severidad y modalidad de activación están vigentes;
+4. qué responsables de proceso/sede deben participar;
+5. qué especialistas son necesarios por la naturaleza del incidente;
+6. quién custodia la evidencia transversal;
+7. quién coordina las comunicaciones;
+8. qué enlaces externos aplican;
+9. qué decisiones requieren autoridad adicional;
+10. quién es el sustituto vigente de cada función crítica o cuál es la ruta de escalamiento si no existe.
+
+Una transferencia de mando conserva:
+
+- incidente y severidad;
+- función que se transfiere;
+- actor saliente y actor entrante por referencia a la fuente autorizada;
+- alcance y vigencia;
+- razón;
+- pendientes abiertos;
+- decisiones en curso;
+- comunicaciones comprometidas;
+- riesgos y restricciones;
+- timestamp de entrega y aceptación;
+- referencia de autorización aplicable.
+
+La transferencia no crea una nueva identidad de incidente y no borra la responsabilidad histórica del actor saliente por sus decisiones anteriores.
+
+---
+
+#### 10. Contrato de sustitución
+
+Una sustitución de función procede únicamente cuando existe una condición verificable que impide o hace insuficiente la cobertura del titular para el alcance actual.
+
+Secuencia documental:
+
+```text
+DETECTAR INDISPONIBILIDAD O INSUFICIENCIA DE COBERTURA
+→ VERIFICAR ASIGNACION Y VIGENCIA DEL TITULAR
+→ RESOLVER SUSTITUTO REGISTRADO PARA FUNCION Y ALCANCE
+→ VERIFICAR VINCULO, VIGENCIA, CONTEXTO Y AUTORIDAD DEL ACTOR REAL
+→ REGISTRAR INICIO DE SUSTITUCION
+→ TRANSFERIR CONTEXTO Y PENDIENTES
+→ EJERCER SOLO LA FUNCION Y AUTORIDAD REALMENTE DISPONIBLES
+→ REGISTRAR FIN O NUEVA TRANSFERENCIA
+```
+
+Reglas:
+
+1. se usa primero el sustituto vigente del registro de responsabilidades de `CONT-DOM-001`;
+2. si no existe sustituto habilitado suficiente, el hecho se escala a la autoridad organizacional competente; no se inventa un reemplazo;
+3. si una acción protegida no puede autorizarse con el actor disponible, la acción permanece bloqueada o el resultado se mantiene en estado protector; no se comparte una credencial para resolver la ausencia;
+4. una persona retirada, suspendida o sin vínculo vigente no puede actuar como sustituto operativo;
+5. el sustituto recibe contexto, no permisos automáticos;
+6. la sustitución termina al cumplirse su condición de salida o al formalizarse una nueva asignación;
+7. el regreso del titular no invalida decisiones emitidas válidamente durante la sustitución;
+8. cada sustitución queda en la bitácora del incidente y en la fuente organizacional aplicable cuando cambie una asignación real.
+
+---
+
+#### 11. Matriz de sustitución por función
+
+| Función del incidente            | Fuente primaria                                                   | Ruta de sustitución                                               | Si no existe sustituto suficiente                                                                                                          |
+| -------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| dirección del incidente          | asignación vigente de `RESPONSABLE_DE_CONTINUIDAD`                | sustituto registrado para la misma función y alcance              | escalar a autoridad organizacional competente; decisiones protegidas siguen su autorización propia                                         |
+| responsable operativo de proceso | `RESPONSABLE_DEL_PROCESO` vigente                                 | suplencia vigente del proceso                                     | coordinación local puede preservar hechos y seguridad, pero validación funcional permanece bloqueada hasta contar con autoridad suficiente |
+| responsable territorial          | `GERENCIA_O_SUPERVISION_DE_SEDE` aplicable                        | suplencia territorial vigente                                     | `COORDINACION_DE_OPERACIONES` puede coordinar información sin adquirir permisos territoriales inexistentes                                 |
+| responsable técnico              | `RESPONSABLE_TECNOLOGICO` o propietario técnico aplicable         | sustituto técnico autorizado                                      | proveedor puede apoyar dentro de contrato, pero no asume autoridad interna                                                                 |
+| datos y evidencia                | `CUSTODIO_DOCUMENTAL` / propietario de información aplicable      | custodio sustituto autorizado                                     | preservar evidencia y restringir cambios; no ampliar acceso por urgencia                                                                   |
+| comunicación                     | actor interno asignado a la función de comunicación del incidente | sustituto asignado con audiencia y alcance equivalentes           | escalar aprobación/emisión; no emitir externamente desde una identidad no autorizada                                                       |
+| enlace con proveedores           | propietario interno de la dependencia o actor delegado            | sustituto interno autorizado para la misma relación               | escalar al propietario interno; el proveedor no se autoasigna como enlace de Vento                                                         |
+| aprobación excepcional           | autoridad protegida aplicable                                     | únicamente sustitución reconocida por el contrato de autorización | la decisión protegida permanece bloqueada o se aplica la medida protectora permitida; no hay autoaprobación                                |
+
+La matriz define rutas funcionales. Los nombres y datos de contacto concretos permanecen en las fuentes organizacionales y de contacto autorizadas.
+
+---
+
+#### 12. Concentración de funciones y segregación
+
+En una organización pequeña, una misma persona puede ejercer varias funciones durante un incidente. La concentración queda permitida solo bajo estas reglas:
+
+1. cada entrada de bitácora declara la función exacta que el actor ejercía;
+2. ejercer dirección del incidente no convierte al actor en propietario funcional de todos los procesos;
+3. ejercer comunicación no autoriza aprobar la información que el propio actor no está autorizado a validar;
+4. preparar una excepción y aprobarla permanecen funciones separadas cuando el contrato de autoridad lo exige;
+5. ejecutar una recuperación y validar el resultado empresarial permanecen separados;
+6. una misma persona puede coordinar varias sedes únicamente dentro de su alcance real;
+7. cuando la separación simultánea sea materialmente imposible, la decisión sensible conserva revisión posterior obligatoria y nunca elimina los controles no dispensables;
+8. la falta de otra persona disponible no crea permisos ni acceso de emergencia;
+9. un proveedor, cuenta técnica, dispositivo o automatización no cuenta como segundo aprobador humano;
+10. la concentración detectada debe alimentar la revisión posterior y el mantenimiento del plan si crea una dependencia de persona única.
+
+---
+
+#### 13. Bitácora cronológica de decisiones
+
+La bitácora del incidente es el registro transversal de **qué se decidió, por qué, por quién y bajo qué contexto**. No sustituye los expedientes de dominio, tickets, órdenes, movimientos, pagos, documentos, logs técnicos o registros de contingencia.
+
+Toda decisión material deberá crear una entrada cronológica. Las correcciones crean una nueva entrada relacionada; una entrada anterior no se reescribe para aparentar que otra decisión estuvo vigente desde el principio.
+
+##### 13.1. Categorías que deben registrarse
+
+1. declaración o no declaración de continuidad cuando corresponda;
+2. activación, ampliación, reducción o desactivación del alcance;
+3. cambio de severidad, alcance o prioridad de coordinación;
+4. asignación, sustitución o transferencia de una función de mando;
+5. medida protectora, contención o suspensión autorizada;
+6. solicitud o resolución de una decisión excepcional/protegida;
+7. coordinación de recuperación técnica o funcional;
+8. validación o rechazo del estado reportado por un proceso;
+9. escalamiento a proveedor, contraparte, asesor o autoridad externa;
+10. aprobación, emisión, corrección o retiro de una comunicación de crisis;
+11. decisión de desactivación del gobierno extraordinario;
+12. propuesta, aceptación o rechazo del cierre empresarial.
+
+##### 13.2. Campos mínimos de cada entrada
+
+Cada entrada conserva veinticinco campos semánticos:
+
+1. referencia estable al incidente;
+2. secuencia cronológica dentro del incidente;
+3. fecha/hora efectiva de la decisión;
+4. fecha/hora de registro cuando difiera;
+5. estado, severidad y alcance vigentes al decidir;
+6. servicios, procesos y sedes materialmente afectados;
+7. categoría de decisión;
+8. decisión adoptada;
+9. hechos confirmados usados;
+10. hipótesis, incertidumbres o información todavía no confirmada;
+11. alternativas consideradas cuando sean materiales;
+12. restricciones relevantes, incluidos MBCO/RTO/MTPD por referencia cuando apliquen;
+13. función que propuso;
+14. función/autoridad que decidió o aprobó, con referencia al contrato aplicable;
+15. función que debe ejecutar;
+16. función que debe validar el resultado;
+17. sustitución o concentración de funciones vigente al decidir;
+18. dependencias/proveedores relevantes por referencia propietaria;
+19. acción resultante, propietario y condición de salida;
+20. comunicaciones que la decisión debe producir o corregir;
+21. entrada anterior que sustituye, revoca, corrige o amplía cuando aplique;
+22. referencias de evidencia;
+23. resultado observado o estado pendiente de la decisión;
+24. versión del plan/contrato aplicable;
+25. referencia de auditoría o integridad disponible en la fuente propietaria.
+
+La bitácora registra razones suficientes para reconstruir la decisión, sin copiar secretos, datos médicos, diagnósticos sensibles o información restringida que deba permanecer en otro expediente.
+
+---
+
+#### 14. Reglas de integridad de la bitácora
+
+1. la secuencia es monotónica dentro del incidente;
+2. fecha efectiva y fecha de registro permanecen separadas cuando no coinciden;
+3. una corrección referencia la entrada corregida y explica el motivo;
+4. una decisión revocada conserva su historia;
+5. un mensaje emitido se relaciona con la decisión que lo autorizó;
+6. una acción pendiente conserva propietario y condición de salida;
+7. una evidencia externa se referencia desde su fuente sin copiar contenido sensible innecesario;
+8. una decisión técnica no se presenta como decisión empresarial si no lo es;
+9. una automatización puede preparar una entrada, pero la autoría de la decisión corresponde al actor/función real;
+10. ningún cierre elimina entradas, severidades máximas, transferencias de mando o comunicaciones previas.
+
+---
+
+#### 15. Árbol funcional de comunicación de crisis
+
+El árbol de comunicación queda definido por función y audiencia, no por nombres personales incrustados en el plan.
+
+```text
+DIRECCION DEL INCIDENTE
+├─ RESPONSABLES DE PROCESO / SEDE
+│  └─ EQUIPOS OPERATIVOS AFECTADOS
+├─ RESPONSABLE TECNICO / ESPECIALISTAS
+├─ DATOS Y EVIDENCIA
+├─ COMUNICACION DE CRISIS
+│  ├─ TRABAJADORES
+│  ├─ CLIENTES CUANDO APLIQUE
+│  └─ AUDIENCIAS EJECUTIVAS
+└─ ENLACES EXTERNOS
+   ├─ PROVEEDORES / SERVICIOS
+   ├─ TRANSPORTE / ABASTECIMIENTO / PAGOS
+   └─ ASESORES / AUTORIDADES CUANDO APLIQUE
+```
+
+El árbol debe poder versionarse con:
+
+- versión y vigencia;
+- función origen y función destino;
+- audiencia;
+- condición que dispara el contacto;
+- canal principal autorizado por referencia;
+- canal alterno autorizado por referencia;
+- necesidad de confirmación;
+- condición de escalamiento por falta de respuesta;
+- propietario de mantener la referencia de contacto;
+- clasificación de sensibilidad de la información;
+- evidencia de última revisión.
+
+Los nombres, teléfonos, correos o credenciales no se incorporan a este documento. Deben resolverse desde las fuentes protegidas vigentes al momento del incidente.
+
+---
+
+#### 16. Siete clases de comunicación
+
+| Clase heredada             | Audiencia                                                            | Prepara                                                   | Verifica / aprueba según contenido                                                           | Regla de emisión                                                                           |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| alerta técnica             | técnicos, propietarios técnicos y mando afectado                     | fuente técnica / `RESPONSABLE_TECNOLOGICO`                | función técnica competente                                                                   | puede informar síntomas y evidencia; no declara por sí sola impacto empresarial            |
+| instrucción operativa      | equipo de proceso/sede afectado                                      | responsable operativo + dirección del incidente           | propietario funcional/autoridad aplicable                                                    | debe indicar qué hacer y qué no hacer sin exceder procedimientos autorizados               |
+| actualización ejecutiva    | `GERENCIA_GENERAL`, gobierno y funciones ejecutivas aplicables       | dirección del incidente                                   | responsable de continuidad con propietarios afectados; autoridad superior cuando corresponda | separa hechos, riesgo, decisiones requeridas y próximo punto de actualización              |
+| comunicación al trabajador | trabajadores afectados                                               | responsable de comunicación + responsable operativo       | función laboral/operativa autorizada según contenido                                         | ANIMA es superficie objetivo cuando corresponda; un canal alterno no se presume disponible |
+| comunicación al cliente    | clientes afectados cuando el impacto lo justifique                   | responsable de comunicación + propietario comercial       | autoridad comercial/comunicacional aplicable                                                 | no promete causa, compensación o tiempo no autorizado; conserva privacidad y consistencia  |
+| comunicación al proveedor  | proveedor o tercero afectado                                         | enlace con proveedores                                    | propietario interno de la dependencia/contrato                                               | solicita estado, escalamiento o acción contractual; no transfiere autoridad interna        |
+| notificación a autoridad   | autoridad, asesor o contraparte regulatoria cuando exista obligación | responsable interno de cumplimiento/riesgo + comunicación | autoridad interna competente conforme a obligación aplicable                                 | se emite solo con obligación, alcance y datos necesarios confirmados                       |
+
+AURA no se convierte en canal operativo oficial de continuidad mientras su capacidad permanezca diferida. La existencia de redes sociales, mensajería, correo o herramientas de terceros no autoriza por sí sola su uso durante una crisis.
+
+---
+
+#### 17. Contrato mínimo de una comunicación
+
+Cada comunicación material conserva quince campos:
+
+1. referencia al incidente;
+2. clase de comunicación;
+3. severidad y alcance vigentes;
+4. audiencia exacta;
+5. emisor funcional autorizado;
+6. aprobador o verificador requerido cuando aplique;
+7. hechos confirmados;
+8. incertidumbres, supuestos o causa no confirmada expresados como tales;
+9. acción requerida o información que la audiencia necesita;
+10. datos que no deben divulgarse a esa audiencia;
+11. canal principal y alterno por referencia autorizada;
+12. confirmación o acuse requerido;
+13. próximo momento o condición de actualización;
+14. mensaje anterior que corrige, sustituye o cierra cuando aplique;
+15. versión, timestamp y evidencia de emisión/entrega disponibles.
+
+No existe una frecuencia universal de partes. Cada mensaje que requiera seguimiento define su próximo momento o condición de actualización según severidad, audiencia, obligación y evidencia disponible.
+
+---
+
+#### 18. Hechos, incertidumbre, causa y tiempo de recuperación
+
+Reglas obligatorias para evitar mensajes contradictorios:
+
+1. un hecho se presenta como confirmado únicamente cuando existe una fuente competente;
+2. una hipótesis se etiqueta como hipótesis y no se convierte en causa por repetición;
+3. la causa preliminar y la causa definitiva permanecen separadas;
+4. la ausencia de información se comunica como ausencia de información confirmada cuando sea material;
+5. un pronóstico técnico no se convierte automáticamente en compromiso de recuperación empresarial;
+6. un tiempo estimado solo puede comunicarse como estimación cuando tenga fuente, alcance y supuestos explícitos;
+7. un tiempo comprometido externamente requiere la autoridad comercial/contractual que corresponda;
+8. una corrección de mensaje referencia el mensaje anterior y conserva la historia;
+9. dos audiencias pueden recibir distinto nivel de detalle, pero no hechos incompatibles;
+10. nunca se divulgan diagnósticos sensibles, datos personales, secretos, credenciales o evidencia restringida solo para completar una actualización.
+
+---
+
+#### 19. Confirmación, falta de respuesta y escalamiento de comunicación
+
+Cuando una comunicación requiera confirmación:
+
+1. se conserva audiencia esperada y audiencia confirmada;
+2. la ausencia de confirmación se distingue de rechazo o imposibilidad de entrega;
+3. no se presume que un mensaje fue leído por haber sido enviado;
+4. si la falta de respuesta puede comprometer MBCO, RTO, MTPD, seguridad u obligación, se activa el canal alterno autorizado y se escala según el mando vigente;
+5. si tampoco existe canal alterno demostrado, el hecho queda explícito y se escala; no se inventa un canal;
+6. una confirmación externa no sustituye validación interna de la decisión o recuperación;
+7. la evidencia de entrega permanece en el sistema/canal propietario y el expediente transversal conserva la referencia necesaria.
+
+---
+
+#### 20. Coordinación externa
+
+Toda relación externa durante continuidad conserva un propietario interno. El tercero puede aportar servicio, estado, evidencia o ejecución contractual, pero no se convierte en director del incidente, propietario del proceso, aprobador de riesgo ni autoridad de cierre.
+
+Se materializan siete clases de coordinación:
+
+| Clase externa                                      | Propietario/enlace interno esperado                   | Información mínima de coordinación                                                   | Límite                                                                               |
+| -------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| tecnología, nube, red o ISP                        | propietario técnico + enlace designado                | servicio afectado, alcance, referencia contractual, estado, escalamiento y evidencia | estado del proveedor no equivale a recuperación empresarial                          |
+| energía, servicios públicos o instalación          | responsable de sede/instalación + enlace              | sede, servicio, condición segura, estado externo y dependencia del proceso           | el tercero no autoriza reanudación insegura                                          |
+| pagos, banca, facturación o contraparte financiera | propietario del proceso financiero/comercial + enlace | operación afectada, referencia, estado, conciliación y escalamiento                  | nunca se comparte autoridad financiera por urgencia                                  |
+| transporte y logística                             | propietario logístico + enlace                        | origen/destino, servicio, custodia, estado, evidencia y retorno                      | el transportador no cierra custodia o proceso interno por sí solo                    |
+| abastecimiento de bienes o servicios críticos      | propietario de compra/abastecimiento + enlace         | necesidad, alcance, disponibilidad, compromiso y alternativa por referencia          | no se inventa proveedor sustituto ni capacidad                                       |
+| mensajería, comunicación o canal externo           | responsable de comunicación + propietario del canal   | audiencia, mensaje autorizado, estado de entrega y fallos                            | el canal no se convierte en fuente de verdad del incidente                           |
+| asesores, autoridades y servicios de respuesta     | responsable interno competente + enlace               | obligación/solicitud, alcance, hechos autorizados, vencimiento y evidencia           | la contraparte externa no recibe información fuera de finalidad ni propiedad interna |
+
+Los contactos, SLA, contratos, credenciales, canales oficiales y alternativas reales se consumen desde sus fuentes propietarias. Su continuidad y sustitución se desarrolla en `CONT-DOM-013` y `CONT-INT-003`.
+
+---
+
+#### 21. Regla de escalamiento externo
+
+El enlace externo debe escalar al mando cuando ocurra cualquiera de estas condiciones:
+
+1. el tercero no responde dentro de la ventana que el resultado empresarial puede tolerar;
+2. el tercero modifica su pronóstico de forma que compromete RTO o MTPD;
+3. el servicio externo reporta degradación mayor o alcance más amplio;
+4. aparece una obligación contractual, legal, sanitaria, laboral o de privacidad;
+5. el tercero solicita una decisión que excede la autoridad del enlace;
+6. el canal primario falla y no existe alternativa demostrada;
+7. la alternativa propuesta comparte el mismo dominio de fallo o no tiene evidencia suficiente;
+8. la comunicación externa puede crear un compromiso público, financiero, contractual o regulatorio;
+9. existe inconsistencia entre el estado reportado por el tercero y la evidencia interna.
+
+La falta de respuesta de un tercero no autoriza inventar causa, ETA, sustituto o estado recuperado.
+
+---
+
+#### 22. Protección de información durante mando y comunicación
+
+1. el expediente transversal conserva solo la información necesaria para continuidad;
+2. diagnósticos médicos, investigaciones SST sensibles, datos personales, secretos y credenciales permanecen en sus fuentes protegidas;
+3. las listas nominales de contacto se tratan como información restringida según su contenido;
+4. una audiencia externa recibe únicamente los datos necesarios para la finalidad aprobada;
+5. capturas, chats o correos no se convierten automáticamente en repositorio canónico de evidencia;
+6. un canal alterno no puede debilitar autorización, privacidad o retención;
+7. el responsable de comunicación no obtiene acceso amplio a expedientes por ejercer esa función;
+8. el enlace con proveedores no obtiene secretos ni datos de otros dominios por conveniencia;
+9. cualquier acceso de emergencia pertenece a `CONT-AUTH-002`;
+10. la protección detallada de contactos, evidencia y datos de contingencia pertenece a `CONT-AUTH-003`.
+
+---
+
+#### 23. Relación con VISO, ANIMA y aplicaciones propietarias
+
+| Superficie / dominio                   | Responsabilidad documental                                                                                                  | Frontera                                                                       |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| VISO                                   | expediente transversal, estado del incidente, mando, línea de tiempo, decisiones, comunicaciones referenciadas y pendientes | interfaz o expediente no conceden autoridad universal                          |
+| ANIMA                                  | instrucciones y comunicaciones al trabajador cuando corresponda                                                             | no dirige el incidente ni decide severidad/activación por presentar el mensaje |
+| SHELL                                  | contexto de identidad/acceso y navegación dentro de su contrato                                                             | no se convierte en propietario de continuidad                                  |
+| aplicación propietaria de cada proceso | hechos, ejecución de dominio, recuperación y validación funcional                                                           | no edita el expediente de otros dominios por coordinación                      |
+| BLOQUE Z / TI                          | incidentes tecnológicos y recuperación técnica                                                                              | ticket o health check no cierra continuidad                                    |
+| BLOQUE AA                              | privacidad, evidencia, retención, legal hold y custodia                                                                     | no dirige la operación empresarial                                             |
+| BLOQUE AB                              | análisis, causa, acciones y eficacia posterior                                                                              | análisis no activa ni desactiva continuidad                                    |
+| E4                                     | transporte de notificaciones, colas, archivos y evidencia transversal                                                       | entrega técnica no decide contenido o autoridad                                |
+
+Los contratos físicos entre estas superficies permanecen en `CONT-INT-002` y las experiencias en `CONT-UX-*`.
+
+---
+
+#### 24. Handoffs obligatorios y condiciones de salida
+
+| Decisión fuera del alcance actual                                                                              | Propietario     | Condición de salida                                                 |
+| -------------------------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------- |
+| autoridad física/digital de declaración, activación, mando, decisión excepcional, comunicación y desactivación | `CONT-AUTH-001` | antes de habilitar acciones protegidas reales                       |
+| acceso de emergencia, credenciales, break-glass, failover y revocación                                         | `CONT-AUTH-002` | antes de crear cualquier acceso excepcional                         |
+| protección de contactos, respaldos, runbooks, evidencia y datos de contingencia                                | `CONT-AUTH-003` | antes de exponer o utilizar información sensible de continuidad     |
+| separación entre ejecución, validación, reincorporación, conciliación, cierre y revisión                       | `CONT-AUTH-004` | antes de implementar el ciclo operacional completo                  |
+| inicio ejecutivo y estado resumido                                                                             | `CONT-UX-001`   | antes de implementar la vista ejecutiva                             |
+| centro de mando, línea de tiempo y recuperación                                                                | `CONT-UX-002`   | antes de implementar la superficie operativa de mando               |
+| plantillas, canales, confirmación y escalamiento de comunicaciones                                             | `CONT-UX-006`   | antes de emitir comunicaciones mediante la experiencia Vento OS     |
+| contratos internos con SHELL, VISO, ANIMA, Z, AA, AB, E4, E5, T, U y X                                         | `CONT-INT-002`  | antes de orquestar eventos de mando y comunicación entre bloques    |
+| contratos externos con nube, energía, ISP, pagos, mensajería, transporte y proveedores                         | `CONT-INT-003`  | antes de automatizar escalamiento o estado externo                  |
+| operación mínima por proceso, sede, horario, temporada y duración                                              | `CONT-DOM-007`  | antes de instruir modo degradado real                               |
+| modalidad concreta de contingencia                                                                             | `CONT-DOM-008`  | antes de ordenar una alternativa manual/offline/física/proveedor    |
+| captura de trabajo durante falla                                                                               | `CONT-DOM-009`  | antes de operar con folios o medios contingentes                    |
+| reincorporación y conciliación                                                                                 | `CONT-DOM-010`  | antes de devolver trabajo contingente a las fuentes propietarias    |
+| runbooks y recuperación                                                                                        | `CONT-DOM-012`  | antes de ejecutar restauración/failover o retorno                   |
+| continuidad de proveedores y recursos alternativos                                                             | `CONT-DOM-013`  | antes de aceptar una dependencia crítica sin alternativa suficiente |
+| ejercicios de mando y comunicaciones                                                                           | `CONT-DOM-014`  | antes de declarar readiness de mando/comunicación                   |
+| mantenimiento de asignaciones, contactos y lecciones                                                           | `CONT-DOM-015`  | después de incidentes, ejercicios o cambios materiales              |
+
+No queda una decisión material identificada por esta tarea sin propietario y condición de salida.
+
+---
+
+#### 25. Cobertura de hallazgos heredados
+
+La tarea cierra documentalmente:
+
+| Hallazgo              | Resolución en esta tarea                                                                                            | Frontera conservada                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `H-CAP-SCOPE-018-011` | formaliza funciones de mando, comunicación, sustitución y su composición por severidad                              | autoridad física/digital permanece en `CONT-AUTH-001`          |
+| `H-CAP-SCOPE-018-012` | define sustitución, transferencia, concentración controlada y bloqueo cuando no existe autoridad suficiente         | no se inventan personas ni permisos                            |
+| `H-CAP-SCOPE-018-030` | materializa árbol funcional de comunicación versionable, clases de mensaje, audiencias, confirmación y escalamiento | plantillas/canales físicos permanecen en `CONT-UX-006`         |
+| `H-CAP-SCOPE-018-031` | separa hechos, hipótesis, causa y pronóstico; obliga a corregir mensajes sin reescribir historia                    | aprobación física de comunicación permanece en `CONT-AUTH-001` |
+
+`H-CAP-SCOPE-018-032` permanece en `CONT-AUTH-003` e `INFO-AUTH-004`; `H-CAP-SCOPE-018-033` permanece en `CONT-AUTH-002`. Esta tarea no absorbe esos propietarios.
+
+---
+
+#### 26. Estado de evidencia después de esta tarea
+
+Quedan **ESPECIFICADOS** documentalmente:
+
+- estructura funcional de mando;
+- composición mínima por severidad;
+- relación entre funciones de incidente y funciones organizacionales;
+- reglas de transferencia de mando;
+- contrato de sustitución;
+- matriz de sustitución por función;
+- segregación bajo concentración de funciones;
+- bitácora cronológica y sus 25 campos;
+- doce categorías de decisión;
+- árbol funcional de comunicación;
+- siete clases de comunicación;
+- contrato de comunicación de 15 campos;
+- reglas de hecho, incertidumbre, causa y ETA;
+- confirmación y escalamiento de mensajes;
+- siete clases de coordinación externa;
+- escalamiento externo;
+- handoffs y límites.
+
+Permanecen `PENDIENTE_DE_EVIDENCIA` operativa, sin impedir el cierre documental de esta tarea:
+
+- nombres de titulares y sustitutos reales por función;
+- disponibilidad real de cada actor en una fecha/turno;
+- teléfonos, correos y contactos protegidos;
+- canales alternos efectivamente disponibles;
+- contratos/SLA y contactos de cada proveedor concreto;
+- ejercicios de mando y comunicaciones;
+- tiempos observados de respuesta y confirmación.
+
+Estas evidencias se resuelven mediante el registro de responsabilidades vigente, las fuentes propietarias de contactos/proveedores y los ejercicios de `CONT-DOM-014`; su mantenimiento posterior pertenece a `CONT-DOM-015`. Ninguna ausencia se interpreta como capacidad disponible.
+
+---
+
+#### 27. Cobertura de requisitos de prueba vigente
+
+La conducta de mando, sustitución, decisiones, comunicaciones y escalamiento ya está cubierta por `TREQ-CONT-002`, que asigna expresamente responsabilidad a `CONT-DOM-006` y exige responsables, sustitutos definidos, autoridad explícita y bitácora cronológica durante el incidente.
+
+`TREQ-AUTH-015` protege la atribución reproducible de decisiones y acciones mediante actor efectivo, contexto, permiso, recurso, decisión, razones, versión y timestamp. `TREQ-INTEGRATION-023` protege la correlación transversal, la comunicación multicanal y la ausencia de activaciones contradictorias entre procesos, aplicaciones, infraestructura, proveedores y canales.
+
+La tarea especializa documentalmente esos comportamientos. No añade una acción ejecutable, un permiso, un canal físico, una integración, una modalidad de contingencia ni un efecto empresarial nuevo.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el mando, la sustitución, la bitácora, las comunicaciones y la coordinación externa desarrollados en esta tarea materializan comportamientos de continuidad, autorización, auditoría e integración que ya están registrados. No se introduce una conducta ejecutable nueva, no se cambia el estado de ningún requisito vigente y no se implementan permisos, comunicaciones, integraciones ni acciones de recuperación.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 28. Criterios de aceptación
+
+1. existe una única función de dirección transversal vigente por incidente;
+2. la dirección del incidente no adquiere propiedad de todos los procesos;
+3. la dirección del incidente no obtiene permisos universales;
+4. los propietarios de proceso conservan validación funcional de sus resultados;
+5. el responsable técnico conserva recuperación técnica sin declarar recuperación empresarial;
+6. VISO conserva el expediente transversal sin convertirse en autoridad universal;
+7. ANIMA conserva comunicación al trabajador sin dirigir el incidente;
+8. SHELL conserva contexto de acceso sin propiedad del incidente;
+9. las ocho responsabilidades conceptuales heredadas están materializadas;
+10. director del incidente queda definido como función temporal de mando;
+11. responsable operativo puede instanciarse por cada proceso/sede afectado;
+12. responsable técnico participa cuando la naturaleza técnica lo exige;
+13. datos y evidencia tienen una función explícita de custodia;
+14. comunicación de crisis tiene una función explícita;
+15. enlace con proveedores tiene una función interna explícita;
+16. decisiones excepcionales remiten a autoridad protegida;
+17. sustitución y escalamiento forman parte obligatoria del mando;
+18. no se crea un nuevo rol base;
+19. no se asigna ninguna persona real;
+20. no se inventa ningún teléfono o correo;
+21. no se inventa ningún proveedor concreto;
+22. se reutilizan las diez funciones organizacionales canónicas de continuidad;
+23. `RESPONSABLE_DE_CONTINUIDAD` coordina sin autoatribuirse autoridad protegida;
+24. `GERENCIA_GENERAL` conserva escalamiento ejecutivo sin absorber ownership;
+25. `GOBIERNO_Y_PROPIEDAD` interviene solo dentro de sus decisiones de gobierno aplicables;
+26. `RESPONSABLE_DEL_PROCESO` conserva su resultado empresarial;
+27. `RESPONSABLE_DE_RIESGO_EMPRESARIAL` no autoaprueba su propia evaluación sensible;
+28. `CUSTODIO_DOCUMENTAL` no decide recuperación por custodiar evidencia;
+29. `COORDINACION_DE_OPERACIONES` coordina sin adquirir ownership;
+30. `GERENCIA_O_SUPERVISION_DE_SEDE` conserva alcance territorial;
+31. `EQUIPO_OPERATIVO_DEL_AREA` ejecuta solo procedimientos autorizados;
+32. proveedor, técnico externo y automatización no asumen autoridad humana por inferencia;
+33. existen cuatro perfiles de mando, uno por cada severidad heredada;
+34. `SEV-C1_CONTROLADA` conserva mando acotado y proporcional;
+35. `SEV-C2_DEGRADADA` exige coordinación de todos los resultados dentro de la activación parcial;
+36. `SEV-C3_MAYOR` exige escalamiento ejecutivo y coordinación ampliada;
+37. `SEV-C4_CRITICA` exige gobierno protector y no permite demorar un control protector por falta de comodidad organizacional;
+38. severidad no crea permisos;
+39. cambio de severidad actualiza composición de mando sin crear otro incidente;
+40. transferencia de mando no cambia la identidad del incidente;
+41. transferencia conserva actor saliente, entrante, alcance, razón y timestamp;
+42. transferencia conserva pendientes y decisiones en curso;
+43. transferencia no borra responsabilidad histórica;
+44. una sustitución exige condición verificable;
+45. se usa primero el sustituto vigente registrado;
+46. un sustituto se evalúa por función y alcance;
+47. un sustituto no hereda credenciales automáticamente;
+48. un sustituto no hereda permisos automáticamente;
+49. un actor retirado, suspendido o sin vínculo vigente no puede sustituir;
+50. si no existe sustituto suficiente, se escala en vez de inventar uno;
+51. una acción protegida permanece bloqueada cuando falta autoridad suficiente;
+52. ausencia de persona no justifica compartir credenciales;
+53. la sustitución tiene inicio y fin registrados;
+54. el regreso del titular no invalida decisiones válidas del sustituto;
+55. la matriz de sustitución cubre dirección, proceso, territorio, tecnología, evidencia, comunicación, proveedor y aprobación excepcional;
+56. la organización pequeña puede concentrar funciones;
+57. cada decisión registra qué función ejercía el actor;
+58. concentración de funciones no elimina segregación;
+59. preparar, aprobar, ejecutar y validar permanecen distinguibles;
+60. ejecutar recuperación y validar resultado empresarial permanecen separados;
+61. proveedor o automatización no cuentan como segundo aprobador humano;
+62. se define una bitácora cronológica transversal de decisiones;
+63. la bitácora no sustituye expedientes de dominio;
+64. se materializan doce categorías de decisión;
+65. cada entrada conserva referencia al incidente y secuencia;
+66. fecha efectiva y fecha de registro pueden permanecer distintas;
+67. cada entrada conserva severidad y alcance vigentes;
+68. cada entrada separa hechos confirmados de incertidumbres;
+69. cada entrada conserva función que propone y función/autoridad que decide;
+70. cada entrada conserva quién ejecuta y quién valida;
+71. cada entrada conserva sustitución o concentración relevante;
+72. cada entrada conserva acción, propietario y condición de salida;
+73. cada entrada conserva comunicaciones disparadas;
+74. una corrección referencia la entrada anterior;
+75. una revocación no borra la decisión revocada;
+76. la bitácora conserva versión contractual y evidencia;
+77. ninguna automatización se presenta como decisor humano;
+78. se materializa un árbol funcional de comunicación versionable;
+79. el árbol no incrusta datos nominales sensibles;
+80. el árbol conserva función origen, audiencia, disparador, rutas y escalamiento;
+81. se preservan exactamente siete clases de comunicación heredadas;
+82. alerta técnica no se confunde con instrucción operativa;
+83. actualización ejecutiva no se confunde con comunicación al trabajador;
+84. comunicación al cliente conserva autoridad comercial/comunicacional aplicable;
+85. comunicación al proveedor conserva propietario interno;
+86. notificación a autoridad requiere obligación y autoridad interna competente;
+87. AURA diferida no se habilita como canal operativo por esta tarea;
+88. cada comunicación conserva quince campos mínimos;
+89. cada comunicación distingue hechos confirmados e incertidumbre;
+90. una hipótesis no se presenta como causa confirmada;
+91. causa preliminar y causa definitiva permanecen distintas;
+92. ETA técnica no se convierte automáticamente en compromiso empresarial;
+93. una estimación comunicada conserva fuente y supuestos;
+94. no se inventa una frecuencia universal de actualización;
+95. cada mensaje de seguimiento define próxima actualización o condición;
+96. una corrección de mensaje conserva la historia del mensaje anterior;
+97. audiencias distintas no reciben hechos incompatibles;
+98. un mensaje enviado no se presume leído;
+99. falta de confirmación puede activar canal alterno autorizado y escalamiento;
+100. si no existe canal alterno demostrado, se registra y escala sin inventarlo;
+101. se materializan siete clases de coordinación externa;
+102. cada relación externa conserva propietario interno;
+103. proveedor externo no dirige el incidente;
+104. proveedor externo no valida recuperación empresarial;
+105. proveedor externo no acepta riesgo en nombre de Vento;
+106. un estado de proveedor no equivale a estado del proceso;
+107. falta de respuesta externa se escala cuando amenaza objetivos empresariales;
+108. no se inventan SLA, contratos, capacidades o alternativas;
+109. coordinación externa no amplía acceso a datos o secretos;
+110. información sensible permanece en su fuente propietaria;
+111. acceso de emergencia permanece en `CONT-AUTH-002`;
+112. protección detallada de contactos permanece en `CONT-AUTH-003`;
+113. autoridad física/digital de mando permanece en `CONT-AUTH-001`;
+114. separación de ejecución, validación y cierre permanece en `CONT-AUTH-004`;
+115. plantillas y canales físicos permanecen en `CONT-UX-006`;
+116. contratos internos permanecen en `CONT-INT-002`;
+117. contratos externos permanecen en `CONT-INT-003`;
+118. operación mínima permanece en `CONT-DOM-007`;
+119. estrategias de contingencia permanecen en `CONT-DOM-008`;
+120. captura durante falla permanece en `CONT-DOM-009`;
+121. reincorporación permanece en `CONT-DOM-010`;
+122. runbooks y recuperación permanecen en `CONT-DOM-012`;
+123. continuidad de proveedores permanece en `CONT-DOM-013`;
+124. ejercicios permanecen en `CONT-DOM-014`;
+125. mantenimiento posterior permanece en `CONT-DOM-015`;
+126. se cierran documentalmente los cuatro hallazgos asignados a esta tarea;
+127. los hallazgos de información sensible y break-glass conservan sus propietarios distintos;
+128. nombres, contactos, canales reales y ejercicios permanecen como evidencia operativa pendiente, no como hechos inventados;
+129. ninguna comunicación real es enviada;
+130. ninguna sustitución real es ejecutada;
+131. ninguna activación real es ejecutada;
+132. no se crea ningún permiso ni acceso;
+133. no se modifica ningún requisito de prueba;
+134. no se modifica código, DDL, DML, RLS, RPC, datos, configuración, infraestructura, proveedor ni Supabase;
+135. no se ejecuta respaldo, restauración, failover, interrupción ni prueba destructiva;
+136. `CONT-DOM-007` permanece únicamente reservada.
+
+---
+
+#### 29. Balance de cierre
+
+| Control                                                 | Resultado |
+| ------------------------------------------------------- | --------: |
+| Responsabilidades conceptuales de mando                 | **8 / 8** |
+| Funciones organizacionales reutilizadas                 |    **10** |
+| Perfiles por severidad                                  | **4 / 4** |
+| Clases de comunicación                                  | **7 / 7** |
+| Clases externas                                         |     **7** |
+| Categorías de decisión                                  |    **12** |
+| Campos de bitácora                                      |    **25** |
+| Campos de comunicación                                  |    **15** |
+| Hallazgos cerrados                                      |     **4** |
+| Criterios de aceptación                                 |   **136** |
+| Personas/contactos/proveedores inventados               |     **0** |
+| Comunicaciones, sustituciones o activaciones ejecutadas |     **0** |
+| Cambios físicos                                         |     **0** |
+| Requisitos de prueba creados/modificados                |     **0** |
+
+---
+
+#### 30. Límites de la tarea
+
+Esta tarea no:
+
+- asigna personas concretas a funciones de mando o suplencia;
+- publica teléfonos, correos, credenciales o contactos sensibles;
+- crea permisos para declarar, activar, dirigir, comunicar, desactivar o cerrar;
+- crea accesos de emergencia;
+- envía alertas, instrucciones, correos, mensajes o notificaciones reales;
+- implementa plantillas, push, SMS, WhatsApp, correo, telefonía o canales externos;
+- habilita AURA;
+- selecciona un proveedor o recurso alternativo;
+- modifica contratos o SLA;
+- define operación mínima cuantificada;
+- activa una modalidad manual, offline, snapshot o recurso alternativo;
+- crea folios operativos de contingencia;
+- reincorpora trabajo ejecutado durante una falla;
+- modifica respaldos;
+- ejecuta restauración o failover;
+- declara recuperación funcional;
+- ejecuta un ejercicio de mando;
+- acepta riesgos;
+- declara readiness;
+- cambia severidad, BIA, MTPD, RTO, RPO o MBCO aprobados;
+- cambia datos, código, configuración, migraciones, RLS, RPC o Supabase.
+
+---
+
+#### 31. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-006 — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración`
+
+
 ### [ ] CONT-DOM-007 — Definir operación mínima viable por proceso, sede, horario, temporada y duración
 ### [ ] CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor
 ### [ ] CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
