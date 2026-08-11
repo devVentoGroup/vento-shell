@@ -7744,7 +7744,733 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos`
 
 
-### [ ] CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos
+### ✅ CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes` — APROBADA
+**Tarea siguiente:** `CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional` — RESERVADA
+**Tipo de tarea:** documental; inventario empresarial y técnico de objetos recuperables, política de respaldo, frecuencia derivada de RPO, retención gobernada, seguridad de copias y decisión de cobertura
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Servicios evaluados:** 69 / 69
+**Servicios activos con política de cobertura:** 67 / 67
+**Servicios AURA bloqueados:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el inventario de información, configuración, código, almacenamiento, identidad, integraciones, colas, secretos y demás objetos que VENTO deberá poder recuperar, y materializar para cada grupo la política que gobierna punto recuperable, frecuencia, retención, seguridad, aislamiento, integridad, monitoreo, restaurabilidad y evidencia.
+
+La tarea separa de forma obligatoria la existencia de una copia de la capacidad real de restaurar un resultado empresarial:
+
+```text
+COPIA EXISTENTE
+!= RESPALDO RECUPERABLE
+
+JOB EXITOSO
+!= PUNTO RECUPERABLE VERIFICADO
+
+REPLICA
+!= BACKUP AISLADO
+
+VERSIONADO
+!= COPIA INDEPENDIENTE
+
+RESTORE TECNICO
+!= RECUPERACION EMPRESARIAL
+```
+
+La política queda especificada; la cobertura física, los restores y la evidencia de cumplimiento permanecen sujetos a implementación y prueba posterior.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados:
+
+1. un inventario empresarial completo por las quince clases recuperables vigentes;
+2. una huella técnica actual del proyecto Supabase VENTO, Storage, Edge Functions, jobs y migraciones observables;
+3. un inventario de los doce repositorios VENTO observados;
+4. una matriz de los catorce buckets de Storage con conteos y volumen observados;
+5. una matriz de las veinticuatro Edge Functions activas;
+6. una matriz de los siete jobs `pg_cron` activos sin reproducir material sensible;
+7. una política única de frecuencia basada en el último punto empresarial consistente y recuperable;
+8. cuatro niveles de frecuencia derivados exactamente de los cuatro RPO aprobados;
+9. una política de retención que consume el gobierno documental vigente sin inventar plazos numéricos;
+10. una política de seguridad para cifrado, llaves, acceso, aislamiento, inmutabilidad condicionada, integridad y disposición;
+11. una puerta de evidencia que impide declarar cobertura cuando no existe restore verificable;
+12. una matriz 69 / 69 que vincula cada servicio BIA con su objetivo y frecuencia máxima de punto recuperable;
+13. un registro explícito de brechas actuales con propietario y condición de salida;
+14. cierre documental del hallazgo de inventario y del hallazgo de confusión entre backup y otros mecanismos;
+15. permanencia explícita de las brechas de prueba, RTO real, credenciales y separación de dominio de falla;
+16. cero cambios físicos y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+- `CONT-DOM-001` a `CONT-DOM-004` para política empresarial, BIA, dependencias y objetivos MTPD/RTO/RPO/MBCO;
+- `CONT-DOM-005` a `CONT-DOM-010` para incidente, mando, mínimo, contingencia, evidencia y reincorporación;
+- `NFR-REQ-006` para retención, legal hold, no resurrección y gobierno de copias;
+- `NFR-REQ-010` para contrato de backup, objetos recuperables, RPO, restore y ejercicios;
+- `TI-DOM-011` para clases técnicas recuperables, separación entre mecanismos y estado AS-IS de recuperación;
+- `INFO-DOM-006` para la decisión vigente de retención y disposición;
+- `CAP-SCOPE-018` para hallazgos de inventario, respaldo, prueba, credenciales y dominio de falla;
+- el registro canónico vigente de requisitos para comprobar cobertura previa;
+- la huella remota actual de GitHub y del proyecto Supabase VENTO accesible.
+
+No se modifica ninguna identidad, BIA, RTO, RPO, MTPD, MBCO, propietaria, proceso, estrategia de contingencia, contrato de reincorporación ni política documental aprobada.
+
+---
+
+#### 4. Frontera de la tarea
+
+Esta tarea define qué debe protegerse y con qué política. No crea ni ejecuta el mecanismo físico.
+
+No se presume:
+
+- que el proveedor administrado tenga una política de backup concreta por existir el servicio;
+- que PITR esté habilitado por existir PostgreSQL administrado;
+- que un repositorio remoto sea una copia independiente por estar versionado;
+- que un bucket esté cubierto por el backup de la base;
+- que una migración restaure los datos empresariales;
+- que una réplica sobreviva a borrado, corrupción o compromiso de la misma autoridad;
+- que una tabla llamada `backup` o `snapshot` sea una estrategia de recuperación;
+- que un secreto pueda copiarse junto con la configuración que lo referencia;
+- que un dispositivo local pueda restaurarse como fuente empresarial.
+
+---
+
+#### 5. Unidad de cobertura y estados
+
+La unidad de cobertura puede ser un objeto individual o un grupo de consistencia cuando recuperar elementos por separado produciría un estado imposible.
+
+| Estado                              | Significado                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`                      | política documental resuelta para el objeto o grupo                                         |
+| `PENDIENTE_DE_EVIDENCIA`            | existe obligación de protección, pero la cobertura física o el restore no están demostrados |
+| `BLOQUEADO`                         | falta una condición protectora que impide declarar recuperabilidad                          |
+| `NO_APLICA`                         | solo admisible con evidencia de que el objeto no participa en el resultado recuperable      |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA` | la identidad se conserva sin habilitar operación de la aplicación diferida                  |
+
+Una política `ESPECIFICADO` no equivale a backup implementado ni a restore validado.
+
+---
+
+#### 6. Contrato mínimo de cada objeto o grupo recuperable
+
+Cada entrada deberá poder resolver:
+
+```text
+identidad del objeto o grupo
+fuente autoritativa
+propietario funcional
+custodio tecnico
+servicios y procesos dependientes
+clasificacion y sensibilidad
+objetivo RPO aplicable
+punto consistente requerido
+metodo de proteccion
+trigger o cadencia
+cadena de dependencias
+ubicacion de copia
+dominio de falla
+cifrado
+referencia de llave
+control de acceso
+inmutabilidad cuando aplique
+integridad y manifiesto
+retencion y expiracion
+legal hold
+monitoreo
+ultimo punto recuperable verificado
+metodo de restore
+evidencia de restore
+estado
+brecha y condicion de salida
+```
+
+---
+
+#### 7. Frecuencia de respaldo derivada de RPO
+
+La frecuencia se define por la **antigüedad máxima admisible del último punto empresarial consistente y recuperable**, no por el horario nominal de un job.
+
+| Objetivo       | BIA                    | RPO aprobado | Frecuencia mínima de punto recuperable                       | Regla                                                                                                                     |
+| -------------- | ---------------------- | -----------: | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   |       15 min | debe existir un punto verificable con antigüedad `<= 15 min` | el mecanismo físico debe dejar margen para duración, verificación y fallo; ejecutar cada 15 min no demuestra cumplimiento |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |          1 h | debe existir un punto verificable con antigüedad `<= 1 h`    | cadena, retraso y verificación forman parte del presupuesto                                                               |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |          4 h | debe existir un punto verificable con antigüedad `<= 4 h`    | una ejecución fallida no mueve el último punto recuperable                                                                |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |         24 h | debe existir un punto verificable con antigüedad `<= 24 h`   | una copia diaria no cumple si su punto real excede 24 h o no es restaurable                                               |
+
+Para un grupo consumido por varios servicios prevalece el RPO más exigente aplicable mientras el grupo no pueda separarse sin romper consistencia.
+
+---
+
+#### 8. Política de retención
+
+La retención de una copia no se deduce del RPO. RPO limita pérdida potencial; retención gobierna cuánto tiempo se conserva una copia y bajo qué fundamento.
+
+La decisión documental vigente de `INFO-DOM-006` mantiene las políticas ejecutables de las 332 identidades como `RET_UNRESOLVED` porque no existe una tabla aprobada de duraciones numéricas y fundamentos aplicables. En consecuencia:
+
+1. no se fija una duración universal de backup;
+2. cada copia hereda la política de la información que protege y su propia clase `RET_BACKUP`;
+3. mínimo, máximo, evento de cómputo y fundamento deben ser resolubles antes de disposición automática;
+4. la ausencia de plazo no autoriza conservación indefinida;
+5. la ausencia de plazo tampoco autoriza destrucción automática;
+6. un legal hold válido suspende disposición ordinaria sin ampliar permisos;
+7. restaurar una copia no autoriza reintroducir datos cuya disposición, revocación o anonimización ocurrió después del punto recuperado;
+8. una copia expirada solo podrá tratarse bajo la excepción y autoridad documental aplicables;
+9. archive y backup permanecen conceptos distintos.
+
+---
+
+#### 9. Política de seguridad de copias
+
+Toda copia o cadena crítica deberá:
+
+- protegerse en tránsito y en reposo según clasificación y mecanismo;
+- usar acceso mínimo y capacidades separadas para configurar, ejecutar, leer, restaurar, validar, promover y eliminar;
+- conservar referencia de llave recuperable sin almacenar el secreto en texto plano en manifiestos, runbooks o copias de configuración;
+- demostrar separación suficiente respecto del dominio de falla primario;
+- aplicar inmutabilidad o protección contra eliminación cuando el escenario de riesgo lo exija;
+- generar manifiesto e integridad verificable;
+- registrar origen, punto, alcance, método, versión, ubicación, expiración y estado;
+- impedir que una restauración reactive sesiones, dispositivos, permisos o excepciones revocados;
+- preservar hold, retención, privacidad y disposición;
+- tratar toda copia sospechosa como no promovible hasta verificación.
+
+---
+
+#### 10. Inventario empresarial por clase recuperable
+
+| Clase heredada                          | Alcance VENTO                                                             | Decisión de protección                                                                   | Estado actual                                             |
+| --------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| fuente canónica empresarial             | hechos autoritativos de los dominios                                      | backup o cadena recuperable coherente con RPO                                            | `PENDIENTE_DE_EVIDENCIA` hasta restore                    |
+| proyección regenerable                  | vistas, agregados, índices y derivados                                    | solo puede excluirse de backup cuando reconstrucción, tiempo e integridad estén probados | `PENDIENTE_DE_EVIDENCIA` por defecto                      |
+| caché                                   | referencias temporales y caches                                           | no se trata como fuente; se reconstruye o invalida según contrato                        | `ESPECIFICADO` con prueba posterior de reconstrucción     |
+| estado transaccional                    | pedidos, ventas, movimientos, pagos, producción y demás hechos            | grupo consistente y punto recuperable compatible con RPO                                 | `PENDIENTE_DE_EVIDENCIA`                                  |
+| ledger                                  | saldos, puntos, dinero, inventario o movimientos acumulativos             | cadena completa, idempotencia y conciliación                                             | `PENDIENTE_DE_EVIDENCIA`                                  |
+| documentos y evidencia                  | Storage, documentos y soportes vinculados                                 | contenido + hash + metadatos + permisos + retención + vínculo                            | `PENDIENTE_DE_EVIDENCIA`                                  |
+| configuración                           | reglas, cron, routing, parámetros y configuración no secreta              | versionado recuperable compatible con release                                            | `PENDIENTE_DE_EVIDENCIA`                                  |
+| secreto o llave                         | credenciales, certificados, claves y material de autenticación            | recuperación separada, acceso restringido y prueba de descifrado                         | `PENDIENTE_DE_EVIDENCIA`                                  |
+| artefacto de software                   | código, dependencias, build, release, migraciones, contratos y plantillas | reconstrucción versionada y reproducible                                                 | `PENDIENTE_DE_EVIDENCIA` de restore/rebuild independiente |
+| estado de integración                   | receipts, correlaciones, cursor, webhook y proveedor                      | persistencia idempotente y conciliable                                                   | `PENDIENTE_DE_EVIDENCIA`                                  |
+| cola y trabajo pendiente                | outbox, inbox, jobs, checkpoints, dead-letter                             | preservar identidad, orden, consumo e idempotencia                                       | `PENDIENTE_DE_EVIDENCIA`                                  |
+| estado local/offline                    | operaciones locales aún no incorporadas                                   | persistencia local gobernada + reincorporación; no crea fuente paralela                  | `PENDIENTE_DE_EVIDENCIA` por paquete/dispositivo          |
+| telemetría y auditoría                  | logs, auditoría y señales requeridas                                      | retención y recuperación según obligación, no almacenamiento infinito                    | `PENDIENTE_DE_EVIDENCIA`                                  |
+| configuración de dispositivo/periférico | endpoint, red, impresora y estación                                       | baseline versionada y recuperación segura                                                | `PENDIENTE_DE_EVIDENCIA`                                  |
+| registro de proveedor externo           | datos, receipts, configuración y evidencia bajo tercero                   | exportación, contrato, recuperación y salida verificables                                | `PENDIENTE_DE_EVIDENCIA` hasta `CONT-DOM-013`             |
+
+---
+
+#### 11. Huella Supabase actual materializada
+
+El proyecto VENTO observado es `clzdpinthhtknkmefsxx` / `vento-os-dev`, región `us-east-2`, PostgreSQL 17.6.1.054 y estado técnico observado `ACTIVE_HEALTHY`.
+
+| Superficie                             | Evidencia actual                                                                                                                                                                                                               | Decisión de backup                                                                | Estado de cobertura                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| base PostgreSQL                        | 142699667 bytes observados                                                                                                                                                                                                     | grupo consistente de datos + esquema + lógica; RPO por servicios consumidores     | `PENDIENTE_DE_EVIDENCIA` de managed backup/PITR y restore   |
+| esquemas no de sistema                 | 19 observados: `app_private`, `auth`, `club`, `cron`, `extensions`, `graphql`, `graphql_public`, `net`, `pass`, `payments`, `pos`, `public`, `realtime`, `storage`, `supabase_migrations`, `talento`, `vault`, `viso`, `vital` | incluidos en evaluación de consistencia; no todos representan datos empresariales | `ESPECIFICADO` / evidencia física pendiente                 |
+| historial de migraciones               | 550 registros; última versión observada `20260731082600`                                                                                                                                                                       | reconstrucción de esquema y cambios versionados; no sustituye backup de datos     | `ESPECIFICADO`                                              |
+| Auth                                   | esquema `auth` presente                                                                                                                                                                                                        | recuperar identidad compatible sin revivir sesiones o accesos revocados           | `PENDIENTE_DE_EVIDENCIA`                                    |
+| RLS, grants, RPC, triggers y políticas | viven en esquema/configuración/migraciones según objeto                                                                                                                                                                        | reconstrucción y restore deben comprobar compatibilidad                           | `PENDIENTE_DE_EVIDENCIA`                                    |
+| Storage                                | 14 buckets; 1101 objetos; 750891333 bytes observados                                                                                                                                                                           | copia y restore de contenido + metadatos + vínculo + permisos                     | `PENDIENTE_DE_EVIDENCIA`                                    |
+| Edge Functions                         | 24 activas                                                                                                                                                                                                                     | código/release/configuración recuperables y compatibles; secretos separados       | `PENDIENTE_DE_EVIDENCIA` de reconstrucción completa         |
+| pg_cron                                | 7 jobs activos                                                                                                                                                                                                                 | definición versionada y restaurable; material sensible separado                   | `BLOQUEADO` para copia segura donde exista secreto embebido |
+| Vault y secretos                       | esquema `vault` presente; valores no inventariados ni reproducidos                                                                                                                                                             | recuperación separada mediante autoridad y mecanismo aprobado                     | `PENDIENTE_DE_EVIDENCIA`                                    |
+| managed backup                         | configuración no expuesta por la lectura autorizada disponible                                                                                                                                                                 | debe demostrar punto, frecuencia, retención, ubicación, integridad y restore      | `PENDIENTE_DE_EVIDENCIA`                                    |
+| PITR                                   | configuración no expuesta por la lectura autorizada disponible                                                                                                                                                                 | solo cuenta si se demuestra ventana y restore a punto                             | `PENDIENTE_DE_EVIDENCIA`                                    |
+
+La ausencia de visibilidad sobre managed backup o PITR no se interpreta como ausencia ni como habilitación.
+
+---
+
+#### 12. Inventario materializado de Storage — 14 / 14
+
+| Bucket                   | Bandera técnica | Objetos observados | Bytes observados | Límite técnico por archivo   | Política de recuperación                                                                | Estado                                      |
+| ------------------------ | --------------- | -----------------: | ---------------: | ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `commercial-menu-images` | público         |                 51 |          2800621 | 5 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `documents`              | público         |                164 |        152907573 | sin límite técnico observado | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `employee-photos`        | público         |                 26 |         39118553 | 5 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `nexo-ai-documents`      | privado         |                  1 |           312532 | 12 MB                        | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `nexo-catalog-images`    | público         |                790 |        172881585 | 5 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `pass-satellite-logos`   | público         |                 11 |           685743 | 5 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `product-images`         | público         |                 45 |        378566937 | 5 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `public-documents`       | público         |                  9 |          3250029 | sin límite técnico observado | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `recipe-media`           | privado         |                  0 |                0 | 100 MB                       | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `recipe-step-photos`     | público         |                  4 |           367760 | 8 MB                         | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `talento-cv`             | privado         |                  0 |                0 | 10 MB                        | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `talento-documents`      | privado         |                  0 |                0 | 15 MB                        | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `talento-medical`        | privado         |                  0 |                0 | 15 MB                        | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+| `website-media`          | privado         |                  0 |                0 | 40 MB                        | contenido + metadatos + vínculo + permisos + retención; RPO según procesos consumidores | `PENDIENTE_DE_EVIDENCIA` de copia y restore |
+
+Total observado: **14 buckets**, **1101 objetos**, **750891333 bytes**. La bandera técnica pública/privada no sustituye la clasificación de información.
+
+---
+
+#### 13. Inventario materializado de Edge Functions — 24 / 24
+
+| Función activa              | Decisión de recuperación                                                                                              | Estado                                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `wallet-pass`               | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `attendance-report`         | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `staff-invitations-create`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `staff-invitations-accept`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `staff-invitations-resend`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `staff-invitations-cancel`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `document-alerts`           | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `request-account-deletion`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `account-deletion`          | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `process-account-deletions` | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `register-push-token`       | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `announcement-notify`       | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `employee-delete`           | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `payments-create-intent`    | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `payments-webhook`          | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `payments-return`           | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `shift-publish-notify`      | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `shift-runtime-processor`   | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `pass-delivery-quote`       | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `pass-address-search`       | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `pass-register-push-token`  | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `support-message-notify`    | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `order-message-notify`      | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+| `delivery-portal`           | reconstruir desde código/release compatible + configuración no secreta; referencias de secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` de rebuild/restore completo |
+
+---
+
+#### 14. Inventario materializado de jobs pg_cron — 7 / 7
+
+| Job                                                  | Programación observada | Decisión de recuperación                                                                | Estado                   |
+| ---------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------- | ------------------------ |
+| `document-alerts-daily`                              | `0 14 * * *`           | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `auto-close-attendance`                              | `59 4 * * *`           | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *`          | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`           | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`            | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`           | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *`          | definición versionada + dependencias + función destino + secreto por mecanismo separado | `PENDIENTE_DE_EVIDENCIA` |
+
+En la configuración desplegada se observó material de autenticación embebido en al menos una definición cron. El valor sensible no forma parte de este documento. La copia segura de esa configuración queda bloqueada hasta separar referencia de secreto y configuración recuperable bajo la autoridad propietaria.
+
+---
+
+#### 15. Objetos con nombre de backup o snapshot observados
+
+| Objeto                                                    | Hecho observado                             | Decisión                                                                                |
+| --------------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `public.product_categories_backup_20260316_preparaciones` | 35 filas; 24576 bytes observados            | artefacto ad hoc; no constituye política canónica ni cobertura empresarial              |
+| `vital.muscle_load_snapshots`                             | 0 filas; 24576 bytes de relación observados | snapshot funcional por nombre; no se clasifica como backup sin contrato de recuperación |
+| `vital.weekly_leaderboard_snapshots`                      | 0 filas; 24576 bytes de relación observados | snapshot funcional por nombre; no se clasifica como backup sin contrato de recuperación |
+
+El nombre del objeto no concede semántica de backup.
+
+---
+
+#### 16. Inventario materializado de repositorios VENTO — 12 / 12
+
+| Repositorio observado | Alcance                                                         | Decisión de recuperación                                                                                                        | Estado                                            |
+| --------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `vento-anima`         | ANIMA                                                           | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-fogo`          | FOGO                                                            | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `Vento-Group`         | web corporativa; identidad canónica histórica `vento-group-web` | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-nexo`          | NEXO                                                            | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-numera`        | NUMERA                                                          | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-origo`         | ORIGO                                                           | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-pass`          | PASS                                                            | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-pulso`         | PULSO                                                           | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-shell`         | SHELL y fuente obligatoria de cambios Supabase                  | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-talento`       | TALENTO                                                         | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-viso`          | VISO                                                            | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+| `vento-vital`         | VITAL                                                           | conservar historia y una vía reproducible de reconstrucción; el remoto versionado no se declara copia independiente por sí solo | `PENDIENTE_DE_EVIDENCIA` de copia/rebuild aislado |
+
+---
+
+#### 17. Política para código, migraciones y releases
+
+1. El código debe poder reconstruirse desde una revisión identificable.
+2. Las dependencias y runtimes deben resolverse desde manifiestos versionados.
+3. Las 550 migraciones observadas son historial de esquema y cambio; no son backup de datos.
+4. Una restauración de datos requiere una versión de aplicación, contratos, esquema y políticas compatibles.
+5. Un release desplegado sin fuente reproducible queda `PENDIENTE_DE_EVIDENCIA`.
+6. La copia de repositorios debe protegerse de eliminación o compromiso del mismo dominio antes de contarse como independencia.
+7. Toda modificación futura de Supabase perteneciente a VENTO conserva su fuente versionada en `vento-shell`.
+
+---
+
+#### 18. Política para estado local, colas e integraciones
+
+El estado local y contingente no se convierte en una segunda base de backup empresarial.
+
+- operaciones locales pendientes conservan identidad, actor, contexto, secuencia e idempotencia;
+- al recuperar el backend se comparan contra el punto restaurado antes de sincronizar;
+- colas, outbox, inbox, jobs, checkpoints y dead-letter conservan estado de consumo y no se reemiten a ciegas;
+- un resultado externo desconocido se consulta o concilia antes de repetir;
+- la pérdida de un dispositivo no autoriza a fingir que su trabajo ya fue incorporado;
+- la cobertura física por dispositivo se materializará en el paquete propietario y se demostrará en ejercicio.
+
+---
+
+#### 19. Matriz empresarial de cobertura — 69 / 69
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Objetivo       |      RPO | Frecuencia mínima de punto recuperable                               | Estado de cobertura actual                     | Decisión                                                                                                   |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | -------: | -------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `BLOQUEADO_POR_APLICACION_DIFERIDA`            | sin habilitar operación AURA; los registros existentes siguen sujetos a la política del objeto recuperable |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `BLOQUEADO_POR_APLICACION_DIFERIDA`            | sin habilitar operación AURA; los registros existentes siguen sujetos a la política del objeto recuperable |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` |    `1 h` | punto empresarial consistente y recuperable con antigüedad <= 1 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `15 min` | punto empresarial consistente y recuperable con antigüedad <= 15 min | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` |   `24 h` | punto empresarial consistente y recuperable con antigüedad <= 24 h   | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` |    `4 h` | punto empresarial consistente y recuperable con antigüedad <= 4 h    | `COBERTURA_NO_DEMOSTRADA_CON_EVIDENCIA_ACTUAL` | la política queda definida; la cobertura real exige punto recuperable y restore probado                    |
+
+---
+
+#### 20. Reconciliación cuantitativa
+
+| Control                                  |     Resultado |
+| ---------------------------------------- | ------------: |
+| servicios BIA                            |   **69 / 69** |
+| procesos VPROC                           |   **69 / 69** |
+| servicios activos                        |   **67 / 67** |
+| AURA bloqueados                          |     **2 / 2** |
+| `CRITICA_PROTECCION` / `CONT-OBJ-001`    |        **12** |
+| `CRITICA_OPERACIONAL` / `CONT-OBJ-002`   |        **20** |
+| `ALTA_CONTROL` / `CONT-OBJ-003`          |        **31** |
+| `DIFERIBLE_CONTROLADA` / `CONT-OBJ-004`  |         **6** |
+| repositorios VENTO observados            |   **12 / 12** |
+| buckets Storage                          |   **14 / 14** |
+| objetos Storage observados               |      **1101** |
+| bytes Storage observados                 | **750891333** |
+| Edge Functions activas                   |   **24 / 24** |
+| jobs pg_cron activos                     |     **7 / 7** |
+| migraciones Supabase observadas          |       **550** |
+| restores verificados por esta tarea      |         **0** |
+| coberturas declaradas `VALIDADAS`        |         **0** |
+| requisitos de prueba creados/modificados |         **0** |
+
+---
+
+#### 21. Brechas de evidencia y condiciones de salida
+
+| Brecha                                               | Estado                   | Propietario documental                           | Condición de salida                                                                             |
+| ---------------------------------------------------- | ------------------------ | ------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| managed backup de la base y último punto recuperable | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011` + arquitectura Supabase aplicable | configuración verificable, manifiesto, último punto e integridad demostrados                    |
+| PITR y ventana recuperable                           | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011` + arquitectura Supabase aplicable | ventana, granularidad, punto restaurable y prueba documentados                                  |
+| copia y restore de los 14 buckets                    | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012` + arquitectura Storage aplicable  | restore aislado que conserve contenido, metadatos, permisos y vínculos                          |
+| rebuild completo de Edge Functions y configuración   | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012` + paquetes técnicos propietarios  | función, release, configuración y dependencias reconstruidos en ambiente aislado                |
+| material sensible embebido en configuración cron     | `BLOQUEADO`              | `CONT-AUTH-003`                                  | separar configuración recuperable de secreto, con referencia protegida y prueba de recuperación |
+| recuperación de secretos, certificados y llaves      | `PENDIENTE_DE_EVIDENCIA` | `CONT-AUTH-002`; `CONT-AUTH-003`                 | mecanismo autorizado de recuperación y prueba de uso/descifrado sin texto plano                 |
+| copia independiente de repositorios                  | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-011` + paquetes de build/release         | reconstrucción limpia o copia separada probada frente a pérdida del remoto primario             |
+| colas, outbox, inbox, jobs y checkpoints             | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012`; `CONT-INT-004`                   | restore/replay controlado sin duplicación ni pérdida                                            |
+| estado local/offline por dispositivo                 | `PENDIENTE_DE_EVIDENCIA` | paquete propietario + `CONT-DOM-014`             | reinicio, pérdida de red/dispositivo y reincorporación probados                                 |
+| configuración de endpoints, red e impresión          | `PENDIENTE_DE_EVIDENCIA` | BLOQUE Z + `CONT-DOM-012`                        | baseline versionada y recuperación funcional demostradas                                        |
+| datos y recuperación de proveedores externos         | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-013`; `CONT-INT-003`                   | contrato, exportación, recovery, independencia y prueba por tercero crítico                     |
+| separación real de dominio de falla de las copias    | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-011`; `CONT-INT-003`                   | evidencia de cuenta/credencial/ubicación/autoridad suficientemente independientes               |
+| periodos numéricos de retención de fuente y backup   | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-006` y gobierno documental aplicable   | fundamento, mínimo, máximo, evento de cómputo y versión de política resolubles                  |
+| restore periódico y comparación real con RTO/RPO     | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                   | ejercicio de restore ejecutado con punto, tiempos, resultado y evidencia                        |
+
+Ninguna brecha anterior autoriza declarar que el mecanismo no existe; declara únicamente que la cobertura exigida no está demostrada con la evidencia actual.
+
+---
+
+#### 22. Cierre documental de hallazgos propietarios
+
+Se cierran documentalmente:
+
+- `H-CAP-SCOPE-018-021` — el inventario de información, configuración y objetos recuperables queda materializado por clase, instancia técnica observable y servicio BIA; la cobertura física continúa bajo sus estados de evidencia;
+- `H-CAP-SCOPE-018-022` — la política separa expresamente job, réplica, sincronización, snapshot, exportación, versionado y backup recuperable.
+
+Permanecen abiertos:
+
+- `H-CAP-SCOPE-018-023` — programa consolidado de restauraciones probadas;
+- `H-CAP-SCOPE-018-024` — tiempos reales de restauración frente a RTO;
+- `H-CAP-SCOPE-018-025` — concentración de credenciales o conocimiento de recuperación;
+- `H-CAP-SCOPE-018-026` — separación real del dominio de falla.
+
+Cada uno conserva la tarea propietaria ya aprobada por el plan.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el inventario, la frecuencia por punto recuperable, la seguridad, la retención, la separación de mecanismos, la restaurabilidad, la no resurrección y las pruebas de recuperación ya están protegidos por requisitos vigentes. Esta tarea especializa y materializa decisiones documentales y evidencia AS-IS sin introducir una transición ejecutable, mecanismo de backup, restore, permiso, migración o comportamiento productivo nuevo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 24. Handoffs obligatorios
+
+| Decisión posterior                                           | Tarea propietaria                | Frontera conservada                                                                   |
+| ------------------------------------------------------------ | -------------------------------- | ------------------------------------------------------------------------------------- |
+| runbooks, orden de recuperación, restore, failover y retorno | `CONT-DOM-012`                   | consume este inventario; no redefine RPO, retención ni clasificación de cobertura     |
+| continuidad de proveedores y separación externa              | `CONT-DOM-013`; `CONT-INT-003`   | acredita instancias y dominios de falla concretos                                     |
+| restores, PITR, ransomware, llaves y readiness               | `CONT-DOM-014`                   | produce evidencia; no cambia silenciosamente la política                              |
+| acceso y secretos de recuperación                            | `CONT-AUTH-002`; `CONT-AUTH-003` | separa autoridad, secreto, break-glass y custodia                                     |
+| reincorporación después del restore                          | `CONT-DOM-010`; `CONT-INT-004`   | preserva idempotencia y conciliación ya aprobadas                                     |
+| periodos de conservación y disposición                       | gobierno documental vigente      | no se inventa plazo numérico mientras la política permanezca sin fundamento resoluble |
+
+---
+
+#### 25. Criterios de aceptación
+
+1. Se conserva exactamente la continuidad `CONT-DOM-010` → `CONT-DOM-011` → `CONT-DOM-012`.
+2. La tarea permanece exclusivamente documental.
+3. No se configura, ejecuta ni altera ningún respaldo productivo.
+4. No se ejecuta DDL, DML, backfill, restauración, failover ni cambio de Supabase.
+5. Se distingue respaldo de réplica, snapshot, exportación, caché, versionado, rollback, failover y restauración.
+6. Una copia no se declara respaldo recuperable sin manifiesto, integridad y restore demostrable.
+7. El inventario empresarial cubre las quince clases recuperables heredadas.
+8. El inventario técnico identifica el proyecto Supabase VENTO actualmente observado.
+9. El inventario técnico identifica la base de datos desplegada como unidad de consistencia recuperable.
+10. El inventario técnico conserva el conteo observado de 550 migraciones sin tratarlas como backup de datos.
+11. Las migraciones se tratan como material de reconstrucción de esquema, no como copia de hechos empresariales.
+12. Los 19 esquemas no de sistema observados quedan incluidos por el grupo de recuperación de base de datos.
+13. Auth, RLS, grants, RPC, triggers y políticas se incluyen en recuperación y no se reducen a datos de tablas.
+14. Storage se incluye como grupo separado de la base de datos.
+15. Se preservan exactamente los 14 buckets observados.
+16. Se preservan exactamente 1101 objetos de Storage observados sin leer su contenido.
+17. Se preserva el volumen agregado observado de 750891333 bytes de objetos Storage.
+18. La bandera pública o privada de un bucket no se interpreta como clasificación empresarial.
+19. Cada bucket tiene una decisión explícita de cobertura.
+20. Los 24 Edge Functions activos observados quedan inventariados.
+21. Los siete jobs pg_cron activos observados quedan inventariados.
+22. Las definiciones cron no se presentan como respaldo por estar persistidas en base de datos.
+23. El material sensible observado en configuración cron no se reproduce en el artefacto.
+24. Las copias de configuración no podrán incluir secretos en texto plano.
+25. Vault, secretos, certificados, llaves y credenciales requieren recuperación separada de los datos.
+26. Un backup de base de datos no reactiva sesiones, permisos o accesos revocados.
+27. Se identifican los doce repositorios VENTO observados.
+28. Git/versionado no se presenta como backup independiente por sí solo.
+29. Cada repositorio requiere evidencia posterior de reconstrucción o copia separada antes de declararse recuperable.
+30. El código restaurado debe corresponder con migraciones, contratos y configuración compatibles.
+31. El proyecto ajeno a la identidad VENTO no se incorpora al inventario por simple coexistencia en la cuenta.
+32. El estado local/offline se incluye como clase recuperable, sin convertir el dispositivo en fuente de verdad.
+33. El trabajo offline pendiente se protege mediante identidad, persistencia y reincorporación; no mediante copia ciega del dispositivo.
+34. Las colas, jobs, outbox, inbox, checkpoints y dead-letter se incluyen en el análisis de recuperación.
+35. Los estados de integración externa se incluyen en el inventario sin inventar proveedor alternativo.
+36. Los registros de auditoría y telemetría se incluyen según su obligación y retención.
+37. Las configuraciones de endpoints, red y periféricos se incluyen aunque el inventario físico exacto permanezca pendiente de evidencia.
+38. Los 69 servicios BIA conservan identidad estable.
+39. Los 69 procesos VPROC conservan identidad estable.
+40. No existen faltantes ni duplicados en la matriz de cobertura empresarial.
+41. Se preserva la distribución BIA 12/20/31/6.
+42. Se preservan 67 servicios activos y dos AURA bloqueados.
+43. Ninguna fila AURA adquiere operación por esta tarea.
+44. Cada servicio conserva el objetivo CONT-OBJ heredado.
+45. `CRITICA_PROTECCION` conserva RPO de 15 minutos.
+46. `CRITICA_OPERACIONAL` conserva RPO de 1 hora.
+47. `ALTA_CONTROL` conserva RPO de 4 horas.
+48. `DIFERIBLE_CONTROLADA` conserva RPO de 24 horas.
+49. La frecuencia se define como antigüedad máxima del último punto consistente y recuperable, no como cron nominal.
+50. Un job cada quince minutos no demuestra por sí solo RPO de quince minutos.
+51. Un job cada hora no demuestra por sí solo RPO de una hora.
+52. Un job cada cuatro horas no demuestra por sí solo RPO de cuatro horas.
+53. Un job diario no demuestra por sí solo RPO de veinticuatro horas.
+54. La duración del backup, verificación, retrasos y fallos forman parte del presupuesto del RPO.
+55. La edad se mide sobre el último punto realmente recuperable, no sobre el último inicio de job.
+56. Una réplica saludable no demuestra RPO.
+57. Un snapshot existente no demuestra RPO.
+58. Una exportación existente no demuestra RPO.
+59. La frecuencia de captura física deberá ser igual o más exigente que la necesaria para mantener el punto verificado dentro del RPO.
+60. Los grupos de consistencia prevalecen sobre respaldos parciales de objetos relacionados.
+61. Base de datos y Storage relacionados se restauran coherentemente o se concilian explícitamente.
+62. Datos, identidad, permisos, archivos, eventos y colas no pueden quedar en puntos incompatibles.
+63. Cada copia deberá conservar fuente, punto, método, cadena y versión.
+64. Cada copia deberá conservar evidencia de integridad.
+65. Cada copia deberá conservar estado de cifrado.
+66. Cada copia deberá conservar ubicación y dominio de falla.
+67. Cada copia deberá conservar expiración o referencia de política.
+68. `COMPLETED_UNVERIFIED` no equivale a recuperable.
+69. Una copia fallida no actualiza el último punto recuperable.
+70. Una copia corrupta queda bloqueada o en cuarentena.
+71. La política exige monitorear job omitido y edad del último punto.
+72. La política exige monitorear cadena incompleta y fallo de integridad.
+73. La política exige monitorear expiración, capacidad y fallo de restore.
+74. Los respaldos críticos deberán separarse del dominio de falla primario.
+75. Compartir cuenta, credencial o autoridad destructiva impide afirmar aislamiento suficiente.
+76. La inmutabilidad se exige cuando el escenario de riesgo lo requiera; no se inventa universalmente.
+77. La seguridad de la copia hereda o aumenta las restricciones de la fuente.
+78. Las transferencias de backup deben protegerse en tránsito.
+79. Las copias persistidas deben protegerse en reposo según el mecanismo aprobado.
+80. Las referencias de llave deben ser recuperables sin almacenar el secreto en texto plano.
+81. La pérdida de una llave se trata como riesgo de recuperación, no como simple error de acceso.
+82. Configurar, ejecutar, leer, restaurar, validar, promover y eliminar copias son capacidades separadas.
+83. El acceso break-glass no se crea por esta tarea.
+84. El acceso de recuperación requiere autoridad separada y auditable.
+85. La política de retención de backup se vincula a la política vigente de la información fuente.
+86. No se fija un plazo numérico universal de retención.
+87. Las políticas documentales numéricas permanecen `RET_UNRESOLVED` donde la fuente aprobada así lo establece.
+88. La ausencia de plazo numérico no autoriza retención indefinida.
+89. La ausencia de plazo numérico no autoriza eliminación automática.
+90. Un legal hold válido prevalece sobre la expiración ordinaria.
+91. Un legal hold no amplía permisos de lectura.
+92. Una copia de backup no se convierte en archivo histórico oculto.
+93. Restaurar una copia no autoriza resucitar datos ya dispuestos.
+94. Las eliminaciones y revocaciones posteriores al punto recuperado deben reconciliarse antes de promoción.
+95. Las pruebas de restore con datos productivos requieren ambiente y autoridad controlados.
+96. La primera restauración de una copia sospechosa pertenece a un ambiente aislado.
+97. Los efectos externos permanecen bloqueados durante una restauración aislada hasta autorización posterior.
+98. La tarea no declara ningún restore ejecutado.
+99. La tarea no declara ningún PITR ejecutado.
+100. La tarea no declara managed backup habilitado o deshabilitado sin evidencia del proveedor.
+101. La tarea no declara cobertura de Storage demostrada.
+102. La tarea no declara recuperación de secretos demostrada.
+103. La tarea no declara restauración de repositorios demostrada.
+104. La tarea no declara recuperación de colas demostrada.
+105. La tarea no declara recuperación de endpoints o red demostrada.
+106. La tarea no declara readiness.
+107. Las brechas de managed backup y PITR tienen propietario y condición de salida.
+108. Las brechas de Storage tienen propietario y condición de salida.
+109. Las brechas de secretos y llaves tienen propietario y condición de salida.
+110. Las brechas de colas y estado offline tienen propietario y condición de salida.
+111. Las brechas de configuración física tienen propietario y condición de salida.
+112. Las brechas de proveedores externos tienen propietario y condición de salida.
+113. La falta de evidencia se expresa como `PENDIENTE_DE_EVIDENCIA`, no como ausencia inventada.
+114. El inventario admite grupos cuando una unidad debe recuperarse consistentemente.
+115. No se obliga a respaldar una proyección reconstruible cuando su reconstrucción sea demostrada posteriormente.
+116. Una proyección no se declara reconstruible solo por intuición.
+117. El único backup-like ad hoc observado no se acepta como estrategia canónica.
+118. Las tablas cuyo nombre contiene snapshot no se consideran backup por su nombre.
+119. El objeto ad hoc `product_categories_backup_20260316_preparaciones` no se presenta como cobertura empresarial.
+120. El hallazgo de inventario de respaldo queda cerrado documentalmente sin afirmar cobertura implementada.
+121. El hallazgo de confusión entre job, réplica, sincronización y backup queda cerrado documentalmente.
+122. El riesgo de compartir dominio de falla permanece abierto hasta evidencia de separación.
+123. El programa de restores probados permanece con su tarea propietaria posterior.
+124. La medición real de RTO/RPO permanece con ejercicios y recuperación.
+125. La concentración de credenciales de recuperación permanece con autorización y runbooks.
+126. La siguiente tarea queda únicamente reservada.
+127. No se crea ni modifica ningún requisito de prueba.
+128. No se genera una copia nueva del registro 04A.
+
+---
+
+#### 26. Balance de cierre
+
+| Control                                              |   Resultado |
+| ---------------------------------------------------- | ----------: |
+| objetos/clases recuperables cubiertos normativamente | **15 / 15** |
+| servicios con decisión                               | **69 / 69** |
+| servicios activos                                    | **67 / 67** |
+| AURA bloqueados                                      |   **2 / 2** |
+| repositorios inventariados                           | **12 / 12** |
+| buckets inventariados                                | **14 / 14** |
+| Edge Functions inventariadas                         | **24 / 24** |
+| jobs pg_cron inventariados                           |   **7 / 7** |
+| hallazgos propietarios cerrados documentalmente      |       **2** |
+| restores ejecutados                                  |       **0** |
+| cambios físicos                                      |       **0** |
+| requisitos de prueba creados/modificados             |       **0** |
+
+---
+
+#### 27. Límites de la tarea
+
+Esta tarea no:
+
+- activa managed backup o PITR;
+- crea jobs de backup;
+- cambia planes o servicios de proveedor;
+- crea buckets o copias de Storage;
+- exporta bases o secretos;
+- rota credenciales;
+- modifica jobs cron;
+- crea mirrors de repositorios;
+- ejecuta restore o failover;
+- crea ambiente de recuperación;
+- restaura datos, Auth, RLS, RPC, Storage, Edge Functions o configuración;
+- ejecuta pruebas con datos productivos;
+- fija plazos jurídicos de retención ausentes;
+- declara RPO o RTO cumplidos;
+- declara readiness;
+- modifica código, DDL, DML, migraciones, RLS, RPC, datos o Supabase;
+- inicia `CONT-DOM-012`.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes`
+
+TAREA ACTUAL APROBADA
+
+`CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional`
+
+
 ### [ ] CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional
 ### [ ] CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
 ### [ ] CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos

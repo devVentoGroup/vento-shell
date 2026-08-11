@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **713** |
+| Tareas aprobadas | **714** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **881** |
+| Tareas no iniciadas | **880** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **44.73% (713/1594)** |
+| Porcentaje de completamiento | **44.79% (714/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes** |
-| Tarea actual | **CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos** |
+| Última tarea aprobada | **CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos** |
+| Tarea actual | **CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional** |
+| Siguiente tarea | **CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 137 de 157 aprobadas; CONT-DOM-011 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 138 de 157 aprobadas; CONT-DOM-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-DOM-010` — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes |
-| Tarea actual | `CONT-DOM-011` — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos — **NO INICIADA** |
-| Siguiente tarea | `CONT-DOM-012` — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional |
+| Última aprobada | `CONT-DOM-011` — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos |
+| Tarea actual | `CONT-DOM-012` — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional — **NO INICIADA** |
+| Siguiente tarea | `CONT-DOM-013` — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 137 DE 157 APROBADAS — ACTUAL CONT-DOM-011** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 138 DE 157 APROBADAS — ACTUAL CONT-DOM-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes
-        ↓
-TAREA ACTUAL
 CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 137 de 157 tareas aprobadas
+CARRIL NEXO — 138 de 157 tareas aprobadas
 ```
