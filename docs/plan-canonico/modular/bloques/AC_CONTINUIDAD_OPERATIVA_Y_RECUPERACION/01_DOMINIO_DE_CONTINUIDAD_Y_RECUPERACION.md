@@ -931,7 +931,639 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos`
 
 
-### [ ] CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos
+### ✅ CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad` — APROBADA
+**Tarea siguiente:** `CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos` — RESERVADA
+**Tipo de tarea:** documental; materialización del análisis de impacto empresarial base por resultado de proceso y contexto territorial, con criticidad BIA y nivel mínimo funcional cualitativo
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, datos, backfills, restauraciones, failover, interrupciones, activaciones de contingencia, compras, cambios de proveedor o cambios en Supabase:** no autorizados
+**Procesos canónicos evaluados:** 69 de 69
+**Sedes operativas canónicas evaluadas:** 5 de 5
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir y materializar la línea base del análisis de impacto empresarial de Vento Group para que cada resultado protegido por los procesos canónicos tenga una decisión explícita de continuidad antes de diseñar dependencias, objetivos de recuperación, procedimientos de contingencia o runbooks.
+
+La tarea responde de forma determinista:
+
+- qué unidad empresarial se somete al BIA;
+- qué resultado o servicio protege cada proceso;
+- qué aplicación conserva la propiedad funcional;
+- qué contexto territorial debe evaluarse;
+- qué clase de impacto hace que el resultado sea crítico, de control alto o diferible;
+- cuál es el resultado mínimo funcional que debe preservarse durante una interrupción;
+- qué sedes existen realmente y cuáles no pueden inventarse para completar el BIA;
+- qué decisiones pertenecen expresamente a las tareas posteriores del bloque.
+
+Esta tarea no asigna minutos, horas, porcentajes, volúmenes mínimos definitivos ni prioridades de recuperación. Tampoco aprueba una modalidad concreta de contingencia. Materializa la base empresarial necesaria para que esas decisiones posteriores se hagan sobre resultados reales y no sobre componentes técnicos aislados.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados cuatro componentes coordinados:
+
+1. un contrato BIA transversal aplicable a los 69 procesos canónicos;
+2. una matriz de decisión BIA con una fila por `VPROC-0001` a `VPROC-0069`;
+3. una matriz territorial con las cinco sedes operativas canónicas vigentes y sus fronteras;
+4. reglas de enlace hacia dependencias, objetivos, operación mínima, contingencia, recuperación y ejercicios sin transferirles el resultado principal de esta tarea.
+
+Balance:
+
+| Control                                    |                                                                                                                      Resultado |
+| ------------------------------------------ | -----------------------------------------------------------------------------------------------------------------------------: |
+| Procesos esperados                         |                                                                                                                         **69** |
+| Procesos materializados                    |                                                                                                                         **69** |
+| Procesos faltantes                         |                                                                                                                          **0** |
+| Procesos duplicados                        |                                                                                                                          **0** |
+| Sedes operativas esperadas                 |                                                                                                                          **5** |
+| Sedes operativas materializadas            |                                                                                                                          **5** |
+| Sedes ficticias creadas                    |                                                                                                                          **0** |
+| Propiedad por aplicación reconciliada      |                **`shell` 0; `anima` 1; `viso` 20; `nexo` 16; `fogo` 6; `origo` 4; `pulso` 12; `numera` 7; `aura` 2; `pass` 1** |
+| Distribución de criticidad BIA             |                             **`CRITICA_PROTECCION` 12; `CRITICA_OPERACIONAL` 20; `ALTA_CONTROL` 31; `DIFERIBLE_CONTROLADA` 6** |
+| Distribución de nivel mínimo               | **`PROTEGER_Y_DETENER` 12; `MANTENER_RESULTADO_ESENCIAL` 20; `MANTENER_CONTROL_Y_EVIDENCIA` 31; `DIFERIR_CON_TRAZABILIDAD` 6** |
+| Objetivos MTPD/RTO/RPO/MBCO fijados        |                                                                                                                          **0** |
+| Prioridades de recuperación fijadas        |                                                                                                                          **0** |
+| Cambios físicos                            |                                                                                                                          **0** |
+| Requisitos de prueba creados o modificados |                                                                                                                          **0** |
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+La tarea consume sin redefinir:
+
+- `CONT-DOM-001` para política, gobierno, funciones, suplencia, ciclo de mantenimiento y fronteras de autoridad;
+- `CAP-SCOPE-018` para el alcance de continuidad, campos mínimos del BIA, las doce subcapacidades `CAP-18` y los hallazgos asignados;
+- `CAP-SCOPE-001` para la taxonomía organizacional, las cinco sedes operativas vigentes y la prohibición de convertir líneas de negocio, canales o puntos externos en sedes;
+- `PROC-CAT-004` para los 69 propósitos empresariales canónicos;
+- `PROC-CAT-005` para la aplicación propietaria única de cada proceso;
+- `PROC-CAT-006` para consumidoras directas y condicionales mediante `PROC-APPLICATION-CONSUMER-REGISTRY-001`;
+- las tareas posteriores `CONT-DOM-003`, `CONT-DOM-004`, `CONT-DOM-007`, `CONT-DOM-008`, `CONT-DOM-012`, `CONT-DOM-013`, `CONT-DOM-014` y `CONT-DOM-015` únicamente como propietarios de decisiones fuera del alcance actual;
+- el registro canónico de requisitos vigente para comprobar cobertura de comportamiento y evitar duplicación de requisitos.
+
+La aplicación propietaria no equivale al servicio empresarial, y el servicio empresarial no se redefine como una aplicación. Para este BIA la identidad estable del resultado es el `VPROC-*` y su propósito aprobado.
+
+---
+
+#### 4. Fronteras conceptuales obligatorias
+
+```text
+SERVICIO EMPRESARIAL BIA
+=
+RESULTADO EMPRESARIAL PROTEGIDO POR VPROC-*
+```
+
+No se crea un segundo catálogo de servicios con identidades competidoras.
+
+```text
+CRITICIDAD BIA ≠ SEVERIDAD DE INCIDENTE ≠ PRIORIDAD DE RECUPERACIÓN
+```
+
+```text
+NIVEL MÍNIMO FUNCIONAL CUALITATIVO ≠ MBCO APROBADO ≠ VOLUMEN MÍNIMO NUMÉRICO
+```
+
+```text
+SEDE OPERATIVA ≠ MARCA ≠ CANAL ≠ LÍNEA DE NEGOCIO ≠ PUNTO EXTERNO
+```
+
+```text
+APLICACIÓN PROPIETARIA ≠ DEPENDENCIA TÉCNICA ≠ FUENTE DE RESPALDO
+```
+
+```text
+SERVICIO TÉCNICAMENTE DISPONIBLE ≠ RESULTADO EMPRESARIAL RECUPERADO
+```
+
+```text
+BIA ESPECIFICADO ≠ CONTINUIDAD VALIDADA ≠ READINESS
+```
+
+---
+
+#### 5. Unidad canónica del BIA
+
+La unidad mínima de análisis es:
+
+```text
+VPROC-*
++ resultado empresarial aprobado
++ aplicación propietaria
++ consumidoras por referencia canónica
++ contexto organizacional y territorial aplicable
++ criticidad BIA
++ nivel mínimo funcional cualitativo
++ clases de impacto
++ obligaciones y restricciones aplicables
++ estado de evidencia
++ versión y vigencia
+```
+
+Cuando un mismo proceso tenga comportamientos materialmente distintos por sede, horario, temporada, canal o población, la decisión se instancia por contexto sin crear un nuevo `VPROC-*`.
+
+La matriz de esta tarea define la regla de alcance territorial por proceso. La instancia física posterior solo podrá usar una sede canónica vigente y deberá demostrar que la capacidad realmente existe en esa sede; compartir nombre, marca, dirección o aplicación no basta.
+
+---
+
+#### 6. Contrato mínimo del registro BIA
+
+Cada registro BIA deberá conservar, cuando aplique:
+
+| Campo                                       | Decisión                                                                                                                      |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| identidad                                   | `process_id` canónico `VPROC-*`; no se inventa un identificador paralelo de servicio                                          |
+| resultado protegido                         | propósito empresarial vigente del proceso                                                                                     |
+| propietario                                 | aplicación propietaria de `PROC-CAT-005` y propietario funcional del proceso cuando se materialice el registro operativo      |
+| consumidores                                | referencia al conjunto vigente de `PROC-CAT-006`; no se copian listas locales divergentes                                     |
+| organización                                | `ORGANIZATION_SCOPE` y sujeto/estructura aplicables sin fusionar conceptos                                                    |
+| sede                                        | una de las cinco `OPERATIONAL_SITE` vigentes o ausencia territorial explícita                                                 |
+| área / zona / estación                      | solo cuando el proceso dependa materialmente de esa subdivisión y exista identidad canónica                                   |
+| horario / temporada                         | condición explícita cuando cambie el impacto; no se inventan ventanas universales                                             |
+| criticidad BIA                              | una de las cuatro clases de esta tarea                                                                                        |
+| nivel mínimo funcional                      | una de las cuatro decisiones cualitativas de esta tarea                                                                       |
+| impacto                                     | clases materiales sobre personas, cliente, dinero, datos, custodia, cumplimiento, reputación u operación                      |
+| obligaciones                                | obligación laboral, sanitaria, contractual, fiscal, legal o de privacidad cuando corresponda                                  |
+| volumen normal y mínimo                     | se conserva como dimensión obligatoria, pero el valor cuantitativo se materializa en la tarea propietaria de operación mínima |
+| dependencias                                | referencia a la materialización de `CONT-DOM-003`; esta tarea no inventa SPOF                                                 |
+| pérdida tolerable / MTPD / RTO / RPO / MBCO | referencia a `CONT-DOM-004`; sin cifras en esta tarea                                                                         |
+| estrategia alternativa                      | referencia a `CONT-DOM-008` y tareas de dominio; no se presume modo offline                                                   |
+| ejercicio / readiness                       | referencia a `CONT-DOM-014`; ausencia de ejercicio no equivale a conformidad                                                  |
+| vigencia                                    | versión, fecha efectiva, motivo y evidencia del cambio                                                                        |
+
+---
+
+#### 7. Clases de criticidad BIA
+
+Las clases siguientes expresan **impacto empresarial potencial**, no orden de recuperación:
+
+| Clase                  | Significado                                                                                                                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CRITICA_PROTECCION`   | La interrupción o una continuación no controlada puede comprometer personas, inocuidad, seguridad, acceso, dinero, custodia o integridad de forma material; el mínimo seguro puede ser detener.                 |
+| `CRITICA_OPERACIONAL`  | La interrupción corta directamente un resultado operativo esencial de venta, producción, abastecimiento, logística, dotación o soporte; se requiere conservar un resultado esencial limitado cuando sea seguro. |
+| `ALTA_CONTROL`         | El proceso puede degradarse o pausarse temporalmente, pero deben mantenerse autoridad, evidencia, conciliación, vencimientos y estado pendiente para evitar pérdida material o incumplimiento.                  |
+| `DIFERIBLE_CONTROLADA` | El resultado puede aplazarse durante una interrupción sin bloquear la operación esencial, siempre que queden propietario, contexto, vencimiento, evidencia y reanudación controlada.                            |
+
+Reglas:
+
+1. `CRITICA_PROTECCION` no significa que el proceso deba continuar; puede exigir `STOP_AND_PROTECT` en tareas posteriores.
+2. `CRITICA_OPERACIONAL` no autoriza bypass de seguridad, calidad, autorización, conciliación o privacidad.
+3. `ALTA_CONTROL` no equivale a baja importancia; impide que una pausa se convierta en pérdida de expediente o efecto huérfano.
+4. `DIFERIBLE_CONTROLADA` no autoriza descartar trabajo, obligaciones o evidencia.
+5. La prioridad de recuperación se decide posteriormente considerando dependencias, MTPD, RTO, RPO, capacidad, costo y aceptación de riesgo.
+
+---
+
+#### 8. Niveles mínimos funcionales cualitativos
+
+| Nivel                          | Resultado que debe conservarse                                                                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PROTEGER_Y_DETENER`           | Poder impedir un efecto inseguro o no verificable, conservar el estado conocido, proteger personas/datos/dinero/custodia y registrar el pendiente.     |
+| `MANTENER_RESULTADO_ESENCIAL`  | Poder completar solo el resultado empresarial indispensable y seguro, con alcance reducido, trazabilidad y pendientes explícitos.                      |
+| `MANTENER_CONTROL_Y_EVIDENCIA` | Poder conservar autoridad, expediente, identificadores, estado, evidencia, vencimientos y conciliación aunque la ejecución principal se difiera.       |
+| `DIFERIR_CON_TRAZABILIDAD`     | Poder suspender temporalmente el trabajo sin perder contexto, propietario, prioridad relativa, fecha relevante, evidencia ni condición de reanudación. |
+
+Estos niveles no fijan volumen, duración o capacidad. La cantidad mínima por proceso, sede, horario, temporada y duración pertenece a `CONT-DOM-007`; el objetivo MBCO y su relación con MTPD/RTO/RPO pertenece a `CONT-DOM-004`.
+
+---
+
+#### 9. Perfil cualitativo de impacto por prolongación
+
+Toda instancia BIA deberá poder evolucionar sin usar umbrales universales:
+
+```text
+INTERRUPCIÓN CONTROLADA
+→ DEGRADACIÓN DEL RESULTADO
+→ IMPACTO MATERIAL
+→ IMPACTO INACEPTABLE
+```
+
+La duración que separa esos estados se decide por proceso y contexto en `CONT-DOM-004`. Esta tarea solo fija qué clases de daño deben observarse:
+
+- personas, SST, inocuidad o seguridad;
+- cliente, promesa de servicio, ingreso o reputación;
+- inventario, activo, custodia, calidad o trazabilidad física;
+- dinero, caja, obligación, fiscalidad o conciliación;
+- datos, documentos, privacidad, retención o evidencia;
+- capacidad laboral, turnos, acceso o continuidad de funciones;
+- cumplimiento legal, contractual, sanitario o regulatorio;
+- dependencia de proveedor o canal;
+- decisión, gobierno, aprendizaje o riesgo residual.
+
+Ausencia de evidencia suficiente obliga a conservar el estado como no demostrado; nunca autoriza reducir la criticidad por defecto.
+
+---
+
+#### 10. Inventario territorial canónico del BIA
+
+|    # | Sede operativa canónica               | Clasificación y estructura relevante                                                                                | Decisión BIA territorial                                                                                                                            | Estado         |
+| ---: | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+|    1 | `Oficina 1`                           | sede administrativa interna; relación física exacta y estado registral externo siguen bajo las puertas ya definidas | Se incluye como sede real para impacto administrativo y continuidad. Su dirección pública o condición registral no se usa como hecho verificado.    | `ESPECIFICADO` |
+|    2 | `Vento Café`                          | sede comercial; Servicio / Salón, Cocina y Barra                                                                    | Se evalúan servicios comerciales, personas, SST, producto, inventario/activos, instalaciones y tecnología según capacidad real.                     | `ESPECIFICADO` |
+|    3 | `Saudo`                               | sede comercial; Área Operativa Integral con estaciones de servicio, caja/mostrador, barra y cocina                  | Se evalúan servicios comerciales y operativos por capacidades reales sin fragmentar artificialmente la sede.                                        | `ESPECIFICADO` |
+|    4 | `Molka`                               | sede comercial; Área Operativa Integral con servicio, caja/mostrador y barra; sin cocina productiva propia          | Se evalúan servicios comerciales y de barra; no se crea capacidad productiva de cocina por inferencia.                                              | `ESPECIFICADO` |
+|    5 | `Centro de Producción y Distribución` | una sede productiva y logística; áreas productivas, Bodega y Abastecimiento y Servicios Generales                   | Se evalúan producción, calidad, inventario, abastecimiento, logística, instalaciones, personas y tecnología. Distribución no crea una segunda sede. | `ESPECIFICADO` |
+
+**Reconciliación territorial:** 5 esperadas; 5 materializadas; 0 faltantes; 0 duplicadas.
+
+No son sedes del BIA:
+
+- `Vaila Vainilla`: marca / frente de negocio con canales y puntos externos pendientes de reconciliación;
+- `Catering`: línea de negocio o servicio sin sede propia;
+- apartamento asociado a Vaila, apartamento de resguardo vehicular y punto externo de decoraciones: `EXTERNAL_OPERATIONAL_POINT`, no `OPERATIONAL_SITE`;
+- `Todos`, `General`, una zona, una estación, un canal o una aplicación.
+
+Un proceso puede afectar Vaila, Catering, un canal o un punto externo sin convertirlos en sede. Esos contextos se conservan en el BIA como dimensión no territorial o punto externo controlado.
+
+---
+
+#### 11. Reglas de alcance territorial por proceso
+
+1. **Empresa y todas las sedes:** procesos de gobierno, personas, información, tecnología, continuidad, riesgo y finanzas pueden tener impacto transversal aunque su ejecución administrativa sea centralizada.
+2. **Sedes comerciales y canales:** ventas, servicio, cliente, pagos y oferta se instancian solo donde exista la modalidad comercial o canal aplicable.
+3. **Sedes con capacidad productiva:** recetas y producción se instancian donde la capacidad productiva esté aprobada; la existencia de cocina, barra o un nombre de área no autoriza inferir por sí sola toda capacidad FOGO.
+4. **Sedes con inventario o custodia:** movimientos, conteos, condición y abastecimiento interno requieren evidencia de existencia/custodia real.
+5. **Sedes origen/destino logístico:** transporte se instancia por origen, destino, ruta y recurso; un proveedor o destino externo no se convierte en sede Vento.
+6. **Sedes con activos:** el BIA de activos se instancia donde exista un activo o recurso que soporte un resultado empresarial.
+7. **No territorial primario:** procesos de asesoría, autoridad, analítica o canales pueden no tener una sede primaria, pero deben relacionar cualquier sede afectada.
+8. Una combinación proceso-sede sin evidencia de aplicabilidad queda `PENDIENTE_DE_EVIDENCIA` para esa instancia concreta; no se marca `NO_APLICA` por silencio y no altera la decisión BIA base del proceso.
+
+---
+
+#### 12. Familias de servicio empresarial para lectura BIA
+
+Las familias siguientes son agrupaciones de lectura; **no crean nuevas identidades de servicio** y no sustituyen los `VPROC-*`:
+
+- gobierno y estructura;
+- personas y trabajo;
+- SST, higiene y cumplimiento;
+- producto, receta y oferta;
+- compras y proveedores;
+- inventario y abastecimiento interno;
+- activos y movilidad;
+- producción;
+- ventas y caja;
+- cliente y fidelización;
+- logística y entregas;
+- finanzas y obligaciones;
+- instalaciones y tecnología;
+- mercadeo y canales;
+- información y evidencia;
+- analítica y mejora;
+- continuidad transversal;
+- riesgo, cumplimiento y mejora.
+
+Cada familia puede contener procesos con criticidad distinta; la agrupación no hereda una criticidad única.
+
+---
+
+#### 13. Matriz BIA materializada de los 69 procesos
+
+La columna **alcance territorial BIA** define dónde debe instanciarse el análisis cuando exista evidencia de aplicabilidad. No concede capacidad, permiso, propiedad ni disponibilidad.
+
+|    # | Proceso      | Resultado / proceso TO-BE                                                                                                                                                                                | Propietaria | Familia de servicio BIA             | Alcance territorial BIA                                                                                                 | Criticidad BIA         | Nivel mínimo funcional         | Impacto primario                                             | Estado BIA     |
+| ---: | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------ | ------------------------------------------------------------ | -------------- |
+|    1 | `VPROC-0001` | Gobernar decisiónes empresariales con registro, alcance, responsable, compromisos y seguimiento                                                                                                          | `viso`      | Gobierno y estructura               | Empresa y las cinco sedes como alcance de impacto; no depende de una sede para existir                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | gobierno, autoridad y compromisos                            | `ESPECIFICADO` |
+|    2 | `VPROC-0002` | Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                                                                                        | `viso`      | Gobierno y estructura               | Empresa y cinco sedes; estructura territorial canónica                                                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | contexto territorial, autorización y trazabilidad            | `ESPECIFICADO` |
+|    3 | `VPROC-0003` | Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                                                                                                    | `viso`      | Gobierno y estructura               | Empresa y cinco sedes como consumidoras de política vigente                                                             | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | gobierno, cumplimiento y autoridad                           | `ESPECIFICADO` |
+|    4 | `VPROC-0004` | Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                                                                                          | `viso`      | Gobierno y estructura               | Empresa y cinco sedes según compromiso o transferencia                                                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | continuidad de trabajo y coordinación                        | `ESPECIFICADO` |
+|    5 | `VPROC-0005` | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                                                                                                       | `viso`      | Personas y trabajo                  | Empresa; demanda de personal puede originarse en cualquiera de las cinco sedes                                          | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | capacidad laboral futura y cumplimiento                      | `ESPECIFICADO` |
+|    6 | `VPROC-0006` | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                                                                                                       | `viso`      | Personas y trabajo                  | Cinco sedes según asignación laboral; gobierno empresarial                                                              | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | habilitación laboral, seguridad y acceso                     | `ESPECIFICADO` |
+|    7 | `VPROC-0007` | Administrar asignaciónes laborales y programación publicada con historial y revisión controlada                                                                                                          | `viso`      | Personas y trabajo                  | Cinco sedes según asignación y programación                                                                             | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | dotación, turnos y capacidad operativa                       | `ESPECIFICADO` |
+|    8 | `VPROC-0008` | Capturar asistencia como hechos inmutables y corregirla mediante decisiónes auditables                                                                                                                   | `anima`     | Personas y trabajo                  | Cinco sedes con personal; contexto laboral vigente                                                                      | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | laboral, pagos y evidencia de tiempo                         | `ESPECIFICADO` |
+|    9 | `VPROC-0009` | Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                                                                                                     | `viso`      | Personas y trabajo                  | Cinco sedes con personal y programación                                                                                 | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | cobertura laboral y continuidad de turno                     | `ESPECIFICADO` |
+|   10 | `VPROC-0010` | Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                                                                                           | `numera`    | Finanzas y obligaciones             | Empresa; cinco sedes como origen de hechos laborales                                                                    | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | financiero, laboral y conciliación                           | `ESPECIFICADO` |
+|   11 | `VPROC-0011` | Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                                                                                          | `viso`      | Personas y trabajo                  | Cinco sedes según vínculo y recursos asignados                                                                          | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | seguridad, laboral, activos y evidencia                      | `ESPECIFICADO` |
+|   12 | `VPROC-0012` | Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                                                                                            | `viso`      | SST, higiene y cumplimiento         | Cinco sedes y puntos controlados donde exista riesgo aplicable                                                          | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | vida, SST, inocuidad y cumplimiento                          | `ESPECIFICADO` |
+|   13 | `VPROC-0013` | Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                                                                                            | `viso`      | SST, higiene y cumplimiento         | Cinco sedes y cualquier punto operativo afectado                                                                        | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | vida, seguridad y respuesta de emergencia                    | `ESPECIFICADO` |
+|   14 | `VPROC-0014` | Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                                                                                              | `viso`      | SST, higiene y cumplimiento         | Sedes y áreas donde el control sea aplicable; las cinco sedes permanecen evaluables                                     | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | inocuidad, salud y cumplimiento                              | `ESPECIFICADO` |
+|   15 | `VPROC-0015` | Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                                                                                         | `nexo`      | Producto, receta y oferta           | Empresa; sedes consumidoras según catálogo y operación                                                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | identidad de producto, unidades e integridad operativa       | `ESPECIFICADO` |
+|   16 | `VPROC-0016` | Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                                                                                               | `fogo`      | Producto, receta y oferta           | Sedes con capacidad productiva aprobada; Centro de Producción y Distribución confirmado como productivo                 | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | producción reproducible, calidad y seguridad de producto     | `ESPECIFICADO` |
+|   17 | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                                                                                                  | `pulso`     | Producto, receta y oferta           | Vento Café, Saudo y Molka como sedes comerciales; canales y Catering como contexto no territorial cuando aplique        | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | venta, promesa al cliente y disponibilidad                   | `ESPECIFICADO` |
+|   18 | `VPROC-0018` | Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                                                                                                  | `nexo`      | Producto, receta y oferta           | Sedes donde se almacene, produzca, prepare o venda producto; no se infiere por nombre de sede                           | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | inocuidad, alérgenos, calidad y cumplimiento                 | `ESPECIFICADO` |
+|   19 | `VPROC-0019` | Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                                                                                         | `origo`     | Compras y proveedores               | Empresa y sedes solicitantes; aplicabilidad por necesidad real                                                          | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | abastecimiento futuro y control de demanda                   | `ESPECIFICADO` |
+|   20 | `VPROC-0020` | Comparar proveedores y condiciónes con evidencia suficiente para decidir                                                                                                                                 | `origo`     | Compras y proveedores               | Empresa; sedes consumidoras según necesidad de abastecimiento                                                           | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | abastecimiento, costo y riesgo de proveedor                  | `ESPECIFICADO` |
+|   21 | `VPROC-0021` | Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                                                                                                 | `origo`     | Compras y proveedores               | Empresa y sedes solicitantes; no concede recepción física                                                               | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | compromiso comercial, abastecimiento y autorización          | `ESPECIFICADO` |
+|   22 | `VPROC-0022` | Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica                                                                                       | `origo`     | Compras y proveedores               | Sedes receptoras de compras; aplicabilidad por recepción real                                                           | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | calidad de recepción, obligación financiera e inventario     | `ESPECIFICADO` |
+|   23 | `VPROC-0023` | Gobernar sedes, LOC, zonas, posiciones y condiciónes de almacenamiento                                                                                                                                   | `nexo`      | Inventario y abastecimiento interno | Sedes con inventario o custodia; no se infiere existencia por sede                                                      | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | ubicación, custodia e integridad referencial                 | `ESPECIFICADO` |
+|   24 | `VPROC-0024` | Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                                                                                          | `nexo`      | Inventario y abastecimiento interno | Sedes con inventario o custodia y sus origenes/destinos autorizados                                                     | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | existencia, custodia y disponibilidad                        | `ESPECIFICADO` |
+|   25 | `VPROC-0025` | Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                                                                                               | `nexo`      | Inventario y abastecimiento interno | Sedes con inventario o custodia y procesos consumidores                                                                 | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | inventario, consumo, traslado y trazabilidad                 | `ESPECIFICADO` |
+|   26 | `VPROC-0026` | Contar como observación, investigar diferencias y ajustar mediante decisión separada                                                                                                                     | `nexo`      | Inventario y abastecimiento interno | Sedes con inventario sujeto a conteo                                                                                    | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | exactitud de inventario y conciliación                       | `ESPECIFICADO` |
+|   27 | `VPROC-0027` | Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                                                                                         | `nexo`      | Inventario y abastecimiento interno | Sedes con existencias sujetas a condición, frío, vencimiento o disposición                                              | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | inocuidad, pérdida, custodia y calidad                       | `ESPECIFICADO` |
+|   28 | `VPROC-0028` | Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                                                                                           | `nexo`      | Inventario y abastecimiento interno | Sedes origen/destino de abastecimiento interno                                                                          | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | continuidad de inventario, producción y venta                | `ESPECIFICADO` |
+|   29 | `VPROC-0029` | Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                                                                                            | `nexo`      | Activos y movilidad                 | Cinco sedes según activos y custodias existentes; puntos externos bajo contrato separado                                | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | custodia, disponibilidad y responsabilidad                   | `ESPECIFICADO` |
+|   30 | `VPROC-0030` | Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                                                                                         | `nexo`      | Activos y movilidad                 | Cinco sedes según activos que soporten procesos                                                                         | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | disponibilidad de activos y continuidad tecnica              | `ESPECIFICADO` |
+|   31 | `VPROC-0031` | Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                                                                                            | `nexo`      | Activos y movilidad                 | Sedes y puntos que requieran vehículo; origen/destino logístico según operación                                         | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | movilidad, entrega y seguridad operacional                   | `ESPECIFICADO` |
+|   32 | `VPROC-0032` | Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                                                                                              | `nexo`      | Activos y movilidad                 | Sedes y procesos que usen reutilizables o contenedores                                                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | custodia, faltantes y capacidad operativa                    | `ESPECIFICADO` |
+|   33 | `VPROC-0033` | Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                                                                                                     | `fogo`      | Producción                          | Sedes con capacidad productiva aprobada; Centro de Producción y Distribución confirmado                                 | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | abastecimiento, capacidad y cumplimiento productivo          | `ESPECIFICADO` |
+|   34 | `VPROC-0034` | Preparar materiales y ejecutar producción contra una versión aprobada                                                                                                                                    | `fogo`      | Producción                          | Sedes con capacidad productiva aprobada                                                                                 | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | producción, consumo, lote y trazabilidad                     | `ESPECIFICADO` |
+|   35 | `VPROC-0035` | Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                                                                                           | `fogo`      | Producción                          | Sedes donde exista producción o liberación de producto                                                                  | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | calidad, inocuidad y liberación segura                       | `ESPECIFICADO` |
+|   36 | `VPROC-0036` | Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                                                                                            | `fogo`      | Producción                          | Sedes con empaque o terminación productiva aprobada                                                                     | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | identidad de lote, empaque y disponibilidad                  | `ESPECIFICADO` |
+|   37 | `VPROC-0037` | Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                                                                                             | `fogo`      | Producción                          | Sedes con producción ejecutada                                                                                          | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | rendimiento, merma, costo e historia productiva              | `ESPECIFICADO` |
+|   38 | `VPROC-0038` | Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                                                                                                    | `pulso`     | Ventas y caja                       | Sedes comerciales donde exista servicio en mesa; Vento Café y las capacidades reales de Saudo/Molka según configuracion | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | servicio al cliente, ingreso y pedido                        | `ESPECIFICADO` |
+|   39 | `VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                                                                                           | `pulso`     | Ventas y caja                       | Vento Café, Saudo y Molka cuando la modalidad comercial aplique                                                         | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | venta, ingreso, entrega y cliente                            | `ESPECIFICADO` |
+|   40 | `VPROC-0040` | Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                                                                                             | `pulso`     | Ventas y caja                       | Canales externos y sedes comerciales receptoras; no crea una sede externa                                               | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | pedido, ingreso, canal y duplicidad                          | `ESPECIFICADO` |
+|   41 | `VPROC-0041` | Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                                                                                                   | `pulso`     | Ventas y caja                       | Catering como linea de negocio sin sede propia; sedes de producción/entrega solo según capacidad real                   | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | compromiso comercial, capacidad, entrega y facturacion       | `ESPECIFICADO` |
+|   42 | `VPROC-0042` | Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                                                                                                       | `pulso`     | Ventas y caja                       | Sedes y canales donde exista el compromiso comercial afectado                                                           | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | cliente, dinero, inventario y reversibilidad                 | `ESPECIFICADO` |
+|   43 | `VPROC-0043` | Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                                                                                             | `pulso`     | Ventas y caja                       | Sedes y canales con cobro autorizado                                                                                    | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | dinero, fiscal, duplicidad y cliente                         | `ESPECIFICADO` |
+|   44 | `VPROC-0044` | Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                                                                                              | `pulso`     | Ventas y caja                       | Sedes y cajas donde exista operación comercial                                                                          | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | financiero, efectivo, conciliación y responsabilidad         | `ESPECIFICADO` |
+|   45 | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                                                                                              | `pass`      | Cliente y fidelización              | Sedes y canales donde fidelización sea aplicable; identidad no pertenece a la sede                                      | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | cliente, saldo, consentimiento y privacidad                  | `ESPECIFICADO` |
+|   46 | `VPROC-0046` | Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                                                                                                       | `pulso`     | Cliente y fidelización              | Sedes y canales comerciales relacionados con el caso                                                                    | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | cliente, compensación, reputación y evidencia                | `ESPECIFICADO` |
+|   47 | `VPROC-0047` | Gestionar reservas, eventos y comunicaciónes al cliente con capacidad y consentimiento                                                                                                                   | `pulso`     | Cliente y fidelización              | Sedes y canales con reservas/eventos; no se presume en todas                                                            | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | promesa, capacidad, cliente y consentimiento                 | `ESPECIFICADO` |
+|   48 | `VPROC-0048` | Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                                                                                              | `nexo`      | Logística y entregas                | Sedes origen/destino logístico, especialmente Centro de Producción y Distribución cuando corresponda                    | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | despacho, custodia, capacidad y tiempo                       | `ESPECIFICADO` |
+|   49 | `VPROC-0049` | Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                                                                                                      | `nexo`      | Logística y entregas                | Sedes origen/destino y puntos autorizados de entrega                                                                    | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | custodia, entrega, rechazo y evidencia                       | `ESPECIFICADO` |
+|   50 | `VPROC-0050` | Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                                                                                               | `pulso`     | Logística y entregas                | Canales/terceros y sedes comerciales vinculadas al pedido; tercero no es sede                                           | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | promesa al cliente, entrega, conciliación y tercero          | `ESPECIFICADO` |
+|   51 | `VPROC-0051` | Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                                                                                          | `numera`    | Finanzas y obligaciones             | Empresa; las cinco sedes pueden originar hechos económicos                                                              | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | financiero, trazabilidad y conciliación                      | `ESPECIFICADO` |
+|   52 | `VPROC-0052` | Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                                                                                            | `numera`    | Finanzas y obligaciones             | Empresa; obligaciones originadas por sedes/procesos                                                                     | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | financiero, proveedor, vencimiento y conciliación            | `ESPECIFICADO` |
+|   53 | `VPROC-0053` | Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                                                                                               | `numera`    | Finanzas y obligaciones             | Empresa; cartera vinculada a ventas, clientes o sedes de origen                                                         | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | caja, cartera, saldo y conciliación                          | `ESPECIFICADO` |
+|   54 | `VPROC-0054` | Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas                                                                                                                | `numera`    | Finanzas y obligaciones             | Empresa y cinco sedes como dimensiones económicas cuando aplique                                                        | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | costo, cierre, rentabilidad y decisión                       | `ESPECIFICADO` |
+|   55 | `VPROC-0055` | Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                                                                                                  | `nexo`      | Instalaciones y tecnología          | Las cinco sedes operativas y sus instalaciones; puntos externos solo con contrato aplicable                             | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | seguridad física, inocuidad, habitabilidad y operación       | `ESPECIFICADO` |
+|   56 | `VPROC-0056` | Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                                                                                                | `aura`      | Mercadeo y canales                  | No territorial primario; afecta marcas, canales y sedes publicadas; AURA permanece diferida                             | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | reputación, vigencia comercial y comunicación                | `ESPECIFICADO` |
+|   57 | `VPROC-0057` | Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                                                                                                  | `aura`      | Mercadeo y canales                  | No territorial primario; canales digitales y frentes comerciales; AURA permanece diferida                               | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | oportunidad comercial, atención y trazabilidad               | `ESPECIFICADO` |
+|   58 | `VPROC-0058` | Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                                                                                                    | `viso`      | Instalaciones y tecnología          | Las cinco sedes, aplicaciónes y servicios tecnologicos afectados                                                        | `CRITICA_OPERACIONAL`  | `MANTENER_RESULTADO_ESENCIAL`  | tecnología, disponibilidad y soporte de procesos             | `ESPECIFICADO` |
+|   59 | `VPROC-0059` | Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                                                                                                 | `viso`      | Instalaciones y tecnología          | Empresa y cinco sedes según identidad, dispositivo, aplicación y contexto                                               | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | seguridad, acceso, privacidad y continuidad                  | `ESPECIFICADO` |
+|   60 | `VPROC-0060` | Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                                                                                               | `viso`      | Informacion y evidencia             | Empresa y cinco sedes como productoras/consumidoras de evidencia                                                        | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | evidencia, privacidad, retención y cumplimiento              | `ESPECIFICADO` |
+|   61 | `VPROC-0061` | Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                                                                                             | `numera`    | Analítica y mejora                  | Empresa y cinco sedes como fuentes o dimensiones de análisis                                                            | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | decisión, aprendizaje y calidad analitica                    | `ESPECIFICADO` |
+|   62 | `VPROC-0062` | Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                                                                                                 | `viso`      | Continuidad transversal             | Empresa, las cinco sedes y procesos/servicios afectados                                                                 | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | continuidad integral, seguridad, coordinación y recuperación | `ESPECIFICADO` |
+|   63 | `VPROC-0063` | `CAP-01.07` — Gestionar riesgos empresariales: Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado de riesgo, tratamiento y seguimiento.            | `viso`      | Riesgo, cumplimiento y mejora       | Empresa y cinco sedes según exposición                                                                                  | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | riesgo, decisión, cumplimiento y exposición residual         | `ESPECIFICADO` |
+|   64 | `VPROC-0064` | `CAP-01.09` — Gestionar relaciónes con asesores y autoridades: Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciónes y evidencia sin delegar la propiedad interna del resultado. | `viso`      | Riesgo, cumplimiento y mejora       | No territorial primario; obligaciones pueden afectar empresa o sedes concretas                                          | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | legal, regulatorio, contractual y vencimientos               | `ESPECIFICADO` |
+|   65 | `VPROC-0065` | `CAP-02.10` — Acompañar desempeño y desarrollo: Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiónes, con uso explícito y privacidad aprobada.                           | `viso`      | Personas y trabajo                  | Cinco sedes con personal; identidad y finalidad laboral gobiernan                                                       | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | personas, privacidad y desarrollo                            | `ESPECIFICADO` |
+|   66 | `VPROC-0066` | `CAP-03.03` — Entregar y controlar elementos de protección: Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección.                               | `viso`      | SST, higiene y cumplimiento         | Sedes con personal y riesgo que exija EPP; no se presume la misma necesidad en todas                                    | `CRITICA_PROTECCION`   | `PROTEGER_Y_DETENER`           | vida, SST, cumplimiento y custodia de EPP                    | `ESPECIFICADO` |
+|   67 | `VPROC-0067` | `CAP-07.11` — Gestionar kits y conjuntos: Definir kit, instancia, componentes obligatorios y opcionales, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor.    | `nexo`      | Activos y movilidad                 | Sedes y procesos donde existan kits o conjuntos; aplicabilidad por recurso real                                         | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | custodia, completitud y capacidad operativa                  | `ESPECIFICADO` |
+|   68 | `VPROC-0068` | `CAP-10.06` — Medir satisfacción: Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido.                                             | `pulso`     | Cliente y fidelización              | Sedes y canales comerciales donde se mida experiencia                                                                   | `DIFERIBLE_CONTROLADA` | `DIFERIR_CON_TRAZABILIDAD`     | cliente, privacidad, reputación y decisión                   | `ESPECIFICADO` |
+|   69 | `VPROC-0069` | `CAP-12.11` — Gestionar presupuestos: Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación sin convertir el presupuesto en hecho contable.                  | `numera`    | Finanzas y obligaciones             | Empresa y cinco sedes como dimensiones presupuestales cuando aplique                                                    | `ALTA_CONTROL`         | `MANTENER_CONTROL_Y_EVIDENCIA` | financiero, planeación, control y desviacion                 | `ESPECIFICADO` |
+
+---
+
+#### 14. Reconciliación de propiedad y cobertura
+
+La matriz conserva sin cambios la propiedad funcional aprobada en `PROC-CAT-005`:
+
+```text
+{{OWNER_COUNTS}}
+TOTAL 69
+```
+
+Reconciliación:
+
+- 69 procesos esperados;
+- 69 procesos materializados;
+- 69 identificadores únicos;
+- 0 faltantes;
+- 0 duplicados;
+- 0 procesos con propietaria múltiple;
+- 0 procesos asignados a `shell`;
+- 2 procesos con propietaria `aura` mantienen la condición de aplicación diferida;
+- ninguna propietaria externa;
+- consumidoras no se redefinen: se resuelven por `PROC-APPLICATION-CONSUMER-REGISTRY-001`.
+
+La criticidad resultante es:
+
+```text
+{{CRIT_COUNTS}}
+```
+
+El nivel mínimo funcional resultante es:
+
+```text
+{{MIN_COUNTS}}
+```
+
+Estas distribuciones son una decisión de esta tarea y no constituyen una prioridad de recuperación.
+
+---
+
+#### 15. Portafolio BIA por sede
+
+| Sede                                  | Servicios que deben evaluarse directamente                                                                                                                                              | Resultado mínimo transversal                                                                                                       | Frontera                                                                                                                                    |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Oficina 1`                           | gobierno, administración de personas, obligaciones/finanzas, documentos/evidencia, tecnología, continuidad y riesgos; además cualquier proceso cuya ejecución real dependa de esta sede | conservar mando, identidad, evidencia, vencimientos, acceso seguro y capacidad de coordinar pendientes                             | su relación física/registral pendiente no impide tratarla como sede interna activa, pero impide inventar dirección pública o estado externo |
+| `Vento Café`                          | servicio/venta, oferta, personas, SST/higiene, producto, inventario/activos, instalaciones, tecnología y cualquier producción realmente habilitada                                      | mantener solo servicio esencial seguro o proteger/detener; conservar pedido, dinero, inventario y pendientes trazables             | Cocina y Barra no prueban por sí solas que toda capacidad productiva FOGO esté activa                                                       |
+| `Saudo`                               | servicio/venta, personas, SST/higiene, producto, inventario/activos, instalaciones, tecnología y capacidades productivas realmente habilitadas                                          | mantener servicio esencial seguro con trazabilidad o proteger/detener                                                              | el Área Operativa Integral no se divide en sedes o áreas ficticias para el BIA                                                              |
+| `Molka`                               | servicio/venta, personas, SST/higiene, producto, inventario/activos, instalaciones y tecnología                                                                                         | mantener servicio esencial seguro con trazabilidad o proteger/detener                                                              | no se crea una cocina productiva propia; cualquier producción distinta de barra exige evidencia/capacidad aprobada                          |
+| `Centro de Producción y Distribución` | producción, calidad, inventario, abastecimiento interno, activos, logística, personas, SST/higiene, instalaciones y tecnología                                                          | preservar seguridad/inocuidad/custodia y mantener solo producción o logística esencial que pueda ejecutarse con controles vigentes | es una sola sede; distribución es capacidad/proceso y no una segunda sede                                                                   |
+
+El portafolio no afirma que todos los procesos listados estén activos permanentemente en cada sede. Determina qué familias deben comprobar aplicabilidad y criticidad cuando el BIA operativo se instancie.
+
+---
+
+#### 16. Tratamiento de marcas, líneas, canales y puntos externos
+
+##### 16.1. Vaila Vainilla
+
+Vaila se conserva como marca / frente de negocio con canales y puntos externos pendientes de reconciliación. El BIA puede registrar impacto sobre Vaila, pero:
+
+- no la cuenta como sexta sede;
+- no asigna un RTO/RPO propio en esta tarea;
+- no convierte apartamentos o puntos de custodia en sedes;
+- no resuelve aquí emisores de factura, inventario o recaudo pendientes de sus tareas propietarias.
+
+##### 16.2. Catering
+
+Catering es línea de negocio o servicio sin sede propia. El BIA de `VPROC-0041` relacionará las sedes que realmente produzcan, preparen, despachen o administren el compromiso, sin crear una sede denominada Catering.
+
+##### 16.3. Canales y proveedores
+
+Rappi, ManyChat, web, WhatsApp, POS externo, bancos, transportistas y otros terceros pueden ser dependencias o canales. No son sedes ni propietarios internos. Su criticidad y sustitutos se detallarán en las tareas de dependencias y continuidad de proveedores.
+
+---
+
+#### 17. Reglas de impacto por sede, horario y temporada
+
+1. La criticidad base de la matriz no sustituye la instancia por sede.
+2. Si un proceso solo existe en una sede o capacidad concreta, una interrupción de esa sede puede elevar el impacto local sin cambiar la identidad del proceso.
+3. Un horario cerrado no convierte el proceso en `NO_APLICA`; puede reducir temporalmente el impacto inmediato, pero conserva obligaciones, pendientes y preparación para la siguiente apertura.
+4. Temporadas, eventos, campañas o picos pueden modificar el impacto y volumen; esos cambios requieren evidencia y vigencia.
+5. El mismo proceso puede tener niveles de volumen diferentes por sede sin recibir otro `VPROC-*`.
+6. Una sede que no ejecuta un proceso puede seguir siendo consumidora o afectada por su resultado.
+7. El BIA no usa número de trabajadores, ventas, pedidos o inventario supuesto; esos valores deberán provenir de evidencia vigente.
+8. La ausencia de datos cuantitativos no autoriza declarar una capacidad no crítica; se conserva la clase base hasta completar evidencia.
+
+---
+
+#### 18. Handoffs obligatorios y condiciones de salida
+
+| Decisión fuera del alcance actual                                                                                                | Propietario documental            | Condición de salida                                                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| mapa de personas, datos, aplicaciones, dispositivos, instalaciones, proveedores, energía, red y demás dependencias por resultado | `CONT-DOM-003`                    | cada resultado BIA enlazado a dependencias y SPOF reales sin inferir criticidad técnica por existencia |
+| MTPD, RTO, RPO, MBCO, prioridad de recuperación y aceptación de riesgo                                                           | `CONT-DOM-004`                    | objetivos empresariales aprobados por contexto, compatibles con capacidad, costo y evidencia           |
+| taxonomía/severidad y criterios de activación/desactivación de incidentes                                                        | `CONT-DOM-005`                    | incidente de continuidad separado de la criticidad BIA del proceso                                     |
+| mando, sustitución y comunicación de crisis                                                                                      | `CONT-DOM-006`                    | roles de incidente y suplencia materializados sin alterar propietarios de proceso                      |
+| volumen y operación mínima exactos por proceso, sede, horario, temporada y duración                                              | `CONT-DOM-007`                    | procedimiento mínimo cuantificado y ejecutable sin perder controles obligatorios                       |
+| modalidad concreta de contingencia y recursos alternativos                                                                       | `CONT-DOM-008`                    | alternativa aprobada por capacidad y contexto, con límites y abandono definidos                        |
+| captura/folios/evidencia durante falla                                                                                           | `CONT-DOM-009`                    | medio controlado con identidad, custodia y estado pendiente                                            |
+| reincorporación, conflictos y conciliación                                                                                       | `CONT-DOM-010`                    | retorno idempotente y pendientes conciliables por dominio                                              |
+| respaldo y cobertura de recuperación                                                                                             | `CONT-DOM-011`                    | inventario de fuentes respaldadas y política verificable                                               |
+| runbooks, orden técnico/funcional, restauración y retorno                                                                        | `CONT-DOM-012`                    | recuperación de componentes vinculada a validación del resultado empresarial                           |
+| proveedores, energía, ISP, pagos, transporte y canales alternativos                                                              | `CONT-DOM-013`                    | dependencia externa con alternativa, contacto, compromiso y evidencia                                  |
+| ejercicios y tiempos observados                                                                                                  | `CONT-DOM-014`                    | BIA y objetivos probados en escenarios controlados con evidencia                                       |
+| actualización posterior por incidentes, ejercicios o cambios                                                                     | `CONT-DOM-015`                    | versión BIA revisada y acciones con eficacia comprobada                                                |
+| autoridad sobre activación, emergencia y recuperación                                                                            | `CONT-AUTH-001` a `CONT-AUTH-004` | autorización y segregación materializadas antes de operación real                                      |
+| contratos de criticidad/estado entre aplicaciones                                                                                | `CONT-INT-001` a `CONT-INT-004`   | integración versionada sin duplicar fuentes de verdad ni efectos                                       |
+
+No queda una decisión material identificada por esta tarea sin propietario documental y condición de salida.
+
+---
+
+#### 19. Reglas de versionado y mantenimiento del BIA
+
+Una revisión BIA será obligatoria cuando ocurra alguno de estos cambios materiales:
+
+1. propósito o frontera de un `VPROC-*`;
+2. aplicación propietaria o consumidoras materiales;
+3. alta, cierre, reemplazo o cambio material de una sede;
+4. nueva capacidad operativa por sede o retiro de una existente;
+5. cambio de área, zona o estación que altere una dependencia crítica;
+6. cambio material de horario, temporada o volumen;
+7. cambio de obligación legal, sanitaria, laboral, contractual, fiscal o de privacidad;
+8. incorporación o retiro de un proveedor/canal cuya falla afecte el resultado;
+9. cambio de arquitectura, plataforma, dispositivo o dato que modifique la dependencia empresarial;
+10. incidente real que demuestre un impacto distinto del supuesto;
+11. ejercicio que invalide una hipótesis del BIA;
+12. cambio de nivel mínimo, MTPD, RTO, RPO, MBCO o aceptación de riesgo aprobado por su tarea propietaria.
+
+La nueva versión conserva la anterior, fecha efectiva, razón, actor, aprobador y evidencia. Una corrección no reescribe silenciosamente el análisis usado para una decisión o ejercicio previo.
+
+---
+
+#### 20. Cobertura de requisitos de prueba vigente
+
+El comportamiento definido aquí ya está protegido por el requisito vigente que exige un BIA y mapa de dependencia versionados por capacidad crítica, con producto/servicio, proceso, sede, horario, propietario, consumidores, personas, datos, aplicaciones, dispositivos, instalaciones, proveedores, recursos, nivel mínimo, impacto y objetivos de continuidad cuando apliquen. Ese requisito asigna expresamente responsabilidad a `CONT-DOM-001` a `CONT-DOM-004`.
+
+La integración transversal vigente también protege que procesos, aplicaciones, datos, infraestructura, proveedores y canales permanezcan relacionados mediante estados versionados, señales, mecanismos alternos y reconciliación, sin activaciones contradictorias ni efectos duplicados.
+
+La presente tarea materializa la parte empresarial y territorial de esas reglas; no introduce un comportamiento ejecutable adicional ni cambia su estado, prioridad, destino de implementación o relación.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el análisis de impacto, la criticidad por resultado/proceso/sede y el nivel mínimo funcional cualitativo materializados en esta tarea son especializaciones documentales de obligaciones ya existentes en el registro canónico. No se incorpora una regla ejecutable nueva, no se altera un requisito vigente y no se realiza implementación.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 21. Criterios de aceptación documental
+
+1. existe una única unidad BIA basada en `VPROC-*` y no un catálogo paralelo de servicios;
+2. los 69 procesos canónicos aparecen exactamente una vez;
+3. no existen identificadores `VPROC-*` faltantes;
+4. no existen identificadores `VPROC-*` duplicados;
+5. cada proceso conserva su aplicación propietaria aprobada;
+6. la distribución de propiedad suma exactamente 69;
+7. `shell` conserva cero procesos propietarios;
+8. `aura` conserva dos procesos y su condición de aplicación diferida;
+9. cada proceso tiene una familia de lectura BIA;
+10. cada proceso tiene una regla explícita de alcance territorial;
+11. cada proceso tiene una clase de criticidad BIA;
+12. cada proceso tiene un nivel mínimo funcional cualitativo;
+13. cada proceso tiene una clase principal de impacto;
+14. las cuatro clases de criticidad están definidas sin usarlas como severidad de incidente;
+15. los cuatro niveles mínimos están definidos sin convertirlos en MBCO cuantitativo;
+16. ningún proceso recibe MTPD numérico;
+17. ningún proceso recibe RTO numérico;
+18. ningún proceso recibe RPO numérico;
+19. ningún proceso recibe MBCO cuantitativo;
+20. no se fija una prioridad de recuperación;
+21. las cinco sedes operativas canónicas aparecen exactamente una vez en el inventario territorial;
+22. `Oficina 1` se conserva como sede administrativa interna activa;
+23. el estado registral/dirección pública pendiente de `Oficina 1` no se presenta como verificado;
+24. Vento Café conserva Servicio/Salón, Cocina y Barra;
+25. Saudo conserva una única Área Operativa Integral;
+26. Molka conserva una única Área Operativa Integral;
+27. no se crea cocina productiva propia para Molka;
+28. Centro de Producción y Distribución se mantiene como una sola sede;
+29. distribución no se convierte en una segunda sede;
+30. Vaila Vainilla no se cuenta como sede;
+31. Catering no se cuenta como sede;
+32. los tres puntos externos citados no se convierten en sedes;
+33. `Todos` o `General` no se usa como unidad territorial BIA;
+34. una marca no se usa como sede;
+35. un canal no se usa como sede;
+36. una aplicación no se usa como sede;
+37. las capacidades productivas no se infieren únicamente por nombre de cocina/barra;
+38. el inventario no se presume existente en una sede por ser operativa;
+39. cada combinación proceso-sede requiere evidencia de aplicabilidad cuando no sea transversal;
+40. una combinación sin evidencia queda pendiente de evidencia y no `NO_APLICA` por silencio;
+41. las consumidoras se referencian desde el registro canónico vigente y no se duplican localmente;
+42. aplicación propietaria no se confunde con dependencia técnica;
+43. criticidad BIA no se confunde con prioridad de recuperación;
+44. criticidad BIA no se confunde con severidad de incidente;
+45. nivel mínimo funcional no se confunde con volumen mínimo cuantitativo;
+46. nivel mínimo funcional no autoriza bypass de seguridad o autorización;
+47. `CRITICA_PROTECCION` permite detener para proteger integridad;
+48. `CRITICA_OPERACIONAL` exige resultado esencial solo cuando sea seguro;
+49. `ALTA_CONTROL` exige preservar expediente, autoridad y conciliación;
+50. `DIFERIBLE_CONTROLADA` exige trazabilidad de reanudación;
+51. el impacto por prolongación se modela sin ventanas universales;
+52. horarios y temporadas pueden cambiar la instancia BIA sin cambiar el `VPROC-*`;
+53. cambios de volumen no crean un proceso nuevo;
+54. cada decisión diferida tiene tarea propietaria y condición de salida;
+55. dependencias y SPOF quedan exclusivamente en `CONT-DOM-003`;
+56. MTPD/RTO/RPO/MBCO y prioridad quedan exclusivamente en `CONT-DOM-004`;
+57. la operación mínima cuantificada queda en `CONT-DOM-007`;
+58. estrategias concretas de contingencia quedan en `CONT-DOM-008`;
+59. captura durante falla queda en `CONT-DOM-009`;
+60. reincorporación y conciliación quedan en `CONT-DOM-010`;
+61. respaldos quedan en `CONT-DOM-011`;
+62. runbooks y restauración quedan en `CONT-DOM-012`;
+63. continuidad de proveedores queda en `CONT-DOM-013`;
+64. ejercicios y evidencia temporal quedan en `CONT-DOM-014`;
+65. mantenimiento posterior queda en `CONT-DOM-015`;
+66. autoridad de emergencia queda en `CONT-AUTH-*`;
+67. contratos físicos de integración quedan en `CONT-INT-*`;
+68. no se crea ni modifica ningún requisito de prueba;
+69. no se modifica código, DDL, DML, RLS, RPC, datos, migraciones, respaldos, proveedores o Supabase;
+70. no se ejecuta interrupción, failover, restauración ni ejercicio productivo;
+71. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 22. Límites de la tarea
+
+Esta tarea no:
+
+- mide tiempos reales de interrupción o recuperación;
+- fija RTO, RPO, MTPD o MBCO;
+- acepta riesgos;
+- ordena la recuperación entre procesos;
+- inventa volúmenes, ventas, inventario, trabajadores o capacidad;
+- declara una combinación proceso-sede aplicable sin evidencia cuando la regla no sea transversal;
+- inventa dependencias o single points of failure;
+- selecciona modos offline, manuales, snapshots, proveedores o recursos alternativos;
+- escribe formularios de contingencia;
+- diseña runbooks;
+- define respaldos;
+- ejecuta pruebas destructivas o simulaciones;
+- activa acceso de emergencia;
+- cambia permisos;
+- cambia proveedores o contratos;
+- crea tablas, vistas, funciones, jobs, colas o integraciones;
+- modifica Supabase;
+- declara continuidad validada o readiness.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos`
+
+
 ### [ ] CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos
 ### [ ] CONT-DOM-004 — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo
 ### [ ] CONT-DOM-005 — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **704** |
+| Aprobadas | **705** |
 | En propuesta | **0** |
-| No iniciadas | **890** |
+| No iniciadas | **889** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.17% (704/1594)** |
+| Porcentaje de completamiento | **44.23% (705/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | ✅ APROBADA |
-| Tarea actual | `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-DOM-003` — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | ⬜ NO INICIADA |
+| Última aprobada | `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | ✅ APROBADA |
+| Tarea actual | `CONT-DOM-003` — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-004` — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1593,7 +1593,7 @@
 | ✅ APROBADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ✅ APROBADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ✅ APROBADA | `CONT-DOM-001` | Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-003` | Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-004` | Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-005` | Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
