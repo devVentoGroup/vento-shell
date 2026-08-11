@@ -3050,4 +3050,1126 @@ SIGUIENTE TAREA RESERVADA
 `DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial`
 
 
-### [ ] DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
+### ✅ DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros` — APROBADA
+**Tarea siguiente:** `CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de la integración controlada de la capa analítica con BI, hojas de cálculo, modelos analíticos, aprendizaje automático, inteligencia artificial generativa y agentes con herramientas gobernadas, sin seleccionar proveedores, contratar servicios, implementar modelos, habilitar secretos, desplegar automatizaciones ni ejecutar efectos empresariales
+**Bloque:** AB — Analítica, indicadores y datos maestros
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, grants, secretos, credenciales, APIs de proveedores, embeddings, índices vectoriales, datasets de entrenamiento, fine-tuning, jobs, agentes productivos, backfills, despliegues, publicaciones o cambios en Supabase:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento OS puede convertir su capa semántica, sus fuentes propietarias y sus artefactos analíticos en una plataforma profundamente asistida por inteligencia artificial sin crear una segunda fuente de verdad, sin entregar un universo de datos a una herramienta externa, sin convertir una predicción en un hecho y sin permitir que una respuesta generativa sustituya una autorización, una certificación, una decisión empresarial o una transición de estado.
+
+La tarea materializa cuatro familias de consumo controlado:
+
+1. BI y visualización analítica;
+2. hojas de cálculo y análisis tabular portable;
+3. modelos estadísticos, predictivos y de optimización;
+4. inteligencia artificial generativa y agentes que puedan consultar, razonar, preparar propuestas y, únicamente en una fase posterior autorizada, solicitar herramientas empresariales tipadas.
+
+El resultado deberá permitir responder de forma determinista:
+
+```text
+qué dato puede conocer una herramienta
+qué proyección recibe y con qué finalidad
+qué versión, corte, calidad y autorización sustentan el resultado
+qué diferencia existe entre hecho, métrica, predicción, simulación, explicación y recomendación
+qué modelo o proveedor produjo un resultado
+qué instrucciones y herramientas estaban habilitadas
+qué evidencia permite reconstruir una respuesta o ejecución de modelo
+qué contenido puede salir de Vento OS y bajo qué contrato
+cómo se impide que una hoja o un modelo se conviertan en fuente de verdad
+cómo se evita que un documento externo cambie instrucciones o permisos del agente
+cómo se distingue una propuesta de una acción empresarial real
+qué capacidades de IA son valiosas en cada aplicación
+qué capacidades permanecen bloqueadas, condicionadas o prohibidas
+qué tarea propietaria deberá materializar cada efecto futuro
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+1. cuatro familias de consumidores analíticos quedan separadas y gobernadas: BI, hojas de cálculo, modelos analíticos y IA/agentes;
+2. se define una frontera única de entrada: toda herramienta consume contratos de `DATA-INT-001` y la capa semántica de `DATA-INT-002`, nunca tablas privadas por conveniencia;
+3. se define una frontera única de identidad: cualquier unión externa consume `DATA-INT-003`; similitud o IA nunca sustituyen crosswalk;
+4. se materializan seis niveles conceptuales de autonomía desde consulta sin efecto hasta ejecución autónoma crítica, con los niveles de efecto alto no habilitados por esta tarea;
+5. se materializan doce capacidades lógicas de IA que cubren consulta, resumen, extracción, clasificación, detección, predicción, simulación, optimización, recomendación, generación, preparación de acción y ejecución delegada futura;
+6. se define el patrón de agente `contexto → evidencia → plan → propuesta de herramienta → gate → ejecución propietaria → evidencia`, sin otorgar autoridad al modelo;
+7. se materializa una matriz de las 10 aplicaciones Vento OS y se preserva la propiedad exacta de 69 procesos: `1 + 20 + 16 + 6 + 4 + 12 + 7 + 2 + 1`, con `shell = 0`;
+8. se materializa un catálogo de 97 oportunidades concretas de IA sobre las diez aplicaciones, con límites de efecto y propietario;
+9. se materializa una decisión de uso IA para los 62 objetos maestros/referencia, preservando `43 + 19`, `59 ESPECIFICADO + 3 BLOQUEADO` y los tres objetos AURA bloqueados;
+10. se materializan decisiones para las 14 métricas actuales de asistencia, preservando `11 NO EVALUADO + 3 BLOQUEADO`;
+11. se materializan decisiones de integración para las 55 familias analíticas `11 + 12 + 10 + 12 + 10`;
+12. se preservan las seis familias D008 —tablero, reporte, exportación, suscripción, alerta y snapshot oficial— como artefactos distintos;
+13. se define el contrato de BI con seguridad server-side, semántica versionada y cero fórmulas locales competidoras;
+14. se define el contrato de hoja de cálculo como derivado portable y nunca como autoridad; cualquier retorno se trata como nueva entrada controlada;
+15. se define el contrato de modelos con identidad/versionado, dataset y features por referencia, evaluación, drift, incertidumbre, reproducibilidad y retiro;
+16. se define el contrato de IA generativa con grounding, citas/evidencia, abstención, tratamiento de contenido no confiable, minimización y memoria gobernada;
+17. se define un gateway de herramientas para futuros agentes: ninguna salida textual se ejecuta como comando libre; cada efecto futuro deberá atravesar una herramienta empresarial tipada, capacidad exacta, autorización fresca, idempotencia y auditoría;
+18. se prohíbe seleccionar o presumir OpenAI, Anthropic, Google, Microsoft u otro proveedor como proveedor vigente; la tarea permanece neutral de proveedor;
+19. se prohíbe usar datos Vento para entrenamiento, fine-tuning, retención o mejora de un proveedor por defecto; cualquier uso diferente exige contrato y finalidad aprobados;
+20. se preserva el bloqueo completo de AURA hasta `AURA-AUD-010` y `AURA-AUD-011`, incluido cero contratación de proveedores de IA por esta tarea;
+21. se preserva la separación entre recomendación y acción de `DATA-DOM-016`/`TREQ-DATA-005`;
+22. se define que una IA puede preparar una acción, pero no adquiere permiso: la acción futura pertenece al dominio propietario y se reautoriza como solicitud nueva;
+23. se definen controles de coste, latencia, fallback y degradación para que una dependencia de IA no se convierta en requisito oculto de toda operación;
+24. se definen evaluación, observabilidad, trazabilidad y retiro sin crear implementación física;
+25. se crean cero requisitos de prueba y se modifican cero porque la conducta queda dentro de requisitos vigentes de autorización, datos, auditoría e integración.
+
+---
+
+#### 3. Decisión principal: IA como capa de capacidades, no como nueva autoridad
+
+Vento OS adopta un modelo de **IA gobernada por herramientas y evidencia**.
+
+```text
+ACTOR O PROCESO AUTORIZADO
+→ solicita una pregunta, análisis o intención
+→ SHELL o la aplicación propietaria resuelve contexto
+→ autorización construye la población permitida
+→ DATA-INT-002 produce la consulta/proyección semántica
+→ DATA-INT-003 resuelve identidades externas cuando aplican
+→ modelo recibe solamente la evidencia/proyección mínima
+→ modelo produce respuesta, predicción, simulación o propuesta
+→ si no existe efecto: se entrega con procedencia y límites
+→ si se propone un efecto: se genera una SOLICITUD TIPADA, no un comando libre
+→ el dominio propietario vuelve a autorizar actor + capacidad + recurso + estado
+→ solo el ejecutor del dominio puede producir el efecto
+→ eventos y auditoría conservan la cadena completa
+```
+
+Regla cardinal:
+
+```text
+MODELO ≠ ACTOR
+PROMPT ≠ PERMISO
+RESPUESTA ≠ HECHO
+PREDICCIÓN ≠ ESTADO REAL
+RECOMENDACIÓN ≠ DECISIÓN
+PROPUESTA DE HERRAMIENTA ≠ EJECUCIÓN
+EJECUCIÓN TÉCNICA ≠ AUTORIDAD EMPRESARIAL
+```
+
+SHELL podrá ser el punto transversal del futuro **Vento Copilot**, pero conserva exactamente **0 procesos empresariales**: enruta contexto y herramientas; cada aplicación propietaria mantiene reglas, datos, estados y efectos.
+
+---
+
+#### 4. Fuentes y decisiones heredadas
+
+- `DATA-DOM-001` a `DATA-DOM-003` para propiedad, maestros, referencias, identidad, claves, jerarquías, fusiones y separación;
+- `DATA-DOM-004` a `DATA-DOM-008` para métricas, hechos, tiempo, ingestión, calidad y artefactos;
+- `DATA-DOM-009` a `DATA-DOM-013` para las 55 familias analíticas;
+- `DATA-DOM-014` para señal, anomalía, diagnóstico, hipótesis, causalidad y confianza;
+- `DATA-DOM-015` para objetivos, baseline, metas, drivers, guardrails y planes de medición;
+- `DATA-DOM-016` para acciones, experimentos, responsables, seguimiento y comprobación;
+- `DATA-DOM-017` para versiones, correcciones, restatements y reproducibilidad;
+- `DATA-AUTH-001` y `DATA-AUTH-002` para conjunto autorizado, finalidad, minimización, sensibilidad, cohortes pequeñas y divulgación;
+- `DATA-AUTH-003` para separar definición, certificación, publicación, meta, anotación, exportación y administración;
+- `DATA-AUTH-004` para auditar consultas, obtenciones portables, suscripciones, alertas, modelos y recomendaciones;
+- `DATA-UX-001` a `DATA-UX-008` para superficies, investigación, decisiones, calidad, reportes y gate de usuarios reales;
+- `DATA-INT-001` para eventos y lectura gobernada;
+- `DATA-INT-002` para capa semántica, modelos, snapshots, caché, consulta y rendimiento;
+- `DATA-INT-003` para crosswalks, claves externas, identidad y reconciliación;
+- `INT-EXT-001` a `INT-EXT-020` para inventario, principal técnico, credenciales, contrato externo, mapping, payload, rate limits, cuarentena, auditoría y retiro de cualquier proveedor externo;
+- `INT-APP-001` a `INT-APP-010` para eventos entre aplicaciones, idempotencia, consumidores y prohibición de escritura cruzada;
+- `AURA-AUD-001` a `AURA-AUD-012` para decidir si AURA continúa, se reemplaza o se retira antes de cualquier implementación o contratación asociada;
+- BLOQUE AA para clasificación, finalidad, evidencia, retención y gobierno de información;
+- BLOQUE Z para identidades y operación tecnológica;
+- BLOQUE E3/R para arquitectura física, Supabase, RLS/RPC, persistencia y migraciones;
+- paquetes E5 y BLOQUE U para implementación, pilotos y certificación cuando el roadmap los habilite.
+
+Esta tarea no reabre ninguna de esas decisiones y no crea una excepción para IA.
+
+---
+
+#### 5. Cuatro familias de consumidor analítico
+
+| Familia          | Función permitida                                                                                                | Entrada canónica                                                 | Salida                                                                | Nunca se convierte en                                                        |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| BI               | explorar, visualizar, comparar, filtrar y navegar métricas/artefactos                                            | modelos/proyecciones gobernadas                                  | visualización, consulta, artefacto autorizado                         | fuente de verdad, motor local de autorización o fórmula canónica alternativa |
+| hoja de cálculo  | análisis ad hoc, conciliación controlada, escenarios, tablas/pivots y trabajo portable                           | exportación/snapshot/proyección autorizada                       | archivo derivado, análisis local, propuesta de importación            | maestro, transacción, permiso o verdad por haber sido editada                |
+| modelo analítico | clasificar, detectar, estimar, predecir, optimizar o simular bajo contrato                                       | dataset/snapshot/features versionados y autorizados              | score, forecast, clasificación, estimación, optimización o simulación | hecho observado, causalidad, certificación o permiso                         |
+| IA / agente      | comprender intención, recuperar evidencia, explicar, generar, razonar y preparar llamadas tipadas a herramientas | contexto + evidencia mínima + catálogo de herramientas permitido | respuesta, propuesta, artefacto o solicitud de herramienta            | actor, propietario, aprobador, fuente de verdad o ejecutor universal         |
+
+---
+
+#### 6. Niveles de autonomía y efecto
+
+Los niveles siguientes son una clasificación documental de riesgo y no un enum físico ni un permiso nuevo.
+
+| Nivel                   | Capacidad                                                                        | Efecto empresarial                     | Regla                                                                                     | Estado en esta tarea         |
+| ----------------------- | -------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------- |
+| `N0_CONSULTAR`          | buscar, recuperar, citar, responder                                              | ninguno                                | únicamente población autorizada                                                           | `ESPECIFICADO`               |
+| `N1_COMPRENDER`         | resumir, extraer, clasificar, explicar                                           | ninguno                                | resultado derivado, no fuente                                                             | `ESPECIFICADO`               |
+| `N2_ANALIZAR`           | detectar, predecir, simular, optimizar                                           | ninguno                                | declarar modelo, versión, horizonte, supuestos, incertidumbre y DQ                        | `ESPECIFICADO`               |
+| `N3_PREPARAR`           | recomendar, redactar, completar una propuesta o plan estructurado                | ninguno hasta aprobación               | propuesta claramente separada del recurso real                                            | `ESPECIFICADO`               |
+| `N4_EJECUCION_DELEGADA` | solicitar una herramienta propietaria después de intención/aprobación válida     | puede existir en implementación futura | nueva autorización server-side, herramienta tipada, idempotencia, evidencia y propietario | `CONDICIONAL; NO HABILITADO` |
+| `N5_AUTONOMIA_CRITICA`  | ejecutar o encadenar efectos de alto impacto sin confirmación/puerta propietaria | alto o irreversible                    | no autorizado por DATA-INT-004                                                            | `BLOQUEADO`                  |
+
+La existencia de `N4_EJECUCION_DELEGADA` no autoriza hoy ninguna mutación. Define cómo deberá comportarse un agente si una tarea posterior habilita una herramienta concreta.
+
+---
+
+#### 7. Doce capacidades lógicas de inteligencia artificial
+
+|    # | Capacidad               | Ejemplo                                                                       | Salida gobernada                                    | Límite                                                                |
+| ---: | ----------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------- |
+|    1 | consulta semántica      | “¿qué pasó hoy en mi sede?”                                                   | respuesta sustentada en métricas/hechos autorizados | no estima hechos faltantes                                            |
+|    2 | resumen                 | brief ejecutivo, turno, caso, lote, pedido o periodo                          | síntesis con referencias                            | no sustituye expediente                                               |
+|    3 | extracción estructurada | leer una factura, cotización, foto, formulario o PDF                          | campos candidatos + confianza/procedencia           | no crea hecho aceptado sin validación                                 |
+|    4 | clasificación           | categorizar ticket, documento, reclamo, producto o anomalía                   | clase candidata/versionada                          | no cambia maestro/estado por sí sola                                  |
+|    5 | detección               | anomalías, inconsistencias, outliers, duplicados candidatos                   | señal de investigación                              | anomalía no es causa                                                  |
+|    6 | predicción              | demanda, riesgo de quiebre, lead time, cash flow, abandono                    | forecast/score con horizonte y versión              | predicción no es hecho ni decisión                                    |
+|    7 | simulación              | escenarios de inventario, producción, precio, presupuesto o continuidad       | resultado hipotético + supuestos                    | simulación no muta realidad                                           |
+|    8 | optimización            | slotting, picking, secuenciación, asignación o mezcla dentro de restricciones | solución candidata + objetivo/guardrails            | no ejecuta ni redefine restricciones                                  |
+|    9 | recomendación           | acción candidata con evidencia y trade-offs                                   | propuesta explicable                                | no fija meta ni actúa                                                 |
+|   10 | generación              | texto, tablas, imágenes, audio, video, presentaciones o documentos            | artefacto etiquetado como generado                  | no publica ni adquiere derechos/autoridad                             |
+|   11 | preparación de acción   | llenar formulario, borrador de orden, cambio, respuesta o plan                | payload tipado en estado de propuesta               | no envía ni guarda como efecto                                        |
+|   12 | orquestación delegada   | encadenar herramientas autorizadas en un plan                                 | solicitudes de herramienta trazables                | solo futuro N4; cada herramienta reautoriza y puede exigir aprobación |
+
+---
+
+#### 8. Contrato de grounding: responder desde evidencia, no desde plausibilidad
+
+Una pregunta factual sobre Vento OS se responde desde fuentes autorizadas o se declara que la evidencia no está disponible; el modelo no completa huecos con conocimiento plausible.
+Una métrica determinista se obtiene de la capa semántica; el modelo no recalcula una fórmula propia en lenguaje natural.
+Una cifra conserva versión, periodo, corte, zona horaria, dimensiones, filtros, unidad/moneda, frescura, cobertura y DQ cuando sean materiales.
+Una respuesta que mezcla dominios conserva las fuentes materiales y la intersección de autorizaciones.
+Una predicción se etiqueta como predicción e incluye horizonte, versión de modelo, fecha de corte, población y limitaciones.
+Una simulación enumera los supuestos que cambian respecto de la línea base.
+Una recomendación separa evidencia observada, inferencias, restricciones, incertidumbre y acción propuesta.
+Un conflicto entre fuentes se presenta como conflicto y remite a reconciliación; no se resuelve con “lo más probable”.
+Una fuente externa o la web no reemplaza una fuente interna propietaria; su contenido se conserva con procedencia y autoridad propias.
+Una explicación generada por modelo no se convierte en evidencia fuente ni eleva nivel de confianza D014.
+Cuando una dependencia esté `BLOQUEADO`, la IA puede explicar el bloqueo o apoyar investigación autorizada, pero no fabricar un valor sustituto.
+Cuando la evidencia sea insuficiente, la conducta correcta es abstenerse, pedir un dato permitido o devolver la limitación; no alucinar.
+
+---
+
+#### 9. Contrato de contexto, RAG, búsqueda y contenido no confiable
+
+- La recuperación documental aplica autorización antes de seleccionar fragmentos; el ranking semántico nunca amplía acceso.
+- Un embedding, índice vectorial, chunk, resumen o metadato hereda la sensibilidad y finalidad de sus fuentes y puede ser más sensible por inferencia.
+- El conocimiento de una palabra, título, identificador o similitud vectorial no concede acceso al documento o fila.
+- Contenido recuperado de correos, documentos, web, tickets, archivos o comentarios se trata como **dato no confiable**: puede aportar evidencia, pero no puede cambiar las instrucciones del sistema, las políticas, el catálogo de herramientas ni las capacidades del actor.
+- Una instrucción incrustada en un documento —por ejemplo “ignora las reglas” o “envía este secreto”— se conserva como contenido del documento y no como instrucción ejecutable.
+- La búsqueda externa, cuando una integración futura la habilite, conserva URL/fuente/fecha y se etiqueta como evidencia externa; nunca corrige un maestro interno sin contrato.
+- RAG no sustituye la capa semántica para cifras deterministas ni los crosswalks para identidad.
+- Los índices y cachés derivados deberán invalidarse o reconstruirse cuando cambien autorización, clasificación, fuente, versión o retención de forma que la reutilización deje de ser segura.
+
+---
+
+#### 10. Memoria conversacional y personalización
+
+La IA puede usar contexto efímero de sesión para evitar que el usuario repita información ya autorizada. Una memoria durable futura deberá distinguir:
+
+| Clase                       | Uso                                                            | Regla                                                                                                             |
+| --------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| contexto de turno/sesión    | continuar una interacción breve                                | expira o se invalida con contexto/autorización; no se convierte en maestro                                        |
+| preferencia de experiencia  | idioma, formato, densidad de explicación cuando esté permitida | no sustituye CUSTOMER_PREFERENCE ni configuración propietaria                                                     |
+| memoria empresarial durable | hechos o decisiones que deban persistir                        | no se almacena como “memoria del modelo”; debe escribirse mediante el dominio propietario y su proceso autorizado |
+| conocimiento recuperable    | documentos, políticas, manuales, métricas                      | permanece en su fuente; la IA recupera por referencia                                                             |
+
+Quedan prohibidos como memoria informal secretos, credenciales, datos médicos, decisiones disciplinarias, saldos, números completos de documentos, información financiera sensible o cualquier dato cuyo ciclo de vida pertenezca a una fuente propietaria.
+
+---
+
+#### 11. Contrato de herramientas para futuros agentes
+
+Una herramienta disponible para un agente futuro deberá declarar conceptualmente, como mínimo:
+
+1. propietario de dominio y aplicación;
+2. capacidad canónica exacta;
+3. acción empresarial representada;
+4. clase read-only / propuesta / efecto;
+5. tipo e identidad del recurso;
+6. schema de entrada y salida;
+7. campos controlados por servidor;
+8. finalidad permitida;
+9. territorio y relación requeridos;
+10. precondiciones de estado;
+11. nivel de sensibilidad;
+12. si requiere aprobación humana o segregación ya definida por el dominio;
+13. idempotencia/clave de operación cuando pueda producir efecto;
+14. resultado recuperable;
+15. errores tipados/fail closed;
+16. evento/auditoría esperados;
+17. compensación o rollback cuando el proceso lo tenga;
+18. timeout/retry permitido;
+19. versión del contrato;
+20. repositorio/paquete propietario futuro;
+
+Reglas:
+
+- el modelo nunca recibe una conexión SQL, `service_role`, secreto o credencial de proveedor como herramienta empresarial;
+- un argumento enviado por el modelo es una solicitud no confiable y se valida igual que cualquier entrada de cliente;
+- el nombre de una herramienta no es una capacidad; la autorización se resuelve en servidor;
+- el modelo no elige una capacidad más débil para ejecutar el mismo efecto;
+- una herramienta read-only no puede mutar por side effect oculto;
+- una herramienta de efecto no se llama desde simulación, preview o recomendación como si fueran autoridad real;
+- una confirmación en lenguaje natural solo sirve si el contrato de la futura superficie la traduce a una intención inequívoca, conserva actor/recurso y vuelve a autorizar;
+- una cadena agentic no hereda autoridad del primer paso: cada cambio de recurso, finalidad o acción se reevalúa;
+- un fallo, timeout o resultado desconocido se reconcilia; el agente no repite ciegamente una operación de efecto;
+- un agente no puede crear dinámicamente nuevas herramientas, permisos, destinos o credenciales.
+
+---
+
+#### 12. Qué puede ejecutar un agente y qué permanece prohibido
+
+| Clase de resultado                                                                                                                                                                                                  | Puede prepararlo IA                                                  | Puede ejecutarse por esta tarea | Condición futura                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| consulta, explicación, resumen                                                                                                                                                                                      | sí                                                                   | no se implementa aquí           | servicio autorizado y auditado                                                                         |
+| borrador de texto/documento                                                                                                                                                                                         | sí                                                                   | no se implementa aquí           | revisión/publicación según propietario                                                                 |
+| propuesta de compra, producción, inventario, precio, presupuesto, respuesta o cambio                                                                                                                                | sí                                                                   | no                              | proceso propietario + capacidad + aprobación aplicable                                                 |
+| mutación reversible de baja consecuencia                                                                                                                                                                            | puede proponer                                                       | no                              | herramienta propietaria explícitamente habilitada por una tarea futura                                 |
+| pago, cierre, contabilización, grant, revocación, sanción, decisión laboral, liberación de calidad, fusión de identidad, ajuste de stock, publicación de precio/campaña, borrado/retención, cambio de red/seguridad | puede como máximo explicar o preparar cuando la finalidad lo permita | **no**                          | únicamente una tarea propietaria posterior que autorice expresamente el comportamiento y sus controles |
+| efecto autónomo irreversible o de alto impacto sin confirmación/puerta                                                                                                                                              | no                                                                   | **no**                          | fuera de la autoridad de DATA-INT-004                                                                  |
+
+---
+
+#### 13. BI controlado
+
+- BI consume modelos o endpoints semánticos gobernados; no obtiene acceso masivo a esquemas privados para aplicar seguridad después.
+- Row/column security, finalidad, territorio y población se resuelven antes de devolver datos.
+- `metric_key`, versión, grano, dimensiones y filtros provienen del registro canónico; un cálculo local no puede llamarse la misma métrica si redefine fórmula.
+- Vista viva, snapshot, reporte, simulación y exportación permanecen artefactos distintos.
+- Un dashboard externo no adquiere propiedad ni capacidad de escritura sobre maestros o hechos.
+- La caché propia de una herramienta no puede servir una población, versión o autorización incompatible después de cambios.
+- Drill-down exige nueva autorización al grano/recurso solicitado.
+- BI puede incorporar explicación generativa, pero la explicación conserva las mismas fuentes y no transforma un agregado en causa.
+
+---
+
+#### 14. Hojas de cálculo: análisis potente sin Excel como nueva fuente de verdad
+
+- Una hoja producida desde Vento OS es un artefacto derivado con corte, versiones, filtros, clasificación y procedencia.
+- Fórmulas, pivots, macros, notas, escenarios o transformaciones locales pertenecen al análisis del archivo y no modifican la semántica canónica.
+- Una hoja editada no se reimporta como verdad por simetría. Si existe una necesidad de retorno, se trata como una entrada nueva mediante contrato de importación, mapping, validación, autorización, reconciliación y evidencia.
+- Un identificador oculto o una celda protegida no se usa como bypass para actualizar un recurso.
+- IA aplicada a una hoja puede generar fórmulas, tablas, gráficos, explicaciones y limpieza candidata, pero no convierte un resultado local en métrica oficial.
+- Los archivos con datos sensibles conservan controles de clasificación, destinatario y finalidad aun después de salir de la interfaz.
+- Una hoja puede ser captura temporal únicamente cuando el dominio propietario ya lo autorice y exista reconciliación; no por conveniencia de la IA.
+
+---
+
+#### 15. Contrato de modelos estadísticos, predictivos y de optimización
+
+Todo modelo productivo futuro deberá poder declarar:
+
+1. caso de uso y decisión que pretende apoyar;
+2. propietario funcional;
+3. población y finalidad autorizadas;
+4. target/objetivo cuando aplique;
+5. horizonte temporal;
+6. dataset/snapshot de entrenamiento por referencia;
+7. ventanas de entrenamiento, validación y prueba;
+8. contrato de features y transformaciones;
+9. fuentes y versiones;
+10. modelo/familia y versión;
+11. configuración/hiperparámetros materiales por referencia;
+12. baseline de comparación;
+13. métricas de evaluación apropiadas al problema;
+14. calibración/incertidumbre cuando corresponda;
+15. segmentos/subgrupos relevantes cuando la decisión pueda afectar personas;
+16. controles de leakage temporal y target leakage;
+17. DQ de entradas;
+18. condiciones de abstención;
+19. umbral o política de uso cuando exista y sea propietaria;
+20. latencia/costo objetivo cuando aplique;
+21. monitor de drift de datos/modelo;
+22. condición de reentrenamiento o reevaluación;
+23. modo shadow/piloto cuando el riesgo lo requiera;
+24. fallback seguro;
+25. historial de versiones;
+26. condición de retiro y reproducibilidad;
+
+Una feature importance, explicación local, correlación, embedding o score no se presenta como causalidad. Un modelo no certifica sus datos y no autoaprueba el umbral con el que se tomará una decisión empresarial.
+
+---
+
+#### 16. Contrato de modelo/proveedor de IA
+
+Antes de conectar cualquier proveedor o modelo externo, el registro de integración deberá materializar al menos:
+
+1. proveedor/sistema externo real;
+2. propietario Vento de la integración;
+3. finalidad empresarial;
+4. principal técnico separado;
+5. ambiente;
+6. modelo o familia consumida y versión cuando el proveedor la exponga;
+7. modalidades habilitadas: texto, imagen, audio, video, embeddings u otras;
+8. clasificaciones de dato permitidas y prohibidas;
+9. poblaciones permitidas;
+10. región/localización de procesamiento cuando sea relevante;
+11. retención del proveedor;
+12. uso o no uso para entrenamiento/mejora del proveedor;
+13. subprocesadores/terceros cuando apliquen al gobierno de información;
+14. contrato de entrada/salida;
+15. límites de tamaño y tipo de archivo;
+16. referencia de secreto/credencial sin valor secreto;
+17. rate limits;
+18. presupuesto/costo y cuotas;
+19. latencia/timeout;
+20. política de retry y resultado desconocido;
+21. herramientas permitidas;
+22. capacidad máxima de efecto;
+23. logs/evidencia retornable a Vento;
+24. fallback;
+25. cambio de versión/modelo;
+26. incidente/contingencia;
+27. revocación y retiro;
+
+Esta tarea selecciona **0 proveedores**, registra **0 credenciales**, autoriza **0 contratos comerciales** y habilita **0 datos reales** en servicios externos.
+
+---
+
+#### 17. Entrenamiento, fine-tuning, evaluación y uso secundario
+
+- El uso de datos en inferencia no autoriza retención para entrenamiento.
+- El uso de feedback del usuario no autoriza convertir conversaciones en dataset de entrenamiento.
+- Fine-tuning, distillation, evaluación humana externa, red-teaming con datos reales o entrenamiento propio requieren finalidad, clasificación, dataset, población, retención y propietario explícitos.
+- No se envían secretos, credenciales, datos médicos, información altamente sensible o datasets completos a un proveedor por conveniencia de contexto.
+- Datos sintéticos deben identificarse como sintéticos y no se presentan como evidencia operativa real.
+- Un modelo entrenado con un snapshot histórico conserva linaje al snapshot; no se reinterpreta como entrenado con el estado actual.
+- Un benchmark exitoso no equivale a aprobación productiva ni a autorización sobre datos reales.
+
+---
+
+#### 18. Evaluación y gates de IA antes de uso productivo
+
+| Dimensión                  | Qué debe demostrar una implementación futura                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| grounding factual          | respuestas factuales se apoyan en evidencia y se abstienen cuando falta                                      |
+| consistencia semántica     | mismas métricas/versiones producen la misma cifra fuera y dentro de IA                                       |
+| autorización               | no existe fuga por prompt, RAG, tool call, caché, contexto o memoria                                         |
+| inyección de instrucciones | contenido no confiable no cambia política, herramientas o secretos                                           |
+| herramientas               | argumentos manipulados, tool spoofing y llamadas no autorizadas fallan cerrado                               |
+| privacidad                 | prompts, outputs, embeddings y trazas cumplen minimización/divulgación                                       |
+| calidad                    | BLOQUEADO/DEGRADADO/NO EVALUADO se propagan correctamente                                                    |
+| predicción                 | métricas, calibración, estabilidad y baseline son suficientes para el uso                                    |
+| drift                      | cambios de datos/modelo disparan reevaluación conforme al contrato                                           |
+| causalidad                 | el sistema no eleva correlación o importancia de variable a causa                                            |
+| acciones                   | recomendación/propuesta nunca produce efecto sin la puerta propietaria                                       |
+| idempotencia               | reintentos o timeouts no duplican efectos futuros                                                            |
+| seguridad                  | secrets, system prompts protegidos y arquitectura sensible no se filtran                                     |
+| robustez                   | entradas adversariales, archivos corruptos, contexto enorme y proveedores caídos degradan con seguridad      |
+| utilidad humana            | usuarios reales entienden qué es hecho, inferencia, predicción, propuesta y acción                           |
+| coste/latencia             | la IA no hace inviable la operación ni obliga a sacrificar seguridad/calidad                                 |
+| fallback                   | la aplicación conserva una ruta funcional segura cuando la IA no está disponible                             |
+| reproducibilidad           | modelo, prompt/config, fuentes y resultado material pueden reconstruirse dentro de los límites del proveedor |
+
+---
+
+#### 19. IA en las 10 aplicaciones Vento OS
+
+La distribución de propiedad permanece `anima 1`, `viso 20`, `nexo 16`, `fogo 6`, `origo 4`, `pulso 12`, `numera 7`, `aura 2`, `pass 1`, `shell 0`; total **69**. La IA no altera esa distribución.
+
+| Aplicación | Procesos propietarios | Papel IA objetivo                                          | Oportunidades principales                                                                                                                                                                                                                                                      | Máximo documental actual | Frontera                                                                                                                                   |
+| ---------- | --------------------: | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| ANIMA      |                     1 | copiloto personal y de asistencia                          | turno y contexto del trabajador; explicación de marcaciones; guía de check-in/check-out; detección de inconsistencias; borrador de corrección; captura estructurada de incidencias; accesibilidad/voz                                                                          | N3_PREPARAR              | sin sanciones, identidad automática, edición de asistencia ni decisiones SST                                                               |
+| VISO       |                    20 | copiloto ejecutivo, administrativo y de gobierno           | preguntas transversales con evidencia; briefing ejecutivo; investigación de anomalías; planificación/cobertura laboral; SST y cumplimiento asistidos; gobierno documental; continuidad/riesgo; soporte y casos; stewardship de datos; generación de borradores administrativos | N3_PREPARAR              | sin aprobar cambios, sanciones, permisos, decisiones médicas/legales, publicaciones oficiales ni acciones de otros dominios                |
+| NEXO       |                    16 | copiloto de inventario, logística, activos e instalaciones | riesgo de quiebre/exceso/vencimiento; propuesta de reposición; conciliación de conteos; remisiones; OCR de soportes; mapping candidato de productos/presentaciones; slotting/picking; visión de inventario futura; diagnóstico de activos; mantenimiento predictivo asistido   | N3_PREPARAR              | sin ajustar stock, cerrar recepción/remisión, fusionar maestros, mover activos o crear compras automáticamente                             |
+| FOGO       |                     6 | copiloto de producción y calidad                           | planificación de lotes/capacidad; escalado de receta; consumo/merma; rendimiento y ciclo; sustituciones candidatas; RAG de recetas/SOP; diagnóstico de desviaciones; visión de calidad futura; checklist sanitario asistido                                                    | N3_PREPARAR              | sin cambiar/publicar receta, liberar calidad, registrar producción, sustituir insumos o cerrar lote automáticamente                        |
+| ORIGO      |                     4 | copiloto de compras y proveedores                          | extracción de cotizaciones; comparación de ofertas/condiciones; lead time/riesgo; propuesta de abastecimiento; negociación asistida; verificación documental; clasificación; mapping candidato proveedor-producto; borradores de comunicación                                  | N3_PREPARAR              | sin adjudicar proveedor, aceptar condición, emitir compra, modificar maestro o comprometer pago                                            |
+| PULSO      |                    12 | copiloto comercial y de operación de venta                 | demanda/picos; mix; recomendación de sustituciones; asistencia al operador; cola y promesa; recuperación de servicio; anomalías en descuentos/devoluciones; promociones/precios simulados; recomendación de producto con finalidad autorizada; consulta natural de ventas      | N3_PREPARAR              | sin publicar precio/promoción, cobrar, devolver, cerrar caja, acusar fraude ni contactar masivamente clientes                              |
+| NUMERA     |                     7 | copiloto financiero y de escenarios                        | briefing financiero; explicación de variaciones; cash-flow forecast; escenarios; drivers de costo/margen; reconciliación candidata; OCR/clasificación documental; propuesta presupuestal; anomalías; consulta natural financiera                                               | N3_PREPARAR              | sin pagos, cierres, contabilización, declaración fiscal, reconocimiento económico o certificación de cifras                                |
+| AURA       |                     2 | copiloto creativo y de marketing futuro                    | estrategia/ideas; copy; imagen/audio/video; localización; calendario; hipótesis de audiencia; social listening; reputación; experimentos; performance creativo; escenarios de media; clasificación de activos y derechos                                                       | BLOQUEADO                | AURA completa y sus tres maestros siguen bloqueados hasta AURA-AUD-010 y AURA-AUD-011; cero conexión, publicación, contacto o proveedor IA |
+| PASS       |                     1 | copiloto de autoservicio, cliente y fidelización           | asistente conversacional; estado de pedidos/beneficios; explicación del programa; reclamos; clasificación y borrador de respuesta; recomendaciones personalizadas consentidas; señal de abandono para servicio; accesibilidad/multilingüe                                      | N3_PREPARAR              | sin reidentificar, fusionar clientes, alterar saldo, crear consentimiento, manipular perfiles ni ejecutar marketing no autorizado          |
+| SHELL      |                     0 | punto transversal del Vento Copilot y router seguro        | entrada conversacional universal; búsqueda autorizada; routing por intención; continuidad entre apps; contexto de sesión; propuestas de herramientas; centro de aprobación; resumen de notificaciones; gateway de modelo/proveedor; observabilidad y evidencia                 | N3_PREPARAR              | SHELL posee 0 procesos empresariales: no duplica lógica, no decide negocio, no amplía permisos y no escribe fuentes propietarias           |
+
+---
+
+#### 20. ANIMA — copiloto del trabajador, no supervisor algorítmico
+
+1. “¿Cuál es mi próximo turno y dónde debo presentarme?” usando únicamente programación autorizada y vigente.
+2. Explicar por qué una marcación aparece abierta, tardía o inconsistente sin cambiarla.
+3. Preparar una solicitud de corrección con hechos, horario, evidencia y motivo para que el flujo propietario la tramite.
+4. Resumir novedades de jornada, descansos y pendientes del propio trabajador.
+5. Ayudar a estructurar una incidencia o reporte que luego se enrute al expediente propietario correcto, sin convertir automáticamente una incidencia de asistencia en SST.
+6. Asistencia por voz y lenguaje sencillo para trabajadores en móvil, manteniendo las mismas capacidades y límites.
+7. Detectar patrones de calidad de dato en marcaciones para investigación administrativa, sin etiquetar conducta individual como fraude o negligencia.
+
+Los indicadores bloqueados `missingCloseCount`, `attendanceRate` y `punctualityRate` no se estiman mediante IA.
+
+---
+
+#### 21. VISO — cerebro administrativo y ejecutivo asistido, sin apropiarse de los dominios
+
+1. Briefing ejecutivo: “qué cambió desde ayer, por qué merece atención y qué evidencia existe”, con DQ y confianza separados.
+2. Consulta natural transversal sobre organización, personas, operación, SST, tecnología, información, continuidad, riesgo y cumplimiento, siempre desde fuentes propietarias.
+3. Investigador D014: localizar una variación, segmentarla, comparar periodos, proponer hipótesis y listar evidencia a favor/en contra.
+4. Planificador de cobertura laboral: simular huecos, sobrecobertura y alternativas sin publicar turnos ni asignaciones.
+5. Copiloto SST: resumir expedientes autorizados, estructurar declaraciones/evidencias y sugerir preguntas de investigación; datos médicos permanecen protegidos.
+6. Copiloto de cumplimiento e información: encontrar obligaciones, soportes, vencimientos y faltantes documentales sin declarar cumplimiento legal por sí solo.
+7. Copiloto de continuidad y riesgo: construir escenarios, dependencias y playbooks candidatos; activación real permanece en BLOQUE AC.
+8. Copiloto de soporte y tecnología: clasificar solicitudes, recuperar runbooks, resumir incidentes y proponer diagnóstico; ejecución privilegiada permanece en BLOQUE Z.
+9. Steward de datos asistido: detectar duplicados candidatos, inconsistencias de catálogo, crosswalks faltantes y DQ sin fusionar ni corregir automáticamente.
+10. Redactor administrativo: preparar informes, actas, comunicaciones y planes con referencias a evidencia, sin publicarlos como decisión oficial.
+11. Centro de decisiones: convertir una recomendación en propuesta estructurada con owner, objetivo, guardrails y siguiente acción, sin ejecutarla.
+
+---
+
+#### 22. NEXO — inventario y logística con inteligencia operacional
+
+1. Forecast de consumo y riesgo de quiebre por producto/sede/ventana cuando exista historia suficiente.
+2. Recomendación de reposición que combine demanda, cobertura, lead time, compras abiertas y restricciones, sin crear orden.
+3. Detección de sobrestock, baja rotación, vencimiento, daño y capacidad de almacenamiento.
+4. Conciliación asistida de conteos: priorizar diferencias y proponer causas investigables sin ejecutar ajustes.
+5. Remisiones: revisar coherencia de origen/destino, líneas, cantidades, presentación, lote/stock y evidencias antes del paso humano/propietario.
+6. OCR/visión de soportes de recepción, etiquetas o fotos para extraer candidatos de producto, lote, cantidad y presentación; la extracción se valida contra maestros.
+7. Matching candidato de productos/presentaciones/códigos externos usando `E5_INFERENCIA`; nunca equivalencia oficial automática.
+8. Optimización de slotting, ruta de picking y utilización de LOC/zonas como propuesta basada en restricciones físicas gobernadas.
+9. Visión computacional futura para conteo o detección de anomalías físicas, siempre como observación que requiere conciliación con NEXO.
+10. Activos e instalaciones: síntesis de historial, señal de mantenimiento y análisis de fotos/observaciones; no baja ni mueve el activo.
+
+---
+
+#### 23. FOGO — producción asistida por restricciones, calidad y conocimiento
+
+1. Proponer plan de lotes y secuencia frente a demanda, capacidad, rutas y recursos disponibles.
+2. Escalar receta y cantidades manteniendo unidad, versión, merma estándar y reglas de redondeo propietarias.
+3. Proponer sustituciones candidatas explicando impacto en inventario, costo, calidad, alérgenos u otras restricciones cuando esas fuentes estén gobernadas.
+4. Detectar desviaciones de rendimiento, consumo, merma, ciclo y capacidad para D014.
+5. Resumir un lote y construir la narrativa “plan → ejecución → consumo → merma → calidad → resultado”.
+6. RAG de receta, SOP y especificaciones para responder dudas del operador con versión vigente.
+7. Visión computacional futura sobre evidencias de producto/proceso como señal de revisión; nunca libera calidad automáticamente.
+8. Asistente de checklist sanitario/inocuidad que explica requisitos y faltantes sin certificar cumplimiento.
+9. Optimización energética o de uso de recursos podrá proponerse cuando existan métricas/mediciones gobernadas; no se inventan sensores ni consumos.
+
+---
+
+#### 24. ORIGO — compras aumentadas, no compras autónomas
+
+1. Extraer de cotizaciones/documentos proveedor, productos, presentaciones, cantidades, impuestos, moneda, vigencia, lead time y condiciones como candidatos.
+2. Comparar ofertas bajo una matriz común y separar precio, costo landed, plazo, calidad, riesgo y condición comercial.
+3. Forecast de lead time y señal de incumplimiento de proveedor cuando la historia lo soporte.
+4. Proponer una estrategia de abastecimiento combinando necesidad, inventario, proveedores habilitados, condiciones y riesgo.
+5. Preparar negociación: preguntas, concesiones, escenarios y borradores de comunicación sin aceptar condiciones.
+6. Detectar documentos faltantes o vencidos y apoyar onboarding/revisión del proveedor.
+7. Matching candidato entre catálogo externo y `RELACION_PRODUCTO_PROVEEDOR` sin crear crosswalk oficial.
+8. Detectar compras atípicas o urgentes como señal de investigación, no como acusación ni bloqueo automático.
+
+---
+
+#### 25. PULSO — copiloto comercial y de servicio en tiempo real
+
+1. Forecast de demanda por franja/día/sede/canal con nivel de incertidumbre y cobertura histórica.
+2. Asistente del operador para producto, oferta, disponibilidad, sustitución y reglas vigentes sin alterar catálogo.
+3. Recomendación de sustitución cuando un producto no está disponible, preservando restricciones y confirmación del cliente cuando aplique.
+4. Recomendación de producto o bundle bajo finalidad autorizada y sin perfilar atributos sensibles.
+5. Señales de cola, tiempos y promesa para priorizar atención; la IA no salta reglas operativas o de servicio.
+6. Recuperación de servicio: proponer opciones de respuesta/compensación permitidas por el proceso sin emitir refund o beneficio.
+7. Detectar patrones atípicos de descuento, cancelación, devolución o caja como señal de revisión; nunca declarar fraude automáticamente.
+8. Simular precio/promoción/mix y su posible efecto; un escenario no publica precio ni demuestra causalidad.
+9. Explicar ventas, conversión, ticket, mix y devoluciones en lenguaje natural desde métricas canónicas.
+10. Preparar un cierre narrativo de turno/caja con diferencias y pendientes, sin cerrar caja ni reconocer hechos financieros.
+
+---
+
+#### 26. NUMERA — copiloto financiero con trazabilidad y abstención
+
+1. Brief diario de ingresos/costos/gastos/caja/obligaciones que existan realmente en fuentes reconciliadas, indicando bloqueos.
+2. Explicación de variaciones por drivers candidatos, sin declarar causa financiera hasta D014/propietario.
+3. Forecast de caja y escenarios de liquidez claramente separados de saldos reales.
+4. Simulador de presupuesto, margen, punto de equilibrio y escenarios sin modificar presupuesto publicado.
+5. Análisis de costo/margen por producto, canal, sede o centro únicamente cuando D013 haya certificado los insumos y asignaciones.
+6. Reconciliación asistida: proponer matches entre movimientos/documentos/hechos, dejando la aplicación final a NUMERA.
+7. OCR y extracción de facturas, recibos, extractos u otros soportes como datos candidatos, nunca reconocimiento económico automático.
+8. Preparar borrador presupuestal/forecast con supuestos explícitos y comparación contra baseline.
+9. Detectar gastos o movimientos atípicos como señal, no como fraude ni error confirmado.
+10. Consulta natural financiera con protección reforzada de importes, cuentas, clientes y detalle.
+
+Quedan fuera de autoridad de IA: ejecutar pagos, cerrar/reabrir periodos, contabilizar, aprobar obligación, declarar impuesto, certificar estados o fabricar una cifra faltante.
+
+---
+
+#### 27. PASS — servicio personalizado sin convertir personalización en vigilancia
+
+1. Asistente conversacional de autoservicio para pedidos, fidelización, beneficios, perfil y preguntas frecuentes dentro de la relación autorizada.
+2. Explicar saldo/reglas de fidelización leyendo ledger/reglas; nunca modificar puntos desde conversación.
+3. Recibir reclamos o feedback, resumirlos, clasificarlos y preparar respuesta o expediente para el proceso propietario.
+4. Recomendaciones personalizadas de producto/servicio solo bajo finalidad, consentimiento y población permitidos.
+5. Señales de abandono o baja recurrencia para priorizar servicio, sin inferir atributos sensibles ni ejecutar campañas por sí solas.
+6. Detectar inconsistencias de contacto/perfil como candidato de revisión; nunca fusionar identidades.
+7. Asistencia multilingüe, voz y accesibilidad sobre los mismos recursos autorizados.
+8. Recuperar historial relevante mínimo para continuidad de servicio sin exponer notas internas o datos de terceros.
+
+---
+
+#### 28. AURA — la oportunidad generativa más amplia, pero completamente bloqueada hoy
+
+AURA presenta una oportunidad especialmente alta para IA generativa, pero el roadmap actual exige que **todas** sus tareas DOM/AUTH/UX/INT permanezcan bloqueadas hasta la decisión de continuidad o reemplazo. Por tanto, lo siguiente es arquitectura objetivo, no capacidad operativa vigente:
+
+1. Copiloto de estrategia de marca anclado en `BRAND`, políticas, tono, campañas y evidencia histórica autorizada.
+2. Generación de conceptos, copies, titulares, guiones, piezas visuales, audio y video con trazabilidad de prompt/configuración/modelo.
+3. Variantes automáticas por canal, formato, idioma, longitud y audiencia objetivo, siempre como borradores.
+4. Control de consistencia de marca: detectar desviaciones de tono, claims, identidad visual y requisitos antes de revisión humana.
+5. Calendario editorial y propuesta de campañas a partir de objetivos, inventario de activos y ventanas comerciales.
+6. Hipótesis de audiencia y segmentación sin crear identidad ni membresía real por inferencia.
+7. Social listening y clustering de temas, reputación y señales emergentes cuando existan fuentes externas gobernadas.
+8. Borradores de respuesta reputacional y servicio; una respuesta pública no cierra reclamos ni se publica sin autoridad.
+9. Diseño de experimentos creativos y variantes con baseline, KPI y guardrails de D015/D016.
+10. Análisis multimodal de desempeño creativo, sin presentar correlación como causa.
+11. Simulación de media mix, alcance o escenarios cuando existan contratos y datos suficientes.
+12. Clasificación automática de activos de marca, metadata, duplicados candidatos y derechos/uso como apoyo al steward.
+13. Reutilización generativa de activos únicamente cuando derechos, finalidad y vigencia lo permitan.
+14. Agente de campaña futuro que pueda preparar un paquete completo —brief, audiencias, piezas, presupuesto, calendario y medición— pero no publicarlo, enviar mensajes ni gastar presupuesto sin los gates propietarios.
+
+**Bloqueo actual:** `AURA-AUD-010` debe decidir continuidad/reemplazo y `AURA-AUD-011` registrar ADR cuando corresponda. Hasta entonces: cero contratación de proveedores de IA, cero conexión de canales, cero datos reales, cero publicación y cero contacto con clientes.
+
+---
+
+#### 29. SHELL — Vento Copilot como router, no como superaplicación
+
+1. Un único punto conversacional puede recibir intención y determinar qué aplicación/dominio es propietario de la respuesta o acción.
+2. Búsqueda transversal autorizada sobre aplicaciones, documentación y analítica, conservando fuentes y límites.
+3. Continuidad de contexto entre aplicaciones mediante handoff tipado: proceso, recurso, actor, sede/área y acción pendiente.
+4. Catálogo de herramientas visible al modelo solo después de resolver actor, aplicación, finalidad y límites; el modelo no ve herramientas que no puede usar.
+5. Centro de propuestas: acciones preparadas por IA aparecen para revisión con recurso, cambios, evidencia, riesgos y aprobaciones necesarias.
+6. Routing de modelos/proveedores por modalidad, sensibilidad, costo, latencia y disponibilidad sin convertir proveedor en autoridad.
+7. Memoria de sesión mínima y controlada; los hechos durables permanecen en los dominios.
+8. Resumen de notificaciones/pendientes autorizado para reducir ruido, manteniendo enlace al expediente fuente.
+9. Observabilidad del copiloto: coste, latencia, modelo, herramienta, resultado, fallo y evidencia sin registrar secretos o payload sensible completo.
+10. Fallback: navegación, búsqueda y operaciones esenciales no quedan bloqueadas porque el modelo externo esté caído.
+
+SHELL conserva **0 procesos empresariales**. Vento Copilot nunca será un “usuario omnisciente”, un service role conversacional ni una capa que salte directamente a las tablas.
+
+---
+
+#### 30. Arquitectura objetivo: una red de copilotos especializados
+
+La visión objetivo no es un único modelo omnisciente. Es una red de copilotos especializados que comparten contratos, evidencia y trazabilidad, pero conservan fronteras de dominio. Los nombres siguientes describen responsabilidades lógicas, no productos ni identidades técnicas nuevas.
+
+| Copiloto lógico        | Propietario/contexto principal | Qué podría hacer                                                                                 | Qué no puede hacer                                               |
+| ---------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Vento Copilot          | SHELL como router              | recibir intención, mantener contexto mínimo, buscar evidencia y delegar al especialista correcto | poseer datos, procesos o permisos de otros dominios              |
+| copiloto ejecutivo     | VISO + BLOQUE AB               | construir briefings, investigar variaciones, comparar escenarios y preparar decisiones           | certificar causalidad o ejecutar acciones de dominio             |
+| copiloto de personas   | ANIMA/VISO                     | explicar turno/asistencia, preparar correcciones, cobertura y autoservicio                       | sancionar, contratar, retirar o perfilar de forma sensible       |
+| copiloto de inventario | NEXO                           | forecast, reposición candidata, conteo, remisiones, slotting, activos y visión                   | ajustar stock o fusionar maestros                                |
+| copiloto productivo    | FOGO                           | plan, capacidad, receta, merma, calidad y conocimiento operativo                                 | liberar calidad, cambiar receta publicada o registrar producción |
+| copiloto de compras    | ORIGO                          | comparar cotizaciones, riesgo, abastecimiento y negociación                                      | adjudicar, comprar o aceptar condiciones                         |
+| copiloto comercial     | PULSO                          | demanda, mix, servicio, recuperación, escenarios y recomendación                                 | cobrar, devolver, publicar precio/promoción o cerrar caja        |
+| copiloto financiero    | NUMERA                         | variaciones, forecast, escenarios, reconciliación y presupuesto                                  | pagar, contabilizar, cerrar o certificar                         |
+| copiloto de cliente    | PASS                           | autoservicio, fidelización, reclamos y personalización autorizada                                | crear consentimiento, alterar saldo o reidentificar              |
+| copiloto creativo      | AURA objetivo                  | estrategia, contenido multimodal, experimentos y reputación                                      | cualquier uso operativo mientras AURA siga bloqueada             |
+| copiloto tecnológico   | VISO/BLOQUE Z                  | triage, diagnóstico, runbooks e impacto de cambios                                               | acceso privilegiado, cambio de red, secreto o despliegue         |
+| investigador de datos  | BLOQUE AB                      | DQ, anomalías, hipótesis, evidencia, crosswalks candidatos y reproducibilidad                    | corregir fuentes, certificar o declarar causa por sí mismo       |
+
+Patrón de colaboración:
+
+```text
+PREGUNTA O INTENCIÓN
+→ VENTO COPILOT RESUELVE CONTEXTO
+→ ESPECIALISTA A CONSULTA SU DOMINIO
+→ ESPECIALISTA B CONSULTA SU DOMINIO CUANDO ES NECESARIO
+→ BLOQUE AB RECONCILIA SEMÁNTICA / DQ / CORTE
+→ EL MODELO PRODUCE UNA RESPUESTA O PLAN CON EVIDENCIA
+→ CADA PROPUESTA DE EFECTO REGRESA AL DOMINIO QUE LA POSEE
+```
+
+Ningún especialista puede “prestar” a otro datos, permisos o herramientas que el actor no pudiera obtener directamente mediante los contratos aplicables.
+
+##### 30.1. Gemelo operacional analítico
+
+Como techo tecnológico, Vento OS podrá construir en fases posteriores un **gemelo operacional analítico**: una representación simulada de la operación que combine snapshots autorizados de demanda, inventario, producción, compras, ventas, personas, finanzas, instalaciones y continuidad para preguntar “¿qué pasaría si…?”.
+
+Ejemplos de simulación objetivo:
+
+- qué ocurre con quiebres y margen si la demanda sube o un proveedor se retrasa;
+- cómo cambia producción si se restringe un recurso o una presentación;
+- qué efecto potencial tiene una promoción sobre capacidad, inventario y caja;
+- qué combinación de compras, producción y distribución reduce riesgo de faltante;
+- qué impacto operativo tendría cerrar temporalmente una sede, zona, recurso o canal;
+- cómo cambian liquidez y margen bajo escenarios de volumen, precio, costo o plazo;
+- qué capacidad laboral aproximada requiere un escenario de demanda, sin convertirlo en programación publicada.
+
+El gemelo es **simulación**, no realidad. No modifica fuentes, no certifica causalidad y no puede convertirse en un carril de ejecución oculto.
+
+##### 30.2. IA proactiva y agentes de vigilancia
+
+Una implementación futura puede ejecutar evaluaciones programadas o por evento para detectar condiciones relevantes y generar una señal, briefing o propuesta antes de que el usuario pregunte. Ejemplos: quiebre inminente, vencimiento, desviación de merma, anomalía de caja, factura sin reconciliar, ticket crítico, retraso de proveedor o deterioro de un KPI.
+
+La proactividad conserva cuatro fronteras: observar no autoriza actuar; una señal no demuestra causa; una recomendación no produce efecto; un proceso técnico conserva principal, finalidad, población y evidencia propios.
+
+##### 30.3. Interacción ambiental y manos libres
+
+En bodega, producción, servicio o mantenimiento, voz, cámara y dispositivos compartidos pueden permitir consultas manos libres, captura de evidencia, lectura de etiquetas, checklist asistido y explicación contextual. La modalidad cambia la experiencia, no la autoridad: actor real, dispositivo, recurso, privacidad y acción siguen resolviéndose por sus contratos canónicos.
+
+##### 30.4. De lenguaje natural a procesos, no de lenguaje natural a SQL
+
+El objetivo de la interfaz conversacional será traducir intención humana a **consultas y acciones empresariales tipadas**. No se adopta como arquitectura objetivo “texto libre → SQL libre → base de datos”. Para lectura, el lenguaje natural se compila contra la capa semántica y sus contratos; para efectos, se compila a una propuesta de herramienta propietaria que vuelve a validar cada frontera.
+
+---
+
+#### 31. Oportunidades transversales fuera de las diez aplicaciones propietarias
+
+| Ámbito                  | Oportunidad IA                                                                                                                                            | Propietario documental/funcional                        | Límite                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Tecnología / BLOQUE Z   | triage de tickets, resumen de logs, búsqueda de runbooks, hipótesis de causa, impacto de cambios, clasificación de activos/endpoints                      | TI-DOM-001 a TI-DOM-013; TI-AUTH; TI-INT; DATA-AUTH-004 | no ejecutar acceso privilegiado, cambio de red, secreto o despliegue desde IA           |
+| Información / BLOQUE AA | clasificación documental, OCR, extracción, resumen, búsqueda semántica, obligaciones, detección de faltantes y apoyo a retención/disposición              | INFO-DOM/AUTH/UX/INT aplicables; DATA-AUTH              | documento recuperado es dato no instrucción; no borrar/retener por recomendación        |
+| Continuidad / BLOQUE AC | simulación de escenarios, resumen de dependencias, propuesta de playbooks, detección de brechas, reconstrucción de evidencia y soporte durante incidentes | CONT-DOM/AUTH/UX/INT cuando se desarrollen              | no declarar recuperación, activar contingencia o cerrar incidente por salida generativa |
+
+Estas capacidades no crean tareas nuevas ni adelantan BLOQUE AC; únicamente fijan la frontera de integración para cuando sus tareas propietarias las materialicen.
+
+---
+
+#### 32. Matriz materializada de los 62 objetos para consumo por IA/modelos
+
+|    # | Objeto                        | Clase             | Uso IA permitido                                                   | Límite / estado                                                                                   |
+| ---: | ----------------------------- | ----------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+|    1 | `ORGANIZATION_SCOPE`          | `DATO_MAESTRO`    | contexto organizacional, comparación y alcance                     | no inferir autoridad, pertenencia o permiso desde nombre/etiqueta; `ESPECIFICADO`                 |
+|    2 | `LEGAL_SUBJECT`               | `DATO_MAESTRO`    | extracción y conciliación de evidencia legal/tributaria autorizada | no declarar forma legal, obligación o identidad oficial sin fuente autorizada; `ESPECIFICADO`     |
+|    3 | `BRAND`                       | `DATO_MAESTRO`    | contexto de marca, consistencia y generación futura de contenido   | no sustituir titularidad, establecimiento ni aprobación de marca; `ESPECIFICADO`                  |
+|    4 | `COMMERCIAL_ESTABLISHMENT`    | `DATO_MAESTRO`    | contexto comercial y conciliación con evidencias externas          | no declarar verificación oficial por coincidencia textual; `ESPECIFICADO`                         |
+|    5 | `BUSINESS_LINE`               | `DATO_MAESTRO`    | segmentación, escenarios y explicación ejecutiva                   | no convertir agrupación analítica en jerarquía o autoridad; `ESPECIFICADO`                        |
+|    6 | `PHYSICAL_FACILITY`           | `DATO_MAESTRO`    | contexto físico, mantenimiento, riesgo y capacidad                 | no equiparar dirección, sede o instalación por similitud; `ESPECIFICADO`                          |
+|    7 | `OPERATIONAL_SITE`            | `DATO_MAESTRO`    | territorio, operación, forecasting y optimización por sede         | no usar sede como permiso ni cambiar identidad por reubicación; `ESPECIFICADO`                    |
+|    8 | `ORGANIZATIONAL_AREA`         | `DATO_MAESTRO`    | contexto funcional y segmentación operativa                        | no inferir permisos, jerarquía o responsabilidad desde nombre; `ESPECIFICADO`                     |
+|    9 | `PHYSICAL_ZONE`               | `DATO_MAESTRO`    | slotting, flujo físico, riesgo y visión asistida futura            | no inferir contención o autoridad por proximidad o etiqueta; `ESPECIFICADO`                       |
+|   10 | `WORKSTATION`                 | `DATO_MAESTRO`    | asistencia contextual al puesto, periféricos y flujo               | no confundir estación, dispositivo, endpoint, área o actor; `ESPECIFICADO`                        |
+|   11 | `EXTERNAL_OPERATIONAL_POINT`  | `DATO_MAESTRO`    | logística, custodia y soporte contextual                           | no promover a sede ni ampliar finalidad por conocer ubicación; `ESPECIFICADO`                     |
+|   12 | `PERSON_IDENTITY`             | `DATO_MAESTRO`    | resolución contextual autorizada y asistencia personalizada mínima | no fusionar por nombre, documento, correo, teléfono, biometría o inferencia; `ESPECIFICADO`       |
+|   13 | `WORKER_PROFILE`              | `DATO_MAESTRO`    | copiloto laboral contextual y planificación autorizada             | no perfilar desempeño sensible ni decidir sanciones, contratación o retiro; `ESPECIFICADO`        |
+|   14 | `EMPLOYMENT_RELATIONSHIP`     | `DATO_MAESTRO`    | contexto de vínculo, vigencia y explicación de reglas              | no inferir autoridad ni decisión laboral desde patrón estadístico; `ESPECIFICADO`                 |
+|   15 | `CONTRACTUAL_POSITION`        | `DATO_REFERENCIA` | clasificación y explicación administrativa                         | no convertir cargo en permiso, rango efectivo o identidad; `ESPECIFICADO`                         |
+|   16 | `BASE_ROLE`                   | `DATO_REFERENCIA` | explicación del modelo de autorización                             | no asignar, ampliar o inferir permisos desde lenguaje natural; `ESPECIFICADO`                     |
+|   17 | `OPERATIONAL_ROLE`            | `DATO_REFERENCIA` | contextualización de funciones y asistencia operativa              | no crear herencia de permisos ni rol efectivo por inferencia; `ESPECIFICADO`                      |
+|   18 | `WORK_ASSIGNMENT`             | `DATO_MAESTRO`    | planificación, cobertura y contexto de trabajo                     | no crear, modificar o cerrar asignaciones desde recomendación; `ESPECIFICADO`                     |
+|   19 | `CUSTOMER_PERSON`             | `DATO_MAESTRO`    | servicio y personalización bajo finalidad autorizada               | no reidentificar, fusionar, perfilar de forma incompatible ni ampliar finalidad; `ESPECIFICADO`   |
+|   20 | `CUSTOMER_CONTACT`            | `DATO_MAESTRO`    | asistencia de comunicación y calidad de contacto                   | no usar contacto como identidad global ni como consentimiento; `ESPECIFICADO`                     |
+|   21 | `CUSTOMER_RELATIONSHIP`       | `DATO_MAESTRO`    | contexto de servicio/fidelización por relación vigente             | no confundir relación con consentimiento, preferencia o autorización; `ESPECIFICADO`              |
+|   22 | `CUSTOMER_PROFILE`            | `DATO_MAESTRO`    | autoservicio y respuestas personalizadas mínimas                   | no incorporar notas internas ni atributos fuera de autoadministración; `ESPECIFICADO`             |
+|   23 | `CUSTOMER_PREFERENCE`         | `DATO_MAESTRO`    | personalización autorizada y explicación de preferencias           | no convertir preferencia en consentimiento o autorización; `ESPECIFICADO`                         |
+|   24 | `LOYALTY_ACCOUNT`             | `DATO_MAESTRO`    | explicación de beneficios, estado y servicio                       | no alterar saldo ni sustituir ledger con salida generativa; `ESPECIFICADO`                        |
+|   25 | `LOYALTY_PROGRAM_RULE`        | `DATO_REFERENCIA` | explicación, simulación y elegibilidad bajo versión                | no cambiar regla publicada ni fabricar beneficio; `ESPECIFICADO`                                  |
+|   26 | `PRODUCTO_MAESTRO`            | `DATO_MAESTRO`    | búsqueda semántica, catálogo, demanda y recomendaciones            | no fusionar ni corregir identidad por similitud, imagen o texto; `ESPECIFICADO`                   |
+|   27 | `VARIANTE`                    | `DATO_MAESTRO`    | selección, comparación y demanda por configuración                 | no colapsar con producto o presentación; `ESPECIFICADO`                                           |
+|   28 | `PRESENTACION`                | `DATO_MAESTRO`    | OCR/mapeo asistido, compra, remisión y venta                       | no cambiar cantidad, unidad, multiplicador o empaque por similitud textual; `ESPECIFICADO`        |
+|   29 | `UNIDAD_DE_MEDIDA`            | `DATO_REFERENCIA` | conversión y validación semántica autorizada                       | no inventar equivalencias ni factores de conversión; `ESPECIFICADO`                               |
+|   30 | `TAXONOMIA_TIPO_MAESTRO`      | `DATO_REFERENCIA` | clasificación asistida y búsqueda                                  | clasificación automática solo propone; no reasigna identidad sin contrato; `ESPECIFICADO`         |
+|   31 | `TAXONOMIA_INVENTARIO`        | `DATO_REFERENCIA` | clasificación, riesgo y política de stock                          | no derivar comportamiento de inventario fuera del catálogo vigente; `ESPECIFICADO`                |
+|   32 | `TAXONOMIA_OPERACIONAL`       | `DATO_REFERENCIA` | búsqueda, slotting y agrupación operativa                          | no convertir taxonomía en permiso o menú autoritativo; `ESPECIFICADO`                             |
+|   33 | `LOC`                         | `DATO_MAESTRO`    | slotting, picking, capacidad y anomalías locativas                 | no inferir ubicación canónica desde imagen, texto o proximidad; `ESPECIFICADO`                    |
+|   34 | `ACTIVO_FISICO`               | `DATO_MAESTRO`    | mantenimiento predictivo asistido, visión y diagnóstico            | no fusionar por serial/imagen ni ejecutar baja o ajuste patrimonial; `ESPECIFICADO`               |
+|   35 | `CLASE_DE_ACTIVO`             | `DATO_REFERENCIA` | clasificación y mantenimiento contextual                           | no cambiar clase por recomendación sin decisión propietaria; `ESPECIFICADO`                       |
+|   36 | `ESPECIFICACION_PRODUCTO`     | `DATO_MAESTRO`    | comparación técnica, control documental y calidad                  | contenido confidencial; no exponer fórmulas ni modificar especificación; `ESPECIFICADO`           |
+|   37 | `PROVEEDOR`                   | `DATO_MAESTRO`    | comparación, riesgo, búsqueda y análisis de desempeño              | no adjudicar, fusionar o bloquear proveedor automáticamente; `ESPECIFICADO`                       |
+|   38 | `CONTACTO_PROVEEDOR`          | `DATO_MAESTRO`    | asistencia de comunicaciones y extracción de contacto              | no fusionar persona/proveedor ni ampliar uso de datos personales; `ESPECIFICADO`                  |
+|   39 | `RELACION_PRODUCTO_PROVEEDOR` | `DATO_MAESTRO`    | sourcing, alternativas y recomendaciones de abastecimiento         | no inventar capacidad de suministro, precio o vigencia; `ESPECIFICADO`                            |
+|   40 | `CONDICION_COMERCIAL`         | `DATO_MAESTRO`    | comparación, negociación asistida y simulación                     | financiero restringido; no aceptar condiciones ni comprometer compra; `ESPECIFICADO`              |
+|   41 | `TAXONOMIA_COMPRA`            | `DATO_REFERENCIA` | clasificación asistida de abastecimiento                           | no sustituir taxonomías de producto, inventario o costo; `ESPECIFICADO`                           |
+|   42 | `RECETA`                      | `DATO_MAESTRO`    | RAG productivo, escalado y propuestas de optimización              | confidencial; no publicar versión, sustituir ingredientes ni autorizar producción; `ESPECIFICADO` |
+|   43 | `FAMILIA_PRODUCTIVA`          | `DATO_REFERENCIA` | clasificación y planificación de producción                        | no redefinir familia por similitud o rendimiento; `ESPECIFICADO`                                  |
+|   44 | `RUTA_PRODUCTIVA`             | `DATO_MAESTRO`    | secuenciación, capacidad y optimización asistida                   | no cambiar ruta aprobada ni ejecutar reconfiguración automáticamente; `ESPECIFICADO`              |
+|   45 | `RECURSO_PRODUCTIVO`          | `DATO_MAESTRO`    | capacidad, mantenimiento y asignación sugerida                     | no confundir recurso funcional con activo físico; `ESPECIFICADO`                                  |
+|   46 | `COMMERCIAL_CHANNEL`          | `DATO_REFERENCIA` | segmentación, forecasting y atribución gobernada                   | no inferir canal canónico desde source libre o proveedor; `ESPECIFICADO`                          |
+|   47 | `CATEGORIA_COMERCIAL`         | `DATO_REFERENCIA` | navegación, mix y merchandising asistido                           | no cambiar taxonomía publicada por recomendación; `ESPECIFICADO`                                  |
+|   48 | `OFERTA_COMERCIAL`            | `DATO_MAESTRO`    | simulación, recomendación y explicación de oferta                  | no publicar precio/promoción/disponibilidad desde IA; `ESPECIFICADO`                              |
+|   49 | `CENTRO_DE_COSTO`             | `DATO_MAESTRO`    | análisis financiero, asignación y escenarios                       | no equiparar a sede/área/marca/canal ni reasignar costos automáticamente; `ESPECIFICADO`          |
+|   50 | `MONEDA`                      | `DATO_REFERENCIA` | presentación y conversión gobernada                                | no inferir tasa ni sumar monedas incompatibles; `ESPECIFICADO`                                    |
+|   51 | `PERIODO_ECONOMICO`           | `DATO_REFERENCIA` | comparación, forecast y escenarios                                 | no reabrir, cerrar ni alterar periodos; `ESPECIFICADO`                                            |
+|   52 | `PERIODO_CONTABLE`            | `DATO_REFERENCIA` | contexto de reporting autorizado                                   | no declarar cierre contable ni autoridad formal; `ESPECIFICADO`                                   |
+|   53 | `PERIODO_FISCAL`              | `DATO_REFERENCIA` | contexto fiscal con fuente externa aplicable                       | no emitir conclusión fiscal oficial sin autoridad/fuente; `ESPECIFICADO`                          |
+|   54 | `CLASIFICACION_ECONOMICA`     | `DATO_REFERENCIA` | clasificación asistida de hechos económicos                        | propuesta no equivale a contabilización ni clasificación oficial; `ESPECIFICADO`                  |
+|   55 | `PERFIL_DE_MARCA`             | `DATO_MAESTRO`    | copiloto de marca futuro                                           | AURA BLOQUEADA; cero uso operativo hasta AURA-AUD-010/011; `BLOQUEADO`                            |
+|   56 | `AUDIENCIA`                   | `DATO_MAESTRO`    | hipótesis/segmentación futura bajo consentimiento                  | AURA BLOQUEADA; no crear ni activar audiencias reales; `BLOQUEADO`                                |
+|   57 | `ACTIVO_DE_MARCA`             | `DATO_MAESTRO`    | generación, clasificación y reutilización creativa futura          | AURA BLOQUEADA; no publicar ni asumir derechos de uso; `BLOQUEADO`                                |
+|   58 | `ENDPOINT`                    | `DATO_MAESTRO`    | diagnóstico técnico y soporte asistido                             | no usar fingerprint, IP o MAC como identidad ni ejecutar control privilegiado; `ESPECIFICADO`     |
+|   59 | `SHARED_DEVICE`               | `DATO_MAESTRO`    | asistencia contextual de estación y soporte                        | no convertir dispositivo en actor ni ampliar techo de capacidades; `ESPECIFICADO`                 |
+|   60 | `NETWORK_RESOURCE`            | `DATO_MAESTRO`    | diagnóstico de conectividad y anomalías                            | no exponer secretos/topología sensible ni ejecutar cambios de red; `ESPECIFICADO`                 |
+|   61 | `APPLICATION`                 | `DATO_MAESTRO`    | routing del copiloto y catálogo de capacidades                     | SHELL enruta; no adquiere procesos ni autoridad de dominio; `ESPECIFICADO`                        |
+|   62 | `TECH_SERVICE`                | `DATO_REFERENCIA` | clasificación y routing de soporte TI                              | preservar TI-SERVICE-001..011; no renumerar ni fusionar por similitud; `ESPECIFICADO`             |
+
+**Reconciliación:** 62 esperados; 62 materializados; 43 `DATO_MAESTRO`; 19 `DATO_REFERENCIA`; 59 `ESPECIFICADO`; 3 `BLOQUEADO`; 0 faltantes; 0 duplicados.
+
+---
+
+#### 33. Métricas de asistencia y IA
+
+|    # | metric_key          | DQ heredado   | Uso IA permitido                                             | Prohibición                                    |
+| ---: | ------------------- | ------------- | ------------------------------------------------------------ | ---------------------------------------------- |
+|    1 | `scheduledShifts`   | `NO EVALUADO` | explicar programación y contexto; detectar huecos como señal | no tratar como certificado                     |
+|    2 | `attendedShifts`    | `NO EVALUADO` | resumir asistencia y tendencias autorizadas                  | no derivar sanción o evaluación laboral        |
+|    3 | `restDayCount`      | `NO EVALUADO` | explicar descansos y cobertura                               | no interpretar descanso como incumplimiento    |
+|    4 | `lateCount`         | `NO EVALUADO` | detectar patrón y preparar investigación                     | no declarar causa o responsabilidad automática |
+|    5 | `noShowCount`       | `NO EVALUADO` | señal de investigación y planificación                       | no emitir sanción ni causalidad                |
+|    6 | `openCount`         | `NO EVALUADO` | priorizar cierres pendientes y soporte                       | no modificar sesiones de asistencia            |
+|    7 | `missingCloseCount` | `BLOQUEADO`   | solo investigación del bloqueo y evidencia                   | no publicar métrica oficial ni estimarla       |
+|    8 | `autoCloseCount`    | `NO EVALUADO` | analizar funcionamiento del autocierre                       | no atribuir conducta humana por inferencia     |
+|    9 | `departureCount`    | `NO EVALUADO` | resumir salidas registradas                                  | no convertir en juicio laboral                 |
+|   10 | `scheduledMinutes`  | `NO EVALUADO` | comparación planificada y capacidad                          | no certificar sin DQ                           |
+|   11 | `netMinutes`        | `NO EVALUADO` | explicar tiempo neto bajo fórmula canónica                   | no recalcular localmente                       |
+|   12 | `incidentCount`     | `NO EVALUADO` | detectar señal y preparar investigación                      | no confundir incidencia de asistencia con SST  |
+|   13 | `attendanceRate`    | `BLOQUEADO`   | solo explicar por qué está bloqueada y qué falta             | no estimar, publicar ni usar para decisión     |
+|   14 | `punctualityRate`   | `BLOQUEADO`   | solo explicar por qué está bloqueada y qué falta             | no estimar, publicar ni usar para decisión     |
+
+**Reconciliación:** 14/14; 11 `NO EVALUADO`; 3 `BLOQUEADO`; 0 métricas nuevas; 0 fórmulas nuevas.
+
+---
+
+#### 34. Matriz materializada de las 55 familias analíticas
+
+| Tarea          |    # | Familia canónica                                        | Consumo BI/hoja/modelo/IA                                              | Límite                                                                                                                                                    |
+| -------------- | ---: | ------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATA-DOM-009` |    1 | ventas netas y brutas                                   | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    2 | pedidos y conversión                                    | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    3 | ticket y unidades                                       | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    4 | mezcla por producto, categoría, canal y sede            | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    5 | demanda por franja, día y temporada                     | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    6 | disponibilidad perdida                                  | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    7 | cancelaciones, devoluciones y descuentos                | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    8 | promociones y efecto incremental                        | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |    9 | recurrencia y frecuencia                                | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |   10 | margen relacionado                                      | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-009` |   11 | capacidad comercial no utilizada                        | BI + consulta + detección + forecasting + simulación + recomendación   | no inventar causalidad, demanda perdida, margen ni identidad de cliente; conserva DQ, población, versión y autorización del resultado concreto            |
+| `DATA-DOM-010` |    1 | existencia disponible y comprometida                    | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    2 | cobertura y días de inventario                          | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    3 | rotación y permanencia                                  | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    4 | faltantes y quiebres                                    | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    5 | vencimiento, daño y pérdida                             | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    6 | diferencias de conteo                                   | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    7 | cumplimiento de remisiones                              | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    8 | lead time y cumplimiento de proveedores                 | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |    9 | compras urgentes                                        | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |   10 | consumo versus plan                                     | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |   11 | costo de inventario                                     | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-010` |   12 | capacidad de almacenamiento                             | BI + detección + forecasting + optimización + recomendación            | no ejecutar ajuste, recepción, remisión, compra o cambio maestro; conserva DQ, población, versión y autorización del resultado concreto                   |
+| `DATA-DOM-011` |    1 | demanda planificada versus producción                   | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    2 | capacidad disponible y utilizada                        | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    3 | adherencia al programa                                  | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    4 | rendimiento teórico y real                              | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    5 | consumo estándar y real                                 | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    6 | merma, reproceso y aprovechamiento                      | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    7 | calidad, retención y rechazo                            | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    8 | tiempo de ciclo                                         | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |    9 | cumplimiento de liberación                              | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-011` |   10 | costo y variación por lote, producto y sede             | BI + detección + forecasting + optimización + recomendación            | no liberar calidad, cambiar receta/ruta ni registrar producción; conserva DQ, población, versión y autorización del resultado concreto                    |
+| `DATA-DOM-012` |    1 | cumplimiento de promesa                                 | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    2 | tiempos de preparación, despacho y entrega              | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    3 | pedidos completos                                       | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    4 | reclamos y tiempo de resolución                         | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    5 | compensaciones                                          | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    6 | satisfacción y feedback                                 | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    7 | recurrencia, frecuencia y abandono                      | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    8 | adquisición y activación                                | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |    9 | fidelización, puntos y redenciones                      | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |   10 | reputación y temas recurrentes                          | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |   11 | reservas, no-show y utilización                         | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-012` |   12 | valor y rentabilidad del cliente cuando esté autorizado | BI + clasificación + resumen + predicción + recomendación              | finalidad/consentimiento; no perfilar o actuar sobre cliente fuera de autorización; conserva DQ, población, versión y autorización del resultado concreto |
+| `DATA-DOM-013` |    1 | costos estándar y reales                                | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    2 | variaciones                                             | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    3 | margen y contribución                                   | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    4 | gastos                                                  | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    5 | centros de costo                                        | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    6 | presupuesto y forecast                                  | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    7 | caja, bancos y tesorería                                | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    8 | cartera y obligaciones                                  | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |    9 | rentabilidad multidimensional                           | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+| `DATA-DOM-013` |   10 | escenarios y simulaciones                               | BI + explicación + forecasting + simulación + reconciliación candidata | no pagar, cerrar, contabilizar, certificar ni fabricar costo/ingreso; conserva DQ, población, versión y autorización del resultado concreto               |
+
+**Reconciliación:** `11 + 12 + 10 + 12 + 10 = 55`; 55 esperadas; 55 materializadas; 0 faltantes; 0 duplicadas.
+
+---
+
+#### 35. Las seis familias de artefacto y su integración
+
+| Artefacto        | BI                             | Hoja                                 | Modelo                                         | IA                                         | Regla                                                   |
+| ---------------- | ------------------------------ | ------------------------------------ | ---------------------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
+| tablero          | consumidor principal           | puede derivar un corte autorizado    | puede producir insumos/score                   | puede explicar y navegar                   | la explicación no cambia métricas                       |
+| reporte          | edición gobernada              | puede exportarse como copia derivada | puede ser entrada solo por referencia/version  | puede resumir o responder sobre la edición | no reescribe el reporte                                 |
+| exportación      | salida portable                | forma natural de consumo tabular     | dataset de entrada solo si contrato lo permite | puede analizar el artefacto autorizado     | no se convierte en fuente editable                      |
+| suscripción      | entrega programada/condicional | puede entregar artefacto tabular     | puede disparar evaluación si está autorizada   | puede resumir la entrega                   | cada ejecución reevalúa autorización                    |
+| alerta           | señal visual                   | puede aparecer en reporte derivado   | puede originarse en regla/modelo versionado    | puede explicar y proponer investigación    | alerta no es causa/acción                               |
+| snapshot oficial | corte inmutable                | puede ser base reproducible          | entrada preferente para reproducibilidad       | puede responder “qué se sabía entonces”    | no cambia por datos nuevos; restatement es otra edición |
+
+---
+
+#### 36. Prompts, configuraciones y respuestas como artefactos versionados
+
+- Las instrucciones de sistema, plantillas de prompt, reglas de tool use y parámetros materiales se versionan cuando afecten comportamiento reproducible.
+- No se exige almacenar cadena privada de razonamiento del modelo. La evidencia canónica se limita a entradas/referencias, configuración material, herramientas, salida y decisiones observables necesarias para auditar.
+- Una actualización silenciosa del modelo/proveedor que cambie comportamiento material exige reevaluación antes de seguir tratando resultados como equivalentes.
+- Prompts completos sensibles pueden almacenarse por referencia protegida o forma minimizada; logs ordinarios no son repositorio de conversaciones.
+- Una salida generada que se publique como artefacto empresarial conserva autor/revisor humano o proceso, modelo/versión cuando sea material, fuentes, fecha y estado de revisión.
+
+---
+
+#### 37. Multimodalidad: texto, imagen, audio y video
+
+- Un archivo, imagen, audio o video se clasifica y autoriza antes de enviarse a un modelo.
+- OCR/transcripción/descripción son derivados con incertidumbre; no sustituyen el original.
+- Una foto de inventario puede producir conteos candidatos; NEXO sigue siendo propietario de la reconciliación física.
+- Una imagen de calidad puede producir una señal; FOGO/propietario mantiene liberación o rechazo.
+- Una grabación de cliente o trabajador puede contener información sensible y exige finalidad/retención/consentimiento aplicables.
+- Contenido generado de marca conserva condición de generado y requiere derechos/revisión/publicación propietaria cuando AURA se habilite.
+- El modelo no usa metadata oculta, EXIF, biometría o inferencias de identidad para ampliar una decisión si el contrato no lo autoriza.
+
+---
+
+#### 38. Coste, latencia y disponibilidad
+
+- La IA es una dependencia degradable: una caída del proveedor no debe bloquear procesos esenciales que puedan operar sin IA.
+- Cada caso futuro declara presupuesto de latencia, coste y volumen; no existe un modelo universal obligatorio para toda interacción.
+- Routing por modelo puede escoger una alternativa más barata/rápida solo si conserva clasificación, finalidad, contrato y calidad mínima del caso.
+- No se reduce seguridad, población autorizada, precisión de una métrica o evidencia para ahorrar tokens/coste.
+- Respuestas largas, archivos grandes o contexto excesivo se reducen mediante recuperación/proyección gobernada, no enviando el universo completo.
+- Una respuesta de caché debe seguir siendo autorizada y suficientemente fresca para el mismo uso.
+- Si un proveedor falla después de una posible operación de efecto futura, el sistema reconcilia el efecto; el modelo no presume rollback.
+
+---
+
+#### 39. Privacidad, seguridad y resistencia a abuso
+
+- `service_role`, secrets, tokens, API keys y credenciales completas nunca se exponen al modelo.
+- El modelo no recibe tablas completas “por si acaso”; se aplica minimización y selección server-side.
+- Prompt injection, indirect prompt injection, tool injection, jailbreak, data exfiltration y tool spoofing se tratan como entradas no confiables; no cambian autorización.
+- Una URL, archivo adjunto, QR, texto OCR, email o documento puede contener instrucciones maliciosas y jamás concede herramientas.
+- Outputs pueden contener datos sensibles por inferencia y pasan protección antes de mostrarse o persistirse.
+- No se permite reidentificar poblaciones suprimidas combinando varias consultas/outputs.
+- No se permite usar un modelo externo como canal lateral para buscar datos a los que el actor no tiene acceso.
+- El proveedor técnico no obtiene derecho empresarial sobre datos, logs, conversaciones o resultados.
+- La moderación/seguridad del proveedor complementa, pero no sustituye, las políticas y autorización de Vento OS.
+- Una IA no puede explicar detalles internos de por qué un recurso secreto fue denegado si esa explicación revelaría metadatos sensibles.
+
+---
+
+#### 40. Experiencia de usuario para respuestas de IA
+
+- Diferenciar visualmente **hecho**, **métrica**, **predicción**, **simulación**, **hipótesis**, **recomendación**, **borrador** y **acción ejecutada**.
+- Mostrar fuente/corte/calidad y enlaces a evidencia de forma progresiva cuando sea material.
+- Indicar incertidumbre y limitaciones en lugar de confianza verbal vacía.
+- Permitir al usuario inspeccionar “de dónde salió” una afirmación sin abrir recursos no autorizados.
+- Una propuesta de acción muestra qué cambiaría, sobre qué recurso, con qué actor y qué confirmación/autoridad faltan.
+- Después de un efecto futuro, confirmar el resultado real devuelto por el dominio; no usar “listo” solo porque el modelo emitió una llamada.
+- Permitir corregir feedback sobre una respuesta sin convertir el feedback en corrección de la fuente.
+- Mantener operación principal accesible sin IA cuando la IA sea complementaria.
+
+---
+
+#### 41. Observabilidad y auditoría de BI, modelos e IA
+
+Toda ejecución futura que sea material deberá poder correlacionar, según aplicabilidad:
+
+- actor/principal y principal técnico;
+- aplicación y caso de uso;
+- finalidad;
+- recurso/población autorizada;
+- modelo/proveedor/versión;
+- prompt/configuración por referencia;
+- dataset/snapshot/features por referencia;
+- periodo/corte/DQ;
+- herramientas visibles y realmente llamadas;
+- argumentos validados mediante referencia segura cuando sean sensibles;
+- decisión de autorización;
+- resultado del modelo;
+- recomendación/propuesta;
+- decisión humana o propietaria posterior cuando exista;
+- efecto confirmado por el sistema propietario;
+- retries, timeouts, errores y reconciliación;
+- coste, latencia y tokens/unidades de proveedor cuando sea útil y seguro;
+- feedback/evaluación vinculados sin reescribir la ejecución histórica.
+
+Los logs externos del proveedor nunca serán la única evidencia canónica necesaria para reconstruir una operación empresarial.
+
+---
+
+#### 42. Cambio de modelo, drift y retiro
+
+- Cambiar de proveedor, modelo, versión, prompt material, dataset, feature contract, herramienta o umbral puede cambiar comportamiento y exige evaluación de impacto.
+- Un modelo retirado conserva identidad e historia para reproducir qué resultado se utilizó entonces.
+- Drift de datos o desempeño no se “corrige” reentrenando silenciosamente; activa evaluación/versionado conforme al caso.
+- Un rollback de modelo no restaura automáticamente outputs, recomendaciones o acciones históricas.
+- Si un proveedor deja de estar disponible, el contrato define fallback, modo degradado o desactivación sin otorgar acceso alternativo más amplio.
+- Una vulnerabilidad, fuga o comportamiento inseguro permite suspender el modelo/caso sin retirar la capacidad empresarial base de la aplicación.
+
+---
+
+#### 43. Fronteras de implementación y handoffs exactos
+
+| Necesidad                                                             | Propietario documental / técnico                               | Condición                                                |
+| --------------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------- |
+| inventario real de proveedores/modelos externos                       | `INT-EXT-001`                                                  | antes de declarar proveedor activo                       |
+| principal técnico, autenticación, secreto y entorno                   | `INT-EXT-002` a `INT-EXT-008`; E3/R                            | antes de cualquier conexión                              |
+| contrato versionado de entrada/salida                                 | `INT-EXT-009`                                                  | antes de inferencia externa productiva                   |
+| webhook/polling/híbrido cuando exista                                 | `INT-EXT-010` a `INT-EXT-012`                                  | antes de operación automática con proveedor              |
+| mapping de IDs del proveedor                                          | `INT-EXT-013`; `DATA-INT-003`                                  | antes de correlacionar identidades externas              |
+| payload original, límites, retry, cuarentena, observabilidad y retiro | `INT-EXT-014` a `INT-EXT-020`                                  | antes de operación productiva                            |
+| capa semántica y serving                                              | `DATA-INT-002`                                                 | antes de consultas/modelos compartidos productivos       |
+| autorización/minimización                                             | `DATA-AUTH-001` a `DATA-AUTH-003`                              | en cada caso y población                                 |
+| auditoría de consultas/modelos/recomendaciones                        | `DATA-AUTH-004`                                                | antes de considerar trazable un uso productivo           |
+| diagnóstico/causalidad/confianza                                      | `DATA-DOM-014`                                                 | antes de llamar causa a una explicación                  |
+| objetivos/metas/guardrails                                            | `DATA-DOM-015`                                                 | antes de fijar objetivos desde una señal o recomendación |
+| acciones/experimentos                                                 | `DATA-DOM-016`                                                 | antes de convertir recomendación en intervención         |
+| restatements/reproducibilidad                                         | `DATA-DOM-017`                                                 | antes de reexpresar historia                             |
+| experiencia y validación con usuarios                                 | `DATA-UX-001` a `DATA-UX-008`                                  | antes de declarar lista una superficie IA                |
+| efecto empresarial concreto                                           | tarea y paquete del dominio propietario                        | antes de habilitar una herramienta N4                    |
+| persistencia/RLS/RPC/Edge/índices/vector stores/secretos              | BLOQUE E3/R desde `vento-shell`                                | solo en fase física autorizada                           |
+| AURA y cualquier proveedor IA de marketing                            | `AURA-AUD-010`; `AURA-AUD-011`; luego tareas AURA propietarias | antes de cualquier contratación, dato real o conexión    |
+| continuidad/recovery de capacidades IA                                | BLOQUE AC cuando corresponda                                   | sin adelantar `CONT-DOM-001` en esta tarea               |
+
+No queda una decisión sustantiva de DATA-INT-004 diferida sin propietario documental o condición de salida. La implementación concreta de cada modelo o herramienta queda condicionada a las tareas ya existentes que poseen ese efecto.
+
+---
+
+#### 44. Cobertura por requisitos vigentes
+
+La conducta definida aquí se encuentra dentro de requisitos canónicos ya vigentes:
+
+- `TREQ-DATA-004` protege versión de métricas, periodo, zona horaria, filtros, dimensiones, unidad/moneda, corte, frescura, cobertura, DQ y separación entre vista viva, snapshot, reporte, simulación y exportación;
+- `TREQ-DATA-005` asigna responsabilidad explícita a `DATA-INT-004` y protege la separación entre señal, diagnóstico, hipótesis, acción, experimento, responsable, baseline, meta, KPI, drivers, guardrails, ventana, segmentos, resultado, confianza, aprendizaje y decisión; además prohíbe que una recomendación ejecute cambios empresariales por sí sola;
+- `TREQ-AUTH-015` exige evidencia correlacionable de principal, actor efectivo, contexto, permiso, recurso, decisión, razones, versión y tiempo para decisiones y acciones protegidas;
+- `TREQ-SHELL-011` exige identidad, actor, finalidad, clasificación, recurso, relación, territorio, estado, destinatario y acción exacta para consulta, búsqueda, obtención portable, impresión, exportación, compartición o administración, sin fuga por metadatos;
+- `TREQ-INTEGRATION-003` protege idempotencia, retry, estado durable, resultado recuperable, observabilidad, conciliación y recuperación de operaciones asíncronas;
+- `TREQ-INTEGRATION-004` protege trazabilidad de disparador, payload, actor/principal técnico, recurso, destinatario, intento, resultado, error y efecto final;
+- `TREQ-INTEGRATION-006` protege captura única en la fuente propietaria, propagación por contratos/eventos, resolución de fuentes competidoras y preservación de historia.
+
+DATA-INT-004 especializa esas obligaciones para BI, hojas, modelos e IA y no habilita un comportamiento ejecutable nuevo. Cada futura herramienta de efecto deberá quedar protegida además por los requisitos del dominio/paquete que materialice ese efecto concreto.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa un contrato documental de consumo e integración sobre comportamientos ya protegidos por requisitos canónicos vigentes de autorización, trazabilidad, semántica, privacidad, recomendación, idempotencia y fuentes de verdad. No habilita un modelo productivo, un proveedor, una herramienta de efecto, una mutación, una credencial, un dataset real ni una automatización que introduzca comportamiento ejecutable adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 45. Criterios de aceptación documental
+
+1. la tarea conserva exactamente cuatro familias de consumidor: BI, hojas, modelos e IA/agentes;
+2. ninguna familia obtiene fuente de verdad por consumir datos;
+3. BI recibe proyección protegida y no un universo amplio con seguridad solo en cliente;
+4. ninguna fórmula BI local redefine una métrica canónica;
+5. una hoja derivada no se convierte en fuente ni autoridad;
+6. una hoja modificada solo puede retornar mediante un contrato de entrada/reconciliación futuro;
+7. un modelo conserva identidad, versión, propósito y entradas por referencia;
+8. predicción, simulación, explicación y recomendación permanecen distintas de un hecho;
+9. un modelo no certifica su dataset o salida;
+10. un modelo no convierte feature importance o correlación en causalidad;
+11. existen exactamente seis niveles documentales N0 a N5;
+12. N4 permanece condicional y no habilitado;
+13. N5 permanece bloqueado por esta tarea;
+14. existen exactamente doce capacidades lógicas de IA materializadas;
+15. consulta factual usa evidencia y puede abstenerse;
+16. cifras deterministas provienen de capa semántica;
+17. un conflicto entre fuentes no se resuelve por plausibilidad;
+18. RAG aplica autorización antes de retrieval;
+19. embeddings/chunks heredan sensibilidad y finalidad;
+20. similitud vectorial no concede acceso;
+21. contenido recuperado se trata como dato no confiable y no como instrucción de sistema;
+22. prompt injection no puede ampliar herramientas o permisos;
+23. contexto efímero no se convierte en maestro;
+24. hechos empresariales durables se escriben solo mediante su dominio propietario;
+25. se materializan veinte campos mínimos del contrato futuro de herramienta;
+26. un argumento generado por modelo se valida como entrada no confiable;
+27. cada llamada de efecto futura reautoriza capacidad, actor, recurso y estado;
+28. un timeout de herramienta no justifica repetir un efecto a ciegas;
+29. ningún agente crea herramientas, permisos, destinos o secretos dinámicamente;
+30. pagos, cierres, grants, sanciones, calidad, fusión de identidad, ajustes de stock y publicaciones críticas no quedan habilitados;
+31. se materializan veintiséis elementos mínimos del contrato de modelo;
+32. se materializan veintisiete elementos mínimos del contrato de proveedor/modelo externo;
+33. se seleccionan cero proveedores;
+34. se habilitan cero credenciales y cero datos reales en proveedor externo;
+35. inferencia no autoriza entrenamiento, retención o fine-tuning;
+36. datos sintéticos permanecen identificados como sintéticos;
+37. se materializan dieciocho dimensiones/gates de evaluación futura;
+38. se preservan las 10 aplicaciones canónicas;
+39. se preserva la distribución `1 + 20 + 16 + 6 + 4 + 12 + 7 + 2 + 1 = 69` y `shell = 0`;
+40. cada una de las 10 aplicaciones recibe un papel IA explícito y una frontera;
+41. SHELL puede enrutar Vento Copilot pero no adquiere procesos empresariales;
+42. se materializan 97 oportunidades concretas de IA en el catálogo por aplicación;
+43. ANIMA no usa IA para sanciones o identidad automática;
+44. VISO no usa IA para autoaprobar cambios, permisos o decisiones sensibles;
+45. NEXO no ajusta stock ni fusiona maestros desde IA;
+46. FOGO no libera calidad ni cambia receta desde IA;
+47. ORIGO no adjudica proveedor ni emite compra desde IA;
+48. PULSO no publica precio/promoción ni ejecuta devolución/cobro desde IA;
+49. NUMERA no paga, cierra, contabiliza o certifica cifras desde IA;
+50. PASS no crea consentimiento, fusiona clientes ni altera fidelización desde IA;
+51. AURA conserva bloqueo completo hasta AURA-AUD-010/AURA-AUD-011;
+52. AURA contrata cero proveedores IA y usa cero datos reales por esta tarea;
+53. se materializan 62/62 objetos maestros/referencia;
+54. los objetos preservan 43 maestros + 19 referencias;
+55. los objetos preservan 59 ESPECIFICADO + 3 BLOQUEADO;
+56. PERFIL_DE_MARCA, AUDIENCIA y ACTIVO_DE_MARCA son los tres bloqueados;
+57. E5_INFERENCIA sigue siendo señal de investigación y nunca equivalencia oficial;
+58. se materializan 14/14 métricas de asistencia;
+59. se preservan 11 NO EVALUADO + 3 BLOQUEADO;
+60. missingCloseCount, attendanceRate y punctualityRate no se estiman con IA;
+61. se materializan 55/55 familias analíticas;
+62. se conserva `11 + 12 + 10 + 12 + 10`;
+63. se preservan seis familias de artefacto distintas;
+64. prompts/configuraciones materiales pueden versionarse sin exigir cadena privada de razonamiento;
+65. multimodalidad no convierte OCR/transcripción/visión en hecho aceptado;
+66. la IA es degradable y existe fallback seguro cuando el caso no requiere IA;
+67. coste/latencia nunca justifican ampliar acceso o degradar semántica;
+68. secrets y service_role nunca se exponen al modelo;
+69. outputs pueden adquirir sensibilidad por inferencia y se protegen;
+70. no se reidentifican cohortes protegidas combinando outputs;
+71. la experiencia diferencia hecho, predicción, simulación, hipótesis, recomendación, borrador y acción;
+72. una tool call no se presenta como efecto hasta que el dominio confirme resultado;
+73. auditoría correlaciona modelo, fuentes, herramientas, autorización, propuesta y efecto cuando apliquen;
+74. logs del proveedor no son la única evidencia canónica;
+75. cambio de modelo/proveedor/configuración material exige evaluación de impacto;
+76. drift no se corrige silenciosamente;
+77. cada handoff tiene propietario exacto y condición de salida;
+78. no se crean tareas nuevas;
+79. no se crea ni modifica ningún requisito de prueba;
+80. no se ejecuta código, DDL, DML, migración, RLS, RPC, secreto, modelo, embedding, agente, proveedor, backfill, publicación ni cambio de Supabase;
+81. `CONT-DOM-001` permanece únicamente reservada.
+
+---
+
+#### 46. Balance de cierre
+
+| Control                                         |                                           Resultado |
+| ----------------------------------------------- | --------------------------------------------------: |
+| Familias de consumidor analítico                |                                           **4 / 4** |
+| Niveles documentales de autonomía               |                                           **6 / 6** |
+| Capacidades lógicas de IA                       |                                         **12 / 12** |
+| Aplicaciones                                    |                                         **10 / 10** |
+| Procesos propietarios                           |                                         **69 / 69** |
+| Distribución por aplicación                     | **1 + 20 + 16 + 6 + 4 + 12 + 7 + 2 + 1; shell = 0** |
+| Oportunidades IA por aplicación                 |                                              **97** |
+| Objetos maestros/referencia                     |                                         **62 / 62** |
+| Distribución objetos                            |                    **43 maestros + 19 referencias** |
+| Estados objetos                                 |                   **59 ESPECIFICADO + 3 BLOQUEADO** |
+| Métricas de asistencia                          |                                         **14 / 14** |
+| Estados asistencia                              |                    **11 NO EVALUADO + 3 BLOQUEADO** |
+| Familias analíticas                             |                                         **55 / 55** |
+| Distribución familias                           |                          **11 + 12 + 10 + 12 + 10** |
+| Familias de artefacto                           |                                           **6 / 6** |
+| Campos mínimos de herramienta futura            |                                              **20** |
+| Elementos mínimos de modelo                     |                                              **26** |
+| Elementos mínimos de proveedor/modelo externo   |                                              **27** |
+| Gates/dimensiones de evaluación futura          |                                              **18** |
+| Proveedores seleccionados                       |                                               **0** |
+| Credenciales/secretos materializados            |                                               **0** |
+| Datasets/modelos/embeddings/agentes productivos |                                               **0** |
+| Herramientas N4 habilitadas                     |                                               **0** |
+| Fusiones por IA autorizadas                     |                                               **0** |
+| Cambios físicos                                 |                                               **0** |
+| Requisitos de prueba creados/modificados        |                                               **0** |
+
+---
+
+#### 47. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros`
+
+TAREA ACTUAL APROBADA
+`DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad`
+

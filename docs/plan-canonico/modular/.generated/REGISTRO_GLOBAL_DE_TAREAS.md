@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **702** |
+| Aprobadas | **703** |
 | En propuesta | **0** |
-| No iniciadas | **892** |
+| No iniciadas | **891** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **44.04% (702/1594)** |
+| Porcentaje de completamiento | **44.10% (703/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | ✅ APROBADA |
-| Tarea actual | `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | ⬜ NO INICIADA |
+| Última aprobada | `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | ✅ APROBADA |
+| Tarea actual | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1591,7 +1591,7 @@
 | ✅ APROBADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ✅ APROBADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ✅ APROBADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
-| ⬜ NO INICIADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
+| ✅ APROBADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/04_INTEGRACIONES_ANALITICAS_Y_SEMANTICAS.md` |
 | ⬜ NO INICIADA | `CONT-DOM-001` | Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-DOM-003` | Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/01_DOMINIO_DE_CONTINUIDAD_Y_RECUPERACION.md` |
