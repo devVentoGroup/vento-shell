@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **703** |
+| Tareas aprobadas | **704** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **891** |
+| Tareas no iniciadas | **890** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **44.10% (703/1594)** |
+| Porcentaje de completamiento | **44.17% (704/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial** |
-| Tarea actual | **CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad** |
+| Última tarea aprobada | **CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad** |
+| Tarea actual | **CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos** |
+| Siguiente tarea | **CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 127 de 157 aprobadas; CONT-DOM-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 128 de 157 aprobadas; CONT-DOM-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial |
-| Tarea actual | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad — **NO INICIADA** |
-| Siguiente tarea | `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos |
+| Última aprobada | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad |
+| Tarea actual | `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos — **NO INICIADA** |
+| Siguiente tarea | `CONT-DOM-003` — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 127 DE 157 APROBADAS — ACTUAL CONT-DOM-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 128 DE 157 APROBADAS — ACTUAL CONT-DOM-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
-        ↓
-TAREA ACTUAL
 CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-DOM-002 — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-DOM-003 — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 127 de 157 tareas aprobadas
+CARRIL NEXO — 128 de 157 tareas aprobadas
 ```
