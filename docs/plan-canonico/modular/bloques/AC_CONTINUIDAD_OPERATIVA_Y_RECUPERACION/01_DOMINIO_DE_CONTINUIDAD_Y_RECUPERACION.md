@@ -5965,7 +5965,811 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla`
 
 
-### [ ] CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
+### ✅ CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor` — APROBADA
+**Tarea siguiente:** `CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes` — RESERVADA
+**Tipo de tarea:** documental; contrato de expediente, identificación, foliado, evidencia y cadena de custodia para todo trabajo contingente, con decisión materializada por servicio BIA y frontera expresa frente a la reincorporación posterior
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Creación de formularios productivos, impresión o compra de talonarios, asignación real de rangos, almacenamiento local, tablas, colas, cargas de archivos, firmas electrónicas, DDL, DML, migraciones, RLS, RPC, backfills, despliegues o cambios en Supabase:** no autorizados
+**Servicios evaluados:** 69 / 69
+**Servicios activos con contrato de registro:** 67 / 67
+**Servicios AURA bloqueados:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma completa cómo se identifica, registra, folia, protege, custodia y entrega el trabajo realizado o preparado durante una falla, de manera que Vento pueda reconstruir posteriormente qué ocurrió sin confundir un registro de contingencia con un hecho empresarial ya confirmado.
+
+La tarea materializa el expediente de contingencia requerido por `CONT-DOM-008` y conserva la frontera siguiente:
+
+```text
+REGISTRO CONTINGENTE
+!= HECHO AUTORITATIVO CONFIRMADO
+
+FOLIO
+!= ID EMPRESARIAL DEFINITIVO
+
+EVIDENCIA CAPTURADA
+!= EVIDENCIA INCORPORADA
+
+DIGITALIZACION
+!= REINCORPORACION
+
+CONECTIVIDAD RECUPERADA
+!= PENDIENTE CONCILIADO
+```
+
+`CONT-DOM-010` conserva la responsabilidad exclusiva de decidir incorporación, idempotencia, conflictos, conciliación y confirmación autoritativa de los pendientes.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados:
+
+1. un contrato documental único de registro para trabajo de contingencia;
+2. una jerarquía de referencias que separa incidente, folio, operación local, evidencia y registro empresarial definitivo;
+3. un contrato de folio estable y no reutilizable que no depende de una numeración central disponible durante la falla;
+4. una regla específica para medios digitales que reutiliza `local_operation_id`, `idempotency_key` y `evidence_refs[]` de `NFR-REQ-004`;
+5. una regla específica para medios manuales o papel que exige rangos precontrolados, inventario de folios, anulación trazable y cadena de custodia;
+6. un conjunto mínimo de campos comunes para todo registro de contingencia;
+7. paquetes de evidencia mínima por cada una de las ocho estrategias activas seleccionadas en `CONT-DOM-008`;
+8. reglas para fotografías, firmas, recibos externos, mediciones, impresiones, adjuntos y evidencia física sin convertirlos en requisitos universales;
+9. una cadena de custodia para medio físico, medio local digital y transferencia entre responsables;
+10. reglas para folios anulados, perdidos, deteriorados, duplicados, ilegibles o fuera de rango;
+11. una matriz 69 / 69 que asigna contrato de registro, folio, evidencia y custodia a cada servicio BIA/proceso;
+12. continuidad intacta de las 67 estrategias activas y los 2 bloqueos AURA heredados de `CONT-DOM-008`;
+13. handoff explícito a `CONT-DOM-010` sin implementar reincorporación;
+14. cero cambios físicos, cero cambios productivos y cero cambios TREQ.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+- `CONT-DOM-001` para fuente de verdad única, historia preservada, autorización persistente y prueba antes de confianza;
+- `CONT-DOM-002` para los 69 servicios BIA y sus identidades;
+- `CONT-DOM-003` para dependencias y ausencia de sustitutos concretos aprobados;
+- `CONT-DOM-004` para objetivos empresariales y prioridad de recuperación;
+- `CONT-DOM-005` para incidente, declaración, activación y cierre;
+- `CONT-DOM-006` para mando, bitácora de decisiones y coordinación;
+- `CONT-DOM-007` para el resultado mínimo que puede preservarse;
+- `CONT-DOM-008` para la estrategia seleccionada por cada uno de los 69 servicios;
+- `NFR-REQ-004` para `local_operation_id`, `idempotency_key`, estados de operación local, estados de evidencia, tiempos, aislamiento por actor/dispositivo/contexto y reglas de sincronización;
+- `TREQ-CONT-003` para datos mínimos, identificadores/formularios controlados, responsables, vigencia, custodia, seguridad y prohibición de segunda fuente de verdad;
+- `TREQ-CONT-005` para origen, actor, hora real, hora de registro, versión, evidencia, secuencia y referencia de contingencia del trabajo que deberá reincorporarse;
+- `TREQ-INTEGRATION-023` para correlación transversal entre incidente, trabajo pendiente y hechos recuperados.
+
+No se redefine ninguno de esos contratos ni se modifica la estrategia asignada en `CONT-DOM-008`.
+
+---
+
+#### 4. Fronteras e identidades
+
+Cada elemento conserva una función diferente:
+
+| Referencia                        | Propósito                                                                   | Regla                                                  |
+| --------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------ |
+| referencia de incidente           | relaciona el trabajo con el evento de continuidad                           | no sustituye el folio ni la operación local            |
+| folio de contingencia             | identifica de forma humana y estable un registro o unidad manual controlada | no confirma el efecto empresarial                      |
+| `local_operation_id`              | identidad técnica local definida por `NFR-REQ-004`                          | no se reemplaza por el folio                           |
+| `idempotency_key`                 | conserva una sola intención para una mutación repetible                     | no se regenera al reintentar                           |
+| `evidence_ref`                    | identifica una pieza de evidencia                                           | no es el ID del caso o del proceso                     |
+| referencia empresarial definitiva | identifica el hecho aceptado por la fuente propietaria                      | solo aparece cuando el dominio propietario lo confirma |
+| referencia externa/receipt        | identifica un resultado emitido por un tercero                              | no se inventa cuando el tercero no respondió           |
+
+Un mismo trabajo puede portar varias referencias, pero ninguna adquiere por equivalencia la semántica de otra.
+
+---
+
+#### 5. Contrato mínimo del registro contingente
+
+Todo registro que documente trabajo realizado, preparado, observado, bloqueado o diferido durante la falla conserva, cuando aplique:
+
+```text
+incident_ref_observed
+contingency_folio
+process_id
+business_service_id
+strategy_ref
+record_kind
+principal_id
+actor_id
+responsible_function
+device_id
+context_id_observed
+site_id
+area_id
+shift_id
+checkin_id
+resource_refs[]
+observed_resource_versions[]
+authorization_envelope_ref
+local_operation_id
+idempotency_key
+sequence_ref
+source_reference
+source_version
+observed_at
+created_local_at
+recorded_at
+handoff_at
+payload_hash
+sensitivity_class
+evidence_refs[]
+external_receipt_refs[]
+status_observed
+business_effect_claimed
+pending_reason
+custodian_ref
+custody_state
+void_or_exception_reason
+reconciliation_required
+```
+
+Reglas:
+
+- los campos se materializan solo cuando son aplicables al perfil de registro;
+- un valor desconocido queda explícitamente desconocido; no se rellena por suposición;
+- `business_effect_claimed` queda en `PENDIENTE`, `NO_APLICA` o una semántica equivalente mientras no exista confirmación autoritativa;
+- `reconciliation_required` no ejecuta la reincorporación; solo marca la necesidad de `CONT-DOM-010`;
+- no se obliga a almacenar datos que no sean necesarios para el proceso, la evidencia, la seguridad o la conciliación posterior.
+
+---
+
+#### 6. Contrato de folio de contingencia
+
+El folio es una referencia **estable, inmutable, no reutilizable y trazable al emisor**. Su unicidad no puede depender de consultar un contador central durante la falla.
+
+Cada folio debe poder reconstruir, como mínimo:
+
+```text
+issuer_ref
+sequence_in_issuer
+issue_version
+process_id
+created_at_or_issued_at
+```
+
+La representación visible podrá componerse con esos elementos, pero la implementación concreta del generador pertenece al paquete propietario. Esta tarea fija las siguientes invariantes:
+
+1. el folio se asigna antes del primer efecto manual o de la primera captura durable que lo requiera;
+2. un folio nunca se reasigna a otro trabajo;
+3. un folio anulado permanece consumido y trazable;
+4. el rango o emisor permite detectar saltos, duplicados y folios fuera de inventario;
+5. el folio no depende de la hora del dispositivo como única fuente de unicidad;
+6. el folio no depende de nombre libre del trabajador;
+7. el folio puede vincularse después con el incidente canónico sin cambiar su identidad original;
+8. la falta temporal del identificador canónico del incidente no autoriza a reenumerar el trabajo;
+9. el folio puede coexistir con `local_operation_id` e `idempotency_key` sin sustituirlos;
+10. la numeración física y la digital no comparten contador salvo que exista un mecanismo de emisión probado que evite colisiones offline.
+
+---
+
+#### 7. Folios manuales y medios físicos
+
+Cuando la estrategia use papel, tarjeta, etiqueta, talonario, hoja de control u otro medio manual:
+
+- el medio debe existir y estar controlado **antes** de la contingencia para poder declararse disponible;
+- cada lote o bloque debe tener `issuer_ref`, versión y rango de folios;
+- la entrega del bloque registra custodio, rango, cantidad, fecha/hora y condición;
+- cada folio usado queda asociado a proceso, actor, hora real y objeto/recurso cuando aplique;
+- un folio anulado conserva número, motivo, actor y custodia;
+- los folios no usados permanecen inventariados y no se destruyen sin disposición autorizada;
+- una hoja adicional se enlaza al folio principal y no crea por sí sola un segundo trabajo;
+- una corrección no borra el dato original; conserva antes/después, actor, hora y motivo;
+- la falta de papel controlado no habilita papel improvisado cuando ello rompa trazabilidad, privacidad, autorización o seguridad;
+- fotografiar un formato no elimina la obligación de custodiar el original cuando la política documental lo requiera.
+
+Esta definición no afirma que Vento disponga hoy de talonarios, impresoras, stock de papel, sellos, sobres, cajas o almacenamiento seguro.
+
+---
+
+#### 8. Registro digital local
+
+Para `OF2_LOCAL_DRAFT`, `OF3_LOCAL_CAPTURE` y `OF4_LEASED_EXECUTION` se reutiliza el contrato de `NFR-REQ-004`.
+
+Obligatoriamente:
+
+- `local_operation_id` nace una sola vez y no cambia al reconectar;
+- `idempotency_key` existe antes del primer envío de una mutación repetible;
+- actor, dispositivo, contexto, sitio y área permanecen aislados;
+- `observed_at` no se sustituye por la hora de sincronización;
+- `payload_hash` permite detectar cambio de contenido cuando aplique;
+- `evidence_refs[]` conserva piezas asociadas sin tratarlas como ya enlazadas al registro empresarial;
+- una operación `RESULT_UNKNOWN` no origina una segunda intención para probar si la primera funcionó;
+- una operación `QUARANTINED`, `CONFLICT`, `EXPIRED` o `RECONCILIATION_REQUIRED` conserva su historia;
+- cambiar de actor, dispositivo o contexto no transfiere automáticamente borradores, cola, claims ni custodia.
+
+La tarea no selecciona IndexedDB, SQLite, archivos, Service Worker, tabla, bucket ni otra tecnología de persistencia.
+
+---
+
+#### 9. Estados de evidencia reutilizados
+
+Las piezas digitales o digitalizadas reutilizan exactamente los estados ya aprobados en `NFR-REQ-004`:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+QUARANTINED
+```
+
+Reglas adicionales de esta tarea:
+
+- `LOCAL_ONLY` no equivale a evidencia recibida por el dominio propietario;
+- `UPLOADED_UNLINKED` no permite cerrar el recurso que exige la evidencia;
+- `LINKED_AND_CONFIRMED` exige vínculo verificable con el hecho o expediente correspondiente;
+- una pieza fallida no se elimina para ocultar el fallo;
+- la digitalización conserva la relación con el original físico;
+- la copia digital no invalida por sí sola la custodia del original;
+- la eliminación local solo ocurre con confirmación y política vigente.
+
+---
+
+#### 10. Paquetes mínimos de evidencia por estrategia
+
+| Estrategia heredada                        | Registro exigido                               | Evidencia mínima                                                                                          | Efecto que no puede afirmarse                                 |
+| ------------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`               | protección/bloqueo                             | actor/función, hora real, alcance, motivo, acción protectora, estado observado                            | que el efecto bloqueado fue ejecutado                         |
+| `CTG-02_REFERENCIA_VERSIONADA`             | uso de referencia                              | fuente, versión, fetched_at, valid_until, clase de frescura, actor y hora                                 | que la referencia sigue vigente fuera de su regla de frescura |
+| `CTG-03_BORRADOR_LOCAL`                    | borrador                                       | actor, contexto, recurso, versiones observadas, created_local_at, sensibilidad                            | aprobación, publicación, reserva o compromiso                 |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`           | captura                                        | observed_at, actor, contexto, recurso, evidencia, estado pendiente                                        | aceptación, corrección, cierre o impacto empresarial          |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`         | ejecución finita                               | operación, actor, recurso/versión, envelope, idempotencia, secuencia, evidencia, receipts                 | trabajo fuera del envelope o efecto sin confirmación          |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`   | manual foliable                                | folio, actor, hora real, sitio/área, recurso, acción, cantidad/unidad cuando aplique, evidencia y handoff | incorporación digital o cierre autoritativo                   |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`      | alcance reducido + subregistros                | MBCO preservado, trabajo aceptado/rechazado, límites y registro de cada acción                            | servicio completo o capacidad fuera del MBCO                  |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`           | backlog                                        | item estable, propietario, origen, created_at, vencimiento/deadline, motivo y condición de reanudación    | que el trabajo diferido fue ejecutado                         |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`    | solo si `CONT-DOM-013` acredita la alternativa | identidad del recurso alterno, activación, custodia, capacidad y evidencia aplicable                      | que existe una alternativa hoy                                |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CONDICIONAL` | solo si `CONT-DOM-013` acredita el tercero     | identidad contractual, canal, receipt, resultado y evidencia aplicable                                    | que existe un proveedor alterno hoy                           |
+
+---
+
+#### 11. Fotografías, firmas, mediciones, impresiones y receipts
+
+Estos elementos se tratan como evidencia **condicional**, no universal:
+
+- fotografía: solo cuando documenta un hecho relevante y la sensibilidad/finalidad permiten capturarla;
+- firma manuscrita: solo cuando el proceso o control aplicable la requiere; no sustituye identidad digital ni autoridad por sí sola;
+- firma electrónica: solo bajo su contrato autorizado; esta tarea no diseña una nueva;
+- medición: conserva instrumento/referencia cuando aplique, unidad, hora, actor y condición observada;
+- impresión: conserva relación con el trabajo; una página impresa no equivale a registro empresarial confirmado;
+- receipt externo: conserva identificador real, emisor, timestamp y resultado; si no existe respuesta, el resultado permanece desconocido;
+- archivo adjunto: conserva estado de evidencia, hash o identificador estable cuando aplique y vínculo con el hecho observado;
+- testigo: se registra solo si el procedimiento lo requiere; no se inventa ni se usa como sustituto de evidencia disponible.
+
+---
+
+#### 12. Cadena de custodia
+
+Toda pieza física o local que pueda ser necesaria para reconciliación conserva una cadena de custodia suficiente para responder:
+
+```text
+quien la creo u observo
+quien la tuvo bajo control
+cuando cambio de custodia
+que medio o contenedor la transporto
+que rango o folio la identifica
+que condicion tenia al entregar y recibir
+si estaba completa, sellada, legible o alterada
+que excepcion ocurrio
+quien recibio la responsabilidad siguiente
+```
+
+Cada handoff registra al menos:
+
+```text
+from_custodian_ref
+to_custodian_ref
+handoff_at
+medium_ref
+folio_or_range
+condition_at_handoff
+exception_reason
+acknowledgement_ref
+```
+
+La custodia es una responsabilidad funcional; esta tarea no nombra personas concretas ni crea cargos nuevos.
+
+---
+
+#### 13. Separación de custodia física y digital
+
+- custodiar un original físico no significa que esté incorporado digitalmente;
+- subir una imagen no significa que el original pueda destruirse;
+- recibir una pieza digital no significa que el efecto empresarial asociado esté conciliado;
+- un dispositivo compartido no transfiere custodia entre actores por cambio de sesión;
+- una carpeta, chat, correo o hoja de cálculo no se convierte en fuente de verdad por almacenar una copia;
+- la custodia de una evidencia sensible conserva minimización, acceso y retención de los contratos de información aplicables;
+- si una pieza cambia de medio, el vínculo entre original y representación debe preservarse.
+
+---
+
+#### 14. Folios anulados, perdidos, deteriorados o duplicados
+
+| Evento               | Tratamiento documental                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| folio anulado        | permanece consumido; registra motivo, actor, hora y, si existe, evidencia del original                  |
+| folio perdido        | no se recrea con el mismo número; se registra pérdida, rango, último custodio y posible impacto         |
+| folio deteriorado    | se conserva si es seguro hacerlo; la transcripción/digitalización queda enlazada y declara el deterioro |
+| folio ilegible       | no se completa por inferencia; pasa a revisión con evidencia disponible                                 |
+| folio duplicado      | ambos objetos quedan bloqueados para confirmación automática y se escalan a `CONT-DOM-010`              |
+| folio fuera de rango | se trata como excepción no confiable hasta demostrar origen                                             |
+| salto de secuencia   | exige explicación de uso, anulación, pérdida o folio no emitido                                         |
+| página adicional     | se vincula al folio principal y conserva su propio control de integridad                                |
+
+Ninguna corrección documental reescribe silenciosamente la evidencia original.
+
+---
+
+#### 15. Tiempos y secuencia
+
+Se preservan como tiempos diferentes, cuando apliquen:
+
+```text
+observed_at
+created_local_at
+recorded_at
+first_send_at
+accepted_at
+business_effect_at
+confirmed_at
+reconciled_at
+handoff_at
+```
+
+Reglas:
+
+1. la hora de observación no se reemplaza por la hora de digitación;
+2. la hora de digitación no se presenta como hora del efecto empresarial;
+3. un reloj local dudoso queda marcado y no se corrige por intuición;
+4. la secuencia causal puede conservarse aunque el reloj exacto sea incierto;
+5. el orden de folios no sustituye el orden real cuando existe evidencia contraria;
+6. `reconciled_at` pertenece al cierre posterior y no se inventa en esta tarea.
+
+---
+
+#### 16. Doble digitación y fuente de verdad
+
+El registro contingente es una **fuente de evidencia temporal**, no una segunda fuente empresarial.
+
+Por tanto:
+
+- la digitación posterior conserva `source_folio` o referencia equivalente;
+- el original no se transcribe varias veces para diferentes aplicaciones;
+- una aplicación propietaria recibe el hecho mediante su contrato; otras aplicaciones consumen la propagación aprobada;
+- una diferencia entre papel/local y fuente autoritativa se registra como conflicto, no se resuelve por sobrescritura;
+- una corrección crea relación con el registro original;
+- un dato ya confirmado por receipt autoritativo no se vuelve a crear como operación nueva;
+- un resultado desconocido permanece desconocido hasta verificación.
+
+---
+
+#### 17. Seguridad, privacidad y minimización
+
+La contingencia no reduce los controles permanentes.
+
+El registro debe:
+
+- capturar solo datos necesarios para resultado, evidencia, custodia y conciliación;
+- evitar secretos, credenciales, tokens o claves completas;
+- proteger datos personales, laborales, financieros, de salud, SST, seguridad e inocuidad según su clasificación;
+- restringir visibilidad a la función autorizada;
+- mantener separado el dato visible al operador del dato reservado a investigación o aprobación;
+- impedir que fotografías o firmas se conviertan en requisito por comodidad;
+- preservar evidencia obligatoria aunque el medio local alcance límites, aplicando backpressure o pausa segura;
+- diferir cualquier disposición hasta que la política de retención aplicable lo permita.
+
+`NFR-REQ-005` y `NFR-REQ-006` conservan sensibilidad y retención; `CONT-DOM-009` no crea plazos universales nuevos.
+
+---
+
+#### 18. Preparación previa y disponibilidad real
+
+Un contrato documental no demuestra que el medio exista. Para declarar lista una modalidad que dependa de registro contingente deberá demostrarse, según aplique:
+
+- medio o almacenamiento disponible;
+- rangos/folios emitidos y controlados;
+- formularios vigentes;
+- versión de referencia disponible;
+- personal instruido;
+- privacidad y custodia practicables;
+- capacidad suficiente para la ventana prevista;
+- posibilidad de digitalización o transferencia sin perder identidad;
+- prueba de handoff;
+- prueba de integridad y recuperación del registro;
+- ruta posterior hacia `CONT-DOM-010`.
+
+La evidencia de readiness pertenece a `CONT-DOM-014`; esta tarea no declara que esas condiciones estén cumplidas.
+
+---
+
+#### 19. Matriz materializada por servicio
+
+La matriz conserva exactamente las 69 identidades, propietarias, clases BIA y estrategias heredadas de `CONT-DOM-008`. Los valores de registro, folio, evidencia y custodia son decisiones documentales de esta tarea; no son enums persistentes ni implementación.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Estrategia heredada                      | Registro                               | Folio/identidad                                         | Evidencia minima                                                                                 | Custodia                                      | Estado                                          |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | ---------------------------------------- | -------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | Registro de diferimiento y backlog     | `ITEM_BACKLOG_ESTABLE`                                  | item + propietario + origen + creado + vencimiento/deadline + motivo + condición de reanudación  | backlog controlado                            | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | Registro de servicio reducido          | `REGISTRO_ALCANCE+FOLIO_SEGUN_ACCION`                   | MBCO preservado + alcance permitido/bloqueado + actor + hora + subregistro de cada acción        | custodia compuesta según subregistro          | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | Registro de ejecución offline acotada  | `LOCAL_OPERATION_ID+IDEMPOTENCY_KEY+FOLIO_CONTINGENCIA` | operación + actor + recurso/versión + envelope + idempotencia + secuencia + evidencia + receipts | partición local + secuencia + receipts        | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | Traza de referencia versionada         | `TRAZA_DE_REFERENCIA_SIN_FOLIO_AUTONOMO`                | fuente + versión + fetched_at + valid_until + frescura + actor + hora                            | traza controlada de referencia                | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | Sin registro operativo de contingencia | `NO_AUTORIZADO`                                         | solo referencia de bloqueo en el expediente de incidente si la afectación existe                 | sin medio operativo autorizado                | `BLOQUEADO_POR_APLICACION_DIFERIDA`             |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | Sin registro operativo de contingencia | `NO_AUTORIZADO`                                         | solo referencia de bloqueo en el expediente de incidente si la afectación existe                 | sin medio operativo autorizado                | `BLOQUEADO_POR_APLICACION_DIFERIDA`             |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | Registro de protección y bloqueo       | `REFERENCIA_DE_INCIDENTE+ACCION`                        | actor + hora real + alcance + motivo + acción protectora + estado                                | expediente de incidente                       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | Registro de diferimiento y backlog     | `ITEM_BACKLOG_ESTABLE`                                  | item + propietario + origen + creado + vencimiento/deadline + motivo + condición de reanudación  | backlog controlado                            | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | Registro de diferimiento y backlog     | `ITEM_BACKLOG_ESTABLE`                                  | item + propietario + origen + creado + vencimiento/deadline + motivo + condición de reanudación  | backlog controlado                            | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | Registro manual controlado             | `FOLIO_MANUAL_CONTROLADO`                               | folio + actor + hora real + sitio/área + recurso + acción + evidencia + handoff                  | custodia física foliada + handoff             | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | Registro de captura pendiente          | `LOCAL_OPERATION_ID+EVIDENCE_REFS`                      | observed_at + actor + contexto + recurso + evidencia + estado pendiente                          | partición local + custodia de evidencia       | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | Registro de diferimiento y backlog     | `ITEM_BACKLOG_ESTABLE`                                  | item + propietario + origen + creado + vencimiento/deadline + motivo + condición de reanudación  | backlog controlado                            | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | Registro de borrador local             | `LOCAL_OPERATION_ID`                                    | actor + contexto + recurso + versión observada + created_local_at + sensibilidad                 | partición local de actor/dispositivo/contexto | `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO` |
+
+---
+
+#### 20. Reconciliación cuantitativa
+
+| Control                                  |   Resultado |
+| ---------------------------------------- | ----------: |
+| servicios evaluados                      | **69 / 69** |
+| decisiones de registro                   | **69 / 69** |
+| servicios activos especificados          | **67 / 67** |
+| AURA bloqueados                          |   **2 / 2** |
+| servicios con estrategia CTG activa      |      **67** |
+| estrategias activas distintas            |       **8** |
+| alternativas físicas concretas nuevas    |       **0** |
+| alternativas de tercero concretas nuevas |       **0** |
+| formularios productivos implementados    |       **0** |
+| rangos físicos realmente emitidos        |       **0** |
+| requisitos TREQ creados/modificados      |       **0** |
+
+Distribución BIA preservada:
+
+| BIA                    | Servicios |
+| ---------------------- | --------: |
+| `CRITICA_PROTECCION`   |    **12** |
+| `CRITICA_OPERACIONAL`  |    **20** |
+| `ALTA_CONTROL`         |    **31** |
+| `DIFERIBLE_CONTROLADA` |     **6** |
+| **Total**              |    **69** |
+
+Distribución de propietarias preservada:
+
+| Aplicación | Servicios |
+| ---------- | --------: |
+| `anima`    |     **1** |
+| `viso`     |    **20** |
+| `nexo`     |    **16** |
+| `fogo`     |     **6** |
+| `origo`    |     **4** |
+| `pulso`    |    **12** |
+| `numera`   |     **7** |
+| `aura`     |     **2** |
+| `pass`     |     **1** |
+| `shell`    |     **0** |
+| **Total**  |    **69** |
+
+Distribución de estrategias heredadas:
+
+| Estrategia                               | Servicios |
+| ---------------------------------------- | --------: |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`             |     **6** |
+| `CTG-02_REFERENCIA_VERSIONADA`           |     **8** |
+| `CTG-03_BORRADOR_LOCAL`                  |     **8** |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`         |    **15** |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`       |     **6** |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` |    **11** |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    |     **9** |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`         |     **4** |
+| `BLOQUEADO_POR_APLICACION_DIFERIDA`      |     **2** |
+| **Total**                                |    **69** |
+
+---
+
+#### 21. Brechas de evidencia y condiciones de salida
+
+| Brecha                                                                                    | Estado                   | Propietario documental                                             | Condición de salida                                                                  |
+| ----------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| algoritmo/almacenamiento real de `local_operation_id`, folio digital y persistencia local | `PENDIENTE_DE_EVIDENCIA` | paquete E5 propietario que implemente la capacidad y `NFR-REQ-004` | implementación versionada, aislamiento, persistencia y prueba de reinicio/reconexión |
+| formularios físicos definitivos, tamaño, materiales, impresión y stock                    | `PENDIENTE_DE_EVIDENCIA` | paquete E5 propietario de cada proceso y `UX-STATION-007`          | formato consumible materializado, inventario disponible y prueba en estación         |
+| emisión real de rangos y custodios por sede/medio                                         | `PENDIENTE_DE_EVIDENCIA` | paquete E5 propietario y `CONT-DOM-014`                            | rangos emitidos, inventariados y probados en ejercicio aplicable                     |
+| cifrado, sensibilidad, retención y disposición concreta del medio local                   | `PENDIENTE_DE_EVIDENCIA` | `NFR-REQ-005` y `NFR-REQ-006`                                      | controles de sensibilidad/retención materializados en el paquete aplicable           |
+| persistencia, carga y enlace de evidencia transversal                                     | `PENDIENTE_DE_EVIDENCIA` | `EVID-ARC-001` a `EVID-ARC-010` y paquete E5 consumidor            | contrato EVID implementado y evidencia enlazada sin duplicación                      |
+| reincorporación, idempotencia, conflicto y conciliación del trabajo contingente           | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-010`                                                     | contrato de reincorporación materializado por las 69 identidades aplicables          |
+| restauración/failover del sistema que recibe los registros                                | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-012`                                                     | runbooks y validación funcional materializados                                       |
+| readiness de folios, medios, personas y cadena de custodia                                | `PENDIENTE_DE_EVIDENCIA` | `CONT-DOM-014`                                                     | ejercicio aplicable con resultado y evidencia vigente                                |
+
+No queda un pendiente material sin propietario ni condición de salida.
+
+---
+
+#### 22. Handoffs obligatorios
+
+| Decisión posterior                                                         | Tarea propietaria               | Frontera conservada                                                                        |
+| -------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| aceptar/rechazar trabajo contingente                                       | `CONT-DOM-010`                  | esta tarea entrega registro, folio, evidencia y custodia; no decide el efecto autoritativo |
+| detectar duplicados y conflictos                                           | `CONT-DOM-010`                  | los identificadores y hashes se conservan; la resolución queda fuera de `CONT-DOM-009`     |
+| conciliar secuencia, inventario, pagos, producción, ventas y demás efectos | `CONT-DOM-010`                  | ningún registro se sobrescribe para forzar coincidencia                                    |
+| restaurar componentes y retornar al servicio                               | `CONT-DOM-012`                  | recuperar el sistema no convierte automáticamente registros en hechos confirmados          |
+| seleccionar recursos/proveedores alternos concretos                        | `CONT-DOM-013`                  | un nuevo medio alterno deberá cumplir este contrato de registro/custodia                   |
+| probar readiness                                                           | `CONT-DOM-014`                  | el ejercicio debe demostrar folios, custodia, handoffs y preservación de evidencia         |
+| privacidad/sensibilidad local                                              | `NFR-REQ-005`                   | esta tarea minimiza; no redefine la clasificación                                          |
+| retención/disposición                                                      | `NFR-REQ-006`                   | esta tarea conserva; no inventa plazo universal                                            |
+| arquitectura transversal de evidencia                                      | `EVID-ARC-001` a `EVID-ARC-010` | la evidencia contingente consume el contrato común y no crea repositorio paralelo          |
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `CONT-DOM-009` especializa documentalmente el registro, identificación, folio, evidencia y custodia ya exigidos por los requisitos vigentes de continuidad e integración y por el contrato offline aprobado. No implementa un formulario, generador de folios, almacenamiento, sincronización, firma, carga, reconciliación, permiso, transición productiva o comportamiento ejecutable nuevo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 24. Criterios de aceptación
+
+1. La tarea conserva exactamente 69 servicios BIA y 69 procesos VPROC.
+2. Cada servicio tiene una decisión explícita de registro o bloqueo.
+3. No existen servicios faltantes ni duplicados.
+4. La distribución de propietarias coincide con la aprobada.
+5. La distribución BIA permanece 12/20/31/6.
+6. La distribución de estrategias permanece 6/8/8/15/6/11/9/4 + 2 AURA bloqueados.
+7. Los 67 servicios activos quedan `CONTRATO_DE_REGISTRO_ESPECIFICADO_NO_VALIDADO`.
+8. Los dos servicios AURA permanecen `BLOQUEADO_POR_APLICACION_DIFERIDA`.
+9. No se cambia ninguna estrategia de `CONT-DOM-008`.
+10. El registro contingente no se presenta como fuente de verdad empresarial.
+11. El folio no se presenta como identificador empresarial definitivo.
+12. La referencia de incidente no sustituye el folio.
+13. El folio no sustituye `local_operation_id`.
+14. El folio no sustituye `idempotency_key`.
+15. Una referencia de evidencia no sustituye el ID del trabajo.
+16. Un receipt externo solo se registra cuando existe realmente.
+17. Un resultado sin receipt permanece desconocido cuando corresponde.
+18. El folio es estable e inmutable.
+19. El folio no se reutiliza después de anulación.
+20. El folio puede asignarse sin conectividad central.
+21. El folio es trazable a un emisor o unidad de captura.
+22. La unicidad no depende solo del reloj local.
+23. La unicidad no depende de un nombre libre del trabajador.
+24. El vínculo posterior con un incidente no reenumera el trabajo.
+25. La numeración física no comparte contador con la digital sin mecanismo probado.
+26. Los rangos manuales quedan inventariados.
+27. La entrega de un rango registra custodio y condición.
+28. Los folios usados conservan proceso, actor y hora real.
+29. Los folios anulados permanecen consumidos.
+30. Los folios no usados permanecen controlados.
+31. Las páginas adicionales quedan ligadas al folio principal.
+32. Las correcciones preservan el dato original.
+33. La falta de medio controlado no autoriza un medio improvisado inseguro.
+34. Fotografiar un original no elimina su custodia por inferencia.
+35. `local_operation_id` nace una sola vez.
+36. `idempotency_key` se conserva al reintentar.
+37. Actor, dispositivo y contexto permanecen aislados.
+38. `observed_at` no se reemplaza por la hora de sincronización.
+39. `payload_hash` permite detectar cambio de contenido cuando aplique.
+40. `evidence_refs[]` no se interpreta como evidencia ya incorporada.
+41. `RESULT_UNKNOWN` no crea una segunda intención.
+42. `QUARANTINED` conserva historia y evidencia.
+43. `CONFLICT` conserva historia y evidencia.
+44. `EXPIRED` conserva historia y motivo.
+45. `RECONCILIATION_REQUIRED` no se presenta como reconciliado.
+46. El cambio de actor no transfiere borradores ni custodia.
+47. El cambio de dispositivo no transfiere automáticamente la cola.
+48. Los estados de evidencia reutilizan exactamente los de `NFR-REQ-004`.
+49. `LOCAL_ONLY` no se presenta como recibido por servidor.
+50. `UPLOADED_UNLINKED` no se presenta como evidencia enlazada.
+51. `LINKED_AND_CONFIRMED` exige vínculo verificable.
+52. Una pieza fallida no se elimina para ocultar el fallo.
+53. La digitalización conserva relación con el original.
+54. La eliminación local exige confirmación y política vigente.
+55. CTG-01 registra alcance, motivo y acción protectora.
+56. CTG-01 no afirma que el efecto bloqueado fue ejecutado.
+57. CTG-02 registra fuente, versión y frescura.
+58. CTG-02 no convierte una referencia expirada en vigente.
+59. CTG-03 conserva contexto y versión observada.
+60. CTG-03 no produce aprobación, publicación o compromiso.
+61. CTG-04 conserva hora real de observación y evidencia.
+62. CTG-04 no convierte captura en aceptación.
+63. CTG-05 conserva envelope de autorización finita.
+64. CTG-05 conserva idempotencia y secuencia.
+65. CTG-05 no permite efecto fuera del envelope.
+66. CTG-06 exige folio manual controlado cuando use medio físico.
+67. CTG-06 conserva actor, hora, sitio/área, recurso y handoff.
+68. CTG-06 no presenta digitalización como cierre autoritativo.
+69. CTG-07 registra el MBCO preservado y el alcance bloqueado.
+70. CTG-07 registra cada acción mediante el subcontrato aplicable.
+71. CTG-07 no presenta operación reducida como servicio completo.
+72. CTG-08 conserva item, propietario, motivo y condición de reanudación.
+73. CTG-08 no presenta backlog como trabajo ejecutado.
+74. CTG-09 no se instancia sin una alternativa acreditada por `CONT-DOM-013`.
+75. CTG-10 no se instancia sin un tercero acreditado por `CONT-DOM-013`.
+76. Las fotografías son evidencia condicional y no universal.
+77. Las firmas manuscritas no conceden autoridad por sí solas.
+78. Las firmas electrónicas requieren contrato autorizado separado.
+79. Las mediciones conservan unidad y contexto cuando aplican.
+80. Una impresión no se presenta como registro empresarial confirmado.
+81. Un receipt conserva emisor e identificador reales.
+82. Un archivo adjunto conserva hash o referencia estable cuando aplique.
+83. Un testigo solo se registra cuando el procedimiento lo exige.
+84. Cada handoff conserva origen y destino de custodia.
+85. Cada handoff conserva fecha/hora.
+86. Cada handoff conserva medio y folio/rango aplicable.
+87. Cada handoff conserva condición y excepción.
+88. La custodia se asigna a funciones sin inventar personas concretas.
+89. Custodia física y digital permanecen diferenciadas.
+90. Un upload no autoriza destrucción del original.
+91. Una copia en chat/correo/hoja no se convierte en fuente de verdad.
+92. El vínculo entre original y representación se preserva.
+93. Un folio perdido no se recrea con el mismo número.
+94. Un folio deteriorado conserva su condición.
+95. Un folio ilegible no se completa por inferencia.
+96. Un folio duplicado se bloquea para confirmación automática.
+97. Un folio fuera de rango se trata como excepción.
+98. Los saltos de secuencia tienen explicación trazable.
+99. `observed_at` y `created_local_at` no se confunden.
+100. `recorded_at` y `business_effect_at` no se confunden.
+101. `confirmed_at` no se inventa durante contingencia.
+102. `reconciled_at` permanece bajo `CONT-DOM-010`.
+103. Un reloj dudoso queda marcado.
+104. La secuencia causal puede preservarse aunque el reloj sea incierto.
+105. El orden de folios no reemplaza evidencia temporal contradictoria.
+106. La digitación posterior conserva referencia al origen.
+107. No se transcribe el mismo original como fuentes competidoras.
+108. Los conflictos no se resuelven por sobrescritura silenciosa.
+109. Una corrección queda vinculada al registro original.
+110. Un receipt ya confirmado no genera una nueva operación.
+111. Se capturan solo datos necesarios para el proceso y evidencia.
+112. No se registran secretos o tokens completos.
+113. La visibilidad respeta la función autorizada.
+114. La contingencia no relaja SST, inocuidad, privacidad o seguridad.
+115. La evidencia obligatoria no se elimina para liberar espacio.
+116. La retención concreta permanece con `NFR-REQ-006`.
+117. La sensibilidad concreta permanece con `NFR-REQ-005`.
+118. La disponibilidad real de papel/almacenamiento no se inventa.
+119. La disponibilidad real de rangos o formularios no se inventa.
+120. La capacidad de custodia no se declara probada.
+121. La readiness permanece con `CONT-DOM-014`.
+122. La reincorporación permanece con `CONT-DOM-010`.
+123. La resolución de duplicados permanece con `CONT-DOM-010`.
+124. La conciliación de efectos permanece con `CONT-DOM-010`.
+125. La restauración/failover permanece con `CONT-DOM-012`.
+126. Los recursos/proveedores alternos concretos permanecen con `CONT-DOM-013`.
+127. La arquitectura de evidencia consume `EVID-ARC-001` a `EVID-ARC-010`.
+128. No se crea una tabla, bucket, cola o almacén local en esta tarea.
+129. No se crea un formulario productivo en esta tarea.
+130. No se emite un rango real de folios en esta tarea.
+131. No se ejecuta una captura real durante una falla.
+132. No se modifica autorización, permiso o RLS.
+133. No se modifica proveedor, hardware, red, sede o infraestructura.
+134. No se modifica código, DDL, DML, migración, dato o Supabase.
+135. No se crea ni modifica ningún requisito TREQ.
+136. No se genera registro 04A nuevo por ausencia de cambios TREQ.
+137. La siguiente tarea permanece exclusivamente reservada.
+
+
+---
+
+#### 25. Balance de cierre
+
+| Control                                  |   Resultado |
+| ---------------------------------------- | ----------: |
+| servicios evaluados                      | **69 / 69** |
+| contratos de registro materializados     | **69 / 69** |
+| servicios activos especificados          | **67 / 67** |
+| servicios AURA bloqueados                |   **2 / 2** |
+| perfiles activos de estrategia cubiertos |   **8 / 8** |
+| criterios de aceptación                  |     **137** |
+| folios productivos emitidos              |       **0** |
+| formularios productivos creados          |       **0** |
+| registros de contingencia ejecutados     |       **0** |
+| cambios físicos                          |       **0** |
+| TREQ creados/modificados                 |       **0** |
+
+---
+
+#### 26. Límites de la tarea
+
+Esta tarea no:
+
+- ejecuta una contingencia real;
+- crea o imprime formatos productivos;
+- compra materiales o talonarios;
+- emite rangos reales de folios;
+- configura almacenamiento local;
+- crea tablas, buckets, colas o APIs;
+- implementa firma digital o electrónica;
+- implementa carga de archivos;
+- incorpora registros a fuentes autoritativas;
+- decide idempotencia de reincorporación más allá de preservar la clave existente;
+- resuelve conflictos;
+- concilia transacciones, inventario, producción, pagos, ventas, asistencia o documentos;
+- restaura componentes;
+- selecciona proveedores o recursos alternos;
+- declara readiness;
+- modifica autorización, código, datos, infraestructura o Supabase;
+- inicia `CONT-DOM-010`.
+
+---
+
+#### 27. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-DOM-008 — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor`
+
+TAREA ACTUAL APROBADA
+`CONT-DOM-009 — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes`
+
+
 ### [ ] CONT-DOM-010 — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes
 ### [ ] CONT-DOM-011 — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos
 ### [ ] CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional
