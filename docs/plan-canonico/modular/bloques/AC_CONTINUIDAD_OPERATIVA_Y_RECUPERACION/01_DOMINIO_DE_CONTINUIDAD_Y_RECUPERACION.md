@@ -7288,77 +7288,79 @@ La autoridad que aprueba el cierre y la separación de funciones permanece reser
 
 #### 18. Matriz materializada por servicio
 
-| La matriz conserva exactamente las 69 identidades, propietarias, clases BIA y estrategias heredadas de `CONT-DOM-008` y `CONT-DOM-009`. La prioridad `SYNC-*` se reutiliza de `NFR-REQ-004`. El tratamiento de reincorporación es una decisión documental de esta tarea y no constituye un enum persistente ni una implementación. | #                | Servicio     | Proceso  | Propietaria            | BIA                                      | Estrategia heredada  | Sync heredada                                          | Tratamiento de reincorporacion                         | Estado |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ---------------- | ------------ | -------- | ---------------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
-|                                                                                                                                                                                                                                                                                                                                  1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`   | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`   | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-4_DEFERRED`    | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`   | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`   | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-2_OPERATIONAL` | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`   | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`   | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`  | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                  9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`   | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera` | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`   | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-1_URGENT`      | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-2_OPERATIONAL` | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`   | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-3_CYCLE`       | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`   | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`   | `CRITICA_PROTECCION`   | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`  | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`  | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-4_DEFERRED`    | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`  | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`  | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`   | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`   | `ALTA_CONTROL`         | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`   | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-0_BLOCKING`    | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`  | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`  | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-0_BLOCKING`    | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`   | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-0_BLOCKING`    | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`  | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`  | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`   | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`  | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-2_OPERATIONAL` | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera` | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera` | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera` | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera` | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`   | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-4_DEFERRED`    | No autorizado; sin replay operativo                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                    |
-|                                                                                                                                                                                                                                                                                                                                 57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`   | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-3_CYCLE`       | No autorizado; sin replay operativo                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                    |
-|                                                                                                                                                                                                                                                                                                                                 58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`   | `CRITICA_OPERACIONAL`  | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`   | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera` | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`   | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`   | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`   | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`  | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
-|                                                                                                                                                                                                                                                                                                                                 69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera` | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+La matriz conserva exactamente las 69 identidades, propietarias, clases BIA y estrategias heredadas de `CONT-DOM-008` y `CONT-DOM-009`. La prioridad `SYNC-*` se reutiliza de `NFR-REQ-004`. El tratamiento de reincorporación es una decisión documental de esta tarea y no constituye un enum persistente ni una implementación.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Estrategia heredada                      | Sync heredada        | Tratamiento de reincorporacion                         | Estado                                                 |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | ---------------------------------------- | -------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-4_DEFERRED`    | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-2_OPERATIONAL` | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-1_URGENT`      | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-2_OPERATIONAL` | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-3_CYCLE`       | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-4_DEFERRED`    | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-0_BLOCKING`    | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance y subregistros por perfil            | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-0_BLOCKING`    | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-0_BLOCKING`    | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; misma intencion e idempotencia      | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-2_OPERATIONAL` | Sin replay; validar referencia y estado vigente        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-4_DEFERRED`    | No autorizado; sin replay operativo                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                    |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-3_CYCLE`       | No autorizado; sin replay operativo                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                    |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar proteccion; sin replay del efecto bloqueado    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio; conservar original y custodia    | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decision propietaria       | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado        | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intencion actual o descartar con motivo | `CONTRATO_DE_REINCORPORACION_ESPECIFICADO_NO_VALIDADO` |
 ---
 
 #### 19. Reconciliación cuantitativa
@@ -9360,6 +9362,722 @@ SIGUIENTE TAREA RESERVADA
 `CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos`
 
 
-### [ ] CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
+### ✅ CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos
+
+**Estado:** APROBADA
+**Tarea anterior:** CONT-DOM-012 — APROBADA
+**Tarea siguiente:** CONT-DOM-014 — RESERVADA
+**Tipo de tarea:** diseño documental de continuidad de terceros, instalaciones, servicios externos y recursos alternativos; sin implementación productiva
+**Bloque:** AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION
+**Fase:** CONDITIONAL_DESIGN_ARTIFACTS
+**Alcance empresarial heredado:** 69 servicios BIA; 67 activos; 2 AURA bloqueados por aplicación diferida
+**Cambios de requisitos de prueba:** 0
+
+---
+
+#### 1. Propósito
+
+Esta tarea define el contrato empresarial para evaluar, aceptar, activar, operar, retirar y conciliar alternativas frente a la indisponibilidad o degradación de proveedores, energía, red, pagos, transporte, canales, instalaciones, equipos y otros recursos necesarios para sostener el MBCO de una capacidad.
+
+El resultado es documental. No contrata un tercero, no instala redundancia, no cambia infraestructura, no habilita un procesador de pago, no conmuta un enlace, no reserva una sede, no asigna un vehículo y no declara disponibilidad demostrada.
+
+La decisión central es estricta: **una dependencia existente no implica que exista una alternativa y una alternativa candidata no equivale a una alternativa acreditada**.
+
+---
+
+#### 2. Estado heredado que gobierna la tarea
+
+- `CONT-DOM-004` conserva los cuatro perfiles de recuperación y sus objetivos;
+- `CONT-DOM-008` dejó las clases físicas y de tercero evaluadas, pero sin instancia concreta preseleccionada;
+- `CONT-DOM-009` exige evidencia específica antes de tratar `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL` o `CTG-10_ALTERNATIVA_PROVEEDOR_CONDICIONAL` como disponibles;
+- `CONT-DOM-010` gobierna reincorporación, idempotencia, conflicto y conciliación del trabajo ejecutado durante una falla;
+- `CONT-DOM-011` gobierna respaldos y separación de dominio de falla;
+- `CONT-DOM-012` gobierna orden de recuperación, restauración, failover, retorno y validación funcional;
+- `CONT-DOM-014` permanece reservada para demostrar readiness mediante walkthroughs, tabletops, simulaciones, restauraciones y ejercicios.
+
+El baseline heredado permanece en **0 alternativas físicas concretas acreditadas** y **0 alternativas de proveedor o canal concretas acreditadas**.
+
+---
+
+#### 3. Principio de no redundancia presumida
+
+No se considera redundancia por mera coexistencia de recursos. En particular:
+
+- varias sedes no son automáticamente sedes alternas entre sí;
+- dos conexiones observadas no son enlaces alternos si comparten un dominio de falla material;
+- una batería, UPS, planta o fuente auxiliar no es capacidad de continuidad hasta demostrar identidad, autonomía, carga, seguridad y operación;
+- un segundo proveedor comercial no es sustituto si no existe contrato, configuración, capacidad, autorización y conciliación demostrables;
+- una réplica, caché, sincronización o exportación no es una plataforma alternativa de recuperación;
+- un proveedor de ruteo no es un transportador físico;
+- un canal de comunicación diferente no es equivalente si no conserva audiencia, consentimiento, seguridad, trazabilidad y estado;
+- un método de pago diferente no autoriza repetir una intención cuyo resultado previo sea desconocido;
+- un equipo disponible físicamente no es sustituto operativo si carece de configuración, acceso, seguridad, periféricos o capacidad aplicables.
+
+---
+
+#### 4. Objetivos empresariales consumidos sin modificación
+
+| Perfil         | BIA                    |     MTPD |      RTO |      RPO | MBCO                           | Prioridad         |
+| -------------- | ---------------------- | -------: | -------: | -------: | ------------------------------ | ----------------- |
+| `CONT-OBJ-001` | `CRITICA_PROTECCION`   | `30 min` | `15 min` | `15 min` | `PROTEGER_Y_DETENER`           | `PR-0_PROTECCION` |
+| `CONT-OBJ-002` | `CRITICA_OPERACIONAL`  |    `4 h` |    `2 h` |    `1 h` | `MANTENER_RESULTADO_ESENCIAL`  | `PR-1_ESENCIAL`   |
+| `CONT-OBJ-003` | `ALTA_CONTROL`         |   `24 h` |    `8 h` |    `4 h` | `MANTENER_CONTROL_Y_EVIDENCIA` | `PR-2_CONTROL`    |
+| `CONT-OBJ-004` | `DIFERIBLE_CONTROLADA` |   `72 h` |   `24 h` |   `24 h` | `DIFERIR_CON_TRAZABILIDAD`     | `PR-3_DIFERIBLE`  |
+
+Estos valores siguen siendo objetivos de diseño. La existencia de una candidata no demuestra cumplimiento de RTO, RPO, MTPD o MBCO.
+
+---
+
+#### 5. Clases de dependencia cubiertas
+
+| Clase                                    | Qué se evalúa                                                                  | Sustitución admisible                                       | Estado actual                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------- | ------------------------------------- |
+| instalación o espacio físico             | sede, área, acceso, servicios básicos, seguridad y capacidad                   | recurso físico suficientemente independiente                | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| energía                                  | suministro, protección eléctrica, autonomía y parada segura                    | fuente o recurso energético autorizado y probado            | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| red y telecomunicaciones                 | conectividad, DNS, reloj, acceso externo y alcance de falla                    | enlace o mecanismo de conectividad independiente            | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| backend, datos y plataforma administrada | servicios autoritativos, almacenamiento, funciones y configuración             | plataforma o modo alterno compatible con autoridad y datos  | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| pagos                                    | procesamiento, webhook, receipt, reverso, conciliación y resultado desconocido | procesador o modalidad alternativa autorizada               | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| ruteo y geoservicios                     | cálculo de distancia, dirección, cobertura y disponibilidad                    | servicio alterno de ruteo o procedimiento controlado        | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| transporte físico                        | vehículo, conductor, transportador, custodia, capacidad y cobertura            | recurso o tercero físico autorizado                         | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| canales de comunicación                  | push, correo, mensajería, atención y avisos de continuidad                     | canal alterno con consentimiento, seguridad y deduplicación | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| dispositivos, impresión y periféricos    | estación, móvil, impresora, lector y demás hardware necesario                  | equipo alterno configurado y gobernado                      | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| proveedores de insumos y materiales      | abastecimiento, especificación, calidad, trazabilidad y plazo                  | fuente sustituta aprobada por el dominio propietario        | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| servicios técnicos y mantenimiento       | soporte, reparación, calibración, instalación y atención de incidente          | tercero sustituto autorizado y competente                   | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+| recursos manuales de contingencia        | formularios, folios, suministros, medios de custodia y captura                 | recurso alterno dentro del contrato `CTG-*` aplicable       | `PENDIENTE_DE_EVIDENCIA`              |
+
+Ninguna fila anterior constituye selección contractual o compra. El estado solo expresa que esta tarea no recibió evidencia suficiente para acreditar una instancia concreta.
+
+---
+
+#### 6. Estados documentales de una alternativa
+
+Los estados siguientes sirven únicamente para razonamiento y evidencia de esta tarea; no se declaran enums persistentes ni implementación:
+
+| Estado documental                               | Significado                                                                                                              |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ALTERNATIVA_NO_PRESELECCIONADA`                | la clase fue considerada, pero no hay candidata concreta aprobada                                                        |
+| `CANDIDATA_IDENTIFICADA_PENDIENTE_DE_EVIDENCIA` | existe una candidata nominal, pero faltan una o más puertas de admisión                                                  |
+| `APROBADA_PARA_EJERCICIO`                       | supera revisión documental suficiente para ser probada en un escenario controlado; todavía no demuestra readiness        |
+| `ACREDITADA_PARA_CONTINGENCIA`                  | solo puede usarse cuando evidencia y ejercicio vigente demuestran las puertas aplicables, autoridad, capacidad y retorno |
+| `RECHAZADA_POR_FALLA_COMUN`                     | comparte un dominio de falla incompatible con el objetivo                                                                |
+| `RECHAZADA_POR_CAPACIDAD`                       | no sostiene el MBCO o la ventana necesaria                                                                               |
+| `RECHAZADA_POR_SEGURIDAD_O_CUMPLIMIENTO`        | introduce un riesgo no aceptable de SST, inocuidad, privacidad, seguridad o cumplimiento                                 |
+| `RECHAZADA_POR_AUTORIDAD`                       | no existe permiso, contrato o función habilitada para activarla                                                          |
+| `RECHAZADA_POR_INCOMPATIBILIDAD`                | no conserva contratos, datos, receipts, secuencia, idempotencia o reconciliación requeridos                              |
+
+El estado efectivo del baseline actual para las instancias concretas es `ALTERNATIVA_NO_PRESELECCIONADA`. No se materializa ninguna `ACREDITADA_PARA_CONTINGENCIA` en esta tarea.
+
+---
+
+#### 7. Puerta de admisión para una alternativa física
+
+Una candidata física solo puede avanzar cuando existe evidencia suficiente de **todas** las condiciones aplicables:
+
+- identidad concreta del recurso, sitio, equipo o medio;
+- propietario funcional y custodio operativo;
+- independencia suficiente frente al dominio de falla del recurso primario;
+- acceso físico y autoridad de activación;
+- personas, habilidades y disponibilidad compatibles con el escenario;
+- recursos, suministros y dependencias mínimas necesarias;
+- controles de SST, inocuidad, seguridad física, información y privacidad aplicables;
+- capacidad medida o demostrada para el MBCO requerido;
+- activación compatible con RTO y MTPD sin convertirlos en bypass de control;
+- procedimiento de traspaso, retorno y reconciliación;
+- evidencia de ejercicio vigente antes de declarar readiness.
+
+Si una sola condición material permanece indeterminada, la candidata conserva estado `PENDIENTE_DE_EVIDENCIA` o es rechazada según corresponda.
+
+---
+
+#### 8. Puerta de admisión para un proveedor o canal alterno
+
+- identidad contractual concreta y servicio exactamente cubierto;
+- propietario empresarial del contrato y autoridad para activar, cambiar o suspender;
+- vigencia, cobertura, horario, soporte, cuotas, límites y capacidad suficientes;
+- independencia razonable frente a la causa de falla del proveedor primario;
+- credenciales, secretos, dominios, endpoints y configuración autorizados sin compartir material inseguro;
+- compatibilidad de contratos, payloads, identificadores, moneda, unidades, estados y versiones;
+- idempotencia, deduplicación y manejo de resultado desconocido;
+- privacidad, seguridad, retención, residencia y cumplimiento aplicables;
+- receipts o evidencia externa suficiente para saber qué efecto ocurrió;
+- conciliación entre primario, alterno y fuente empresarial;
+- condición de retiro y retorno al proveedor o canal normal;
+- prueba controlada vigente antes de declarar readiness.
+
+Un proveedor con capacidad comercial aparente no pasa esta puerta por existir en el mercado. Debe existir una relación y configuración válidas para Vento y para el proceso que pretende sostener.
+
+---
+
+#### 9. Independencia de dominio de falla
+
+La independencia se evalúa por escenario, no por nombre comercial. Se consideran al menos: cuenta administrativa, identidad, credenciales, región o infraestructura, enlace físico, energía, DNS, dispositivo, ubicación, operador humano, proveedor ascendente, contrato, dato autoritativo y mecanismo de activación.
+
+Dos recursos pueden ser diferentes y aun fallar juntos. Si la misma pérdida de energía, conectividad, credencial, proveedor ascendente, persona o configuración inutiliza primario y alterno, la sustitución no se acredita para ese escenario.
+
+---
+
+#### 10. Capacidad, MBCO y límites
+
+La alternativa se dimensiona contra el **MBCO**, no contra una afirmación genérica de disponibilidad. La evaluación debe indicar, según corresponda:
+
+- volumen o throughput soportado;
+- concurrencia y número de operadores;
+- capacidad de almacenamiento, energía, red, transporte o procesamiento;
+- cobertura geográfica y horario;
+- backlog que puede acumularse sin romper MTPD;
+- restricciones de producto, sede, transacción, dato o cliente;
+- degradaciones aceptables y funciones que permanecen bloqueadas;
+- criterio de abandono si el MBCO deja de sostenerse.
+
+La tarea no inventa valores numéricos de capacidad donde no existe medición o contrato verificable.
+
+---
+
+#### 11. Autoridad de activación
+
+La disponibilidad técnica de una candidata no concede autoridad para usarla. Toda activación conserva:
+
+1. incidente o evento que origina la decisión;
+2. alcance empresarial afectado;
+3. dependencia primaria y condición observada;
+4. alternativa seleccionada y evidencia vigente;
+5. autoridad que aprueba activación;
+6. hora de decisión y hora de efecto;
+7. limitaciones, MBCO esperado y controles protectores;
+8. fuente activa y mecanismo para impedir doble autoridad;
+9. punto de conciliación para hechos pendientes;
+10. criterio explícito de retiro o retorno.
+
+La autoridad empresarial, técnica, financiera, de seguridad o de proceso permanece segregada según la acción; una emergencia no crea privilegio implícito.
+
+---
+
+#### 12. Continuidad de energía
+
+La continuidad energética se decide por carga y resultado protegido. Una fuente auxiliar solo es válida si demuestra capacidad, autonomía o ventana útil, compatibilidad eléctrica, seguridad, mantenimiento, combustible o recarga cuando aplique, activación segura y operación bajo los controles de SST correspondientes.
+
+Cuando no exista alternativa energética acreditada, la respuesta correcta puede ser `PROTEGER_Y_DETENER`, ejecutar una parada segura, preservar evidencia y diferir trabajo. RTO o presión operativa nunca autorizan energizar un equipo mediante una solución no aprobada.
+
+**Baseline actual:** no se acredita una fuente energética alternativa concreta para los 69 servicios.
+
+---
+
+#### 13. Continuidad de red y telecomunicaciones
+
+Un enlace alterno deberá demostrar independencia suficiente, configuración, alcance, autenticación, DNS y reloj utilizables, capacidad para los servicios esenciales, seguridad, observabilidad, activación, aislamiento del enlace fallido y retorno controlado.
+
+El cambio de conectividad no permite emitir dos veces una operación cuyo primer resultado sea desconocido. Sesiones, colas, webhooks y mensajes conservan correlación e idempotencia durante el cambio.
+
+**Baseline actual:** no se acredita un enlace o proveedor de telecomunicaciones alterno concreto.
+
+---
+
+#### 14. Continuidad de backend, datos y plataforma administrada
+
+Supabase permanece como dependencia tecnológica observada del entorno actual. Su existencia administrada no implica que exista una plataforma sustituta aprobada.
+
+Una alternativa de backend tendría que conservar, según alcance, fuente autoritativa, esquema y migraciones, RLS/RPC, identidad, Storage, funciones, jobs, eventos, secretos por mecanismo autorizado, consistencia, compatibilidad de clientes y capacidad de reconciliación. La recuperación técnica de `CONT-DOM-011` y `CONT-DOM-012` no se reinterpreta aquí como proveedor alterno.
+
+**Baseline actual:** 0 plataformas backend alternas acreditadas.
+
+---
+
+#### 15. Continuidad de pagos
+
+El código vigente evidencia integración con Wompi para procesamiento de pagos. Esta observación identifica una dependencia; no acredita un procesador sustituto ni autoriza migración automática.
+
+Reglas obligatorias para cualquier cambio de modalidad o procesador:
+
+- un pago con resultado `UNKNOWN` o equivalente no se repite mediante otro procesador como nueva intención solo para probar si funciona;
+- primero se revisan receipt, recurso, idempotencia y estado autoritativo;
+- el identificador de intención y la correlación empresarial se conservan;
+- una autorización de pago no se confunde con venta, entrega, factura o aplicación financiera;
+- reversos, devoluciones, webhooks tardíos y duplicados se concilian antes de cerrar;
+- el alterno debe definir moneda, monto, expiración, fees, respuesta, seguridad, PCI/controles aplicables, callbacks y reconciliación;
+- el retorno al procesador normal exige tratar transacciones abiertas de ambos lados y evitar doble cobro.
+
+**Baseline actual:** 0 procesadores de pago alternos acreditados.
+
+---
+
+#### 16. Continuidad de ruteo y geoservicios
+
+Los servicios de cálculo de distancia, geocodificación o ruteo se tratan como dependencias técnicas, no como sustitutos de la ejecución logística. Un servicio alterno de ruteo debe demostrar contratos de entrada/salida, límites, cobertura, precisión suficiente para el uso, tratamiento de errores, seguridad y degradación controlada.
+
+Si el geoservicio falla, puede existir un procedimiento manual controlado cuando el proceso propietario lo haya aprobado; esto no convierte el procedimiento en confirmación de entrega ni en transportador.
+
+**Baseline actual:** no se acredita un geoservicio alterno concreto.
+
+---
+
+#### 17. Continuidad de transporte físico
+
+La continuidad del transporte distingue planificación de ejecución física. Una candidata requiere vehículo o transportador identificado, conductor o función autorizada, capacidad, cobertura, custodia, seguridad vial, cadena de evidencia, restricciones de producto, tiempos, comunicación, prueba de entrega y retorno de excepciones.
+
+Cambiar el motor de ruteo no crea transporte. Cambiar transportador no autoriza cerrar la entrega sin receipt o evidencia del proceso propietario.
+
+**Baseline actual:** 0 transportadores, vehículos o recursos físicos alternos acreditados por esta tarea.
+
+---
+
+#### 18. Continuidad de canales de comunicación
+
+Un canal alterno de comunicación debe conservar finalidad, audiencia, consentimiento cuando aplique, clasificación de información, autoridad del emisor, deduplicación, correlación con incidente/caso, registro del intento y resultado de entrega.
+
+No se asume que push, correo, mensajería, llamada o publicación sean intercambiables. La selección depende del mensaje, sensibilidad, urgencia, alcance, disponibilidad y obligación de evidencia.
+
+Mensajes emitidos por canal alterno no se duplican automáticamente cuando el canal primario regresa; primero se determina qué audiencia recibió qué versión y qué acciones quedan pendientes.
+
+**Baseline actual:** 0 canales externos alternos acreditados como sustitución general.
+
+---
+
+#### 19. Continuidad de instalaciones y espacios
+
+La existencia de varias sedes de Vento no permite declarar que una pueda asumir la operación de otra. Una sede alternativa debe demostrar compatibilidad del proceso, acceso, personal, energía, red, equipos, capacidad, seguridad, SST, inocuidad, almacenamiento, custodia, permisos y tiempo de activación cuando aplique.
+
+El movimiento físico de una operación también debe definir qué ocurre con inventario, producción en curso, documentos, dispositivos, caja, personal, pedidos y trabajo contingente del sitio afectado.
+
+**Baseline actual:** 0 sedes alternativas acreditadas para asumir de forma general un servicio BIA de otra sede.
+
+---
+
+#### 20. Continuidad de dispositivos, impresión y periféricos
+
+Un dispositivo alterno requiere baseline compatible, identidad de activo, postura de seguridad, configuración, aplicación, red, periféricos y permisos. Una impresora o periférico alterno exige además correspondencia con el proceso físico correcto y trazabilidad del efecto.
+
+No se interpreta inventario de hardware como readiness. Tampoco se supone batería disponible, carga suficiente, papel, consumibles, driver, conectividad o configuración si no existe evidencia.
+
+**Baseline actual:** 0 sustitutos de dispositivo o periférico acreditados de forma transversal.
+
+---
+
+#### 21. Continuidad de proveedores de insumos, materiales y servicios técnicos
+
+Una fuente sustituta de insumo o material debe conservar especificación, unidad, calidad, alérgenos o restricciones, recepción, lote cuando corresponda, costo, trazabilidad y aprobación del dominio propietario. Un servicio técnico sustituto debe demostrar competencia, autorización, alcance, seguridad, evidencia del servicio y criterio de aceptación.
+
+La urgencia no autoriza una sustitución de producto, repuesto, calibración, mantenimiento o servicio que altere control de calidad, inocuidad, SST, garantía o seguridad sin aprobación correspondiente.
+
+**Baseline actual:** 0 proveedores sustitutos acreditados transversalmente por esta tarea.
+
+---
+
+#### 22. Degradación parcial antes de sustitución total
+
+La continuidad prioriza el resultado mínimo y el control. Antes de activar un sustituto completo se evalúan, cuando correspondan, las estrategias heredadas `CTG-01` a `CTG-08`: bloquear y proteger, referencia versionada, borrador local, captura pendiente, ejecución offline acotada, procedimiento manual controlado, servicio reducido y diferimiento controlado.
+
+`CTG-09` y `CTG-10` solo se habilitan cuando la instancia concreta pasa las puertas de esta tarea. La sustitución no se usa para evitar una modalidad degradada más segura.
+
+---
+
+#### 23. Idempotencia y autoridad durante el cambio
+
+El cambio de proveedor o recurso no crea una nueva intención empresarial por defecto. Se conserva, según aplique:
+
+- `local_operation_id` o identificador empresarial estable;
+- `idempotency_key`;
+- identificador del proveedor primario y del alterno;
+- estado conocido, desconocido o pendiente;
+- payload lógico y versión relevante;
+- receipts y respuestas;
+- recurso y versión afectados;
+- actor y autoridad;
+- tiempos de primer intento, activación, confirmación y conciliación.
+
+Si el alterno no puede preservar el contrato necesario, el efecto permanece bloqueado o pendiente en vez de ejecutarse con semántica distinta.
+
+---
+
+#### 24. Activación y prevención de doble fuente activa
+
+Antes de conmutar se registra cuál es la fuente, proveedor o recurso activo para cada efecto material. La activación del alterno debe deshabilitar, aislar o limitar el primario en la medida necesaria para evitar split-brain, doble despacho, doble cobro, doble mensaje, doble movimiento, doble impresión o estados empresariales competidores.
+
+Si no puede determinarse si el primario produjo el efecto, se trata como resultado incierto y se aplica verificación/reconciliación; no se usa el alterno como prueba destructiva.
+
+---
+
+#### 25. Operación sobre la alternativa
+
+Mientras una alternativa esté activa se conservan al menos: incidente, alcance, inicio, propietario, capacidad disponible, restricciones, errores, consumos o transacciones, receipts, backlog, excepciones, cambios de configuración, autorizaciones temporales y estado de la dependencia primaria.
+
+Una alternativa puede ser retirada si deja de sostener MBCO, pierde independencia, excede capacidad, rompe control protector, introduce riesgo material, expira autorización o presenta resultados no reconciliables.
+
+---
+
+#### 26. Retorno y normalización
+
+El primario no recupera autoridad solo porque vuelve a responder. Antes del retorno se comprueba:
+
+1. estabilidad suficiente del primario;
+2. causa del incidente contenida o aceptada por autoridad aplicable;
+3. datos, configuración y versión compatibles;
+4. fuente activa inequívoca;
+5. delta de trabajo del alterno identificado;
+6. resultados desconocidos resueltos o con propietario;
+7. backlog y efectos derivados cuantificados;
+8. conciliación de pagos, inventario, producción, logística, comunicaciones, documentos y demás dominios aplicables;
+9. posibilidad de rollback si el retorno falla;
+10. retiro de accesos, credenciales o configuraciones temporales cuando corresponda;
+11. validación técnica y funcional posterior;
+12. evidencia suficiente para cerrar o mantener abierto el incidente.
+
+El failback técnico conserva el contrato de `CONT-DOM-012`; la reincorporación del trabajo conserva `CONT-DOM-010`.
+
+---
+
+#### 27. Baseline actual de dependencias y alternativas
+
+| Frente                       | Dependencia o situación observada                                                                  | Alternativa concreta acreditada | Decisión documental                                                             |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------: | ------------------------------------------------------------------------------- |
+| backend y datos              | Supabase forma parte del entorno tecnológico vigente                                               |                               0 | no se afirma plataforma sustituta; recuperación permanece bajo CONT-DOM-011/012 |
+| pagos                        | Wompi aparece en la integración vigente de pagos                                                   |                               0 | no se afirma procesador sustituto ni conmutación automática                     |
+| energía                      | no existe evidencia canónica suficiente de una fuente alterna acreditada para los servicios BIA    |                               0 | mantener `PENDIENTE_DE_EVIDENCIA`; protección o parada segura prevalecen        |
+| red y telecomunicaciones     | existen dependencias de conectividad, pero no evidencia suficiente de un enlace alterno acreditado |                               0 | no se declara redundancia de red                                                |
+| ruteo y geoservicios         | el proceso logístico puede depender de servicios técnicos de dirección/distancia                   |                               0 | no se confunde geoservicio con transporte físico                                |
+| transporte físico            | no se acredita transportador, vehículo o capacidad sustituta transversal                           |                               0 | la ejecución física permanece bajo propietario del proceso                      |
+| canales externos             | existen canales e integraciones parciales; no se demuestra sustitución general de proveedor/canal  |                               0 | cada canal requiere finalidad, seguridad, receipt y deduplicación               |
+| instalaciones                | la pluralidad de sedes no demuestra que una pueda sustituir a otra                                 |                               0 | cada candidata debe pasar puerta física                                         |
+| dispositivos y periféricos   | existe hardware operativo, pero inventario no equivale a sustituto probado                         |                               0 | cada equipo alterno requiere baseline y prueba                                  |
+| insumos y servicios técnicos | existen proveedores operativos, pero no se acredita sustituto transversal para continuidad         |                               0 | selección pertenece al proceso propietario y exige especificación/control       |
+
+La ausencia de acreditación no se interpreta como afirmación de que ningún recurso o proveedor exista; significa únicamente que la evidencia canónica vigente no permite declararlo **alternativa de continuidad acreditada**.
+
+---
+
+#### 28. Matriz empresarial de continuidad de alternativas — 69 / 69
+
+La matriz conserva las 69 identidades, propietarias, clases BIA, perfiles y prioridades heredadas. Para los 67 servicios activos, `CONT-DOM-008` dejó las alternativas física y de tercero como no preseleccionadas; esta tarea no recibió evidencia suficiente para elevar ninguna instancia concreta a `ACREDITADA_PARA_CONTINGENCIA`. AURA conserva su bloqueo por aplicación diferida.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Perfil         | Prioridad         | Alternativa física                  | Alternativa de tercero              | Resultado actual                      |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | -------------- | ----------------- | ----------------------------------- | ----------------------------------- | ------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`   |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CONT-OBJ-002` | `PR-1_ESENCIAL`   | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CONT-OBJ-001` | `PR-0_PROTECCION` | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CONT-OBJ-004` | `PR-3_DIFERIBLE`  | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CONT-OBJ-003` | `PR-2_CONTROL`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `ALTERNATIVA_NO_PRESELECCIONADA`    | `SIN_ALTERNATIVA_CONCRETA_ACREDITADA` |
+
+---
+
+#### 29. Brechas de evidencia y condición de salida
+
+| Brecha                                                        | Estado                   | Propietario documental                                             | Condición de salida                                                             |
+| ------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| sede o espacio alterno por servicio que realmente lo necesite | `PENDIENTE_DE_EVIDENCIA` | propietario del proceso; CONT-DOM-013; CONT-DOM-014                | candidata identificada, puertas físicas completas y ejercicio vigente           |
+| fuente energética alterna suficiente y segura                 | `PENDIENTE_DE_EVIDENCIA` | propietario de instalación/TI; CONT-DOM-013; CONT-DOM-014          | identidad, carga, autonomía, seguridad, activación y ejercicio demostrados      |
+| enlace o mecanismo alterno de conectividad                    | `PENDIENTE_DE_EVIDENCIA` | TI; CONT-INT aplicable; CONT-DOM-014                               | independencia, capacidad, configuración, seguridad y ejercicio demostrados      |
+| plataforma backend alternativa                                | `PENDIENTE_DE_EVIDENCIA` | arquitectura tecnológica aplicable; CONT-DOM-014                   | compatibilidad de datos/identidad/Storage/funciones y ejercicio demostrados     |
+| procesador de pago alterno                                    | `PENDIENTE_DE_EVIDENCIA` | propietario financiero/comercial; CONT-INT aplicable; CONT-DOM-014 | contrato, configuración, idempotencia, conciliación y ejercicio demostrados     |
+| geoservicio alterno                                           | `PENDIENTE_DE_EVIDENCIA` | propietario logístico; CONT-INT aplicable                          | candidata compatible y degradación probada                                      |
+| transportador o recurso de transporte alterno                 | `PENDIENTE_DE_EVIDENCIA` | propietario logístico; CONT-DOM-014                                | capacidad, custodia, cobertura, autoridad y ejercicio demostrados               |
+| canal externo alterno por mensaje crítico                     | `PENDIENTE_DE_EVIDENCIA` | propietario de comunicación; CONT-UX/INT aplicables                | canal, consentimiento, seguridad, deduplicación y evidencia de entrega probados |
+| equipo o periférico sustituto                                 | `PENDIENTE_DE_EVIDENCIA` | TI/operación; paquete propietario                                  | inventario, baseline, configuración, consumibles y ejercicio demostrados        |
+| proveedor sustituto de insumo/material/servicio técnico       | `PENDIENTE_DE_EVIDENCIA` | ORIGO/NEXO y propietario funcional aplicable                       | especificación, contrato, calidad, capacidad, recepción y control demostrados   |
+| readiness de cualquier alternativa aprobada para ejercicio    | `PENDIENTE_DE_EVIDENCIA` | CONT-DOM-014                                                       | ejercicio vigente con tiempos, resultado, desviaciones y acciones               |
+
+No queda una brecha material sin propietario documental o condición de salida.
+
+---
+
+#### 30. Handoffs obligatorios
+
+| Materia                                         | Tarea o contrato propietario                         | Frontera                                                                   |
+| ----------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| trabajo manual/offline y evidencia              | `CONT-DOM-009`                                       | la alternativa no crea una segunda fuente de verdad                        |
+| reincorporación, conflicto e idempotencia       | `CONT-DOM-010`                                       | el cambio de tercero no crea una nueva intención empresarial               |
+| respaldos y copias recuperables                 | `CONT-DOM-011`                                       | una plataforma alterna no sustituye política de backup                     |
+| restauración, failover y failback               | `CONT-DOM-012`                                       | esta tarea acredita candidatos; el runbook técnico gobierna la conmutación |
+| ejercicios y readiness                          | `CONT-DOM-014`                                       | ninguna candidata se declara probada desde diseño documental               |
+| autorización excepcional y credenciales         | `CONT-AUTH-*` aplicable                              | emergencia no concede privilegio implícito                                 |
+| experiencia degradada y comunicación            | `CONT-UX-*` aplicable                                | el canal informa límites y pendientes sin prometer efectos no confirmados  |
+| integración degradada, salud y circuit breaking | `CONT-INT-*` aplicable                               | preserva idempotencia, deduplicación, aislamiento y conciliación           |
+| proveedor, compra y recepción                   | dominio propietario ORIGO/NEXO y procesos aplicables | continuidad no sustituye autoridad contractual, técnica o de calidad       |
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento material de contingencia por ubicación o proveedor sustituto ya está protegido por `TREQ-CONT-003`; la operación de redes, proveedores, contratos y servicios tecnológicos ya está protegida por `TREQ-INTEGRATION-020`; y la continuidad transversal frente a falla de proveedor, red, energía, dispositivo, aplicación o base, incluida degradación, mecanismos alternos, failover autorizado, retorno y reconciliación, ya está protegida por `TREQ-INTEGRATION-023`. Esta tarea especializa el contrato documental y el estado de evidencia por servicio sin introducir un comportamiento ejecutable nuevo.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 32. Criterios de aceptación
+
+1. La continuidad vigente consume CONT-DOM-012 como tarea anterior aprobada y reserva CONT-DOM-014 como siguiente tarea.
+2. La tarea permanece exclusivamente documental dentro de CONDITIONAL_DESIGN_ARTIFACTS.
+3. No se implementa una alternativa física, técnica o contractual.
+4. No se modifica código, DDL, DML, migraciones, RLS, RPC, Edge Functions, datos, secretos ni configuración desplegada.
+5. El alcance conserva exactamente 69 servicios BIA.
+6. El alcance conserva 67 servicios activos y 2 servicios AURA bloqueados.
+7. La distribución BIA permanece 12 CRITICA_PROTECCION, 20 CRITICA_OPERACIONAL, 31 ALTA_CONTROL y 6 DIFERIBLE_CONTROLADA.
+8. Los cuatro perfiles CONT-OBJ-001 a CONT-OBJ-004 se consumen sin modificación.
+9. CONT-OBJ-001 conserva MTPD 30 min, RTO 15 min, RPO 15 min y PROTEGER_Y_DETENER.
+10. CONT-OBJ-002 conserva MTPD 4 h, RTO 2 h, RPO 1 h y MANTENER_RESULTADO_ESENCIAL.
+11. CONT-OBJ-003 conserva MTPD 24 h, RTO 8 h, RPO 4 h y MANTENER_CONTROL_Y_EVIDENCIA.
+12. CONT-OBJ-004 conserva MTPD 72 h, RTO 24 h, RPO 24 h y DIFERIR_CON_TRAZABILIDAD.
+13. Una dependencia existente no se interpreta como alternativa disponible.
+14. Una candidata identificada no se interpreta como alternativa acreditada.
+15. Una alternativa acreditada exige evidencia y ejercicio vigente.
+16. Las cinco sedes no se interpretan como cinco redundancias.
+17. Una alternativa física exige identidad concreta.
+18. Una alternativa física exige propietario y custodia.
+19. Una alternativa física exige independencia suficiente del dominio de falla.
+20. Una alternativa física exige acceso y autoridad de activación.
+21. Una alternativa física exige personas y recursos mínimos demostrados.
+22. Una alternativa física exige controles de SST, inocuidad y seguridad aplicables.
+23. Una alternativa física exige capacidad suficiente para el MBCO.
+24. Una alternativa física exige activación compatible con RTO/MTPD.
+25. Una alternativa física exige traspaso, retorno y reconciliación.
+26. Una alternativa física exige prueba vigente antes de readiness.
+27. Un proveedor alterno exige identidad contractual concreta.
+28. Un proveedor alterno exige autoridad para activar, cambiar o suspender.
+29. Un proveedor alterno exige vigencia, cobertura, cuotas, soporte y capacidad suficientes.
+30. Un proveedor alterno exige independencia suficiente frente a la causa de falla.
+31. Un proveedor alterno exige credenciales y configuración autorizadas.
+32. Un proveedor alterno exige compatibilidad de contratos y datos.
+33. Un proveedor alterno exige idempotencia y deduplicación.
+34. Un proveedor alterno exige tratamiento explícito del resultado desconocido.
+35. Un proveedor alterno exige privacidad, seguridad, retención y cumplimiento aplicables.
+36. Un proveedor alterno exige receipts o evidencia del efecto cuando corresponda.
+37. Un proveedor alterno exige conciliación entre primario, alterno y fuente empresarial.
+38. Un proveedor alterno exige condición de retiro y retorno.
+39. Un proveedor alterno exige prueba vigente antes de readiness.
+40. La tarea no inventa proveedor, sede, enlace, equipo, vehículo, fuente energética o canal.
+41. La tarea no inventa headcount, stock, throughput, autonomía o concurrencia.
+42. La tarea no inventa disponibilidad de dispositivo, batería, impresora o consumibles.
+43. La tarea no inventa existencia de red o energía alternativa.
+44. La tarea no inventa un contrato o SLA no observado.
+45. La tarea no inventa readiness.
+46. El baseline actual conserva 0 alternativas físicas concretas acreditadas.
+47. El baseline actual conserva 0 alternativas de proveedor/canal concretas acreditadas.
+48. Los 67 servicios activos conservan ALTERNATIVA_NO_PRESELECCIONADA para físico y tercero.
+49. Los dos servicios AURA conservan BLOQUEADO_POR_APLICACION_DIFERIDA.
+50. Ninguna fila activa se marca ACREDITADA_PARA_CONTINGENCIA.
+51. No se interpreta PENDIENTE_DE_EVIDENCIA como inexistencia absoluta de un recurso.
+52. La continuidad energética se evalúa contra carga, autonomía, seguridad y MBCO.
+53. Una fuente energética auxiliar no se presume apta por estar físicamente presente.
+54. Ante ausencia de energía alterna segura puede prevalecer PROTEGER_Y_DETENER.
+55. RTO no autoriza energización insegura.
+56. La continuidad de red exige capacidad y configuración compatibles.
+57. Un enlace alterno debe evaluarse por independencia del dominio de falla.
+58. El cambio de red no duplica operaciones con resultado desconocido.
+59. Sesiones, eventos, colas y webhooks conservan correlación durante un cambio de conectividad.
+60. Supabase se reconoce como dependencia tecnológica observada sin inferir una plataforma sustituta.
+61. Backup, restore y proveedor alterno permanecen conceptos separados.
+62. Una plataforma alterna debe conservar autoridad, esquema, identidad y datos aplicables.
+63. Wompi se reconoce como integración vigente de pagos sin inferir un procesador sustituto.
+64. Un pago con resultado desconocido no se repite en otro procesador como nueva intención.
+65. Antes de repetir o compensar un pago se revisan receipt, idempotencia y recurso autoritativo.
+66. El cambio de procesador conserva correlación de la intención empresarial.
+67. Autorización de pago no equivale a venta, factura, entrega ni aplicación financiera.
+68. Webhooks tardíos, reversos y devoluciones se concilian antes de cierre.
+69. El retorno desde un procesador alterno evita doble cobro.
+70. Un geoservicio no se interpreta como transportador físico.
+71. La falta de geoservicio puede degradarse mediante un procedimiento controlado solo cuando el propietario lo permita.
+72. Un procedimiento manual de ruteo no confirma una entrega.
+73. Un transporte alterno exige recurso o tercero físico identificado.
+74. Un transporte alterno exige autoridad, capacidad, cobertura y custodia.
+75. Cambiar transportador no autoriza cerrar la entrega sin evidencia propietaria.
+76. Los canales de comunicación no se consideran intercambiables por defecto.
+77. Un canal alterno conserva audiencia y finalidad.
+78. Un canal alterno conserva consentimiento cuando aplique.
+79. Un canal alterno conserva clasificación y seguridad de la información.
+80. Un canal alterno conserva correlación con incidente o caso.
+81. Un canal alterno conserva intento y resultado de entrega.
+82. El regreso del canal primario no produce reenvío ciego de mensajes.
+83. Una sede alternativa exige compatibilidad física y operativa del proceso.
+84. Una sede alternativa exige energía, red, equipo, personal y controles aplicables.
+85. Mover la operación no oculta inventario, producción, documentos, caja o trabajo pendiente.
+86. Un dispositivo alterno exige baseline, identidad de activo y postura de seguridad.
+87. Un periférico alterno conserva relación con el proceso físico correcto.
+88. Inventario de hardware no equivale a readiness.
+89. No se supone papel, consumibles, drivers o conectividad sin evidencia.
+90. Un proveedor alterno de insumo conserva especificación y unidad.
+91. Un proveedor alterno de insumo conserva calidad, alérgenos o restricciones aplicables.
+92. Un proveedor alterno de insumo conserva lote y trazabilidad cuando corresponda.
+93. Un servicio técnico alterno demuestra competencia y alcance autorizado.
+94. La urgencia no elimina controles de SST, calidad, inocuidad, garantía o seguridad.
+95. Las estrategias CTG-01 a CTG-08 pueden sostener degradación antes de una sustitución total.
+96. CTG-09 solo se habilita para una instancia física que pasa la puerta aplicable.
+97. CTG-10 solo se habilita para un tercero que pasa la puerta aplicable.
+98. La sustitución no se usa para eludir una modalidad degradada más segura.
+99. El cambio de proveedor no crea una nueva intención empresarial por defecto.
+100. La idempotency_key se conserva cuando el contrato aplicable la exige.
+101. Los identificadores externos del primario y del alterno permanecen correlacionados.
+102. El payload lógico y su versión permanecen trazables.
+103. Un alterno incompatible con la semántica del proceso no recibe el efecto.
+104. Antes de activar se identifica la fuente o recurso activo.
+105. La activación evita split-brain o doble autoridad.
+106. La activación evita doble despacho.
+107. La activación evita doble cobro.
+108. La activación evita doble mensaje.
+109. La activación evita doble movimiento o impresión.
+110. Un resultado incierto se verifica; el alterno no se usa como prueba destructiva.
+111. Durante el uso del alterno se conserva incidente, alcance, propietario, capacidad y restricciones.
+112. Durante el uso del alterno se conservan receipts, backlog y excepciones.
+113. Una alternativa puede retirarse si deja de sostener el MBCO.
+114. Una alternativa puede retirarse si pierde independencia o capacidad.
+115. Una alternativa puede retirarse si introduce riesgo material no aceptado.
+116. Una alternativa puede retirarse si expira autoridad o configuración.
+117. El primario no recupera autoridad solo porque vuelve a responder.
+118. El retorno verifica estabilidad del primario y condición del incidente.
+119. El retorno verifica datos, configuración y versión compatibles.
+120. El retorno determina una fuente activa inequívoca.
+121. El retorno identifica el delta de trabajo del alterno.
+122. El retorno resuelve o asigna propietario a resultados desconocidos.
+123. El retorno cuantifica backlog y efectos derivados.
+124. El retorno concilia pagos, inventario, producción, logística y comunicaciones aplicables.
+125. El retorno dispone rollback si la normalización falla cuando corresponda.
+126. El retorno retira accesos o configuraciones temporales cuando corresponda.
+127. El retorno ejecuta validación técnica y funcional posterior.
+128. CONT-DOM-010 conserva la propiedad de reincorporación y conciliación.
+129. CONT-DOM-011 conserva la propiedad de respaldos y copias recuperables.
+130. CONT-DOM-012 conserva la propiedad de restore, failover y failback técnico.
+131. CONT-DOM-014 conserva la propiedad de ejercicios y readiness.
+132. CONT-AUTH conserva la autorización excepcional y material sensible.
+133. CONT-UX conserva la comunicación de estado, limitaciones y pendientes.
+134. CONT-INT conserva salud, aislamiento, reintentos, deduplicación y reconciliación de integraciones.
+135. TREQ-CONT-003 ya protege ubicación alternativa y proveedor sustituto.
+136. TREQ-INTEGRATION-020 ya protege redes, proveedores, contratos y operación tecnológica relacionada.
+137. TREQ-INTEGRATION-023 ya protege continuidad transversal frente a proveedor, red, energía, dispositivo, aplicación o base.
+138. La tarea no crea ni modifica requisitos de prueba.
+139. La ausencia de cambios TREQ impide generar una nueva revisión del registro 04A.
+140. No se ejecuta failover real.
+141. No se ejecuta cambio de proveedor real.
+142. No se modifica energía, red, pagos, transporte, canales o infraestructura real.
+143. No se ejecuta ejercicio de readiness.
+144. La siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 33. Balance de cierre
+
+| Control                                               |   Resultado |
+| ----------------------------------------------------- | ----------: |
+| servicios evaluados                                   | **69 / 69** |
+| servicios activos                                     | **67 / 67** |
+| AURA bloqueados                                       |   **2 / 2** |
+| clases de dependencia evaluadas                       |      **12** |
+| alternativas físicas concretas acreditadas            |       **0** |
+| alternativas de proveedor/canal concretas acreditadas |       **0** |
+| plataformas backend alternas acreditadas              |       **0** |
+| procesadores de pago alternos acreditados             |       **0** |
+| enlaces de red alternos acreditados                   |       **0** |
+| fuentes energéticas alternas acreditadas              |       **0** |
+| transportadores o vehículos alternos acreditados      |       **0** |
+| activaciones reales ejecutadas                        |       **0** |
+| failovers reales ejecutados                           |       **0** |
+| ejercicios de readiness ejecutados por esta tarea     |       **0** |
+| criterios de aceptación                               |     **144** |
+| cambios físicos o contractuales                       |       **0** |
+| requisitos TREQ creados/modificados                   |       **0** |
+
+---
+
+#### 34. Límites de la tarea
+
+- no contrata, cambia, cancela ni habilita un proveedor;
+- no compra, instala, configura ni energiza un recurso alterno;
+- no reserva ni declara una sede alternativa;
+- no instala UPS, planta, batería, enlace, router, modem u otra infraestructura;
+- no cambia DNS, red, ISP, endpoints o configuración productiva;
+- no cambia procesador, adquirente, gateway o modalidad de pago;
+- no reintenta pagos ni transacciones reales;
+- no cambia transportador, vehículo o asignación logística;
+- no cambia proveedor de mensajería, push, correo o canal externo;
+- no cambia proveedores de insumos, materiales o servicios técnicos;
+- no asigna credenciales, secretos, tokens o accesos temporales;
+- no modifica Supabase, Storage, Edge Functions, jobs, bases o aplicaciones;
+- no ejecuta restore, failover, failback o retorno real;
+- no ejecuta ejercicios, simulaciones o pruebas de readiness;
+- no declara RTO, RPO, MTPD o MBCO cumplidos;
+- no declara una alternativa validada sin evidencia vigente;
+- no inicia CONT-DOM-014;
+- no inicia CONT-DOM-015.
+
+---
+
+#### 35. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-DOM-012 — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional`
+
+TAREA ACTUAL APROBADA
+
+`CONT-DOM-013 — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos`
+
+
 ### [ ] CONT-DOM-014 — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos
 ### [ ] CONT-DOM-015 — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan
