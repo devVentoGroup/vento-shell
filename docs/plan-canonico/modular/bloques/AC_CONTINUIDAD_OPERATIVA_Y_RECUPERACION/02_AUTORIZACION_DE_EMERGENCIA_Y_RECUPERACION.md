@@ -2930,4 +2930,1298 @@ SIGUIENTE TAREA RESERVADA
 `CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior`
 
 
-### [ ] CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior
+### ✅ CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia` — APROBADA
+**Tarea siguiente:** `CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de autorización, segregación, independencia funcional y evidencia para ejecución, validación técnica y funcional, reincorporación, conciliación, recuperación total, cierre de continuidad y revisión posterior
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md`
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, RPC, funciones, Edge Functions, migraciones, datos, permisos, grants, sesiones, secretos, respaldos, restauraciones, colas, integraciones, formularios, dispositivos, proveedores, infraestructura ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar la separación de autoridad que impide que una persona, equipo, proveedor, servicio técnico, automatización o función que ejecutó una contingencia o recuperación pueda convertir por sí mismo su propia ejecución en validación, conciliación, recuperación total, cierre o eficacia demostrada.
+
+La tarea completa el gobierno de autorización de `VPROC-0062` desde la ejecución de la respuesta hasta el aprendizaje posterior y debe permitir resolver de forma determinista:
+
+```text
+quién puede ejecutar una acción de continuidad
+quién puede validar el resultado técnico
+quién puede validar el resultado empresarial
+quién puede admitir trabajo contingente para reincorporación
+quién puede resolver conflictos de reincorporación
+quién puede conciliar efectos por dominio
+qué evidencia permite declarar recuperación total
+quién puede proponer el cierre
+quién puede aprobar el cierre
+qué pendientes bloquean el cierre
+qué pendientes pueden continuar después del cierre
+cómo se evita que la misma persona se autocertifique
+cómo se gobierna una organización pequeña cuando varias funciones recaen en la misma persona
+cómo se mantiene separada la revisión posterior del cierre operativo
+quién puede verificar la eficacia de una acción posterior
+cómo se preservan historia, denegaciones y decisiones
+```
+
+Esta tarea no ejecuta una recuperación real, no reincorpora trabajo real, no concilia transacciones reales, no cierra un incidente real y no produce evidencia operativa nueva.
+
+---
+
+#### 2. Resultado sustantivo
+
+`CONT-AUTH-004` queda definida con las siguientes decisiones obligatorias:
+
+1. ejecución, validación técnica, validación funcional, reincorporación, conciliación, recuperación total, cierre y revisión posterior son actos distintos;
+2. quien ejecuta una acción no obtiene por ejecución autoridad para aprobar su resultado;
+3. la restauración o disponibilidad técnica no constituye recuperación empresarial;
+4. la validación técnica confirma el componente dentro de su alcance, pero no valida el MBCO ni el resultado del proceso;
+5. la validación funcional corresponde al propietario del resultado empresarial o a una función autorizada por ese propietario;
+6. la reincorporación de trabajo contingente exige una decisión actual de admisión antes de producir o confirmar un efecto propietario;
+7. la digitalización, sincronización o replay técnico no constituye por sí solo reincorporación aceptada;
+8. un conflicto, resultado desconocido, unidad en cuarentena o conciliación requerida no puede ser convertido en éxito por el ejecutor;
+9. la conciliación pertenece a los dominios propietarios de los efectos y no a una autoridad técnica transversal;
+10. una conciliación entre dominios exige que cada extremo reconozca su propio hecho o disposición; un único sistema no certifica al otro;
+11. la recuperación total es una decisión empresarial protegida distinta de restauración, retorno técnico, desactivación y cierre;
+12. `RESPONSABLE_DE_CONTINUIDAD` coordina y puede proponer recuperación total o cierre, pero no sustituye validaciones funcionales de los propietarios;
+13. la aprobación final de recuperación total y cierre de `VPROC-0062` corresponde a `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD` según severidad y delegación vigente;
+14. no se crea una tabla fija de severidad a persona nominal; la autoridad efectiva se resuelve desde la delegación organizacional vigente;
+15. el iniciador, preparador o ejecutor principal de la misma decisión crítica no puede emitir por sí solo la aprobación final;
+16. `DESACTIVADO` puede coexistir con pendientes identificados y asignados cuando estos ya no requieren gobierno extraordinario;
+17. `CERRADO` no puede coexistir con efectos operativos o de conciliación abiertos que el contrato de dominio exige resolver;
+18. un incidente puede cerrarse antes de terminar todas las acciones de mejora únicamente cuando esas acciones ya no representan recuperación, reincorporación, conciliación, seguridad o evidencia pendiente del incidente;
+19. la revisión posterior es un expediente correlacionado pero distinto del incidente y no altera su historia;
+20. abrir una revisión posterior no cierra el incidente y cerrar el incidente no concluye la revisión posterior;
+21. las acciones correctivas y de mejora posteriores poseen propietario, condición de salida y verificación de eficacia independientes del cierre del incidente;
+22. una acción implementada no puede ser marcada eficaz por la sola persona que la ejecutó cuando la criticidad o el riesgo exigen independencia;
+23. la concentración de funciones en una organización pequeña solo es admisible si cada función ejercida queda identificada y no produce autoaprobación crítica;
+24. cuando no sea materialmente posible separar dos funciones de ejecución no críticas, se exige control compensatorio posterior y nunca se elimina la aprobación final independiente;
+25. un proveedor puede ejecutar o aportar evidencia técnica, pero no valida recuperación empresarial ni aprueba el cierre de Vento;
+26. una automatización puede calcular, comparar, bloquear, correlacionar o preparar una decisión, pero no se convierte en aprobador empresarial;
+27. una interfaz, un rol local, un estado técnico, un receipt, un health check o una métrica no sustituyen la autoridad requerida;
+28. las mismas reglas aplican a operación real, restauraciones controladas y ejercicios, distinguiendo siempre contexto real de simulación;
+29. denegaciones, intentos fallidos, excepciones y decisiones de no cierre permanecen auditables;
+30. toda transición protegida conserva actor, función, alcance, evidencia, versión, razones y autoridad aplicable;
+31. la tarea materializa el enforcement documental pendiente de `CONT-DOM-010` sobre separación entre ejecutar, validar, reincorporar, conciliar y cerrar;
+32. la tarea materializa la separación de ejercicio y revisión reservada por `CONT-DOM-014` y `CONT-DOM-015`;
+33. la tarea no cambia criticidades BIA, perfiles `CONT-OBJ-*`, MTPD, RTO, RPO, MBCO, estrategias `CTG-*`, propietarios de proceso ni estados de readiness;
+34. la tarea no declara implementación física ni validación operativa;
+35. se generan cero cambios de requisitos de prueba porque el comportamiento protegido ya está cubierto por requisitos vigentes de continuidad, autorización e integración.
+
+---
+
+#### 3. Entradas canónicas conservadas
+
+Esta tarea consume sin redefinir:
+
+- `VPROC-0062 — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje`;
+- la matriz `PROC-ACTOR-003`, que establece aprobación obligatoria por `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD` según severidad para activación, modo degradado, recuperación total y cierre de continuidad;
+- `CONT-DOM-001` para propiedad federada, autorización persistente, fuente de verdad única, recuperación funcional, prueba antes de confianza e historia preservada;
+- `CONT-DOM-005` para estados del incidente, distinción entre `DESACTIVADO` y `CERRADO` y condiciones empresariales de cierre;
+- `CONT-DOM-006` para mando, sustitución, bitácora y segregación de decisiones;
+- `CONT-DOM-007` y `CONT-DOM-008` para MBCO y estrategias de contingencia sin transferir autoridad;
+- `CONT-DOM-009` para folios, registros, evidencia, custodia y trabajo realizado durante la falla;
+- `CONT-DOM-010` para reincorporación, idempotencia, `RESULT_UNKNOWN`, `CONFLICT`, `QUARANTINED`, `RECONCILIATION_REQUIRED`, orden causal, conciliación y balance de pendientes;
+- `CONT-DOM-011` y `CONT-DOM-012` para respaldos, runbooks, restore, failover condicional, retorno, validación técnica y validación funcional;
+- `CONT-DOM-013` para resultados y receipts de proveedores y recursos alternativos;
+- `CONT-DOM-014` para ejercicios, restauración aislada, validación funcional, conciliación, evidencia y readiness;
+- `CONT-DOM-015` para revisión posterior, cadena de aprendizaje, acciones y verificación de eficacia;
+- `CONT-AUTH-001` para autoridad de declaración, activación, mando, decisiones excepcionales, comunicación y desactivación;
+- `CONT-AUTH-002` para acceso extraordinario, break-glass, failover privilegiado, expiración y revocación;
+- `CONT-AUTH-003` para protección de respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia;
+- el modelo canónico de identidad, actor efectivo, permiso, alcance, contexto, recurso, denegación, decisión y auditoría;
+- los contratos vigentes de idempotencia, información, evidencia e integración que preservan un único efecto y una única fuente propietaria.
+
+No se crean roles base, roles operativos, permisos, cuentas, identidades, severidades, estados de servicio, objetivos de continuidad ni propietarios nuevos.
+
+---
+
+#### 4. Decisión principal
+
+Vento OS adopta un modelo de **segregación por resultado y por decisión**, no una separación artificial basada únicamente en personas distintas.
+
+```text
+EJECUTAR
+→ produce una acción o intento
+→ conserva actor, autorización y evidencia
+→ no certifica éxito
+
+VALIDAR TÉCNICAMENTE
+→ confirma componente, versión, integridad o comportamiento técnico
+→ no declara recuperación empresarial
+
+VALIDAR FUNCIONALMENTE
+→ confirma que el proceso logra el resultado empresarial requerido
+→ pertenece al propietario funcional
+
+REINCORPORAR
+→ admite y aplica trabajo contingente bajo estado actual
+→ no equivale a conciliar todos los efectos
+
+CONCILIAR
+→ compara hechos y efectos entre fuentes propietarias
+→ resuelve o conserva diferencias explícitas
+
+DECLARAR RECUPERACIÓN TOTAL
+→ afirma que el resultado empresarial y sus dependencias aplicables están recuperados
+→ exige evidencia y autoridad
+
+CERRAR
+→ termina el expediente operacional del incidente como caso abierto
+→ exige balance sin bloqueos operativos ocultos y aprobación final
+
+REVISAR POSTERIORMENTE
+→ analiza hechos, causas, lecciones, acciones y eficacia
+→ no reescribe ni sustituye el cierre histórico
+```
+
+Regla cardinal:
+
+```text
+EJECUCION
+≠ VALIDACION
+≠ RECUPERACION TOTAL
+≠ CIERRE
+≠ EFICACIA
+```
+
+---
+
+#### 5. Fronteras obligatorias
+
+Se conservan las siguientes separaciones:
+
+```text
+restore ejecutado ≠ restore validado
+```
+
+```text
+validación técnica ≠ validación funcional
+```
+
+```text
+servicio técnicamente disponible ≠ proceso empresarial recuperado
+```
+
+```text
+sincronización ≠ reincorporación aceptada
+```
+
+```text
+reincorporación ≠ conciliación integral
+```
+
+```text
+receipt técnico ≠ aceptación funcional
+```
+
+```text
+conciliación de un dominio ≠ conciliación transversal completa
+```
+
+```text
+recuperación total ≠ desactivación ≠ cierre
+```
+
+```text
+cierre ≠ revisión posterior
+```
+
+```text
+acción implementada ≠ acción eficaz
+```
+
+```text
+participación en ejercicio ≠ autoridad real
+```
+
+```text
+proveedor técnicamente conforme ≠ proceso Vento recuperado
+```
+
+---
+
+#### 6. Unidad mínima de segregación
+
+La segregación se evalúa sobre una decisión concreta, no sobre etiquetas generales de cargo.
+
+Cada decisión protegida deberá resolver como mínimo:
+
+| Dimensión            | Regla                                                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| expediente           | incidente, recuperación, conciliación, ejercicio o revisión correlacionable                                             |
+| decisión             | acción exacta que se ejecuta, valida, admite, concilia, aprueba o cierra                                                |
+| recurso              | proceso, servicio, registro, fuente, dependencia o alcance afectado                                                     |
+| actor efectivo       | persona o servicio que realiza el acto material                                                                         |
+| función ejercida     | ejecución, validación técnica, validación funcional, reincorporación, conciliación, coordinación, aprobación o revisión |
+| autoridad            | permiso, delegación y prerrequisitos aplicables a esa función                                                           |
+| severidad y alcance  | contexto empresarial que determina escalamiento y aprobación                                                            |
+| estado anterior      | estado autoritativo previo a la decisión                                                                                |
+| evidencia            | hechos, receipts, validaciones y referencias utilizados                                                                 |
+| conflicto de función | concentración o incompatibilidad detectada                                                                              |
+| decisión final       | allow, deny, bloqueo, aprobación o rechazo aplicable                                                                    |
+| versión              | política, delegación, runbook y contratos vigentes utilizados                                                           |
+| tiempo               | inicio, decisión y resultado suficientes para reconstrucción                                                            |
+
+Una misma persona puede aparecer en varios actos, pero cada acto conserva su función y no hereda autoridad del acto anterior.
+
+---
+
+#### 7. Matriz materializada de autoridad y segregación
+
+| Decisión o acción               | Prepara o propone                                  | Ejecuta                                    | Valida o concilia                                  | Aprobación protegida                                                     | Regla de separación                                                                |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| ejecutar contingencia aprobada  | director, operación o propietario aplicable        | actor operativo autorizado                 | propietario funcional según resultado              | solo si el contrato de la acción la exige                                | ejecutar el procedimiento no concede recuperación total                            |
+| ejecutar recuperación técnica   | `RESPONSABLE_TECNOLOGICO` o coordinador autorizado | técnico, servicio o proveedor autorizado   | validador técnico aplicable                        | autoridad de cambio/acceso cuando corresponda                            | ejecutor no declara resultado empresarial                                          |
+| validar recuperación técnica    | función técnica competente                         | validador técnico                          | evidencia técnica                                  | no sustituye aprobación empresarial                                      | cuando el riesgo exija independencia, no se autocertifica el mismo cambio sensible |
+| validar resultado empresarial   | `RESPONSABLE_DEL_PROCESO` o función autorizada     | validador funcional                        | propietario funcional y evidencia de MBCO          | no sustituye cierre                                                      | proveedor y técnico no asumen esta función por conveniencia                        |
+| admitir trabajo contingente     | propietario del proceso o coordinador autorizado   | operador o servicio autorizado             | regla de admisión de `CONT-DOM-010`                | autoridad de dominio cuando corresponda                                  | la existencia del registro no concede aplicación                                   |
+| reincorporar una intención      | propietario o función de dominio                   | contrato o ejecutor idempotente autorizado | receipt, recurso, versión y evidencia              | decisión vigente de la acción                                            | replay no aprueba su propio resultado                                              |
+| resolver duplicado o conflicto  | dominio propietario                                | actor autorizado para la resolución        | revisor de conflicto o propietario                 | autoridad de corrección aplicable                                        | el productor del registro no descarta por sí solo evidencia contradictoria         |
+| conciliar efecto de un dominio  | responsable del dominio                            | conciliador autorizado                     | fuente propietaria y evidencia                     | propietario funcional                                                    | conciliar no autoriza modificar otro dominio                                       |
+| conciliar efecto entre dominios | propietarios involucrados                          | funciones autorizadas en cada extremo      | confirmación bilateral o multilateral aplicable    | autoridad de excepción si queda diferencia material                      | un extremo no certifica al otro                                                    |
+| proponer recuperación total     | `RESPONSABLE_DE_CONTINUIDAD` o sustituto efectivo  | no aplica como efecto técnico              | propietarios de procesos y validaciones aplicables | `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD` según severidad y delegación | propuesta no equivale a aprobación                                                 |
+| aprobar recuperación total      | autoridad ejecutiva efectiva                       | no aplica                                  | consume validaciones sin sustituirlas              | `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD`                              | quien ejecutó la recuperación no se autoaprueba esta decisión crítica              |
+| proponer cierre                 | `RESPONSABLE_DE_CONTINUIDAD` o sustituto efectivo  | no aplica                                  | balance de pendientes y validaciones               | aprobación final obligatoria                                             | cierre no se deriva automáticamente de `DESACTIVADO`                               |
+| aprobar cierre                  | autoridad ejecutiva efectiva                       | no aplica                                  | evidencia de cierre y bloqueos                     | `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD` según severidad y delegación | iniciador/preparador y ejecutor no emiten solos la aprobación final crítica        |
+| iniciar revisión posterior      | continuidad, riesgo, proceso o disparador vigente  | equipo revisor autorizado                  | evidencia histórica preservada                     | según gobierno de revisión                                               | abrir revisión no altera el cierre                                                 |
+| verificar eficacia de acción    | propietario o revisor designado                    | verificador competente                     | método de eficacia aprobado                        | autoridad de aceptación cuando corresponda                               | la sola persona que implementó no convierte la acción en eficaz por declaración    |
+
+La matriz no crea permisos físicos. Cualquier implementación futura deberá mapear estas funciones al catálogo y a los evaluadores canónicos vigentes.
+
+---
+
+#### 8. Ejecución de continuidad
+
+La ejecución solo puede ocurrir dentro de una decisión previamente autorizada o de una medida protectora ya prevista por contrato.
+
+El ejecutor debe conocer:
+
+- incidente o ejercicio;
+- acción exacta;
+- recurso y ambiente;
+- estrategia o runbook aplicable;
+- alcance;
+- actor y principal;
+- autorización vigente;
+- controles protectores;
+- condición de abortado;
+- evidencia esperada;
+- handoff de validación.
+
+El ejecutor no adquiere por la acción:
+
+- derecho a aprobar el resultado;
+- autoridad para ampliar el alcance;
+- autoridad para cambiar MTPD, RTO, RPO o MBCO;
+- autoridad para descartar evidencia adversa;
+- autoridad para omitir conciliación;
+- autoridad para declarar recuperación total;
+- autoridad para cerrar el incidente;
+- autoridad para declarar eficaz una acción posterior.
+
+---
+
+#### 9. Validación técnica
+
+La validación técnica determina si el componente o capacidad técnica cumple el resultado técnico definido por su contrato.
+
+Puede incluir, según aplique:
+
+- integridad de restore;
+- versión compatible;
+- health y estabilidad;
+- fuente activa inequívoca;
+- ausencia de split-brain;
+- conectividad;
+- colas y eventos;
+- capacidad técnica mínima;
+- seguridad y configuración;
+- acceso y revocación;
+- evidencia de tiempo y punto recuperado;
+- condición de retorno o rollback.
+
+La validación técnica no puede declarar:
+
+- MBCO cumplido sin validación funcional;
+- reconciliación completa;
+- recuperación total;
+- cierre;
+- readiness vigente por sí sola.
+
+Cuando una acción técnica sensible sea ejecutada y validada por la misma persona por limitación real de dotación, la concentración debe quedar registrada y no sustituye la validación funcional independiente ni la aprobación ejecutiva final.
+
+---
+
+#### 10. Validación funcional
+
+La validación funcional confirma que el proceso puede producir su resultado empresarial dentro del modo aprobado.
+
+Corresponde a `RESPONSABLE_DEL_PROCESO` o a la función expresamente autorizada por el proceso y deberá considerar, según aplique:
+
+- resultado mínimo `MBCO`;
+- entradas y salidas requeridas;
+- datos y versión correctos;
+- acciones pendientes;
+- restricciones de sede, horario o duración;
+- continuidad de controles de SST, inocuidad, calidad, privacidad, autorización e integridad;
+- dependencias necesarias;
+- efectos ya producidos durante la falla;
+- trabajo diferido o contingente;
+- conciliaciones requeridas;
+- limitaciones conocidas del modo recuperado.
+
+La validación funcional puede ser positiva, negativa o condicionada. Una condición material abierta impide convertirla silenciosamente en recuperación total.
+
+---
+
+#### 11. Puerta de recuperación total
+
+La decisión de recuperación total solo puede proponerse cuando el alcance evaluado demuestra, según aplique:
+
+1. estado técnico estable suficiente;
+2. fuente activa y versión identificadas;
+3. validación funcional de cada proceso afectado que deba declararse recuperado;
+4. MBCO observado o condición de servicio objetivo satisfecha;
+5. dependencias críticas requeridas disponibles o con limitación explícita compatible;
+6. trabajo contingente identificado;
+7. `RESULT_UNKNOWN` sin resolver igual a cero dentro del alcance que se pretende declarar recuperado;
+8. `CONFLICT` abierto igual a cero dentro de ese alcance;
+9. `QUARANTINED` sin decisión igual a cero dentro de ese alcance;
+10. `RECONCILIATION_REQUIRED` abierto igual a cero dentro de ese alcance;
+11. efectos empresariales ocurridos con representación propietaria o disposición explícita;
+12. evidencia obligatoria vinculada o excepción autorizada y admisible;
+13. efectos downstream materiales reconciliados;
+14. pendientes restantes identificados, asignados y compatibles con operación ordinaria;
+15. controles protectores satisfechos;
+16. autoridad extraordinaria ya no necesaria para afirmar el resultado;
+17. evidencia suficiente para reconstruir la decisión.
+
+Una limitación material que no permita cumplir la puerta conserva el estado real; no se reduce el alcance de forma artificial para declarar éxito.
+
+---
+
+#### 12. Reincorporación: autoridad de admisión
+
+La reincorporación de trabajo contingente aplica la semántica de `CONT-DOM-010` y añade una puerta de autorización.
+
+Antes de admitir una unidad deberá evaluarse:
+
+- identidad original y folio cuando aplique;
+- `local_operation_id` e `idempotency_key` cuando apliquen;
+- actor y contexto originales;
+- estado actual del actor y su autoridad;
+- recurso actual y versión;
+- integridad del contenido;
+- receipts existentes;
+- estado de dependencias;
+- conflicto o duplicado potencial;
+- autorización actual para producir el efecto;
+- propietario funcional;
+- evidencia y custodia;
+- secuencia causal.
+
+La autoridad observada durante la falla no se transporta como allow reutilizable. Toda mutación actual se reevalúa con el contexto vigente inmediatamente antes del efecto.
+
+---
+
+#### 13. Reincorporación: ejecución y verificación
+
+La reincorporación distingue:
+
+```text
+ADMITIR
+→ decidir si la unidad puede entrar al proceso de retorno
+
+APLICAR
+→ producir o vincular el efecto autorizado una sola vez
+
+VERIFICAR
+→ comprobar receipt, recurso, versión y resultado
+
+CONCILIAR
+→ confirmar consecuencias propietarias y downstream
+```
+
+Reglas:
+
+1. el ejecutor de replay no convierte ausencia de error en éxito empresarial;
+2. un mismo identificador y mismo contenido debe recuperar el resultado existente cuando el contrato lo define;
+3. un mismo identificador con contenido diferente se conserva como conflicto;
+4. una respuesta tardía se correlaciona antes de cualquier nuevo efecto;
+5. un timeout no autoriza una segunda intención destructiva;
+6. una unidad expirada no se ejecuta automáticamente;
+7. un efecto ocurrido durante la vigencia no se borra por expiración posterior;
+8. una corrección crea una decisión trazable; no altera silenciosamente el registro original;
+9. la automatización puede ejecutar la regla autorizada, pero no autoaprobar un conflicto material;
+10. la evidencia adversa no se descarta para liberar la cola.
+
+---
+
+#### 14. Resolución de conflictos
+
+Un conflicto de reincorporación exige una decisión del dominio propietario cuando no exista una regla determinista ya aprobada.
+
+La decisión deberá conservar:
+
+| Campo           | Regla                                                              |
+| --------------- | ------------------------------------------------------------------ |
+| conflicto       | identidad y clase del conflicto                                    |
+| registros       | referencias de todas las versiones o intenciones implicadas        |
+| recurso         | estado y versión actuales                                          |
+| evidencia       | receipts, folios, auditoría, documentos o fuentes observadas       |
+| efecto posible  | consecuencias de aceptar, rechazar, compensar o mantener pendiente |
+| actor           | función que prepara o analiza                                      |
+| autoridad       | función que puede decidir la resolución                            |
+| resolución      | decisión explícita y motivo                                        |
+| efecto derivado | nueva acción autorizada cuando corresponda                         |
+| conciliación    | dominios que deben confirmar el resultado                          |
+
+El actor que produjo el registro original puede aportar hechos, pero no posee por esa razón autoridad exclusiva para resolver una contradicción material.
+
+---
+
+#### 15. Conciliación por dominio
+
+Cada dominio conserva la propiedad de sus hechos y verifica su convergencia.
+
+La conciliación debe responder, según aplique:
+
+- qué hecho propietario existe;
+- qué intención u observación de contingencia lo originó;
+- qué receipt o referencia lo confirma;
+- qué efecto fue rechazado o compensado;
+- qué diferencia permanece;
+- qué actor o función resolvió la diferencia;
+- qué evidencia soporta la resolución;
+- qué efectos downstream se propagaron;
+- qué pendientes quedan;
+- quién es propietario de cada pendiente.
+
+Una herramienta transversal puede presentar el balance, pero no se convierte en propietaria de ventas, inventario, producción, pagos, asistencia, documentos, comunicaciones ni otros hechos de dominio.
+
+---
+
+#### 16. Conciliación transversal
+
+Cuando una misma intención produce efectos en más de un dominio, el cierre exige correlación suficiente entre los extremos aplicables.
+
+Ejemplos de clases ya cubiertas por el contrato de dominio incluyen:
+
+- venta, pedido, pago y caja;
+- inventario, abastecimiento y recepción;
+- producción, consumo, merma e inventario;
+- logística, custodia, entrega y recepción;
+- asistencia, turno y efectos laborales;
+- documentos, evidencia y referencias;
+- comunicaciones y entrega;
+- colas, integraciones y proveedores.
+
+Reglas:
+
+1. un dominio no escribe autoridad sobre el otro para forzar convergencia;
+2. una diferencia puede terminar en corrección, compensación, rechazo documentado o riesgo residual autorizado cuando el contrato lo permita;
+3. una discrepancia material sin tratamiento mantiene el bloqueo;
+4. un efecto externo sin receipt o evidencia autoritativa permanece desconocido cuando corresponda;
+5. una conciliación parcial no se etiqueta como integral;
+6. los conteos abiertos solo disminuyen por una causa demostrable y correlacionada.
+
+---
+
+#### 17. Balance obligatorio antes del cierre
+
+Antes de proponer `CERRADO`, el expediente deberá disponer de un balance reconstruible que distinga como mínimo:
+
+- registros contingentes identificados;
+- unidades admitidas;
+- unidades aplicadas;
+- unidades rechazadas con motivo;
+- duplicados confirmados;
+- operaciones expiradas con disposición;
+- conflictos abiertos;
+- resultados desconocidos abiertos;
+- unidades `QUARANTINED`;
+- unidades `RECONCILIATION_REQUIRED`;
+- evidencia obligatoria no enlazada;
+- efectos downstream pendientes;
+- pendientes sin propietario;
+- pendientes transferidos a operación ordinaria;
+- acciones de mejora posteriores separadas del incidente.
+
+El balance debe preservar referencias y razones. No se exige un esquema físico nuevo en esta fase.
+
+---
+
+#### 18. Condiciones que bloquean el cierre
+
+`CERRADO` queda denegado mientras exista, dentro del alcance que debe resolver el incidente:
+
+- `RESULT_UNKNOWN` sin resolución;
+- `CONFLICT` abierto;
+- `QUARANTINED` sin decisión;
+- `RECONCILIATION_REQUIRED` abierto;
+- efecto físico o empresarial ocurrido sin representación propietaria o disposición explícita;
+- evidencia obligatoria sin vínculo ni excepción admisible;
+- efecto downstream material pendiente;
+- operación expirada sin disposición;
+- trabajo de contingencia sin destino;
+- pendiente material sin propietario;
+- validación funcional obligatoria ausente;
+- control protector todavía incumplido;
+- recuperación total no aprobada cuando el alcance la exige;
+- excepción temporal vencida o sin autoridad;
+- diferencia material ocultada mediante reducción artificial del alcance;
+- autoridad de cierre no resoluble o no vigente.
+
+Un bloqueo no desaparece por desactivar el mando, restaurar la aplicación, terminar un turno o cambiar de canal.
+
+---
+
+#### 19. Pendientes admisibles después del cierre
+
+Pueden permanecer después del cierre únicamente elementos que hayan dejado de ser parte de la recuperación operacional del incidente y cumplan simultáneamente:
+
+1. identidad propia;
+2. relación histórica con el incidente;
+3. propietario explícito;
+4. prioridad y condición de salida;
+5. tratamiento autorizado en su dominio;
+6. ausencia de `RESULT_UNKNOWN`, conflicto, conciliación o efecto empresarial pendiente encubierto;
+7. ausencia de control protector incumplido;
+8. ausencia de riesgo que obligue a mantener el incidente abierto;
+9. evidencia suficiente del traspaso;
+10. seguimiento en el proceso propietario correspondiente.
+
+Ejemplos admisibles son una acción de mejora, una actualización de plan o una investigación causal posterior cuando el resultado operacional ya está reconciliado. No es admisible renombrar un pendiente operacional como acción de mejora para permitir el cierre.
+
+---
+
+#### 20. Propuesta de cierre
+
+`RESPONSABLE_DE_CONTINUIDAD` o `CONTINUADOR_DE_CONTINUIDAD` con sustitución vigente puede preparar la propuesta de cierre.
+
+La propuesta deberá contener como mínimo:
+
+- incidente y alcance;
+- severidad inicial, máxima y final;
+- modalidad de activación utilizada;
+- estado de desactivación cuando aplicó;
+- servicios y procesos afectados;
+- validaciones técnicas relevantes;
+- validaciones funcionales por proceso;
+- resultado de recuperación total;
+- balance de reincorporación y conciliación;
+- excepciones y riesgos residuales;
+- pendientes admitidos después del cierre;
+- revisión posterior requerida;
+- evidencia de autoridad y versiones aplicables;
+- razón explícita para cerrar.
+
+Preparar la propuesta no cambia el estado a `CERRADO`.
+
+---
+
+#### 21. Autoridad de cierre
+
+El cierre de continuidad es una decisión protegida obligatoria de `VPROC-0062`.
+
+La aprobación final corresponde a:
+
+- `GERENCIA_GENERAL`; o
+- `GOBIERNO_Y_PROPIEDAD`;
+
+según severidad y delegación organizacional vigente.
+
+Reglas:
+
+1. no se inventa una correspondencia fija entre severidad y persona nominal;
+2. debe poder reconstruirse qué autoridad era efectiva al momento del cierre;
+3. `RESPONSABLE_DE_CONTINUIDAD` no se convierte en aprobador final por dirigir el incidente;
+4. el ejecutor técnico no se convierte en aprobador final por restaurar el servicio;
+5. el propietario funcional no se convierte en aprobador ejecutivo por validar su proceso;
+6. un proveedor no puede aprobar el cierre de Vento;
+7. una automatización no puede aprobar el cierre;
+8. una regla automática puede bloquear el cierre cuando falte un prerrequisito, pero no fabricar el allow empresarial;
+9. la aprobación final consume la evidencia de los dominios sin reemplazar sus validaciones;
+10. una denegación de cierre conserva razones y siguiente condición verificable.
+
+---
+
+#### 22. Recuperación total y cierre
+
+La recuperación total y el cierre se relacionan pero no son el mismo acto.
+
+Puede existir:
+
+- proceso funcionalmente recuperado mientras el incidente sigue abierto por otro proceso;
+- todos los procesos recuperados mientras continúa conciliación;
+- `DESACTIVADO` mientras persisten pendientes identificados compatibles con autoridad ordinaria;
+- recuperación total aprobada antes del cierre documental final;
+- incidente cerrado con revisión posterior todavía abierta.
+
+No puede existir cierre cuando la recuperación total necesaria para el alcance sigue sin autoridad o evidencia suficiente.
+
+---
+
+#### 23. Concentración de funciones en organización pequeña
+
+La organización puede concentrar funciones sin ocultar la segregación lógica.
+
+Cuando una persona ejerza más de una función deberá conservarse:
+
+- identidad de cada función ejercida;
+- orden temporal de los actos;
+- alcance de cada acto;
+- autoridad utilizada;
+- conflicto potencial;
+- razón por la que la concentración fue necesaria;
+- control compensatorio aplicado;
+- revisor o aprobador independiente cuando la decisión sea crítica.
+
+Reglas mínimas:
+
+1. una persona puede ejecutar y realizar una comprobación técnica inicial de bajo riesgo si el contrato lo permite;
+2. esa concentración no sustituye validación funcional de un proceso ajeno;
+3. la persona que opera la contingencia no aprueba por sí sola recuperación total o cierre;
+4. el beneficiario de una excepción no aprueba la misma excepción crítica;
+5. el responsable de una acción de mejora no declara unilateralmente su eficacia cuando el método exige independencia;
+6. cuando no exista separación suficiente para una decisión crítica, la decisión permanece bloqueada y escala a la autoridad aplicable;
+7. no se crean aprobadores ficticios para simular separación.
+
+---
+
+#### 24. Revisión posterior como expediente separado
+
+La revisión posterior consume la historia del incidente o ejercicio, pero no la reescribe.
+
+Fronteras obligatorias:
+
+```text
+INCIDENTE CERRADO
+≠
+REVISION POSTERIOR CONCLUIDA
+```
+
+```text
+CAUSA PROPUESTA
+≠
+CAUSA CONFIRMADA
+```
+
+```text
+LECCION IDENTIFICADA
+≠
+ACCION IMPLEMENTADA
+```
+
+```text
+ACCION IMPLEMENTADA
+≠
+ACCION EFICAZ
+```
+
+La revisión utiliza los estados ya definidos por `CONT-DOM-015`:
+
+- `PENDIENTE_DE_REVISION`;
+- `EN_REVISION`;
+- `BLOQUEADA_POR_EVIDENCIA`;
+- `REVISION_CONCLUIDA_SIN_ACCIONES`;
+- `REVISION_CONCLUIDA_CON_ACCIONES`;
+- `CERRADA_CON_RIESGO_RESIDUAL`.
+
+Estos estados no sustituyen `DECLARADO`, `ESTABILIZADO`, `DESACTIVADO` o `CERRADO` del incidente.
+
+---
+
+#### 25. Autoridad y segregación de la revisión posterior
+
+La revisión debe incorporar las funciones que aporten hechos o validen materias de su dominio, sin transferirles autoridad universal.
+
+Pueden participar, según el caso:
+
+- `RESPONSABLE_DE_CONTINUIDAD`;
+- `RESPONSABLE_DEL_PROCESO`;
+- `COORDINACION_DE_OPERACIONES`;
+- `RESPONSABLE_TECNOLOGICO`;
+- `RESPONSABLE_DE_RIESGO_EMPRESARIAL`;
+- funciones de SST, seguridad, calidad, inocuidad, información, datos o finanzas aplicables;
+- custodios de evidencia;
+- proveedores como aportantes de hechos dentro de su alcance.
+
+Reglas:
+
+1. quien ejecutó una acción puede explicar hechos y decisiones;
+2. aportar hechos no concede autoridad para fijar unilateralmente causa;
+3. la persona investigada o responsable de una decisión no controla por sí sola la evidencia;
+4. una causa material debe distinguir hechos, hipótesis, contribuyentes y desconocidos;
+5. el cierre de la revisión requiere que hallazgos y acciones tengan estado y propietario coherentes;
+6. una revisión puede concluir con riesgo residual solo cuando ese riesgo tiene autoridad y tratamiento explícitos;
+7. la revisión no se usa como proceso disciplinario implícito;
+8. la revisión no reabre el incidente salvo que se descubra un efecto operacional todavía no resuelto que realmente invalide el cierre.
+
+---
+
+#### 26. Reapertura y descubrimiento posterior
+
+Si después de `CERRADO` aparece evidencia de que existía un efecto operacional material no resuelto al momento del cierre:
+
+1. se conserva el cierre histórico original y su evidencia;
+2. se registra el nuevo hecho y el momento en que fue conocido;
+3. se evalúa si corresponde reabrir el expediente, crear un incidente relacionado o activar otro proceso según la naturaleza real del hecho;
+4. no se reescribe retrospectivamente el balance para aparentar que el efecto siempre estuvo resuelto;
+5. la autoridad aplicable decide la transición conforme al estado y severidad actuales;
+6. la revisión posterior conserva la relación con el hallazgo;
+7. una corrección de datos posterior preserva el antes, después, actor, razón y evidencia.
+
+La tarea no inventa una transición física de base de datos; fija la semántica que deberá materializarse en la fase propietaria.
+
+---
+
+#### 27. Acciones posteriores y verificación de eficacia
+
+Las acciones posteriores conservan la cadena de `CONT-DOM-015`:
+
+```text
+HECHO
+→ OBSERVACION
+→ HALLAZGO
+→ LECCION
+→ ACCION
+→ IMPLEMENTACION
+→ EFICACIA
+→ ACTUALIZACION
+```
+
+La segregación mínima es:
+
+| Etapa                     | Función principal                               | Regla                                               |
+| ------------------------- | ----------------------------------------------- | --------------------------------------------------- |
+| identificar hallazgo      | revisor o dominio competente                    | no se convierte automáticamente en causa confirmada |
+| definir acción            | propietario de la brecha con gobierno aplicable | debe tener condición de salida y método de eficacia |
+| implementar acción        | ejecutor asignado                               | implementar no certifica eficacia                   |
+| verificar eficacia        | verificador competente o propietario autorizado | usa evidencia posterior y método aprobado           |
+| aceptar riesgo residual   | autoridad de riesgo aplicable                   | no puede ser autoaceptado por el ejecutor           |
+| actualizar plan o runbook | propietario documental/técnico                  | conserva versión anterior y trazabilidad            |
+
+Cuando el mismo propietario implemente y mida una acción de bajo riesgo, la concentración queda registrada. Para una acción material que afecte seguridad, autorización, integridad, disponibilidad crítica o control financiero, la verificación no puede descansar únicamente en la declaración del ejecutor.
+
+---
+
+#### 28. Ejercicios y simulaciones
+
+En ejercicios se conserva la misma separación lógica, pero sin convertir autoridad simulada en autoridad real.
+
+Reglas:
+
+- un actor puede representar una función dentro del escenario sin recibir permisos productivos;
+- el ejecutor de una restauración de prueba no aprueba su propio resultado empresarial;
+- la validación funcional de ejercicio debe provenir del propietario del proceso o función autorizada para la prueba;
+- la conciliación del escenario debe cubrir los pendientes declarados;
+- quien diseña el escenario puede observar, pero no altera los resultados para obtener un aprobado;
+- una prueba abortada conserva el estado real y no puede cerrarse como exitosa;
+- el cierre del ejercicio y la revisión posterior son distintos;
+- una simulación satisfactoria no crea readiness si falta evidencia vigente exigida por el programa;
+- un incidente real surgido durante el ejercicio se separa del escenario y entra por `VPROC-0062` real.
+
+---
+
+#### 29. Proveedores y terceros
+
+Un proveedor puede:
+
+- ejecutar una acción técnica autorizada;
+- informar health o ETA de su propio servicio;
+- aportar receipt o evidencia;
+- confirmar cumplimiento de su contrato;
+- participar en una revisión como fuente de hechos.
+
+No puede:
+
+- validar MBCO de Vento;
+- declarar recuperado un proceso empresarial;
+- resolver por sí solo una conciliación de Vento;
+- aprobar riesgo residual interno;
+- aprobar recuperación total;
+- aprobar cierre;
+- declarar eficaz una acción interna únicamente porque su servicio quedó estable.
+
+La aceptación de resultados externos permanece con el propietario interno aplicable.
+
+---
+
+#### 30. Automatización y agentes
+
+Automatizaciones, reglas, jobs, servicios o agentes pueden:
+
+- correlacionar registros;
+- recuperar receipts;
+- comparar versiones;
+- detectar duplicados;
+- aplicar una regla determinista previamente autorizada;
+- calcular balances;
+- bloquear una transición inválida;
+- preparar evidencia;
+- recordar pendientes;
+- proponer una conclusión.
+
+No pueden por sí solos:
+
+- eliminar un conflicto material no determinista;
+- aceptar una excepción empresarial;
+- validar MBCO sin evidencia funcional;
+- declarar recuperación total;
+- aprobar cierre;
+- aceptar riesgo residual;
+- declarar eficacia de una acción cuya evaluación requiere juicio o autoridad humana.
+
+Toda automatización conserva principal técnico, versión, reglas, entradas, decisión y resultado suficientes para auditoría.
+
+---
+
+#### 31. Consistencia entre superficies
+
+La misma semántica de segregación deberá aplicarse cuando una decisión se origine mediante:
+
+- interfaz;
+- Server Action;
+- Route Handler;
+- API;
+- RPC;
+- RLS o Data API;
+- Edge Function;
+- job;
+- webhook;
+- Realtime;
+- dispositivo compartido;
+- operación offline reincorporada;
+- herramienta administrativa;
+- integración externa.
+
+Ninguna superficie puede omitir la autoridad de cierre o convertir un estado visible en un permiso.
+
+---
+
+#### 32. Evidencia mínima de una transición protegida
+
+Para ejecución, validación, reincorporación, conciliación, recuperación total, cierre y revisión deberá conservarse, cuando corresponda:
+
+- expediente y correlación;
+- acción o transición;
+- estado anterior y posterior;
+- actor humano efectivo;
+- principal técnico;
+- función ejercida;
+- sustitución vigente;
+- permiso o autoridad relevante;
+- alcance;
+- recurso o proceso;
+- severidad;
+- versiones contractuales;
+- evidencia utilizada;
+- receipts o referencias;
+- conflictos y excepciones;
+- decisión;
+- razones;
+- aprobador cuando aplique;
+- concentración de funciones detectada;
+- control compensatorio;
+- timestamp;
+- pendientes y propietarios resultantes.
+
+La evidencia no contiene secretos completos ni se usa para otorgar autoridad retroactiva.
+
+---
+
+#### 33. Denegaciones obligatorias
+
+Una transición deberá quedar denegada o bloqueada cuando:
+
+- falta autoridad efectiva;
+- el estado vigente no permite la transición;
+- el actor intenta ampliar el alcance por su función anterior;
+- el ejecutor intenta aprobar su propia decisión crítica;
+- falta validación funcional obligatoria;
+- se intenta tratar un health técnico como recuperación empresarial;
+- existe `RESULT_UNKNOWN` material abierto;
+- existe `CONFLICT` material abierto;
+- existe `QUARANTINED` sin decisión;
+- existe `RECONCILIATION_REQUIRED` abierto;
+- existe evidencia obligatoria faltante;
+- queda un efecto downstream material sin tratamiento;
+- queda un pendiente material sin propietario;
+- se intenta convertir `DESACTIVADO` en `CERRADO` automáticamente;
+- una simulación intenta producir autoridad real;
+- un proveedor intenta aprobar un resultado empresarial;
+- una automatización intenta autoaprobar una excepción;
+- la delegación aplicable está vencida o no puede resolverse;
+- una revisión posterior intenta reescribir historia para satisfacer el cierre.
+
+La denegación conserva razones y siguiente condición verificable; no obliga a improvisar un bypass.
+
+---
+
+#### 34. Estados documentales y de evidencia
+
+| Materia                                | Estado después de esta tarea  | Condición de salida física                                          |
+| -------------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| contrato de segregación del ciclo      | `ESPECIFICADO`                | implementación posterior en evaluadores y superficies propietarias  |
+| separación ejecución / validación      | `ESPECIFICADO`                | enforcement y pruebas en paquetes autorizados                       |
+| validación técnica                     | `ESPECIFICADO`                | runbooks y pruebas reales según `CONT-DOM-012` y paquetes técnicos  |
+| validación funcional                   | `ESPECIFICADO`                | superficies y permisos de propietarios materializados y ejercitados |
+| autoridad de reincorporación           | `ESPECIFICADO`                | contratos idempotentes de dominio y `CONT-INT-004` implementados    |
+| resolución de conflictos               | `ESPECIFICADO`                | comandos y experiencia de revisión materializados                   |
+| conciliación por dominio               | `ESPECIFICADO`                | evidencia real de convergencia en paquetes propietarios             |
+| conciliación transversal               | `ESPECIFICADO`                | `CONT-INT-004` y contratos consumidores implementados               |
+| recuperación total                     | `ESPECIFICADO`                | validaciones reales y aprobación autoritativa demostrable           |
+| autoridad de cierre                    | `ESPECIFICADO`                | decisión implementada y auditada en `VPROC-0062`                    |
+| cierre real por esta tarea             | `NO_EJECUTADO_POR_ESTA_TAREA` | incidente real autorizado y condiciones satisfechas                 |
+| revisión posterior real por esta tarea | `NO_EJECUTADA_POR_ESTA_TAREA` | incidente o ejercicio real con expediente de revisión               |
+| verificación real de eficacia          | `PENDIENTE_DE_EVIDENCIA`      | acción implementada y método de eficacia ejecutado                  |
+| readiness                              | `PENDIENTE_DE_EVIDENCIA`      | programa de ejercicios y evidencia vigente aplicable                |
+| implementación física                  | `PENDIENTE_DE_EVIDENCIA`      | fase y paquete autorizados                                          |
+
+No se interpreta `ESPECIFICADO` como `IMPLEMENTADO` ni `PENDIENTE_DE_EVIDENCIA` como fallo de diseño.
+
+---
+
+#### 35. Tratamiento de brechas y decisiones heredadas
+
+| Materia heredada                                                        | Tratamiento de esta tarea                                                                                                       | Estado documental                                                                      |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `H-CAP-SCOPE-018-020` — cierre con trabajos o conciliaciones pendientes | se materializa autoridad de cierre, balance obligatorio, bloqueos, aprobación final y prohibición de ocultar pendientes         | `ESPECIFICADO`; enforcement físico pendiente                                           |
+| `H-CAP-SCOPE-018-035` — restauración técnica sin conciliación operativa | se exige validación funcional y conciliación antes de recuperación total o cierre cuando el escenario afecta estado empresarial | `ESPECIFICADO`; prueba integrada permanece con propietarios de ejercicio e integración |
+| separación reservada por `CONT-DOM-010`                                 | se define quién ejecuta, valida, reincorpora, concilia, propone y aprueba                                                       | `ESPECIFICADO`                                                                         |
+| separación reservada por `CONT-DOM-014`                                 | se aplica el mismo modelo a ejercicios sin autoridad productiva implícita                                                       | `ESPECIFICADO`                                                                         |
+| separación reservada por `CONT-DOM-015`                                 | cierre, revisión, implementación de acciones y eficacia permanecen actos distintos                                              | `ESPECIFICADO`                                                                         |
+
+`H-CAP-SCOPE-018-036` y `H-CAP-SCOPE-018-037` conservan sus propietarios de aprendizaje y mantenimiento. Esta tarea no reasigna esas brechas.
+
+---
+
+#### 36. Handoffs obligatorios
+
+| Materia posterior                                                         | Propietario                                    | Condición de salida                                              |
+| ------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
+| inicio ejecutivo, estado, impacto, prioridades, responsables y decisiones | `CONT-UX-001`                                  | antes de implementar la superficie ejecutiva de continuidad      |
+| centro de mando y línea de tiempo                                         | `CONT-UX-002`                                  | antes de implementar operación visual del incidente              |
+| runbooks y checklists de ejecución                                        | `CONT-UX-003`                                  | antes de implementar experiencia guiada de recuperación          |
+| captura y reincorporación humana                                          | `CONT-UX-004`                                  | antes de implementar revisión de trabajo contingente             |
+| respaldo, restore, failover y pendientes                                  | `CONT-UX-005`                                  | antes de implementar seguimiento visual de recuperación          |
+| comunicación de crisis                                                    | `CONT-UX-006`                                  | antes de implementar plantillas y canales                        |
+| ejercicios, revisión posterior y readiness                                | `CONT-UX-007`                                  | antes de implementar experiencia de ejercicios y acciones        |
+| health, degradación e incidente entre aplicaciones                        | `CONT-INT-001` y `CONT-INT-002`                | antes de automatizar propagación de estado                       |
+| dependencias externas                                                     | `CONT-INT-003`                                 | antes de automatizar participación de proveedores                |
+| replay, reincorporación, idempotencia, conciliación y retorno normal      | `CONT-INT-004`                                 | antes de materializar retorno productivo de trabajo contingente  |
+| permisos, evaluadores, contratos y superficies físicas                    | tareas AUTH/SHELL y paquetes E5 propietarios   | antes de implementar enforcement de las decisiones de esta tarea |
+| certificación y evidencia operacional                                     | `CONT-DOM-014`, BLOQUE U y paquetes aplicables | antes de declarar readiness o eficacia operacional               |
+
+Ninguna materia sustantiva identificada queda sin propietario y condición de salida.
+
+---
+
+#### 37. Cobertura vigente de prueba
+
+La conducta protegida por esta tarea ya dispone de requisitos vigentes:
+
+- `TREQ-CONT-002` exige autoridad explícita y bitácora para activación y cierre del incidente;
+- `TREQ-CONT-004` exige restauración demostrable, integridad, compatibilidad y comparación con objetivos;
+- `TREQ-CONT-005` exige reincorporación idempotente, detección de duplicados y conflictos, conciliación de efectos y cierre sin pendientes sin propietario;
+- `TREQ-CONT-006` exige ejercicios, revisión posterior, acciones con propietario, eficacia y actualización del plan;
+- `TREQ-AUTH-001` exige permiso, contexto y alcance canónicos para capacidades protegidas;
+- `TREQ-AUTH-004` exige la misma decisión y razones entre evaluadores;
+- `TREQ-AUTH-013` impide bypass de interfaz, API o RPC y exige validación autoritativa de mutaciones;
+- `TREQ-AUTH-015` exige evidencia correlacionable de actor, contexto, recurso, decisión, razones, versión y tiempo;
+- `TREQ-INTEGRATION-003` protege idempotencia, resultado recuperable, conflicto y recuperación manual controlada;
+- `TREQ-INTEGRATION-023` protege degradación, replay controlado, failover autorizado, retorno normal y trazabilidad entre incidente, pendientes y hechos recuperados.
+
+La tarea especializa esa cobertura en la segregación de autoridad del ciclo final de continuidad y no introduce una conducta verificable nueva fuera de esos requisitos.
+
+---
+
+#### 38. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la autoridad de cierre, la reincorporación controlada, la conciliación, la restauración demostrable, la revisión posterior, la evidencia correlacionable, la consistencia entre evaluadores y la protección contra bypass ya poseen cobertura vigente. Esta tarea materializa la separación funcional y la autoridad aplicables al tramo final de continuidad sin crear una obligación de prueba distinta.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 39. Criterios de aceptación
+
+1. La tarea conserva `CONT-AUTH-003` como anterior aprobada.
+2. La tarea reserva únicamente `CONT-UX-001` como siguiente.
+3. La tarea permanece exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No crea código, migraciones, DDL, DML, RLS, RPC, datos ni configuración.
+5. No ejecuta contingencia real.
+6. No ejecuta restore real.
+7. No ejecuta failover ni failback real.
+8. No reincorpora trabajo real.
+9. No concilia efectos productivos.
+10. No cierra un incidente real.
+11. No ejecuta una revisión posterior real.
+12. No declara readiness.
+13. No declara eficacia operativa inexistente.
+14. Ejecución y validación permanecen separadas.
+15. Validación técnica y validación funcional permanecen separadas.
+16. Restauración técnica no equivale a recuperación empresarial.
+17. Health técnico no equivale a recuperación empresarial.
+18. Receipt técnico no equivale a validación funcional.
+19. Sincronización no equivale a reincorporación aceptada.
+20. Replay no equivale a conciliación completa.
+21. Reincorporación no equivale a conciliación transversal.
+22. Recuperación total no equivale a cierre.
+23. Desactivación no equivale a cierre.
+24. Cierre no equivale a revisión posterior concluida.
+25. Acción implementada no equivale a acción eficaz.
+26. El ejecutor conserva actor y autoridad propios.
+27. El ejecutor no amplía alcance por haber participado en el incidente.
+28. El ejecutor no cambia MTPD por decisión propia.
+29. El ejecutor no cambia RTO por decisión propia.
+30. El ejecutor no cambia RPO por decisión propia.
+31. El ejecutor no cambia MBCO por decisión propia.
+32. El ejecutor no descarta evidencia adversa por conveniencia.
+33. El ejecutor no declara recuperación total por sí solo.
+34. El ejecutor no aprueba cierre por sí solo.
+35. El ejecutor no declara eficacia por sí solo cuando se exige independencia.
+36. La validación técnica confirma únicamente el alcance técnico definido.
+37. La validación técnica conserva versión e integridad cuando aplican.
+38. La validación técnica conserva fuente activa cuando aplica.
+39. La validación técnica evalúa split-brain cuando aplica.
+40. La validación técnica no sustituye MBCO.
+41. La validación técnica no sustituye conciliación.
+42. La validación técnica no declara readiness por sí sola.
+43. La validación funcional pertenece al propietario del resultado empresarial o función autorizada.
+44. La validación funcional consume datos y versión actuales.
+45. La validación funcional considera dependencias requeridas.
+46. La validación funcional considera trabajo contingente.
+47. La validación funcional considera restricciones del modo recuperado.
+48. La validación funcional puede ser negativa.
+49. La validación funcional puede ser condicionada.
+50. Una condición material abierta no se convierte silenciosamente en validación positiva.
+51. La recuperación total exige estado técnico suficiente.
+52. La recuperación total exige validaciones funcionales aplicables.
+53. La recuperación total exige fuente activa identificada cuando corresponda.
+54. La recuperación total exige dependencias compatibles con el alcance declarado.
+55. La recuperación total exige trabajo contingente identificado.
+56. La recuperación total no tolera `RESULT_UNKNOWN` material sin resolver.
+57. La recuperación total no tolera `CONFLICT` material abierto.
+58. La recuperación total no tolera `QUARANTINED` sin decisión.
+59. La recuperación total no tolera `RECONCILIATION_REQUIRED` material abierto.
+60. La recuperación total exige representación o disposición de efectos ocurridos.
+61. La recuperación total exige evidencia obligatoria suficiente.
+62. La recuperación total exige tratamiento de efectos downstream materiales.
+63. La recuperación total no se obtiene reduciendo artificialmente el alcance.
+64. `RESPONSABLE_DE_CONTINUIDAD` puede proponer recuperación total.
+65. Proponer recuperación total no equivale a aprobarla.
+66. `GERENCIA_GENERAL` o `GOBIERNO_Y_PROPIEDAD` conservan la aprobación conforme a severidad y delegación vigente.
+67. No se inventa una correspondencia nominal fija de severidad.
+68. La autoridad de recuperación total debe ser resoluble y vigente.
+69. La reincorporación revalida autoridad actual.
+70. La autoridad observada durante la falla no se reutiliza automáticamente.
+71. Una unidad contingente conserva identidad original.
+72. Una unidad contingente conserva folio cuando aplica.
+73. `local_operation_id` no se sustituye por el folio.
+74. `idempotency_key` se conserva cuando aplica.
+75. Una respuesta tardía se correlaciona antes de un nuevo efecto.
+76. `RESULT_UNKNOWN` no crea una segunda intención destructiva.
+77. Una operación expirada no se ejecuta automáticamente.
+78. Un efecto ocurrido durante vigencia no se borra por expiración posterior.
+79. Un conflicto material exige decisión propietaria cuando no existe regla determinista.
+80. El productor del registro puede aportar evidencia sin apropiarse de la resolución.
+81. Una corrección conserva el registro original.
+82. La automatización no autoaprueba un conflicto no determinista.
+83. La evidencia adversa no se elimina para liberar una cola.
+84. Cada dominio conserva propiedad de sus hechos.
+85. La conciliación transversal no crea una fuente de verdad nueva.
+86. Un dominio no certifica unilateralmente hechos de otro dominio.
+87. Un efecto externo sin receipt suficiente permanece desconocido cuando corresponda.
+88. Una conciliación parcial no se presenta como integral.
+89. Un conteo abierto solo disminuye con causa demostrable.
+90. El balance de cierre distingue registros contingentes.
+91. El balance distingue unidades admitidas.
+92. El balance distingue unidades aplicadas.
+93. El balance distingue unidades rechazadas.
+94. El balance distingue duplicados confirmados.
+95. El balance distingue operaciones expiradas con disposición.
+96. El balance distingue conflictos abiertos.
+97. El balance distingue resultados desconocidos abiertos.
+98. El balance distingue unidades en cuarentena.
+99. El balance distingue conciliaciones requeridas.
+100. El balance distingue evidencia obligatoria no enlazada.
+101. El balance distingue efectos downstream pendientes.
+102. El balance distingue pendientes sin propietario.
+103. El balance distingue pendientes transferidos a operación ordinaria.
+104. El balance distingue acciones de mejora posteriores.
+105. `CERRADO` se deniega con `RESULT_UNKNOWN` material abierto.
+106. `CERRADO` se deniega con `CONFLICT` material abierto.
+107. `CERRADO` se deniega con `QUARANTINED` sin decisión.
+108. `CERRADO` se deniega con `RECONCILIATION_REQUIRED` abierto.
+109. `CERRADO` se deniega con efecto ocurrido sin representación o disposición.
+110. `CERRADO` se deniega con evidencia obligatoria faltante sin excepción admisible.
+111. `CERRADO` se deniega con efecto downstream material pendiente.
+112. `CERRADO` se deniega con operación expirada sin disposición.
+113. `CERRADO` se deniega con trabajo contingente sin destino.
+114. `CERRADO` se deniega con pendiente material sin propietario.
+115. `CERRADO` se deniega sin validación funcional obligatoria.
+116. `CERRADO` se deniega con control protector incumplido.
+117. `CERRADO` se deniega cuando falta recuperación total requerida.
+118. `CERRADO` se deniega con autoridad final no resoluble.
+119. Un bloqueo no desaparece por desactivación.
+120. Un bloqueo no desaparece por restauración técnica.
+121. Un bloqueo no desaparece por terminar un turno.
+122. Un bloqueo no desaparece por cambiar de canal.
+123. Un pendiente posterior al cierre posee identidad propia.
+124. Un pendiente posterior al cierre conserva vínculo histórico.
+125. Un pendiente posterior al cierre posee propietario.
+126. Un pendiente posterior al cierre posee condición de salida.
+127. Un pendiente posterior al cierre no encubre conciliación operativa.
+128. Un pendiente posterior al cierre no encubre un control protector incumplido.
+129. Una acción de mejora no se usa para renombrar un pendiente operacional.
+130. La propuesta de cierre identifica incidente y alcance.
+131. La propuesta de cierre conserva severidad inicial, máxima y final.
+132. La propuesta de cierre conserva procesos y servicios afectados.
+133. La propuesta de cierre conserva validaciones relevantes.
+134. La propuesta de cierre conserva balance de reincorporación y conciliación.
+135. La propuesta de cierre conserva riesgos y excepciones.
+136. La propuesta de cierre conserva pendientes posteriores admisibles.
+137. La propuesta de cierre conserva requisito de revisión posterior.
+138. Preparar la propuesta no cambia el estado a `CERRADO`.
+139. El cierre exige aprobación obligatoria.
+140. La aprobación corresponde a autoridad ejecutiva efectiva según severidad y delegación.
+141. `RESPONSABLE_DE_CONTINUIDAD` no es aprobador final por dirigir el incidente.
+142. El técnico no es aprobador final por restaurar el servicio.
+143. El propietario funcional no es aprobador ejecutivo por validar su proceso.
+144. El proveedor no aprueba el cierre de Vento.
+145. La automatización no aprueba el cierre de Vento.
+146. Una regla automática puede bloquear, pero no fabricar el allow final.
+147. Una denegación de cierre conserva razones.
+148. Una denegación de cierre conserva condición verificable para reevaluación.
+149. Puede existir `DESACTIVADO` con pendientes identificados y asignados.
+150. Puede existir recuperación total antes del cierre documental.
+151. Puede existir cierre con revisión posterior abierta.
+152. No puede existir cierre con recuperación total requerida sin resolver.
+153. La concentración de funciones se registra explícitamente.
+154. La concentración conserva función ejercida por acto.
+155. La concentración conserva orden temporal.
+156. La concentración conserva conflicto potencial.
+157. La concentración conserva control compensatorio.
+158. La concentración no crea autoaprobación crítica.
+159. Una comprobación técnica inicial de bajo riesgo puede concentrarse cuando el contrato lo permite.
+160. Esa concentración no sustituye validación funcional independiente cuando corresponda.
+161. La persona que opera contingencia no aprueba por sí sola recuperación total.
+162. La persona que opera contingencia no aprueba por sí sola cierre.
+163. El beneficiario de una excepción no se autoaprueba la misma excepción crítica.
+164. Si no existe segregación mínima para una decisión crítica, la decisión queda bloqueada.
+165. No se crean aprobadores ficticios.
+166. La revisión posterior no reescribe la historia del incidente.
+167. Abrir revisión no cierra el incidente.
+168. Cerrar el incidente no concluye la revisión.
+169. Los estados de revisión no sustituyen estados del incidente.
+170. Quien ejecutó puede aportar hechos a la revisión.
+171. Aportar hechos no concede autoridad para fijar causa unilateralmente.
+172. El actor investigado no controla por sí solo la evidencia.
+173. Causa propuesta y causa confirmada permanecen separadas.
+174. Una revisión puede concluir con riesgo residual solo con autoridad y tratamiento explícitos.
+175. La revisión no funciona como proceso disciplinario implícito.
+176. Un hallazgo operacional posterior no reescribe el cierre histórico.
+177. Un hallazgo material posterior conserva momento de descubrimiento.
+178. Un efecto no resuelto descubierto después del cierre exige nueva decisión de gobierno.
+179. Una corrección posterior conserva antes, después, actor, razón y evidencia.
+180. Hallazgo, lección, acción, implementación, eficacia y actualización permanecen etapas distintas.
+181. Implementar una acción no prueba eficacia.
+182. La eficacia usa método y evidencia posteriores.
+183. El ejecutor no acepta su propio riesgo residual por conveniencia.
+184. Una acción material no depende únicamente de la declaración de su ejecutor para considerarse eficaz.
+185. Un ejercicio mantiene autoridad simulada separada de autoridad real.
+186. Ejecutar restauración de prueba no aprueba recuperación empresarial del ejercicio.
+187. Una prueba abortada conserva su resultado real.
+188. Cerrar ejercicio no concluye automáticamente la revisión posterior.
+189. Un incidente real surgido durante un ejercicio entra al ciclo real.
+190. Un proveedor puede aportar evidencia técnica sin validar MBCO.
+191. Un proveedor no declara proceso empresarial recuperado.
+192. Un proveedor no aprueba recuperación total.
+193. Un proveedor no aprueba cierre.
+194. Una automatización puede calcular balance sin aprobar cierre.
+195. Una automatización puede bloquear transición inválida.
+196. Una automatización no acepta riesgo residual empresarial.
+197. La misma semántica aplica a UI, servidor, API, RPC, RLS, Edge Functions, jobs, webhooks, Realtime y offline.
+198. Una superficie visible no sustituye evaluación autoritativa.
+199. Cada transición protegida conserva expediente y correlación.
+200. Cada transición protegida conserva actor y función.
+201. Cada transición protegida conserva alcance y recurso.
+202. Cada transición protegida conserva evidencia y razones.
+203. Cada transición protegida conserva versión contractual.
+204. Cada transición protegida conserva aprobador cuando aplique.
+205. Cada transición protegida conserva concentración y control compensatorio cuando existan.
+206. Cada transición protegida conserva pendientes resultantes.
+207. Una denegación queda auditable.
+208. La tarea trata documentalmente el cierre prematuro heredado de `H-CAP-SCOPE-018-020`.
+209. La tarea trata documentalmente la separación restauración/conciliación de `H-CAP-SCOPE-018-035`.
+210. `CONT-UX-001` permanece únicamente reservada.
+211. `CONT-UX-002` a `CONT-UX-007` permanecen posteriores.
+212. `CONT-INT-001` a `CONT-INT-004` permanecen posteriores.
+213. La implementación de enforcement permanece en tareas AUTH/SHELL y paquetes propietarios.
+214. La prueba de recuperación y cierre permanece en ejercicios y paquetes autorizados.
+215. La tarea no modifica criticidades BIA.
+216. La tarea no modifica perfiles `CONT-OBJ-*`.
+217. La tarea no modifica MTPD.
+218. La tarea no modifica RTO.
+219. La tarea no modifica RPO.
+220. La tarea no modifica MBCO.
+221. La tarea no modifica estrategias `CTG-*`.
+222. La tarea no cambia propietarios de proceso.
+223. La tarea no cambia estados de readiness.
+224. La tarea no crea roles base.
+225. La tarea no crea roles operativos.
+226. La tarea no crea permisos físicos.
+227. La tarea no crea cuentas o credenciales.
+228. La tarea no crea un segundo evaluador de autorización.
+229. La tarea crea cero requisitos de prueba.
+230. La tarea modifica cero requisitos de prueba.
+231. La tarea difiere cero requisitos de prueba.
+232. La tarea descarta cero requisitos de prueba.
+233. La tarea vuelve obsoletos cero requisitos de prueba.
+234. La ausencia de cambios de requisitos no genera un registro adicional.
+235. La tarea conserva exactamente una siguiente tarea reservada.
+
+---
+
+#### 40. Balance de cierre documental
+
+| Control                                      |                 Resultado |
+| -------------------------------------------- | ------------------------: |
+| etapa atendida                               |           `CONT-AUTH-004` |
+| naturaleza                                   |                documental |
+| acciones físicas ejecutadas                  |                     **0** |
+| incidentes reales cerrados                   |                     **0** |
+| recuperaciones totales declaradas            |                     **0** |
+| reincorporaciones productivas ejecutadas     |                     **0** |
+| conciliaciones productivas ejecutadas        |                     **0** |
+| revisiones posteriores reales creadas        |                     **0** |
+| verificaciones de eficacia reales ejecutadas |                     **0** |
+| cambios TREQ                                 |                     **0** |
+| siguiente tarea                              | `CONT-UX-001` — RESERVADA |
+
+---
+
+#### 41. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-AUTH-003 — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia`
+
+TAREA ACTUAL APROBADA
+
+`CONT-AUTH-004 — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones`
+

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **721** |
+| Aprobadas | **722** |
 | En propuesta | **0** |
-| No iniciadas | **873** |
+| No iniciadas | **872** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.23% (721/1594)** |
+| Porcentaje de completamiento | **45.29% (722/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-AUTH-003` — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia | ✅ APROBADA |
-| Tarea actual | `CONT-AUTH-004` — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-UX-001` — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones | ⬜ NO INICIADA |
+| Última aprobada | `CONT-AUTH-004` — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior | ✅ APROBADA |
+| Tarea actual | `CONT-UX-001` — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-UX-002` — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1610,7 +1610,7 @@
 | ✅ APROBADA | `CONT-AUTH-001` | Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-AUTH-002` | Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
 | ✅ APROBADA | `CONT-AUTH-003` | Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
-| ⬜ NO INICIADA | `CONT-AUTH-004` | Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
+| ✅ APROBADA | `CONT-AUTH-004` | Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/02_AUTORIZACION_DE_EMERGENCIA_Y_RECUPERACION.md` |
 | ⬜ NO INICIADA | `CONT-UX-001` | Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ⬜ NO INICIADA | `CONT-UX-002` | Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ⬜ NO INICIADA | `CONT-UX-003` | Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
