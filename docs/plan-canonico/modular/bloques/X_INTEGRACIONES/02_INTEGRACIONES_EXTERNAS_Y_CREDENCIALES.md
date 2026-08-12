@@ -13647,7 +13647,965 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-020 — Prohibir credenciales compartidas entre integraciones`
 
 
-### [ ] INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
+### ✅ INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-019 — Definir retiro de integración y revocación de credenciales` — APROBADA
+**Tarea siguiente:** `INT-WORK-001 — Definir contrato para que VISO publique el turno` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de segregación de credenciales entre integraciones externas, bindings, principals técnicos, superficies, ambientes, cuentas, direcciones y privilegios, incluida la detección y remediación de compartición, sin modificar secretos, proveedores, código, Supabase, datos ni configuración remota
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, secretos, credenciales, cuentas externas, configuración productiva, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir y materializar la prohibición de reutilizar una misma credencial material entre integraciones distintas de VENTO, preservando de forma explícita la separación entre capacidad empresarial, identidad técnica, referencia de credencial y valor secreto.
+
+La tarea fija la siguiente separación obligatoria:
+
+```text
+PermissionKey
+→ capacidad empresarial
+
+IntegrationPrincipal
+→ identidad técnica de la integración
+
+ExternalCredentialId
+→ referencia interna a una credencial
+
+API key, token o secret
+→ valor secreto almacenado fuera de tablas expuestas
+```
+
+La regla cardinal es:
+
+```text
+INTEGRACIÓN A ≠ INTEGRACIÓN B
+→ NO COMPARTEN EL MISMO MATERIAL DE CREDENCIAL
+```
+
+La tarea no exige que cada función, proceso o archivo de código disponga de una credencial distinta. Permite varios consumidores técnicos únicamente cuando pertenecen al mismo binding acreditado, operan bajo la misma frontera de confianza y están declarados expresamente como consumidores de esa credencial.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-CREDENTIAL-ISOLATION-CONTRACT-001`, contrato común de segregación, evidencia, detección y remediación de credenciales compartidas.
+2. `VENTO-EXTERNAL-CREDENTIAL-ISOLATION-MATRIX-001`, decisión materializada para las veintiuna identidades `EXT-SYS-*`.
+
+Balance:
+
+| Control                                                                                  | Resultado |
+| ---------------------------------------------------------------------------------------- | --------: |
+| Identidades heredadas esperadas                                                          |    **21** |
+| Identidades materializadas                                                               | **21/21** |
+| Identificadores `EXT-SYS-*` únicos                                                       |    **21** |
+| Identidades faltantes                                                                    |     **0** |
+| Identidades duplicadas                                                                   |     **0** |
+| `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`                                                   |     **1** |
+| `AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO`                                                |     **2** |
+| `AISLAMIENTO_SERVER_SIDE_OBLIGATORIO`                                                    |     **1** |
+| `CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`                                                |     **2** |
+| `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                                                       |     **2** |
+| `PUBLICABLE_RESTRINGIDA_POR_BINDING`                                                     |     **2** |
+| `AISLAMIENTO_MULTIMATERIAL_OBLIGATORIO`                                                  |     **1** |
+| `MODELO_SIN_BINDING_REMOTO`                                                              |     **1** |
+| `NO_APLICA_SIN_BINDING`                                                                  |     **7** |
+| `BLOQUEADA_SIN_BINDING`                                                                  |     **2** |
+| Comparticiones materiales entre integraciones confirmadas por las fuentes inspeccionadas |     **0** |
+| Exclusividades físicas certificadas mediante autoridad emisora o secret store            |     **0** |
+| Cambios físicos                                                                          |     **0** |
+| Requisitos de prueba creados o modificados                                               |     **0** |
+
+Reconciliación:
+
+```text
+1 + 2 + 1 + 2 + 2 + 2 + 1 + 1 + 7 + 2 = 21
+```
+
+Distribución de evidencia heredada preservada:
+
+```text
+3 BINDING_TECNICO_OBSERVADO
++ 6 BINDING_CONDICIONAL_OBSERVADO
++ 2 CONFIGURACION_OBSERVADA
++ 6 DOCUMENTADO_SIN_BINDING_ACREDITADO
++ 4 PROVEEDOR_NO_ACREDITADO
+= 21
+```
+
+Distribución de lifecycle heredada preservada:
+
+```text
+4 LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA
++ 2 LIFECYCLE_PUBLICABLE_ESPECIFICADO
++ 2 LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA
++ 2 SIN_CREDENCIAL_EXTERNA_OBSERVADA
++ 1 LIFECYCLE_CON_BRECHA_OBSERVADA
++ 1 MODELO_DOCUMENTADO_SIN_BINDING
++ 9 NO_APLICA_ACTUAL
+= 21
+```
+
+La ausencia de una compartición confirmada no constituye prueba de exclusividad física. Los nombres de variables, referencias documentales o consumidores observados no permiten afirmar que dos valores remotos sean distintos sin evidencia de la autoridad emisora, del secret store o de un mecanismo de equivalencia controlado que no revele el secreto.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- las veintiuna identidades externas aprobadas en el inventario canónico;
+- la separación entre actor humano, `PermissionKey`, `IntegrationPrincipal`, cuenta externa, `ExternalCredentialId`, endpoint y valor secreto;
+- la procedencia de credenciales por superficie y no por proveedor de forma genérica;
+- los mecanismos de autenticación observados y la obligación fail-closed;
+- el alcance mínimo y la prohibición de reutilizar credenciales de lectura para escritura;
+- la separación estricta de `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+- la custodia de secretos fuera de frontend, repositorio, tablas empresariales expuestas, logs y auditoría ordinaria;
+- el lifecycle independiente por superficie y ambiente, incluida rotación, expiración, revocación y retiro local;
+- los contratos versionados de entrada/salida, autenticidad, idempotencia, mapping, evidencia, retry, cuarentena, auditoría, contingencia y retiro aprobados en las tareas anteriores del mini-bloque;
+- la regla de `INT-EXT-019` que bloquea una revocación planificada ciega cuando una credencial tenga consumidores compartidos o no resueltos;
+- la regla de `INT-EXT-019` que prioriza revocación inmediata frente a continuidad cuando el material esté comprometido;
+- `SHELL-CON-017` como propietario posterior del contrato compartido de principal técnico;
+- `SHELL-CON-018` como propietario posterior de la referencia compartida de credencial externa sin incluir el secreto.
+
+Esta tarea no cambia el proveedor, la cuenta, el ambiente, el principal, el scope, el mecanismo de autenticación ni el lifecycle aprobados para ninguna identidad.
+
+---
+
+#### 4. Definición de binding de credencial
+
+Una credencial solo puede considerarse correctamente aislada cuando pertenece a una frontera explícita y verificable.
+
+La identidad conceptual del binding se determina por:
+
+```text
+external_system_id
++ provider_instance_or_account_ref cuando exista
++ environment
++ integration_principal
++ surface
++ direction
++ privilege_class
++ purpose
+→ credential_binding
+```
+
+Reglas:
+
+1. `external_system_id` delimita la integración externa canónica.
+2. Una cuenta, tenant, proyecto o merchant distinto constituye otra frontera cuando el proveedor los diferencie materialmente.
+3. `environment` siempre forma parte del binding; una credencial nunca cruza ambientes.
+4. `IntegrationPrincipal` identifica al consumidor técnico autorizado; una credencial no se convierte en identidad genérica de toda la organización.
+5. `surface` separa interfaces que tengan material o privilegios distintos, por ejemplo SDK público, webhook, API administrativa o firma.
+6. `direction` distingue entrada, salida y administración cuando la seguridad o el proveedor las diferencien.
+7. `privilege_class` impide reutilizar una credencial de lectura para escritura o una credencial operativa para administración.
+8. `purpose` impide que una credencial aprobada para una finalidad se convierta en acceso genérico a otro proceso.
+9. Si una dimensión no está acreditada, se conserva como evidencia pendiente y no se rellena por inferencia.
+10. El binding no transfiere autoridad empresarial al proveedor ni al principal técnico.
+
+---
+
+#### 5. `VENTO-EXTERNAL-CREDENTIAL-ISOLATION-CONTRACT-001`
+
+Toda referencia de credencial materializada deberá poder relacionar, como mínimo y sin contener el valor secreto:
+
+```text
+external_credential_id
+external_system_id
+environment
+provider_or_instance_ref
+external_account_or_tenant_ref cuando aplique
+integration_principal_ref
+surface
+direction
+privilege_class
+purpose
+credential_class
+issuer_or_revocation_authority_ref
+consumer_refs[]
+allowed_scope_ref
+custody_ref
+lifecycle_state
+predecessor_ref cuando aplique
+successor_ref cuando aplique
+isolation_evidence_ref
+sharing_state
+```
+
+El contrato no prescribe tabla, índice, formato de UUID, secret store o producto de gestión de credenciales.
+
+Invariantes:
+
+1. `ExternalCredentialId` es una referencia no sensible y no el secreto.
+2. El valor secreto permanece en la custodia autorizada y no se replica para facilitar el inventario.
+3. Una referencia de credencial no puede resolver silenciosamente a materiales diferentes según el consumidor.
+4. Una misma credencial material no puede estar asociada a dos bindings distintos.
+5. Un mismo binding puede tener un sucesor durante una rotación controlada sin convertir predecesor y sucesor en una credencial compartida entre integraciones.
+6. El solapamiento de rotación se limita al mismo binding y al periodo permitido por el proveedor.
+7. La revocación de un material no modifica contratos empresariales ni identidades canónicas.
+8. La evidencia de aislamiento no requiere revelar el valor secreto.
+
+---
+
+#### 6. Qué se considera credencial compartida prohibida
+
+Existe `SHARED_CREDENTIAL_DETECTED` cuando evidencia suficiente demuestra que el mismo material aceptado por la autoridad externa está siendo utilizado por más de un binding independiente.
+
+La compartición queda prohibida cuando el mismo material cruza cualquiera de estas fronteras:
+
+- dos `EXT-SYS-*` distintos;
+- dos ambientes distintos;
+- dos `IntegrationPrincipal` independientes;
+- dos cuentas, tenants, merchants, proyectos o instancias que requieran aislamiento propio;
+- una superficie de lectura y otra de escritura cuando el proveedor permita separar privilegios;
+- una superficie operativa y otra administrativa;
+- dos finalidades empresariales independientes;
+- dos trust boundaries que no deban poder suplantarse entre sí;
+- un adaptador externo y un cliente/frontend;
+- un proveedor externo y una credencial privilegiada interna de VENTO.
+
+También constituye compartición prohibida distribuir el mismo secreto a varios principals para evitar crear un contrato técnico único o para eludir una limitación de scopes del proveedor.
+
+---
+
+#### 7. Varios consumidores dentro del mismo binding
+
+La existencia de varios consumidores técnicos no equivale automáticamente a compartir una credencial entre integraciones.
+
+Varios componentes pueden consumir el mismo material únicamente cuando se cumplen simultáneamente estas condiciones:
+
+1. pertenecen al mismo `external_system_id`;
+2. pertenecen al mismo ambiente;
+3. operan bajo el mismo `IntegrationPrincipal` o bajo una única frontera técnica acreditada que los representa;
+4. usan la misma cuenta, tenant, proyecto o instancia externa cuando aplique;
+5. consumen la misma superficie y dirección de seguridad;
+6. requieren el mismo privilegio mínimo;
+7. cumplen la misma finalidad contractual;
+8. todos los consumidores están inventariados explícitamente;
+9. el proveedor emite el material para esa frontera y no ofrece una segregación necesaria que se esté omitiendo;
+10. la revocación y rotación pueden ejecutarse sobre la frontera completa sin afectar otra integración independiente.
+
+Si una de estas condiciones no se cumple, el consumidor necesita un binding y una credencial independientes o debe acceder a la capacidad mediante el único principal/adaptador autorizado sin recibir el secreto.
+
+---
+
+#### 8. Proveedor que solo ofrece una credencial de cuenta
+
+Cuando un proveedor no permita emitir credenciales independientes para consumidores que VENTO desea separar, no se distribuye el secreto de cuenta a múltiples principals.
+
+El contrato exige:
+
+```text
+UNA CREDENCIAL DE PROVEEDOR
+→ UN ÚNICO PRINCIPAL / ADAPTADOR CUSTODIO Y CONSUMIDOR
+→ CAPACIDADES INTERNAS EXPUESTAS MEDIANTE CONTRATOS VENTO AUTORIZADOS
+→ LOS DEMÁS CONSUMIDORES NO RECIBEN EL SECRETO
+```
+
+Reglas:
+
+1. la limitación del proveedor no justifica copiar el secreto a varias aplicaciones;
+2. el principal custodio no adquiere autoridad empresarial transversal;
+3. cada operación interna conserva autorización, ownership e idempotencia propias;
+4. el adaptador aplica allowlist y privilegio mínimo compatible con el proveedor;
+5. si ni siquiera esta concentración permite cumplir separación de funciones o riesgo aceptable, el binding permanece bloqueado hasta una solución acreditada;
+6. esta tarea no implementa el adaptador ni el secret store.
+
+---
+
+#### 9. Credenciales publicables o restringidas
+
+Una credencial diseñada para estar presente en cliente, como una API key publicable o DSN, no se convierte en secreto confidencial por esta tarea, pero conserva aislamiento de binding.
+
+Reglas:
+
+1. `PUBLIC_CREDENTIAL_RESTRICTED` no equivale a credencial universal reutilizable.
+2. La seguridad depende de restricciones del proveedor, ambiente, aplicación, dominio, bundle, APIs permitidas, cuota y controles server-side posteriores cuando apliquen.
+3. El mismo valor no se reutiliza entre integraciones distintas solo porque sea visible en cliente.
+4. La publicación del valor no concede autoridad empresarial.
+5. Una contraparte privada asociada mantiene un binding y lifecycle independientes.
+6. La evidencia de restricciones físicas permanece pendiente cuando la configuración remota del proveedor no ha sido inspeccionada.
+
+---
+
+#### 10. `service_role` y credenciales internas privilegiadas
+
+`service_role`, secret keys privilegiadas de Supabase y equivalentes internos de VENTO no son credenciales de un proveedor externo disponibles para los adaptadores.
+
+Reglas:
+
+1. ninguna integración externa recibe `service_role`;
+2. ninguna aplicación cliente recibe `service_role`;
+3. `service_role` no se usa como `IntegrationPrincipal` genérico;
+4. un adaptador externo conserva su propio principal técnico y su referencia de credencial externa;
+5. cualquier capacidad interna privilegiada se limita al contrato propietario necesario y no habilita escrituras transversales;
+6. compartir infraestructura Supabase no autoriza compartir una credencial privilegiada entre integraciones;
+7. logs y auditoría registran referencias y acciones, no el valor privilegiado.
+
+---
+
+#### 11. Separación por ambiente
+
+Se preservan exactamente los ambientes `DEVELOPMENT`, `STAGING` y `PRODUCTION`.
+
+Reglas:
+
+1. una referencia de credencial pertenece a un solo ambiente;
+2. un valor secreto no se reutiliza entre ambientes;
+3. el mismo nombre de variable en dos ambientes no prueba que el valor sea el mismo;
+4. nombres de variables diferentes no prueban que el material sea distinto;
+5. no existe fallback de producción a staging ni de staging a development;
+6. un mismo principal lógico desplegado en varios ambientes consume credenciales independientes;
+7. la evidencia de exclusividad debe poder demostrar la separación sin revelar los valores.
+
+---
+
+#### 12. Separación por dirección y privilegio
+
+Una credencial no se reutiliza solo porque el proveedor sea el mismo.
+
+Se exige separación cuando corresponda entre:
+
+```text
+INBOUND AUTHENTICITY
+≠ OUTBOUND API
+≠ CLIENT PUBLIC SDK
+≠ ADMINISTRATIVE API
+≠ SIGNING MATERIAL
+≠ RESOURCE TOKEN
+```
+
+Reglas:
+
+1. un secreto de webhook no se usa como API key outbound;
+2. una API key de cliente no se reutiliza como secreto server-side;
+3. una credencial read-only no se amplía a write por conveniencia;
+4. una credencial de administración no se utiliza para operaciones ordinarias si existe una opción menos privilegiada;
+5. una clave privada de firma no se usa como identificador o token de recurso;
+6. una credencial derivada de corta vida no se confunde con la raíz que la emite.
+
+---
+
+#### 13. Estados de compartición y evidencia
+
+Toda credencial o superficie materializada deberá poder terminar en uno de estos estados documentales:
+
+| Estado                                      | Significado                                                                                                    |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `ISOLATED_BY_BINDING`                       | existe evidencia suficiente de que el material pertenece exclusivamente a un binding acreditado                |
+| `EXCLUSIVITY_PENDING_EVIDENCE`              | no se ha demostrado compartición, pero tampoco existe evidencia remota suficiente para certificar exclusividad |
+| `SHARED_CREDENTIAL_DETECTED`                | existe evidencia suficiente de que el mismo material cruza bindings independientes                             |
+| `SHARED_CREDENTIAL_REMEDIATION_IN_PROGRESS` | la compartición fue detectada y existe migración controlada hacia credenciales independientes                  |
+| `NO_CREDENTIAL_APPLICABLE`                  | la superficie no consume credencial externa de cliente en el corte actual                                      |
+| `BLOCKED_NO_BINDING`                        | no existe binding o evidencia suficiente para definir la credencial y su aislamiento                           |
+
+Reglas:
+
+1. `EXCLUSIVITY_PENDING_EVIDENCE` no es incumplimiento demostrado ni conformidad certificada.
+2. `ISOLATED_BY_BINDING` requiere evidencia y no se declara por nombres de variables.
+3. `SHARED_CREDENTIAL_DETECTED` requiere demostrar equivalencia material o una misma referencia real de autoridad/custodia.
+4. El estado no incluye el valor secreto.
+5. La ausencia de acceso administrativo al proveedor mantiene la exclusividad como pendiente cuando no exista otra evidencia suficiente.
+
+---
+
+#### 14. Evidencia mínima de exclusividad
+
+Puede utilizarse como evidencia no sensible, según el proveedor y sin exigir todos los elementos simultáneamente:
+
+- identificador nativo de credencial emitido por el proveedor;
+- referencia opaca de entrada en el secret store;
+- referencia de versión o generación de credencial;
+- cuenta, tenant, merchant, proyecto o instancia a la que pertenece;
+- ambiente;
+- `IntegrationPrincipal` consumidor;
+- lista explícita de consumidores autorizados;
+- scope o restricciones observables;
+- historial de rotación/revocación;
+- evidencia de que el material anterior fue rechazado después de revocación;
+- comprobación controlada de equivalencia/no equivalencia que no registre, exporte ni persista el secreto.
+
+No se crea una huella del valor secreto en logs o documentos solo para demostrar aislamiento cuando esa huella pueda convertirse en material sensible o facilitar ataques.
+
+---
+
+#### 15. Detección de compartición
+
+Una implementación posterior deberá poder detectar al menos estas condiciones:
+
+1. un mismo `ExternalCredentialId` asociado a más de un binding;
+2. un mismo identificador nativo de credencial asociado a varios bindings incompatibles;
+3. una misma referencia de secret store resoluble por principals independientes sin justificación de binding único;
+4. una variable o alias de configuración que haga que integraciones independientes resuelvan al mismo material;
+5. una credencial de un ambiente consumida en otro;
+6. una credencial de lectura usada en una ruta de escritura;
+7. una credencial administrativa utilizada por una superficie ordinaria;
+8. una credencial externa expuesta a frontend o aplicación que no pertenece al binding;
+9. un material revocado conservado como fallback para otra integración;
+10. un consumidor nuevo añadido sin actualizar el inventario del binding.
+
+Un nombre de variable igual o distinto constituye una señal de revisión, no evidencia concluyente por sí solo.
+
+---
+
+#### 16. Tratamiento de una compartición detectada
+
+Una compartición confirmada se trata así:
+
+```text
+SHARED_CREDENTIAL_DETECTED
+→ BLOQUEAR NUEVOS CONSUMIDORES Y AMPLIACIÓN DE SCOPE
+→ INVENTARIAR TODOS LOS CONSUMIDORES REALES
+→ FIJAR BINDINGS INDEPENDIENTES
+→ EMITIR SUCESORES INDEPENDIENTES POR BINDING
+→ MIGRAR UN BINDING A LA VEZ
+→ ACREDITAR FUNCIONAMIENTO DEL SUCESOR
+→ REVOCAR EL PREDECESOR COMPARTIDO EN LA AUTORIDAD QUE LO ACEPTA
+→ ACREDITAR RECHAZO DEL PREDECESOR
+→ RETIRAR COPIAS Y REFERENCIAS OBSOLETAS
+→ CERRAR SOLO CUANDO NO EXISTA CONSUMIDOR HUÉRFANO
+```
+
+Reglas:
+
+1. durante una remediación planificada no se revoca ciegamente el material compartido antes de identificar a todos sus consumidores;
+2. la migración no amplía scopes ni cambia la finalidad original;
+3. cada sucesor pertenece a un solo binding;
+4. un consumidor no migrado mantiene la remediación abierta;
+5. la remediación no modifica contratos empresariales para acomodar la credencial;
+6. no se reutiliza un sucesor entre bindings para acelerar la migración;
+7. no se conserva el predecesor indefinidamente como fallback;
+8. cualquier resultado desconocido producido durante la transición conserva su conciliación propia.
+
+---
+
+#### 17. Compromiso de una credencial compartida
+
+Cuando el material compartido esté comprometido o exista sospecha razonable que invalide su confianza, prevalece la regla de seguridad de `INT-EXT-019`.
+
+```text
+CREDENCIAL COMPARTIDA COMPROMETIDA
+→ REVOCACIÓN PRIORITARIA
+→ NO MANTENERLA ACTIVA PARA COMPLETAR MIGRACIÓN
+→ IDENTIFICAR INTEGRACIONES AFECTADAS
+→ ACTIVAR CONTINUIDAD / RECUPERACIÓN SEGÚN CONTRATOS VIGENTES
+→ EMITIR MATERIAL INDEPENDIENTE POR BINDING
+→ RECONCILIAR OPERACIONES AFECTADAS
+```
+
+La disponibilidad no justifica mantener vigente un material comprometido.
+
+---
+
+#### 18. Relación con rotación, revocación y retiro
+
+La segregación y el lifecycle se coordinan así:
+
+1. una rotación ordinaria ocurre dentro del mismo binding;
+2. un predecesor y un sucesor en solapamiento controlado no son dos integraciones compartiendo una credencial;
+3. una credencial compartida entre bindings no puede cerrarse como `RETIRADA` mientras exista un consumidor autorizado que dependa de ella;
+4. el retiro planificado de una integración no revoca material que todavía pertenece a otro binding sin resolver primero la compartición;
+5. la remediación emite sucesores separados y luego revoca el material compartido;
+6. una credencial comprometida puede revocarse antes de completar migración y continuidad;
+7. una credencial revocada no puede usarse como fallback de otra integración;
+8. retirar una credencial no elimina evidencia histórica, receipts, mappings, auditoría ni hechos empresariales.
+
+---
+
+#### 19. Supabase — `EXT-SYS-001`
+
+Clasificación primaria:
+
+`GOBERNADA_POR_CONTRATO_INTERNO_VENTO`
+
+Reglas:
+
+1. Supabase no recibe una credencial externa universal para todas las integraciones.
+2. La clave publicable de cliente, la sesión del usuario y cualquier credencial privilegiada server-side conservan contratos distintos.
+3. Ninguna integración externa recibe `service_role`.
+4. Un adaptador externo alojado en Supabase conserva el `IntegrationPrincipal` y `ExternalCredentialId` del proveedor correspondiente.
+5. Compartir proyecto, runtime o base de datos no autoriza compartir material externo entre adaptadores.
+6. La exclusividad de cada secreto de proveedor se evalúa bajo su `EXT-SYS-*`, no bajo `EXT-SYS-001` de forma global.
+
+Estado documental:
+
+`SUPABASE_CREDENTIAL_ISOLATION_STATE = SEGUN_CONTRATO_PROPIETARIO`
+
+---
+
+#### 20. Wompi — `EXT-SYS-002`
+
+Clasificación primaria:
+
+`AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO`
+
+Se preservan por separado:
+
+- public key;
+- secreto de integridad;
+- secreto de eventos/webhook;
+- ambiente y cuenta/merchant cuando estén acreditados.
+
+Reglas:
+
+1. la public key no sustituye los secretos server-side;
+2. el secreto de integridad no se reutiliza como secreto de webhook salvo que el proveedor defina explícitamente el mismo material para la misma frontera y esa relación esté acreditada;
+3. sandbox/test y producción conservan material independiente;
+4. ninguna de estas credenciales se reutiliza para RevenueCat, Resend u otra identidad externa;
+5. aliases de variables del mismo webhook no prueban que existan dos credenciales ni que el material sea exclusivo;
+6. la evidencia física actual no permite certificar exclusividad de los valores remotos.
+
+Estado:
+
+`WOMPI_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE`
+
+---
+
+#### 21. RevenueCat — `EXT-SYS-003`
+
+Clasificación primaria:
+
+`AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO`
+
+Se separan:
+
+- API key publicable del SDK Apple;
+- API key publicable del SDK Google;
+- secreto server-side del webhook;
+- ambiente y proyecto/cuenta cuando estén acreditados.
+
+Reglas:
+
+1. una API key de SDK no se reutiliza como secreto de webhook;
+2. Apple y Google conservan las credenciales que el proveedor asigne a sus superficies correspondientes;
+3. el secreto del webhook pertenece al binding server-side y no se distribuye a clientes;
+4. una integración distinta no consume estas credenciales por compartir el repositorio o la cuenta VENTO;
+5. la exclusividad física de los valores remotos permanece pendiente de evidencia de proveedor/custodia.
+
+Estado:
+
+`REVENUECAT_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE`
+
+---
+
+#### 22. Resend — `EXT-SYS-004`
+
+Clasificación primaria:
+
+`AISLAMIENTO_SERVER_SIDE_OBLIGATORIO`
+
+`RESEND_API_KEY` representa material server-side de la integración de correo observada.
+
+Reglas:
+
+1. el material pertenece al principal y ambiente exactos del binding de Resend;
+2. no se reutiliza para otros proveedores ni para una integración de correo corporativo no acreditada;
+3. varios flujos de correo solo pueden usar el mismo material si pertenecen al mismo binding y todos son consumidores explícitos;
+4. si dos principales o finalidades independientes necesitan Resend, deben segregarse mediante bindings/credenciales independientes o un único adaptador autorizado que no distribuya el secreto;
+5. el nombre de la variable no acredita exclusividad del valor remoto.
+
+Estado:
+
+`RESEND_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE`
+
+---
+
+#### 23. Sentry y Google Maps — `EXT-SYS-007` y `EXT-SYS-008`
+
+Clasificación primaria:
+
+`PUBLICABLE_RESTRINGIDA_POR_BINDING`
+
+Para Sentry se conserva el DSN publicable/restringido. Para Google Maps se conserva la API key cliente publicable/restringida.
+
+Reglas:
+
+1. ser publicable no convierte el valor en credencial organizacional universal;
+2. cada binding conserva ambiente, aplicación/superficie, finalidad y restricciones del proveedor;
+3. no se amplían APIs, dominios, bundles, proyectos o cuotas para reutilizar una credencial en otra integración;
+4. cualquier token administrativo futuro tendrá un binding server-side independiente;
+5. la configuración remota de restricciones no se declara validada sin evidencia administrativa.
+
+Estados:
+
+```text
+SENTRY_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE
+GOOGLE_MAPS_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE
+```
+
+---
+
+#### 24. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Clasificación primaria:
+
+`AISLAMIENTO_MULTIMATERIAL_OBLIGATORIO`
+
+Se mantienen separados:
+
+- certificado y private key de firma del pase;
+- password del paquete cuando aplique;
+- clave P8 de APNs;
+- JWT APNs derivado;
+- identificadores públicos asociados;
+- token opaco por pase;
+- push token de dispositivo como destino técnico, no como credencial de VENTO ante Apple.
+
+Reglas:
+
+1. la P8 no se reutiliza como token de recurso;
+2. la expiración del JWT derivado no equivale a revocación de la P8;
+3. el token por pase conserva lifecycle por recurso y no se convierte en secreto global de integración;
+4. certificados, P12/P8 y tokens de recurso no se fusionan en una sola referencia genérica;
+5. la brecha de custodia heredada del token por pase permanece sin ser ocultada por esta tarea;
+6. la exclusividad física de P12/P8/password y demás material remoto/custodiado no se certifica sin evidencia del secret store y autoridad correspondiente.
+
+Estado:
+
+`APPLE_WALLET_CREDENTIAL_SHARING_STATE = EXCLUSIVITY_PENDING_EVIDENCE_WITH_INHERITED_CUSTODY_GAP`
+
+---
+
+#### 25. Plataformas sin credencial administrativa acreditada — `EXT-SYS-005` y `EXT-SYS-010`
+
+`Expo / EAS Update` y `Vercel` conservan configuración de plataforma observada, pero no una credencial administrativa actual acreditada sobre la cual afirmar compartición o aislamiento físico.
+
+Clasificación:
+
+`CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`
+
+Reglas:
+
+1. no se inventa token administrativo;
+2. una futura credencial debe tener binding, principal, ambiente, scope, custodia y lifecycle antes de activarse;
+3. no se reutiliza automáticamente un token de CI, proyecto o cuenta entre integraciones por compartir pipeline o repositorio.
+
+---
+
+#### 26. Superficies sin credencial externa observada — `EXT-SYS-006` y `EXT-SYS-011`
+
+`Expo Push Service` y `Zebra BrowserPrint` no presentan una credencial externa de cliente acreditada en el corte actual.
+
+Clasificación:
+
+`SIN_CREDENCIAL_EXTERNA_OBSERVADA`
+
+Reglas:
+
+1. push token es destino, no credencial de VENTO ante Expo;
+2. UID/nombre/tipo de impresora son identificadores técnicos, no credenciales;
+3. no se crea una política de compartición sobre objetos que no son credenciales;
+4. cualquier autenticación futura del proveedor o bridge debe acreditar su binding antes de habilitarse.
+
+---
+
+#### 27. Google Wallet — `EXT-SYS-012`
+
+Clasificación:
+
+`MODELO_SIN_BINDING_REMOTO`
+
+Existe un modelo documental de cuenta de servicio y material asociado, pero no un binding remoto operativo acreditado.
+
+Reglas:
+
+1. la clave de cuenta de servicio futura será server-side y pertenecerá a un binding exacto;
+2. issuer y class no se convierten en credenciales;
+3. no se afirma compartición ni exclusividad de un material runtime no acreditado;
+4. activar el binding exige resolver aislamiento, custodia, principal, ambiente, scope, lifecycle y consumidores.
+
+---
+
+#### 28. Identidades sin binding y bindings bloqueados
+
+Permanecen `NO_APLICA_SIN_BINDING`:
+
+- `EXT-SYS-014` — Shopify / comercio electrónico;
+- `EXT-SYS-015` — Rappi / marketplace;
+- `EXT-SYS-016` — ManyChat / automatización conversacional;
+- `EXT-SYS-017` — WhatsApp;
+- `EXT-SYS-018` — Instagram / social;
+- `EXT-SYS-019` — Correo corporativo y alias funcionales;
+- `EXT-SYS-021` — Transporte externo.
+
+No existe una credencial runtime acreditada que pueda declararse aislada o compartida. No son pendientes ejecutables abiertos por esta tarea; cualquier incorporación futura deberá introducir de forma explícita su binding y satisfacer este contrato antes de activación.
+
+Permanecen `BLOQUEADA_SIN_BINDING`:
+
+- `EXT-SYS-013` — POS externo vigente, bajo `INT-POS-001`;
+- `EXT-SYS-020` — Telefonía / voz, bajo `TI-INT-003`.
+
+Sus tareas propietarias deberán acreditar proveedor, cuenta, interfaz, principal, credencial, ambiente, scope y consumidores antes de declarar aislamiento.
+
+---
+
+#### 29. `VENTO-EXTERNAL-CREDENTIAL-ISOLATION-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Clasificación primaria                    | Superficie de credencial                                                                                    | Estado de compartición/evidencia | Decisión materializada                                                                                                                                    |
+| ------------- | ---------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`    | credenciales internas por superficie propietaria; material externo se atribuye al proveedor correspondiente | `SEGUN_CONTRATO_PROPIETARIO`     | no existe credencial externa universal; `service_role` nunca se entrega a integraciones externas y cada adaptador conserva principal y credencial propios |
+| `EXT-SYS-002` | Wompi                                    | `AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO` | public key, integridad, eventos/webhook, ambiente y cuenta cuando aplique                                   | `EXCLUSIVITY_PENDING_EVIDENCE`   | separar superficies y ambientes; no reutilizar material en otra integración; nombres de variables no certifican exclusividad física                       |
+| `EXT-SYS-003` | RevenueCat                               | `AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO` | SDK Apple, SDK Google y webhook server-side                                                                 | `EXCLUSIVITY_PENDING_EVIDENCE`   | separar cliente y webhook, plataforma y ambiente; no distribuir el secreto server-side ni reutilizarlo en otra integración                                |
+| `EXT-SYS-004` | Resend                                   | `AISLAMIENTO_SERVER_SIDE_OBLIGATORIO`     | API key server-side de envío                                                                                | `EXCLUSIVITY_PENDING_EVIDENCE`   | un solo binding/principal por material; flujos adicionales solo como consumidores explícitos del mismo binding o mediante binding independiente           |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_SIN_CREDENCIAL_ACREDITADA` | credencial administrativa no acreditada                                                                     | `BLOCKED_NO_BINDING`             | no inventar token; cualquier material futuro queda aislado por proyecto, ambiente, principal, superficie y finalidad                                      |
+| `EXT-SYS-006` | Expo Push Service                        | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`        | push tokens como destinos; sin credencial de cliente observada                                              | `NO_CREDENTIAL_APPLICABLE`       | no tratar destino como credencial; autenticación futura debe instanciar este contrato                                                                     |
+| `EXT-SYS-007` | Sentry                                   | `PUBLICABLE_RESTRINGIDA_POR_BINDING`      | DSN publicable/restringido                                                                                  | `EXCLUSIVITY_PENDING_EVIDENCE`   | restringir por binding y ambiente; no usar el carácter publicable como autorización para compartir entre integraciones                                    |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `PUBLICABLE_RESTRINGIDA_POR_BINDING`      | API key cliente publicable/restringida                                                                      | `EXCLUSIVITY_PENDING_EVIDENCE`   | restringir por aplicación/superficie, ambiente y APIs; no ampliar restricciones para reutilizar la credencial en otro binding                             |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `AISLAMIENTO_MULTIMATERIAL_OBLIGATORIO`   | P12/private key/password, P8, JWT derivado, token por pase y referencias públicas                           | `EXCLUSIVITY_PENDING_EVIDENCE`   | lifecycles separados por material; no fusionar raíces, derivados ni tokens de recurso; conservar brecha de custodia heredada                              |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_SIN_CREDENCIAL_ACREDITADA` | credencial administrativa/deploy no acreditada                                                              | `BLOCKED_NO_BINDING`             | no inventar token; futura credencial se aísla por proyecto, ambiente, principal y finalidad                                                               |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`        | UID/nombre/tipo de dispositivo                                                                              | `NO_CREDENTIAL_APPLICABLE`       | identificadores de impresora no se reetiquetan como credenciales; autenticación futura debe acreditarse antes de uso                                      |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `MODELO_SIN_BINDING_REMOTO`               | modelo de cuenta de servicio sin binding operativo acreditado                                               | `BLOCKED_NO_BINDING`             | no declarar material runtime compartido o aislado; activación futura exige binding y aislamiento verificables                                             |
+| `EXT-SYS-013` | POS externo vigente                      | `BLOQUEADA_SIN_BINDING`                   | proveedor e interfaz no acreditados                                                                         | `BLOCKED_NO_BINDING`             | `INT-POS-001` debe acreditar principal, cuenta, credencial, scope y consumidores antes de materializar aislamiento                                        |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `NO_APLICA_SIN_BINDING`                   | sin binding acreditado                                                                                      | `NO_CREDENTIAL_APPLICABLE`       | no se inventa credencial ni compartición; cualquier binding futuro debe cumplir este contrato antes de activarse                                          |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_SIN_BINDING`                   | sin binding acreditado                                                                                      | `NO_CREDENTIAL_APPLICABLE`       | no se inventa credencial ni compartición; cualquier binding futuro debe cumplir este contrato antes de activarse                                          |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING`                   | sin binding acreditado                                                                                      | `NO_CREDENTIAL_APPLICABLE`       | no se inventa credencial ni compartición; cualquier binding futuro debe cumplir este contrato antes de activarse                                          |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_SIN_BINDING`                   | proveedor/API no acreditados                                                                                | `NO_CREDENTIAL_APPLICABLE`       | no se presume token Meta u otro material; binding futuro debe declarar principal, cuenta, ambiente y aislamiento                                          |
+| `EXT-SYS-018` | Instagram / social                       | `NO_APLICA_SIN_BINDING`                   | API/binding no acreditados                                                                                  | `NO_CREDENTIAL_APPLICABLE`       | no se presume token, aplicación o material compartido; binding futuro debe acreditar aislamiento                                                          |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_SIN_BINDING`                   | proveedor e integración no acreditados                                                                      | `NO_CREDENTIAL_APPLICABLE`       | la existencia del canal no acredita credencial técnica ni autoriza reutilizar la de Resend                                                                |
+| `EXT-SYS-020` | Telefonía / voz                          | `BLOQUEADA_SIN_BINDING`                   | operador e interfaz no acreditados                                                                          | `BLOCKED_NO_BINDING`             | `TI-INT-003` debe acreditar operador, cuenta, principal, credencial y consumidores antes de materializar aislamiento                                      |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_SIN_BINDING`                   | proveedor e interfaz no acreditados                                                                         | `NO_CREDENTIAL_APPLICABLE`       | no se inventa token, cuenta o credencial; cualquier binding futuro debe satisfacer aislamiento antes de uso                                               |
+
+Reconciliación:
+
+```text
+GOBERNADA_POR_CONTRATO_INTERNO_VENTO = 001 = 1
+AISLAMIENTO_MULTISUPERFICIE_OBLIGATORIO = 002,003 = 2
+AISLAMIENTO_SERVER_SIDE_OBLIGATORIO = 004 = 1
+CONFIGURACION_SIN_CREDENCIAL_ACREDITADA = 005,010 = 2
+SIN_CREDENCIAL_EXTERNA_OBSERVADA = 006,011 = 2
+PUBLICABLE_RESTRINGIDA_POR_BINDING = 007,008 = 2
+AISLAMIENTO_MULTIMATERIAL_OBLIGATORIO = 009 = 1
+MODELO_SIN_BINDING_REMOTO = 012 = 1
+NO_APLICA_SIN_BINDING = 014,015,016,017,018,019,021 = 7
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+---
+
+#### 30. Puerta obligatoria para nuevos bindings
+
+Una integración externa nueva o una identidad actualmente sin binding no puede activarse hasta acreditar:
+
+1. `external_system_id` exacto;
+2. proveedor, cuenta, tenant, proyecto o instancia aplicables;
+3. ambiente;
+4. `IntegrationPrincipal`;
+5. superficie y dirección;
+6. finalidad;
+7. clase de privilegio;
+8. `ExternalCredentialId` no sensible;
+9. clase de material;
+10. custodia;
+11. consumidores explícitos;
+12. scope/restricciones mínimas;
+13. evidencia de que el material no se reutiliza en otro binding independiente;
+14. lifecycle de rotación/revocación;
+15. mecanismo para retirar el binding sin cambiar contratos empresariales;
+16. prohibición efectiva de `service_role` y secretos en cliente cuando aplique.
+
+Si la exclusividad no puede demostrarse y la superficie requiere secreto o credencial privilegiada, el estado permanece `EXCLUSIVITY_PENDING_EVIDENCE` o `BLOCKED_NO_BINDING` según exista o no un binding acreditado.
+
+---
+
+#### 31. Handoffs y condiciones de salida
+
+| Materia                                     | Estado en esta tarea      | Propietario / tarea responsable | Condición de salida                                                                                                                              |
+| ------------------------------------------- | ------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| contrato compartido de principal técnico    | `DEFINIDO_SEMANTICAMENTE` | `SHELL-CON-017`                 | materializar tipo/contrato consumible que identifique principal, binding, superficies y consumidores sin convertirlo en autoridad empresarial    |
+| referencia compartida de credencial externa | `DEFINIDO_SEMANTICAMENTE` | `SHELL-CON-018`                 | materializar referencia no sensible con sistema, ambiente, principal, superficie, estado, consumidores y lifecycle sin contener el valor secreto |
+| binding del POS externo vigente             | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | acreditar proveedor, cuenta, interfaz, principal, credencial, scope y consumidores antes de instanciar aislamiento                               |
+| binding de telefonía / voz                  | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                    | acreditar operador, cuenta, interfaz, principal, credencial, scope y consumidores antes de instanciar aislamiento                                |
+
+La implementación física de custodia, referencia, grants, secret stores, validadores o migraciones permanece fuera del alcance de esta tarea documental.
+
+---
+
+#### 32. Prohibiciones
+
+Queda prohibido:
+
+1. reutilizar el mismo material de credencial entre dos `EXT-SYS-*` distintos;
+2. compartir una credencial entre development, staging y production;
+3. reutilizar una credencial de lectura para escritura;
+4. reutilizar una credencial operativa para administración cuando exista una opción menos privilegiada;
+5. compartir secretos entre principals técnicos independientes;
+6. usar una cuenta genérica o clave organizacional como sustituto de principals de integración;
+7. entregar `service_role` a un proveedor externo;
+8. entregar `service_role` a frontend o aplicación cliente;
+9. usar `service_role` como credencial externa universal;
+10. guardar secretos en frontend, variables públicas, repositorio, tablas empresariales expuestas, logs o auditoría ordinaria;
+11. registrar valores secretos para comprobar si dos credenciales son iguales;
+12. asumir exclusividad porque dos variables tienen nombres distintos;
+13. asumir compartición porque dos variables tienen el mismo nombre en ambientes distintos;
+14. asumir que una clave publicable puede reutilizarse en cualquier aplicación por no ser confidencial;
+15. ampliar scopes o restricciones del proveedor para permitir que otro binding reutilice la credencial;
+16. usar un secreto de webhook como credencial outbound sin contrato explícito del mismo binding;
+17. reutilizar una API key cliente como secreto server-side;
+18. distribuir una credencial de cuenta a varios principals cuando puede concentrarse en un único adaptador autorizado;
+19. declarar `ISOLATED_BY_BINDING` sin evidencia suficiente;
+20. ocultar una compartición confirmada creando dos `ExternalCredentialId` que apunten al mismo material;
+21. emitir sucesores y mantener indefinidamente el predecesor compartido como fallback;
+22. revocar ciegamente una credencial compartida durante un retiro planificado sin identificar consumidores;
+23. mantener activa una credencial comprometida para completar una migración planificada;
+24. cambiar contratos empresariales para acomodar una credencial compartida;
+25. inventar tokens administrativos para Expo/EAS o Vercel;
+26. tratar push tokens, UID de impresora, `place_id`, issuer, class o identificadores públicos como credenciales de autenticación por conveniencia;
+27. inventar credenciales para sistemas sin binding;
+28. modificar código, Supabase, secrets, proveedores, cuentas, endpoints, permisos, datos o configuración durante esta tarea;
+29. crear tablas, índices, constraints, RPC, triggers, RLS, secret stores, workers o migraciones;
+30. iniciar `INT-WORK-001`.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa para las veintiuna identidades externas la prohibición de compartir material de credencial entre bindings independientes y especializa reglas ya cubiertas por el registro vigente: principal técnico explícito, referencia de credencial separada del secreto, mínimo privilegio, separación por ambiente, denegación de credenciales privilegiadas a terceros, custodia fuera de superficies expuestas, lifecycle y revocación. No introduce una nueva familia ejecutable, no cambia una obligación histórica y no declara aislamiento físico ya validado sin evidencia.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 34. Criterios de aceptación
+
+`INT-EXT-020` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución primaria es exactamente `1 + 2 + 1 + 2 + 2 + 2 + 1 + 1 + 7 + 2 = 21`;
+7. `PermissionKey`, `IntegrationPrincipal`, `ExternalCredentialId` y valor secreto permanecen separados;
+8. un binding incluye sistema, ambiente, principal, superficie, dirección, privilegio y finalidad;
+9. cuenta/tenant/proyecto/instancia forman parte del binding cuando sean materiales y estén acreditados;
+10. una misma credencial material no puede pertenecer a dos bindings independientes;
+11. varios consumidores solo pueden compartir material dentro del mismo binding explícito y con inventario completo;
+12. un proveedor que solo emite una credencial de cuenta no autoriza distribuirla entre varios principals;
+13. cuando proceda, un único adaptador custodio concentra el secreto sin adquirir autoridad empresarial transversal;
+14. credenciales publicables permanecen restringidas por binding y no se convierten en credenciales universales;
+15. una contraparte privada mantiene binding separado de su configuración publicable;
+16. `service_role` nunca se entrega a proveedores externos ni clientes;
+17. compartir Supabase no permite compartir secretos externos entre adaptadores;
+18. development, staging y production usan material independiente;
+19. una credencial read-only no se reutiliza para write;
+20. inbound, outbound, administración, firma y tokens de recurso permanecen separados cuando corresponda;
+21. nombres de variables no se utilizan como prueba concluyente de igualdad o desigualdad del material;
+22. `ISOLATED_BY_BINDING` exige evidencia suficiente;
+23. ausencia de compartición observada no se presenta como exclusividad certificada;
+24. compartir el mismo material bajo dos referencias distintas sigue siendo compartición;
+25. una compartición detectada bloquea nuevos consumidores y ampliación de scope;
+26. la remediación identifica todos los consumidores antes de revocación planificada;
+27. cada binding recibe un sucesor independiente durante la remediación;
+28. el predecesor compartido se revoca en la autoridad que lo acepta después de migrar consumidores en una remediación planificada;
+29. el predecesor compartido debe quedar rechazado antes de cerrar la remediación;
+30. una credencial comprometida se revoca prioritariamente aunque afecte disponibilidad;
+31. la remediación no modifica contratos empresariales;
+32. Wompi mantiene separadas sus superficies y ambientes;
+33. RevenueCat mantiene separadas sus credenciales SDK y webhook;
+34. Resend conserva binding server-side explícito;
+35. Sentry y Google Maps conservan restricciones por binding pese a ser material publicable;
+36. Apple conserva lifecycles separados para certificado/private key, P8, JWT, token por pase y destinos;
+37. Expo/EAS y Vercel no reciben credenciales administrativas ficticias;
+38. Expo Push y Zebra no convierten destinos o identificadores en credenciales;
+39. Google Wallet permanece modelo sin binding remoto acreditado;
+40. POS permanece bloqueado hasta `INT-POS-001`;
+41. telefonía/voz permanece bloqueada hasta `TI-INT-003`;
+42. siete identidades sin binding no reciben credenciales ficticias;
+43. `SHELL-CON-017` conserva la materialización del principal técnico compartido;
+44. `SHELL-CON-018` conserva la materialización de la referencia no sensible de credencial;
+45. se crean cero requisitos de prueba;
+46. se modifican cero requisitos de prueba;
+47. no se modifica código;
+48. no se modifica Supabase;
+49. no se modifica ningún secreto o credencial remota;
+50. no se crean tablas, RPC, RLS, migraciones, secret stores o cambios físicos;
+51. `INT-WORK-001` permanece reservada.
+
+---
+
+#### 35. Resultado de la tarea
+
+`INT-EXT-020` queda **APROBADA** como definición documental completa de prohibición de credenciales compartidas entre integraciones externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- bindings con aislamiento multisuperficie obligatorio: **2**;
+- binding server-side con aislamiento obligatorio: **1**;
+- plataformas sin credencial administrativa acreditada: **2**;
+- superficies sin credencial externa observada: **2**;
+- credenciales publicables restringidas por binding: **2**;
+- familia multimaterial con aislamiento obligatorio: **1**;
+- modelo sin binding remoto: **1**;
+- identidades sin binding no aplicables: **7**;
+- identidades bloqueadas: **2**;
+- comparticiones materiales confirmadas por las fuentes inspeccionadas: **0**;
+- exclusividades físicas certificadas mediante proveedor/secret store: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+UNA CREDENCIAL MATERIAL
++
+UN AMBIENTE
++
+UN INTEGRATION PRINCIPAL
++
+UNA SUPERFICIE / DIRECCIÓN
++
+UN PRIVILEGIO MÍNIMO
++
+UNA FINALIDAD
++
+CONSUMIDORES EXPLÍCITOS DENTRO DEL MISMO BINDING
+=
+UN BINDING CONTROLADO
+```
+
+```text
+DOS BINDINGS INDEPENDIENTES
+→ DOS MATERIALES DE CREDENCIAL INDEPENDIENTES
+```
+
+sin convertir referencias en secretos, sin usar `service_role` como identidad genérica y sin declarar exclusividad física cuando la evidencia disponible no la demuestra.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-019 — Definir retiro de integración y revocación de credenciales`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-020 — Prohibir credenciales compartidas entre integraciones`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-WORK-001 — Definir contrato para que VISO publique el turno`
+
 
 Separación obligatoria:
 

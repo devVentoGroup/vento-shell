@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **746** |
+| Aprobadas | **747** |
 | En propuesta | **0** |
-| No iniciadas | **848** |
+| No iniciadas | **847** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.80% (746/1594)** |
+| Porcentaje de completamiento | **46.86% (747/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-019` — Definir retiro de integración y revocación de credenciales | ✅ APROBADA |
-| Tarea actual | `INT-EXT-020` — Prohibir credenciales compartidas entre integraciones | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-WORK-001` — Definir contrato para que VISO publique el turno | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-020` — Prohibir credenciales compartidas entre integraciones | ✅ APROBADA |
+| Tarea actual | `INT-WORK-001` — Definir contrato para que VISO publique el turno | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1453,7 +1453,7 @@
 | ✅ APROBADA | `INT-EXT-017` | Definir auditoría, métricas, alertas y conciliación | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-018` | Definir contingencia ante indisponibilidad del proveedor | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-019` | Definir retiro de integración y revocación de credenciales | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-020` | Prohibir credenciales compartidas entre integraciones | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-020` | Prohibir credenciales compartidas entre integraciones | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-WORK-001` | Definir contrato para que VISO publique el turno | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ⬜ NO INICIADA | `INT-WORK-002` | Definir contrato para que ANIMA presente el turno | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ⬜ NO INICIADA | `INT-WORK-003` | Definir contrato para que ANIMA registre la asistencia | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
