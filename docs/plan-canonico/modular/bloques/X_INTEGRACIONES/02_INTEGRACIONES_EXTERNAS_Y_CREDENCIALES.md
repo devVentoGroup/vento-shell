@@ -3579,7 +3579,703 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-008 — Definir rotación, expiración y revocación de credenciales`
 
 
-### [ ] INT-EXT-008 — Definir rotación, expiración y revocación
+### ✅ INT-EXT-008 — Definir rotación, expiración y revocación
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-007 — Definir almacenamiento seguro de secretos` — APROBADA
+**Tarea siguiente:** `INT-EXT-009 — Definir contratos de entrada y salida versionados` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del lifecycle de rotación, expiración, revocación y retiro aplicable a las credenciales o superficies de credencial de `EXT-SYS-001` a `EXT-SYS-021`, preservando principal técnico, mecanismo, alcance mínimo, separación por ambiente y custodia ya aprobados, sin crear, rotar, revocar, reemplazar ni destruir credenciales físicas
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, credenciales, cuentas externas, configuración productiva, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar un contrato único de lifecycle para las credenciales externas y superficies de credencial ya clasificadas en `INT-EXT-001` a `INT-EXT-007`, sin confundir cuatro operaciones distintas:
+
+```text
+ROTAR
+≠
+EXPIRAR
+≠
+REVOCAR
+≠
+RETIRAR LOCALMENTE
+```
+
+La tarea establece cuándo una credencial puede seguir activa, cuándo debe sustituirse, qué significa que haya expirado, cómo se invalida realmente en su autoridad emisora y cuándo puede retirarse de consumidores y custodia.
+
+La tarea también elimina estas ambigüedades:
+
+```text
+CAMBIAR UNA VARIABLE
+≠
+REVOCAR LA CREDENCIAL ANTERIOR
+```
+
+```text
+BORRAR UNA COPIA LOCAL
+≠
+INVALIDARLA EN EL PROVEEDOR
+```
+
+```text
+CREAR UNA CREDENCIAL SUCESORA
+≠
+COMPLETAR LA ROTACIÓN
+```
+
+```text
+TOKEN DERIVADO EXPIRADO
+≠
+CLAVE RAÍZ REVOCADA
+```
+
+No se fijan periodos universales arbitrarios de 30, 60, 90 días ni equivalentes. La cadencia depende de la clase de material, reglas del emisor, riesgo, contrato aprobado y evidencia real.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+- `VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-CONTRACT-001`;
+- `VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-MATRIX-001`.
+
+Balance materializado:
+
+| Control                                                      | Resultado |
+| ------------------------------------------------------------ | --------: |
+| Identidades heredadas esperadas                              |    **21** |
+| Identidades materializadas                                   | **21/21** |
+| Identificadores únicos                                       |    **21** |
+| Identidades faltantes                                        |     **0** |
+| Identidades duplicadas                                       |     **0** |
+| Lifecycle server-side especificado pendiente de evidencia    |     **4** |
+| Lifecycle de configuración publicable especificado           |     **2** |
+| Plataformas sin credencial administrativa acreditada         |     **2** |
+| Bindings observados sin credencial externa                   |     **2** |
+| Identidades con brecha de lifecycle observada                |     **1** |
+| Modelos documentados sin binding acreditado                  |     **1** |
+| Identidades sin binding actual a las que no aplica lifecycle |     **9** |
+| Credenciales creadas, sustituidas, revocadas o destruidas    |     **0** |
+| Requisitos de prueba creados o modificados                   |     **0** |
+
+Distribución:
+
+```text
+4 LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA
++
+2 LIFECYCLE_PUBLICABLE_ESPECIFICADO
++
+2 LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA
++
+2 SIN_CREDENCIAL_EXTERNA_OBSERVADA
++
+1 LIFECYCLE_CON_BRECHA_OBSERVADA
++
+1 MODELO_DOCUMENTADO_SIN_BINDING
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+Ninguna clasificación documental equivale por sí sola a una rotación ejecutada, una revocación remota, una fecha de expiración conocida o una prueba operativa.
+
+---
+
+#### 3. Fuentes y contratos preservados
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades, proveedores acreditados o no acreditados, propietarios, finalidades y nivel de evidencia;
+- `INT-EXT-002`, incluida la separación entre actor humano, principal técnico, cuenta externa, referencia de credencial y autoridad empresarial;
+- `INT-EXT-003`, incluida la procedencia de cada credencial o superficie de credencial;
+- `INT-EXT-004`, incluidos los mecanismos reales observados y la obligación fail-closed;
+- `INT-EXT-005`, incluido el techo de alcance mínimo de cada credencial;
+- `INT-EXT-006`, incluida la prohibición de reutilizar material entre `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+- `INT-EXT-007`, incluida la separación entre configuración publicable, secreto server-side, identificador técnico, destino y custodia segura;
+- la regla de que `service_role` y cualquier secret key privilegiada permanecen exclusivamente server-side;
+- el registro canónico vigente de requisitos de prueba, que ya exige inventario de secretos, rotación posterior a exposición, revocación, trazabilidad de claves privadas y gobierno de credenciales externas.
+
+La tarea no cambia mecanismos, scopes, ambientes, secret stores, proveedores, endpoints ni consumidores.
+
+---
+
+#### 4. Semántica de lifecycle
+
+`VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-CONTRACT-001` usa estas definiciones:
+
+| Concepto                  | Definición documental                                                                                                                                |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ROTACION`                | sustitución controlada de una credencial o material por un sucesor independiente, seguida de migración de consumidores e invalidación del predecesor |
+| `EXPIRACION`              | pérdida de validez por una fecha, duración o condición definida por el emisor o por un contrato aprobado                                             |
+| `REVOCACION`              | invalidación activa de la credencial en la autoridad, cuenta, proyecto o mecanismo que puede aceptarla                                               |
+| `RETIRO_LOCAL`            | eliminación de referencias, copias y material obsoleto en consumidores o custodia una vez ya no debe utilizarse                                      |
+| `SOLAPAMIENTO_CONTROLADO` | periodo temporal en el que predecesor y sucesor pueden coexistir únicamente cuando el proveedor lo soporta y es necesario para migración segura      |
+| `COMPROMISO`              | exposición confirmada o razonablemente sospechada que invalida la confianza en la exclusividad o integridad del material                             |
+
+Reglas:
+
+1. una rotación no termina al generar el sucesor;
+2. una revocación no se demuestra eliminando una variable local;
+3. una expiración no se extiende localmente si el emisor ya considera inválido el material;
+4. una credencial revocada o expirada no vuelve al estado activo;
+5. la retirada local ocurre después de que el consumidor ya no necesita el material y la invalidez del predecesor está resuelta;
+6. si una credencial no tiene expiración nativa acreditada, no se inventa una fecha de expiración;
+7. la ausencia de expiración nativa no elimina revisión, rotación por evento ni capacidad de revocación;
+8. cada superficie conserva lifecycle independiente aunque pertenezca al mismo proveedor;
+9. cada ambiente conserva lifecycle independiente aunque use el mismo nombre de variable;
+10. una credencial publicable puede requerir reemplazo o revocación sin convertirse por ello en secreto confidencial.
+
+---
+
+#### 5. `VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-CONTRACT-001`
+
+Para toda credencial materializada, la representación documental mínima deberá poder relacionar:
+
+```text
+SISTEMA EXTERNO
++
+INTEGRATION PRINCIPAL
++
+AMBIENTE
++
+SUPERFICIE DE CREDENCIAL
++
+REFERENCIA NO SENSIBLE
++
+CLASE DE MATERIAL
++
+ESTADO LÓGICO
++
+EMISOR / AUTORIDAD DE REVOCACIÓN
++
+CONSUMIDORES
++
+FECHAS CONOCIDAS
++
+PREDECESOR / SUCESOR CUANDO APLIQUE
+→ LIFECYCLE TRAZABLE
+```
+
+La información de lifecycle no contiene el valor secreto.
+
+Campos lógicos mínimos:
+
+- referencia no sensible de credencial;
+- sistema/proveedor;
+- principal técnico;
+- ambiente;
+- superficie;
+- clase de material;
+- estado lógico VENTO;
+- fecha de emisión o creación cuando exista evidencia;
+- fecha de activación cuando exista evidencia;
+- fecha de expiración cuando la credencial la tenga;
+- última rotación cuando exista;
+- próxima revisión o rotación cuando esté definida por política o proveedor;
+- autoridad o procedimiento de revocación;
+- consumidores autorizados;
+- referencia de predecesor y sucesor cuando exista una rotación;
+- motivo de rotación o revocación;
+- evidencia no sensible de cierre.
+
+Estados lógicos VENTO aplicables al lifecycle:
+
+```text
+ACTIVA
+ROTACION_EN_CURSO
+SOLAPAMIENTO_CONTROLADO
+REVOCADA
+EXPIRADA
+RETIRADA
+```
+
+Son estados contractuales internos y no pretenden sustituir los estados nativos de cada proveedor.
+
+---
+
+#### 6. Regla de rotación coordinada y corte
+
+Una rotación planificada se considera completa únicamente cuando ocurre esta secuencia lógica:
+
+```text
+PREDECESOR ACTIVO
+→
+SUCESOR EMITIDO / ACREDITADO
+→
+SUCESOR EN CUSTODIA CORRECTA
+→
+CONSUMIDORES MIGRADOS
+→
+SUCESOR FUNCIONALMENTE ACREDITADO
+→
+PREDECESOR REVOCADO
+→
+PREDECESOR RECHAZADO
+→
+COPIAS Y REFERENCIAS OBSOLETAS RETIRADAS
+```
+
+Reglas:
+
+1. el sucesor mantiene el mismo ambiente y no amplía el scope aprobado;
+2. un cambio de secreto no puede cambiar silenciosamente `IntegrationPrincipal`, proveedor, cuenta o autoridad empresarial;
+3. el solapamiento solo existe cuando el emisor permite credenciales concurrentes y la migración lo necesita;
+4. el solapamiento tiene inicio, propietario y condición de cierre explícitos;
+5. queda prohibida la validez dual indefinida;
+6. el consumidor no puede seleccionar silenciosamente entre clave antigua y nueva por fallback permanente;
+7. después de revocar el predecesor debe existir evidencia de que ya no autoriza el efecto protegido;
+8. si un consumidor no puede migrar, la rotación permanece incompleta y el bloqueo se registra antes de retirar el predecesor;
+9. una credencial de otro ambiente no puede usarse como sucesor temporal;
+10. la continuidad operativa no convierte en válido un material comprometido.
+
+La tarea no ejecuta esta secuencia; define el contrato que deberá respetar la implementación propietaria.
+
+---
+
+#### 7. Expiración, revocación y retiro
+
+##### 7.1. Expiración
+
+Cuando el emisor provea expiración verificable:
+
+- se registra la fecha real o metadato equivalente;
+- la preparación del sucesor debe ocurrir antes del vencimiento según la política aplicable;
+- una credencial expirada queda inutilizable aunque todavía exista una copia local;
+- una credencial sin fecha acreditada no recibe una fecha ficticia.
+
+##### 7.2. Revocación
+
+La revocación es obligatoria cuando aplique al menos una de estas condiciones:
+
+- exposición confirmada o sospecha razonable de compromiso;
+- copia o almacenamiento fuera de la custodia aprobada;
+- acceso no autorizado al material;
+- principal técnico, cuenta, aplicación, ambiente o binding retirado;
+- cambio de alcance que exige reemisión;
+- proveedor o mecanismo declara el material comprometido, retirado o no válido;
+- consumidor huérfano o credencial sin propietario;
+- incidente que rompe la confianza en la integridad del material.
+
+La revocación se ejecutará en la autoridad que acepta la credencial. Deshabilitar un consumidor sin invalidar el material no equivale a revocación.
+
+##### 7.3. Retiro
+
+Una credencial anterior solo puede considerarse `RETIRADA` cuando:
+
+- ya no existe consumidor autorizado que dependa de ella;
+- la revocación o expiración está acreditada;
+- las referencias activas ya apuntan al sucesor cuando exista;
+- las copias obsoletas fueron eliminadas de los lugares no necesarios;
+- la evidencia de auditoría conserva únicamente referencias no sensibles.
+
+---
+
+#### 8. Observaciones técnicas actuales por familia
+
+##### 8.1. Supabase
+
+Se observan superficies cliente publicables y superficies privilegiadas server-side.
+
+Decisión:
+
+- la clave publicable y la credencial privilegiada conservan lifecycle independiente;
+- una rotación de material privilegiado exige migrar todos sus consumidores del mismo ambiente y acreditar rechazo del material anterior;
+- no se presume qué mecanismo específico de rotación soporta el proyecto remoto sin evidencia administrativa;
+- no se asigna una fecha de expiración inexistente o no acreditada.
+
+##### 8.2. Wompi
+
+Se preservan por separado:
+
+- public key;
+- secreto de integridad;
+- secreto de eventos/webhook.
+
+El código observado distingue familias `test` y `prod`, pero no materializa un registro de lifecycle completo.
+
+Decisión:
+
+- cada superficie rota y se revoca independientemente;
+- cualquier solapamiento de secretos debe estar soportado por el proveedor y acotado;
+- la rotación no puede mezclar ambientes;
+- el webhook no puede conservar indefinidamente un secreto anterior como fallback.
+
+##### 8.3. RevenueCat
+
+Se distinguen:
+
+- API key publicable del SDK Apple;
+- API key publicable del SDK Google;
+- secreto server-side de webhook.
+
+La sustitución de una API key cliente no se reetiqueta como rotación de secreto confidencial. El webhook sí requiere lifecycle server-side con revocación del valor anterior.
+
+##### 8.4. Resend
+
+`RESEND_API_KEY` es material server-side.
+
+Su lifecycle objetivo exige referencia trazable, sucesor, migración del consumidor, invalidación en el proveedor y rechazo del material anterior. Las fuentes inspeccionadas no acreditan un lifecycle físico vigente.
+
+##### 8.5. Expo / EAS Update y Vercel
+
+Existen configuraciones de plataforma, perfiles o despliegues, pero no se acredita una credencial administrativa actual sobre la cual afirmar un lifecycle físico.
+
+No se inventan tokens ni fechas. Cualquier futura credencial administrativa deberá disponer de lifecycle antes de habilitarse.
+
+##### 8.6. Expo Push Service y Zebra BrowserPrint
+
+No se observó credencial externa de cliente.
+
+- un push token es un destino que puede quedar inválido, no una credencial de VENTO ante Expo;
+- UID, nombre o dirección de impresora son identificadores técnicos, no credenciales.
+
+Su mantenimiento no se convierte artificialmente en rotación de credenciales.
+
+##### 8.7. Sentry y Google Maps / Google Reviews
+
+`EXPO_PUBLIC_SENTRY_DSN` y `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY` son configuración/credenciales publicables con restricciones.
+
+Decisión:
+
+- pueden reemplazarse, deshabilitarse o revocarse cuando el proveedor lo permita;
+- su lifecycle conserva referencia, ambiente, consumidor y restricciones;
+- no se exige ocultación imposible en el bundle como criterio de seguridad;
+- cualquier token administrativo futuro sí requerirá lifecycle server-side independiente.
+
+##### 8.8. Apple Wallet / PassKit y APNs
+
+Existen varias clases con lifecycle distinto:
+
+- certificado y clave privada para firma del pase;
+- password asociado al P12;
+- clave P8 para APNs;
+- JWT derivado para autenticación APNs;
+- token opaco VENTO por pase.
+
+El código actual reutiliza el `auth_token` existente cuando vuelve a emitir el pase para el mismo serial; por tanto, la reemisión ordinaria del pase no acredita una rotación de ese token.
+
+La expiración de un JWT derivado de APNs no equivale a revocar o rotar la clave P8 que lo firma.
+
+##### 8.9. Google Wallet
+
+Existe un modelo documental de cuenta de servicio, issuer y class, pero no un binding runtime acreditado.
+
+El lifecycle de la clave privada de la cuenta de servicio queda definido como requisito de activación del binding, no como operación actualmente implementada.
+
+##### 8.10. Identidades sin binding acreditado
+
+Para `EXT-SYS-013` a `EXT-SYS-021` no se materializan credenciales ficticias.
+
+La activación de cualquier binding futuro deberá acreditar simultáneamente:
+
+```text
+CREDENCIAL REAL
++
+AMBIENTE
++
+CUSTODIA
++
+PROPIETARIO
++
+CONSUMIDORES
++
+MECANISMO DE ROTACIÓN
++
+MECANISMO DE REVOCACIÓN
++
+EXPIRACIÓN SI EXISTE
+→ HABILITACIÓN
+```
+
+---
+
+#### 9. `VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Superficie de lifecycle                                                | Decisión `INT-EXT-008`                                      | Estado físico            | Regla / condición de salida                                                                                                                                                                 |
+| ------------- | ---------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | clave publicable/anon; secret key o `service_role` server-side         | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | registrar lifecycle por ambiente y superficie; rotar material privilegiado mediante mecanismo soportado, migrar consumidores y acreditar invalidez del predecesor sin exponer valores       |
+| `EXT-SYS-002` | Wompi                                    | public key; secreto de integridad; secreto de eventos/webhook          | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | lifecycle independiente por superficie y ambiente; cualquier rollover debe ser acotado; el predecesor debe quedar inválido al cerrar la rotación                                            |
+| `EXT-SYS-003` | RevenueCat                               | API keys SDK Apple/Google; secreto de webhook                          | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | separar lifecycle de claves publicables por plataforma del secreto server-side; revocar el material sustituido en su autoridad emisora                                                      |
+| `EXT-SYS-004` | Resend                                   | `RESEND_API_KEY` server-side                                           | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | sucesor, migración del consumidor, revocación en proveedor y rechazo del predecesor; sin fecha ficticia de expiración                                                                       |
+| `EXT-SYS-005` | Expo / EAS Update                        | credencial administrativa no acreditada; perfiles y canales observados | `LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA`         | `PENDIENTE_DE_EVIDENCIA` | no inventar token; cualquier credencial administrativa futura debe declarar lifecycle por ambiente antes de activarse                                                                       |
+| `EXT-SYS-006` | Expo Push Service                        | push tokens como destinos; sin credencial externa observada            | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                          | `NO_APLICA`              | invalidez de destination tokens se gobierna como lifecycle de destino, no como rotación de credencial externa                                                                               |
+| `EXT-SYS-007` | Sentry                                   | `EXPO_PUBLIC_SENTRY_DSN`                                               | `LIFECYCLE_PUBLICABLE_ESPECIFICADO`                         | `ESPECIFICADO`           | referencia publicable reemplazable/revocable cuando aplique; conservar restricciones y ambiente; futuros tokens administrativos tendrán lifecycle independiente                             |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY`; enlaces e identificadores públicos  | `LIFECYCLE_PUBLICABLE_ESPECIFICADO`                         | `ESPECIFICADO`           | API key cliente puede reemplazarse o revocarse manteniendo restricciones; URLs, coordenadas y place ID quedan fuera del lifecycle de credencial                                             |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | P12/private key/password; P8; JWT APNs; token opaco por pase           | `LIFECYCLE_CON_BRECHA_OBSERVADA`                            | `NO_CONFORME_OBSERVADO`  | registrar expiración real del certificado cuando exista; separar lifecycle P8/JWT; materializar revocación/rotación del token por pase y corregir la custodia heredada antes de conformidad |
+| `EXT-SYS-010` | Vercel                                   | credencial administrativa/deploy no acreditada                         | `LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA`         | `PENDIENTE_DE_EVIDENCIA` | no inventar token; futura credencial de deploy debe tener lifecycle ligado al ambiente y proyecto exactos                                                                                   |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | UID/nombre/dispositivo; sin secreto externo observado                  | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                          | `NO_APLICA`              | identificadores de dispositivo no se convierten en credenciales; cualquier autenticación futura debe acreditarse antes de definir lifecycle                                                 |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | modelo de cuenta de servicio con material JSON                         | `MODELO_DOCUMENTADO_SIN_BINDING`                            | `PENDIENTE_DE_EVIDENCIA` | cuando el binding exista, la clave de cuenta de servicio deberá disponer de rotación/revocación y consumidores trazables; no se declara lifecycle físico vigente                            |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, interfaz y credenciales no acreditados                      | `NO_APLICA_ACTUAL`                                          | `BLOQUEADO`              | `INT-POS-001` debe acreditar proveedor, cuenta, binding y credencial antes de instanciar el lifecycle                                                                                       |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | binding no acreditado                                                  | `NO_APLICA_ACTUAL`                                          | `NO_APLICA`              | no existe credencial actual acreditada sobre la cual ejecutar lifecycle                                                                                                                     |
+| `EXT-SYS-015` | Rappi / marketplace                      | binding no acreditado                                                  | `NO_APLICA_ACTUAL`                                          | `NO_APLICA`              | no existe credencial actual acreditada sobre la cual ejecutar lifecycle                                                                                                                     |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | binding no acreditado                                                  | `NO_APLICA_ACTUAL`                                          | `NO_APLICA`              | no existe credencial actual acreditada sobre la cual ejecutar lifecycle                                                                                                                     |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API no acreditados                                           | `NO_APLICA_ACTUAL`                                          | `NO_APLICA`              | no existe credencial actual acreditada sobre la cual ejecutar lifecycle                                                                                                                     |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                                             | `NO_APLICA_ACTUAL`                                          | `NO_APLICA`              | no existe credencial actual acreditada sobre la cual ejecutar lifecycle                                                                                                                     |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                                 | `NO_APLICA_ACTUAL`                                          | `BLOQUEADO`              | acreditar proveedor, cuenta técnica, interfaz y credencial antes de instanciar lifecycle                                                                                                    |
+| `EXT-SYS-020` | Telefonía / voz                          | operador e integración no acreditados                                  | `NO_APLICA_ACTUAL`                                          | `BLOQUEADO`              | acreditar operador, cuenta, interfaz y credencial antes de instanciar lifecycle                                                                                                             |
+| `EXT-SYS-021` | Transporte externo                       | proveedor e interfaz no acreditados                                    | `NO_APLICA_ACTUAL`                                          | `BLOQUEADO`              | acreditar proveedor, cuenta, interfaz y credencial antes de instanciar lifecycle                                                                                                            |
+
+---
+
+#### 10. Reconciliación de cobertura
+
+La matriz conserva exactamente las veintiuna identidades y una decisión primaria por identidad.
+
+```text
+4 LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA
++
+2 LIFECYCLE_PUBLICABLE_ESPECIFICADO
++
+2 LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA
++
+2 SIN_CREDENCIAL_EXTERNA_OBSERVADA
++
+1 LIFECYCLE_CON_BRECHA_OBSERVADA
++
+1 MODELO_DOCUMENTADO_SIN_BINDING
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+Faltantes = `0`.
+
+Duplicados = `0`.
+
+Identificadores únicos = `21`.
+
+La clasificación primaria no elimina sub-superficies. Wompi, RevenueCat y Apple mantienen lifecycles distintos dentro de una misma identidad porque una credencial publicable, un secreto de webhook, un certificado, una private key y un token dinámico no comparten necesariamente emisor, expiración ni mecanismo de revocación.
+
+---
+
+#### 11. Evidencia y estados del lifecycle
+
+Ninguna credencial se declara rotada, revocada o expirada únicamente porque:
+
+- cambió el nombre de una variable;
+- existe una segunda variable;
+- el código acepta un alias;
+- se publicó un nuevo build;
+- cambió una URL o endpoint;
+- se regeneró un artefacto derivado;
+- se eliminó una copia local;
+- existe una fecha en documentación sin vínculo con el material real.
+
+La evidencia mínima de una rotación completa deberá permitir demostrar, sin mostrar valores secretos:
+
+1. referencia del predecesor;
+2. referencia del sucesor;
+3. sistema, superficie y ambiente;
+4. consumidores afectados;
+5. momento de activación del sucesor;
+6. migración del consumidor;
+7. revocación o expiración del predecesor;
+8. rechazo posterior del predecesor;
+9. retiro de copias obsoletas cuando corresponda;
+10. actor técnico o procedimiento autorizado que ejecutó el cambio.
+
+La evidencia de revocación no exige conservar el valor secreto.
+
+---
+
+#### 12. Estado especial de Apple Wallet
+
+`EXT-SYS-009` conserva lifecycles separados:
+
+| Material                                             | Lifecycle objetivo                                                                                          |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| certificado de Pass Type / material público asociado | registrar identidad y validez real cuando sea observable                                                    |
+| private key del P12                                  | rotación y revocación coordinadas con el certificado y consumidores server-side                             |
+| password del P12                                     | sustituible con el paquete de credencial al que protege; no se usa como identidad independiente             |
+| clave P8 de APNs                                     | rotación/revocación de la clave raíz mediante su autoridad; independiente del JWT derivado                  |
+| JWT APNs derivado                                    | vida corta propia del token; su expiración no prueba revocación de la P8                                    |
+| token opaco VENTO por pase                           | lifecycle por recurso: emisión, validación, sustitución/revocación y retiro ligados al pase correspondiente |
+
+La implementación observada conserva el `auth_token` existente al emitir nuevamente el pase para el mismo serial. Por tanto, **reemitir el `.pkpass` no constituye por sí mismo rotación del token del servicio web**.
+
+Además, permanece vigente la brecha de custodia heredada de `INT-EXT-007`: el valor original del token no debe residir directamente como secreto recuperable en la entidad empresarial cuando basta un verificador no reversible.
+
+Condición de salida del lifecycle del token por pase:
+
+```text
+TOKEN NUEVO / VERIFICADOR NUEVO CUANDO APLIQUE
++
+PASE / RECURSO VINCULADO
++
+CONSUMIDORES ACTUALIZADOS
++
+TOKEN PREDECESOR INVÁLIDO
++
+CUSTODIA CONFORME
+→ LIFECYCLE CERRADO
+```
+
+No se declara que el certificado P12, la P8 o el token actual estén vencidos o comprometidos; las fuentes inspeccionadas no acreditan esa afirmación.
+
+---
+
+#### 13. Trazabilidad de handoff
+
+| Pendiente                                                                             | Estado                        | Propietario / tarea responsable   | Condición de salida                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Referencia física de credencial con metadata de lifecycle y sin valor secreto         | `FUERA_DE_ALCANCE`            | `SHELL-CON-018`                   | contrato consumible representa ambiente, superficie, estado, predecesor/sucesor y fechas conocidas sin exponer material                                                                |
+| Remediación de secretos identificados fuera de custodia aprobada y rotación posterior | `PENDIENTE_DE_IMPLEMENTACION` | `SUPA-TRANS-010` / `SUPA-ARC-024` | material expuesto queda sustituido cuando corresponda, invalidado en origen y retirado de ubicaciones no aprobadas con evidencia no sensible                                           |
+| Lifecycle físico del token opaco de Apple Wallet y corrección de su custodia          | `PENDIENTE_DE_IMPLEMENTACION` | `SUPA-TRANS-010`                  | el token por pase dispone de mecanismo efectivo de sustitución/revocación, el predecesor deja de ser válido y el valor original deja la entidad empresarial cuando no deba recuperarse |
+| Evidencia de lifecycle de credenciales server-side ya observadas                      | `PENDIENTE_DE_EVIDENCIA`      | `SUPA-TRANS-013` / `SHELL-CI-017` | cada superficie acredita referencia, estado, fechas conocidas, consumidores, mecanismo de revocación y prueba de invalidez del material retirado sin revelar valores                   |
+| Binding y credenciales del POS externo vigente                                        | `BLOQUEADO_POR_EVIDENCIA`     | `INT-POS-001`                     | proveedor, cuenta, interfaz y credenciales quedan acreditados antes de instanciar lifecycle                                                                                            |
+| Contratos de payload y versionado de las integraciones                                | `FUERA_DE_ALCANCE`            | `INT-EXT-009`                     | entradas y salidas quedan versionadas sin alterar el lifecycle definido aquí                                                                                                           |
+
+No queda pendiente material sin propietario, tarea responsable o condición de salida.
+
+---
+
+#### 14. Prohibiciones
+
+Queda prohibido:
+
+1. fijar una cadencia universal de rotación sin base canónica, contractual o del proveedor;
+2. inventar fecha de expiración cuando el material no la tenga acreditada;
+3. considerar rotación completa solo porque existe una credencial nueva;
+4. considerar revocada una credencial porque se eliminó una variable o copia local;
+5. conservar indefinidamente credenciales predecesoras válidas como fallback;
+6. mantener solapamiento sin propietario y condición de cierre;
+7. reactivar una credencial revocada o expirada;
+8. usar credencial de otro ambiente como reemplazo temporal;
+9. ampliar scope durante una rotación;
+10. cambiar `IntegrationPrincipal` silenciosamente durante la sustitución;
+11. registrar el valor secreto como evidencia de rotación;
+12. registrar private keys, webhook secrets, tokens o passwords en logs o auditoría;
+13. tratar la expiración de un JWT derivado como revocación de su clave raíz;
+14. tratar un push token de dispositivo como credencial que deba rotarse;
+15. tratar UID, URL, `place_id`, project ID, issuer ID o class ID como secreto;
+16. rotar material de producción durante esta fase documental;
+17. revocar credenciales reales durante esta fase documental;
+18. crear credenciales sucesoras durante esta fase documental;
+19. cambiar secret stores durante esta fase documental;
+20. modificar código, Supabase, proveedores, cuentas, configuración remota o datos;
+21. adelantar contratos de payload de `INT-EXT-009`;
+22. cambiar las veintiuna identidades heredadas.
+
+---
+
+#### 15. Criterios de aceptación
+
+`INT-EXT-008` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. se materializa la distribución `4 + 2 + 2 + 2 + 1 + 1 + 9 = 21`;
+7. rotación, expiración, revocación y retiro quedan definidos como operaciones distintas;
+8. una rotación exige sucesor, migración de consumidores e invalidez del predecesor;
+9. la revocación ocurre en la autoridad que puede aceptar la credencial;
+10. la retirada local no se presenta como revocación;
+11. no se inventan periodos universales de rotación;
+12. no se inventan fechas de expiración;
+13. el solapamiento solo se admite cuando el proveedor lo soporta y tiene cierre explícito;
+14. se preserva separación por ambiente;
+15. se preserva alcance mínimo;
+16. se preserva custodia segura;
+17. credenciales publicables y secretos confidenciales conservan lifecycles diferenciados;
+18. Wompi conserva lifecycle independiente para public key, integridad y webhook;
+19. RevenueCat conserva lifecycle independiente para SDK Apple, SDK Google y webhook;
+20. Resend conserva lifecycle server-side;
+21. Expo/EAS y Vercel no reciben credenciales administrativas ficticias;
+22. Expo Push y Zebra no convierten destinos o identificadores en credenciales;
+23. Sentry y Google Maps conservan lifecycle publicable sin falsa confidencialidad;
+24. Apple separa certificado/P12, P8, JWT derivado y token por pase;
+25. la reemisión ordinaria del pase no se presenta como rotación del token por pase;
+26. Google Wallet permanece como modelo documentado sin binding;
+27. las nueve identidades sin binding permanecen `NO_APLICA_ACTUAL`;
+28. no se crean, rotan ni revocan credenciales físicas;
+29. no se modifica código;
+30. no se modifica Supabase;
+31. no se ejecutan despliegues;
+32. se crean cero requisitos de prueba;
+33. se modifican cero requisitos de prueba;
+34. `INT-EXT-009` permanece reservada.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa por identidad un lifecycle ya protegido por el registro canónico vigente: inventario de secretos y fechas de rotación, revocación, sustitución posterior a exposición, invalidación del material anterior, gobierno de claves privadas, separación por ambiente y lifecycle de credenciales externas. No introduce una nueva credencial, endpoint, operación empresarial, algoritmo, permiso, mecanismo de autenticación ni comportamiento ejecutable.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 17. Resultado de la tarea
+
+`INT-EXT-008` queda **APROBADA** como definición documental completa de rotación, expiración, revocación y retiro para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- lifecycle materializado para **21/21** identidades;
+- faltantes: **0**;
+- duplicados: **0**;
+- fechas de expiración inventadas: **0**;
+- periodos universales de rotación inventados: **0**;
+- credenciales físicas rotadas o revocadas: **0**;
+- TREQ creados o modificados: **0**.
+
+La tarea deja como invariante:
+
+```text
+ROTACIÓN COMPLETA
+=
+SUCESOR ACREDITADO
++
+CONSUMIDORES MIGRADOS
++
+PREDECESOR INVALIDADO
++
+PREDECESOR RECHAZADO
++
+COPIAS OBSOLETAS RETIRADAS
+```
+
+sin ampliar scope, ambiente, principal técnico ni autoridad empresarial.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-007 — Definir almacenamiento seguro de secretos`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-008 — Definir rotación, expiración y revocación`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-009 — Definir contratos de entrada y salida versionados`
+
+
 ### [ ] INT-EXT-009 — Definir contratos de entrada y salida versionados
 ### [ ] INT-EXT-010 — Definir estrategia webhook, polling o híbrida
 ### [ ] INT-EXT-011 — Definir validación de firma, origen, timestamp y replay

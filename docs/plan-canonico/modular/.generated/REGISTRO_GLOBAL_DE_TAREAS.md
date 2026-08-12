@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **734** |
+| Aprobadas | **735** |
 | En propuesta | **0** |
-| No iniciadas | **860** |
+| No iniciadas | **859** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.05% (734/1594)** |
+| Porcentaje de completamiento | **46.11% (735/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-007` — Definir almacenamiento seguro de secretos | ✅ APROBADA |
-| Tarea actual | `INT-EXT-008` — Definir rotación, expiración y revocación | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-009` — Definir contratos de entrada y salida versionados | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-008` — Definir rotación, expiración y revocación | ✅ APROBADA |
+| Tarea actual | `INT-EXT-009` — Definir contratos de entrada y salida versionados | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-010` — Definir estrategia webhook, polling o híbrida | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1441,7 +1441,7 @@
 | ✅ APROBADA | `INT-EXT-005` | Definir alcance mínimo de cada credencial | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-006` | Separar credenciales de desarrollo, staging y producción | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-007` | Definir almacenamiento seguro de secretos | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-008` | Definir rotación, expiración y revocación | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-008` | Definir rotación, expiración y revocación | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-009` | Definir contratos de entrada y salida versionados | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-010` | Definir estrategia webhook, polling o híbrida | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-011` | Definir validación de firma, origen, timestamp y replay | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
