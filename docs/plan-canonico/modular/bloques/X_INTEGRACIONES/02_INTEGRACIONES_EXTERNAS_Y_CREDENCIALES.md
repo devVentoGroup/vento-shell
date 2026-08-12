@@ -5700,7 +5700,705 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-011 — Definir validación de firma, origen, timestamp y replay`
 
 
-### [ ] INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
+### ✅ INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-010 — Definir estrategia webhook, polling o híbrida` — APROBADA
+**Tarea siguiente:** `INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de autenticidad, origen, firma o MAC, semántica temporal y protección contra replay para las integraciones externas `EXT-SYS-001` a `EXT-SYS-021`, preservando identidades, contratos I/O y estrategias de transporte ya aprobados, sin modificar código, endpoints, Supabase, secretos, proveedores, cuentas, datos ni configuración remota
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, secretos, credenciales, cuentas externas, endpoints, webhooks, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar para cada una de las veintiuna identidades externas el contrato de seguridad que determina si una entrada puede considerarse auténtica, atribuible al origen esperado y temporalmente válida antes de que VENTO permita cualquier interpretación empresarial.
+
+La tarea separa obligatoriamente:
+
+```text
+AUTENTICIDAD
+≠
+AUTORIZACIÓN EMPRESARIAL
+≠
+INTEGRIDAD
+≠
+ORIGEN DE RED
+≠
+FRESCURA TEMPORAL
+≠
+IDEMPOTENCIA
+≠
+DEDUPLICACIÓN
+```
+
+Una firma válida no convierte al proveedor en fuente de verdad interna, no concede autorización sobre un dominio VENTO y no demuestra que la entrega sea nueva.
+
+La tarea define controles documentales para:
+
+- firma, HMAC, checksum o secreto de autenticación cuando la superficie los soporte;
+- identificación del proveedor, cuenta, ambiente y superficie esperados;
+- tratamiento de timestamps de firma, evento, envío, recepción y procesamiento;
+- clasificación de entregas firmadas pero antiguas;
+- separación entre replay de seguridad y repetición legítima del proveedor;
+- fail-closed ante autenticidad no verificable;
+- fronteras exactas con idempotencia, deduplicación, payload original, retry y cuarentena.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+- `VENTO-EXTERNAL-INGRESS-AUTHENTICITY-001`;
+- `VENTO-EXTERNAL-INGRESS-AUTHENTICITY-MATRIX-001`.
+
+Balance materializado:
+
+| Control                                                               | Resultado |
+| --------------------------------------------------------------------- | --------: |
+| Identidades heredadas esperadas                                       |    **21** |
+| Identidades materializadas                                            | **21/21** |
+| Identificadores `EXT-SYS-*` únicos                                    |    **21** |
+| Identidades faltantes                                                 |     **0** |
+| Identidades duplicadas                                                |     **0** |
+| Perfiles Wompi con checksum firmado                                   |     **1** |
+| Perfiles RevenueCat con HMAC obligatorio                              |     **1** |
+| Perfiles PassKit de autenticación de recurso                          |     **1** |
+| Casos `NO_APLICA_INGRESO_AUTONOMO`                                    |    **16** |
+| Casos `BLOQUEADA_SIN_BINDING`                                         |     **2** |
+| Integraciones con cumplimiento físico total acreditado por esta tarea |     **0** |
+| Cambios físicos                                                       |     **0** |
+| Requisitos de prueba creados o modificados                            |     **0** |
+
+Distribución primaria:
+
+```text
+1 WOMPI_CHECKSUM_TIMESTAMP
++
+1 REVENUECAT_HMAC_TIMESTAMP
++
+1 PASSKIT_RESOURCE_AUTH
++
+16 NO_APLICA_INGRESO_AUTONOMO
++
+2 BLOQUEADA_SIN_BINDING
+=
+21
+```
+
+La clasificación describe el control aplicable, no certifica que el runtime actual ya lo cumpla por completo.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- `INT-EXT-002`, incluida la separación entre principal técnico, actor humano y cuenta externa;
+- `INT-EXT-003`, incluida la procedencia verificable de credenciales;
+- `INT-EXT-004`, incluidos los mecanismos reales de autenticación observados y la regla fail-closed;
+- `INT-EXT-005`, incluidos scopes mínimos y prohibición de convertir autenticación en autoridad empresarial;
+- `INT-EXT-006`, incluida la separación `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+- `INT-EXT-007`, incluida la custodia de secretos y referencias sin exponer valores;
+- `INT-EXT-008`, incluido el lifecycle de credenciales, rotación, expiración y revocación;
+- `INT-EXT-009`, incluidos `VENTO-EXTERNAL-IO-CONTRACT-001` y `VENTO-EXTERNAL-IO-CONTRACT-MATRIX-001`;
+- `INT-EXT-010`, incluidos `VENTO-EXTERNAL-DELIVERY-STRATEGY-001` y `VENTO-EXTERNAL-DELIVERY-STRATEGY-MATRIX-001`;
+- `TREQ-INTEGRATION-003`, para operación asíncrona recuperable, reintentos e idempotencia;
+- `TREQ-INTEGRATION-004`, para trazabilidad del disparador efectivo y sus efectos;
+- `TREQ-INTEGRATION-042`, para entrega al menos una vez y deduplicación por identidad estable;
+- `TREQ-INTEGRATION-049`, para conservar y validar afirmación externa, mecanismo de autenticidad, proveedor, identificador, recepción y correlación antes de producir un hecho interno;
+- `TREQ-INTEGRATION-051`, para impedir que secretos o credenciales entren en eventos, ejemplos o contratos;
+- `TREQ-INTEGRATION-061`, para impedir que una afirmación externa se publique como verdad interna sin validación del adaptador y de la aplicación propietaria;
+- `TREQ-PASS-009`, para impedir doble efecto, regresión de estado y replay con efectos repetidos en pagos.
+
+Esta tarea no cambia la identidad de proveedor, el contrato I/O, la modalidad webhook/polling/híbrida, la cuenta, el ambiente, el principal técnico ni el scope de credencial ya aprobados.
+
+---
+
+#### 4. Vocabulario cerrado de decisión primaria
+
+`VENTO-EXTERNAL-INGRESS-AUTHENTICITY-001` usa exactamente estas decisiones primarias:
+
+| Decisión                     | Significado                                                                                                                                                                             |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WOMPI_CHECKSUM_TIMESTAMP`   | entrada webhook Wompi cuya autenticidad depende del checksum SHA-256 construido con propiedades dinámicas, timestamp firmado y secreto de eventos del ambiente correspondiente          |
+| `REVENUECAT_HMAC_TIMESTAMP`  | entrada webhook RevenueCat que deberá usar HMAC-SHA256 sobre timestamp de entrega y cuerpo raw, con comparación de tiempo constante y ventana temporal explícita                        |
+| `PASSKIT_RESOURCE_AUTH`      | llamadas estandarizadas del PassKit Web Service autenticadas por `authenticationToken` o `deviceLibraryIdentifier` según la operación; no se tratan como eventos empresariales firmados |
+| `NO_APLICA_INGRESO_AUTONOMO` | no existe en el corte una entrada autónoma externa que requiera firma, timestamp o replay gate de esta tarea                                                                            |
+| `BLOQUEADA_SIN_BINDING`      | proveedor, interfaz o payload no están acreditados y no es posible seleccionar de forma verificable el mecanismo de autenticidad                                                        |
+
+No se autoriza inferir HMAC, mTLS, OAuth, allowlist de IP, firma asimétrica o nonce cuando el binding actual no los acredita.
+
+---
+
+#### 5. `VENTO-EXTERNAL-INGRESS-AUTHENTICITY-001`
+
+Toda entrada externa que pueda producir, directa o indirectamente, una afirmación empresarial deberá atravesar conceptualmente este orden:
+
+```text
+1. RESOLVER IDENTIDAD EXTERNA Y AMBIENTE
+2. VALIDAR SUPERFICIE Y MÉTODO ESPERADOS
+3. CAPTURAR RECEIVED_AT DE VENTO
+4. PRESERVAR MATERIAL DE VERIFICACIÓN
+5. VALIDAR FIRMA / MAC / CHECKSUM / TOKEN SEGÚN PERFIL
+6. VALIDAR ORIGEN LÓGICO DEL PROVEEDOR
+7. VALIDAR TIMESTAMP DE SEGURIDAD CUANDO EXISTA
+8. CLASIFICAR FRESCURA / REPLAY
+9. ENTREGAR SOLO UNA AFIRMACIÓN EXTERNA AUTENTICADA
+10. APLICAR IDEMPOTENCIA / DEDUPLICACIÓN EN SU FRONTERA PROPIA
+11. VALIDAR SEMÁNTICA Y AUTORIDAD EMPRESARIAL
+12. PRODUCIR O RECHAZAR EL HECHO INTERNO
+```
+
+Reglas:
+
+1. la validación de autenticidad ocurre antes de cualquier mutación empresarial;
+2. una entrada no verificable falla cerrada;
+3. un secreto no se registra junto al payload, digest, log o evidencia;
+4. una firma válida no concede permisos;
+5. una firma válida no sustituye la validación de ambiente;
+6. una firma válida no convierte el timestamp del hecho en timestamp de entrega;
+7. una entrega auténtica repetida no se interpreta automáticamente como ataque ni como hecho nuevo;
+8. el control de replay no sustituye la deduplicación de `INT-EXT-012`;
+9. el control de autenticidad no sustituye la cuarentena de `INT-EXT-016`;
+10. cualquier material de seguridad que dependa de una credencial conserva el lifecycle aprobado por `INT-EXT-008`.
+
+---
+
+#### 6. Regla canónica de origen
+
+VENTO distingue:
+
+```text
+ORIGEN LÓGICO VERIFICADO
+=
+IDENTIDAD EXTERNA
++
+AMBIENTE
++
+SUPERFICIE ESPERADA
++
+MECANISMO DE AUTENTICIDAD VÁLIDO
+```
+
+No constituyen prueba suficiente de origen por sí solos:
+
+- `Origin` HTTP;
+- CORS;
+- `User-Agent`;
+- nombre de un header;
+- dirección IP no gobernada por un rango oficial estable;
+- reverse DNS;
+- URL de retorno del navegador;
+- correo, teléfono o identificador visible del proveedor;
+- un payload que "parece" tener la forma esperada.
+
+TLS protege el canal hacia un endpoint HTTPS, pero no sustituye una firma, MAC, token o secreto cuando una petición autónoma entra a VENTO.
+
+Una allowlist de IP solo podrá usarse como defensa adicional cuando el proveedor publique rangos autoritativos, estables y operables; nunca será la única prueba de autenticidad de un webhook si existe un mecanismo criptográfico soportado.
+
+CORS no se usa como control de autenticidad de webhook.
+
+---
+
+#### 7. Regla canónica de firma, MAC y checksum
+
+Para cada perfil que soporte material criptográfico:
+
+1. se usa exactamente el algoritmo y canonicalización documentados para ese proveedor;
+2. no se reserializa un cuerpo si la firma cubre los bytes raw;
+3. no se fija una lista de propiedades si el proveedor envía dinámicamente las propiedades firmadas;
+4. si dos representaciones del mismo checksum o firma llegan simultáneamente y discrepan, la entrada se rechaza;
+5. los campos requeridos por el material firmado deben existir y tener semántica compatible con el contrato del proveedor;
+6. la comparación se realizará en tiempo constante cuando el runtime lo permita;
+7. no se registran secreto, clave privada ni signing secret;
+8. el identificador de secreto o referencia de versión puede conservarse sin exponer el valor;
+9. una rotación no habilita aceptación indefinida de secreto anterior;
+10. una firma que no puede verificarse produce `INVALID_SIGNATURE_OR_MAC` y no alcanza la lógica empresarial.
+
+El nombre de un header que contenga la palabra `signature` no demuestra que exista una firma criptográfica.
+
+---
+
+#### 8. Semántica temporal obligatoria
+
+Se mantienen separados:
+
+| Tiempo               | Significado                                          | Uso de seguridad                                                                       |
+| -------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `provider_event_at`  | momento del hecho según el proveedor                 | contexto del hecho; no es anti-replay por defecto                                      |
+| `provider_signed_at` | timestamp incluido dentro del material firmado o MAC | puede gobernar frescura cuando el protocolo lo permite                                 |
+| `provider_sent_at`   | momento declarado de envío o primera notificación    | evidencia de transporte; solo es prueba de seguridad si está criptográficamente ligado |
+| `vento_received_at`  | instante registrado por VENTO al recibir la petición | referencia local para medir edad, skew y retraso                                       |
+| `vento_processed_at` | instante de procesamiento interno                    | auditoría; no reemplaza el tiempo recibido                                             |
+
+Reglas:
+
+1. ningún timestamp se corrige silenciosamente para hacerlo parecer actual;
+2. el timestamp de negocio no se usa como nonce;
+3. la fecha de recepción local no convierte una firma vieja en una firma nueva;
+4. un timestamp de seguridad debe estar incluido en el material firmado o MAC para usarse como freshness gate;
+5. timezone y unidad deben normalizarse explícitamente;
+6. un timestamp imposible, no parseable o fuera del perfil aceptado falla cerrado;
+7. la ausencia de timestamp firmado no se compensa inventando uno del lado de VENTO;
+8. si el protocolo del proveedor admite reentregas legítimas del mismo material firmado, no se impone un TTL que destruya esas reentregas sin evidencia del proveedor.
+
+---
+
+#### 9. Estados de autenticidad y replay
+
+Una entrada evaluada por esta tarea puede terminar únicamente en uno de estos resultados de seguridad:
+
+| Resultado                        | Significado                                                                                                                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTHENTIC_FRESH_DELIVERY`       | autenticidad y origen verificados, timestamp de seguridad dentro del perfil aplicable                                                                     |
+| `AUTHENTIC_REDELIVERY_ALLOWED`   | autenticidad verificada y protocolo compatible con reentrega legítima; la repetición debe pasar a idempotencia/deduplicación sin adquirir un efecto nuevo |
+| `STALE_SIGNED_DELIVERY`          | firma válida, pero timestamp de seguridad excede la ventana autorizada del perfil                                                                         |
+| `INVALID_SIGNATURE_OR_MAC`       | firma, MAC o checksum no coincide o no puede verificarse                                                                                                  |
+| `ORIGIN_OR_ENVIRONMENT_MISMATCH` | material criptográfico o token puede ser válido, pero identidad, ambiente o superficie no corresponden al binding esperado                                |
+| `INVALID_SECURITY_TIMESTAMP`     | timestamp requerido falta, es inválido o no puede evaluarse conforme al perfil                                                                            |
+| `UNVERIFIABLE_AUTHENTICITY`      | el binding exige autenticidad, pero faltan los elementos necesarios para demostrarla                                                                      |
+| `NOT_APPLICABLE`                 | la superficie no es una entrada autónoma gobernada por este contrato                                                                                      |
+
+`AUTHENTIC_REDELIVERY_ALLOWED` no significa `DUPLICATE`. La decisión de si dos entregas representan el mismo evento y si deben devolver el mismo resultado pertenece a `INT-EXT-012`.
+
+---
+
+#### 10. Perfil Wompi — `EXT-SYS-002`
+
+##### 10.1. Contrato objetivo
+
+Se fija `WOMPI_EVENT_AUTH_PROFILE_001`:
+
+```text
+proveedor             = WOMPI
+dirección             = INBOUND_WEBHOOK
+método                 = POST
+authenticity_profile   = WOMPI_CHECKSUM_TIMESTAMP
+checksum_source        = signature.checksum OR X-Event-Checksum
+algorithm              = SHA-256
+signed_material        = ordered(signature.properties from data) + timestamp + event_secret
+environment_binding    = REQUIRED
+hard_timestamp_ttl     = NOT_DEFINED_BY_PROVIDER_CONTRACT
+replay_outcome         = AUTHENTIC_REDELIVERY_ALLOWED when signature remains valid
+```
+
+Reglas materiales:
+
+1. `signature.properties` se consume en el orden recibido; no se codifica una lista fija;
+2. cada path firmado debe resolverse desde `data` conforme al contrato Wompi;
+3. el `timestamp` forma parte del material usado para calcular el checksum;
+4. se usa el secreto de eventos correspondiente al ambiente exacto;
+5. si `signature.checksum` y `X-Event-Checksum` están presentes, ambos deben representar el mismo checksum;
+6. el checksum calculado se compara sin fuga temporal evitable;
+7. `environment` debe corresponder al ambiente VENTO configurado para ese endpoint;
+8. una URL de eventos de producción no acepta eventos declarados como sandbox ni a la inversa;
+9. CORS no participa en la decisión de origen;
+10. el retorno del checkout no participa en la autenticidad del webhook;
+11. `timestamp`, `sent_at` y `vento_received_at` se preservan como tiempos distintos;
+12. no se usa una ventana rígida genérica sobre `timestamp`, porque Wompi admite reentregas del evento y el contrato vigente no acredita que ese timestamp cambie por intento;
+13. una reentrega con checksum válido se clasifica como entrega auténtica potencialmente repetida y pasa a la frontera de `INT-EXT-012` antes de producir un efecto nuevo;
+14. la ausencia de una expiración rígida no permite reescribir estados terminales ni omitir idempotencia;
+15. checksum inválido, secreto ausente o ambiente incompatible bloquean la entrada antes del efecto empresarial.
+
+##### 10.2. Estado técnico observado
+
+La implementación actual de `payments-webhook`:
+
+- obtiene el secreto desde `WOMPI_EVENTS_SECRET` con fallback a `WOMPI_WEBHOOK_SECRET`;
+- extrae dinámicamente `signature.properties`;
+- incorpora `timestamp` al material calculado;
+- calcula SHA-256;
+- acepta el checksum del body o `X-Event-Checksum`;
+- rechaza checksum inválido con respuesta no autorizada;
+- registra y consulta una identidad de evento antes de aplicar el estado.
+
+No queda acreditado en el código observado:
+
+- validar que `environment` del payload coincida con el ambiente del endpoint;
+- comprobar inconsistencia entre checksum de header y checksum de body cuando ambos existen;
+- comparación de digest en tiempo constante;
+- una clasificación explícita de temporalidad/replay separada de la deduplicación;
+- tratamiento diferenciado entre entrega nueva y reentrega auténtica antes de la lógica empresarial.
+
+Resultado del corte:
+
+`WOMPI_AUTH_RUNTIME_STATE = IMPLEMENTADO_PARCIAL`
+
+La definición documental queda completa; la evidencia actual no permite declarar cumplimiento físico total.
+
+---
+
+#### 11. Perfil RevenueCat — `EXT-SYS-003`
+
+##### 11.1. Contrato objetivo
+
+Se fija `REVENUECAT_WEBHOOK_AUTH_PROFILE_001`:
+
+```text
+proveedor             = REVENUECAT
+dirección             = INBOUND_WEBHOOK
+authenticity_profile   = REVENUECAT_HMAC_TIMESTAMP
+signature_header       = X-RevenueCat-Webhook-Signature
+header_shape           = t=<unix_timestamp>,v1=<hmac_sha256_hex>
+algorithm              = HMAC-SHA256
+signed_material        = <t>.<raw_json_body>
+comparison             = CONSTANT_TIME
+freshness_tolerance    = 300 seconds
+authorization_header   = SECONDARY_ORIGIN_GUARD_WHEN_CONFIGURED
+```
+
+Reglas materiales:
+
+1. el HMAC signing de RevenueCat será obligatorio para el binding VENTO activo;
+2. el cuerpo debe obtenerse en bytes raw antes de cualquier `JSON.parse` o reserialización;
+3. se extraen `t` y `v1` del header oficial de firma;
+4. se calcula HMAC-SHA256 sobre `t + "." + raw_body`;
+5. la comparación usa una función de tiempo constante;
+6. `abs(vento_received_at - t)` no puede superar **300 segundos**;
+7. una firma válida con `t` fuera de la ventana produce `STALE_SIGNED_DELIVERY` y no alcanza lógica empresarial;
+8. `event_timestamp_ms`, `purchased_at_ms` y `expiration_at_ms` son tiempos del dominio de suscripción y no sustituyen `t` como freshness gate;
+9. el authorization header configurado en RevenueCat puede mantenerse como defensa adicional de origen, pero no se presenta como HMAC ni sustituye la firma;
+10. sandbox y producción se validan contra el perfil de webhook configurado y la información de ambiente que exponga el evento;
+11. una entrega HMAC válida dentro de ventana todavía puede ser duplicada; la identidad del evento y el efecto repetido pertenecen a `INT-EXT-012`;
+12. la rotación del signing secret conserva el lifecycle de `INT-EXT-008` y no admite fallback indefinido a secretos revocados.
+
+##### 11.2. Estado técnico observado
+
+La implementación actual de `club-revenuecat-webhook`:
+
+- obtiene `REVENUECAT_WEBHOOK_SECRET`;
+- lee `x-revenuecat-signature`;
+- compara directamente el valor recibido con el secreto;
+- rechaza si falta o no coincide;
+- parsea después el JSON y procesa entitlement, suscripción y auditoría.
+
+El nombre del header actual no constituye evidencia de firma criptográfica. El código observado no implementa el perfil HMAC vigente del proveedor.
+
+No queda acreditado:
+
+- `X-RevenueCat-Webhook-Signature` con `t` y `v1`;
+- acceso al cuerpo raw antes de parsear;
+- HMAC-SHA256 sobre `t.raw_body`;
+- comparación de tiempo constante;
+- ventana de **300 segundos**;
+- distinción entre authorization header y signing secret;
+- clasificación explícita de replay temporal.
+
+Resultado del corte:
+
+`REVENUECAT_AUTH_RUNTIME_STATE = NO_CONFORME_CONTRATO_OBJETIVO`
+
+Esta tarea no modifica el runtime. La no conformidad permanece como gate de implementación y certificación; no se presenta como seguridad ya materializada.
+
+---
+
+#### 12. Perfil Apple Wallet / PassKit — `EXT-SYS-009`
+
+##### 12.1. Naturaleza del flujo
+
+La estrategia `HIBRIDA_PUSH_PULL` aprobada en `INT-EXT-010` no convierte las llamadas del PassKit Web Service en webhooks de hechos empresariales.
+
+Se fija `PASSKIT_RESOURCE_AUTH_PROFILE_001`:
+
+| Operación                                      | Prueba de autenticidad/origen aplicable                                                                  |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| registrar pase en dispositivo                  | `Authorization: ApplePass <authenticationToken>` debe coincidir con el token del pase                    |
+| desregistrar pase                              | mismo `authenticationToken` del pase                                                                     |
+| obtener pase actualizado                       | mismo `authenticationToken` del pase                                                                     |
+| listar seriales actualizados de un dispositivo | `deviceLibraryIdentifier` actúa como secreto compartido de dispositivo según el protocolo PassKit        |
+| registrar log                                  | no produce por sí solo hecho empresarial y no adquiere autoridad por provenir del endpoint estándar      |
+| APNs saliente                                  | autenticación hacia Apple pertenece a la salida; no es evidencia de autenticidad de una llamada entrante |
+| `.pkpass` firmado                              | firma del artefacto entregado; no equivale a firma de la petición entrante                               |
+
+Reglas:
+
+1. `authenticationToken` y `deviceLibraryIdentifier` no son intercambiables;
+2. un token de un pase no autoriza otro `serialNumber` o `passTypeIdentifier`;
+3. `passesUpdatedSince` es un cursor/tag de actualización, no un timestamp anti-replay;
+4. `If-Modified-Since` es semántica HTTP de cache/actualización, no una firma temporal;
+5. el `iat` del JWT usado para APNs autentica la salida VENTO → Apple y no valida una entrada Apple → VENTO;
+6. el replay de una lectura no se trata como un nuevo hecho empresarial;
+7. operaciones repetidas con efecto material se someten a la frontera idempotente de `INT-EXT-012` cuando corresponda;
+8. no se inventa HMAC de request donde el protocolo PassKit usa shared secrets de recurso.
+
+##### 12.2. Estado técnico observado
+
+El web service actual:
+
+- valida `authenticationToken` contra el pase para registro, desregistro y obtención del pase;
+- acepta `ApplePass` y también `Bearer` en el parser de autorización;
+- usa `deviceLibraryIdentifier` para consultar registros del dispositivo;
+- exige además un token no vacío en la consulta de seriales, pero el valor de ese token no se vincula a un recurso en ese handler;
+- firma el `.pkpass` mediante certificados;
+- crea JWT ES256 con `iat` para autenticarse ante APNs.
+
+La documentación oficial de PassKit asigna el `deviceLibraryIdentifier` como secreto compartido de la consulta de seriales actualizados. Por ello, el requisito adicional de un token arbitrario no verificado en ese handler no se considera evidencia de autenticación correcta ni se incorpora al contrato canónico.
+
+Resultado del corte:
+
+`PASSKIT_AUTH_RUNTIME_STATE = IMPLEMENTADO_PARCIAL_CON_DIVERGENCIA_DE_PROTOCOLO`
+
+La tarea define la semántica correcta y no declara validación física del servicio.
+
+---
+
+#### 13. `VENTO-EXTERNAL-INGRESS-AUTHENTICITY-MATRIX-001`
+
+| ID            | Sistema / proveedor preservado           | Estrategia heredada de `INT-EXT-010` | Decisión de autenticidad     | Estado documental         | Estado técnico / decisión materializada                                                                                                                                                                             |
+| ------------- | ---------------------------------------- | ------------------------------------ | ---------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | las superficies heredadas son plataforma VENTO y request/response; JWT, sesión, anon/service role y autorización Supabase pertenecen a sus contratos propios, no a un webhook externo de esta tarea                 |
+| `EXT-SYS-002` | Wompi                                    | `WEBHOOK`                            | `WOMPI_CHECKSUM_TIMESTAMP`   | `ESPECIFICADO`            | checksum SHA-256 con propiedades dinámicas, timestamp y secreto de eventos; runtime observado implementa validación parcial, pero no acredita ambiente, equivalencia header/body ni clasificación temporal completa |
+| `EXT-SYS-003` | RevenueCat                               | `WEBHOOK`                            | `REVENUECAT_HMAC_TIMESTAMP`  | `ESPECIFICADO`            | VENTO exige HMAC-SHA256 del proveedor sobre timestamp y raw body con tolerancia 300 s; runtime actual usa comparación estática de secreto y queda no conforme al contrato objetivo                                  |
+| `EXT-SYS-004` | Resend                                   | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | superficie actual de salida de correo; no existe callback de entrada acreditado sobre el cual validar firma o replay                                                                                                |
+| `EXT-SYS-005` | Expo / EAS Update                        | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | configuración/plataforma sin contrato de evento entrante acreditado por `INT-EXT-009`                                                                                                                               |
+| `EXT-SYS-006` | Expo Push Service                        | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | la superficie observada es salida de push y respuesta técnica; no se convierte en webhook de entrada                                                                                                                |
+| `EXT-SYS-007` | Sentry                                   | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | telemetría SDK saliente; no existe afirmación empresarial autónoma entrante acreditada                                                                                                                              |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | consultas HTTPS bajo demanda; la identidad del endpoint remoto se protege por el canal y configuración, pero no existe webhook firmado de entrada                                                                   |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `HIBRIDA_PUSH_PULL`                  | `PASSKIT_RESOURCE_AUTH`      | `ESPECIFICADO`            | las llamadas de actualización usan shared secrets de recurso según operación; `.pkpass` firmado y JWT APNs son salientes y no se confunden con firma de request entrante                                            |
+| `EXT-SYS-010` | Vercel                                   | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | no existe contrato I/O entrante acreditado para esta materia                                                                                                                                                        |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | adaptador local de periférico; no es un proveedor remoto que emita webhook de negocio                                                                                                                               |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `ESPECIFICADO`            | existe modelo de JWT de guardado saliente, pero no binding remoto entrante acreditado; no se inventa validación de callback                                                                                         |
+| `EXT-SYS-013` | POS externo vigente                      | `BLOQUEADA_SIN_BINDING`              | `BLOQUEADA_SIN_BINDING`      | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001` debe acreditar proveedor, endpoints, webhooks, autenticación y payload antes de seleccionar firma, origen o replay gate                                                                               |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | binding no acreditado; cualquier integración futura deberá versionar esta matriz antes de activar una entrada                                                                                                       |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | no existe intercambio actual acreditado; no se presume firma, token, HMAC o allowlist                                                                                                                               |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | no existe bot/API activo acreditado; no se selecciona mecanismo de autenticidad por nombre de plataforma                                                                                                            |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | proveedor/API no acreditados; el canal no determina firma, token ni tecnología de webhook                                                                                                                           |
+| `EXT-SYS-018` | Instagram / social                       | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | API/binding no acreditados; no se presume mecanismo Meta ni callback                                                                                                                                                |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | proveedor e integración no acreditados; no se inventa firma de inbound mail, IMAP, webhook o polling                                                                                                                |
+| `EXT-SYS-020` | Telefonía / voz                          | `BLOQUEADA_SIN_BINDING`              | `BLOQUEADA_SIN_BINDING`      | `BLOQUEADO_POR_EVIDENCIA` | operador, interfaz y payload deben acreditarse antes de definir firma, origen, timestamp o replay; un caller ID no constituye autenticidad                                                                          |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_RECEPCION_ASINCRONA`      | `NO_APLICA_INGRESO_AUTONOMO` | `NO_APLICA_EN_CORTE`      | proveedor e interfaz no acreditados; tracking o número de guía no se convierten en prueba de origen                                                                                                                 |
+
+Comprobación:
+
+```text
+WOMPI_CHECKSUM_TIMESTAMP       = 1
+REVENUECAT_HMAC_TIMESTAMP      = 1
+PASSKIT_RESOURCE_AUTH          = 1
+NO_APLICA_INGRESO_AUTONOMO     = 16
+BLOQUEADA_SIN_BINDING          = 2
+----------------------------------
+TOTAL                          = 21
+```
+
+---
+
+#### 14. Reglas para futuros bindings
+
+Cuando una identidad actualmente `NO_APLICA_INGRESO_AUTONOMO` o `BLOQUEADA_SIN_BINDING` obtenga una entrada real, la tarea que materialice ese binding deberá decidir antes de activar tráfico:
+
+1. proveedor y cuenta exactos;
+2. ambiente exacto;
+3. endpoint, método y dirección del intercambio;
+4. material que prueba origen;
+5. algoritmo de firma, MAC o token cuando exista;
+6. bytes o campos exactos cubiertos por la firma;
+7. canonicalización exacta;
+8. timestamp de seguridad y unidad;
+9. ventana de frescura solo cuando el protocolo la soporte;
+10. tratamiento de retries legítimos;
+11. condición de replay inválido;
+12. relación con la identidad idempotente de `INT-EXT-012`;
+13. secreto y lifecycle sin exponer valores;
+14. ambiente de sandbox/staging/producción sin mezcla;
+15. condición fail-closed cuando falte evidencia.
+
+No se hereda automáticamente la política de Wompi, RevenueCat o PassKit a otro proveedor.
+
+---
+
+#### 15. Handoffs y fronteras exactas
+
+| Trabajo derivado                                                                   | Estado                    | Propietario / tarea responsable | Condición de salida                                                                                                  |
+| ---------------------------------------------------------------------------------- | ------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Materializar contrato compartido de evento externo recibido                        | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                 | el contrato compartido puede conservar proveedor, ambiente, autenticidad, tiempos y correlación sin incluir secretos |
+| Definir identidad estable y deduplicación de reentregas Wompi/RevenueCat           | `FUERA_DE_ALCANCE`        | `INT-EXT-012`                   | una misma entrega lógica no produce dos efectos y una repetición legítima conserva resultado estable                 |
+| Materializar contrato compartido de idempotencia y conciliación                    | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                 | la repetición autenticada queda separada del efecto empresarial y es recuperable                                     |
+| Conservar payload original protegido                                               | `FUERA_DE_ALCANCE`        | `INT-EXT-014`                   | evidencia original se conserva con minimización, retención y acceso controlados                                      |
+| Definir retries y backoff del proveedor                                            | `FUERA_DE_ALCANCE`        | `INT-EXT-015`                   | reintentos legítimos no se confunden con un nuevo hecho ni crean loops                                               |
+| Definir disposición de entradas inválidas                                          | `FUERA_DE_ALCANCE`        | `INT-EXT-016`                   | firma inválida, ambiente incompatible o payload no procesable tienen rechazo/cuarentena explícitos                   |
+| Definir auditoría y reconciliación                                                 | `FUERA_DE_ALCANCE`        | `INT-EXT-017`                   | se puede reconstruir autenticidad, recepción, resultado, rechazo y conciliación sin exponer secretos                 |
+| Acreditar binding del POS vigente                                                  | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | proveedor, endpoints, webhooks, autenticación y límites permiten instanciar este contrato                            |
+| Certificar seguridad de cualquier paquete Supabase que materialice estas fronteras | `FUERA_DE_ALCANCE`        | `SUPA-TRANS-010`                | el paquete no amplía superficie de ataque y los casos no autorizados permanecen en cero                              |
+| Verificar paridad local/staging/producción de cambios Supabase relacionados        | `FUERA_DE_ALCANCE`        | `SUPA-TRANS-013`                | el mismo candidato y configuración intencional quedan demostrados por ambiente antes de promoción                    |
+
+Las dos no conformidades observadas en Edge Functions no autorizan cambios físicos durante esta tarea. Cualquier corrección Supabase posterior deberá originarse, versionarse, probarse y ejecutarse desde `vento-shell`.
+
+---
+
+#### 16. Fronteras reservadas a `INT-EXT-012` a `INT-EXT-020`
+
+| Materia                                                     | Tarea propietaria |
+| ----------------------------------------------------------- | ----------------- |
+| identidad idempotente y deduplicación                       | `INT-EXT-012`     |
+| mapeo de identificadores externos/canónicos                 | `INT-EXT-013`     |
+| conservación controlada del payload original                | `INT-EXT-014`     |
+| rate limits, retry, backoff y circuit breaker               | `INT-EXT-015`     |
+| cuarentena o dead-letter                                    | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación                 | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor            | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales          | `INT-EXT-019`     |
+| prohibición de credenciales compartidas entre integraciones | `INT-EXT-020`     |
+
+`INT-EXT-011` puede declarar que una entrega es auténtica, inválida, antigua o reentregada conforme al perfil, pero no define todavía la clave idempotente del proveedor ni el algoritmo de deduplicación del efecto.
+
+---
+
+#### 17. Prohibiciones
+
+Queda prohibido:
+
+1. tratar CORS como autenticidad de webhook;
+2. confiar solo en `Origin`, `User-Agent`, reverse DNS o IP no gobernada;
+3. aceptar una entrada solo porque contiene un header llamado `signature`;
+4. llamar HMAC a una comparación estática de secreto;
+5. reserializar JSON cuando la firma cubre el cuerpo raw;
+6. usar el timestamp del hecho empresarial como timestamp anti-replay sin contrato del proveedor;
+7. sustituir un timestamp firmado por `Date.now()`;
+8. aceptar silenciosamente firma de body y header cuando ambos difieren;
+9. registrar el valor del secreto usado para verificar una firma;
+10. compartir el mismo secreto entre ambientes;
+11. usar una credencial revocada como fallback indefinido;
+12. asumir que firma válida equivale a autorización empresarial;
+13. asumir que firma válida equivale a entrega nueva;
+14. rechazar reintentos legítimos de Wompi mediante un TTL inventado no soportado por el protocolo observado;
+15. aceptar RevenueCat como conforme solo por comparar un secreto estático;
+16. usar `event_timestamp_ms` de RevenueCat como sustituto del timestamp HMAC `t`;
+17. confundir `passesUpdatedSince` o `If-Modified-Since` de PassKit con mecanismo anti-replay;
+18. confundir JWT APNs saliente con firma de entrada;
+19. inventar firma, HMAC, mTLS, OAuth o allowlist para identidades sin binding;
+20. definir claves idempotentes o algoritmo de deduplicación de `INT-EXT-012`;
+21. definir retención del payload de `INT-EXT-014`;
+22. definir cadence, retry o backoff de `INT-EXT-015`;
+23. definir cuarentena de `INT-EXT-016`;
+24. modificar código, Supabase, proveedor, dashboard, secreto, endpoint, webhook o datos durante esta fase;
+25. cambiar las veintiuna identidades heredadas;
+26. cambiar las estrategias de transporte aprobadas en `INT-EXT-010`;
+27. iniciar `INT-EXT-012`.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea no introduce una nueva familia de comportamiento ejecutable ni altera el registro de requisitos. Especializa, por identidad externa y con evidencia actual, cómo se satisfacen controles de autenticidad de afirmaciones externas, seguridad de operaciones asíncronas, tratamiento de reentregas y ausencia de doble efecto que ya están protegidos por requisitos vigentes. Las brechas observadas permanecen como estado de implementación no acreditado y como gates de los contratos y paquetes responsables; no se declara ninguna prueba satisfecha sin evidencia.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 19. Criterios de aceptación
+
+`INT-EXT-011` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución es exactamente `1 WOMPI_CHECKSUM_TIMESTAMP + 1 REVENUECAT_HMAC_TIMESTAMP + 1 PASSKIT_RESOURCE_AUTH + 16 NO_APLICA_INGRESO_AUTONOMO + 2 BLOQUEADA_SIN_BINDING = 21`;
+7. Wompi usa propiedades dinámicas del evento y no una lista fija;
+8. Wompi incorpora el timestamp dentro del checksum;
+9. Wompi valida el ambiente como parte de su origen lógico;
+10. Wompi no recibe un TTL rígido inventado que invalide reentregas legítimas;
+11. una reentrega Wompi auténtica no se interpreta como hecho nuevo;
+12. RevenueCat exige el HMAC oficial sobre timestamp y cuerpo raw;
+13. RevenueCat usa comparación de tiempo constante;
+14. RevenueCat usa una tolerancia de **300 segundos** sobre el timestamp HMAC;
+15. `event_timestamp_ms` no sustituye el timestamp HMAC;
+16. el authorization header de RevenueCat queda separado del signing secret;
+17. la implementación RevenueCat actual no se presenta como HMAC válida;
+18. PassKit conserva `authenticationToken` para operaciones de pase que lo requieren;
+19. PassKit conserva `deviceLibraryIdentifier` como secreto de dispositivo para consulta de seriales actualizados;
+20. `.pkpass` firmado y JWT APNs permanecen clasificados como salidas;
+21. cursores de actualización PassKit no se presentan como anti-replay;
+22. CORS no se presenta como seguridad de webhook;
+23. TLS no sustituye la firma de una entrada autónoma cuando el proveedor ofrece mecanismo criptográfico;
+24. no se inventan mecanismos para identidades sin binding;
+25. `EXT-SYS-013` permanece bloqueada hasta `INT-POS-001`;
+26. `EXT-SYS-020` permanece bloqueada hasta acreditar operador, interfaz y payload;
+27. autenticidad permanece separada de autorización empresarial;
+28. freshness/replay permanece separado de deduplicación del efecto;
+29. `INT-EXT-012` conserva propiedad exclusiva de identidad idempotente y deduplicación;
+30. no se modifica código;
+31. no se modifica Supabase;
+32. no se rotan ni crean secretos;
+33. no se modifica configuración de proveedor;
+34. se crean cero requisitos de prueba;
+35. se modifican cero requisitos de prueba;
+36. `INT-EXT-012` permanece reservada.
+
+---
+
+#### 20. Resultado de la tarea
+
+`INT-EXT-011` queda **APROBADA** como definición documental completa de validación de firma, origen, timestamp y replay para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- `WOMPI_CHECKSUM_TIMESTAMP`: **1**;
+- `REVENUECAT_HMAC_TIMESTAMP`: **1**;
+- `PASSKIT_RESOURCE_AUTH`: **1**;
+- `NO_APLICA_INGRESO_AUTONOMO`: **16**;
+- `BLOQUEADA_SIN_BINDING`: **2**;
+- faltantes: **0**;
+- duplicados: **0**;
+- runtimes declarados totalmente conformes por esta tarea: **0**;
+- cambios físicos: **0**;
+- TREQ creados o modificados: **0**.
+
+La tarea deja como invariante:
+
+```text
+AFIRMACIÓN EXTERNA ACEPTABLE
+=
+IDENTIDAD Y AMBIENTE ESPERADOS
++
+MECANISMO DE AUTENTICIDAD VÁLIDO
++
+SEMÁNTICA TEMPORAL CORRECTA
++
+CLASIFICACIÓN DE REPLAY
++
+AUTORIDAD EMPRESARIAL REVALIDADA
+```
+
+sin tratar firma válida como hecho nuevo, sin confundir autenticidad con autorización y sin adelantar la identidad idempotente o la deduplicación de la tarea siguiente.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-010 — Definir estrategia webhook, polling o híbrida`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-011 — Definir validación de firma, origen, timestamp y replay`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo`
+
+
 ### [ ] INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
 ### [ ] INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
 ### [ ] INT-EXT-014 — Definir conservación controlada del payload original
