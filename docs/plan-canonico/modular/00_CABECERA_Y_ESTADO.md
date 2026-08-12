@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **729** |
+| Tareas aprobadas | **730** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **865** |
+| Tareas no iniciadas | **864** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.73% (729/1594)** |
+| Porcentaje de completamiento | **45.80% (730/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-002 — Definir principal técnico independiente por integración** |
-| Tarea actual | **INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento** |
+| Última tarea aprobada | **INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento** |
+| Tarea actual | **INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo** |
+| Siguiente tarea | **INT-EXT-005 — Definir alcance mínimo de cada credencial** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 0 de 70 aprobadas; INT-EXT-003 pendiente** |
+| Progreso del bloque | **BLOQUE X: 0 de 69 aprobadas; INT-EXT-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-002` — Definir principal técnico independiente por integración |
-| Tarea actual | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo |
+| Última aprobada | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento |
+| Tarea actual | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-005` — Definir alcance mínimo de cada credencial |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 70 APROBADAS — ACTUAL INT-EXT-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 69 APROBADAS — ACTUAL INT-EXT-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-002 — Definir principal técnico independiente por integración
-        ↓
-TAREA ACTUAL
 INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-005 — Definir alcance mínimo de cada credencial
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 0 de 70 tareas aprobadas
+BLOQUE X — 0 de 69 tareas aprobadas
 ```

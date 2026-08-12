@@ -1136,7 +1136,500 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento`
 
 
-### [ ] INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
+### ✅ INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-EXT-002 — Definir principal técnico independiente por integración` — APROBADA  
+**Tarea siguiente:** `INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo` — RESERVADA  
+**Tipo de tarea:** documental; clasificación materializada de procedencia de credenciales por frontera externa para `EXT-SYS-001` a `EXT-SYS-021`, separando credenciales emitidas por proveedor, credenciales emitidas por VENTO, material cuya procedencia no está acreditada y bindings sin credencial externa acreditada, sin crear secretos, cuentas, mecanismos de autenticación, scopes, configuración ni cambios físicos  
+**Bloque:** X — Integraciones  
+**Mini-bloque:** Integraciones externas y credenciales  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`  
+**Implementación física autorizada:** ninguna  
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, configuración productiva o despliegues:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diferenciar, para las 21 identidades externas inventariadas y para las superficies de credencial que la evidencia actual permite observar, quién controla la emisión de la credencial y qué parte la presenta o valida.
+
+La tarea fija esta separación:
+
+```text
+QUIÉN EMITE LA CREDENCIAL
+≠ QUIÉN LA CUSTODIA
+≠ QUIÉN LA PRESENTA
+≠ QUIÉN LA VALIDA
+≠ PRINCIPAL TÉCNICO
+≠ ACTOR HUMANO
+≠ PERMISO EMPRESARIAL
+```
+
+La procedencia de una credencial no concede autoridad empresarial y no sustituye `IntegrationPrincipal`, `PermissionKey`, cuenta de proveedor, endpoint, dispositivo ni contrato.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializada una decisión documental para cada identidad `EXT-SYS-001` a `EXT-SYS-021`.
+
+Balance:
+
+| Control                                                                       |    Resultado |
+| ----------------------------------------------------------------------------- | -----------: |
+| Identidades heredadas esperadas                                               |       **21** |
+| Decisiones materializadas                                                     | **21 de 21** |
+| Identidades faltantes                                                         |        **0** |
+| Identidades duplicadas                                                        |        **0** |
+| Sistemas con credencial de proveedor acreditada en binding                    |        **6** |
+| Sistemas con superficies acreditadas de proveedor y de VENTO                  |        **1** |
+| Bindings observados sin credencial externa en la llamada o bridge observado   |        **2** |
+| Configuraciones observadas sin credencial física acreditada                   |        **2** |
+| Modelo de credencial de proveedor documentado sin binding acreditado          |        **1** |
+| Identidades sin procedencia de credencial acreditable por ausencia de binding |        **9** |
+| Superficies observadas con credencial emitida por VENTO                       |        **1** |
+| Valores secretos creados                                                      |        **0** |
+| Cuentas externas creadas                                                      |        **0** |
+| Cambios físicos                                                               |        **0** |
+
+La reconciliación por identidad es:
+
+```text
+21 IDENTIDADES
+= 6 PROVEEDOR_ACREDITADO_EN_BINDING
++ 1 MIXTO_PROVEEDOR_Y_VENTO
++ 2 SIN_CREDENCIAL_EXTERNA_EN_BINDING_OBSERVADO
++ 2 CREDENCIAL_NO_ACREDITADA_EN_CONFIGURACION
++ 1 MODELO_PROVEEDOR_DOCUMENTADO_SIN_BINDING
++ 9 SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING
+```
+
+Esta distribución clasifica evidencia de procedencia. No declara vigencia productiva, suficiencia de scope, almacenamiento seguro, rotación ni autenticidad runtime.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea conserva sin alterar:
+
+- las 21 identidades `EXT-SYS-001` a `EXT-SYS-021` de `INT-EXT-001`;
+- la distribución heredada de evidencia **3 + 6 + 2 + 6 + 4 = 21**;
+- las decisiones de principal técnico de `INT-EXT-002`;
+- la separación entre `PermissionKey`, `IntegrationPrincipal`, `ExternalCredentialId` y valor secreto;
+- la prohibición de usar `service_role` como identidad empresarial o entregarlo a un proveedor externo;
+- la obligación de conservar secretos fuera de frontend, variables públicas, tablas expuestas, payloads ordinarios y logs;
+- la obligación de que los adaptadores externos conserven identidad, autenticación referenciada, trazabilidad y frontera de propiedad;
+- la prohibición de derivar autoridad empresarial desde una credencial técnicamente válida.
+
+La tarea no cambia proveedor, propietario funcional, finalidad, principal técnico ni estado de binding definidos por las tareas anteriores.
+
+---
+
+#### 4. Taxonomía de procedencia
+
+##### 4.1. `PROVEEDOR_ACREDITADO_EN_BINDING`
+
+Aplica cuando la evidencia actual muestra una credencial, referencia de acceso o material de autenticación específico del proveedor consumido por VENTO.
+
+Regla:
+
+```text
+PROVEEDOR / PLATAFORMA
+→ EMITE O ASIGNA MATERIAL DE ACCESO
+→ VENTO LO CUSTODIA O REFERENCIA
+→ VENTO LO PRESENTA O USA EN LA FRONTERA APROBADA
+```
+
+No significa que el proveedor tenga permiso empresarial dentro de VENTO.
+
+##### 4.2. `VENTO_EMITIDA`
+
+Aplica cuando VENTO genera una credencial y la entrega a un cliente, dispositivo o contraparte técnica para que esa parte pueda autenticarse contra una frontera controlada por VENTO.
+
+Regla:
+
+```text
+VENTO
+→ GENERA CREDENCIAL
+→ TERCERO / CLIENTE TÉCNICO LA PRESENTA
+→ VENTO LA VALIDA
+```
+
+La credencial sigue siendo distinta del actor humano y del permiso empresarial.
+
+##### 4.3. `ORIGEN_NO_ACREDITADO`
+
+Aplica cuando existe una referencia o secreto configurado, pero las fuentes verificadas no demuestran qué parte lo generó originalmente.
+
+No se infiere procedencia por nombre de variable, ubicación del secreto o lado que actualmente lo almacena.
+
+##### 4.4. `SIN_CREDENCIAL_EXTERNA_EN_BINDING_OBSERVADO`
+
+Aplica cuando el binding de código inspeccionado no presenta una credencial externa en la llamada o bridge observado.
+
+Un token de destino, identificador de dispositivo, URL, `projectId`, `place_id`, UID de impresora o referencia equivalente no se convierte en credencial por conveniencia documental.
+
+##### 4.5. `NO_APLICA_ACTUAL`
+
+Aplica a una identidad documentada sin binding acreditado. La tarea no inventa credenciales hipotéticas.
+
+Antes de activar un binding futuro deberá existir una referencia física de credencial con procedencia acreditada cuando el mecanismo elegido la requiera.
+
+---
+
+#### 5. Regla de cardinalidad
+
+La procedencia se clasifica por **superficie de credencial**, no únicamente por plataforma.
+
+Un mismo sistema puede tener:
+
+- una credencial emitida por el proveedor para llamadas salientes de VENTO;
+- una credencial emitida por VENTO para callbacks o clientes técnicos;
+- credenciales diferentes por binding;
+- material cuya procedencia todavía no esté acreditada;
+- superficies que no usen credencial externa en el binding observado.
+
+Por tanto:
+
+```text
+external_system_id
+≠ external_credential_id
+```
+
+y:
+
+```text
+UNA PLATAFORMA
+PUEDE TENER
+MÁS DE UNA PROCEDENCIA DE CREDENCIAL
+```
+
+sin fusionarlas en una credencial genérica.
+
+---
+
+#### 6. Matriz materializada `VENTO-EXTERNAL-CREDENTIAL-PROVENANCE-001`
+
+| ID            | Sistema / plataforma                     | Evidencia heredada                   | Superficie de credencial observada o documentada                                                                          | Procedencia decidida                                                                                     | Presenta / usa                                                                                                   | Valida / recibe                                          | Estado documental | Decisión y condición                                                                                                                                                                                                                                                   |
+| ------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `BINDING_TECNICO_OBSERVADO`          | `SUPABASE_ANON_KEY` / clave publicable y `SUPABASE_SERVICE_ROLE_KEY` usadas por componentes VENTO                         | `PROVEEDOR_ACREDITADO_EN_BINDING`                                                                        | clientes o backend VENTO según la clase de clave                                                                 | Supabase                                                 | `ESPECIFICADO`    | Las claves de proyecto pertenecen a la frontera Supabase→VENTO. `service_role` permanece credencial privilegiada interna y nunca se entrega a otro proveedor ni se convierte en principal o permiso.                                                                   |
+| `EXT-SYS-002` | Wompi                                    | `BINDING_CONDICIONAL_OBSERVADO`      | `WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`, `WOMPI_EVENTS_SECRET` / `WOMPI_WEBHOOK_SECRET`                              | `PROVEEDOR_ACREDITADO_EN_BINDING` con procedencia exacta del secreto de eventos no demostrada por código | VENTO usa las credenciales de checkout; el proveedor emite payload firmado                                       | Wompi valida checkout y VENTO valida el evento           | `ESPECIFICADO`    | La familia de checkout se trata como credencial del proveedor. El secreto de eventos queda `ORIGEN_NO_ACREDITADO` a nivel de ceremonia de emisión; su referencia física deberá conservar ese estado hasta evidencia de la configuración del proveedor.                 |
+| `EXT-SYS-003` | RevenueCat                               | `BINDING_CONDICIONAL_OBSERVADO`      | `EXPO_PUBLIC_REVENUECAT_APPLE_API_KEY`, `EXPO_PUBLIC_REVENUECAT_GOOGLE_API_KEY`, `REVENUECAT_WEBHOOK_SECRET`              | `PROVEEDOR_ACREDITADO_EN_BINDING` para API keys; `ORIGEN_NO_ACREDITADO` para el secreto del webhook      | PASS presenta las API keys al SDK; RevenueCat presenta el valor esperado por el webhook observado                | RevenueCat / VENTO según la dirección                    | `ESPECIFICADO`    | Las API keys quedan del lado proveedor→VENTO. La fuente actual no acredita quién creó el secreto compartido del webhook; no se reclasifica por inferencia.                                                                                                             |
+| `EXT-SYS-004` | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `RESEND_API_KEY`                                                                                                          | `PROVEEDOR_ACREDITADO_EN_BINDING`                                                                        | Edge Function de VENTO                                                                                           | API de Resend                                            | `ESPECIFICADO`    | La API key autentica a VENTO ante Resend. No es principal técnico, permiso empresarial ni credencial que Resend pueda usar contra Supabase.                                                                                                                            |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | `expoProjectId`, URL `u.expo.dev` y metadatos EAS; no se observó material de credencial en la configuración inspeccionada | `CREDENCIAL_NO_ACREDITADA_EN_CONFIGURACION`                                                              | no determinable con la evidencia actual                                                                          | no determinable con la evidencia actual                  | `ESPECIFICADO`    | La configuración acredita proyecto y servicio, no la procedencia de una credencial física. La referencia física queda a cargo del contrato de credencial cuando se materialice evidencia de cuenta/servicio.                                                           |
+| `EXT-SYS-006` | Expo Push Service                        | `BINDING_TECNICO_OBSERVADO`          | llamada HTTP observada sin header de credencial externa; tokens `to` identifican destinos de push                         | `SIN_CREDENCIAL_EXTERNA_EN_BINDING_OBSERVADO`                                                            | VENTO envía mensajes y tokens de destino                                                                         | Expo Push Service                                        | `ESPECIFICADO`    | El token de dispositivo no se clasifica como credencial de integración. Si otra modalidad de Expo exige credencial, deberá registrarse como superficie independiente.                                                                                                  |
+| `EXT-SYS-007` | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `EXPO_PUBLIC_SENTRY_DSN`                                                                                                  | `PROVEEDOR_ACREDITADO_EN_BINDING`                                                                        | ANIMA SDK                                                                                                        | Sentry                                                   | `ESPECIFICADO`    | El DSN se conserva como referencia de ingestión del proveedor y no se trata como secreto empresarial ni permiso VENTO. La activación depende de configuración vigente.                                                                                                 |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY`; URLs públicas de Maps/Reviews                                                          | `PROVEEDOR_ACREDITADO_EN_BINDING` para la API key                                                        | PASS cuando usa vista cartográfica con API                                                                       | Google                                                   | `ESPECIFICADO`    | La API key pertenece a la frontera proveedor→VENTO. URLs, `place_id`, coordenadas y enlaces de reseña no son credenciales.                                                                                                                                             |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | material `APPLE_PASS_*`, `APPLE_PUSH_*`; además `authenticationToken` generado con aleatoriedad por VENTO para cada pase  | `MIXTO_PROVEEDOR_Y_VENTO`                                                                                | VENTO usa material asociado a Apple; Wallet/dispositivo presenta el token emitido por VENTO al servicio del pase | Apple/APNs y servicio Wallet de VENTO según la dirección | `ESPECIFICADO`    | Se separan dos direcciones. El `authenticationToken` del pase es `VENTO_EMITIDA`. El material de certificados/keys está asociado a la plataforma Apple, pero la ceremonia exacta de generación no se inventa; la referencia física deberá conservar su evidencia real. |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_OBSERVADA`            | `vercel.json`, rewrites, headers y superficies web; no se observó credencial física en esa configuración                  | `CREDENCIAL_NO_ACREDITADA_EN_CONFIGURACION`                                                              | no determinable con la evidencia actual                                                                          | no determinable con la evidencia actual                  | `ESPECIFICADO`    | Hosting/configuración observados no prueban token, cuenta o procedencia de credencial. La credencial física se registrará únicamente con evidencia de la cuenta o automatización que la consuma.                                                                       |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | bridge `window.BrowserPrint`, enumeración y selección local por UID; no se observó credencial externa                     | `SIN_CREDENCIAL_EXTERNA_EN_BINDING_OBSERVADO`                                                            | navegador/estación VENTO usa bridge local                                                                        | agente BrowserPrint / impresora local                    | `ESPECIFICADO`    | UID, nombre y tipo de impresora no son credenciales. Cualquier autenticación adicional futura será una superficie separada y no se presume.                                                                                                                            |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | modelo documental de cuenta de servicio e issuer; sin binding ni credencial vigente acreditados                           | `MODELO_PROVEEDOR_DOCUMENTADO_SIN_BINDING`                                                               | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | El modelo documenta una credencial de plataforma, pero no acredita material físico activo. Estado físico `NO_APLICA_ACTUAL` hasta que exista binding verificable.                                                                                                      |
+| `EXT-SYS-013` | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | proveedor, API, endpoints y credenciales no acreditados                                                                   | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica documentalmente                                                                                        | no aplica documentalmente                                | `ESPECIFICADO`    | No se inventa proveedor ni credential family. `INT-POS-001` deberá acreditar el binding; la referencia de credencial física deberá registrar procedencia antes de activación.                                                                                          |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico  | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | plataforma nombrada sin cuenta o integración VENTO acreditada                                                             | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | Nombrar Shopify no acredita token, app, client secret ni cuenta. Estado físico `NO_APLICA_ACTUAL`.                                                                                                                                                                     |
+| `EXT-SYS-015` | Rappi / marketplace                      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | plataforma nombrada sin integración activa acreditada                                                                     | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | No se presume API key, OAuth, webhook secret ni cuenta. Estado físico `NO_APLICA_ACTUAL`.                                                                                                                                                                              |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | plataforma nombrada sin cuenta, bot o API activa acreditada                                                               | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | No se presume credential family. Estado físico `NO_APLICA_ACTUAL`.                                                                                                                                                                                                     |
+| `EXT-SYS-017` | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | canal nombrado; proveedor/API, número, cuenta y webhook no acreditados                                                    | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | El canal no determina proveedor ni procedencia de credencial. Estado físico `NO_APLICA_ACTUAL`.                                                                                                                                                                        |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | canal nombrado sin API, cuenta o automatización activa acreditada                                                         | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | El perfil social no constituye credencial técnica. Estado físico `NO_APLICA_ACTUAL`.                                                                                                                                                                                   |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `PROVEEDOR_NO_ACREDITADO`            | proveedor, buzones concretos e integración API no acreditados                                                             | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | Un alias o dirección de correo no es credencial. La procedencia solo podrá definirse cuando el proveedor y binding estén acreditados.                                                                                                                                  |
+| `EXT-SYS-020` | Telefonía / canal de voz                 | `PROVEEDOR_NO_ACREDITADO`            | operador, numeración, grabación e integración no acreditados                                                              | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | Número telefónico, extensión o caller ID no se clasifican como credencial de integración.                                                                                                                                                                              |
+| `EXT-SYS-021` | Transporte externo                       | `PROVEEDOR_NO_ACREDITADO`            | proveedor, tracking, API y alternativa no acreditados                                                                     | `SIN_PROVENIENCIA_ACREDITADA_POR_NO_BINDING`                                                             | no aplica actualmente                                                                                            | no aplica actualmente                                    | `ESPECIFICADO`    | No se presume token, portal, API key o cuenta. Estado físico `NO_APLICA_ACTUAL` hasta que exista proveedor y binding acreditados.                                                                                                                                      |
+
+---
+
+#### 7. Separación entre credencial, referencia y valor
+
+Cada credencial física futura deberá poder relacionarse sin almacenar su valor en el registro empresarial:
+
+```text
+external_system_id
+external_instance_id
+integration_principal_id
+external_credential_id
+credential_issuer_class
+credential_owner_ref
+credential_presenter_ref
+credential_validator_ref
+contract_version
+```
+
+Esta tarea define únicamente la procedencia documental. Los nombres físicos definitivos pertenecen al contrato compartido posterior.
+
+Reglas:
+
+1. `external_credential_id` identifica una referencia, no el secreto;
+2. el valor secreto no forma parte del inventario documental;
+3. una credencial del proveedor no convierte al proveedor en actor VENTO;
+4. una credencial emitida por VENTO no concede por sí sola permiso empresarial;
+5. custodiar una credencial no convierte a VENTO en su emisor;
+6. configurar un secreto en VENTO no demuestra que VENTO lo haya generado;
+7. validar una credencial no demuestra que el validador sea su emisor;
+8. una credencial puede rotar sin cambiar `IntegrationPrincipal`;
+9. un principal puede requerir más de una credencial cuando las fronteras sean independientes;
+10. una misma credencial no se fusiona entre bindings por compartir proveedor.
+
+---
+
+#### 8. Credenciales emitidas por proveedor
+
+Cuando la procedencia esté acreditada como proveedor→VENTO:
+
+- el proveedor o plataforma conserva la autoridad técnica sobre emisión o asignación de ese material;
+- VENTO conserva la referencia, custodia y uso que le correspondan;
+- el material se usa exclusivamente en la frontera para la que fue emitido;
+- ninguna credencial externa habilita escritura transversal en dominios VENTO;
+- `service_role` de Supabase permanece dentro de la frontera VENTO/Supabase y no se entrega a Wompi, RevenueCat, Resend, Expo, Sentry, Google, Apple, Vercel, Zebra ni a otro tercero;
+- una clave publicable o DSN visible no se reetiqueta como secreto únicamente por ser una referencia de acceso;
+- una API key del proveedor no se reetiqueta como `PermissionKey`.
+
+Esta tarea no define todavía scope, ambiente, almacenamiento ni rotación.
+
+---
+
+#### 9. Credenciales emitidas por VENTO
+
+Una credencial `VENTO_EMITIDA` debe cumplir conceptualmente:
+
+```text
+EMISOR = VENTO
+PRESENTADOR = CONTRAPARTE TÉCNICA AUTORIZADA
+VALIDADOR = FRONTERA VENTO CORRESPONDIENTE
+AUTORIDAD EMPRESARIAL = NO DERIVADA
+```
+
+La evidencia actual acredita una superficie de este tipo en `EXT-SYS-009`:
+
+- el servicio Wallet genera un `authenticationToken` aleatorio;
+- el token se incorpora al pase cuando existe `webServiceURL`;
+- el cliente Wallet lo presenta contra el servicio del pase;
+- el token no es el usuario, el principal técnico ni el permiso empresarial.
+
+No se generaliza este patrón a otros sistemas sin evidencia.
+
+---
+
+#### 10. Material compartido o de procedencia no demostrada
+
+La presencia de un valor idéntico en ambos extremos no permite inferir quién lo emitió.
+
+Para secretos de webhook o materiales cuya ceremonia de creación no está documentada, la decisión canónica es:
+
+```text
+ORIGEN_NO_ACREDITADO
+```
+
+hasta disponer de evidencia que demuestre:
+
+- quién creó o asignó el material;
+- a qué cuenta o instancia pertenece;
+- quién lo presenta;
+- quién lo valida;
+- qué referencia interna lo representa.
+
+No se reconstruye la procedencia a partir de naming, intuición o documentación genérica del proveedor.
+
+---
+
+#### 11. Elementos que no son credenciales por sí solos
+
+No se clasifican como credenciales:
+
+- `PermissionKey`;
+- `IntegrationPrincipal`;
+- `external_system_id`;
+- `external_instance_id`;
+- endpoint o URL;
+- `projectId`;
+- `place_id`;
+- coordenadas;
+- UID o nombre de impresora;
+- push token usado únicamente como dirección de entrega;
+- número telefónico;
+- alias de correo;
+- identificador de pedido, pago, evento, receipt o tracking;
+- `provider_account_ref` por sí solo;
+- actor humano;
+- rol empresarial;
+- sesión humana;
+- payload, hash o firma ya producida.
+
+Si alguno de esos elementos participa posteriormente en un mecanismo de autenticación, la tarea correspondiente deberá documentar ese mecanismo sin reescribir su naturaleza base.
+
+---
+
+#### 12. Frontera con principal técnico
+
+La procedencia de credencial no altera las 21 decisiones de `INT-EXT-002`.
+
+Se mantiene:
+
+```text
+IntegrationPrincipal
+→ QUIÉN EJECUTA TÉCNICAMENTE
+
+ExternalCredentialId
+→ QUÉ CREDENCIAL REFERENCIADA AUTENTICA ESA EJECUCIÓN
+
+credential_issuer_class
+→ QUIÉN EMITIÓ O ASIGNÓ ESA CREDENCIAL
+```
+
+Una rotación futura de credencial no deberá fabricar un principal nuevo salvo que cambie realmente la identidad técnica de la integración.
+
+---
+
+#### 13. Evidencia técnica utilizada
+
+La clasificación de bindings observados se apoya en evidencia actual de repositorio:
+
+- Wompi: `payments-create-intent` y `payments-webhook` usan referencias `WOMPI_*` para checkout y validación de eventos;
+- RevenueCat: PASS configura el SDK con API keys por plataforma y el webhook usa un secreto configurado;
+- Resend: `staff-invitations-create` usa `RESEND_API_KEY` para la API de correo;
+- Expo Push: el envío observado usa el endpoint de push y tokens de destino sin header de credencial externa;
+- Sentry: ANIMA inicializa el SDK con `EXPO_PUBLIC_SENTRY_DSN`;
+- Google Maps: PASS usa `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY` cuando la vista cartográfica está habilitada;
+- Apple Wallet/APNs: PASS usa material de firma/push configurado y genera además el `authenticationToken` de pase bajo control de VENTO;
+- Vercel: la configuración inspeccionada acredita rewrites/headers, no una credencial;
+- Zebra BrowserPrint: NEXO detecta y selecciona dispositivos mediante el bridge local y UID, sin credencial externa observada;
+- Expo/EAS Update: ANIMA acredita `expoProjectId` y `u.expo.dev`, no una credencial física en la configuración inspeccionada.
+
+No se inspeccionaron ni expusieron valores secretos.
+
+---
+
+#### 14. Pendientes de evidencia con destino documental
+
+Los estados no acreditados tienen dueño y condición de salida:
+
+| Caso                                              | Propietario documental                    | Tarea / artefacto responsable                     | Condición de salida                                                                             |
+| ------------------------------------------------- | ----------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Referencia física de credencial sin valor secreto | BLOQUE H / BLOQUE X                       | `SHELL-CON-018`                                   | existir `external_credential_id` con sistema, instancia y procedencia respaldados por evidencia |
+| Mecanismo que consume cada credencial             | BLOQUE X                                  | `INT-EXT-004`                                     | mecanismo exacto definido sin alterar procedencia                                               |
+| Alcance permitido de la credencial                | BLOQUE X                                  | `INT-EXT-005`                                     | alcance mínimo definido por binding                                                             |
+| Separación por ambiente                           | BLOQUE X                                  | `INT-EXT-006`                                     | cada referencia física ligada a un ambiente sin reutilización cruzada                           |
+| Custodia del valor secreto                        | BLOQUE X                                  | `INT-EXT-007`                                     | mecanismo de almacenamiento definido sin exponer el valor                                       |
+| Rotación, expiración y revocación                 | BLOQUE X                                  | `INT-EXT-008`                                     | lifecycle definido para cada familia aplicable                                                  |
+| Binding futuro hoy no acreditado                  | BLOQUE X + propietario funcional heredado | tarea especializada del sistema y `SHELL-CON-018` | proveedor, instancia, binding y referencia de credencial acreditados antes de activación        |
+
+Ninguno de estos pendientes cambia la decisión actual de procedencia: cuando la evidencia no permite afirmar emisor, el estado documental correcto es `ORIGEN_NO_ACREDITADO` o `NO_APLICA_ACTUAL`.
+
+---
+
+#### 15. Reconciliación con el inventario heredado
+
+La clasificación de evidencia de `INT-EXT-001` se conserva exactamente:
+
+| Clasificación heredada               | Cantidad |
+| ------------------------------------ | -------: |
+| `BINDING_TECNICO_OBSERVADO`          |    **3** |
+| `BINDING_CONDICIONAL_OBSERVADO`      |    **6** |
+| `CONFIGURACION_OBSERVADA`            |    **2** |
+| `DOCUMENTADO_SIN_BINDING_ACREDITADO` |    **6** |
+| `PROVEEDOR_NO_ACREDITADO`            |    **4** |
+| **Total**                            |   **21** |
+
+La nueva clasificación de procedencia no sustituye esa distribución. Ambas dimensiones permanecen ortogonales.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La tarea no introduce un mecanismo ejecutable nuevo, una nueva autoridad, una nueva credencial física ni una nueva capacidad técnica. Materializa la procedencia documental sobre identidades ya inventariadas y especializa reglas vigentes que ya separan principal técnico, credencial, secreto, actor humano, autoridad empresarial, auditoría y frontera de adaptador.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 17. Criterios de aceptación
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones;
+3. faltantes = 0;
+4. duplicados = 0;
+5. se preserva la distribución heredada 3 + 6 + 2 + 6 + 4;
+6. cada identidad declara una procedencia o ausencia de procedencia acreditable;
+7. se distingue `PROVEEDOR_ACREDITADO_EN_BINDING` de `VENTO_EMITIDA`;
+8. se admite más de una procedencia dentro de una plataforma cuando existan superficies independientes;
+9. `EXT-SYS-009` conserva separada la credencial generada por VENTO del material asociado a Apple;
+10. un secreto configurado localmente no se declara emitido por VENTO sin evidencia;
+11. un token de destino no se convierte en credencial de integración;
+12. una URL, ID de proyecto, UID de impresora, alias o número telefónico no se convierte en credencial;
+13. `service_role` permanece credencial privilegiada interna y no autoridad empresarial;
+14. ninguna credencial externa se entrega como acceso directo a varios dominios VENTO;
+15. ninguna credencial se convierte en `PermissionKey`;
+16. ninguna credencial se convierte en `IntegrationPrincipal`;
+17. no se crean valores físicos de credencial;
+18. no se crean cuentas;
+19. no se crean secretos;
+20. no se selecciona un mecanismo de autenticación futuro;
+21. no se definen scopes;
+22. no se define separación por ambientes;
+23. no se define almacenamiento de secretos;
+24. no se define rotación o expiración;
+25. no se modifica Supabase;
+26. no se modifica código;
+27. no se ejecuta despliegue;
+28. cada caso no acreditado tiene destino documental y condición de salida;
+29. se crean cero requisitos de prueba;
+30. se modifican cero requisitos de prueba;
+31. `INT-EXT-004` permanece reservada.
+
+---
+
+#### 18. Resultado de la tarea
+
+`INT-EXT-003` deja diferenciada documentalmente la procedencia de credenciales para las 21 identidades externas.
+
+El modelo resultante permite representar:
+
+```text
+SISTEMA EXTERNO
++
+PRINCIPAL TÉCNICO
++
+REFERENCIA DE CREDENCIAL
++
+PROCEDENCIA DE CREDENCIAL
++
+PRESENTADOR
++
+VALIDADOR
++
+PROPIETARIO EMPRESARIAL
++
+CONTRATO
+```
+
+sin equiparar proveedor, credencial, principal, actor ni permiso.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-002 — Definir principal técnico independiente por integración`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo`
+
+
 ### [ ] INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
 ### [ ] INT-EXT-005 — Definir alcance mínimo de cada credencial
 ### [ ] INT-EXT-006 — Separar credenciales de desarrollo, staging y producción

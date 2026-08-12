@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **7007 de 7007** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |   `INT-EXT-002` |
+| Última tarea incorporada          |   `SUPA-TRANS-006` |
 | Fecha de normalización            |     `2026-08-08` |
 
 Distribución vigente:
