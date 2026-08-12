@@ -2579,7 +2579,507 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-006 — Separar credenciales de desarrollo, staging y producción`
 
 
-### [ ] INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
+### ✅ INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-005 — Definir alcance mínimo de cada credencial` — APROBADA
+**Tarea siguiente:** `INT-EXT-007 — Definir almacenamiento seguro de secretos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de la separación de credenciales por ambiente para cada identidad `EXT-SYS-001` a `EXT-SYS-021`, distinguiendo los ambientes VENTO de las etiquetas propias de proveedores, preservando bindings, mecanismos y alcances ya aprobados, sin crear credenciales, secretos, cuentas, proyectos, ambientes, almacenamiento, rotación, configuración ni cambios físicos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Fase:** exclusivamente documental
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, proveedores, configuración remota, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar la separación obligatoria de credenciales entre `DEVELOPMENT`, `STAGING` y `PRODUCTION` para las veintiuna identidades externas ya inventariadas, sin inferir cumplimiento a partir de nombres de variables, perfiles de build, etiquetas de telemetría, proyectos, URLs o convenciones del proveedor.
+
+La tarea debe impedir cuatro ambigüedades:
+
+```text
+AMBIENTE VENTO
+≠ ETIQUETA DE AMBIENTE DEL PROVEEDOR
+```
+
+```text
+PERFIL / CANAL / PROYECTO
+≠ CREDENCIAL SEPARADA
+```
+
+```text
+MISMO NOMBRE DE VARIABLE
+≠ MISMO VALOR DE CREDENCIAL
+```
+
+```text
+CREDENCIAL VÁLIDA EN UN AMBIENTE
+≠ AUTORIDAD EN OTRO AMBIENTE
+```
+
+La separación definida aquí es una frontera de autoridad técnica. No sustituye el alcance mínimo aprobado en `INT-EXT-005`, no define almacenamiento de secretos, no define lifecycle y no acredita por sí sola que una credencial exista o esté desplegada.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos de esta tarea:
+
+- `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-CONTRACT-001`, que define la semántica y las reglas de aislamiento por ambiente;
+- `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-MATRIX-001`, que materializa una decisión para cada `EXT-SYS-001` a `EXT-SYS-021`.
+
+Balance materializado:
+
+| Control                                                                | Resultado |
+| ---------------------------------------------------------------------- | --------: |
+| Identidades heredadas esperadas                                        |    **21** |
+| Identidades materializadas                                             | **21/21** |
+| Identificadores únicos                                                 |    **21** |
+| Identidades faltantes                                                  |     **0** |
+| Identidades duplicadas                                                 |     **0** |
+| Tríadas completas `DEVELOPMENT` / `STAGING` / `PRODUCTION` acreditadas |     **0** |
+| Separaciones parciales acreditadas                                     |     **1** |
+| Separaciones especificadas pendientes de evidencia                     |     **6** |
+| Configuraciones de ambiente sin separación de credencial acreditada    |     **2** |
+| Bindings observados sin credencial externa                             |     **2** |
+| Modelos documentados sin binding acreditado                            |     **1** |
+| Identidades sin binding actual a las que no aplica separación física   |     **9** |
+| Credenciales o secretos creados                                        |     **0** |
+| Cuentas, proyectos o ambientes creados                                 |     **0** |
+| Requisitos de prueba creados o modificados                             |     **0** |
+
+La distribución de evidencia heredada de `INT-EXT-001` se conserva sin cambios:
+
+```text
+3 BINDING_TECNICO_OBSERVADO
++
+6 BINDING_CONDICIONAL_OBSERVADO
++
+2 CONFIGURACION_OBSERVADA
++
+6 DOCUMENTADO_SIN_BINDING_ACREDITADO
++
+4 PROVEEDOR_NO_ACREDITADO
+=
+21
+```
+
+El resultado no presenta ninguna identidad como físicamente conforme con la tríada completa cuando las fuentes actuales solo acreditan una parte, una configuración, un modelo o ningún binding.
+
+---
+
+#### 3. Fuentes y contratos preservados
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades, sus proveedores acreditados o no acreditados, propietarios funcionales, custodios técnicos, finalidades y clasificación de evidencia;
+- `INT-EXT-002`, incluida la separación entre actor humano, `IntegrationPrincipal`, cuenta del proveedor, referencia de credencial, valor secreto y autoridad empresarial;
+- `INT-EXT-003`, incluida la procedencia por superficie y la distinción entre credenciales emitidas por proveedor, emitidas por VENTO, no acreditadas y artefactos que no son credenciales;
+- `INT-EXT-004`, incluidos los mecanismos reales observados, sus límites, la separación entre autenticación y autorización y el comportamiento fail-closed;
+- `INT-EXT-005`, incluido el alcance mínimo por credencial y la prohibición de ampliar autoridad técnica por reutilización de una credencial;
+- la obligación canónica ya existente de que cada ambiente use una credencial independiente;
+- la regla de que `service_role` permanece como credencial interna privilegiada de VENTO y no se entrega a proveedores externos;
+- el registro `04A` vigente y su cobertura de mínimo privilegio, contexto de ejecución técnica por ambiente, custodia de secretos, trazabilidad y separación entre autenticación técnica y autoridad empresarial.
+
+Como evidencia técnica actual se consideran, sin convertirlos en prueba de operación remota:
+
+- validación `test` / `prod` observada en el checkout de Wompi;
+- configuración local de Supabase y uso de credenciales server-side en funciones;
+- variables de RevenueCat, Resend, Sentry, Google Maps, Apple Wallet y Google Wallet;
+- perfiles EAS `development`, `preview` y `production` observados en aplicaciones móviles;
+- bindings sin credencial externa observada de Expo Push y Zebra BrowserPrint;
+- configuraciones de plataforma que no acreditan por sí solas una credencial separada.
+
+---
+
+#### 4. Semántica de ambiente VENTO
+
+`VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-CONTRACT-001` define exactamente tres identidades lógicas de ambiente para esta tarea:
+
+| Ambiente VENTO | Finalidad documental de la frontera de credencial |
+| -------------- | ------------------------------------------------- |
+| `DEVELOPMENT`  | desarrollo y prueba técnica no productiva         |
+| `STAGING`      | validación preproductiva aislada                  |
+| `PRODUCTION`   | operación productiva autorizada                   |
+
+Estas identidades no se derivan automáticamente de etiquetas externas.
+
+Por tanto:
+
+- `test` de un proveedor no equivale automáticamente a `DEVELOPMENT` ni a `STAGING`;
+- `preview` de Expo/EAS no equivale automáticamente a `STAGING`;
+- `development` o `production` usados como tags de telemetría no acreditan una credencial distinta;
+- un branch, deployment, URL, proyecto, canal, `projectId`, `place_id`, UID, token de dispositivo o identificador de cuenta no prueba por sí mismo la existencia de una credencial separada;
+- una misma cuenta externa puede contener varios ambientes únicamente cuando el proveedor permite aislar de forma verificable credenciales, recursos y autoridad; de lo contrario, se requerirá una instancia, proyecto, aplicación o cuenta externa separada antes de habilitar el ambiente afectado.
+
+La tarea no crea esas instancias externas ni determina todavía dónde se almacenan sus secretos.
+
+---
+
+#### 5. `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-CONTRACT-001`
+
+Cuando una superficie de integración materialice una credencial, la relación lógica mínima queda definida como:
+
+```text
+AMBIENTE VENTO
++
+SISTEMA EXTERNO
++
+INTEGRATION PRINCIPAL
++
+SUPERFICIE DE CREDENCIAL
++
+REFERENCIA DE CREDENCIAL
++
+INSTANCIA / ENDPOINT EXTERNO ALCANZADO
++
+DESTINO INTERNO AUTORIZADO
+→ BINDING DE AMBIENTE
+```
+
+Reglas:
+
+1. la identidad del ambiente se resuelve antes de buscar o presentar material de credencial;
+2. una referencia de credencial materializada pertenece a un único ambiente VENTO;
+3. el valor secreto alcanzado por esa referencia no puede ser reutilizado como credencial de otro ambiente;
+4. un `IntegrationPrincipal` puede existir lógicamente en varios ambientes solo mediante bindings de credencial independientes;
+5. una credencial de `PRODUCTION` no puede ser cargada, presentada ni usada desde `DEVELOPMENT` o `STAGING`;
+6. una credencial de `STAGING` no puede ser cargada, presentada ni usada desde `DEVELOPMENT` o `PRODUCTION`;
+7. una credencial de `DEVELOPMENT` no puede ser cargada, presentada ni usada desde `STAGING` o `PRODUCTION`;
+8. compartir nombre de variable entre runtimes no prueba compartir valor y tampoco prueba aislamiento; la conformidad requiere evidencia de la referencia o material efectivo por ambiente;
+9. compartir cuenta de proveedor no elimina la obligación de aislamiento de credencial y recurso;
+10. compartir proyecto o aplicación externa solo es admisible cuando la plataforma permite separar efectivamente credenciales y autoridad por ambiente sin acceso cruzado;
+11. si el proveedor no permite aislamiento suficiente dentro de una misma instancia, el ambiente permanece bloqueado hasta usar una instancia externa separada;
+12. `service_role` conserva binding estricto al ambiente interno de VENTO y no se transforma en credencial del proveedor;
+13. el alcance mínimo aprobado en `INT-EXT-005` se aplica dentro de cada ambiente y nunca se amplía por el hecho de separar credenciales;
+14. almacenamiento, acceso humano/técnico y custodia del valor secreto pertenecen a `INT-EXT-007`;
+15. rotación, expiración y revocación pertenecen a `INT-EXT-008`.
+
+La tarea no inventa valores físicos de `ExternalCredentialId`, `IntegrationPrincipal`, cuenta, proyecto o secreto.
+
+---
+
+#### 6. Regla de coherencia extremo a extremo
+
+La separación no se considera correcta si únicamente cambia la variable o el secreto, pero la operación sigue cruzando ambientes.
+
+Toda integración aplicable deberá conservar coherencia entre:
+
+```text
+RUNTIME VENTO
+→ AMBIENTE VENTO
+→ INTEGRATION PRINCIPAL
+→ REFERENCIA DE CREDENCIAL
+→ CREDENCIAL DEL MISMO AMBIENTE
+→ INSTANCIA / ENDPOINT / RECURSO EXTERNO COMPATIBLE
+→ DESTINO INTERNO DEL MISMO AMBIENTE
+```
+
+Se prohíben, entre otros, estos cruces:
+
+- desarrollo con credencial de producción;
+- staging con credencial de producción;
+- producción con credencial de test;
+- credencial no productiva escribiendo en datos productivos;
+- credencial productiva usada contra recursos de desarrollo o staging;
+- webhook de un ambiente aceptado y aplicado sobre transacciones de otro;
+- aplicación móvil no productiva configurada para una credencial productiva por fallback;
+- secreto interno privilegiado compartido entre ambientes para simplificar despliegues.
+
+Una etiqueta de entorno recibida del cliente o del proveedor no es autoridad suficiente para seleccionar credencial o destino interno.
+
+---
+
+#### 7. Clasificación documental de evidencia
+
+Los estados de `INT-EXT-006` describen exclusivamente evidencia de separación por ambiente:
+
+| Estado documental                                                    | Significado                                                                                                                                                                |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SEPARACION_PARCIAL_ACREDITADA`                                      | Existe evidencia física de separación o validación entre al menos dos clases de entorno, pero no la tríada VENTO completa.                                                 |
+| `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | Existe una credencial o superficie material y la separación VENTO queda normada, pero las fuentes no acreditan valores/referencias independientes para los tres ambientes. |
+| `CONFIGURACION_DE_AMBIENTES_SIN_SEPARACION_DE_CREDENCIAL_ACREDITADA` | Existen perfiles, canales o configuración diferenciada por ambiente, pero no evidencia suficiente de credenciales independientes.                                          |
+| `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                                   | El binding observado no presenta credencial externa de cliente sobre la cual materializar separación actual.                                                               |
+| `MODELO_DOCUMENTADO_SIN_BINDING`                                     | Existe un modelo de credencial o cuenta documentado, pero no un binding remoto acreditado sobre el cual comprobar separación.                                              |
+| `NO_APLICA_ACTUAL`                                                   | No existe binding/credencial actual acreditado; no se fabrica una separación física inexistente.                                                                           |
+
+Ninguno de estos estados equivale a `IMPLEMENTADO`, `VALIDADO` o conformidad remota salvo que exista evidencia suficiente para esa afirmación.
+
+---
+
+#### 8. Observaciones técnicas actuales por familia
+
+##### 8.1. Supabase
+
+La configuración local observada acredita un contexto de desarrollo local y el código usa credenciales Supabase diferenciadas por función o nivel de privilegio. No acredita tres proyectos o tres juegos remotos de credenciales VENTO para `DEVELOPMENT`, `STAGING` y `PRODUCTION`.
+
+Decisión: la separación completa queda especificada y pendiente de evidencia física.
+
+##### 8.2. Wompi
+
+El checkout observado:
+
+- infiere `test` o `prod` desde la clave pública;
+- infiere `test` o `prod` desde el secreto de integridad;
+- rechaza cuando ambos materiales no pertenecen a la misma clase;
+- puede exigir coherencia adicional con `WOMPI_ENVIRONMENT`.
+
+Esto acredita una separación parcial entre familias `test` y `prod`, no una tríada VENTO completa. El webhook usa una referencia de secreto genérica y no acredita discriminación independiente para `DEVELOPMENT`, `STAGING` y `PRODUCTION`.
+
+##### 8.3. RevenueCat y Resend
+
+Las superficies observadas usan nombres genéricos de credencial para el runtime que las consume. No existe evidencia suficiente en las fuentes inspeccionadas para demostrar referencias o valores independientes por los tres ambientes VENTO.
+
+##### 8.4. Expo / EAS Update
+
+ANIMA y PASS contienen perfiles `development`, `preview` y `production`.
+
+La existencia de esos perfiles acredita separación de configuración/build, pero:
+
+```text
+preview ≠ STAGING por inferencia
+```
+
+ni acredita que los secretos utilizados por esos perfiles sean distintos.
+
+##### 8.5. Sentry
+
+El runtime observado puede etiquetar eventos como `development` o `production`, pero consume una referencia `EXPO_PUBLIC_SENTRY_DSN`. La etiqueta del evento no demuestra que existan DSN independientes.
+
+##### 8.6. Google Maps / Google Reviews
+
+La API key opcional observada no contiene una discriminación de ambiente acreditada en el código inspeccionado. URLs públicas, coordenadas y `place_id` siguen fuera del concepto de credencial.
+
+##### 8.7. Apple Wallet / PassKit y APNs
+
+Las superficies observadas usan material de certificado/clave para firma de pases, material P8 para APNs y token VENTO por pase. Los nombres de variables inspeccionados no acreditan pares o tríadas independientes por ambiente.
+
+##### 8.8. Expo Push Service y Zebra BrowserPrint
+
+No se observó una credencial externa de cliente en los bindings inspeccionados. Los push tokens de dispositivo, UID o nombre de impresora no se convierten en credenciales para satisfacer artificialmente esta tarea.
+
+##### 8.9. Google Wallet
+
+Existe un modelo técnico con issuer, class y cuenta de servicio para una superficie de Wallet, pero el binding remoto actual no queda acreditado. No se declara separación de credencial por ambiente sin demostrar primero el binding efectivo.
+
+##### 8.10. Vercel y sistemas sin binding
+
+La existencia de despliegues o configuración Vercel no acredita por sí misma credenciales administrativas distintas por ambiente. Para las identidades sin binding actual no se asignan credenciales de desarrollo, staging o producción por inferencia.
+
+---
+
+#### 9. `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Evidencia heredada                   | Evidencia ambiental actual                                                                     | Decisión `INT-EXT-006`                                               | Estado físico            | Bloqueo / condición de salida                                                                                                          |
+| ------------- | ---------------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `BINDING_TECNICO_OBSERVADO`          | configuración local y credenciales runtime observadas; tríada remota no acreditada             | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar referencias/material independiente y targets coherentes para `DEVELOPMENT`, `STAGING` y `PRODUCTION`                         |
+| `EXT-SYS-002` | Wompi                                    | `BINDING_CONDICIONAL_OBSERVADO`      | checkout distingue `test` / `prod`; webhook y tríada VENTO completa no quedan discriminados    | `SEPARACION_PARCIAL_ACREDITADA`                                      | `PENDIENTE_DE_EVIDENCIA` | acreditar mapping VENTO de los tres ambientes y credenciales independientes en checkout/webhook sin reutilización cruzada              |
+| `EXT-SYS-003` | RevenueCat                               | `BINDING_CONDICIONAL_OBSERVADO`      | API keys por plataforma y secreto de webhook observados; separación por ambiente no acreditada | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar credenciales/referencias independientes por ambiente para SDK y webhook                                                      |
+| `EXT-SYS-004` | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `RESEND_API_KEY` observada sin discriminación ambiental acreditada                             | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar credencial y remitente/configuración compatibles e independientes por ambiente                                               |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | perfiles `development`, `preview`, `production`; separación de credencial no demostrada        | `CONFIGURACION_DE_AMBIENTES_SIN_SEPARACION_DE_CREDENCIAL_ACREDITADA` | `PENDIENTE_DE_EVIDENCIA` | acreditar mapping de perfiles a ambientes VENTO y material/referencias de credencial independientes donde exista autenticación externa |
+| `EXT-SYS-006` | Expo Push Service                        | `BINDING_TECNICO_OBSERVADO`          | llamada externa observada sin credencial de cliente                                            | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                                   | `NO_APLICA`              | si el proveedor/binding futuro exige credencial, materializar su binding ambiental antes de habilitarla                                |
+| `EXT-SYS-007` | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | tag de entorno observado; una referencia DSN genérica en código                                | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar DSN/proyecto o aislamiento equivalente que impida ingestión cruzada entre ambientes                                          |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | API key opcional observada sin discriminación ambiental                                        | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar claves/restricciones independientes o aislamiento equivalente por ambiente cuando la API key esté habilitada                 |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | certificados, clave P8 y token por pase observados; tríada ambiental no acreditada             | `SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA`                     | `PENDIENTE_DE_EVIDENCIA` | demostrar material y referencias por ambiente para firma/APNs/servicio Wallet sin cruce de pases o endpoints                           |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_OBSERVADA`            | hosting/configuración observados; credencial administrativa por ambiente no acreditada         | `CONFIGURACION_DE_AMBIENTES_SIN_SEPARACION_DE_CREDENCIAL_ACREDITADA` | `PENDIENTE_DE_EVIDENCIA` | demostrar identidad/credencial de despliegue o administración aislada cuando el contrato operativo la materialice                      |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | bridge local observado sin credencial externa                                                  | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                                   | `NO_APLICA`              | si se introduce autenticación del bridge o proveedor, materializar binding ambiental antes de uso                                      |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | modelo de issuer/class/cuenta de servicio; binding remoto no acreditado                        | `MODELO_DOCUMENTADO_SIN_BINDING`                                     | `NO_APLICA_ACTUAL`       | acreditar binding efectivo y después demostrar credenciales/recursos independientes por ambiente                                       |
+| `EXT-SYS-013` | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | proveedor e interfaz no acreditados                                                            | `NO_APLICA_ACTUAL`                                                   | `BLOQUEADO`              | `INT-POS-001` acredita proveedor, interfaces y binding; después se materializa separación antes de activación                          |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                                                      | `NO_APLICA_ACTUAL`                                                   | `NO_APLICA`              | acreditar binding real; si se activa, separar credenciales antes de cualquier uso multientorno                                         |
+| `EXT-SYS-015` | Rappi / marketplace                      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                                                      | `NO_APLICA_ACTUAL`                                                   | `NO_APLICA`              | acreditar proveedor/binding y materializar separación ambiental antes de activación                                                    |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                                                      | `NO_APLICA_ACTUAL`                                                   | `NO_APLICA`              | acreditar cuenta/binding y materializar separación ambiental antes de activación                                                       |
+| `EXT-SYS-017` | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | proveedor/API no acreditados                                                                   | `NO_APLICA_ACTUAL`                                                   | `NO_APLICA`              | acreditar proveedor, cuenta técnica y binding; después separar credenciales por ambiente                                               |
+| `EXT-SYS-018` | Instagram / social                       | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | API/binding no acreditados                                                                     | `NO_APLICA_ACTUAL`                                                   | `NO_APLICA`              | acreditar cuenta técnica/binding y separar credenciales antes de activación multientorno                                               |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `PROVEEDOR_NO_ACREDITADO`            | proveedor e integración no acreditados                                                         | `NO_APLICA_ACTUAL`                                                   | `BLOQUEADO`              | acreditar proveedor y binding; posteriormente aplicar el contrato ambiental a cualquier credencial técnica                             |
+| `EXT-SYS-020` | Telefonía / voz                          | `PROVEEDOR_NO_ACREDITADO`            | operador e integración no acreditados                                                          | `NO_APLICA_ACTUAL`                                                   | `BLOQUEADO`              | acreditar operador, cuenta e interfaz; posteriormente separar credenciales por ambiente                                                |
+| `EXT-SYS-021` | Transporte externo                       | `PROVEEDOR_NO_ACREDITADO`            | proveedor, tracking e interfaz no acreditados                                                  | `NO_APLICA_ACTUAL`                                                   | `BLOQUEADO`              | acreditar proveedor y binding; posteriormente separar credenciales por ambiente antes de activar efectos                               |
+
+---
+
+#### 10. Reconciliación de cobertura
+
+La matriz conserva las veintiuna identidades heredadas y produce una decisión única por cada una.
+
+Distribución de `INT-EXT-006`:
+
+```text
+1 SEPARACION_PARCIAL_ACREDITADA
++
+6 SEPARACION_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA
++
+2 CONFIGURACION_DE_AMBIENTES_SIN_SEPARACION_DE_CREDENCIAL_ACREDITADA
++
+2 SIN_CREDENCIAL_EXTERNA_OBSERVADA
++
+1 MODELO_DOCUMENTADO_SIN_BINDING
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+Resultado de conformidad física completa:
+
+```text
+TRIADAS DEVELOPMENT / STAGING / PRODUCTION ACREDITADAS = 0
+```
+
+Esta cifra no significa que las credenciales sean necesariamente compartidas. Significa exclusivamente que las fuentes inspeccionadas no permiten afirmar la existencia y aislamiento verificable de las tres credenciales/referencias requeridas.
+
+---
+
+#### 11. Comportamiento fail-closed ante mismatch de ambiente
+
+Cuando una integración aplicable materialice separación física, el runtime deberá resolver el ambiente antes de producir un efecto externo o de usar autoridad privilegiada posterior.
+
+Se rechaza la operación cuando:
+
+- el ambiente VENTO no puede resolverse de forma autoritativa;
+- la referencia de credencial pertenece a otro ambiente;
+- el proveedor devuelve o identifica un ambiente incompatible con el esperado;
+- endpoint, cuenta, proyecto o recurso externo no corresponde al binding del ambiente;
+- el destino interno pertenece a otro ambiente;
+- solo existe una credencial productiva para un runtime no productivo;
+- el sistema intenta hacer fallback a una credencial de otro ambiente;
+- la evidencia de entorno proviene únicamente de un parámetro manipulable del cliente.
+
+El rechazo debe ocurrir antes del efecto externo irreversible o del efecto interno privilegiado que dependa de esa integración.
+
+Esta tarea no define el código de error público, mecanismo de retry, circuit breaker, cuarentena ni lifecycle de la credencial.
+
+---
+
+#### 12. Separación de datos, recursos y cuentas
+
+Separar el secreto sin separar el recurso alcanzado no satisface el objetivo cuando el mismo recurso permite contaminación cruzada.
+
+Por ello:
+
+1. una credencial no productiva no podrá apuntar a datos productivos por configuración;
+2. una credencial productiva no podrá usarse como fallback de desarrollo o staging;
+3. cuando el proveedor ofrezca recursos aislables dentro de una cuenta, cada ambiente deberá quedar limitado a su recurso autorizado;
+4. cuando el proveedor no ofrezca aislamiento suficiente, deberá existir una instancia/proyecto/aplicación/cuenta separada antes de considerar habilitado ese ambiente;
+5. la decisión de crear o contratar esa instancia externa no se ejecuta en `INT-EXT-006`;
+6. el ambiente forma parte del contexto técnico y de auditoría, pero nunca se registran valores secretos para demostrarlo;
+7. un identificador de recurso externo puede conservarse como referencia, pero no sustituye la referencia de credencial ni la prueba de aislamiento.
+
+---
+
+#### 13. Trazabilidad de handoff
+
+| Pendiente                                                                  | Estado                    | Propietario / tarea responsable                                                          | Condición de salida                                                                                            |
+| -------------------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Referencia física de credencial con ambiente explícito y sin valor secreto | `FUERA_DE_ALCANCE`        | `SHELL-CON-018`                                                                          | contrato consumible representa sistema, principal, superficie, ambiente y referencia sin exponer secreto       |
+| Almacenamiento, custodia y acceso a secretos separados por ambiente        | `FUERA_DE_ALCANCE`        | `INT-EXT-007`                                                                            | ubicación y permisos de acceso aprobados impiden exposición o lectura cruzada no autorizada                    |
+| Rotación, expiración y revocación independientes por ambiente              | `FUERA_DE_ALCANCE`        | `INT-EXT-008`                                                                            | lifecycle permite retirar una credencial sin reutilizar ni afectar indebidamente otros ambientes               |
+| Proveedor y binding exactos del POS vigente                                | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                                                                            | proveedor, interfaces, cuentas y credenciales quedan acreditados antes de aplicar separación ambiental física  |
+| Evidencia física de tríada completa para bindings ya observados            | `PENDIENTE_DE_EVIDENCIA`  | tarea de implementación propietaria de cada binding + `SHELL-CON-018` cuando corresponda | cada runtime demuestra referencia/material independiente y coherencia de endpoint/recurso/destino por ambiente |
+| Mapping de `preview` u otras etiquetas de proveedor a `STAGING`            | `PENDIENTE_DE_EVIDENCIA`  | configuración propietaria de la aplicación/integración correspondiente                   | existe decisión explícita de ambiente VENTO; no se deriva por nombre del perfil                                |
+
+No queda pendiente narrativo sin propietario, tarea responsable o condición de salida.
+
+---
+
+#### 14. Prohibiciones
+
+Queda prohibido:
+
+1. usar una credencial de `PRODUCTION` en `DEVELOPMENT` o `STAGING`;
+2. usar una credencial de `STAGING` en `DEVELOPMENT` o `PRODUCTION`;
+3. usar una credencial de `DEVELOPMENT` en `STAGING` o `PRODUCTION`;
+4. compartir el mismo valor secreto entre ambientes aunque las variables tengan nombres distintos;
+5. considerar separados dos ambientes únicamente porque usan distintos nombres de variable;
+6. considerar `preview` equivalente a `STAGING` sin decisión VENTO explícita;
+7. considerar un tag de Sentry, canal EAS, branch, URL, `projectId`, account ID o endpoint como prueba suficiente de credencial separada;
+8. permitir fallback a una credencial de otro ambiente cuando falta la credencial correcta;
+9. usar `service_role` de un ambiente desde otro o entregarlo a un proveedor externo;
+10. presentar push tokens, UIDs, números, aliases, `place_id`, tracking o identificadores de proyecto como credenciales;
+11. documentar valores secretos para probar separación;
+12. inventar que existe staging físico cuando solo existe una etiqueta `preview` o un entorno de test del proveedor;
+13. declarar conformidad completa con una tríada si solo se acreditan `test` y `prod`;
+14. crear cuentas, proyectos, claves, certificados, secretos o ambientes durante esta fase documental;
+15. adelantar almacenamiento/custodia de `INT-EXT-007` o lifecycle de `INT-EXT-008`.
+
+---
+
+#### 15. Criterios de aceptación
+
+`INT-EXT-006` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existen exactamente veintiuna decisiones, una por `EXT-SYS-001` a `EXT-SYS-021`;
+2. no existen identidades faltantes ni duplicadas;
+3. se preserva la distribución heredada `3 + 6 + 2 + 6 + 4 = 21`;
+4. `DEVELOPMENT`, `STAGING` y `PRODUCTION` quedan definidos como identidades VENTO y no como aliases automáticos del proveedor;
+5. cada credencial material futura queda limitada a un único ambiente VENTO;
+6. la coherencia abarca runtime, principal, credencial, recurso externo y destino interno;
+7. los bindings sin evidencia suficiente permanecen pendientes o no aplicables, sin declarar cumplimiento ficticio;
+8. Wompi queda reconocido como separación parcial `test` / `prod`, no como tríada VENTO completa;
+9. Expo/EAS conserva sus perfiles observados sin convertir `preview` en `STAGING` por inferencia;
+10. Expo Push y Zebra no reciben credenciales ficticias;
+11. Google Wallet no se presenta como binding remoto acreditado;
+12. se registran propietarios y condiciones de salida para toda evidencia física pendiente;
+13. no se crea, expone, almacena, rota ni revoca ningún secreto;
+14. no se modifica código, Supabase, proveedor, configuración remota ni datos;
+15. la tarea produce cero cambios en requisitos de prueba porque materializa por identidad una obligación ambiental ya cubierta por los controles canónicos vigentes y no introduce una nueva superficie ejecutable.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- la obligación de credencial independiente por ambiente ya forma parte de los contratos canónicos consumidos por esta tarea;
+- los controles vigentes ya exigen mínimo privilegio, ambiente dentro del contexto de ejecución técnica, separación de autoridad, protección de credenciales y trazabilidad sin exposición de secretos;
+- `INT-EXT-006` materializa esa obligación sobre las veintiuna identidades y clasifica la evidencia actual, pero no crea una credencial, endpoint, mecanismo, permiso, esquema, cambio de datos, almacenamiento, lifecycle ni comportamiento ejecutable nuevo;
+- las brechas físicas quedan asignadas a tareas propietarias y condiciones de salida explícitas, sin declararlas satisfechas.
+
+---
+
+#### 17. Resultado de la tarea
+
+`INT-EXT-006` queda **APROBADA** como definición documental completa de separación de credenciales por ambiente para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-CONTRACT-001`: **ESPECIFICADO**;
+- `VENTO-EXTERNAL-CREDENTIAL-ENVIRONMENT-MATRIX-001`: **21/21 decisiones materializadas**;
+- faltantes: **0**;
+- duplicados: **0**;
+- tríadas `DEVELOPMENT` / `STAGING` / `PRODUCTION` físicamente acreditadas: **0**;
+- separación parcial acreditada: **1** (`EXT-SYS-002` Wompi, `test` / `prod` sin equivalencia automática a la tríada VENTO);
+- separaciones especificadas pendientes de evidencia: **6**;
+- configuraciones de ambiente sin separación de credencial acreditada: **2**;
+- bindings observados sin credencial externa: **2**;
+- modelo documentado sin binding: **1**;
+- identidades `NO_APLICA_ACTUAL`: **9**;
+- credenciales, secretos, cuentas, proyectos o ambientes creados: **0**;
+- cambios físicos: **0**;
+- requisitos de prueba creados o modificados: **0**.
+
+La siguiente tarea queda reservada exclusivamente para almacenamiento seguro de secretos; esta tarea no adelanta esa decisión.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-005 — Definir alcance mínimo de cada credencial`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-006 — Separar credenciales de desarrollo, staging y producción`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-007 — Definir almacenamiento seguro de secretos`
+
+
 ### [ ] INT-EXT-007 — Definir almacenamiento seguro de secretos
 ### [ ] INT-EXT-008 — Definir rotación, expiración y revocación
 ### [ ] INT-EXT-009 — Definir contratos de entrada y salida versionados
