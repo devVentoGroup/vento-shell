@@ -12643,7 +12643,1010 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-019 — Definir retiro de integración y revocación de credenciales`
 
 
-### [ ] INT-EXT-019 — Definir retiro de integración y revocación de credenciales
+### ✅ INT-EXT-019 — Definir retiro de integración y revocación de credenciales
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor` — APROBADA
+**Tarea siguiente:** `INT-EXT-020 — Prohibir credenciales compartidas entre integraciones` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del retiro controlado de integraciones externas, detención de nuevos efectos, drenaje y conciliación de trabajo en curso, desactivación de bindings, revocación de credenciales, retiro de referencias locales y preservación de historia para `EXT-SYS-001` a `EXT-SYS-021`, sin ejecutar cambios físicos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, Storage, secretos, credenciales, cuentas externas, endpoints, webhooks, proyectos, dominios, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VENTO retira una integración externa completa y cómo invalida sus credenciales sin perder historia, fabricar resultados, interrumpir de forma insegura operaciones en curso ni convertir el retiro técnico en una eliminación del hecho empresarial.
+
+La tarea separa obligatoriamente:
+
+```text
+RETIRO DE INTEGRACIÓN
+≠
+ROTACIÓN DE CREDENCIAL
+≠
+REVOCACIÓN DE CREDENCIAL
+≠
+RETIRO LOCAL DE REFERENCIAS
+≠
+ELIMINACIÓN DE CUENTA DEL PROVEEDOR
+≠
+BORRADO DE DATOS O EVIDENCIA
+≠
+CANCELACIÓN EMPRESARIAL
+```
+
+Regla cardinal:
+
+```text
+RETIRAR EL CAMINO TÉCNICO
+NO REESCRIBE
+LO QUE YA OCURRIÓ EN EL NEGOCIO
+```
+
+La integración puede terminar de forma definitiva sin sucesor. Cuando sí exista reemplazo, el reemplazo no adquiere automáticamente identidades, receipts, mappings, autorizaciones, credenciales ni resultados del binding retirado.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-INTEGRATION-RETIREMENT-CREDENTIAL-REVOCATION-CONTRACT-001@1.0.0`.
+2. `VENTO-EXTERNAL-INTEGRATION-RETIREMENT-CREDENTIAL-REVOCATION-MATRIX-001@1.0.0`.
+
+Balance materializado:
+
+| Control                                              | Resultado |
+| ---------------------------------------------------- | --------: |
+| Identidades externas esperadas                       |    **21** |
+| Identidades materializadas                           | **21/21** |
+| Identificadores `EXT-SYS-*` únicos                   |    **21** |
+| Identidades faltantes                                |     **0** |
+| Identidades duplicadas                               |     **0** |
+| `RETIRO_GOBERNADO_POR_CONTRATO_INTERNO`              |     **1** |
+| `RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION` |     **2** |
+| `RETIRO_OUTBOUND_CON_DRENAJE_Y_REVOCACION`           |     **1** |
+| `RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`     |     **2** |
+| `RETIRO_OUTBOUND_SIN_CREDENCIAL_EXTERNA_OBSERVADA`   |     **1** |
+| `RETIRO_OBSERVABILIDAD_PUBLICABLE`                   |     **1** |
+| `RETIRO_LECTURA_CON_CREDENCIAL_PUBLICABLE`           |     **1** |
+| `RETIRO_HIBRIDO_MULTIMATERIAL`                       |     **1** |
+| `RETIRO_LOCAL_SIN_CREDENCIAL_EXTERNA`                |     **1** |
+| `MODELO_SIN_BINDING_REMOTO`                          |     **1** |
+| `NO_APLICA_SIN_BINDING`                              |     **7** |
+| `BLOQUEADA_SIN_BINDING`                              |     **2** |
+| Revocaciones físicas ejecutadas                      |     **0** |
+| Cuentas o proyectos de proveedor eliminados          |     **0** |
+| Requisitos de prueba creados o modificados           |     **0** |
+
+Reconciliación:
+
+```text
+1 + 2 + 1 + 2 + 1 + 1 + 1 + 1 + 1 + 1 + 7 + 2 = 21
+```
+
+La tarea materializa la semántica de retiro. No afirma que una credencial actual haya sido revocada, que un endpoint haya sido deshabilitado, que una cuenta del proveedor haya sido cerrada ni que un consumidor haya sido migrado.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- el inventario vigente `EXT-SYS-001` a `EXT-SYS-021` y su nivel de evidencia;
+- la separación entre actor humano, `IntegrationPrincipal`, cuenta externa, referencia de credencial y autoridad empresarial;
+- procedencia, autenticación, scopes mínimos, separación de ambientes y custodia de credenciales;
+- `VENTO-EXTERNAL-CREDENTIAL-LIFECYCLE-CONTRACT-001` y su semántica de rotación, expiración, revocación y retiro local;
+- los contratos de entrada/salida, estrategia de entrega, autenticidad, idempotencia, mapping y custodia de evidencia externa;
+- la política de retry, backoff, resultado desconocido y circuit breaker;
+- cuarentena, dead-letter, intervención, auditoría, métricas, alertas y conciliación;
+- contingencia y reincorporación controlada ante indisponibilidad del proveedor;
+- la propiedad empresarial de cada dominio VENTO;
+- el contrato compartido pendiente de referencia de credencial externa sin secreto;
+- los contratos compartidos de evento externo recibido, mapping, idempotencia/conciliación y cuarentena/rechazo/compensación;
+- los contratos de continuidad de proveedores y retorno al servicio normal.
+
+Ninguna decisión de esta tarea cambia retrospectivamente el significado de un receipt, una operación, un evento, un mapping, una evidencia, un resultado empresarial o una credencial histórica.
+
+---
+
+#### 4. Semántica cerrada del retiro
+
+`VENTO-EXTERNAL-INTEGRATION-RETIREMENT-CREDENTIAL-REVOCATION-CONTRACT-001@1.0.0` distingue:
+
+| Concepto                     | Definición                                                                                                                                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `RETIRO_PLANIFICADO`         | terminación controlada de una integración vigente por decisión autorizada, con corte de nuevas operaciones, estabilización del trabajo existente y cierre técnico posterior                                        |
+| `REVOCACION_DE_EMERGENCIA`   | invalidación prioritaria de una credencial cuando existe compromiso o pérdida de confianza; puede anteceder al drenaje normal porque la seguridad prevalece sobre la continuidad del material comprometido         |
+| `QUIESCING`                  | fase en la que no se admiten nuevas intenciones dependientes del binding, pero todavía se clasifican, completan o concilian unidades preexistentes autorizadas                                                     |
+| `DRENAJE_CONTROLADO`         | tratamiento de trabajo pendiente preservando identidad, idempotencia, orden, autorización y límites sin crear nuevas intenciones                                                                                   |
+| `DESACTIVACION_DE_BINDING`   | retirada del camino técnico que permite tráfico nuevo hacia o desde la integración para el alcance retirado                                                                                                        |
+| `REVOCACION_DE_CREDENCIAL`   | invalidación del material en la autoridad, cuenta, proyecto o mecanismo que puede aceptarlo                                                                                                                        |
+| `RETIRO_LOCAL_DE_REFERENCIA` | eliminación o desactivación de referencias y copias obsoletas una vez que ningún consumidor autorizado depende de ellas y la invalidez está acreditada                                                             |
+| `PRESERVACION_HISTORICA`     | conservación gobernada de receipts, mappings, auditoría, evidencia, resultados y referencias no sensibles necesarias después del retiro                                                                            |
+| `RETIRO_TERMINAL`            | estado en el que el binding ya no puede producir nuevos efectos, las credenciales aplicables están invalidadas o no aplican, las referencias activas fueron retiradas y los residuales están resueltos o asignados |
+
+No se crea un estado que permita reactivar una credencial `REVOCADA`, `EXPIRADA` o `RETIRADA`. Una futura reactivación de la integración constituye una nueva habilitación autorizada y utiliza material válido conforme al lifecycle vigente.
+
+---
+
+#### 5. Motivos de retiro y precedencia
+
+El retiro puede originarse, entre otros, por:
+
+- terminación del proveedor o del binding;
+- sustitución planificada por otra integración ya acreditada;
+- reducción de alcance;
+- retiro de una aplicación, ambiente o superficie;
+- cambio contractual que elimina la necesidad del intercambio;
+- pérdida de propietario o consumidor legítimo;
+- incidente o compromiso de credencial;
+- obsolescencia técnica aprobada;
+- consolidación de una capacidad bajo otro contrato autorizado.
+
+La causa determina el orden de cierre.
+
+##### 5.1. Retiro planificado
+
+Secuencia obligatoria:
+
+```text
+AUTORIDAD DE RETIRO
+→ CONGELAR NUEVAS INTENCIONES
+→ INVENTARIAR CONSUMIDORES Y SUPERFICIES
+→ CLASIFICAR TRABAJO EN CURSO
+→ DRENAR LO SEGURO
+→ CONCILIAR RESULTADOS DESCONOCIDOS
+→ DESACTIVAR BINDING
+→ REVOCAR CREDENCIALES APLICABLES
+→ ACREDITAR RECHAZO DEL MATERIAL ANTERIOR
+→ RETIRAR REFERENCIAS LOCALES OBSOLETAS
+→ PRESERVAR HISTORIA
+→ CERRAR RETIRO
+```
+
+##### 5.2. Revocación de emergencia
+
+Cuando la confianza en una credencial está rota:
+
+```text
+COMPROMISO O SOSPECHA RAZONABLE
+→ BLOQUEAR NUEVO USO
+→ REVOCAR EN LA AUTORIDAD QUE LA ACEPTA
+→ ACREDITAR INVALIDEZ CUANDO SEA POSIBLE
+→ CLASIFICAR IMPACTO Y TRABAJO EN CURSO
+→ CONCILIAR EFECTOS E INCERTIDUMBRE
+→ RETIRAR COPIAS / REFERENCIAS OBSOLETAS
+→ RECUPERAR O RETIRAR EL BINDING SEGÚN DECISIÓN AUTORIZADA
+```
+
+Una credencial comprometida no permanece válida para completar un drenaje por conveniencia operativa.
+
+---
+
+#### 6. Regla de sucesor
+
+Existen dos cierres válidos y distintos.
+
+##### 6.1. Sustitución
+
+Cuando la integración continúa mediante un sucesor acreditado:
+
+- el sucesor debe tener identidad, proveedor, cuenta, ambiente, principal, credencial, contratos, mapping y autorización propios;
+- la migración no reutiliza una credencial retirada;
+- cualquier solapamiento de credenciales debe estar permitido por el emisor, ser temporal y conservar condición explícita de cierre;
+- el predecesor se revoca cuando el consumidor ya no depende de él y el sucesor está funcionalmente acreditado, salvo revocación urgente por compromiso;
+- resultados, receipts e historia del predecesor permanecen vinculados al predecesor.
+
+##### 6.2. Retiro terminal sin sucesor
+
+Un retiro definitivo no exige fabricar una credencial de reemplazo.
+
+Debe demostrar:
+
+- ausencia de nuevas intenciones autorizadas en el binding retirado;
+- tratamiento de unidades en curso;
+- cierre o ownership explícito de cualquier residual;
+- revocación de credenciales aplicables;
+- retiro local de referencias activas;
+- preservación de la historia necesaria.
+
+La inexistencia de sucesor es una condición válida y no un lifecycle incompleto.
+
+---
+
+#### 7. Puertas acumulativas para `RETIRO_TERMINAL`
+
+Un binding solo puede declararse retirado cuando todas las puertas aplicables sean verdaderas:
+
+| Puerta                                  | Regla                                                                                                                                                                  |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RETIREMENT_AUTHORITY_RECORDED`         | existe decisión autorizada, alcance exacto, propietario y fecha/condición efectiva                                                                                     |
+| `SCOPE_AND_SURFACES_FROZEN`             | sistemas, ambientes, endpoints, consumers, principals y credential refs afectados quedaron identificados                                                               |
+| `NEW_EFFECTS_STOPPED`                   | el binding no acepta nuevas intenciones empresariales para el alcance retirado                                                                                         |
+| `IN_FLIGHT_CLASSIFIED`                  | todas las unidades iniciadas antes del corte están confirmadas, rechazadas, canceladas, pendientes, aisladas o en conciliación con identidad preservada                |
+| `UNKNOWN_OUTCOMES_RESOLVED_OR_OWNED`    | ningún resultado incierto queda oculto; si no puede resolverse inmediatamente, conserva caso, responsable y siguiente acción que impiden declarar falsamente el efecto |
+| `BACKLOG_DISPOSED_OR_TRANSFERRED`       | trabajo pendiente fue drenado, cancelado conforme al contrato, aislado o transferido a una ruta autorizada sin duplicar intención                                      |
+| `BINDING_DEACTIVATED_OR_NOT_APPLICABLE` | el camino técnico ya no admite uso nuevo o se acredita que nunca existió binding runtime                                                                               |
+| `CREDENTIALS_REVOKED_OR_NOT_APPLICABLE` | cada credencial aplicable está revocada/expirada conforme al lifecycle o se acredita que no existe credencial externa para esa superficie                              |
+| `OLD_MATERIAL_REJECTED_WHEN_VERIFIABLE` | cuando el proveedor permite prueba segura, el material anterior ya no autoriza el efecto protegido                                                                     |
+| `LOCAL_REFERENCES_RETIRED`              | no quedan consumidores autorizados apuntando a material retirado; copias obsoletas fueron eliminadas donde corresponde                                                 |
+| `DEPENDENTS_RECONCILED`                 | consumidores y contratos dependientes ya no requieren el binding retirado o fueron migrados de forma acreditada                                                        |
+| `HISTORY_PRESERVED`                     | auditoría, receipts, mappings, evidence refs y resultados empresariales permanecen gobernados por retención y acceso                                                   |
+| `RESIDUALS_OWNED`                       | todo residual permitido conserva propietario, responsable, riesgo y siguiente acción                                                                                   |
+
+Un solo gate falso impide declarar `RETIRO_TERMINAL`.
+
+---
+
+#### 8. Corte de nuevas operaciones y frontera temporal
+
+Todo retiro planificado define un punto de corte conceptual que separa:
+
+```text
+INTENCIONES ANTERIORES AL CORTE
+→ pueden requerir drenaje, receipt, query o conciliación
+```
+
+```text
+INTENCIONES POSTERIORES AL CORTE
+→ no pueden utilizar el binding retirado
+```
+
+Reglas:
+
+1. el corte no cambia retrospectivamente la autorización de una operación ya aceptada;
+2. una unidad anterior al corte conserva la misma idempotency key y contenido lógico;
+3. una unidad posterior al corte no puede enviarse usando una credencial antigua por fallback;
+4. no se cambia la fecha local de una operación para hacerla parecer anterior al corte;
+5. una entrega externa tardía que corresponde a una operación anterior puede conservarse y conciliarse bajo su identidad histórica sin reactivar la integración para tráfico nuevo;
+6. una entrega nueva posterior al retiro no adquiere efecto empresarial por venir de un proveedor antes confiable;
+7. el contrato de autenticidad y la evidencia histórica siguen aplicando durante cualquier ventana de cierre autorizada.
+
+---
+
+#### 9. Tratamiento de trabajo en curso
+
+Antes de retirar una integración activa se clasifican todas las unidades conocidas:
+
+| Estado de la unidad     | Tratamiento de retiro                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `CONFIRMADA`            | preservar resultado y no repetir                                                                            |
+| `NO_EFECTO_CONFIRMADO`  | puede cerrarse o cancelarse según autoridad; no fabricar un efecto                                          |
+| `PENDIENTE_NO_ENVIADA`  | drenar si sigue autorizada o cancelar según contrato; nunca marcar como entregada                           |
+| `ENVIADA_CON_RECEIPT`   | recuperar resultado y conservar receipt antes del cierre                                                    |
+| `RESULTADO_DESCONOCIDO` | query/conciliación antes de cualquier repetición incompatible                                               |
+| `EN_RETRY`              | detener o completar según presupuesto, vigencia y decisión de retiro; la misma intención conserva identidad |
+| `CUARENTENA`            | conservar aislamiento y causa; retirar la integración no resuelve la unidad                                 |
+| `DEAD_LETTER_CANDIDATE` | conservar gates, owner y disposición; no borrar por cierre del binding                                      |
+| `REQUIERE_INTERVENCION` | conservar actor autorizado, decisión y evidencia                                                            |
+| `RESIDUAL_ACEPTADO`     | conservar riesgo, control, propietario y condición de seguimiento                                           |
+
+Retirar la integración no es una acción masiva de `cancel`, `success`, `failed` o `delete` sobre todas las unidades existentes.
+
+---
+
+#### 10. Revocación de credenciales
+
+La revocación conserva la semántica aprobada del lifecycle:
+
+```text
+REVOCAR
+=
+INVALIDAR EN LA AUTORIDAD QUE PUEDE ACEPTAR EL MATERIAL
+```
+
+No constituye revocación:
+
+- borrar una variable local;
+- renombrar una variable;
+- eliminar una referencia del frontend;
+- desplegar una versión que ya no lee la clave;
+- cambiar un endpoint;
+- cerrar una sesión de desarrollo;
+- borrar un archivo local;
+- retirar un consumidor sin invalidar la credencial;
+- ocultar el valor en un dashboard.
+
+La evidencia mínima de revocación conserva, sin mostrar el secreto:
+
+- referencia no sensible de la credencial;
+- sistema, superficie y ambiente;
+- autoridad emisora o mecanismo de revocación;
+- estado lógico posterior;
+- momento o condición de revocación cuando exista evidencia;
+- motivo;
+- actor/procedimiento autorizado;
+- consumidores afectados;
+- prueba o referencia de rechazo posterior cuando sea verificable;
+- referencia de retiro local posterior.
+
+---
+
+#### 11. Material publicable y material secreto
+
+El retiro no reetiqueta el tipo de credencial.
+
+- una API key publicable o DSN puede quedar visible históricamente en un bundle anterior y seguir requiriendo restricción, sustitución o revocación conforme al proveedor;
+- un secreto server-side sigue siendo secreto durante y después del retiro;
+- un identificador de proyecto, issuer, pass type, UID, place ID o push token no se convierte en credencial por retirarse la integración;
+- un token de destino que deja de ser válido se gobierna según su lifecycle de destino y no se presenta como API credential de VENTO;
+- una private key, password, webhook secret o server-side API key nunca se conserva como evidencia de retiro en texto claro.
+
+La historia de la referencia puede permanecer; el valor secreto no se conserva en auditoría ordinaria.
+
+---
+
+#### 12. Integraciones con múltiples credenciales o superficies
+
+Retirar una identidad externa no autoriza tratar todas sus superficies como una sola credencial.
+
+Reglas:
+
+1. Wompi separa public key, secreto de integridad y secreto de eventos/webhook;
+2. RevenueCat separa keys publicables de SDK por plataforma y secreto server-side del webhook;
+3. Apple Wallet separa certificado/clave P12, password asociado, P8 APNs, JWT derivado y token por pase;
+4. Supabase separa material publicable de material privilegiado server-side y contratos propietarios;
+5. una revocación puede afectar una sola superficie sin retirar toda la identidad si el alcance autorizado así lo define;
+6. un retiro total exige resolver todas las superficies activas del alcance;
+7. un JWT derivado que expira no demuestra revocación de la clave raíz que lo firma;
+8. una reemisión de recurso no demuestra rotación o revocación del token de autenticación asociado.
+
+---
+
+#### 13. Credencial potencialmente compartida
+
+Antes de revocar cualquier credencial se debe conocer el conjunto de consumidores autorizados de su referencia.
+
+Si la evidencia demuestra que una misma credencial es consumida por más de una integración o por superficies cuya independencia no está resuelta:
+
+```text
+SHARED_CREDENTIAL_DETECTED
+→ BLOQUEAR REVOCACIÓN CIEGA
+→ PRESERVAR ALCANCE Y CONSUMIDORES
+→ NO AMPLIAR NI REDISEÑAR LA POLÍTICA EN ESTA TAREA
+→ RESERVAR LA RESOLUCIÓN DE COMPARTICIÓN A INT-EXT-020
+```
+
+Reglas:
+
+- `INT-EXT-019` no normaliza ni autoriza credenciales compartidas;
+- tampoco puede revocar una credencial común suponiendo que solo pertenece al binding retirado;
+- el retiro del binding puede detener nuevos efectos y preservar el caso mientras la dependencia de consumidores se resuelve;
+- `INT-EXT-020` permanece reservada y es la propietaria documental de la prohibición de credenciales compartidas entre integraciones.
+
+---
+
+#### 14. Preservación de historia y evidencia
+
+El retiro técnico nunca autoriza borrar historia necesaria.
+
+Deben conservarse conforme a su política aplicable:
+
+- business records propietarios;
+- receipts externos;
+- provider references;
+- mappings históricos;
+- operation/idempotency references;
+- audit entries;
+- evidence digests;
+- referencias a payload protegido;
+- intervenciones y decisiones de conciliación;
+- referencias no sensibles de credenciales y lifecycle;
+- registros de revocación y retiro;
+- residuales y outcomes de cierre.
+
+Reglas:
+
+1. una relación histórica puede marcarse retirada sin sobrescribirse;
+2. el cierre de una cuenta del proveedor, si alguna vez se autoriza separadamente, no sustituye la retención VENTO;
+3. retirar una integración no elimina auditoría;
+4. la corrección de una entrada histórica se materializa como nueva evidencia enlazada;
+5. los secretos se eliminan de copias obsoletas cuando corresponde, pero la referencia no sensible puede conservarse para trazabilidad;
+6. las obligaciones de privacidad, retención, hold y disposición continúan después del retiro.
+
+---
+
+#### 15. Eliminación de cuenta, proyecto o tenant del proveedor
+
+`RETIRO_TERMINAL` no implica automáticamente:
+
+- borrar la cuenta del proveedor;
+- borrar un proyecto;
+- borrar un tenant;
+- eliminar dominios;
+- eliminar historial remoto;
+- destruir invoices, receipts, logs o evidence del proveedor;
+- transferir propiedad de la cuenta;
+- cerrar un contrato comercial.
+
+Esas acciones requieren autoridad, alcance, retención, obligaciones contractuales y evidencia independientes.
+
+La tarea solo exige que el binding retirado deje de poder producir efectos nuevos y que las credenciales aplicables queden invalidadas conforme al lifecycle.
+
+---
+
+#### 16. Wompi — `EXT-SYS-002`
+
+Clasificación:
+
+`RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION`
+
+Reglas:
+
+1. detener nuevas intenciones de pago que dependan del binding antes del retiro planificado;
+2. preservar transaction ID, reference, provider event/receipt y mapeos históricos;
+3. conciliar pagos con resultado incierto antes de repetir, cancelar o sustituir la operación;
+4. una revocación de public key, secreto de integridad o secreto de eventos se ejecuta por superficie y ambiente;
+5. retirar el webhook no convierte un pago previo en fallido;
+6. una entrega tardía que resuelva una operación anterior puede conservarse como evidencia y conciliación sin habilitar nuevos pagos;
+7. no se designa otro procesador de pagos por el acto de retirar Wompi;
+8. no se elimina por defecto la cuenta Wompi ni su historia remota;
+9. un retiro terminal puede no tener sucesor.
+
+Decisión documental:
+
+`WOMPI_RETIREMENT_STATE = DEFINIDO_CON_CORTE_DE_NUEVOS_PAGOS_CONCILIACION_Y_REVOCACION_POR_SUPERFICIE`
+
+---
+
+#### 17. RevenueCat — `EXT-SYS-003`
+
+Clasificación:
+
+`RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION`
+
+Reglas:
+
+1. detener nuevas operaciones que dependan del binding retirado sin reinterpretar compras anteriores;
+2. conciliar purchase/restore/entitlement inciertos antes del cierre;
+3. un entitlement ya confirmado no se revoca únicamente porque la integración técnica se retire;
+4. las keys publicables de SDK y el secreto server-side del webhook conservan lifecycles independientes;
+5. una credencial reemplazada o retirada debe invalidarse en la autoridad aplicable cuando el proveedor lo permita;
+6. `app_user_id`, product mapping, transaction refs, receipts y evidencia histórica permanecen trazables;
+7. una nueva plataforma o proveedor de suscripción no hereda automáticamente los identificadores o estados de RevenueCat;
+8. retirar el binding no equivale a cancelar la suscripción del cliente.
+
+Decisión documental:
+
+`REVENUECAT_RETIREMENT_STATE = DEFINIDO_SIN_CONVERTIR_RETIRO_TECNICO_EN_CANCELACION_DE_ENTITLEMENT`
+
+---
+
+#### 18. Resend — `EXT-SYS-004`
+
+Clasificación:
+
+`RETIRO_OUTBOUND_CON_DRENAJE_Y_REVOCACION`
+
+Reglas:
+
+1. el corte impide crear nuevas generaciones de entrega mediante el binding retirado;
+2. las generaciones ya iniciadas conservan intento, destinatario autorizado, receipt y resultado;
+3. un timeout con posible aceptación por el proveedor permanece `RESULTADO_DESCONOCIDO` hasta evidencia suficiente;
+4. trabajo pendiente puede drenarse solo si continúa autorizado y el retiro planificado lo permite;
+5. `RESEND_API_KEY` se revoca en el proveedor y su predecesor debe dejar de autorizar nuevos envíos;
+6. borrar la variable local antes de la revocación no demuestra cierre;
+7. invitaciones, auditoría y evidencia de comunicación no se eliminan por retirar Resend;
+8. otro canal de mensajería no se activa automáticamente.
+
+Decisión documental:
+
+`RESEND_RETIREMENT_STATE = DEFINIDO_CON_DRENAJE_DE_GENERACIONES_Y_REVOCACION_SERVER_SIDE`
+
+---
+
+#### 19. Expo Push Service — `EXT-SYS-006`
+
+Clasificación:
+
+`RETIRO_OUTBOUND_SIN_CREDENCIAL_EXTERNA_OBSERVADA`
+
+Reglas:
+
+1. el push token permanece destino y no se reetiqueta como credencial de VENTO ante Expo;
+2. el corte detiene nuevas entregas por la superficie retirada;
+3. tickets/receipts y resultados por destino se concilian cuando existan;
+4. trabajo pendiente no se marca como entregado por retirarse el canal;
+5. `DeviceNotRegistered` conserva lifecycle del destino y no es revocación de una API credential;
+6. no se inventa una credencial externa para poder declarar que fue revocada;
+7. otro canal de notificación requiere contrato y autorización propios.
+
+Decisión documental:
+
+`EXPO_PUSH_RETIREMENT_STATE = DEFINIDO_PARA_SUPERFICIE_OUTBOUND_SIN_CREDENCIAL_EXTERNA_OBSERVADA`
+
+---
+
+#### 20. Sentry — `EXT-SYS-007`
+
+Clasificación:
+
+`RETIRO_OBSERVABILIDAD_PUBLICABLE`
+
+Reglas:
+
+1. el retiro de Sentry no bloquea ni revierte hechos empresariales;
+2. `EXPO_PUBLIC_SENTRY_DSN` conserva naturaleza publicable y puede reemplazarse, deshabilitarse o revocarse según soporte del proveedor;
+3. deshabilitar captura SDK no equivale por sí solo a demostrar revocación del DSN o cierre de proyecto;
+4. la auditoría empresarial obligatoria permanece en VENTO y no depende de conservar el proyecto Sentry;
+5. no se crea backlog empresarial de telemetría para cerrar el retiro;
+6. cualquier token administrativo futuro tendría lifecycle independiente y no se infiere en esta tarea.
+
+Decisión documental:
+
+`SENTRY_RETIREMENT_STATE = DEFINIDO_COMO_RETIRO_DE_OBSERVABILIDAD_SIN_IMPACTO_EMPRESARIAL_IMPLÍCITO`
+
+---
+
+#### 21. Google Maps / Google Reviews — `EXT-SYS-008`
+
+Clasificación:
+
+`RETIRO_LECTURA_CON_CREDENCIAL_PUBLICABLE`
+
+Reglas:
+
+1. el corte impide nuevas consultas remotas por el binding retirado;
+2. `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY` conserva naturaleza publicable y restricciones de proveedor;
+3. la key puede reemplazarse o revocarse conforme al mecanismo acreditado sin convertir `place_id`, direcciones o coordenadas en credenciales;
+4. mappings canónicos históricos, si existen, se conservan según su propietario y no se borran por revocar la key;
+5. datos no confirmados no se completan por inferencia al retirar el proveedor;
+6. no se crea provider alterno ni geocoding sustituto implícito.
+
+Decisión documental:
+
+`GOOGLE_PLACES_RETIREMENT_STATE = DEFINIDO_PARA_LECTURA_Y_CREDENCIAL_PUBLICABLE_SIN_BORRAR_MAPPING_HISTORICO`
+
+---
+
+#### 22. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Clasificación:
+
+`RETIRO_HIBRIDO_MULTIMATERIAL`
+
+El retiro se resuelve por superficie y por material:
+
+| Material / superficie         | Regla de retiro                                                                                                                                                         |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| certificado/clave privada P12 | detener el uso del material en las superficies retiradas y revocar/retirar conforme a la autoridad y lifecycle aplicables; la desaparición de un archivo local no basta |
+| password asociado al P12      | se retira con el paquete de material al que protege y nunca queda como referencia empresarial autónoma                                                                  |
+| clave P8 APNs                 | se revoca en la autoridad aplicable cuando corresponda; los JWT derivados dejan de ser aceptables según su propio lifecycle                                             |
+| JWT APNs derivado             | su expiración no prueba revocación de la P8 raíz                                                                                                                        |
+| token opaco por pase          | se retira por recurso conforme a su lifecycle; reemitir el pase no prueba rotación ni revocación del token                                                              |
+| PassKit resource              | historia, serial, mapping y estado canónico se conservan; retirar push no equivale a borrar el recurso                                                                  |
+| señal APNs                    | resultados pendientes se clasifican antes del cierre; no se reenvían ciegamente por retirar la integración                                                              |
+
+Reglas adicionales:
+
+1. no se crea un pase nuevo para evadir un resultado incierto;
+2. retirar APNs no demuestra que el dispositivo haya actualizado o dejado de actualizar el pase;
+3. retirar el web service no borra automáticamente registros históricos de pase/dispositivo;
+4. cualquier cierre debe preservar la relación entre pase, usuario propietario, dispositivo, evidencia y material de lifecycle sin exponer secretos.
+
+Decisión documental:
+
+`PASSKIT_APNS_RETIREMENT_STATE = DEFINIDO_POR_SUPERFICIE_Y_MATERIAL_SIN_CONFUNDIR_EXPIRACION_DERIVADA_CON_REVOCACION_RAIZ`
+
+---
+
+#### 23. Zebra BrowserPrint — `EXT-SYS-011`
+
+Clasificación:
+
+`RETIRO_LOCAL_SIN_CREDENCIAL_EXTERNA`
+
+Reglas:
+
+1. UID, nombre y tipo de impresora no son credenciales externas;
+2. el corte detiene nuevos jobs hacia el binding local retirado;
+3. un job con resultado físico desconocido se verifica o concilia antes de retirar su contexto operativo;
+4. quitar la referencia local a la impresora no significa que un job anterior no haya sido impreso;
+5. no se auto-reimprime durante el retiro;
+6. job, generación, impresora, evidencia y resultado histórico permanecen trazables;
+7. cualquier autenticación futura del bridge deberá acreditarse antes de poder revocarse como credencial.
+
+Decisión documental:
+
+`ZEBRA_RETIREMENT_STATE = DEFINIDO_COMO_RETIRO_LOCAL_CON_CONCILIACION_DE_EFECTO_FISICO`
+
+---
+
+#### 24. Supabase, Expo/EAS, Vercel y Google Wallet
+
+##### 24.1. Supabase — `EXT-SYS-001`
+
+Clasificación:
+
+`RETIRO_GOBERNADO_POR_CONTRATO_INTERNO`
+
+No existe una acción universal de “retirar Supabase”. Cada Auth, RPC, Edge Function, Storage, Realtime, secret o superficie propietaria conserva su contrato y ambiente.
+
+Reglas:
+
+- retirar un adaptador alojado en Supabase se atribuye a la identidad externa real del proveedor y al dominio propietario;
+- una secret key o `service_role` privilegiada conserva lifecycle server-side y nunca se entrega al proveedor o al cliente;
+- retirar una superficie no implica borrar el proyecto, base de datos o historia de otros dominios;
+- cualquier modificación física futura de Supabase perteneciente a VENTO se origina, versiona y ejecuta desde `vento-shell`.
+
+##### 24.2. Expo / EAS Update — `EXT-SYS-005`
+
+Clasificación:
+
+`RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`
+
+Perfiles, canales, project IDs y configuración observados pueden retirarse del contrato aplicable, pero no se inventa token administrativo ni revocación remota inexistente. El retiro no implica eliminar proyecto, historial de builds o releases.
+
+##### 24.3. Vercel — `EXT-SYS-010`
+
+Clasificación:
+
+`RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`
+
+No existe credencial administrativa/deploy acreditada en el corte. No se inventa token para revocarlo y el retiro del binding no implica eliminar proyecto, dominio o historial de despliegue.
+
+##### 24.4. Google Wallet / Google Pay & Wallet — `EXT-SYS-012`
+
+Clasificación:
+
+`MODELO_SIN_BINDING_REMOTO`
+
+Existe modelo documental de cuenta de servicio/JWT, pero no binding remoto acreditado. No se declara un retiro runtime ni una revocación física ya ejecutable. Cualquier activación futura deberá disponer de lifecycle y de un contrato de retiro antes de operar.
+
+---
+
+#### 25. Sistemas sin binding y bindings bloqueados
+
+##### 25.1. `NO_APLICA_SIN_BINDING`
+
+Permanecen sin intercambio runtime acreditado:
+
+- `EXT-SYS-014` — Shopify / canal de comercio electrónico;
+- `EXT-SYS-015` — Rappi / marketplace;
+- `EXT-SYS-016` — ManyChat / automatización conversacional;
+- `EXT-SYS-017` — WhatsApp;
+- `EXT-SYS-018` — Instagram / perfiles sociales;
+- `EXT-SYS-019` — Correo corporativo y alias funcionales;
+- `EXT-SYS-021` — Transporte externo.
+
+Para estas siete identidades:
+
+- no se inventan credenciales, cuentas, endpoints o registros de retiro;
+- no se declara revocación donde no existe material acreditado;
+- una futura activación deberá acreditar desde el inicio su mecanismo de retiro y revocación;
+- el nombre comercial o canal no permite inferir proveedor, API, tenant o autoridad de revocación.
+
+##### 25.2. `BLOQUEADA_SIN_BINDING`
+
+`EXT-SYS-013 — POS externo vigente` permanece bloqueada hasta que `INT-POS-001` acredite proveedor, cuenta, interfaz, credenciales, operaciones y garantías suficientes para instanciar el contrato.
+
+`EXT-SYS-020 — Telefonía / canal de voz` permanece bloqueada hasta que `TI-INT-003` acredite operador/proveedor, cuenta, interfaz, credenciales, operaciones y garantías suficientes para instanciar el contrato.
+
+No se inventa un procedimiento de revocación específico para ninguno de los dos.
+
+---
+
+#### 26. `VENTO-EXTERNAL-INTEGRATION-RETIREMENT-CREDENTIAL-REVOCATION-MATRIX-001@1.0.0`
+
+| ID            | Sistema / plataforma                     | Evidencia heredada                   | Lifecycle de credencial heredado                            | Clasificación de retiro                              | Revocación / retiro materializado                                                                        | Estado documental | Condición crítica                                                               |
+| ------------- | ---------------------------------------- | ------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `BINDING_CONDICIONAL_OBSERVADO`      | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `RETIRO_GOBERNADO_POR_CONTRATO_INTERNO`              | por superficie propietaria; material privilegiado se revoca solo dentro de su lifecycle y ambiente       | `ESPECIFICADO`    | no retirar proyecto/datos globales por retirar un adaptador                     |
+| `EXT-SYS-002` | Wompi                                    | `BINDING_TECNICO_OBSERVADO`          | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION` | public key, integridad y webhook se resuelven por separado; revocar tras estabilización salvo compromiso | `ESPECIFICADO`    | pago incierto se concilia antes de repetir o cerrar                             |
+| `EXT-SYS-003` | RevenueCat                               | `BINDING_TECNICO_OBSERVADO`          | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION` | SDK keys y webhook secret conservan lifecycles independientes                                            | `ESPECIFICADO`    | retiro técnico no cancela entitlement confirmado                                |
+| `EXT-SYS-004` | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA` | `RETIRO_OUTBOUND_CON_DRENAJE_Y_REVOCACION`           | drenar/cerrar generaciones seguras y revocar API key server-side                                         | `ESPECIFICADO`    | timeout con aceptación posible conserva resultado desconocido                   |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | `LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA`         | `RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`     | retirar configuración aplicable; no inventar token o revocación remota                                   | `ESPECIFICADO`    | no implica eliminar proyecto/builds/releases                                    |
+| `EXT-SYS-006` | Expo Push Service                        | `BINDING_CONDICIONAL_OBSERVADO`      | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                          | `RETIRO_OUTBOUND_SIN_CREDENCIAL_EXTERNA_OBSERVADA`   | detener nuevas entregas; destination tokens no son credential refs del proveedor                         | `ESPECIFICADO`    | backlog y receipts se resuelven por destino/generación                          |
+| `EXT-SYS-007` | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `LIFECYCLE_PUBLICABLE_ESPECIFICADO`                         | `RETIRO_OBSERVABILIDAD_PUBLICABLE`                   | DSN publicable se reemplaza/deshabilita/revoca según mecanismo acreditado                                | `ESPECIFICADO`    | retirar Sentry no elimina auditoría empresarial VENTO                           |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | `LIFECYCLE_PUBLICABLE_ESPECIFICADO`                         | `RETIRO_LECTURA_CON_CREDENCIAL_PUBLICABLE`           | detener consultas y revocar/restringir key según proveedor                                               | `ESPECIFICADO`    | `place_id` y mappings históricos no son credenciales                            |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | `LIFECYCLE_CON_BRECHA_OBSERVADA`                            | `RETIRO_HIBRIDO_MULTIMATERIAL`                       | resolver P12/password, P8/JWT, token por pase y superficies de recurso/push por separado                 | `ESPECIFICADO`    | expiración JWT no prueba revocación P8; reemitir pase no rota token por sí solo |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_OBSERVADA`            | `LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA`         | `RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA`     | retirar binding/configuración; no inventar token de deploy                                               | `ESPECIFICADO`    | no implica eliminar proyecto/dominio                                            |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`                          | `RETIRO_LOCAL_SIN_CREDENCIAL_EXTERNA`                | retirar referencia local después de clasificar jobs; UID no se revoca como secret                        | `ESPECIFICADO`    | no auto-reprint ante resultado físico desconocido                               |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `MODELO_DOCUMENTADO_SIN_BINDING`                            | `MODELO_SIN_BINDING_REMOTO`                          | no existe revocación runtime acreditada                                                                  | `NO_APLICA`       | binding futuro debe incorporar lifecycle y retiro antes de activarse            |
+| `EXT-SYS-013` | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_ACTUAL`                                          | `BLOQUEADA_SIN_BINDING`                              | no instanciable sin proveedor/cuenta/credencial acreditados                                              | `BLOQUEADO`       | propietario documental: `INT-POS-001`                                           |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico  | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe material acreditado que retirar o revocar                                                      | `NO_APLICA`       | cualquier binding futuro versiona retiro y revocación antes de uso              |
+| `EXT-SYS-015` | Rappi / marketplace                      | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe material acreditado que retirar o revocar                                                      | `NO_APLICA`       | no inferir cuenta/API por nombre comercial                                      |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe material acreditado que retirar o revocar                                                      | `NO_APLICA`       | no inferir bot/token/API                                                        |
+| `EXT-SYS-017` | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe proveedor/API/credential ref acreditado                                                        | `NO_APLICA`       | no inferir cuenta, número, token o Meta binding                                 |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe API/credential ref acreditado                                                                  | `NO_APLICA`       | no inferir app, token o cuenta                                                  |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe proveedor/integración técnica acreditados                                                      | `NO_APLICA`       | canal organizacional no acredita API ni credential ref                          |
+| `EXT-SYS-020` | Telefonía / canal de voz                 | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_ACTUAL`                                          | `BLOQUEADA_SIN_BINDING`                              | no instanciable sin operador/cuenta/interfaz/credencial                                                  | `BLOQUEADO`       | propietario documental: `TI-INT-003`                                            |
+| `EXT-SYS-021` | Transporte externo                       | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_ACTUAL`                                          | `NO_APLICA_SIN_BINDING`                              | no existe proveedor/interfaz/credential ref acreditado                                                   | `NO_APLICA`       | tracking o guía no acreditan integración técnica                                |
+
+Reconciliación de la clasificación de retiro:
+
+```text
+RETIRO_GOBERNADO_POR_CONTRATO_INTERNO = 001 = 1
+RETIRO_BIDIRECCIONAL_CON_CONCILIACION_Y_REVOCACION = 002,003 = 2
+RETIRO_OUTBOUND_CON_DRENAJE_Y_REVOCACION = 004 = 1
+RETIRO_CONFIGURACION_SIN_CREDENCIAL_ACREDITADA = 005,010 = 2
+RETIRO_OUTBOUND_SIN_CREDENCIAL_EXTERNA_OBSERVADA = 006 = 1
+RETIRO_OBSERVABILIDAD_PUBLICABLE = 007 = 1
+RETIRO_LECTURA_CON_CREDENCIAL_PUBLICABLE = 008 = 1
+RETIRO_HIBRIDO_MULTIMATERIAL = 009 = 1
+RETIRO_LOCAL_SIN_CREDENCIAL_EXTERNA = 011 = 1
+MODELO_SIN_BINDING_REMOTO = 012 = 1
+NO_APLICA_SIN_BINDING = 014,015,016,017,018,019,021 = 7
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+Reconciliación de evidencia heredada:
+
+```text
+BINDING_TECNICO_OBSERVADO = 002,003,011 = 3
+BINDING_CONDICIONAL_OBSERVADO = 001,004,006,007,008,009 = 6
+CONFIGURACION_OBSERVADA = 005,010 = 2
+DOCUMENTADO_SIN_BINDING_ACREDITADO = 012,014,017,018,019,021 = 6
+PROVEEDOR_NO_ACREDITADO = 013,015,016,020 = 4
+TOTAL = 21
+```
+
+Reconciliación del lifecycle heredado:
+
+```text
+LIFECYCLE_SERVER_SIDE_ESPECIFICADO_PENDIENTE_DE_EVIDENCIA = 001,002,003,004 = 4
+LIFECYCLE_PUBLICABLE_ESPECIFICADO = 007,008 = 2
+LIFECYCLE_DE_PLATAFORMA_SIN_CREDENCIAL_ACREDITADA = 005,010 = 2
+SIN_CREDENCIAL_EXTERNA_OBSERVADA = 006,011 = 2
+LIFECYCLE_CON_BRECHA_OBSERVADA = 009 = 1
+MODELO_DOCUMENTADO_SIN_BINDING = 012 = 1
+NO_APLICA_ACTUAL = 013,014,015,016,017,018,019,020,021 = 9
+TOTAL = 21
+```
+
+Faltantes = **0**.
+
+Duplicados = **0**.
+
+Identificadores únicos = **21**.
+
+---
+
+#### 27. Dependencias consumidoras y contratos empresariales
+
+Antes de retirar una integración activa deben identificarse sus consumidores efectivos.
+
+Reglas:
+
+1. retirar el provider binding no modifica `PermissionKey` ni contratos empresariales por conveniencia;
+2. `IntegrationPrincipal` se retira o desautoriza dentro del alcance técnico correspondiente sin reescribir actores humanos o ownership de dominio;
+3. `ExternalCredentialId` puede pasar a estado histórico/retirado sin borrar el registro de lifecycle;
+4. una API key, token o secret se invalida fuera de tablas expuestas y nunca se copia a la evidencia de retiro;
+5. una credencial de lectura no se convierte en sustituto temporal de una credencial de escritura;
+6. un ambiente no usa credenciales de otro ambiente durante el cierre;
+7. un consumidor que todavía depende de la credencial impide `LOCAL_REFERENCES_RETIRED` y debe resolverse antes del retiro terminal;
+8. el retiro no autoriza escrituras directas de un adaptador sobre dominios ajenos para “cerrar” pendientes.
+
+---
+
+#### 28. Handoffs y condiciones de salida
+
+| Materia                                                                          | Estado en esta tarea      | Propietario / tarea responsable | Condición de salida                                                                                                                                      |
+| -------------------------------------------------------------------------------- | ------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| referencia compartida de credencial externa sin secreto y metadata de lifecycle  | `DEFINIDA_SEMANTICAMENTE` | `SHELL-CON-018`                 | contrato consumible representa sistema, principal, ambiente, superficie, estado, autoridad de revocación y referencias de lifecycle sin material secreto |
+| evento externo recibido durante cierre o entrega tardía                          | `CONSUMIDO`               | `SHELL-CON-019`                 | receipt/evento conserva identidad y evidencia aun cuando el binding deje de admitir nuevas intenciones                                                   |
+| mapping externo retirado o histórico                                             | `CONSUMIDO`               | `SHELL-CON-022`                 | mappings retirados conservan historia y no son sobrescritos para aparentar que nunca existieron                                                          |
+| idempotencia y conciliación de trabajo en curso                                  | `CONSUMIDO`               | `SHELL-CON-023`                 | operaciones preexistentes conservan identidad, resultado recuperable y conciliación sin duplicar efecto                                                  |
+| cuarentena, rechazo, compensación y residuales                                   | `CONSUMIDO`               | `SHELL-CON-024`                 | casos aislados conservan disposición y owner; retirar el binding no los cierra por inferencia                                                            |
+| cola de fallos y recuperación manual                                             | `FUERA_DE_IMPLEMENTACION` | `QUEUE-ARC-008`                 | trabajo pendiente o fallido puede mantenerse y recuperarse sin depender de que el binding continúe activo                                                |
+| exclusión de reprocesos concurrentes durante drenaje                             | `FUERA_DE_IMPLEMENTACION` | `QUEUE-ARC-009`                 | un mismo caso no se ejecuta dos veces durante cierre o migración                                                                                         |
+| autorización para retry/reprocess manual                                         | `FUERA_DE_IMPLEMENTACION` | `QUEUE-ARC-012`                 | cualquier intervención durante cierre conserva actor, motivo y alcance autorizados                                                                       |
+| continuidad y dependencia del proveedor                                          | `CONSUMIDO`               | `CONT-INT-003`                  | la retirada conserva las reglas de proveedor crítico, contingencia y operación mínima aplicables                                                         |
+| reincorporación, replay y conciliación previa al retiro cuando hubo contingencia | `CONSUMIDO`               | `CONT-INT-004`                  | el retorno o cierre de una contingencia no deja backlog o incertidumbre ocultos antes del retiro definitivo                                              |
+| binding del POS externo                                                          | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | proveedor, cuenta, interfaz, credenciales y operaciones quedan acreditados antes de instanciar retiro/revocación                                         |
+| binding de telefonía / voz                                                       | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                    | operador/proveedor, cuenta, interfaz, credenciales y operaciones quedan acreditados antes de instanciar retiro/revocación                                |
+| credenciales compartidas entre integraciones                                     | `RESERVADA`               | `INT-EXT-020`                   | se define y aprueba la prohibición y resolución de compartición sin ser adelantada por esta tarea                                                        |
+
+No queda una brecha sustantiva de retiro de esta tarea sin propietario y condición de salida.
+
+---
+
+#### 29. Frontera con `INT-EXT-020`
+
+Esta tarea necesita conocer los consumidores de una credential ref para retirar un binding de forma segura, pero no define la política de compartición entre integraciones.
+
+Permanece reservado a `INT-EXT-020`:
+
+- la prohibición canónica de compartir credenciales entre integraciones;
+- el tratamiento normativo de una credencial hallada compartida;
+- la segregación de credenciales entre identidades de integración;
+- cualquier regla adicional de migración cuyo motivo sea exclusivamente eliminar la compartición.
+
+`INT-EXT-019` únicamente establece que una credencial con consumidores no resueltos no puede revocarse ciegamente como si perteneciera de forma exclusiva al binding retirado.
+
+---
+
+#### 30. Prohibiciones
+
+Queda prohibido:
+
+1. declarar una integración retirada solo porque se eliminó una variable local;
+2. declarar una credencial revocada solo porque un consumidor dejó de usarla;
+3. borrar el secreto antes de obtener la evidencia necesaria para revocarlo cuando el mecanismo requiera una referencia administrativa distinta;
+4. conservar una credencial comprometida activa para terminar un drenaje planificado;
+5. reutilizar una credencial revocada o retirada;
+6. usar una credencial de otro ambiente como reemplazo temporal;
+7. usar una credencial de otra integración como reemplazo temporal;
+8. crear un nuevo `IntegrationPrincipal` implícito durante el retiro;
+9. cambiar de proveedor por el solo hecho de retirar el actual;
+10. tratar una nueva integración como sucesora sin binding y contratos acreditados;
+11. repetir un pago, correo, push, update, impresión u otro efecto con resultado desconocido para “limpiar” el cierre;
+12. cancelar o revertir un hecho empresarial únicamente porque el provider binding se retira;
+13. revocar un entitlement confirmado únicamente por retirar RevenueCat;
+14. marcar como no entregada una comunicación cuyo resultado sigue incierto;
+15. borrar mappings, receipts o audit history para simplificar la migración;
+16. borrar auditoría durante retiro o migración;
+17. sobrescribir la evidencia histórica de un binding retirado;
+18. conservar secretos en logs, métricas, tickets, audit entries o documentación del retiro;
+19. confundir `pushToken`, `place_id`, UID de impresora, issuer, project ID o pass type con una credential ref si el contrato no los clasifica así;
+20. considerar la expiración de un token derivado como revocación de su material raíz;
+21. considerar la reemisión de un recurso como revocación de su token previo sin evidencia;
+22. eliminar cuentas, proyectos, tenants, dominios o historial remoto por inferencia;
+23. cerrar cuarentena o dead-letter porque la integración deja de existir;
+24. dejar trabajo pendiente sin propietario y siguiente acción;
+25. declarar retiro terminal con consumidores todavía dependientes del material retirado;
+26. revocar ciegamente una credencial con consumidores compartidos o no resueltos;
+27. adelantar la política de credenciales compartidas de `INT-EXT-020`;
+28. inventar credenciales o procedimientos de revocación para sistemas sin binding;
+29. crear tablas, índices, funciones, triggers, RPC, RLS, buckets, queues, jobs, cron o schedulers durante esta tarea;
+30. modificar código, Supabase, proveedores, endpoints, cuentas, secretos, credenciales o datos;
+31. ejecutar revocaciones reales;
+32. desarrollar `INT-EXT-020`.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro vigente ya protege el lifecycle de credenciales, la capacidad de revocación sin modificar contratos empresariales, la separación de ambientes y consumidores, el tratamiento de resultado desconocido, la conciliación de intercambios externos, la preservación de receipts y evidencia, la inmutabilidad de auditoría durante retiro o migración, la minimización de secretos y la propiedad del efecto empresarial. Esta tarea especializa esas obligaciones sobre las veintiuna identidades externas y define su cierre documental sin introducir una familia ejecutable nueva, una credencial nueva, un endpoint nuevo ni una operación productiva nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 32. Criterios de aceptación
+
+`INT-EXT-019` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones de retiro;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. se preserva la evidencia heredada `3 / 6 / 2 / 6 / 4`;
+7. se preserva la distribución de lifecycle heredada `4 / 2 / 2 / 2 / 1 / 1 / 9`;
+8. retiro de integración y revocación de credencial permanecen conceptos distintos;
+9. revocación y retiro local permanecen conceptos distintos;
+10. retiro técnico y cancelación empresarial permanecen conceptos distintos;
+11. retiro técnico no implica eliminación de cuenta, proyecto, tenant o historial del proveedor;
+12. un retiro planificado detiene nuevas intenciones antes de revocar el material aplicable;
+13. una revocación por compromiso puede anteceder al drenaje y no se posterga para preservar continuidad;
+14. una revocación se acredita en la autoridad que acepta la credencial y no mediante eliminación local;
+15. una credencial revocada, expirada o retirada no vuelve al estado activo;
+16. retiro terminal puede existir sin sucesor;
+17. cuando existe sucesor, no hereda credenciales, receipts, mappings o autoridad por inferencia;
+18. trabajo en curso se clasifica antes del cierre;
+19. operaciones confirmadas no se repiten;
+20. resultado desconocido no se resuelve mediante repetición ciega;
+21. backlog conserva identidad, idempotencia, autorización y resultado individual;
+22. cuarentena y dead-letter sobreviven al retiro mientras el caso lo requiera;
+23. auditoría, receipts, mappings y evidencia histórica no se borran por retirar la integración;
+24. secretos no se conservan en evidencia ordinaria de retiro;
+25. late deliveries de operaciones anteriores pueden conciliarse sin reactivar tráfico nuevo;
+26. una entrega nueva posterior al retiro no adquiere efecto empresarial automáticamente;
+27. ambientes conservan lifecycle y retiro independientes;
+28. Wompi separa public key, integridad y webhook y no convierte retiro en cancelación de pago;
+29. RevenueCat separa SDK keys y webhook secret y no convierte retiro en revocación de entitlement;
+30. Resend drena generaciones seguras y revoca su API key server-side sin confundir timeout con no-entrega;
+31. Expo Push no recibe una credencial externa ficticia y trata tokens como destinos;
+32. Sentry puede retirarse sin convertirse en dependencia de auditoría empresarial;
+33. Google Maps retira consulta/key sin borrar mappings históricos;
+34. Apple resuelve P12, P8/JWT, token por pase, PassKit y APNs por lifecycles separados;
+35. Zebra retira referencia local sin llamar credencial al UID ni auto-reimprimir resultados inciertos;
+36. Supabase permanece gobernada por contratos propietarios y no recibe un retiro global ficticio;
+37. Expo/EAS y Vercel no reciben credenciales administrativas inventadas;
+38. Google Wallet permanece modelo sin binding remoto;
+39. siete identidades sin binding permanecen `NO_APLICA_SIN_BINDING`;
+40. POS permanece bloqueado hasta `INT-POS-001`;
+41. telefonía/voz permanece bloqueada hasta `TI-INT-003`;
+42. `SHELL-CON-018` conserva la materialización compartida de la referencia de credencial externa sin secreto;
+43. `SHELL-CON-019`, `022`, `023` y `024` conservan receipts, mapping, conciliación y disposiciones compartidas;
+44. `CONT-INT-003` y `CONT-INT-004` conservan continuidad y reincorporación;
+45. una credential ref con consumidores compartidos/no resueltos bloquea revocación ciega y remite su política a `INT-EXT-020`;
+46. `INT-EXT-020` no se desarrolla en esta tarea;
+47. no se modifica código;
+48. no se modifica Supabase;
+49. no se revocan secretos o credenciales reales;
+50. no se eliminan cuentas, proyectos, endpoints ni datos;
+51. se crean cero requisitos de prueba;
+52. se modifican cero requisitos de prueba;
+53. `INT-EXT-020` permanece reservada.
+
+---
+
+#### 33. Resultado de la tarea
+
+`INT-EXT-019` queda **APROBADA** como definición documental completa del retiro de integraciones externas y revocación de credenciales para las veintiuna identidades canónicas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- faltantes: **0**;
+- duplicados: **0**;
+- distribución de evidencia preservada: **3 / 6 / 2 / 6 / 4**;
+- distribución de lifecycle preservada: **4 / 2 / 2 / 2 / 1 / 1 / 9**;
+- retiros gobernados por contrato interno: **1**;
+- retiros bidireccionales con conciliación y revocación: **2**;
+- retiros outbound con drenaje y revocación: **1**;
+- configuraciones sin credencial acreditada: **2**;
+- retiros outbound sin credencial externa observada: **1**;
+- retiro de observabilidad publicable: **1**;
+- retiro de lectura con credencial publicable: **1**;
+- retiro híbrido multimaterial: **1**;
+- retiro local sin credencial externa: **1**;
+- modelo sin binding remoto: **1**;
+- identidades sin binding no aplicables: **7**;
+- identidades bloqueadas sin binding: **2**;
+- revocaciones reales ejecutadas: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+DECISIÓN AUTORIZADA DE RETIRO
++
+CORTE DE NUEVAS INTENCIONES
++
+CLASIFICACIÓN DEL TRABAJO EN CURSO
++
+CONCILIACIÓN DE RESULTADOS INCIERTOS
++
+DESACTIVACIÓN DEL BINDING
++
+REVOCACIÓN REAL DEL MATERIAL APLICABLE
++
+RETIRO LOCAL POSTERIOR
++
+PRESERVACIÓN DE HISTORIA Y EVIDENCIA
++
+RESIDUALES CON PROPIETARIO
+=
+INTEGRACIÓN RETIRADA SIN BORRAR EL NEGOCIO, REUTILIZAR CREDENCIALES NI FABRICAR RESULTADOS
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-019 — Definir retiro de integración y revocación de credenciales`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-020 — Prohibir credenciales compartidas entre integraciones`
+
+
 ### [ ] INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
 
 Separación obligatoria:

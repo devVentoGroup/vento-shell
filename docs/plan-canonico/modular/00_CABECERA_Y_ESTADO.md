@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **745** |
+| Tareas aprobadas | **746** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **849** |
+| Tareas no iniciadas | **848** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.74% (745/1594)** |
+| Porcentaje de completamiento | **46.80% (746/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor** |
-| Tarea actual | **INT-EXT-019 — Definir retiro de integración y revocación de credenciales** |
+| Última tarea aprobada | **INT-EXT-019 — Definir retiro de integración y revocación de credenciales** |
+| Tarea actual | **INT-EXT-020 — Prohibir credenciales compartidas entre integraciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-020 — Prohibir credenciales compartidas entre integraciones** |
+| Siguiente tarea | **INT-WORK-001 — Definir contrato para que VISO publique el turno** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 29 de 83 aprobadas; INT-EXT-019 pendiente** |
+| Progreso del bloque | **BLOQUE X: 30 de 83 aprobadas; INT-EXT-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-018` — Definir contingencia ante indisponibilidad del proveedor |
-| Tarea actual | `INT-EXT-019` — Definir retiro de integración y revocación de credenciales — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-020` — Prohibir credenciales compartidas entre integraciones |
+| Última aprobada | `INT-EXT-019` — Definir retiro de integración y revocación de credenciales |
+| Tarea actual | `INT-EXT-020` — Prohibir credenciales compartidas entre integraciones — **NO INICIADA** |
+| Siguiente tarea | `INT-WORK-001` — Definir contrato para que VISO publique el turno |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 29 DE 83 APROBADAS — ACTUAL INT-EXT-019** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 30 DE 83 APROBADAS — ACTUAL INT-EXT-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor
-        ↓
-TAREA ACTUAL
 INT-EXT-019 — Definir retiro de integración y revocación de credenciales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-WORK-001 — Definir contrato para que VISO publique el turno
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 29 de 83 tareas aprobadas
+BLOQUE X — 30 de 83 tareas aprobadas
 ```
