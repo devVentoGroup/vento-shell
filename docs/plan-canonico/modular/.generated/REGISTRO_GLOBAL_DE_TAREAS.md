@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **752** |
+| Aprobadas | **753** |
 | En propuesta | **0** |
-| No iniciadas | **842** |
+| No iniciadas | **841** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **47.18% (752/1594)** |
+| Porcentaje de completamiento | **47.24% (753/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-WORK-005` — Definir consumo del contexto por SHELL y las aplicaciones | ✅ APROBADA |
-| Tarea actual | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción | ⬜ NO INICIADA |
+| Última aprobada | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra | ✅ APROBADA |
+| Tarea actual | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-PROC-003` — Definir contrato para que NEXO cree la entrada de inventario | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1459,7 +1459,7 @@
 | ✅ APROBADA | `INT-WORK-003` | Definir contrato para que ANIMA registre la asistencia | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ✅ APROBADA | `INT-WORK-004` | Definir confirmación autoritativa del contexto efectivo en Supabase | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ✅ APROBADA | `INT-WORK-005` | Definir consumo del contexto por SHELL y las aplicaciones | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
-| ⬜ NO INICIADA | `INT-PROC-001` | Definir contrato para que ORIGO apruebe la orden de compra | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
+| ✅ APROBADA | `INT-PROC-001` | Definir contrato para que ORIGO apruebe la orden de compra | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROC-002` | Definir contrato para que ORIGO registre la recepción | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROC-003` | Definir contrato para que NEXO cree la entrada de inventario | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROC-004` | Definir contrato para que NUMERA reciba el evento económico | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |

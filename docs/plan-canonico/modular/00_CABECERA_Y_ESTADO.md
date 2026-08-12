@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **752** |
+| Tareas aprobadas | **753** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **842** |
+| Tareas no iniciadas | **841** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.18% (752/1594)** |
+| Porcentaje de completamiento | **47.24% (753/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones** |
-| Tarea actual | **INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra** |
+| Última tarea aprobada | **INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra** |
+| Tarea actual | **INT-PROC-002 — Definir contrato para que ORIGO registre la recepción** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-PROC-002 — Definir contrato para que ORIGO registre la recepción** |
+| Siguiente tarea | **INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 36 de 83 aprobadas; INT-PROC-001 pendiente** |
+| Progreso del bloque | **BLOQUE X: 37 de 83 aprobadas; INT-PROC-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-WORK-005` — Definir consumo del contexto por SHELL y las aplicaciones |
-| Tarea actual | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra — **NO INICIADA** |
-| Siguiente tarea | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción |
+| Última aprobada | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra |
+| Tarea actual | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción — **NO INICIADA** |
+| Siguiente tarea | `INT-PROC-003` — Definir contrato para que NEXO cree la entrada de inventario |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 36 DE 83 APROBADAS — ACTUAL INT-PROC-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 37 DE 83 APROBADAS — ACTUAL INT-PROC-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
-        ↓
-TAREA ACTUAL
 INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 36 de 83 tareas aprobadas
+BLOQUE X — 37 de 83 tareas aprobadas
 ```
