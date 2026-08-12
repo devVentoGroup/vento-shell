@@ -3708,5 +3708,875 @@ SIGUIENTE TAREA RESERVADA
 `INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase`
 
 
-### [ ] INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
+### ✅ INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia` — APROBADA
+**Tarea siguiente:** `INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones` — RESERVADA
+**Tipo de tarea:** documental; definición del contrato semántico mediante el cual Supabase y los resolutores canónicos determinan, confirman, invalidan y obligan a revalidar el contexto laboral operativo efectivo a partir de identidad laboral, turno y revisión publicados, asistencia confirmada, sesión de check-in, rol operativo, territorio y frescura autoritativos, sin implementar esquema físico, migraciones, RPC, RLS, triggers, tokens, cachés, cambios de código ni modificaciones de Supabase
+**Bloque:** X — Integraciones
+**Mini-bloque:** Contexto laboral
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca cuándo Vento OS puede considerar que existe un contexto laboral operativo efectivo y autoritativo para un actor, y cuándo ese contexto debe considerarse ausente, inválido, obsoleto o no resoluble.
+
+La tarea conecta las decisiones ya aprobadas de programación y asistencia sin transferir propiedad entre dominios:
+
+```text
+VISO
+→ PUBLICA TURNO Y REVISIÓN AUTORITATIVOS
+
+ANIMA
+→ REGISTRA Y CONFIRMA HECHOS DE ASISTENCIA
+
+SUPABASE / RESOLUTORES CANÓNICOS
+→ CORRELACIONAN LAS FUENTES AUTORITATIVAS
+→ CONFIRMAN O INVALIDAN EL CONTEXTO EFECTIVO
+```
+
+La confirmación del contexto no crea programación, no crea asistencia y no concede por sí sola una capacidad empresarial.
+
+---
+
+#### 2. Alcance documental
+
+Esta tarea define exclusivamente:
+
+1. la semántica de contexto laboral operativo efectivo;
+2. las fuentes que pueden participar en su resolución;
+3. las precondiciones para confirmarlo;
+4. las condiciones que impiden confirmarlo;
+5. las reglas de frescura e invalidación;
+6. el tratamiento de concurrencia, ambigüedad, fallas y operación offline;
+7. la relación entre contexto efectivo y autorización;
+8. la evidencia mínima para reconstruir una decisión;
+9. la frontera con `INT-WORK-001`, `INT-WORK-002`, `INT-WORK-003` e `INT-WORK-005`;
+10. los escenarios mínimos que una materialización futura deberá demostrar.
+
+No define una estructura física concreta ni una estrategia específica de almacenamiento o caché.
+
+---
+
+#### 3. Definición canónica de contexto efectivo
+
+Para una acción cuya modalidad requiera contexto laboral operativo, el contexto solo puede considerarse efectivo cuando las fuentes autoritativas aplicables permiten resolver de forma coherente, simultánea y fresca:
+
+- actor humano laboral aplicable;
+- vínculo o asignación laboral vigente aplicable;
+- turno publicado autoritativo;
+- revisión exacta del turno aplicable;
+- hecho de entrada confirmado por servidor cuando la modalidad exige presencia;
+- sesión de check-in autoritativa vigente derivada de esa confirmación;
+- ausencia de una salida o cierre efectivo que invalide la sesión;
+- rol operativo efectivo;
+- sede efectiva;
+- área efectiva cuando corresponda;
+- territorio compatible con la acción y el recurso;
+- versiones contractuales compatibles;
+- ausencia de una causa de invalidación o contradicción que impida utilizar la decisión.
+
+La regla conceptual queda:
+
+```text
+TURNO PUBLICADO AUTORITATIVO + REVISIÓN EXACTA
++
+VÍNCULO / ASIGNACIÓN LABORAL VÁLIDOS
++
+CHECK-IN CONFIRMADO + SESIÓN VIGENTE
++
+ROL OPERATIVO + TERRITORIO COHERENTES
++
+FRESCURA AUTORITATIVA
++
+AUSENCIA DE CONTRADICCIÓN BLOQUEANTE
+=
+CONTEXTO LABORAL OPERATIVO EFECTIVO
+```
+
+Cada componente sigue siendo propiedad de su dominio original.
+
+---
+
+#### 4. Modalidad operativa y modalidad administrativa
+
+El contexto laboral operativo no se convierte en requisito universal para toda capacidad del sistema.
+
+Se preserva la separación ya aprobada:
+
+```text
+CAPACIDAD ADMINISTRATIVA
+→ PUEDE RESOLVERSE POR ROL BASE Y COBERTURA ADMINISTRATIVA
+→ NO EXIGE TURNO NI CHECK-IN CUANDO SU CONTRATO ASÍ LO DEFINE
+```
+
+```text
+CAPACIDAD OPERATIVA DEPENDIENTE DE JORNADA
+→ EXIGE TURNO PUBLICADO Y APLICABLE
+→ EXIGE CHECK-IN ACTIVO CUANDO CORRESPONDA
+→ EXIGE ROL OPERATIVO EFECTIVO
+→ EXIGE TERRITORIO COMPATIBLE
+```
+
+La existencia o ausencia de contexto laboral operativo no debe bloquear ni habilitar por inferencia un carril administrativo independiente.
+
+---
+
+#### 5. Fuentes autoritativas
+
+La resolución deberá utilizar únicamente fuentes server-side o contratos propietarios capaces de demostrar la identidad y vigencia de los hechos requeridos.
+
+Pueden participar, según la modalidad:
+
+- identidad autenticada y actor efectivo;
+- estado laboral aplicable;
+- asignaciones y coberturas vigentes;
+- programación publicada por VISO;
+- identidad de turno y revisión publicada exacta;
+- hechos de asistencia confirmados bajo `INT-WORK-003`;
+- sesión de check-in autoritativa derivada de esos hechos;
+- catálogo y reglas vigentes de rol operativo;
+- relaciones territoriales canónicas de sede y área;
+- restricciones aplicables de dispositivo, sesión o contexto;
+- versiones contractuales necesarias para interpretar la decisión.
+
+Una fuente cliente puede aportar una intención, un identificador o una pista de correlación, pero no puede convertir ese dato en autoridad.
+
+---
+
+#### 6. Fuentes que no crean autoridad
+
+Por sí solos no confirman contexto efectivo:
+
+- una pantalla que muestra un turno;
+- una tarjeta de “turno actual”;
+- una notificación;
+- una respuesta optimista;
+- un evento local aún no confirmado;
+- una cola offline;
+- un registro pendiente de sincronización;
+- una caché del cliente;
+- un valor persistido como última selección;
+- la zona horaria del dispositivo;
+- geolocalización aislada;
+- `navigation_role`;
+- rol base;
+- sede primaria o seleccionada;
+- área seleccionada;
+- un rol, sede o área enviados por cliente;
+- la mera existencia de una sesión autenticada;
+- la existencia de un permiso sin los prerrequisitos contextuales que ese permiso exija.
+
+La autoridad se resuelve; no se declara desde la interfaz.
+
+---
+
+#### 7. Identidad laboral y vínculo aplicable
+
+La confirmación debe partir de una identidad laboral resoluble y del vínculo o asignación aplicables al instante y a la acción.
+
+Reglas:
+
+1. una identidad laboral inactiva no conserva contexto operativo por tener un turno o check-in históricos;
+2. un vínculo finalizado, suspendido con bloqueo o no aplicable no se reactiva por una sesión previa;
+3. una asignación residual no puede conceder autoridad después de quedar inválida;
+4. una identidad ambigua no se resuelve escogiendo una coincidencia conveniente;
+5. una identidad de cliente no sustituye la identidad laboral requerida;
+6. el actor humano, el principal técnico, el dispositivo y la sesión permanecen separados.
+
+---
+
+#### 8. Turno y revisión publicada exacta
+
+El contexto efectivo depende de la misma identidad de programación autoritativa ya aprobada para VISO y ANIMA.
+
+Debe preservarse simultáneamente:
+
+- `shift_id` aplicable;
+- revisión publicada exacta;
+- trabajador o vínculo al que aplica;
+- ventana temporal autoritativa;
+- sede;
+- área cuando corresponda;
+- rol operativo;
+- estado que determine su aplicabilidad.
+
+Queda prohibido resolver la revisión mediante:
+
+- máximo timestamp;
+- primera fila retornada;
+- `published_at` aislado;
+- estado visual del cliente;
+- notificación;
+- caché sin identidad de revisión;
+- revisión sucesora todavía no publicada.
+
+Una revisión ambigua o incompatible no puede producir contexto efectivo.
+
+---
+
+#### 9. Relación con asistencia confirmada
+
+`INT-WORK-003` fija la precondición de asistencia:
+
+```text
+EVENTO DE ENTRADA CONFIRMADO
+→ PUEDE PRODUCIR SESIÓN DE CHECK-IN AUTORITATIVA
+→ ESTA TAREA PUEDE CONFIRMAR CONTEXTO EFECTIVO
+```
+
+También:
+
+```text
+EVENTO DE SALIDA CONFIRMADO
+→ PUEDE CERRAR SESIÓN DE CHECK-IN
+→ ESTA TAREA DEBE INVALIDAR EL CONTEXTO OPERATIVO DEPENDIENTE DE ESA SESIÓN
+```
+
+Un intento de entrada, un `ACK` local, una cola o una respuesta optimista no satisfacen esta precondición.
+
+---
+
+#### 10. Sesión de check-in autoritativa
+
+La sesión de check-in es una representación derivada de hechos de asistencia confirmados y no una fuente independiente capaz de contradecirlos.
+
+Para participar en contexto efectivo deberá ser:
+
+- atribuible al actor laboral correcto;
+- correlacionable con el turno y la revisión aplicables;
+- abierta por una entrada confirmada;
+- no cerrada por una salida confirmada o decisión autoritativa equivalente;
+- coherente con el instante de resolución;
+- coherente con sede, área y rol cuando correspondan;
+- suficientemente fresca para la acción evaluada.
+
+Una sesión abierta que contradiga un hecho autoritativo más reciente no conserva autoridad.
+
+---
+
+#### 11. Rol operativo efectivo
+
+El rol operativo se deriva de la programación, asignación y contexto autoritativos aplicables.
+
+No se deriva de:
+
+- rol base;
+- `navigation_role`;
+- nombre visible del cargo;
+- una lista local;
+- coincidencia aproximada de texto;
+- selección del cliente;
+- último rol utilizado.
+
+Un cambio de rol operativo que afecte la decisión invalida el contexto anterior para acciones posteriores y exige resolución nueva.
+
+---
+
+#### 12. Sede, área y territorio
+
+La sede y el área efectivas deben ser compatibles con el turno, el actor y el recurso según la modalidad correspondiente.
+
+Reglas:
+
+1. sede seleccionada no sustituye sede del turno;
+2. área seleccionada no sustituye área efectiva;
+3. `null` no significa toda la sede;
+4. una geolocalización cercana no crea territorio laboral;
+5. un dispositivo no puede trasladar al actor a otra sede o área;
+6. un cliente no puede enviar otro territorio para reparar una incompatibilidad;
+7. una relación área–sede inválida o contradictoria impide confirmar el contexto que dependa de ella;
+8. todo cruce territorial requerido debe resolverse en la frontera autoritativa.
+
+---
+
+#### 13. Tiempo y aplicabilidad
+
+La vigencia temporal se determina con instantes y zona horaria autoritativos del turno y de las fuentes aplicables.
+
+Reglas:
+
+- la zona del dispositivo no gobierna la decisión;
+- un turno overnight conserva una sola identidad lógica;
+- una fecha civil aislada no acredita vigencia;
+- una ventana expirada no conserva contexto porque la UI aún la muestre;
+- una transición temporal relevante puede exigir resolución nueva;
+- el reloj cliente no puede extender una sesión o turno;
+- una decisión válida en un instante no se presume válida indefinidamente.
+
+---
+
+#### 14. Confirmación autoritativa
+
+Confirmar contexto efectivo significa que una frontera server-side puede reconstruir una decisión coherente desde sus fuentes propietarias y producir una respuesta inequívoca para el instante y modalidad evaluados.
+
+La confirmación debe cumplir:
+
+1. identidad suficiente;
+2. fuentes necesarias disponibles y concluyentes;
+3. correlación determinista entre actor, turno, revisión y asistencia;
+4. territorio y rol coherentes;
+5. ausencia de contradicciones bloqueantes;
+6. frescura suficiente;
+7. versión contractual interpretable;
+8. decisión reproducible para las mismas entradas autoritativas.
+
+La confirmación no transforma el contexto en un token universal ni evita validar la acción protegida concreta.
+
+---
+
+#### 15. Ausencia normal de contexto efectivo
+
+Puede existir ausencia normal de contexto operativo sin que exista un error técnico.
+
+Ejemplos:
+
+- trabajador sin turno operativo aplicable;
+- turno válido pero sin check-in confirmado cuando el carril lo exige;
+- sesión correctamente cerrada después de check-out;
+- acción perteneciente a un carril que no requiere contexto laboral operativo;
+- instante fuera de la ventana aplicable cuando el contrato así lo determina.
+
+La ausencia normal debe mantenerse diferenciada de indisponibilidad, contradicción y estado obsoleto.
+
+---
+
+#### 16. Contexto no resoluble
+
+Si una fuente requerida está temporalmente indisponible o la lectura no es concluyente, el sistema no debe inventar una respuesta empresarial estable.
+
+Son ejemplos:
+
+- timeout;
+- excepción de fuente;
+- lectura incompleta;
+- imposibilidad de comprobar la revisión aplicable;
+- imposibilidad de comprobar el estado actual de la sesión;
+- versión necesaria temporalmente no disponible.
+
+Regla:
+
+```text
+NO SE PUDO RESOLVER
+≠
+NO EXISTE CONTEXTO
+```
+
+La indisponibilidad técnica no se convierte en permiso ni en ausencia normal por conveniencia.
+
+---
+
+#### 17. Contradicción y ambigüedad
+
+Una contradicción concluyente o una ambigüedad material impide confirmar contexto efectivo para el carril afectado.
+
+Entre otros casos:
+
+- dos revisiones incompatibles candidatas;
+- más de una sesión que pretende ser la sesión activa del mismo contexto cuando el contrato exige unicidad;
+- turno y asistencia vinculados a revisiones incompatibles;
+- rol operativo incompatible con la programación;
+- área que no pertenece a la sede;
+- identidad laboral o asignación contradictorias;
+- versiones contractuales incompatibles;
+- fuentes propietarias que no pueden reconciliarse sin inventar una regla.
+
+Queda prohibido resolver estas situaciones escogiendo la primera, la última o la más reciente por conveniencia.
+
+---
+
+#### 18. Frescura
+
+La frescura es una propiedad de la decisión contextual, no únicamente de una fila o respuesta cacheada.
+
+Una decisión solo puede reutilizarse cuando las fuentes, versiones y condiciones que la sostienen siguen siendo válidas para el instante y la acción posteriores.
+
+La materialización futura deberá poder detectar o revalidar cambios relevantes sin depender de una duración arbitraria definida por esta tarea.
+
+No se fija un TTL numérico.
+
+---
+
+#### 19. Causas de invalidación
+
+El contexto operativo efectivo debe invalidarse o someterse a resolución completa nueva cuando cambie de forma relevante cualquiera de sus fundamentos autoritativos.
+
+Incluye, según corresponda:
+
+- check-out confirmado;
+- cierre o expiración de la sesión de check-in;
+- cancelación o retiro efectivo del turno;
+- publicación de una revisión sucesora aplicable;
+- cambio que altere la vigencia temporal;
+- cambio de actor;
+- cambio, suspensión o terminación del vínculo laboral;
+- cambio de asignación;
+- cambio de rol operativo;
+- cambio de sede;
+- cambio de área o de pertenencia área–sede;
+- cambio territorial relevante;
+- cambio de dispositivo cuando la modalidad lo haga parte del contexto;
+- revocación de una fuente de autoridad aplicable;
+- cambio contractual o de catálogo que vuelva incompatible el snapshot anterior;
+- detección de una contradicción estructural que afecte el carril.
+
+Una invalidación no borra la evidencia histórica que justificó la decisión anterior.
+
+---
+
+#### 20. Concurrencia
+
+Una acción protegida no puede depender de un contexto que era válido al abrir la pantalla pero quedó inválido antes del efecto autoritativo.
+
+Cuando una condición relevante pueda cambiar concurrentemente, la frontera que autoriza o ejecuta deberá revalidar las precondiciones aplicables antes de producir el efecto.
+
+Ejemplos:
+
+- check-out concurrente;
+- nueva revisión publicada;
+- cambio de rol o área;
+- desactivación del trabajador;
+- cierre de sesión;
+- revocación territorial.
+
+La victoria de una carrera cliente no constituye una decisión empresarial.
+
+---
+
+#### 21. Operación offline
+
+La operación offline preserva intención y evidencia, no autoridad futura.
+
+Reglas:
+
+1. una intención de check-in encolada no crea contexto efectivo;
+2. un último contexto conocido puede conservarse únicamente como representación no autoritativa si la experiencia aprobada lo permite;
+3. una acción protegida nueva no puede ejecutarse con un contexto conocido como obsoleto;
+4. al sincronizar, toda intención o acción pendiente debe reautorizarse frente a contexto canónico fresco;
+5. un cambio ocurrido durante la desconexión puede invalidar la autoridad que existía al capturar la intención;
+6. el replay no conserva automáticamente permisos, turno, rol, territorio ni sesión;
+7. una cola no puede convertir una decisión anterior en una autorización permanente.
+
+---
+
+#### 22. Caché, Realtime y señales de invalidación
+
+Caché, Realtime y señales de invalidación pueden acelerar la convergencia, pero no sustituyen las fuentes propietarias.
+
+Reglas:
+
+- una señal puede indicar que debe resolverse de nuevo;
+- una notificación de cambio no es por sí sola la nueva verdad;
+- una caché debe quedar asociada a suficiente identidad y versión para detectar obsolescencia;
+- un evento Realtime perdido no convierte en vigente una decisión antigua;
+- una reconexión no reutiliza autoridad sin comprobar frescura;
+- una vista stale no puede alimentar una acción operativa nueva.
+
+El mecanismo físico de caché, suscripciones e invalidación no se define en esta tarea.
+
+---
+
+#### 23. Contexto efectivo y autorización
+
+El contexto efectivo es una entrada de autorización cuando el contrato de la capacidad lo exige. No sustituye la autorización.
+
+Por tanto:
+
+```text
+CONTEXTO EFECTIVO CONFIRMADO
+≠
+PERMISO CONCEDIDO
+```
+
+Una acción protegida continúa exigiendo, según corresponda:
+
+- sesión e identidad válidas;
+- acceso a la aplicación;
+- clave exacta de permiso;
+- modalidad de autorización;
+- contexto requerido;
+- territorio;
+- restricciones de dispositivo;
+- estado del recurso;
+- reglas de concurrencia;
+- ausencia de denegaciones;
+- controles server-side, RPC y RLS aplicables.
+
+Un contexto laboral correcto no concede capacidades que el actor no posee.
+
+---
+
+#### 24. Consistencia entre canales
+
+Para las mismas fuentes autoritativas, instante, actor, modalidad y recurso, las capas que dependan del contexto deberán interpretar de forma equivalente si el contexto es utilizable.
+
+La implementación futura no podrá permitir que:
+
+- la interfaz considere válido un contexto que servidor rechaza;
+- una RPC acepte un contexto que una acción server-side considera obsoleto;
+- RLS ignore una invalidación relevante;
+- una cola offline ejecute con una decisión ya retirada;
+- una aplicación reconstruya por su cuenta turno, check-in, rol o territorio con reglas distintas.
+
+La materialización de esa paridad permanece bajo los propietarios técnicos ya existentes.
+
+---
+
+#### 25. Auditoría mínima
+
+La decisión de contexto deberá poder reconstruirse, cuando aplique, con evidencia correlacionable de:
+
+- principal autenticado;
+- actor humano efectivo;
+- identidad laboral y vínculo aplicables;
+- turno;
+- revisión publicada;
+- hecho de asistencia relevante;
+- sesión de check-in;
+- estado de cierre o check-out cuando corresponda;
+- rol operativo;
+- sede;
+- área;
+- territorio;
+- dispositivo o sesión cuando formen parte de la modalidad;
+- instante de resolución;
+- resultado contextual;
+- razón de ausencia, invalidación, contradicción o imposibilidad de resolución cuando aplique;
+- causa de revalidación;
+- versiones contractuales relevantes;
+- correlación necesaria para investigar una acción posterior.
+
+La auditoría debe minimizar datos y no almacenar secretos como evidencia contextual.
+
+---
+
+#### 26. Privacidad y minimización
+
+El contexto laboral es información operacional y laboral restringida.
+
+Cada consumidor deberá recibir únicamente los campos necesarios para su finalidad.
+
+La confirmación del contexto no autoriza por sí sola a propagar:
+
+- geolocalización exacta;
+- notas laborales privadas;
+- evidencia completa de asistencia;
+- historial administrativo;
+- datos de otros trabajadores;
+- razones internas sensibles;
+- credenciales, tokens o secretos.
+
+La semántica de consumo por SHELL y las aplicaciones permanece reservada a `INT-WORK-005`.
+
+---
+
+#### 27. Frontera con `INT-WORK-001`
+
+`INT-WORK-001` continúa siendo propietaria documental del contrato mediante el cual VISO publica el turno.
+
+Esta tarea consume esa decisión y exige:
+
+- turno publicado;
+- revisión exacta;
+- identidad estable;
+- aplicabilidad temporal y territorial coherentes.
+
+No publica, corrige, cancela ni versiona programación.
+
+---
+
+#### 28. Frontera con `INT-WORK-002`
+
+`INT-WORK-002` define cómo ANIMA presenta la programación publicada.
+
+La presentación no se convierte en fuente contextual.
+
+Por tanto:
+
+```text
+TURNO MOSTRADO
+≠
+CONTEXTO EFECTIVO
+```
+
+Una tarjeta, semana, detalle o notificación pueden conducir a una acción, pero esa acción debe resolver nuevamente las fuentes autoritativas que su contrato requiera.
+
+---
+
+#### 29. Frontera con `INT-WORK-003`
+
+`INT-WORK-003` gobierna la captura, persistencia, sincronización, validación y conciliación de los hechos de asistencia.
+
+Esta tarea no reinterpreta una intención pendiente como asistencia confirmada ni corrige el hecho propietario.
+
+Su dependencia es estricta:
+
+```text
+HECHO DE ASISTENCIA CONFIRMADO
+→ SESIÓN DE CHECK-IN AUTORITATIVA CUANDO CORRESPONDA
+→ CONTEXTO EFECTIVO PUEDE SER RESUELTO
+```
+
+Si el hecho de asistencia deja de sostener la sesión, el contexto dependiente de ella deja de ser utilizable.
+
+---
+
+#### 30. Frontera con `INT-WORK-005`
+
+`INT-WORK-004` termina en la definición de cómo se confirma, invalida y revalida el contexto efectivo.
+
+`INT-WORK-005` será propietaria documental del consumo de ese contexto por SHELL y las aplicaciones.
+
+Por tanto esta tarea no define:
+
+- API final de consumo;
+- hook, provider o SDK de cliente;
+- estructura de estado de SHELL;
+- estrategia de navegación;
+- campos mínimos por aplicación;
+- comportamiento visual por consumidora;
+- caché específica de una aplicación;
+- contrato de propagación entre aplicaciones.
+
+---
+
+#### 31. Frontera física con Supabase
+
+El título de la tarea fija a Supabase como frontera autoritativa de datos y resolución, pero esta fase no autoriza implementación física.
+
+Esta tarea no crea ni modifica:
+
+- tablas;
+- columnas;
+- constraints;
+- índices;
+- vistas o vistas materializadas;
+- funciones;
+- RPC;
+- triggers;
+- políticas RLS;
+- grants;
+- migraciones;
+- Edge Functions;
+- tokens derivados;
+- mecanismos de caché;
+- suscripciones Realtime;
+- datos de producción, staging o desarrollo.
+
+La materialización futura deberá realizarse mediante los propietarios técnicos ya definidos y versionarse desde `vento-shell` cuando implique Supabase.
+
+---
+
+#### 32. Brechas físicas y propietarios existentes
+
+La definición documental no declara como implementado aquello que permanece pendiente físicamente.
+
+Las obligaciones de materialización ya tienen propietarios documentales existentes, entre ellos:
+
+| Brecha física                                                                         | Propietario existente                                                          | Condición de salida                                                                                                  |
+| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| resolución server-side coherente de contexto operativo y autorización                 | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CTX-002` a `SHELL-CTX-004`                | servidor, RPC y RLS resuelven las mismas precondiciones operativas y razones para el mismo caso                      |
+| invalidación por check-out, sesión, turno, rol, área, actor, dispositivo o asignación | `AUTH-DB-035`; `SHELL-CTX-006`; `ANIMA-AUTH-015`; `AUTH-QA-025`; `AUTH-QA-026` | ninguna decisión, caché, token derivado o cola offline conserva autoridad después del cambio aplicable               |
+| paridad de autorización antes de mutaciones                                           | `AUTH-SRV-004` a `AUTH-SRV-018`; `AUTH-DB-034`                                 | toda mutación revalida identidad, permiso, contexto, territorio y recurso antes del efecto                           |
+| evidencia correlacionable de decisión                                                 | `AUTH-DB-012` a `AUTH-DB-014`; `AUTH-DB-032`; `AUTH-SRV-014`; `AUTH-QA-029`    | decisiones permitidas y denegadas pueden reconstruirse con actor, contexto, razones y versión contractual            |
+| consumo transversal del contexto                                                      | `INT-WORK-005`                                                                 | SHELL y las aplicaciones consumen el contexto compartido sin reconstruir programación o asistencia por cuenta propia |
+
+No se crea una tarea adicional para obligaciones que ya poseen dueño y condición de salida.
+
+---
+
+#### 33. Invariantes
+
+1. VISO sigue siendo propietaria de programación.
+2. ANIMA sigue siendo propietaria de asistencia.
+3. Supabase y los resolutores canónicos confirman contexto; no inventan hechos propietarios.
+4. turno mostrado no equivale a contexto efectivo.
+5. turno publicado no equivale a presencia.
+6. check-in local no equivale a check-in confirmado.
+7. cola offline no equivale a contexto.
+8. sesión autenticada no equivale a contexto laboral operativo.
+9. rol base no equivale a rol operativo.
+10. sede seleccionada no equivale a sede efectiva.
+11. área seleccionada no equivale a área efectiva.
+12. `null` no equivale a cobertura global.
+13. contexto efectivo no equivale a permiso concedido.
+14. contexto válido para una modalidad no habilita otra modalidad por inferencia.
+15. una revisión ambigua no se resuelve por primera o última fila.
+16. una fuente no disponible no equivale a ausencia normal de contexto.
+17. una decisión obsoleta no conserva autoridad para una acción nueva.
+18. check-out confirmado invalida el contexto que dependía de la sesión cerrada.
+19. cambio de turno, rol, territorio o actor exige revalidación cuando afecta la decisión.
+20. la UI no puede ampliar autoridad enviada por servidor.
+21. caché y Realtime no son fuentes propietarias.
+22. una acción offline pendiente se reautoriza al sincronizar.
+23. una decisión histórica se conserva como evidencia aunque deje de ser efectiva.
+24. la implementación física no se presume por aprobar esta definición documental.
+25. el consumo transversal permanece reservado a `INT-WORK-005`.
+
+---
+
+#### 34. Prohibiciones
+
+Queda prohibido considerar conforme cualquiera de estos atajos:
+
+1. activar contexto cuando el usuario toca “Entrar” antes de confirmación server-side;
+2. activar contexto porque una intención fue persistida localmente;
+3. activar contexto porque una intención fue enviada a una cola;
+4. activar contexto desde una respuesta optimista;
+5. usar la tarjeta de turno actual como prueba de presencia;
+6. aceptar una revisión distinta a la correlacionada con la asistencia;
+7. elegir una revisión por máximo timestamp;
+8. elegir una sesión activa por primera fila;
+9. usar rol base o `navigation_role` como rol operativo efectivo;
+10. aceptar sede o área enviadas por cliente para reparar incompatibilidad;
+11. interpretar `null` como todas las sedes o áreas;
+12. conservar un contexto después de check-out confirmado;
+13. reutilizar un contexto después de una revisión sucesora sin revalidación;
+14. ejecutar una acción offline con la autoridad que existía al capturarla sin reautorizar;
+15. tratar un timeout como ausencia de contexto;
+16. tratar una contradicción como una ausencia normal;
+17. conceder una capacidad solo porque el contexto es efectivo;
+18. reconstruir el contexto de forma diferente en cada aplicación;
+19. declarar implementada una política física no materializada;
+20. trasladar a `INT-WORK-005` la propiedad de confirmar el contexto.
+
+---
+
+#### 35. Escenarios mínimos de aceptación contractual
+
+La materialización futura deberá demostrar como mínimo:
+
+1. entrada confirmada, turno y revisión exactos, vínculo válido, sesión vigente, rol y territorio coherentes permiten confirmar contexto operativo cuando la modalidad lo exige;
+2. un turno mostrado sin check-in confirmado no produce contexto operativo efectivo;
+3. una intención de entrada encolada offline no produce contexto efectivo;
+4. una respuesta optimista de cliente no produce contexto efectivo;
+5. un check-out confirmado invalida el contexto dependiente de esa sesión;
+6. una revisión sucesora publicada invalida la decisión basada en la revisión sustituida cuando afecta su aplicabilidad;
+7. un cambio de rol operativo invalida decisiones posteriores basadas en el rol anterior;
+8. un cambio de área o sede relevante obliga a resolver de nuevo el territorio;
+9. trabajador inactivo o vínculo no aplicable no conserva contexto por tener una sesión previa;
+10. dos revisiones incompatibles candidatas bloquean la confirmación automática;
+11. dos sesiones incompatibles no se resuelven escogiendo una por orden de consulta;
+12. un timeout de fuente se trata como resolución no concluyente y no como ausencia normal;
+13. una capacidad administrativa cuyo contrato no exige turno ni check-in conserva su carril independiente;
+14. contexto efectivo con permiso exacto ausente no autoriza la acción;
+15. contexto efectivo con recurso o territorio incompatible no autoriza la acción;
+16. un rol enviado por cliente no sustituye el rol operativo autoritativo;
+17. una sede o área enviada por cliente no amplía territorio;
+18. una caché stale no habilita una acción operativa nueva;
+19. una acción capturada offline se reautoriza con contexto fresco al sincronizar;
+20. una señal Realtime inicia convergencia o relectura sin convertirse por sí sola en fuente;
+21. la evidencia permite correlacionar turno, revisión, asistencia, sesión, rol, territorio, resultado y versión contractual;
+22. el cierre de una sesión conserva la evidencia histórica de la decisión anterior;
+23. la aplicación consumidora no necesita reconstruir por su cuenta el turno o la asistencia para saber si el contexto recibido es utilizable;
+24. ninguna de las validaciones anteriores exige una mutación física durante esta tarea documental.
+
+---
+
+#### 36. Criterios de aceptación documental
+
+`INT-WORK-004` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. contexto laboral operativo efectivo queda definido sin confundirse con permiso o sesión autenticada;
+2. se preserva la propiedad de VISO sobre programación y de ANIMA sobre asistencia;
+3. turno y revisión exactos forman parte de la base contextual cuando corresponde;
+4. una sesión de check-in solo participa después de asistencia confirmada;
+5. rol, sede y área proceden de fuentes autoritativas y no del cliente;
+6. la modalidad administrativa independiente permanece separada;
+7. ausencia normal, indisponibilidad, contradicción y obsolescencia permanecen diferenciadas;
+8. las causas de invalidación obligan a revalidar cuando afectan la decisión;
+9. caché, Realtime, UI y offline no crean autoridad;
+10. las acciones pendientes offline se reautorizan al sincronizar;
+11. contexto efectivo permanece como prerrequisito de autorización y no como concesión universal;
+12. la decisión puede auditarse y correlacionarse sin exponer secretos ni datos innecesarios;
+13. las brechas físicas permanecen asignadas a propietarios existentes con condición de salida;
+14. no se crea esquema, tabla, RPC, RLS, trigger, token, caché, migración ni cambio físico en Supabase;
+15. no se modifica código ni configuración;
+16. no se crean ni modifican requisitos de prueba;
+17. `INT-WORK-005` permanece reservada y sin desarrollar.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- `TREQ-AUTH-008` ya exige que las capacidades operativas dependientes de jornada requieran turno publicado y vigente, check-in activo, rol operativo efectivo y compatibilidad territorial, preservando por separado las capacidades administrativas que no requieren esas precondiciones;
+- `TREQ-AUTH-009` ya exige resolver sede y área efectivas de forma determinista desde asignaciones, turno, check-in y contexto, con rechazo de cruces territoriales indebidos;
+- `TREQ-AUTH-013` ya exige que cada mutación protegida revalide en servidor permiso, actor, territorio, contexto requerido, estado del recurso y columnas permitidas;
+- `TREQ-AUTH-014` ya exige invalidar contexto, caché y tokens derivados ante check-out, expiración o cambios relevantes y obliga a reautorizar colas offline al sincronizar;
+- `TREQ-AUTH-015` ya exige evidencia correlacionable de actor, rol, turno, check-in, sede, área, dispositivo, permiso, decisión, razones, versión contractual y timestamp;
+- `TREQ-AUTH-016` ya cubre revocación coordinada del contexto y la prohibición de ejecutar con autoridad anterior desde cachés o colas offline;
+- `INT-WORK-003` ya fija que una intención local o pendiente no equivale a asistencia confirmada y que solo un hecho confirmado puede originar la sesión que esta tarea consume;
+- esta tarea especializa y conecta obligaciones ya registradas sin introducir una capacidad empresarial, permiso, proceso, transición, evento, repositorio, esquema o comportamiento físico nuevo.
+
+Por tanto, el registro 04A vigente no requiere creación, modificación, diferimiento, descarte ni obsolescencia de filas por esta tarea.
+
+---
+
+#### 38. Resultado de la tarea
+
+`INT-WORK-004` queda **APROBADA** como definición documental de la confirmación autoritativa del contexto laboral operativo efectivo en Supabase.
+
+Resultado consolidado:
+
+- fuente de programación: **VISO mediante turno y revisión publicados autoritativos**;
+- fuente de asistencia: **ANIMA mediante hechos confirmados bajo `INT-WORK-003`**;
+- condición de presencia: **check-in confirmado y sesión autoritativa vigente cuando la modalidad lo exige**;
+- rol operativo: **derivado de fuentes autoritativas, nunca del rol base o del cliente**;
+- territorio: **sede y área coherentes con actor, turno y recurso**;
+- frescura: **obligatoria para toda reutilización de la decisión**;
+- check-out o cambio relevante: **invalida o fuerza nueva resolución cuando afecta el contexto**;
+- operación offline: **conserva intención, no autoridad; reautoriza al sincronizar**;
+- caché y Realtime: **mecanismos auxiliares, no fuentes propietarias**;
+- contexto efectivo equivalente a permiso: **prohibido**;
+- mutaciones físicas en Supabase: **0**;
+- cambios de código o configuración: **0**;
+- requisitos de prueba creados o modificados: **0**.
+
+Invariante final:
+
+```text
+FUENTES PROPIETARIAS AUTORITATIVAS
+→ RESOLUCIÓN SERVER-SIDE COHERENTE Y FRESCA
+→ CONTEXTO LABORAL OPERATIVO EFECTIVO
+→ ENTRADA A LA AUTORIZACIÓN DE LA ACCIÓN
+```
+
+sin permitir:
+
+```text
+CLIENTE / CACHÉ / OFFLINE / UI
+→ AUTORIDAD CONTEXTUAL
+```
+
+ni:
+
+```text
+CONTEXTO EFECTIVO
+→ PERMISO UNIVERSAL
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia`
+
+TAREA ACTUAL APROBADA
+
+`INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones`
+
+
 ### [ ] INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
