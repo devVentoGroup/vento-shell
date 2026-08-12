@@ -4542,4 +4542,1190 @@ SIGUIENTE TAREA RESERVADA
 `CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal`
 
 
-### [ ] CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
+### ✅ CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos` — APROBADA
+**Tarea siguiente:** `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal de integración para captura, reconexión, replay controlado, idempotencia, reincorporación, conciliación y retorno al servicio normal sin duplicar efectos ni transferir propiedad entre dominios
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md`
+**Bloque:** AC — Continuidad operativa y recuperación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, Edge Functions, outbox, inbox, workers, jobs, topics, buckets, colas, backfills, despliegues, cambios de proveedor o cambios en Supabase:** no autorizados
+**Servicios evaluados:** 69 / 69
+**Servicios activos con contrato documental de reincorporación interaplicación:** 67 / 67
+**Servicios AURA bloqueados:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la capa transversal mediante la cual Vento OS podrá transportar y orquestar, entre aplicaciones, servicios y dependencias externas, el trabajo capturado durante una interrupción y su posterior reincorporación sin reproducir ciegamente solicitudes, duplicar efectos, alterar la propiedad empresarial, ocultar resultados desconocidos ni presentar como operación normal un sistema que todavía conserva pendientes de conciliación.
+
+La tarea materializa el handoff técnico-documental de `CONT-DOM-009` y `CONT-DOM-010` hacia la arquitectura de integración. Conserva la propiedad funcional de cada proceso y establece qué debe transportar cualquier implementación futura para que captura, retry, replay, reconciliación y retorno sean deterministas y verificables.
+
+Reglas cardinales:
+
+```text
+CAPTURA
+!= HECHO AUTORITATIVO
+
+RETRY
+!= NUEVA INTENCION
+
+REPLAY
+!= REPRODUCCION CIEGA
+
+REPLAY
+!= DECISION EMPRESARIAL
+
+DIGITALIZACION
+!= REINCORPORACION
+
+REINCORPORACION
+!= CONCILIACION COMPLETA
+
+CONECTIVIDAD RECUPERADA
+!= SISTEMA LISTO PARA REPLAY
+
+SERVICIO RESTAURADO
+!= PROCESO EMPRESARIAL RECUPERADO
+
+RETORNO AL SERVICIO NORMAL
+!= CIERRE DEL INCIDENTE
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados:
+
+1. contrato transversal de captura para registros locales, manuales, físicos, diferidos y efectos externos;
+2. identidad lógica suficiente para correlacionar una unidad desde su origen hasta el resultado autoritativo;
+3. secuencia común de reconexión que impide disparar replay por el solo retorno de conectividad;
+4. contrato de idempotencia estable para retry y replay de la misma intención;
+5. reglas de consulta de receipt y recurso antes de repetir una mutación;
+6. tratamiento explícito de `RESULT_UNKNOWN`, expiración, respuesta tardía y efecto parcial;
+7. contrato de deduplicación por identidad, contenido, folio, receipt, recurso y semántica empresarial;
+8. reutilización de las clases de conflicto y resoluciones aprobadas, sin taxonomía paralela;
+9. contrato de orden causal entre operaciones y entre aplicaciones propietarias/consumidoras;
+10. tres corredores canónicos de precedencia preservados para venta, abastecimiento y producción;
+11. contrato de reincorporación interaplicación que exige decisión de la fuente propietaria antes de propagar efectos;
+12. contrato de conciliación por unidad, por consumidor y por incidente;
+13. tratamiento específico de los ocho perfiles de contingencia activos y de los dos perfiles condicionales no instanciados;
+14. tratamiento específico de folios manuales, evidencia y digitalización;
+15. tratamiento de receipts y resultados provenientes de proveedores o canales externos;
+16. balance reconstruible de pendientes, conflictos, desconocidos, cuarentenas, expirados y efectos downstream;
+17. puerta documental para retorno gradual al servicio normal;
+18. separación entre retorno normal, desactivación y cierre;
+19. matriz 69 / 69 con decisión de transporte/replay/reincorporación por servicio;
+20. continuidad intacta de los 67 servicios activos y los 2 servicios AURA bloqueados;
+21. definición de trazabilidad mínima para implementación futura sin prescribir tecnología física;
+22. frontera expresa de autoridad entre ejecutar, validar, reincorporar, conciliar y cerrar;
+23. frontera expresa de propiedad: ninguna integración convierte una consumidora en propietaria del hecho fuente;
+24. cero cambios físicos, cero operaciones reales y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume sin redefinir:
+
+- `CONT-DOM-009` para registro, folio, evidencia, custodia, tiempos y referencias del trabajo de contingencia;
+- `CONT-DOM-010` para unidad de reincorporación, puerta de admisión, idempotencia, conflictos, orden causal, conciliación y balance de pendientes;
+- `CONT-DOM-012` para restauración, orden de recuperación, failover, retorno y validación funcional;
+- `CONT-DOM-013` y `CONT-INT-003` para dependencias externas, receipts, fallback y prohibición de inferir capacidad alterna no demostrada;
+- `CONT-AUTH-004` para separación entre ejecución, validación, reincorporación, conciliación, recuperación total, cierre y revisión;
+- `CONT-INT-001` para salud, degradación e incidente entre aplicaciones;
+- `CONT-INT-002` para contratos entre aplicaciones y preservación de propiedad;
+- `NFR-REQ-004` para clases offline, operación local, estados, prioridades `SYNC-*`, idempotencia, reconexión, conflictos, evidencia y resultado desconocido;
+- los 69 servicios BIA, las 67 estrategias activas y los dos bloqueos AURA heredados;
+- los requisitos vigentes de continuidad e integración que ya protegen reincorporación idempotente, replay controlado, trazabilidad, deduplicación, conflicto y retorno.
+
+La tarea no cambia criticidad BIA, perfiles `CONT-OBJ-*`, MTPD, RTO, RPO, MBCO, estrategias `CTG-*`, prioridades `SYNC-*`, propietarios de proceso, propiedad de datos, estados de AURA ni decisiones de autorización aprobadas.
+
+---
+
+#### 4. Fronteras de propiedad
+
+El transporte técnico nunca altera la propiedad empresarial.
+
+```text
+APLICACION PROPIETARIA
+→ acepta, rechaza, corrige o confirma el hecho fuente
+
+CAPA DE INTEGRACION
+→ transporta identidad, contexto, intento, receipt, estado y evidencia
+→ aplica controles de idempotencia y causalidad
+→ no decide el significado empresarial del hecho
+
+APLICACION CONSUMIDORA
+→ aplica únicamente el efecto derivado que le corresponde
+→ no recrea el hecho fuente
+→ no certifica a la propietaria
+
+EXPEDIENTE DE CONTINUIDAD
+→ correlaciona incidente, pendientes y conciliaciones
+→ no sustituye las fuentes de verdad de dominio
+```
+
+Reglas:
+
+- una caída de la propietaria no convierte a una consumidora en fuente de verdad;
+- una proyección, caché, hoja, mensaje, snapshot o cola no adquiere propiedad por contener una copia;
+- una integración puede bloquear, deduplicar, consultar o transportar, pero no aprobar el resultado empresarial por sí sola;
+- un replay técnico solo puede intentar un efecto ya autorizado o transportar una observación existente dentro de su contrato;
+- una corrección empresarial se expresa como nueva intención enlazada, no como reescritura silenciosa.
+
+---
+
+#### 5. Unidad transversal de captura y reincorporación
+
+La unidad transportable conserva, cuando aplique, la identidad y contexto siguientes:
+
+```text
+incident_ref
+process_id
+business_service_id
+strategy_ref
+source_record_kind
+source_record_ref
+contingency_folio
+local_operation_id
+idempotency_key
+payload_hash
+principal_id
+actor_id
+device_id
+original_context_ref
+site_id
+area_id
+shift_id
+checkin_id
+resource_refs[]
+observed_resource_versions[]
+authorization_envelope_ref
+sequence_ref
+dependency_operation_ids[]
+source_reference
+source_version
+observed_at
+created_local_at
+recorded_at
+first_send_at
+accepted_at
+business_effect_at
+evidence_refs[]
+external_receipt_refs[]
+current_resource_reference
+current_resource_version
+owner_decision_ref
+authoritative_result_ref
+confirmed_at
+reconciled_at
+```
+
+No todos los campos son obligatorios para todos los perfiles. La regla es preservar los datos que existían y sean necesarios para atribución, integridad, autoridad, deduplicación, causalidad y conciliación.
+
+Un batch puede agrupar unidades para transporte o revisión, pero cada intención conserva identidad propia. Un lote de papeles, un archivo o una cola completa no se convierten por conveniencia en una sola operación idempotente.
+
+---
+
+#### 6. Contrato de captura
+
+La captura conserva el hecho observado o el trabajo preparado sin anunciar un resultado que aún no existe.
+
+Para una captura digital local:
+
+- `local_operation_id` nace una sola vez;
+- `idempotency_key` existe antes del primer envío cuando la operación puede producir un efecto repetible;
+- actor, principal, dispositivo, contexto, sitio y área conservan la atribución observada;
+- `observed_at` no se reemplaza por la hora de sincronización;
+- `payload_hash` conserva identidad lógica del contenido cuando aplique;
+- `evidence_refs[]` permanecen enlazables aunque todavía no estén confirmadas por el dominio;
+- una operación `RESULT_UNKNOWN` no origina otra intención;
+- un cambio de actor o dispositivo no transfiere automáticamente la cola.
+
+Para una captura manual o física:
+
+- el folio conserva identidad, emisor, rango y custodia;
+- el original no se reenumera al digitalizar;
+- la operación de incorporación digital recibe su propia identidad idempotente;
+- `source_record_ref` o referencia equivalente conserva el folio original;
+- un original duplicado, fuera de rango, ilegible o con custodia rota no pasa a confirmación automática.
+
+Para un proveedor o canal externo:
+
+- la solicitud y el receipt se conservan como referencias distintas;
+- ausencia de receipt significa resultado pendiente o desconocido según el contrato, no éxito ni fallo inventado;
+- cambiar de canal no permite duplicar una solicitud cuyo resultado anterior sigue desconocido.
+
+---
+
+#### 7. Estados heredados de operación local
+
+Se reutilizan exactamente los estados aprobados en `NFR-REQ-004`:
+
+```text
+DRAFT_LOCAL
+CAPTURED_LOCAL
+QUEUED
+WAITING_DEPENDENCY
+VALIDATING
+SYNCING
+ACCEPTED_PENDING_EFFECT
+CONFIRMED
+REJECTED
+CONFLICT
+RESULT_UNKNOWN
+EXPIRED
+SUPERSEDED
+QUARANTINED
+RECONCILIATION_REQUIRED
+DISCARDED_WITH_REASON
+```
+
+Interpretación de integración:
+
+- `DRAFT_LOCAL`: todavía no existe una intención ejecutable;
+- `CAPTURED_LOCAL`: existe captura durable, no confirmación de servidor;
+- `QUEUED`: está pendiente de transporte, no aceptada;
+- `WAITING_DEPENDENCY`: la causalidad impide avanzar;
+- `VALIDATING`: se revalidan contexto, esquema, autoridad, recurso y dependencias;
+- `SYNCING`: existe un intento en curso, no resultado definitivo;
+- `ACCEPTED_PENDING_EFFECT`: el receptor aceptó la operación, pero el efecto empresarial aún no está confirmado;
+- `CONFIRMED`: existe receipt o estado autoritativo verificable;
+- `REJECTED`: existe rechazo autoritativo;
+- `CONFLICT`: la intención no puede aplicarse sin resolución;
+- `RESULT_UNKNOWN`: el intento pudo haber producido efecto, pero no existe confirmación suficiente;
+- `EXPIRED`: la intención ya no puede ejecutarse automáticamente bajo su vigencia original;
+- `SUPERSEDED`: otra intención conocida la sustituye y la anterior no debe ejecutarse;
+- `QUARANTINED`: el dato se conserva sin ejecución automática;
+- `RECONCILIATION_REQUIRED`: hace falta una decisión o comparación adicional;
+- `DISCARDED_WITH_REASON`: solo aplica cuando el descarte está permitido y conserva motivo.
+
+Ningún estado terminal se infiere por cerrar una pantalla, reiniciar un dispositivo, recuperar internet o vaciar visualmente una cola.
+
+---
+
+#### 8. Estados heredados de evidencia
+
+Se reutilizan:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+QUARANTINED
+```
+
+Reglas:
+
+- `UPLOADED_UNLINKED` sigue siendo pendiente;
+- `LINKED_AND_CONFIRMED` exige vínculo verificable con el hecho o expediente correspondiente;
+- una pieza fallida conserva historia y no se elimina para ocultar el fallo;
+- el estado de la evidencia no se confunde con el estado de la operación empresarial;
+- el original físico conserva su relación después de la digitalización.
+
+---
+
+#### 9. Secuencia obligatoria de reconexión
+
+La capa de integración deberá respetar el orden lógico ya aprobado:
+
+```text
+1. ESTABILIZAR CONECTIVIDAD
+2. VERIFICAR HORA, DNS Y SERVICIOS REQUERIDOS
+3. REVALIDAR SESION Y DISPOSITIVO
+4. RESOLVER ACCESS CONTEXT NUEVO
+5. OBTENER REVOCACIONES, VERSIONES Y POLITICAS
+6. VALIDAR ESQUEMA DE OPERACIONES LOCALES
+7. CONSULTAR RECEIPTS E IDEMPOTENCY KEYS
+8. CLASIFICAR PENDIENTES, EXPIRADOS Y CONFLICTOS
+9. ORDENAR POR DEPENDENCIA Y PRIORIDAD
+10. SINCRONIZAR SIN BLOQUEAR TRABAJO FOREGROUND
+11. DETENER LA RAMA AFECTADA ANTE CONFLICTO
+12. ACTUALIZAR PROYECCIONES
+13. MOSTRAR PENDIENTES RESTANTES EN LA SUPERFICIE PROPIETARIA
+```
+
+La recuperación parcial de red, identidad, Supabase, proveedor o una aplicación no habilita por sí sola el paso 10. Cada dependencia requerida debe estar disponible o existir un perfil degradado todavía válido.
+
+---
+
+#### 10. Idempotencia
+
+La invariancia principal es:
+
+```text
+MISMA IDEMPOTENCY KEY
++
+MISMO CONTENIDO LOGICO
+→ MISMA INTENCION
+→ COMO MAXIMO UN EFECTO
+→ CONSULTAR O RECUPERAR RESULTADO EXISTENTE
+```
+
+```text
+MISMA IDEMPOTENCY KEY
++
+CONTENIDO LOGICO DIFERENTE
+→ CONFLICT
+→ NO REUTILIZAR LA CLAVE
+→ NO SOBRESCRIBIR LA INTENCION ORIGINAL
+```
+
+Reglas adicionales:
+
+1. la clave nace antes del primer envío de una mutación durable;
+2. un retry conserva clave, actor, contexto, contenido lógico y referencias;
+3. un replay de la misma intención conserva la clave original o la correlación que demuestre inequívocamente la misma intención;
+4. una corrección o compensación autorizada recibe identidad nueva y relación con el original;
+5. un folio manual no sustituye la clave de incorporación;
+6. un receipt ya confirmado evita recrear el efecto;
+7. una clave confirmada no se reutiliza para trabajo nuevo;
+8. nombre, importe, hora aproximada o cantidad aislados no son clave suficiente de deduplicación;
+9. el mecanismo físico futuro podrá usar restricciones, inbox, outbox, claims, locking, versiones u otro patrón compatible, pero deberá respetar esta semántica;
+10. ninguna optimización puede degradar el guardrail de cero efectos duplicados por retry/replay.
+
+---
+
+#### 11. Retry, replay y nueva intención
+
+```text
+RETRY
+→ nuevo intento de transporte/ejecucion de la MISMA intencion
+
+REPLAY
+→ reejecucion controlada de una unidad previamente registrada
+→ solo cuando el contrato demuestra que sigue siendo la MISMA intencion
+→ conserva identidad, causalidad y evidencia
+
+NUEVA INTENCION
+→ nuevo efecto empresarial
+→ nueva identidad
+→ puede enlazarse con la anterior como correccion, compensacion o sucesora
+```
+
+Replay no es una operación universal. Según estrategia puede significar:
+
+- no hacer replay y solo vincular una referencia;
+- convertir un borrador en intención actual después de revalidar;
+- incorporar una observación una sola vez;
+- consultar primero el resultado de una ejecución offline;
+- digitalizar un folio con identidad de incorporación;
+- reconciliar subregistros de un servicio reducido;
+- reanudar backlog como trabajo actual.
+
+---
+
+#### 12. Tratamiento de `RESULT_UNKNOWN`
+
+La ruta común es:
+
+```text
+RESULT_UNKNOWN
+→ CONSULTAR RECEIPT
+→ CONSULTAR IDEMPOTENCY KEY
+→ CONSULTAR RECURSO Y VERSION ACTUAL
+→ COMPARAR CONTENIDO LOGICO
+→ VINCULAR RESULTADO EXISTENTE
+   O REINTENTAR LA MISMA INTENCION SI EL CONTRATO LO PERMITE
+   O MANTENER RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+- nunca se crea una segunda intención para comprobar si la primera ocurrió;
+- una respuesta tardía se incorpora a la historia;
+- si durante la incertidumbre se tomó una decisión posterior, ambas quedan correlacionadas;
+- un resultado externo no se infiere por saldo, pantalla o ausencia de error cuando existe un receipt autoritativo que debe consultarse;
+- una unidad no puede abandonar el incidente como resuelta mientras su efecto material siga desconocido.
+
+---
+
+#### 13. Expiración, cancelación y supersession
+
+- `EXPIRED` impide ejecución automática bajo el envelope o vigencia anterior;
+- si el trabajo sigue siendo necesario, debe revalidarse como intención actual;
+- un efecto ya ocurrido se representa y concilia aunque el permiso haya expirado después;
+- una cancelación autoritativa no borra intentos históricos;
+- `SUPERSEDED` requiere sucesora conocida y evita ejecutar después la intención anterior;
+- una operación cancelada, expirada o superseded conserva disposición y referencia final antes del cierre.
+
+---
+
+#### 14. Conflictos y resoluciones
+
+Se reutilizan las clases:
+
+```text
+RESOURCE_VERSION_CONFLICT
+CONTEXT_CHANGED
+AUTHORIZATION_CHANGED
+DUPLICATE_OPERATION
+DEPENDENCY_REJECTED
+SCHEMA_INCOMPATIBLE
+BUSINESS_STATE_CHANGED
+QUANTITY_CONFLICT
+CUSTODY_CONFLICT
+TIME_WINDOW_EXPIRED
+CLOCK_INVALID
+LOCAL_STORAGE_CORRUPTED
+```
+
+Y las resoluciones permitidas:
+
+```text
+ACCEPT_SERVER_STATE
+REAPPLY_ALLOWED_FIELDS
+CREATE_CORRECTION
+SPLIT_OPERATION
+ESCALATE
+DISCARD_LOCAL_DRAFT
+MANUAL_RECONCILIATION
+```
+
+La capa de integración puede detectar y enrutar el conflicto. La decisión empresarial pertenece a la propietaria y a la autoridad aplicable.
+
+Queda prohibido resolver por `last write wins` un efecto empresarial, una custodia, un saldo, una cantidad, una aprobación, una asistencia, un pago o una versión sensible.
+
+---
+
+#### 15. Orden causal
+
+La cola de reincorporación no es FIFO global.
+
+Reglas:
+
+1. cada unidad declara dependencias cuando existan;
+2. la propietaria confirma el hecho fuente antes de efectos derivados;
+3. una operación dependiente espera a su prerequisito;
+4. `SYNC-*` ordena solo unidades causalmente elegibles;
+5. una rama en conflicto puede detenerse sin paralizar ramas independientes;
+6. un rechazo terminal bloquea o reclasifica dependientes;
+7. `SUPERSEDED` no se ejecuta;
+8. un consumidor restaurado no adelanta el hecho de la propietaria;
+9. un consumidor divergente se concilia sin reescribir el origen;
+10. el mecanismo físico futuro deberá preservar partición, contención y orden por recurso cuando corresponda.
+
+---
+
+#### 16. Corredores canónicos de precedencia
+
+Venta:
+
+```text
+PULSO confirma venta
+→ NEXO aplica salida
+→ PASS aplica puntos cuando corresponda
+→ NUMERA registra efecto economico
+```
+
+Abastecimiento:
+
+```text
+ORIGO confirma compra o recepcion empresarial
+→ NEXO aplica entrada fisica
+→ NUMERA registra obligacion
+```
+
+Producción:
+
+```text
+FOGO confirma lote y resultado productivo
+→ NEXO aplica consumos y salida de producto
+→ NUMERA calcula costo
+```
+
+Estos corredores expresan causalidad y propiedad. No autorizan escrituras cruzadas, no convierten una consumidora en productora y no obligan a ejecutar todos los efectos en una sola transacción distribuida.
+
+---
+
+#### 17. Tratamiento por estrategia de contingencia
+
+| Estrategia                                 | Contrato de integración                                                                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`               | transporta la acción protectora y su evidencia; nunca reproduce el efecto bloqueado; cualquier acción posterior nace como intención actual       |
+| `CTG-02_REFERENCIA_VERSIONADA`             | no hace replay de una consulta; conserva fuente, versión y frescura usadas; una mutación posterior usa estado vigente                            |
+| `CTG-03_BORRADOR_LOCAL`                    | revalida actor, contexto, recurso, versión y contenido; solo después puede crear una intención actual                                            |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`           | incorpora la observación una sola vez y entrega a la propietaria para aceptar, rechazar, corregir o escalar                                      |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`         | consulta receipt y recurso; conserva misma intención, clave, secuencia y envelope; replay solo bajo resultado no confirmado y contrato permitido |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`   | digitaliza por folio/origen controlado mediante operación idempotente propia y conserva original/custodia                                        |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`      | reconcilia alcance reducido y cada subregistro mediante su perfil; no presenta servicio reducido como normal                                     |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`           | reanuda backlog como trabajo actual revalidado; conserva origen, edad, deadline y propietario                                                    |
+| `CTG-09_ALTERNATIVA_FISICA_CONDICIONAL`    | solo puede instanciarse si la alternativa concreta está acreditada y cada hecho conserva origen, idempotencia y conciliación                     |
+| `CTG-10_ALTERNATIVA_PROVEEDOR_CONDICIONAL` | solo puede instanciarse con tercero acreditado; receipts reales gobiernan el resultado y la ausencia de receipt permanece pendiente/desconocida  |
+
+Actualmente los 67 servicios activos utilizan únicamente `CTG-01` a `CTG-08`; las dos alternativas condicionales no se presentan como disponibles por esta tarea.
+
+---
+
+#### 18. Reincorporación de medios manuales y físicos
+
+La incorporación de un registro físico sigue esta frontera:
+
+```text
+ORIGINAL CONTROLADO
+→ VALIDAR FOLIO / RANGO / CUSTODIA
+→ CREAR OPERACION DIGITAL DE INCORPORACION CON IDENTIDAD ESTABLE
+→ CONSERVAR SOURCE RECORD REF
+→ CONSULTAR POSIBLE HECHO YA EXISTENTE
+→ ENTREGAR A LA PROPIETARIA
+→ VINCULAR RESULTADO O ENVIAR A CONFLICTO
+→ CONSERVAR ORIGINAL Y EVIDENCIA SEGUN POLITICA
+```
+
+La persona que digitaliza no se convierte en actor original. La hora de digitación no sustituye la hora observada. Una transcripción no se presenta como hecho autoritativo hasta la decisión de la propietaria.
+
+---
+
+#### 19. Proveedores, pagos, mensajería y canales externos
+
+Para una operación externa:
+
+```text
+INTENCION INTERNA
+→ ENVIO
+→ RESULTADO / RECEIPT EXTERNO
+→ MAPEO A ESTADO INTERNO
+→ EFECTO PROPIETARIO
+→ CONCILIACION
+```
+
+Reglas:
+
+- la identidad externa y la interna permanecen correlacionadas, no fusionadas;
+- una respuesta duplicada del proveedor no duplica el efecto interno;
+- un callback o webhook tardío se reconcilia contra el estado vigente;
+- un timeout mantiene `RESULT_UNKNOWN` cuando el proveedor pudo haber ejecutado;
+- un cambio de ruta, proveedor o canal no crea automáticamente una nueva intención;
+- una conmutación autorizada debe proteger contra split-brain lógico y doble emisión;
+- el retorno al proveedor primario no implica replay ciego del backlog;
+- la fuente propietaria decide el resultado empresarial final.
+
+---
+
+#### 20. Conciliación por capas
+
+La conciliación se realiza en capas separadas:
+
+```text
+UNIDAD
+→ resultado de la intencion
+
+RECURSO
+→ estado y version de la fuente propietaria
+
+DOMINIO
+→ efectos empresariales del propietario
+
+CONSUMIDORES
+→ efectos derivados obligatorios
+
+INCIDENTE
+→ balance transversal de pendientes
+
+RETORNO
+→ capacidad de admitir trabajo ordinario sin ocultar lo anterior
+```
+
+Un nivel conciliado no implica que todos los demás lo estén.
+
+Frentes empresariales aplicables:
+
+- personas y asistencia;
+- compras y recepciones;
+- inventario, custodia y activos;
+- producción y calidad;
+- pedidos, ventas y servicio;
+- dinero, pagos y caja;
+- documentos y evidencia;
+- comunicaciones;
+- colas, accesos e integraciones.
+
+---
+
+#### 21. Balance transversal de pendientes
+
+El expediente debe poder reconstruir al menos:
+
+```text
+unidades identificadas
+unidades sin replay requerido
+borradores convertidos en trabajo actual
+backlog reanudado
+unidades waiting_dependency
+unidades validating
+unidades syncing
+unidades accepted_pending_effect
+hechos confirmados
+unidades rechazadas
+unidades superseded
+unidades discarded_with_reason
+operaciones expired con disposicion
+conflictos abiertos
+resultados desconocidos abiertos
+unidades quarantined
+unidades reconciliation_required
+evidencia obligatoria no enlazada
+efectos downstream pendientes
+pendientes sin propietario
+```
+
+No se exige aquí una tabla física específica. La implementación deberá poder demostrar por referencia por qué cada unidad abierta permanece abierta y por qué cada unidad cerrada salió del balance.
+
+---
+
+#### 22. Retorno al servicio normal
+
+El retorno se gobierna como una transición controlada y no como un interruptor.
+
+Fases documentales:
+
+```text
+R1 — DEPENDENCIAS MINIMAS ESTABLES
+R2 — FUENTE PROPIETARIA DISPONIBLE PARA VALIDAR
+R3 — REVALIDACION DE SESION, CONTEXTO, POLITICAS Y ESQUEMA
+R4 — INVENTARIO Y CLASIFICACION DEL BACKLOG
+R5 — REPLAY / REINCORPORACION CONTROLADOS
+R6 — CONCILIACION DE EFECTOS DERIVADOS
+R7 — APERTURA GRADUAL DE TRABAJO ORDINARIO
+R8 — CONFIRMACION FUNCIONAL Y BALANCE RESIDUAL
+```
+
+Estas etiquetas describen etapas documentales de esta tarea; no son estados persistentes ni enums de implementación.
+
+Reglas:
+
+- el trabajo foreground puede reabrirse gradualmente cuando no depende de pendientes bloqueantes;
+- `SYNC-0_BLOCKING` debe resolverse antes de operaciones dependientes;
+- backlog histórico no puede monopolizar recursos hasta degradar el trabajo ordinario;
+- al mismo tiempo, backpressure o priorización no pueden abandonar pendientes;
+- la operación normal solo puede presentarse como tal donde el resultado ordinario y los controles estén disponibles;
+- si permanecen efectos sin incorporar, el estado empresarial puede requerir `RECOVERING` o `RECONCILIATION_REQUIRED`;
+- la reapertura de una aplicación no declara recuperación del proceso;
+- una rollback/failback técnico no borra trabajo producido en la rama alternativa;
+- toda transición conserva antes, después, motivo, actor/servicio efectivo y evidencia.
+
+---
+
+#### 23. Criterios de apertura gradual
+
+Puede habilitarse trabajo ordinario de una rama cuando:
+
+1. sus dependencias obligatorias están utilizables;
+2. sesión, dispositivo y Access Context vigentes fueron revalidados;
+3. esquema y políticas son compatibles;
+4. no existe un `SYNC-0_BLOCKING` propio que haga insegura la nueva operación;
+5. el recurso propietario puede aceptar la nueva intención sin confundirla con pendientes antiguos;
+6. cualquier riesgo de doble emisión o split-brain está contenido;
+7. los consumidores obligatorios tienen ruta de propagación o una degradación autorizada;
+8. los pendientes restantes tienen propietario, prioridad y condición de salida.
+
+La apertura gradual no necesita esperar que todas las unidades diferibles del incidente estén cerradas cuando estas no impiden la operación ordinaria; sí exige que ningún pendiente material quede oculto.
+
+---
+
+#### 24. Retorno, desactivación y cierre
+
+```text
+RETORNO TECNICO
+→ componentes y dependencias vuelven a una ruta primaria/normal
+
+RETORNO OPERATIVO
+→ el proceso vuelve a producir el resultado ordinario autorizado
+
+DESACTIVACION
+→ termina la coordinacion extraordinaria del alcance cuando los pendientes residuales pueden gestionarse fuera del modo activo
+
+CIERRE
+→ no queda efecto de reincorporacion material sin resolver, propietario o disposicion
+```
+
+Puede existir desactivación con pendientes identificados. No puede existir cierre con:
+
+- `RESULT_UNKNOWN` abierto;
+- `CONFLICT` abierto;
+- `QUARANTINED` sin decisión;
+- `RECONCILIATION_REQUIRED` abierto;
+- evidencia obligatoria sin vínculo o excepción admisible;
+- efecto downstream obligatorio sin conciliar;
+- operación expirada sin disposición;
+- unidad sin destino;
+- pendiente sin propietario;
+- diferencia material de dinero, inventario, producción, pedido, asistencia, documento, custodia o comunicación sin resolver.
+
+La autoridad de recuperación total y cierre permanece protegida por el contrato de autorización vigente. La capa de integración aporta evidencia; no se autoaprueba.
+
+---
+
+#### 25. Observabilidad y reconstrucción
+
+Sin seleccionar plataforma física, la implementación futura deberá permitir correlacionar:
+
+```text
+incident_ref
+business_service_id
+process_id
+source_record_ref
+local_operation_id
+idempotency_key
+payload_hash
+dependency_operation_ids[]
+attempt_no
+attempt_at
+transport_result
+receipt_refs[]
+external_reference
+owner_decision_ref
+authoritative_result_ref
+downstream_effect_refs[]
+conflict_class
+resolution_ref
+sync_priority
+sync_state
+confirmed_at
+reconciled_at
+```
+
+Métricas de apoyo heredadas que podrán usarse cuando se materialice la capacidad:
+
+- profundidad y antigüedad de pendientes;
+- intentos de sincronización;
+- latencia de sincronización;
+- conflictos por clase;
+- resultados desconocidos;
+- duplicados prevenidos;
+- operaciones expiradas;
+- operaciones en cuarentena;
+- duración de conciliación;
+- presión de almacenamiento local;
+- fallos de compatibilidad de esquema.
+
+Las métricas no son evidencia suficiente de resultado empresarial por sí solas.
+
+---
+
+#### 26. Seguridad, autorización y segregación
+
+Toda reincorporación preserva:
+
+- identidad humana o técnica atribuible;
+- actor original cuando el hecho fue observado durante contingencia;
+- principal técnico usado para transporte;
+- contexto observado y contexto actual cuando ambos son relevantes;
+- autorización histórica para hechos ya ocurridos;
+- autorización vigente para efectos que todavía no ocurrieron;
+- denegaciones y límites actuales;
+- sensibilidad y minimización;
+- evidencia de la decisión propietaria.
+
+Separaciones obligatorias:
+
+```text
+EJECUTAR
+!= VALIDAR TECNICAMENTE
+!= VALIDAR FUNCIONALMENTE
+!= REINCORPORAR
+!= CONCILIAR
+!= CERRAR
+```
+
+Una misma persona puede concentrar funciones solo conforme al gobierno de autorización vigente y sin crear autoaprobación crítica.
+
+---
+
+#### 27. Supabase y propiedad técnica futura
+
+Esta tarea no modifica Supabase.
+
+Si la implementación posterior requiere tablas, funciones, triggers, RLS, RPC, Realtime, Storage, Edge Functions, secretos, jobs o migraciones pertenecientes a VENTO:
+
+- deberán crearse, versionarse, documentarse y ejecutarse desde `vento-shell`;
+- deberán revisar historial de migraciones, esquema, consumidores, grants, RLS, funciones, triggers, Realtime, Storage, tipos generados, compatibilidad y rollback;
+- la implementación no podrá convertir una tabla transversal en propietaria de hechos de otros dominios;
+- una outbox/inbox física no sustituirá la fuente propietaria;
+- cualquier replay administrativo deberá preservar exactamente las mismas reglas de idempotencia, autoridad y causalidad que el replay automático.
+
+No se selecciona en esta tarea un esquema físico concreto.
+
+---
+
+#### 28. Estado de materialización y brechas de evidencia
+
+La definición documental queda completa. La materialización física permanece `PENDIENTE_DE_EVIDENCIA` en los componentes de implementación que correspondan.
+
+| Brecha                                                               | Estado                   | Propietario posterior                                                             | Condición de salida                                                                              |
+| -------------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| outbox/inbox, claims, workers, retry, replay y deduplicación físicos | `PENDIENTE_DE_EVIDENCIA` | `QUEUE-ARC-*`, contratos de integración y paquetes de implementación propietarios | mecanismo versionado con una sola aplicación por intención y recuperación del resultado original |
+| comandos ejecutables de reincorporación por dominio                  | `PENDIENTE_DE_EVIDENCIA` | paquete de implementación de cada propietaria                                     | contrato idempotente implementado con receipt, conflicto y prueba de duplicado                   |
+| almacenamiento local, aislamiento y reinicio                         | `PENDIENTE_DE_EVIDENCIA` | paquete propietario que materialice `NFR-REQ-004`                                 | persistencia, aislamiento y recuperación probados                                                |
+| conciliación física de efectos                                       | `PENDIENTE_DE_EVIDENCIA` | paquetes propietarios y recuperación aplicable                                    | convergencia demostrada con pendientes finales conocidos                                         |
+| revisión humana de conflicto/desconocido                             | `PENDIENTE_DE_EVIDENCIA` | superficies de continuidad y paquete consumidor                                   | estado verdadero, evidencia y acción segura implementados                                        |
+| receipts y conducta real de terceros                                 | `PENDIENTE_DE_EVIDENCIA` | contratos externos y proveedor aplicable                                          | evidencia operativa/sandbox suficiente para confirmar, rechazar o mantener desconocido           |
+| restauración y punto seguro de replay                                | `PENDIENTE_DE_EVIDENCIA` | recuperación técnica y paquete implementado                                       | runbook materializado con validación funcional                                                   |
+| readiness end-to-end                                                 | `PENDIENTE_DE_EVIDENCIA` | ejercicios de continuidad y certificación aplicable                               | escenario reproducible con timeout, duplicado, conflicto, orden causal, folio y conciliación     |
+
+Ninguna de estas brechas se presenta como implementación existente ni se difiere sin propietario y condición de salida.
+
+---
+
+#### 29. Matriz materializada por servicio
+
+La matriz conserva las identidades, propietarias, BIA, estrategias y prioridades ya aprobadas. La columna de contrato de integración especializa el transporte/replay de `CONT-DOM-010`; no cambia la decisión del dominio.
+
+|    # | Servicio         | Proceso      | Propietaria | BIA                    | Estrategia heredada                      | Prioridad            | Contrato de integración                                                           | Estado                                                                 |
+| ---: | ---------------- | ------------ | ----------- | ---------------------- | ---------------------------------------- | -------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-4_DEFERRED`    | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | `viso`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | `viso`      | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-2_OPERATIONAL` | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado                                   | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | `anima`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | `viso`      | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-1_URGENT`      | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-2_OPERATIONAL` | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-3_CYCLE`       | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-1_URGENT`      | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | `origo`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | `origo`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-4_DEFERRED`    | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | `origo`     | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | `origo`     | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | `nexo`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-0_BLOCKING`    | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | `nexo`      | `ALTA_CONTROL`         | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-2_OPERATIONAL` | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | `fogo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-0_BLOCKING`    | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | `fogo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | `fogo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-0_BLOCKING`    | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-1_URGENT`      | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`    | `SYNC-3_CYCLE`       | Conciliar alcance reducido y subregistros por perfil                              | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | `pulso`     | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-0_BLOCKING`    | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | `pass`      | `ALTA_CONTROL`         | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-0_BLOCKING`    | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | `pulso`     | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | `pulso`     | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | `nexo`      | `CRITICA_OPERACIONAL`  | `CTG-05_EJECUCION_OFFLINE_ACOTADA`       | `SYNC-1_URGENT`      | Consultar receipt; conservar intención, clave y contenido; replay solo si procede | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | `pulso`     | `CRITICA_OPERACIONAL`  | `CTG-02_REFERENCIA_VERSIONADA`           | `SYNC-2_OPERATIONAL` | Sin replay; validar versión, frescura y estado vigente                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | `numera`    | `ALTA_CONTROL`         | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | `numera`    | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-1_URGENT`      | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | `nexo`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-4_DEFERRED`    | No autorizado; sin captura, replay o reincorporación operativa                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                                    |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | `aura`      | `DIFERIBLE_CONTROLADA` | `BLOQUEADO_POR_APLICACION_DIFERIDA`      | `SYNC-3_CYCLE`       | No autorizado; sin captura, replay o reincorporación operativa                    | `BLOQUEADO_POR_APLICACION_DIFERIDA`                                    |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | `viso`      | `CRITICA_OPERACIONAL`  | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | `viso`      | `CRITICA_PROTECCION`   | `CTG-01_BLOQUEAR_Y_PROTEGER`             | `SYNC-0_BLOCKING`    | Enlazar acción protectora; no reproducir el efecto bloqueado                      | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | `numera`    | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado                                   | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | `viso`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-3_CYCLE`       | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | `viso`      | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado                                   | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | `viso`      | `CRITICA_PROTECCION`   | `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO` | `SYNC-1_URGENT`      | Incorporar por folio mediante operación idempotente; conservar original           | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | `nexo`      | `ALTA_CONTROL`         | `CTG-04_CAPTURA_LOCAL_PENDIENTE`         | `SYNC-2_OPERATIONAL` | Incorporar captura una vez; decisión de la propietaria                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | `pulso`     | `DIFERIBLE_CONTROLADA` | `CTG-08_DIFERIMIENTO_CONTROLADO`         | `SYNC-4_DEFERRED`    | Reanudar backlog como trabajo actual revalidado                                   | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | `numera`    | `ALTA_CONTROL`         | `CTG-03_BORRADOR_LOCAL`                  | `SYNC-3_CYCLE`       | Revalidar como intención actual; sin replay automático                            | `CONTRATO_DE_REINCORPORACION_INTERAPLICACION_ESPECIFICADO_NO_VALIDADO` |
+
+---
+
+#### 30. Reconciliación cuantitativa
+
+| Control                                   |   Resultado |
+| ----------------------------------------- | ----------: |
+| servicios evaluados                       | **69 / 69** |
+| decisiones de integración/reincorporación | **69 / 69** |
+| servicios activos especificados           | **67 / 67** |
+| AURA bloqueados                           |   **2 / 2** |
+| perfiles activos de estrategia            |   **8 / 8** |
+| `CTG-01_BLOQUEAR_Y_PROTEGER`              |       **6** |
+| `CTG-02_REFERENCIA_VERSIONADA`            |       **8** |
+| `CTG-03_BORRADOR_LOCAL`                   |       **8** |
+| `CTG-04_CAPTURA_LOCAL_PENDIENTE`          |      **15** |
+| `CTG-05_EJECUCION_OFFLINE_ACOTADA`        |       **6** |
+| `CTG-06_PROCEDIMIENTO_MANUAL_CONTROLADO`  |      **11** |
+| `CTG-07_SERVICIO_REDUCIDO_CONTROLADO`     |       **9** |
+| `CTG-08_DIFERIMIENTO_CONTROLADO`          |       **4** |
+| bloqueos AURA                             |       **2** |
+| `SYNC-0_BLOCKING` activos                 |      **12** |
+| `SYNC-1_URGENT` activos                   |      **23** |
+| `SYNC-2_OPERATIONAL` activos              |      **11** |
+| `SYNC-3_CYCLE` activos                    |      **15** |
+| `SYNC-4_DEFERRED` activos                 |       **6** |
+| corredores de precedencia preservados     |   **3 / 3** |
+| fases documentales de retorno             |   **8 / 8** |
+| operaciones productivas reproducidas      |       **0** |
+| conciliaciones productivas ejecutadas     |       **0** |
+| cambios físicos                           |       **0** |
+| requisitos de prueba creados/modificados  |       **0** |
+
+---
+
+#### 31. Cobertura de requisitos vigente
+
+La conducta de esta tarea ya se encuentra protegida por la cobertura vigente que exige:
+
+- reincorporación controlada, idempotente y reconciliable del trabajo ejecutado durante una falla;
+- conservación de origen, actor, tiempos, versión, evidencia, secuencia y referencia de contingencia;
+- detección de duplicados, conflictos, recursos modificados, vencimientos y efectos parciales;
+- cierre sin pendientes materiales sin propietario;
+- identidad estable de operación, contenido lógico y resultado recuperable;
+- conflicto ante misma identidad con contenido diferente;
+- retry con semántica canónica y recuperación de resultado;
+- trazabilidad de cadenas trigger/función/job/webhook/notificación;
+- replay controlado y retorno al servicio normal;
+- correlación entre incidente, trabajo pendiente y hechos recuperados;
+- orden causal, resultado desconocido, clases de conflicto, reconexión y prioridades de sincronización.
+
+La tarea especializa esas obligaciones en el contrato de integración de continuidad y no introduce un comportamiento ejecutable adicional que requiera una nueva fila.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa en la capa de integración comportamientos de captura, idempotencia, replay, reincorporación, conflicto, conciliación y retorno que ya cuentan con cobertura de prueba vigente. No crea una transición productiva, permiso, fuente de verdad, integración física o efecto empresarial adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 33. Criterios de aceptación
+
+1. La tarea conserva exactamente 69 servicios BIA y 69 procesos VPROC.
+2. Cada servicio conserva una decisión explícita de integración para reincorporación o bloqueo.
+3. No existen servicios faltantes ni duplicados en la matriz.
+4. La distribución de propietarias permanece: anima 1, viso 20, nexo 16, fogo 6, origo 4, pulso 12, numera 7, aura 2, pass 1 y shell 0.
+5. La distribución BIA permanece 12 `CRITICA_PROTECCION`, 20 `CRITICA_OPERACIONAL`, 31 `ALTA_CONTROL` y 6 `DIFERIBLE_CONTROLADA`.
+6. La distribución de estrategias permanece 6/8/8/15/6/11/9/4 más 2 AURA bloqueados.
+7. La distribución `SYNC-*` de los 67 servicios activos permanece 12/23/11/15/6.
+8. Los 67 servicios activos quedan especificados documentalmente y no se presentan como implementados.
+9. Los dos servicios AURA permanecen `BLOQUEADO_POR_APLICACION_DIFERIDA`.
+10. No se habilita una ruta operativa de captura, replay o reincorporación para AURA.
+11. Captura local y hecho autoritativo permanecen conceptos distintos.
+12. Digitalización y reincorporación permanecen conceptos distintos.
+13. Upload y vínculo autoritativo permanecen conceptos distintos.
+14. Conectividad recuperada y sistema listo para replay permanecen conceptos distintos.
+15. Retry y replay permanecen conceptos distintos.
+16. Replay y nueva intención permanecen conceptos distintos.
+17. Replay y decisión propietaria permanecen conceptos distintos.
+18. Reincorporación y conciliación permanecen conceptos distintos.
+19. Conciliación de una unidad y conciliación transversal completa permanecen conceptos distintos.
+20. Retorno al servicio normal y cierre del incidente permanecen conceptos distintos.
+21. Restauración técnica y recuperación empresarial permanecen conceptos distintos.
+22. Una operación durable conserva `local_operation_id` cuando existe.
+23. Una mutación repetible conserva `idempotency_key` antes del primer envío.
+24. Un retry de la misma intención conserva la misma `idempotency_key`.
+25. Un replay permitido de la misma intención conserva la misma identidad lógica.
+26. La misma clave y el mismo contenido no producen un segundo efecto.
+27. La misma clave con contenido lógico diferente produce conflicto.
+28. Una clave confirmada no se reutiliza para una intención nueva.
+29. Una corrección, compensación o reverso autorizado es una intención distinta enlazada a la original.
+30. Un folio manual no se convierte por equivalencia en `idempotency_key`.
+31. La incorporación digital de un registro manual obtiene identidad idempotente antes de su primer envío.
+32. El folio original permanece como referencia de origen.
+33. `payload_hash` o representación lógica equivalente permite detectar cambio de contenido cuando aplique.
+34. `RESULT_UNKNOWN` bloquea la creación de una segunda intención para probar el resultado.
+35. `RESULT_UNKNOWN` obliga a consultar receipt, clave idempotente y recurso actual antes de decidir retry.
+36. Una respuesta tardía se incorpora a la historia y se confronta con el estado vigente.
+37. Un timeout no se presenta automáticamente como fallo.
+38. Un timeout tampoco se presenta automáticamente como éxito.
+39. Un efecto parcial conserva cada parte confirmada y cada parte pendiente por separado.
+40. La parte ya confirmada no se repite para completar un efecto parcial.
+41. Una operación expirada sin efecto no se ejecuta automáticamente.
+42. Un trabajo todavía necesario después de expirar se revalida como intención actual.
+43. Un efecto ocurrido durante la vigencia no se borra por una expiración posterior.
+44. Una operación `EXPIRED` sin disposición explícita permanece pendiente para cierre.
+45. Se reutilizan las clases de conflicto aprobadas; no se crea una taxonomía paralela.
+46. Ningún conflicto empresarial se resuelve por `last write wins`.
+47. `RESOURCE_VERSION_CONFLICT` impide sobrescritura silenciosa.
+48. `CONTEXT_CHANGED` obliga a revalidar contexto aplicable.
+49. `AUTHORIZATION_CHANGED` no amplía autoridad histórica ni actual.
+50. `DUPLICATE_OPERATION` no produce un segundo efecto.
+51. `DEPENDENCY_REJECTED` bloquea o reclasifica operaciones dependientes.
+52. `SCHEMA_INCOMPATIBLE` puede llevar la unidad a `QUARANTINED`.
+53. `BUSINESS_STATE_CHANGED` requiere decisión de la propietaria.
+54. `QUANTITY_CONFLICT` no se resuelve por suma o reemplazo intuitivo.
+55. `CUSTODY_CONFLICT` conserva evidencia y handoffs.
+56. `TIME_WINDOW_EXPIRED` no permite backdatear una nueva ejecución.
+57. `CLOCK_INVALID` conserva incertidumbre temporal.
+58. `LOCAL_STORAGE_CORRUPTED` no inventa contenido perdido.
+59. `ACCEPT_SERVER_STATE` no elimina evidencia de un efecto físico real.
+60. `REAPPLY_ALLOWED_FIELDS` solo opera sobre campos revalidados.
+61. `CREATE_CORRECTION` preserva el hecho original.
+62. `SPLIT_OPERATION` no duplica partes ya confirmadas.
+63. `DISCARD_LOCAL_DRAFT` solo aplica a borradores sin efecto empresarial o físico ocurrido.
+64. `ESCALATE` identifica propietario o autoridad requerida.
+65. `MANUAL_RECONCILIATION` conserva decisión, evidencia y referencias resultantes.
+66. La secuencia de reconexión verifica conectividad y servicios antes de procesar pendientes.
+67. La secuencia de reconexión revalida sesión y dispositivo.
+68. La secuencia de reconexión resuelve un nuevo Access Context antes de mutaciones.
+69. La secuencia de reconexión obtiene revocaciones, versiones y políticas vigentes.
+70. La secuencia de reconexión valida compatibilidad de esquema.
+71. La secuencia de reconexión consulta receipts y claves idempotentes antes del replay.
+72. La secuencia de reconexión clasifica pendientes, expirados, conflictos y desconocidos.
+73. La secuencia de reconexión ordena por dependencias y prioridad, no por FIFO global.
+74. Una rama en conflicto puede detenerse sin paralizar ramas causalmente independientes.
+75. Una operación dependiente no se procesa antes de su prerequisito.
+76. Una prioridad `SYNC-*` no altera causalidad.
+77. Una operación `SUPERSEDED` no se ejecuta después de su sucesora.
+78. El hecho propietario se confirma antes de propagar sus efectos derivados.
+79. Una aplicación consumidora no crea el hecho fuente para suplir una falta de la propietaria.
+80. Un fallo de propagación no borra un hecho ya confirmado por la propietaria.
+81. Cada efecto derivado conserva identidad, resultado y evidencia propios.
+82. PULSO confirma la venta antes de los efectos derivados aplicables.
+83. NEXO aplica el movimiento de inventario derivado sin apropiarse de la venta.
+84. PASS aplica puntos solo cuando corresponda y sin apropiarse del hecho fuente.
+85. NUMERA registra el efecto económico desde hechos reconciliados aplicables.
+86. ORIGO confirma compra o recepción empresarial antes de la entrada física derivada.
+87. FOGO confirma lote y resultado productivo antes de consumos y efectos derivados.
+88. Los corredores canónicos no autorizan escrituras cruzadas entre propietarias.
+89. El registro manual verifica folio, emisor, rango y custodia antes de admisión.
+90. Un folio duplicado, fuera de rango o ilegible no se confirma automáticamente.
+91. La digitalización de un soporte manual ocurre una sola vez hacia la propietaria.
+92. El original físico conserva relación con su representación digital.
+93. `UPLOADED_UNLINKED` permanece pendiente.
+94. `LINKED_AND_CONFIRMED` exige vínculo verificable.
+95. Un receipt externo solo se trata como real cuando existe y es correlacionable.
+96. Una solicitud externa sin receipt no se presenta como efecto confirmado.
+97. El cambio de proveedor, red o canal no crea una segunda intención cuando el primer resultado es desconocido.
+98. El retorno desde una alternativa no drena backlog de forma ciega.
+99. El retorno exige conocer qué fuente está activa y evitar split-brain lógico.
+100. El retorno exige verificar estabilidad suficiente de las dependencias necesarias.
+101. El retorno exige validar que el sistema propietario puede aceptar trabajo nuevo.
+102. El retorno exige clasificar y proteger el backlog antes de reabrir flujo ordinario.
+103. El retorno prioriza trabajo foreground sin abandonar pendientes históricos.
+104. El retorno permite procesamiento gradual y reversible cuando corresponda.
+105. El retorno mantiene visibles conflictos, cuarentenas, expirados y resultados desconocidos.
+106. El retorno no presenta `AVAILABLE` mientras exista una condición que obligue a `RECOVERING` o `RECONCILIATION_REQUIRED`.
+107. Un health check técnico positivo no cierra el proceso empresarial.
+108. La confirmación propietaria es necesaria para afirmar el resultado empresarial.
+109. Los efectos downstream obligatorios deben quedar conciliados o con disposición explícita.
+110. Puede existir desactivación con pendientes identificados, referenciados y con propietario.
+111. No puede existir cierre con `RESULT_UNKNOWN` abierto.
+112. No puede existir cierre con `CONFLICT` abierto.
+113. No puede existir cierre con `QUARANTINED` sin decisión.
+114. No puede existir cierre con `RECONCILIATION_REQUIRED` abierto.
+115. No puede existir cierre con evidencia obligatoria sin vínculo o excepción admisible.
+116. No puede existir cierre con efecto downstream obligatorio sin conciliar.
+117. No puede existir cierre con operación expirada sin disposición.
+118. No puede existir cierre con unidad contabilizada sin destino.
+119. No puede existir cierre con pendiente de reincorporación sin propietario.
+120. No puede existir cierre con diferencia material de dinero, inventario, producción, pedidos, asistencia, documentos, custodia o comunicación sin resolver.
+121. La ejecución de replay no aprueba su propio resultado.
+122. La función que reincorpora no adquiere autoridad para cerrar.
+123. La conciliación de un dominio no autoriza modificar otro dominio.
+124. La recuperación total requiere las validaciones funcionales aplicables y autoridad vigente.
+125. Una automatización puede clasificar, bloquear, correlacionar o ejecutar pasos preautorizados, pero no se convierte en aprobador empresarial.
+126. Un proveedor puede aportar receipt o estado técnico, pero no declara recuperado un proceso de Vento.
+127. Los secretos, tokens o credenciales no forman parte del payload documental de reincorporación.
+128. Las operaciones conservan actor, principal, dispositivo y contexto observados sin atribuir el hecho original al operador que sincroniza.
+129. `observed_at`, `created_local_at`, `recorded_at`, `first_send_at`, `accepted_at`, `business_effect_at`, `confirmed_at` y `reconciled_at` conservan semánticas distintas.
+130. La hora de sincronización no reemplaza la hora del hecho observado.
+131. Un reloj dudoso permanece marcado y no se corrige por inferencia.
+132. Las métricas de cola no sustituyen evidencia de conciliación.
+133. El diseño exige poder reconstruir incident_ref, unidad, intentos, receipts, decisión propietaria, efectos downstream y resultado final.
+134. El diseño no crea una tabla, outbox, inbox, worker, job, topic, bucket, RPC o Edge Function.
+135. El diseño no selecciona IndexedDB, SQLite, Service Worker ni otro almacén local.
+136. El diseño no ejecuta replay sobre datos reales.
+137. El diseño no ejecuta conciliación productiva.
+138. El diseño no ejecuta compensaciones o reversos productivos.
+139. El diseño no modifica RLS, grants, permisos, roles ni autoridad.
+140. El diseño no modifica código, DDL, DML, migraciones, datos o configuración de Supabase.
+141. Toda modificación futura de Supabase de VENTO permanece gobernada desde `vento-shell`.
+142. La implementación física deberá materializar pruebas de duplicado, timeout, respuesta tardía, conflicto, orden causal y retorno sin efectos dobles.
+143. La especificación no se presenta como readiness ni como capacidad operativa validada.
+144. No se crea ni modifica ningún requisito de prueba en esta tarea.
+145. No se genera una copia nueva de 04A por ausencia de cambios de requisitos.
+146. La siguiente etapa permanece únicamente reservada y no se ejecuta por esta tarea.
+
+---
+
+#### 34. Balance de cierre
+
+`CONT-INT-004` deja definida la última capa documental del mini-bloque de integraciones de continuidad:
+
+- captura y transporte conservan identidad, origen y atribución;
+- retry y replay preservan una sola intención;
+- `RESULT_UNKNOWN` se consulta y concilia, no se resuelve por duplicación;
+- la deduplicación combina identidad, contenido, folio, receipt, recurso y semántica;
+- el orden causal prevalece sobre FIFO global;
+- la propietaria confirma el hecho antes de efectos derivados;
+- la reincorporación manual conserva folio, original y custodia;
+- la conciliación puede reconstruirse por unidad, dominio, consumidor e incidente;
+- el retorno normal es gradual y no oculta backlog, conflicto o desconocidos;
+- la capa de integración no se convierte en propietaria del negocio ni en autoridad de cierre;
+- los 69 servicios conservan decisión explícita, con 67 activos y 2 AURA bloqueados;
+- la etapa permanece documental y no declara implementación ni readiness.
+
+---
+
+#### 35. Límites de la tarea
+
+Esta tarea no:
+
+- ejecuta contingencia real;
+- captura trabajo real durante una falla;
+- sincroniza una cola real;
+- ejecuta replay productivo;
+- importa registros a fuentes autoritativas;
+- resuelve conflictos empresariales reales;
+- concilia datos productivos;
+- ejecuta compensaciones o reversos;
+- crea outbox, inbox, worker, job, topic, dead-letter o scheduler;
+- crea tablas, buckets, RPC o Edge Functions;
+- selecciona almacenamiento local;
+- despliega código;
+- cambia RLS, grants, roles, permisos o secretos;
+- modifica Supabase;
+- cambia proveedor, red, energía o canal;
+- ejecuta restore, failover o failback;
+- declara readiness;
+- declara recuperación real;
+- declara cierre real de incidente;
+- cambia una propiedad de proceso o aplicación;
+- modifica AURA;
+- modifica el registro canónico de requisitos;
+- inicia la etapa de implementación posterior.
+
+---
+
+#### 36. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos`
+
+TAREA ACTUAL APROBADA
+`CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal`
+
+SIGUIENTE TAREA RESERVADA
+`NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE`

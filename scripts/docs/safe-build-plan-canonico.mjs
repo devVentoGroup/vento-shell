@@ -16,6 +16,9 @@ import {
   syncPriorityLaneOrderDocument,
 } from './sync-priority-delivery-lanes-doc.mjs';
 import {
+  syncPlanContinuity,
+} from './plan-continuity-final-newline.mjs';
+import {
   readCanonicalTreqRegistry,
   writeCanonicalTreqRegistry,
 } from './treq-registry-files.mjs';
@@ -230,6 +233,13 @@ function attemptSafeReconciliation() {
 let reconciliation = null;
 
 try {
+  // Resolve a completed sequence before deriving the TREQ summary. Otherwise a
+  // terminal transition can reconcile the summary against the old sequence and
+  // make the core build validate it against the newly activated sequence.
+  syncPlanContinuity({
+    root,
+    checkOnly: process.argv.includes('--check'),
+  });
   const laneOrderSync = syncPriorityLaneOrderDocument({ root });
   if (laneOrderSync.changed) {
     console.log(
