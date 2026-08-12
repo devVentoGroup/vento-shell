@@ -4276,7 +4276,902 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-009 — Definir contratos de entrada y salida versionados`
 
 
-### [ ] INT-EXT-009 — Definir contratos de entrada y salida versionados
+### ✅ INT-EXT-009 — Definir contratos de entrada y salida versionados
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-008 — Definir rotación, expiración y revocación` — APROBADA
+**Tarea siguiente:** `INT-EXT-010 — Definir estrategia webhook, polling o híbrida` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de contratos versionados de entrada y salida para las integraciones externas `EXT-SYS-001` a `EXT-SYS-021`, preservando proveedor, principal técnico, mecanismo, alcance mínimo, separación por ambiente, custodia y lifecycle ya aprobados, sin modificar payloads ejecutables, endpoints, proveedores, transporte, credenciales, código ni datos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, credenciales, cuentas externas, configuración productiva, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar un contrato único de gobierno para las entradas y salidas de las veintiuna identidades externas heredadas de `INT-EXT-001` a `INT-EXT-008`.
+
+La tarea separa explícitamente:
+
+```text
+CREDENCIAL
+≠
+CONTRATO DE PAYLOAD
+≠
+TRANSPORTE
+≠
+HECHO EMPRESARIAL
+≠
+EVIDENCIA
+```
+
+y también:
+
+```text
+VERSIÓN DEL PROVEEDOR
+≠
+VERSIÓN DEL CONTRATO VENTO
+```
+
+El objetivo es que cada intercambio externo que exista o llegue a activarse pueda responder, antes de producir un efecto empresarial, qué estructura recibe o emite VENTO, qué significado tiene cada campo, qué versión contractual aplica, qué cambios son compatibles y qué cambios obligan a una nueva versión mayor.
+
+Esta tarea no decide todavía si una integración usa webhook, polling o modalidad híbrida; tampoco define firma, replay, deduplicación, mapeo canónico de identificadores, conservación del payload original, retry, cuarentena, conciliación, contingencia o retiro. Esas decisiones permanecen en sus tareas propietarias posteriores.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+- `VENTO-EXTERNAL-IO-CONTRACT-001`;
+- `VENTO-EXTERNAL-IO-CONTRACT-MATRIX-001`.
+
+Balance materializado:
+
+| Control                                                     | Resultado |
+| ----------------------------------------------------------- | --------: |
+| Identidades heredadas esperadas                             |    **21** |
+| Identidades materializadas                                  | **21/21** |
+| Identificadores `EXT-SYS-*` únicos                          |    **21** |
+| Identidades faltantes                                       |     **0** |
+| Identidades duplicadas                                      |     **0** |
+| Identidades con familia, contrato o modelo I/O documentable |    **10** |
+| Configuraciones de plataforma sin contrato I/O acreditado   |     **2** |
+| Identidades sin binding actual acreditado                   |     **9** |
+| Contratos físicos alterados                                 |     **0** |
+| Payloads de runtime alterados                               |     **0** |
+| Endpoints alterados                                         |     **0** |
+| Requisitos de prueba creados o modificados                  |     **0** |
+
+Distribución primaria:
+
+```text
+2 FAMILIA_IO_VERSIONADA
++
+2 CONTRATO_BIDIRECCIONAL_VERSIONADO
++
+3 CONTRATO_SALIDA_VERSIONADO
++
+1 CONTRATO_CONSULTA_VERSIONADO
++
+1 CONTRATO_ADAPTADOR_LOCAL_VERSIONADO
++
+1 MODELO_PAYLOAD_VERSIONADO_SIN_BINDING_REMOTO_ACREDITADO
++
+2 CONFIGURACION_PLATAFORMA_SIN_CONTRATO_IO_ACREDITADO
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+La versión documental inicial de los contratos o modelos materializados por esta tarea es `1.0.0`. Esa versión expresa la primera definición VENTO de la superficie observada; no afirma que el proveedor publique esa misma versión ni que el runtime actual transmita un campo `contract_version`.
+
+---
+
+#### 3. Fuentes y contratos preservados
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades, proveedores acreditados o no acreditados, propietarios, finalidades y nivel de evidencia;
+- `INT-EXT-002`, incluida la separación entre actor humano, principal técnico, cuenta externa y autoridad empresarial;
+- `INT-EXT-003`, incluida la procedencia de credenciales;
+- `INT-EXT-004`, incluidos los mecanismos reales observados y la obligación fail-closed;
+- `INT-EXT-005`, incluido el techo de alcance mínimo;
+- `INT-EXT-006`, incluida la separación entre `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+- `INT-EXT-007`, incluida la separación entre configuración publicable, secretos server-side, identificadores técnicos, destinos y custodia;
+- `INT-EXT-008`, incluido el lifecycle independiente de cada superficie de credencial;
+- `TREQ-INTEGRATION-001`, que ya protege coherencia entre esquemas, dominios, URLs, ambiente y contrato;
+- `TREQ-INTEGRATION-004`, que ya exige trazabilidad del payload y del efecto en cadenas de integración;
+- `TREQ-INTEGRATION-049`, que ya protege la adaptación de afirmaciones externas antes de convertirlas en hechos internos;
+- `TREQ-INTEGRATION-051`, que ya prohíbe secretos y credenciales dentro de esquemas o ejemplos;
+- `TREQ-INTEGRATION-052`, que ya gobierna cambios incompatibles y versionado mayor;
+- `TREQ-INTEGRATION-213`, que ya exige conservar versión, transformación, respuesta y correlación en intercambios externos;
+- las fronteras de propiedad que impiden que un proveedor o adaptador externo se convierta en escritor universal de dominios internos.
+
+Ninguna decisión de esta tarea cambia un proveedor, cuenta, ambiente, principal, credential store, scope, endpoint ni fuente de verdad ya aprobados.
+
+---
+
+#### 4. Semántica de contrato de entrada y salida
+
+`VENTO-EXTERNAL-IO-CONTRACT-001` usa estas definiciones:
+
+| Concepto              | Definición documental                                                                                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONTRATO_DE_ENTRADA` | estructura que VENTO acepta desde un sistema, SDK, adaptador o superficie externa antes de validarla y convertirla en un resultado interno                                       |
+| `CONTRATO_DE_SALIDA`  | estructura que VENTO construye y envía hacia una superficie externa                                                                                                              |
+| `RESPUESTA_EXTERNA`   | respuesta, receipt, estado o error producido por el proveedor; por sí solo no equivale a un hecho empresarial interno                                                            |
+| `PAYLOAD_PROVEEDOR`   | representación nativa del tercero; no se convierte automáticamente en el modelo canónico de VENTO                                                                                |
+| `CONTRATO_VENTO`      | interpretación estable y versionada que VENTO aplica sobre una superficie externa                                                                                                |
+| `VERSION_PROVEEDOR`   | versión publicada, declarada o inferible de forma acreditada por la interfaz externa                                                                                             |
+| `VERSION_VENTO`       | versión del contrato con el que VENTO valida, adapta, emite o interpreta el intercambio                                                                                          |
+| `ADAPTADOR`           | frontera que traduce entre el contrato del proveedor y el contrato o hecho propietario de VENTO sin adquirir autoridad empresarial por esa traducción                            |
+| `CAMBIO_COMPATIBLE`   | cambio que conserva significado previo y puede ser consumido por las partes soportadas sin reinterpretar historia                                                                |
+| `CAMBIO_INCOMPATIBLE` | cambio que altera significado, obligatoriedad, cardinalidad, interpretación o comportamiento de forma que un consumidor anterior puede producir un resultado distinto o inválido |
+
+Reglas:
+
+1. toda superficie materializada tiene dirección explícita;
+2. una misma identidad externa puede tener varios contratos independientes;
+3. el contrato de entrada no se presume simétrico al de salida;
+4. una respuesta técnica no acredita por sí sola un efecto empresarial;
+5. la estructura del proveedor no se adopta como modelo interno por conveniencia;
+6. el valor de una credencial nunca forma parte del contrato ni de sus ejemplos;
+7. ambiente y contrato se vinculan explícitamente;
+8. el contrato conserva unidad, moneda, zona temporal, formato y semántica cuando sean materiales;
+9. un campo desconocido no adquiere significado por inferencia;
+10. una versión no soportada no se interpreta silenciosamente como la versión vigente.
+
+---
+
+#### 5. `VENTO-EXTERNAL-IO-CONTRACT-001`
+
+Para toda superficie de intercambio materializada, la representación mínima deberá poder relacionar:
+
+```text
+EXT-SYS
++
+SUPERFICIE
++
+DIRECCIÓN
++
+AMBIENTE
++
+VERSIÓN VENTO
++
+VERSIÓN / REFERENCIA DEL PROVEEDOR CUANDO EXISTA
++
+PRODUCTOR
++
+CONSUMIDOR
++
+SCHEMA DE ENTRADA O SALIDA
++
+SEMÁNTICA DE CAMPOS
++
+RESULTADOS / ERRORES
++
+COMPATIBILIDAD
+→ CONTRATO TRAZABLE
+```
+
+Campos lógicos mínimos:
+
+- `external_system_id`;
+- nombre estable de la superficie;
+- dirección: `VENTO_TO_EXTERNAL`, `EXTERNAL_TO_VENTO`, `BIDIRECTIONAL` o `LOCAL_ADAPTER`;
+- ambiente aplicable;
+- versión VENTO;
+- versión, release, endpoint generation o referencia contractual del proveedor cuando exista evidencia;
+- aplicación, servicio o adaptador VENTO que produce o recibe;
+- media type y encoding cuando sean materiales;
+- campos requeridos;
+- campos opcionales;
+- tipo de cada campo;
+- nullabilidad;
+- cardinalidad;
+- unidad o moneda cuando aplique;
+- semántica temporal y zona cuando aplique;
+- enumeraciones cerradas cuando aplique;
+- restricciones y límites estructurales conocidos;
+- forma de respuesta o resultado;
+- forma de error conocida;
+- sensibilidad de datos;
+- referencia no sensible a la clase de credencial cuando aplique;
+- compatibilidad con versiones VENTO anteriores;
+- predecesor y sucesor contractuales cuando exista una evolución.
+
+El contrato no contiene valores secretos, passwords, private keys, webhook secrets, tokens, credenciales de proveedor ni URLs firmadas persistentes.
+
+---
+
+#### 6. Gobierno de versiones
+
+La versión VENTO usa:
+
+```text
+MAJOR.MINOR.PATCH
+```
+
+La primera definición documental materializada por `INT-EXT-009` es:
+
+```text
+1.0.0
+```
+
+Reglas:
+
+##### 6.1. `MAJOR`
+
+Requiere una nueva versión mayor cualquier cambio que pueda modificar la interpretación o validez de un intercambio existente, incluidos:
+
+- cambio de significado empresarial de un campo;
+- cambio de nombre sin alias contractual compatible;
+- campo opcional convertido en obligatorio;
+- cambio de tipo;
+- cambio de cardinalidad;
+- cambio de unidad o moneda;
+- cambio de semántica temporal;
+- cambio de nullabilidad que invalide datos antes válidos;
+- eliminación de un campo consumido;
+- cambio incompatible de enumeración cerrada;
+- cambio de resultado o error que altere la decisión del consumidor;
+- cambio de sensibilidad que exija controles distintos;
+- reinterpretación incompatible de la misma estructura.
+
+##### 6.2. `MINOR`
+
+Puede usar una nueva versión menor un cambio aditivo que conserve la interpretación histórica y sea compatible de manera demostrable.
+
+Un campo opcional nuevo solo se considera compatible cuando:
+
+- los consumidores soportados toleran el campo adicional, o
+- un adaptador versionado aísla a los consumidores que no lo toleran.
+
+Si esa compatibilidad no está acreditada, el cambio no se presume menor.
+
+##### 6.3. `PATCH`
+
+Se limita a correcciones documentales o metadata contractual que no cambian:
+
+- validación;
+- significado;
+- obligatoriedad;
+- tipo;
+- unidad;
+- cardinalidad;
+- sensibilidad;
+- resultado;
+- comportamiento ejecutable.
+
+##### 6.4. Versionado del proveedor
+
+Si el proveedor publica una versión nativa, esta se registra por separado de `VERSION_VENTO`.
+
+Si el proveedor no expone una versión acreditada:
+
+- no se inventa una versión externa;
+- se conserva la referencia verificable disponible al contrato, SDK, endpoint o documentación aplicable;
+- VENTO sigue versionando su propia interpretación.
+
+Un cambio de URL no implica automáticamente cambio de contrato, y un contrato incompatible puede requerir nueva versión aunque la URL no cambie.
+
+---
+
+#### 7. Compatibilidad y evolución
+
+Estados documentales de compatibilidad:
+
+| Estado                         | Significado                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `COMPATIBLE`                   | la versión nueva mantiene la interpretación soportada por la anterior       |
+| `COMPATIBLE_CON_ADAPTADOR`     | la compatibilidad depende de una traducción explícita y versionada          |
+| `INCOMPATIBLE_MAYOR`           | el consumidor debe adoptar una nueva versión mayor o un adaptador explícito |
+| `COMPATIBILIDAD_NO_ACREDITADA` | las fuentes actuales no permiten afirmar compatibilidad                     |
+
+Reglas:
+
+1. el productor declara la versión VENTO que emite o el adaptador declara la versión que materializa;
+2. el consumidor valida la versión antes de aplicar un efecto;
+3. una versión desconocida falla cerrada respecto del efecto protegido;
+4. no se usa heurística de nombres para reinterpretar una versión incompatible;
+5. las versiones históricas no cambian de significado;
+6. una corrección incompatible crea una versión sucesora;
+7. el mismo contrato no puede significar cosas distintas entre `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+8. diferencias de valores de configuración entre ambientes no crean por sí solas otro contrato si el significado y schema son los mismos;
+9. si un proveedor cambia de forma incompatible sin versión explícita, VENTO crea una nueva versión mayor de su interpretación;
+10. la compatibilidad de una respuesta se gobierna con el mismo rigor que la compatibilidad de una solicitud.
+
+---
+
+#### 8. Frontera entre payload externo y hecho interno
+
+Un intercambio externo seguirá esta separación conceptual:
+
+```text
+PAYLOAD / RESPUESTA DEL PROVEEDOR
+→
+VALIDACIÓN DEL CONTRATO VENTO
+→
+ADAPTACIÓN
+→
+CONTRATO DEL DOMINIO PROPIETARIO
+→
+HECHO O RESULTADO INTERNO
+```
+
+Reglas:
+
+1. recibir un payload no convierte al proveedor en fuente de verdad interna;
+2. el adaptador puede conservar referencias, receipts y metadata propios, pero no adquirir propiedad funcional del proceso;
+3. una integración externa no escribe directamente estados privados de múltiples aplicaciones por usar una credencial privilegiada;
+4. una respuesta HTTP, ACK, SDK callback, receipt o respuesta de dispositivo no se equipara a un efecto empresarial salvo que el contrato propietario lo establezca y ese efecto quede confirmado;
+5. los campos externos que no tengan mapping acreditado permanecen externos hasta que su tarea propietaria defina la correspondencia;
+6. esta tarea no materializa ese mapping; `INT-EXT-013` permanece responsable de identificadores externos y canónicos.
+
+---
+
+#### 9. Superficies observadas que fija la versión `1.0.0`
+
+La versión inicial preserva las estructuras observadas sin modificarlas.
+
+##### 9.1. Wompi
+
+Se separan dos superficies:
+
+**Salida de checkout**
+
+Entrada VENTO actual hacia la construcción del checkout:
+
+```text
+transaction_id
+→
+reference
+amount_minor
+currency
+expiration_time
+redirect_url
+customer_email cuando exista
+```
+
+Representación observada hacia Wompi:
+
+```text
+public-key
+currency
+amount-in-cents
+reference
+expiration-time
+signature:integrity
+redirect-url cuando aplique
+customer-data:email cuando aplique
+```
+
+La respuesta VENTO observada del flujo contiene referencias como:
+
+```text
+transaction_id
+order_id
+provider
+amount_minor
+currency
+reference
+checkout_url
+expires_at
+environment
+```
+
+**Entrada de evento de pago**
+
+Campos observados del payload:
+
+```text
+event
+id
+data.id
+data.transaction_id
+data.status
+data.reference
+data.transaction.id
+data.transaction.status
+data.transaction.reference
+data.transaction.metadata
+signature.properties
+signature.checksum
+timestamp
+```
+
+Checkout y evento conservan contratos distintos dentro de `EXT-SYS-002`. Esta tarea no decide la estrategia de entrega del evento, la validación de replay ni la deduplicación.
+
+##### 9.2. RevenueCat
+
+La interacción cliente conserva como contrato de SDK:
+
+```text
+configure(apiKey, appUserID)
+getOfferings()
+purchasePackage(package)
+restorePurchases()
+```
+
+La entrada de webhook observada admite un evento con campos:
+
+```text
+type
+app_user_id
+product_id
+entitlement_ids
+expiration_at_ms
+purchased_at_ms
+event_timestamp_ms
+original_transaction_id
+aliases
+```
+
+La forma de entrada puede llegar como `payload.event` o como payload directo en la implementación observada.
+
+SDK y webhook no comparten un único contrato por pertenecer al mismo proveedor.
+
+##### 9.3. Resend
+
+La salida de correo observada usa una solicitud JSON con:
+
+```text
+from
+to[]
+subject
+html
+```
+
+La autenticación se mantiene fuera del payload contractual. La respuesta del proveedor permanece una respuesta externa y no se convierte por sí sola en confirmación empresarial de lectura, entrega final o aceptación humana.
+
+##### 9.4. Expo Push Service
+
+La salida observada usa mensajes con:
+
+```text
+to
+title
+body
+data cuando aplique
+```
+
+La respuesta técnica observada expone elementos de `data[]` con estado y detalle de error; `DeviceNotRegistered` se utiliza actualmente para identificar un destino inválido.
+
+El push token continúa siendo un destino, no una credencial de VENTO ante Expo.
+
+##### 9.5. Google Maps / Google Reviews
+
+Para búsqueda de direcciones se observan dos contratos de consulta:
+
+**Autocomplete**
+
+Entrada VENTO relevante:
+
+```text
+query
+latitude cuando aplique
+longitude cuando aplique
+```
+
+Salida normalizada VENTO:
+
+```text
+predictions[]
+  place_id
+  description
+  main_text
+  secondary_text
+  distance_meters
+```
+
+**Detalle de lugar**
+
+Entrada:
+
+```text
+place_id
+```
+
+Salida normalizada:
+
+```text
+place
+  place_id
+  label
+  address
+  latitude
+  longitude
+```
+
+Los enlaces de Google Reviews, coordenadas y `place_id` publicables no se convierten por ello en secretos.
+
+##### 9.6. Apple Wallet / PassKit + APNs
+
+Se conservan contratos independientes para:
+
+- generación y entrega de `.pkpass`;
+- web service de PassKit;
+- registro y retiro de dispositivos;
+- consulta de seriales actualizados;
+- descarga del pase;
+- logging técnico del servicio;
+- notificación APNs asociada al pase.
+
+El web service observado ya usa una familia `v1` y admite:
+
+```text
+POST registro de dispositivo → pushToken → 201
+DELETE registro de dispositivo → 200
+GET actualizaciones → serialNumbers[] + lastUpdated, o 204
+GET pase → application/vnd.apple.pkpass, con 304 cuando corresponde
+POST log técnico → 200
+```
+
+El contrato del pase utiliza referencias como serial, pass type, nombre de cuenta, puntos, nivel, token de autenticación del pase, web service y barcode. El valor secreto del token no se documenta en ejemplos.
+
+La superficie APNs conserva contrato independiente; esta tarea no redefine firma JWT, lifecycle de P8 ni estrategia de entrega.
+
+##### 9.7. Zebra BrowserPrint
+
+La integración local observada distingue:
+
+- descubrimiento de dispositivos con `getLocalDevices(..., "printer")`;
+- identificación de dispositivo mediante atributos como `uid`, nombre y tipo;
+- generación de contenido ZPL;
+- selección del dispositivo local.
+
+El payload ZPL es contenido de impresión dirigido a un dispositivo local. El UID de la impresora sigue siendo identificador técnico y no credencial.
+
+##### 9.8. Supabase
+
+`EXT-SYS-001` se gobierna como familia de contratos, no como un payload universal.
+
+Las superficies de Auth, consultas autorizadas, RPC, Edge Functions y demás interfaces consumidas por VENTO conservan:
+
+- contrato propio;
+- ambiente;
+- productor y consumidor;
+- esquema de solicitud y respuesta;
+- error;
+- versión VENTO.
+
+Compartir una instancia de Supabase no autoriza a una aplicación a interpretar todas las tablas, funciones o respuestas como parte de un contrato externo único.
+
+##### 9.9. Sentry
+
+La telemetría enviada por SDK se trata como contrato de salida gobernado por la versión VENTO y por la referencia del SDK/proveedor utilizada.
+
+La DSN publicable identifica el destino de ingestión; no define por sí sola el schema empresarial ni convierte datos arbitrarios en contenido permitido.
+
+La versión `1.0.0` exige que la superficie conserve minimización y sensibilidad, sin inventar un payload nativo de Sentry que las fuentes inspeccionadas no acreditan.
+
+##### 9.10. Google Wallet
+
+El código observado materializa un modelo de payload para un objeto genérico y un JWT de guardado, incluyendo referencias como:
+
+```text
+id
+classId
+state
+cardTitle
+subheader
+textModulesData
+barcode
+```
+
+y claims de JWT como:
+
+```text
+iss
+aud
+typ
+iat
+exp
+payload.genericObjects[]
+```
+
+Sin embargo, las tareas anteriores no acreditan un binding remoto operativo completo. Por ello se fija un **modelo contractual `1.0.0`**, no una afirmación de integración remota validada.
+
+---
+
+#### 10. `VENTO-EXTERNAL-IO-CONTRACT-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Superficie contractual                                                        | Decisión `INT-EXT-009`                                    | Versión VENTO | Estado físico / evidencia                            | Regla / condición de salida                                                                                                                  |
+| ------------- | ---------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- | ------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | Auth, consultas autorizadas, RPC, Edge Functions y demás fronteras consumidas | `FAMILIA_IO_VERSIONADA`                                   | `1.0.0`       | `ESPECIFICADO_SOBRE_INTERCAMBIOS_OBSERVADOS`         | cada superficie debe conservar request, response, error, ambiente y versión propios; compartir Supabase no crea un contrato universal        |
+| `EXT-SYS-002` | Wompi                                    | checkout de pago; retorno; evento de pago                                     | `CONTRATO_BIDIRECCIONAL_VERSIONADO`                       | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | checkout y evento permanecen contratos distintos; cualquier cambio incompatible crea nueva versión mayor                                     |
+| `EXT-SYS-003` | RevenueCat                               | SDK Apple/Google; compra/restauración; webhook de entitlement                 | `CONTRATO_BIDIRECCIONAL_VERSIONADO`                       | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | separar contrato del SDK del contrato de webhook y no interpretar una respuesta técnica como entitlement confirmado sin frontera propietaria |
+| `EXT-SYS-004` | Resend                                   | envío server-side de correo                                                   | `CONTRATO_SALIDA_VERSIONADO`                              | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | conservar body, respuesta y errores por versión; autenticación fuera del payload                                                             |
+| `EXT-SYS-005` | Expo / EAS Update                        | configuración, perfiles, canales y plataforma                                 | `CONFIGURACION_PLATAFORMA_SIN_CONTRATO_IO_ACREDITADO`     | `NO_APLICA`   | `SIN_CONTRATO_IO_ACREDITADO_ACTUAL`                  | no inventar payload de API; si se acredita una interfaz programática, deberá instanciar contrato antes de habilitar efectos                  |
+| `EXT-SYS-006` | Expo Push Service                        | mensajes push y respuesta técnica                                             | `CONTRATO_SALIDA_VERSIONADO`                              | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | mensaje y respuesta técnica quedan tipados; los destinos inválidos no se convierten en fallo de credencial                                   |
+| `EXT-SYS-007` | Sentry                                   | telemetría SDK hacia ingestión                                                | `CONTRATO_SALIDA_VERSIONADO`                              | `1.0.0`       | `ESPECIFICADO_SOBRE_SUPERFICIE_PUBLICABLE_OBSERVADA` | gobernar versión y contenido permitido sin inventar schema nativo no acreditado ni enviar secretos                                           |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | autocomplete; detalle de lugar; navegación pública a reviews                  | `CONTRATO_CONSULTA_VERSIONADO`                            | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | consultas estructuradas se versionan; enlaces de navegación pública permanecen configuración, no respuesta empresarial                       |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `.pkpass`; web service `v1`; registro; actualización; APNs                    | `FAMILIA_IO_VERSIONADA`                                   | `1.0.0`       | `OBSERVADO_CON_SEPARACION_DE_SUBCONTRATOS`           | PassKit, web service y APNs conservan contratos separados; no mezclar lifecycle de credenciales con versión de payload                       |
+| `EXT-SYS-010` | Vercel                                   | plataforma y despliegue                                                       | `CONFIGURACION_PLATAFORMA_SIN_CONTRATO_IO_ACREDITADO`     | `NO_APLICA`   | `SIN_CONTRATO_IO_ACREDITADO_ACTUAL`                  | no inventar API de administración o deploy; cualquier binding futuro deberá declarar contrato y ambiente                                     |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | descubrimiento local de impresora; dispositivo; ZPL                           | `CONTRATO_ADAPTADOR_LOCAL_VERSIONADO`                     | `1.0.0`       | `OBSERVADO_SIN_VERSION_VENTO_EXPLICITA_EN_RUNTIME`   | BrowserPrint y ZPL se gobiernan como adaptador local; UID y nombre siguen siendo identificadores técnicos                                    |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | objeto genérico y JWT de guardado                                             | `MODELO_PAYLOAD_VERSIONADO_SIN_BINDING_REMOTO_ACREDITADO` | `1.0.0`       | `MODELO_DOCUMENTADO_SIN_BINDING_REMOTO`              | preservar el modelo observado; no declarar operación remota hasta acreditar issuer, class, cuenta y respuesta del proveedor                  |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, interfaz y payload no acreditados                                  | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `BLOQUEADO`                                          | `INT-POS-001` debe acreditar proveedor e interfaz antes de instanciar el contrato                                                            |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | binding no acreditado                                                         | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-015` | Rappi / marketplace                      | binding no acreditado                                                         | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | binding no acreditado                                                         | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API no acreditados                                                  | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                                                    | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                                        | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+| `EXT-SYS-020` | Telefonía / voz                          | operador e integración no acreditados                                         | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `BLOQUEADO`                                          | acreditar operador, interfaz y payload antes de instanciar contrato                                                                          |
+| `EXT-SYS-021` | Transporte externo                       | proveedor e interfaz no acreditados                                           | `NO_APLICA_ACTUAL`                                        | `NO_APLICA`   | `NO_APLICA`                                          | no existe intercambio actual acreditado sobre el cual versionar entradas o salidas                                                           |
+
+---
+
+#### 11. Reconciliación de cobertura
+
+La matriz conserva exactamente las veintiuna identidades y una decisión primaria por identidad:
+
+```text
+2 FAMILIA_IO_VERSIONADA
++
+2 CONTRATO_BIDIRECCIONAL_VERSIONADO
++
+3 CONTRATO_SALIDA_VERSIONADO
++
+1 CONTRATO_CONSULTA_VERSIONADO
++
+1 CONTRATO_ADAPTADOR_LOCAL_VERSIONADO
++
+1 MODELO_PAYLOAD_VERSIONADO_SIN_BINDING_REMOTO_ACREDITADO
++
+2 CONFIGURACION_PLATAFORMA_SIN_CONTRATO_IO_ACREDITADO
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+Faltantes = `0`.
+
+Duplicados = `0`.
+
+Identificadores únicos = `21`.
+
+Una clasificación primaria no fusiona subcontratos. Wompi, RevenueCat, Apple Wallet y Supabase conservan varias superficies porque sus entradas, salidas, respuestas y autoridades técnicas no comparten necesariamente schema, dirección ni evolución.
+
+---
+
+#### 12. Regla de activación de un contrato externo
+
+Una nueva superficie no puede habilitar efectos empresariales únicamente porque exista conectividad o una credencial.
+
+Debe quedar materializada como mínimo esta secuencia documental:
+
+```text
+IDENTIDAD EXT-SYS ACREDITADA
++
+PROVEEDOR / CUENTA / AMBIENTE ACREDITADOS
++
+SUPERFICIE IDENTIFICADA
++
+DIRECCIÓN
++
+SCHEMA DE ENTRADA / SALIDA
++
+VERSIÓN VENTO
++
+REFERENCIA DE VERSIÓN DEL PROVEEDOR CUANDO EXISTA
++
+PRODUCTOR / CONSUMIDOR
++
+RESULTADOS Y ERRORES
++
+COMPATIBILIDAD
+→ CONTRATO HABILITABLE
+```
+
+Reglas:
+
+1. una credencial válida no sustituye este contrato;
+2. un endpoint accesible no sustituye este contrato;
+3. un SDK instalado no sustituye este contrato;
+4. un ejemplo de payload no sustituye este contrato;
+5. una prueba manual exitosa no sustituye el contrato versionado;
+6. una futura integración de `EXT-SYS-013` a `EXT-SYS-021` deberá instanciar este modelo antes de producir efectos internos;
+7. si la fuente actual no acredita campos o respuesta, se mantiene `PENDIENTE_DE_EVIDENCIA` y no se fabrican propiedades.
+
+---
+
+#### 13. Fronteras reservadas a `INT-EXT-010` a `INT-EXT-020`
+
+`INT-EXT-009` define **qué** contrato entra o sale y **cómo se versiona**. No consume decisiones que pertenecen a tareas posteriores.
+
+| Materia                                            | Tarea propietaria |
+| -------------------------------------------------- | ----------------- |
+| webhook, polling o modalidad híbrida               | `INT-EXT-010`     |
+| firma, origen, timestamp y replay                  | `INT-EXT-011`     |
+| idempotencia y deduplicación                       | `INT-EXT-012`     |
+| mapeo de identificadores externos y canónicos      | `INT-EXT-013`     |
+| conservación controlada del payload original       | `INT-EXT-014`     |
+| rate limits, reintentos, backoff y circuit breaker | `INT-EXT-015`     |
+| cuarentena o dead-letter                           | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación        | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor   | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales | `INT-EXT-019`     |
+| credenciales compartidas entre integraciones       | `INT-EXT-020`     |
+
+La presencia de campos como `timestamp`, `signature`, `id`, `reference`, `receipt` o `status` en un payload observado no resuelve por adelantado las políticas de esas tareas.
+
+---
+
+#### 14. Trazabilidad de handoff
+
+| Pendiente                                                           | Estado                    | Propietario / tarea responsable                   | Condición de salida                                                                                                               |
+| ------------------------------------------------------------------- | ------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Contrato consumible de evento externo recibido                      | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                                   | el contrato compartido representa versión, proveedor, recepción y payload adaptado sin convertir al tercero en fuente empresarial |
+| Contratos canónicos de venta y línea para integraciones comerciales | `FUERA_DE_ALCANCE`        | `INT-POS-005` / `SHELL-CON-020` / `SHELL-CON-021` | ventas y líneas externas convergen en contratos canónicos propietarios                                                            |
+| Mapeo contractual de identificadores                                | `FUERA_DE_ALCANCE`        | `INT-EXT-013` / `SHELL-CON-022`                   | cada identificador externo y canónico queda relacionado sin inferencia por nombre                                                 |
+| Idempotencia y conciliación consumibles                             | `FUERA_DE_ALCANCE`        | `INT-EXT-012` / `SHELL-CON-023`                   | los contratos disponen de claves y resultados recuperables según alcance aprobado                                                 |
+| Cuarentena, rechazo y compensación                                  | `FUERA_DE_ALCANCE`        | `INT-EXT-016` / `SHELL-CON-024`                   | payloads incompatibles o no aplicables tienen disposición explícita sin efecto silencioso                                         |
+| Estrategia de recepción por proveedor                               | `FUERA_DE_ALCANCE`        | `INT-EXT-010`                                     | cada superficie define webhook, polling o modalidad híbrida con base acreditada                                                   |
+| Binding del POS externo vigente                                     | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                                     | proveedor e interfaz quedan acreditados antes de crear versión de payload                                                         |
+
+No queda una decisión sustantiva de versionado sin regla de salida. Las políticas de transporte, seguridad, resiliencia y operación conservan sus propietarios posteriores.
+
+---
+
+#### 15. Prohibiciones
+
+Queda prohibido:
+
+1. tratar la versión del proveedor como si fuera la versión VENTO;
+2. inventar una versión nativa cuando el proveedor no la exponga de forma acreditada;
+3. usar un mismo contrato para request y response si sus significados son distintos;
+4. usar un mismo contrato para varias superficies solo porque comparten proveedor;
+5. considerar compatible un campo nuevo si no está acreditada la tolerancia del consumidor;
+6. reutilizar una versión mayor después de cambiar significado incompatible;
+7. reinterpretar historia para acomodar un schema nuevo;
+8. asumir unidad, moneda, zona temporal, nullabilidad o enumeración no acreditadas;
+9. convertir un ACK o respuesta técnica en efecto empresarial sin contrato propietario;
+10. permitir que el payload del proveedor escriba directamente varias fuentes internas;
+11. incluir secretos, passwords, private keys, tokens, webhook secrets o credenciales en el schema o ejemplos;
+12. usar el valor de una credencial como discriminador de versión;
+13. mezclar `DEVELOPMENT`, `STAGING` y `PRODUCTION` dentro de una misma instancia contractual;
+14. inventar payloads para Expo/EAS, Vercel o las identidades sin binding acreditado;
+15. presentar Google Wallet como binding remoto validado solo porque existe un modelo de payload en código;
+16. convertir `place_id`, UID de impresora, DSN publicable o push token en secreto por aparecer en un contrato;
+17. adelantar webhook/polling de `INT-EXT-010`;
+18. adelantar firma, timestamp o replay de `INT-EXT-011`;
+19. adelantar idempotencia de `INT-EXT-012`;
+20. adelantar mapeo canónico de `INT-EXT-013`;
+21. adelantar conservación de payload de `INT-EXT-014`;
+22. adelantar retry o circuit breaker de `INT-EXT-015`;
+23. adelantar cuarentena, conciliación, contingencia o retiro de `INT-EXT-016` a `INT-EXT-019`;
+24. modificar código, Supabase, proveedores, cuentas, endpoints, credenciales o datos durante esta fase documental;
+25. cambiar las veintiuna identidades heredadas.
+
+---
+
+#### 16. Criterios de aceptación
+
+`INT-EXT-009` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. se materializa la distribución `2 + 2 + 3 + 1 + 1 + 1 + 2 + 9 = 21`;
+7. contrato de entrada, contrato de salida y respuesta externa quedan diferenciados;
+8. versión VENTO y versión del proveedor quedan diferenciadas;
+9. la primera versión documental se fija en `1.0.0` para las superficies o modelos materializados;
+10. se define `MAJOR.MINOR.PATCH`;
+11. todo cambio incompatible obliga nueva versión mayor;
+12. un cambio aditivo solo se considera menor cuando la compatibilidad está acreditada;
+13. `PATCH` no puede cambiar comportamiento ejecutable;
+14. cada contrato conserva ambiente, productor, consumidor, schema y resultados;
+15. el valor de una credencial queda fuera del contrato;
+16. una respuesta técnica no se presenta como resultado empresarial;
+17. Wompi conserva checkout y evento como contratos separados;
+18. RevenueCat conserva SDK y webhook como contratos separados;
+19. Resend conserva contrato de salida server-side;
+20. Expo Push conserva mensaje y respuesta técnica sin convertir push token en credencial;
+21. Google Maps conserva autocomplete y detalle como consultas versionadas;
+22. Apple Wallet separa `.pkpass`, web service y APNs;
+23. Supabase no se presenta como un contrato universal por compartir plataforma;
+24. Sentry se gobierna sin inventar un payload nativo no acreditado;
+25. Zebra se conserva como adaptador local con contenido ZPL;
+26. Google Wallet queda como modelo versionado sin acreditar binding remoto;
+27. Expo/EAS y Vercel no reciben contratos de API ficticios;
+28. las nueve identidades sin binding permanecen `NO_APLICA_ACTUAL`;
+29. no se decide webhook, polling o modalidad híbrida;
+30. no se decide firma, replay, deduplicación, mapeo, retención, retry, cuarentena, conciliación, contingencia o retiro;
+31. no se modifica código;
+32. no se modifica Supabase;
+33. no se cambian endpoints;
+34. no se ejecutan despliegues;
+35. se crean cero requisitos de prueba;
+36. se modifican cero requisitos de prueba;
+37. `INT-EXT-010` permanece reservada.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa por identidad y superficie el contrato documental de entrada, salida y versionado ya protegido por requisitos de integración vigentes sobre coherencia de schema, ambiente, versión, transformación, compatibilidad, minimización, trazabilidad y fronteras de propiedad. No introduce un nuevo endpoint, proveedor, operación empresarial, permiso, algoritmo, credencial, mecanismo de transporte ni comportamiento ejecutable.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 18. Resultado de la tarea
+
+`INT-EXT-009` queda **APROBADA** como definición documental completa de contratos de entrada y salida versionados para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- contratos o modelos I/O documentables: **10**;
+- configuraciones de plataforma sin contrato I/O acreditado: **2**;
+- identidades sin binding actual: **9**;
+- faltantes: **0**;
+- duplicados: **0**;
+- versiones nativas de proveedor inventadas: **0**;
+- cambios de runtime: **0**;
+- TREQ creados o modificados: **0**.
+
+La tarea deja como invariante:
+
+```text
+INTERCAMBIO EXTERNO VÁLIDO
+=
+IDENTIDAD EXTERNA ACREDITADA
++
+AMBIENTE
++
+SUPERFICIE
++
+DIRECCIÓN
++
+SCHEMA
++
+VERSIÓN VENTO
++
+COMPATIBILIDAD
++
+FRONTERA PROPIETARIA
+```
+
+sin convertir credenciales, endpoints, ACKs, SDKs o payloads de proveedor en sustitutos del contrato empresarial.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-008 — Definir rotación, expiración y revocación`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-009 — Definir contratos de entrada y salida versionados`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-010 — Definir estrategia webhook, polling o híbrida`
+
+
 ### [ ] INT-EXT-010 — Definir estrategia webhook, polling o híbrida
 ### [ ] INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
 ### [ ] INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
