@@ -1187,6 +1187,1971 @@ SIGUIENTE TAREA RESERVADA
 `CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X`
 
 
-### [ ] CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X
+### ✅ CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones` — APROBADA
+**Tarea siguiente:** `CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de contratos de interoperabilidad de continuidad con SHELL, VISO, ANIMA y los bloques transversales Z, AA, AB, E4, E5, T, U y X
+**Bloque:** AC — Continuidad operativa y recuperación
+**Mini-bloque:** Integraciones de continuidad y reincorporación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md`
+**Implementación técnica u operativa:** no autorizada
+**Código, DDL, DML, migraciones, RLS, RPC, secretos, despliegues, cambios de datos, bindings físicos o configuración productiva:** no autorizados
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo el dominio de continuidad intercambia contexto, señales, decisiones, instrucciones, evidencia, estado, recuperación y resultados con las superficies y bloques transversales que intervienen en una interrupción, sin transferir autoridad, duplicar expedientes, crear fuentes de verdad competidoras ni convertir una entrega técnica en resultado empresarial.
+
+La tarea materializa exactamente once fronteras:
+
+1. SHELL;
+2. VISO;
+3. ANIMA;
+4. BLOQUE Z;
+5. BLOQUE AA;
+6. BLOQUE AB;
+7. BLOQUE E4;
+8. BLOQUE E5;
+9. BLOQUE T;
+10. BLOQUE U;
+11. BLOQUE X.
+
+El contrato debe permitir que una interrupción pueda atravesar de forma trazable:
+
+```text
+SEÑAL
+→ EVALUACIÓN
+→ DECLARACIÓN
+→ ACTIVACIÓN
+→ OPERACIÓN MÍNIMA / CONTINGENCIA
+→ RECUPERACIÓN TÉCNICA Y FUNCIONAL
+→ VALIDACIÓN
+→ REINCORPORACIÓN / CONCILIACIÓN
+→ DESACTIVACIÓN
+→ CIERRE
+→ REVISIÓN / APRENDIZAJE
+```
+
+sin que ninguna superficie transversal absorba la propiedad de los procesos afectados.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados los siguientes resultados:
+
+1. once contratos de frontera, uno por cada identidad exigida por el título;
+2. matriz consolidada 11/11, sin fronteras faltantes ni duplicadas;
+3. separación explícita entre autoridad de continuidad, representación en interfaz, transporte técnico, evidencia, analítica, implementación y certificación;
+4. perfil común de intercambio que reutiliza contratos ya aprobados y no crea un protocolo paralelo;
+5. regla de correlación entre incidente de continuidad, servicio BIA, proceso, aplicación, capacidad, dependencia, señal, decisión y evidencia;
+6. conservación de `VPROC-0062` y del expediente transversal de continuidad en VISO;
+7. conservación de SHELL como hub de identidad, contexto, navegación y handoff sin propiedad empresarial;
+8. conservación de ANIMA como superficie personal del trabajador para comunicación, reporte, interacción y confirmación contextual, sin autoridad sobre severidad, activación o cierre;
+9. conservación de BLOQUE Z como autoridad tecnológica sobre incidentes, diagnóstico, health técnico y recuperación técnica;
+10. conservación de BLOQUE AA como autoridad transversal sobre clasificación, finalidad, privacidad, retención, legal hold, custodia y evidencia;
+11. conservación de BLOQUE AB como autoridad sobre datos maestros federados, métricas, calidad, snapshots, analítica y mejora, sin autoridad para mutar procesos;
+12. conservación de E4 como capacidad técnica compartida sin propiedad del proceso consumidor;
+13. conservación de E5 como planificación de paquetes, readiness, cutover, piloto e hypercare antes de implementación;
+14. conservación de T como calidad, compatibilidad, release, despliegue, rollback y evidencia de ejecución;
+15. conservación de U como certificación transversal y validación final de requisitos, sin sustituir readiness, cutover o hypercare;
+16. conservación de X como autoridad sobre emisoras, consumidoras, contratos, idempotencia, retry, compensaciones y handoffs de integración;
+17. contrato de propagación de señales que impide activación automática de continuidad;
+18. contrato de instrucciones que exige autoridad explícita antes de producir efectos protegidos;
+19. contrato de evidencia que preserva procedencia y evita convertir log, ACK, alerta o hash en hecho empresarial;
+20. contrato de degradación transversal basado en `CONT-INT-001`;
+21. contrato de recuperación que separa health técnico de recuperación empresarial;
+22. regla de que la recuperación de una superficie transversal no cierra automáticamente el incidente;
+23. regla de que la ausencia de una superficie transversal no transfiere su autoridad a otra;
+24. preservación de implementación independiente por repositorio y consumidor;
+25. preservación de rollback sin reescritura histórica ni repetición de efectos ya confirmados;
+26. preservación de la ruta prioritaria actual sin activar el alcance de implementación;
+27. preservación de `QUEUE_CONDITIONAL` como no aplicable en la instancia prioritaria vigente, sin eliminar la capacidad global de E4;
+28. handoff explícito a `CONT-INT-003` para dependencias externas;
+29. handoff explícito a `CONT-INT-004` para replay, reincorporación y conciliación;
+30. cero cambios físicos;
+31. cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume y conserva, sin redefinir:
+
+- `CONT-DOM-001` a `CONT-DOM-015` para gobierno, BIA, dependencias, objetivos, incidente, mando, operación mínima, contingencia, captura, reincorporación, respaldo, recuperación, proveedores, ejercicios y aprendizaje;
+- `CONT-AUTH-001` a `CONT-AUTH-004` para declaración, activación, autoridad, break-glass, protección de información y segregación;
+- `CONT-UX-001` a `CONT-UX-007` para superficies ejecutivas, mando, runbooks, contingencia, recuperación, comunicación y ejercicios;
+- `CONT-INT-001` para criticidad proyectada, dependencias aplicación-a-aplicación, health, degradación y proyección de incidente;
+- `VPROC-0062` como proceso transversal de continuidad, propiedad de VISO;
+- los 69 servicios BIA, sus perfiles, MBCO, MTPD, RTO, RPO y prioridades por referencia a sus tareas propietarias;
+- el contrato de BLOQUE Z que separa incidente tecnológico e incidente de continuidad;
+- el contrato de BLOQUE AA que preserva propiedad funcional, privacidad, ciclo documental y evidencia;
+- el contrato de BLOQUE AB que consume eventos y lecturas gobernadas sin crear una fuente editable alternativa;
+- el principio de E4 según el cual la aplicación propietaria decide el resultado empresarial y el servicio transversal ejecuta una capacidad técnica compartida;
+- el inventario vigente de diez servicios transversales E4;
+- los principios E5 de paquete, readiness, cutover, piloto, hypercare, suspensión, rollback y evidencia;
+- BLOQUE T para package/release, consumer tests, gates, despliegue, piloto y estabilización;
+- BLOQUE U para regresión transversal, E2E, seguridad, funcional, operación, experiencia y certificación final;
+- BLOQUE X, especialmente `INT-APP-001` a `INT-APP-010`, para catálogo de eventos, productores, consumidores, idempotencia, retry, compensación, auditoría y prohibición de escritura cruzada;
+- `EVENT-ENVELOPE-001` cuando el intercambio sea un evento empresarial;
+- los contratos compartidos de SHELL cuando la interacción corresponda a contexto, acción, evento, handoff, trabajo pendiente o propiedad funcional;
+- la ruta prioritaria vigente `NEXO-REMISSIONS-001`, cuya fase de diseño condicional está aprobada y cuyo alcance de implementación condicional permanece no iniciado.
+
+La tarea no modifica propiedad de procesos, identidades de aplicación, criticidades BIA, objetivos de continuidad, contratos de autorización, catálogo de eventos, consumidores, servicios transversales ni alcance de la ruta prioritaria.
+
+---
+
+#### 4. Decisión principal
+
+Vento OS adopta un contrato de continuidad **federado y correlacionado**, no un orquestador monolítico.
+
+```text
+CONTINUIDAD
+→ gobierna el resultado empresarial de continuidad
+→ conserva incidente, alcance, decisiones y estado de recuperación empresarial
+→ coordina sin absorber los hechos propietarios
+
+SUPERFICIE O BLOQUE TRANSVERSAL
+→ conserva su autoridad especializada
+→ recibe únicamente el contexto necesario
+→ devuelve señales, resultados o evidencia dentro de su contrato
+→ no decide fuera de su dominio
+
+APLICACIÓN PROPIETARIA
+→ conserva sus hechos y resultado funcional
+→ valida su recuperación
+→ no transfiere propiedad por participar en el incidente
+```
+
+Regla cardinal:
+
+```text
+COORDINAR
+≠
+TRANSFERIR PROPIEDAD O AUTORIDAD
+```
+
+---
+
+#### 5. Fronteras obligatorias
+
+Se conservan las siguientes no equivalencias:
+
+```text
+IDENTIDAD Y CONTEXTO DE SHELL
+≠ AUTORIDAD DE CONTINUIDAD
+```
+
+```text
+EXPEDIENTE DE VISO
+≠ APROBACIÓN HUMANA
+```
+
+```text
+MENSAJE O ACK EN ANIMA
+≠ CAMBIO DEL ESTADO DE CONTINUIDAD
+```
+
+```text
+INCIDENTE TECNOLÓGICO
+≠ INCIDENTE DE CONTINUIDAD
+```
+
+```text
+EVIDENCIA O LEGAL HOLD
+≠ DECISIÓN OPERATIVA
+```
+
+```text
+MÉTRICA O ALERTA ANALÍTICA
+≠ ACTIVACIÓN
+```
+
+```text
+ENTREGA DE E4
+≠ EFECTO EMPRESARIAL
+```
+
+```text
+PLAN E5
+≠ IMPLEMENTACIÓN
+```
+
+```text
+DEPLOY EXITOSO EN T
+≠ RECUPERACIÓN EMPRESARIAL
+```
+
+```text
+CERTIFICACIÓN EN U
+≠ AUTORIDAD PARA MUTAR PRODUCCIÓN
+```
+
+```text
+EVENTO O TRANSPORTE DE X
+≠ PERMISO
+```
+
+---
+
+#### 6. Tipos de interacción reutilizados
+
+CONT-INT-002 no crea un nuevo vocabulario de transporte. Reutiliza los tipos ya gobernados cuando correspondan:
+
+- `QUERY`: consulta autorizada sin mutación;
+- `COMMAND`: solicitud dirigida al propietario de la acción;
+- `EVENT`: hecho durable ya confirmado;
+- `STATUS`: progreso o estado técnico/operativo que no sustituye el hecho empresarial;
+- `PROJECTION`: vista derivada y reconstruible;
+- observación técnica: telemetría o señal bajo el contrato de BLOQUE Z;
+- notificación humana: comunicación sin autoridad transaccional;
+- auditoría o evidencia: prueba correlacionable distinta del hecho empresarial.
+
+Reglas:
+
+1. un `COMMAND` recibido no equivale a efecto completado;
+2. un `EVENT` no es una orden;
+3. un `STATUS` no decide cierre;
+4. una `PROJECTION` no se convierte en fuente editable;
+5. una observación técnica no declara continuidad;
+6. una notificación entregada no confirma comprensión, acción ni resultado;
+7. la evidencia demuestra un hecho definido por su contrato, no crea un hecho distinto.
+
+---
+
+#### 7. Contexto mínimo de interoperabilidad de continuidad
+
+Toda interacción material deberá conservar únicamente los campos que apliquen, sin inventar valores ausentes:
+
+| Dimensión         | Referencia que debe conservarse cuando aplique                              |
+| ----------------- | --------------------------------------------------------------------------- |
+| continuidad       | incidente de continuidad, evaluación o ejercicio relacionado                |
+| servicio          | `BCS-VPROC-*` afectado o amenazado                                          |
+| proceso           | `VPROC-*` propietario                                                       |
+| aplicación        | `app_code` canónico                                                         |
+| capacidad         | capacidad o resultado específico afectado                                   |
+| dependencia       | dependencia material relacionada                                            |
+| alcance           | empresa, sede, área, canal, recurso o contexto aplicable                    |
+| health            | estado y alcance conforme a `CONT-INT-001`                                  |
+| degradación       | capacidad conservada, restringida o no disponible                           |
+| BIA               | referencias de criticidad, MBCO, MTPD, RTO, RPO y prioridad aplicables      |
+| severidad         | únicamente cuando exista evaluación/declaración conforme al contrato        |
+| decisión          | declaración, activación, excepción, desactivación u otra decisión protegida |
+| contingencia      | estrategia o runbook aplicable por referencia                               |
+| trabajo pendiente | referencia estable cuando exista efecto aún no incorporado                  |
+| correlación       | correlación y causalidad cuando el intercambio forme una cadena             |
+| idempotencia      | identidad estable cuando exista riesgo de repetición de efecto              |
+| tiempo            | ocurrencia, observación, registro o ejecución según el hecho                |
+| versión           | contrato, esquema, política o artefacto aplicable                           |
+| evidencia         | referencias suficientes sin copiar material sensible innecesario            |
+
+La ausencia de un campo obligatorio para una decisión protegida no se resuelve mediante un valor implícito favorable.
+
+---
+
+#### 8. Propiedad del expediente transversal
+
+VISO conserva `VPROC-0062` y el expediente transversal de continuidad.
+
+El expediente puede relacionar:
+
+- servicios BIA;
+- procesos;
+- aplicaciones;
+- incidentes tecnológicos;
+- dependencias;
+- decisiones;
+- activaciones;
+- comunicaciones;
+- runbooks;
+- recuperación;
+- pendientes;
+- evidencia;
+- ejercicios;
+- acciones posteriores.
+
+El expediente no absorbe:
+
+- estado privado de aplicaciones propietarias;
+- tickets tecnológicos;
+- evidencia original de AA;
+- métricas maestras de AB;
+- jobs de E4;
+- releases de T;
+- resultados de certificación U;
+- contratos o eventos propietarios de X.
+
+La relación se realiza por referencia y correlación.
+
+---
+
+#### 9. Regla de autoridad antes de un efecto
+
+Toda acción protegida recibida por una frontera deberá ser reevaluada por su propietario.
+
+La presencia de cualquiera de estos elementos no concede autoridad:
+
+- `continuity_incident_ref`;
+- severidad;
+- prioridad;
+- health;
+- alerta;
+- evento;
+- usuario autenticado;
+- rol visible;
+- dispositivo;
+- sede;
+- relación de dependencia;
+- acceso a una cola;
+- service role;
+- pertenencia al equipo técnico;
+- aprobación de otra frontera.
+
+Cuando la acción pertenezca al dominio de continuidad, se aplican los contratos `CONT-AUTH-*`.
+
+Cuando pertenezca a otro dominio, ese dominio conserva su propia autorización.
+
+---
+
+#### 10. Contrato con SHELL
+
+##### 10.1 Autoridad conservada
+
+SHELL conserva:
+
+- identidad de aplicación;
+- autenticación y contexto de sesión dentro de su contrato;
+- catálogo y visibilidad de aplicaciones;
+- decisión de acceso contextual cuando le corresponda;
+- navegación, entrada, retorno y handoff entre aplicaciones;
+- contexto compartido y trabajo pendiente conforme a sus contratos.
+
+SHELL conserva cero procesos empresariales propietarios en el catálogo vigente.
+
+##### 10.2 Entradas desde continuidad
+
+SHELL puede consumir una proyección mínima y autorizada para:
+
+- presentar que existe una afectación o modo degradado aplicable;
+- dirigir al usuario hacia la superficie propietaria correcta;
+- conservar referencia a tarea, incidente o acción pendiente;
+- impedir una ruta no disponible o no autorizada;
+- mantener contexto de retorno cuando el contrato lo permita.
+
+##### 10.3 Salidas hacia continuidad
+
+SHELL puede aportar:
+
+- actor o principal autenticado;
+- aplicación objetivo;
+- contexto autorizado;
+- sede, área o dispositivo cuando formen parte del contexto válido;
+- referencia de handoff;
+- resultado de decisión de acceso;
+- imposibilidad de navegación o acceso como señal correlacionable.
+
+##### 10.4 Prohibiciones
+
+SHELL no puede:
+
+- declarar incidente de continuidad;
+- fijar severidad;
+- activar o desactivar continuidad;
+- editar el expediente de otro dominio por mostrarlo;
+- publicar como propio un evento empresarial de otra propietaria;
+- convertir visibilidad en autorización;
+- convertir bloqueo de navegación en indisponibilidad empresarial total;
+- crear un fallback de escritura cuando la propietaria no esté disponible.
+
+##### 10.5 Degradación de SHELL
+
+La indisponibilidad de SHELL:
+
+- puede afectar navegación, contexto o acceso compartido;
+- debe proyectarse mediante las dependencias materiales de `CONT-INT-001`;
+- no vuelve automáticamente indisponibles las diez aplicaciones;
+- no transfiere autoridad a otra superficie;
+- no autoriza un acceso alternativo no definido.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 11. Contrato con VISO
+
+##### 11.1 Autoridad conservada
+
+VISO conserva:
+
+- `VPROC-0062` y el expediente transversal de continuidad;
+- el expediente tecnológico de `VPROC-0058` bajo su contrato tecnológico;
+- las superficies administrativas y ejecutivas que le correspondan;
+- estados, referencias y relaciones de los expedientes que son de su propiedad.
+
+La autoridad humana para declarar, activar, aprobar excepciones, desactivar o cerrar permanece separada de la mera capacidad de VISO para registrar o presentar una decisión.
+
+##### 11.2 Entradas hacia VISO
+
+VISO puede recibir:
+
+- señales y health de BLOQUE Z;
+- confirmaciones funcionales de aplicaciones propietarias;
+- decisiones autorizadas de continuidad;
+- comunicaciones y acknowledgements referenciados;
+- evidencia de AA;
+- métricas y análisis de AB;
+- estado de servicios transversales E4;
+- evidencia de paquete, release, deploy y rollback de E5/T;
+- resultados de certificación U;
+- eventos, estados y correlaciones de X.
+
+##### 11.3 Salidas desde VISO
+
+VISO puede exponer, conforme a autorización:
+
+- referencia del incidente;
+- alcance y severidad formal vigentes;
+- activación y decisiones registradas;
+- servicios y procesos afectados;
+- acciones requeridas;
+- estado de contingencia y recuperación;
+- pendientes;
+- referencia de comunicaciones;
+- necesidad de validación;
+- estado de desactivación/cierre;
+- referencias a revisión posterior.
+
+##### 11.4 Separación con el expediente tecnológico
+
+```text
+INCIDENTE TECNOLÓGICO VISO
+≠
+INCIDENTE DE CONTINUIDAD VISO
+```
+
+Pueden compartir correlación y evidencia, pero conservan:
+
+- identidad;
+- autoridad;
+- ciclo;
+- criterios de cierre;
+- clasificación;
+- pendientes.
+
+##### 11.5 Prohibiciones
+
+VISO no puede:
+
+- convertir una alerta en declaración;
+- cerrar continuidad por un health técnico favorable;
+- declarar recuperado un proceso de otra aplicación sin validación propietaria;
+- editar una evidencia custodiada por AA para cambiar la historia;
+- convertir una métrica de AB en decisión automática;
+- tratar éxito de deploy como recuperación empresarial.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 12. Contrato con ANIMA
+
+##### 12.1 Autoridad conservada
+
+ANIMA conserva la experiencia personal del trabajador para:
+
+- recibir instrucciones;
+- recibir comunicaciones;
+- consultar información autorizada;
+- reportar un síntoma, observación o necesidad;
+- aportar evidencia permitida;
+- ejecutar una acción personal autorizada;
+- confirmar comprensión o funcionamiento observado cuando el flujo lo solicite;
+- recibir runbooks o capacitación contextual cuando corresponda.
+
+##### 12.2 Entradas desde continuidad
+
+ANIMA puede consumir una proyección mínima de:
+
+- incidente o afectación aplicable al trabajador;
+- instrucción vigente;
+- sede/área/contexto relevante;
+- modo operativo aplicable;
+- acción requerida;
+- restricción;
+- prioridad comunicacional;
+- fecha/hora y vigencia;
+- canal o alternativa aprobada;
+- referencia de seguimiento.
+
+##### 12.3 Salidas hacia continuidad
+
+ANIMA puede aportar:
+
+- entrega de comunicación;
+- lectura o acknowledgement cuando exista;
+- respuesta del trabajador;
+- reporte de condición observada;
+- evidencia permitida;
+- confirmación funcional personal;
+- imposibilidad de ejecutar una instrucción.
+
+##### 12.4 No equivalencias
+
+```text
+ENTREGADO
+≠ LEÍDO
+≠ COMPRENDIDO
+≠ EJECUTADO
+≠ RESULTADO EMPRESARIAL CONFIRMADO
+```
+
+Un mensaje o respuesta del trabajador no cambia por sí solo:
+
+- severidad;
+- activación;
+- prioridad BIA;
+- estado del proceso;
+- recuperación empresarial;
+- cierre.
+
+##### 12.5 Degradación de ANIMA
+
+Si ANIMA no puede entregar una comunicación:
+
+- se conserva el estado de entrega verdadero;
+- no se afirma que el trabajador fue informado;
+- la necesidad puede activar una alternativa ya aprobada por el contrato de comunicación;
+- la alternativa no convierte a ANIMA ni al canal alterno en fuente de verdad del incidente.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 13. Contrato con BLOQUE Z
+
+##### 13.1 Autoridad conservada
+
+BLOQUE Z conserva:
+
+- servicios tecnológicos;
+- configuración e identidades técnicas;
+- endpoints;
+- red;
+- impresoras;
+- aplicaciones y ambientes;
+- incidentes, problemas y cambios tecnológicos;
+- health técnico, observabilidad y telemetría;
+- recuperación técnica;
+- conocimiento y soporte;
+- licencias y dependencias técnicas dentro de sus fronteras.
+
+##### 13.2 Entradas desde tecnología hacia continuidad
+
+BLOQUE Z puede aportar:
+
+- servicio o componente afectado;
+- capacidad técnica afectada;
+- health y frescura;
+- incidente tecnológico correlacionado;
+- alcance técnico;
+- dependencia afectada;
+- backlog técnico;
+- hipótesis identificada como hipótesis;
+- restore o recovery ejecutado;
+- estado de backup/restauración;
+- cambio/release correlacionado;
+- evidencia de recuperación técnica.
+
+##### 13.3 Entradas desde continuidad hacia tecnología
+
+Continuidad puede solicitar, con autoridad válida:
+
+- diagnóstico;
+- evaluación de alternativa;
+- restauración;
+- recuperación;
+- aislamiento;
+- failover autorizado;
+- retorno controlado;
+- soporte para operación mínima;
+- validación técnica;
+- información de dependencias y pendientes.
+
+##### 13.4 Separaciones obligatorias
+
+```text
+HEALTH TÉCNICO
+≠ MBCO
+```
+
+```text
+INCIDENTE TECNOLÓGICO
+≠ INCIDENTE DE CONTINUIDAD
+```
+
+```text
+RESTORE EXITOSO
+≠ RECUPERACIÓN EMPRESARIAL
+```
+
+```text
+CAUSA TÉCNICA
+≠ CAUSA EMPRESARIAL COMPLETA
+```
+
+##### 13.5 Contrato con la telemetría
+
+Las observaciones de `TI-INT-001`:
+
+- conservan fuente y frescura;
+- se correlacionan con el contrato de health de `CONT-INT-001`;
+- no fabrican un estado favorable ante ausencia de telemetría;
+- no activan continuidad por sí solas;
+- pueden enriquecer un incidente sin convertirse en la decisión.
+
+##### 13.6 Relación con TI-INT-002
+
+CONT-INT-002 adopta el lado de continuidad del contrato ya definido desde BLOQUE Z.
+
+La semántica técnica preservada incluye:
+
+- no escritura cruzada;
+- autoridad propietaria;
+- idempotencia;
+- resultado desconocido;
+- compatibilidad;
+- rollback;
+- separación entre incidentes;
+- recuperación técnica distinta de recuperación empresarial.
+
+Las referencias históricas de estado contenidas en una tarea anterior no sustituyen el estado vigente de la secuencia canónica.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 14. Contrato con BLOQUE AA
+
+##### 14.1 Autoridad conservada
+
+BLOQUE AA gobierna transversalmente:
+
+- clasificación;
+- finalidad;
+- versiones documentales;
+- privacidad;
+- custodia;
+- compartición;
+- retención;
+- archivo;
+- disposición;
+- legal hold;
+- preservación;
+- firma y certificación dentro de sus contratos;
+- auditoría e investigación;
+- evidencia.
+
+Las aplicaciones de dominio conservan sus hechos, registros y expedientes.
+
+##### 14.2 Entradas desde continuidad hacia AA
+
+Continuidad puede aportar referencias a:
+
+- incidente;
+- servicio/proceso;
+- decisión;
+- comunicación;
+- evidencia producida;
+- archivo o documento;
+- actor;
+- tiempo;
+- fuente;
+- clasificación conocida;
+- necesidad de preservación;
+- investigación o revisión posterior.
+
+##### 14.3 Salidas desde AA hacia continuidad
+
+AA puede aportar:
+
+- referencia de evidencia;
+- procedencia;
+- integridad;
+- versión;
+- clasificación;
+- restricciones de acceso;
+- retención;
+- preservación;
+- hold;
+- estado de custodia;
+- resultado de investigación dentro de su competencia;
+- obligación pendiente del ciclo de información.
+
+##### 14.4 Reglas
+
+1. un incidente no reduce clasificación;
+2. una emergencia no elimina finalidad ni minimización;
+3. una copia de contingencia no adquiere propiedad;
+4. preservar evidencia no equivale a aprobar una acción;
+5. legal hold puede impedir disposición, pero no decide por sí solo continuidad;
+6. un hash o receipt no sustituye el hecho empresarial;
+7. una evidencia posterior no reescribe el estado histórico que estaba vigente;
+8. información sensible se referencia cuando una copia completa no sea necesaria.
+
+##### 14.5 Recuperación
+
+La restauración de un archivo o evidencia:
+
+- debe preservar versión y procedencia;
+- no confirma por sí sola el proceso empresarial;
+- puede ser precondición de validación si el proceso exige esa evidencia;
+- conserva inconsistencias como pendientes reconciliables.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 15. Contrato con BLOQUE AB
+
+##### 15.1 Autoridad conservada
+
+BLOQUE AB gobierna:
+
+- datos maestros federados;
+- métricas;
+- indicadores;
+- calidad;
+- certificación de datos;
+- snapshots;
+- reportes;
+- análisis;
+- diagnóstico;
+- mejora continua.
+
+Las aplicaciones de dominio conservan sus hechos y transacciones.
+
+##### 15.2 Entradas desde continuidad hacia AB
+
+AB puede consumir, bajo contrato:
+
+- eventos durables;
+- proyecciones autorizadas;
+- cortes de incidente;
+- servicios/procesos afectados;
+- tiempos observados;
+- decisiones;
+- desvíos;
+- recuperación;
+- ejercicios;
+- acciones posteriores;
+- referencias de evidencia;
+- métricas de readiness.
+
+##### 15.3 Salidas desde AB hacia continuidad
+
+AB puede aportar:
+
+- métricas versionadas;
+- calidad/frescura;
+- cobertura;
+- comparativos;
+- tendencias;
+- indicadores;
+- anomalías;
+- análisis;
+- resultados de eficacia;
+- snapshots reproducibles;
+- deuda de datos o evidencia.
+
+##### 15.4 Prohibiciones
+
+AB no puede:
+
+- declarar un incidente;
+- activar continuidad por superar una métrica;
+- escribir el estado privado de un proceso;
+- convertir una proyección en maestro;
+- convertir correlación en causalidad;
+- publicar una cifra sin calidad/frescura suficiente como si fuera actual;
+- cerrar una acción por observar una mejora sin el método de eficacia aplicable.
+
+##### 15.5 Uso durante incidentes
+
+Las métricas pueden apoyar:
+
+- evaluación de impacto;
+- seguimiento de MBCO/RTO/MTPD;
+- detección de tendencias;
+- priorización informada;
+- revisión posterior.
+
+La decisión permanece en el contrato de continuidad correspondiente.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 16. Contrato con BLOQUE E4
+
+##### 16.1 Autoridad conservada
+
+E4 contiene capacidades técnicas compartidas y no adquiere propiedad del proceso consumidor.
+
+El inventario vigente conserva diez identidades:
+
+1. orquestación genérica de trabajos asíncronos;
+2. entrega transaccional de eventos y outbox;
+3. impresión centralizada;
+4. notificaciones y alertas;
+5. generación de documentos;
+6. custodia de archivos y documentos originales;
+7. evidencia transaccional;
+8. integraciones externas y webhooks;
+9. programación y automatizaciones recurrentes;
+10. monitoreo y heartbeat de workers.
+
+##### 16.2 Entrada de continuidad hacia E4
+
+Cuando una capacidad E4 sea aplicable, continuidad o una aplicación propietaria puede emitir una solicitud conforme al contrato propietario para:
+
+- entregar una notificación;
+- transportar un evento;
+- ejecutar un trabajo;
+- gestionar una impresión;
+- generar o custodiar un documento;
+- registrar evidencia;
+- programar una ejecución;
+- interactuar con una frontera externa;
+- observar un worker.
+
+La solicitud no entrega autoridad empresarial al servicio transversal.
+
+##### 16.3 Salida desde E4
+
+E4 devuelve estados técnicos verdaderos, por ejemplo:
+
+- aceptado;
+- en proceso;
+- entregado técnicamente;
+- rechazado;
+- fallido;
+- pendiente;
+- duplicado reconocido;
+- resultado desconocido;
+- requerido para reconciliación;
+
+según el contrato específico existente.
+
+Esos estados no se convierten en éxito empresarial por traducción genérica.
+
+##### 16.4 Fallo de E4
+
+La degradación de un servicio transversal:
+
+- se correlaciona con los servicios BIA que dependan realmente de él;
+- no propaga indisponibilidad por pertenecer a E4;
+- conserva trabajo pendiente;
+- aísla consumidoras cuando corresponda;
+- evita confirmar trabajo que no se completó;
+- respeta la estrategia de contingencia del proceso consumidor.
+
+##### 16.5 Ruta prioritaria vigente
+
+La ruta prioritaria vigente conserva `QUEUE_CONDITIONAL` como grupo no aplicable.
+
+CONT-INT-002:
+
+- no cambia esa decisión;
+- no activa una cola por el solo hecho de definir la frontera E4;
+- conserva el contrato global de E4 para otras capacidades y futuros alcances autorizados;
+- no interpreta la no aplicabilidad de la cola en esta instancia como eliminación de la arquitectura E4.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 17. Contrato con BLOQUE E5
+
+##### 17.1 Autoridad conservada
+
+E5 planifica, antes de implementación:
+
+- paquete;
+- archivos previstos;
+- pruebas;
+- readiness;
+- cutover;
+- piloto;
+- hypercare;
+- suspensión;
+- rollback;
+- evidencia;
+- cierre y handoff.
+
+E5 no produce la evidencia real de una implementación que todavía no ocurrió.
+
+##### 17.2 Entradas de continuidad hacia E5
+
+Todo paquete que afecte continuidad deberá recibir, cuando aplique:
+
+- servicios BIA afectados;
+- MBCO/MTPD/RTO/RPO;
+- dependencias;
+- modos de degradación;
+- estrategia de contingencia;
+- runbooks;
+- autoridad y segregación;
+- respaldo/restore;
+- criterios de suspensión;
+- rollback;
+- comunicaciones;
+- monitoreo;
+- reconciliación;
+- escenarios de prueba;
+- requisitos de prueba aplicables.
+
+##### 17.3 Salidas E5 hacia continuidad
+
+E5 entrega diseños aprobados de:
+
+- readiness checklist;
+- condiciones de entrada;
+- riesgo aceptado y condiciones de suspensión;
+- cutover;
+- convivencia;
+- controles contra doble registro/doble efecto;
+- conciliación durante piloto;
+- métricas;
+- hypercare;
+- retirada de contingencias temporales;
+- transferencia a soporte.
+
+##### 17.4 Frontera de fase
+
+```text
+PLAN E5 APROBADO
+≠ IMPLEMENTACIÓN FÍSICA
+```
+
+La evidencia real pertenece a las tareas ejecutoras posteriores ya asignadas.
+
+##### 17.5 Estado vigente
+
+En la ruta prioritaria actual:
+
+- `CONDITIONAL_DESIGN_ARTIFACTS` está aprobada;
+- `CONDITIONAL_IMPLEMENTATION_SCOPE` permanece `NO INICIADA`;
+- la ejecución condicional permanece no iniciada.
+
+CONT-INT-002 no cambia esos estados.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 18. Contrato con BLOQUE T
+
+##### 18.1 Autoridad conservada
+
+BLOQUE T conserva:
+
+- pruebas de paquetes;
+- release y versionado;
+- compatibilidad;
+- consumer tests;
+- rollback;
+- automatización;
+- evidencia;
+- gates;
+- despliegue;
+- readiness ejecutado;
+- piloto;
+- hypercare;
+- estabilización.
+
+##### 18.2 Entrada de continuidad hacia T
+
+Un cambio o paquete con impacto de continuidad deberá transportar, mediante sus artefactos propietarios:
+
+- alcance;
+- consumidores;
+- dependencias;
+- escenarios de degradación;
+- requisitos aplicables;
+- criterios de aceptación;
+- señales pre/durante/post;
+- condición de rollback;
+- evidencia esperada;
+- restricciones protectoras;
+- condición de suspensión.
+
+##### 18.3 Salida de T hacia continuidad
+
+T puede devolver:
+
+- build;
+- pruebas;
+- compatibilidad;
+- release;
+- despliegue;
+- resultado de rollback;
+- estado del piloto;
+- incidencias;
+- evidencia;
+- métricas técnicas;
+- estabilización;
+- transferencia.
+
+##### 18.4 No equivalencias
+
+```text
+BUILD EXITOSO
+≠ COMPATIBILIDAD COMPLETA
+```
+
+```text
+DEPLOY EXITOSO
+≠ SERVICIO EMPRESARIAL RECUPERADO
+```
+
+```text
+ROLLBACK EJECUTADO
+≠ INCIDENTE CERRADO
+```
+
+```text
+PIPELINE VERDE
+≠ READINESS DE CONTINUIDAD
+```
+
+##### 18.5 Incidente durante implementación
+
+Si una ejecución genera o descubre una afectación material:
+
+- T conserva el expediente de ejecución;
+- VISO/BLOQUE Z conservan el expediente tecnológico;
+- continuidad evalúa el impacto empresarial;
+- cada expediente mantiene su criterio de cierre;
+- la corrección no se disfraza de una prueba exitosa posterior.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 19. Contrato con BLOQUE U
+
+##### 19.1 Autoridad conservada
+
+U ejecuta certificación transversal después de que existan las pruebas y evidencias de los paquetes.
+
+Puede ejecutar:
+
+- regresión automatizada transversal;
+- E2E entre aplicaciones;
+- seguridad;
+- funcional;
+- operación;
+- experiencia;
+- pilotos con usuarios reales;
+- validación final de requisitos de prueba.
+
+##### 19.2 Entradas desde continuidad hacia U
+
+Cuando un alcance incluya continuidad, U debe recibir:
+
+- escenarios;
+- servicios/procesos;
+- roles;
+- sedes/contextos;
+- estados degradados;
+- contingencias;
+- recuperación;
+- autorización;
+- evidencia esperada;
+- criterios de cierre;
+- requisitos aplicables;
+- resultados previos de paquete.
+
+##### 19.3 Salidas U hacia continuidad
+
+U puede producir:
+
+- resultado de certificación;
+- incumplimientos;
+- evidencia;
+- defectos;
+- regresiones;
+- incompatibilidades;
+- hallazgos de experiencia;
+- bloqueo de certificación;
+- necesidad de corrección.
+
+##### 19.4 Límites
+
+U:
+
+- puede rechazar una certificación;
+- no activa continuidad;
+- no modifica el estado empresarial para hacer pasar una prueba;
+- no reemplaza readiness, cutover, piloto o hypercare;
+- no sustituye al propietario funcional en la validación del resultado recuperado;
+- no convierte evidencia simulada en evidencia de incidente real.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 20. Contrato con BLOQUE X
+
+##### 20.1 Autoridad conservada
+
+X gobierna documentalmente:
+
+- catálogo de eventos;
+- productoras;
+- consumidoras;
+- contratos;
+- integraciones internas/externas;
+- identidad técnica;
+- idempotencia;
+- retry;
+- compensación;
+- auditoría;
+- handoffs;
+- prohibición de escritura cruzada.
+
+##### 20.2 Uso por continuidad
+
+Continuidad reutiliza los contratos X cuando:
+
+- un hecho durable necesita propagarse;
+- una aplicación debe consumir un estado propietario;
+- una acción debe solicitarse al dominio propietario;
+- un handoff cruza aplicaciones;
+- existe retry o resultado desconocido;
+- una compensación debe solicitarse;
+- una dependencia necesita aislamiento;
+- un evento o proyección debe correlacionarse con un incidente.
+
+##### 20.3 Eventos de continuidad
+
+CONT-INT-002 no crea un catálogo paralelo de eventos.
+
+Un health check, heartbeat, log, alerta o click:
+
+- no se convierte en evento empresarial por pertenecer a un incidente;
+- puede permanecer observación técnica;
+- solo un hecho durable que cumpla el contrato empresarial puede usar el catálogo de eventos vigente.
+
+##### 20.4 Productor y consumidor
+
+1. la productora empresarial permanece la propietaria del proceso;
+2. SHELL no se vuelve productora por transportar;
+3. infraestructura no se vuelve productora por publicar físicamente;
+4. consumir un evento no concede permiso;
+5. una consumidora no escribe el estado privado de la productora;
+6. eventos relacionados conservan correlación y causalidad sin reetiquetar productora.
+
+##### 20.5 Idempotencia y retry
+
+Las operaciones reintentables conservan:
+
+- identidad estable;
+- contenido lógico;
+- versión;
+- autorización vigente;
+- resultado;
+- presupuesto de retry aplicable;
+- reconciliación cuando exista incertidumbre.
+
+Un incidente de continuidad no reinicia el presupuesto ni autoriza repetir un efecto confirmado.
+
+##### 20.6 Aislamiento
+
+Circuit breaking, bulkheads u otros mecanismos de aislamiento:
+
+- protegen contra cascadas cuando corresponda;
+- no pierden ni confirman trabajo por abrir un circuito;
+- conservan consumidoras y criticidades separadas;
+- no deciden por sí solos la activación empresarial.
+
+##### 20.7 Replay
+
+El replay y backfill detallados permanecen en `CONT-INT-004` y en los contratos X aplicables.
+
+Esta tarea solo exige conservar:
+
+- identidad;
+- procedencia;
+- audiencia;
+- autorización;
+- correlación;
+- trabajo pendiente.
+
+**Estado contractual:** `ESPECIFICADO`.
+
+---
+
+#### 21. Matriz consolidada de las once fronteras
+
+| Frontera | Autoridad que conserva                                                     | Continuidad consume                                      | Continuidad entrega/solicita                             | Equivalencia prohibida principal        | Estado         |
+| -------- | -------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------- | -------------- |
+| SHELL    | identidad, contexto, acceso, navegación y handoff                          | actor, app, contexto, decisión de acceso, handoff        | proyección mínima de incidente/modo y acción pendiente   | visibilidad = autorización              | `ESPECIFICADO` |
+| VISO     | expediente `VPROC-0062` y expedientes administrativos/tecnológicos propios | decisiones, estados, referencias, validaciones           | señales, confirmaciones, evidencia, pendientes           | registro = aprobación                   | `ESPECIFICADO` |
+| ANIMA    | experiencia personal del trabajador                                        | entrega, respuesta, reporte, confirmación contextual     | instrucción, comunicación, acción personal autorizada    | mensaje = cambio de estado              | `ESPECIFICADO` |
+| Z        | servicios, health, incidentes y recuperación técnica                       | health, incidente técnico, dependencia, restore/recovery | diagnóstico, aislamiento, restore/failover autorizados   | recovery técnico = recovery empresarial | `ESPECIFICADO` |
+| AA       | información, privacidad, retención, hold, custodia y evidencia             | evidencia, clasificación, restricciones, preservación    | referencias de incidente/hecho y necesidad de custodia   | evidencia = estado empresarial          | `ESPECIFICADO` |
+| AB       | maestros, métricas, calidad, snapshots y analítica                         | indicadores, calidad, cobertura, eficacia                | eventos/proyecciones/cortes autorizados                  | métrica = decisión                      | `ESPECIFICADO` |
+| E4       | capacidad técnica compartida                                               | estados de job/entrega/cola/evidencia                    | solicitudes técnicas conforme al propietario             | entrega técnica = efecto empresarial    | `ESPECIFICADO` |
+| E5       | planificación de implementación                                            | readiness/cutover/hypercare diseñados                    | continuidad, contingencia, rollback y pruebas requeridas | plan = implementación                   | `ESPECIFICADO` |
+| T        | pruebas, release, deploy, rollback y evidencia                             | resultados de ejecución                                  | escenarios, gates y criterios                            | deploy = recuperación                   | `ESPECIFICADO` |
+| U        | certificación transversal                                                  | certificación, fallos y evidencia                        | escenarios y criterios de continuidad                    | certificación = mutación productiva     | `ESPECIFICADO` |
+| X        | contratos, eventos, productores, consumidores, retry y handoff             | eventos/estados/resultados contractuales                 | acciones y hechos por contratos propietarios             | transporte = autoridad                  | `ESPECIFICADO` |
+
+Reconciliación:
+
+- fronteras esperadas: **11**;
+- fronteras materializadas: **11**;
+- fronteras faltantes: **0**;
+- fronteras duplicadas: **0**;
+- nuevas fuentes de verdad: **0**;
+- nuevos transportes universales: **0**;
+- nuevos permisos: **0**;
+- nuevos estados de continuidad: **0**.
+
+---
+
+#### 22. Matriz de participación por fase del incidente
+
+| Fase                 | VISO                         | SHELL / ANIMA                    | Z                                             | AA                                     | AB                      | E4                            | E5 / T                                                 | U                                        | X                                 |
+| -------------------- | ---------------------------- | -------------------------------- | --------------------------------------------- | -------------------------------------- | ----------------------- | ----------------------------- | ------------------------------------------------------ | ---------------------------------------- | --------------------------------- |
+| señal/evaluación     | correlaciona expediente      | presenta/reportan según contexto | aporta observaciones técnicas                 | preserva evidencia cuando aplique      | aporta métricas/calidad | transporta señales aplicables | aporta referencia de cambio/deploy si existe           | no ejecuta por incidente ordinario       | conserva contrato/correlación     |
+| declaración          | registra decisión autorizada | presenta estado autorizado       | aporta evidencia técnica                      | preserva decisión/evidencia            | no declara              | no declara                    | no declara                                             | no declara                               | no declara                        |
+| activación           | registra alcance y decisión  | presenta instrucciones           | ejecuta solo acciones autorizadas             | protege información                    | mide sin decidir        | entrega capacidades técnicas  | ejecuta únicamente si existe cambio/paquete autorizado | no sustituye activación                  | transporta sin conceder autoridad |
+| contingencia         | conserva estado y pendientes | guía/reportan                    | soporta modo técnico mínimo                   | protege copias/evidencia               | vigila calidad/impacto  | ejecuta servicios aplicables  | E5 conserva plan; T ejecuta solo si corresponde        | puede probar en ejercicio autorizado     | conserva idempotencia/handoff     |
+| recuperación         | correlaciona estados         | comunica/recoge validación       | restaura/recupera técnicamente                | valida evidencia/documentos aplicables | mide recuperación       | entrega trabajos técnicos     | T aporta deploy/rollback si aplica                     | certifica cuando corresponde             | conserva contratos                |
+| validación funcional | registra confirmaciones      | aporta feedback contextual       | aporta health técnico                         | aporta integridad/evidencia            | aporta métricas         | aporta delivery status        | aporta evidencia técnica                               | ejecuta validación transversal posterior | aporta trazabilidad               |
+| cierre               | registra decisión autorizada | comunica cierre si aplica        | cierra expediente técnico por criterio propio | conserva expediente/evidencia          | conserva medición       | no cierra por entrega         | T/E5 cierran sus ciclos propios                        | certificación no sustituye cierre        | no cierra por evento              |
+
+Ninguna columna sustituye al propietario funcional de cada proceso afectado.
+
+---
+
+#### 23. Flujo material — falla tecnológica que amenaza continuidad
+
+```text
+SEÑAL TÉCNICA
+→ BLOQUE Z normaliza evidencia y health
+→ VISO conserva el incidente tecnológico cuando corresponda
+→ CONT-INT-001 proyecta servicio/proceso/dependencia afectados
+→ autoridad de continuidad evalúa declaración y activación
+→ VISO registra la decisión autorizada
+→ SHELL/ANIMA presentan contexto e instrucciones autorizadas
+→ E4 entrega capacidades técnicas compartidas cuando apliquen
+→ X preserva contratos, idempotencia y correlación
+→ Z ejecuta recuperación técnica autorizada
+→ aplicaciones propietarias validan sus resultados
+→ AA conserva evidencia y restricciones
+→ AB mide impacto, recuperación y eficacia
+→ VISO conserva pendientes y estado empresarial
+```
+
+Si existe código, configuración o despliegue como parte de la recuperación:
+
+```text
+CAMBIO AUTORIZADO
+→ E5 aporta plan/readiness/cutover/hypercare aplicables
+→ T ejecuta pruebas/deploy/rollback conforme a su ciclo
+→ evidencia retorna a los expedientes correlacionados
+```
+
+U interviene en certificación transversal, ejercicio o puerta integral cuando corresponda; no reemplaza el ciclo operativo del incidente.
+
+---
+
+#### 24. Flujo material — aplicación saludable con negocio todavía no recuperado
+
+```text
+APLICACIÓN → HEALTHY
+```
+
+no permite inferir:
+
+```text
+SERVICIO BIA → RECUPERADO
+INCIDENTE → CERRABLE
+PENDIENTES → CERO
+DATOS → CONCILIADOS
+COMUNICACIONES → COMPLETAS
+EVIDENCIA → COMPLETA
+```
+
+El cierre exige las validaciones ya definidas por el dominio de continuidad.
+
+SHELL puede navegar.
+ANIMA puede comunicar.
+Z puede confirmar health técnico.
+E4 puede haber drenado su trabajo.
+T puede haber desplegado.
+AB puede mostrar métricas normales.
+
+Aun así, el proceso propietario puede conservar trabajo pendiente o efectos por reconciliar.
+
+---
+
+#### 25. Flujo material — modo degradado y comunicación
+
+```text
+DECISIÓN DE MODO DEGRADADO AUTORIZADA
+→ VISO registra alcance y vigencia
+→ SHELL presenta estado contextual cuando aplique
+→ ANIMA presenta instrucción al trabajador cuando aplique
+→ E4 transporta notificación/artefacto cuando el servicio aplicable exista
+→ AA aplica clasificación, minimización y retención
+→ X conserva correlación y contratos
+→ AB observa resultado sin ejecutar cambios
+```
+
+Un ACK de canal solo actualiza el contrato de comunicación.
+
+---
+
+#### 26. Flujo material — ejercicio de continuidad
+
+```text
+ESCENARIO APROBADO
+→ VISO abre el expediente de ejercicio aplicable
+→ SHELL/ANIMA presentan superficies de simulación cuando existan
+→ Z aporta simulación técnica autorizada
+→ E4 usa canales/servicios de prueba cuando corresponda
+→ AA preserva evidencia del ejercicio
+→ AB captura métricas y tiempos
+→ T aporta evidencia de ambientes/paquetes cuando corresponda
+→ U ejecuta certificación transversal cuando sea la etapa aplicable
+→ acciones posteriores conservan propietario y eficacia
+```
+
+Reglas:
+
+- ejercicio no concede autoridad real;
+- señal simulada no dispara efecto productivo;
+- aprobación simulada no es aprobación real;
+- resultado simulado no se registra como recovery real;
+- evidencia de ejercicio permanece identificada como tal.
+
+---
+
+#### 27. Estados de entrega y resultado
+
+Cuando una frontera entregue trabajo asíncrono o técnico, debe conservar el estado verdadero permitido por su contrato.
+
+La capa de continuidad no colapsa estos conceptos:
+
+```text
+SOLICITADO
+ACEPTADO TÉCNICAMENTE
+EN PROCESO
+ENTREGADO TÉCNICAMENTE
+RESULTADO CONFIRMADO
+RESULTADO DESCONOCIDO
+RECHAZADO
+FALLIDO
+PENDIENTE DE RECONCILIACIÓN
+```
+
+El vocabulario físico exacto pertenece al contrato de cada servicio.
+
+La regla transversal es que ninguna capa traduzca un estado intermedio a éxito empresarial.
+
+---
+
+#### 28. Fallos parciales
+
+Cada frontera debe poder representar, conforme a su contrato propietario:
+
+- indisponibilidad;
+- degradación;
+- timeout;
+- rechazo;
+- autorización denegada;
+- conflicto;
+- duplicado reconocido;
+- evidencia contradictoria;
+- información obsoleta;
+- resultado desconocido;
+- trabajo pendiente.
+
+Reglas:
+
+1. un fallo parcial no se presenta como éxito total;
+2. una recuperación parcial no cierra el incidente;
+3. una frontera no corrige directamente el estado privado de otra;
+4. una operación desconocida se reconcilia antes de repetir un efecto inseguro;
+5. el error de una consumidora no revierte el hecho durable de la productora;
+6. el fallo de transporte no convierte la fuente de verdad en la cola o el canal;
+7. la incertidumbre se conserva como incertidumbre.
+
+---
+
+#### 29. Compatibilidad y versionado
+
+Los contratos de continuidad entre bloques deben:
+
+- identificar versión cuando el contrato subyacente lo requiera;
+- conservar compatibilidad con consumidores vigentes;
+- permitir adopción independiente cuando el contrato lo soporte;
+- tratar cambios incompatibles mediante versión mayor o mecanismo propietario equivalente;
+- conservar una ventana de transición cuando sea necesaria;
+- evitar un despliegue simultáneo forzado de todo Vento OS;
+- mantener rollback hacia una combinación soportada;
+- no revivir permisos, eventos o efectos ya retirados mediante rollback.
+
+CONT-INT-002 no fija una versión física nueva ni crea un paquete compartido.
+
+---
+
+#### 30. Idempotencia y resultados desconocidos
+
+Cuando una frontera pueda producir un efecto:
+
+1. la identidad lógica se fija antes del primer envío;
+2. el mismo identificador y mismo contenido no producen un segundo efecto;
+3. contenido incompatible bajo la misma identidad produce conflicto;
+4. retry conserva el contexto y la autorización vigente;
+5. timeout posterior a posible efecto queda como resultado desconocido;
+6. resultado desconocido exige consulta/reconciliación antes de un retry que pueda duplicar;
+7. retry no equivale a replay;
+8. compensación requiere contrato propietario;
+9. agotar retry no ejecuta compensación por inferencia;
+10. un incidente de continuidad no amplía el presupuesto ni la autoridad del retry.
+
+La definición física de replay y reincorporación permanece en `CONT-INT-004`.
+
+---
+
+#### 31. Comunicaciones y notificaciones
+
+Las comunicaciones de continuidad conservan:
+
+- contenido aprobado;
+- audiencia;
+- canal;
+- vigencia;
+- sensibilidad;
+- referencia al incidente;
+- emisor efectivo;
+- estado de entrega;
+- acknowledgement cuando corresponda.
+
+Separaciones:
+
+```text
+MENSAJE PREPARADO
+≠ MENSAJE APROBADO
+≠ MENSAJE EMITIDO
+≠ MENSAJE ENTREGADO
+≠ MENSAJE LEÍDO
+≠ MENSAJE COMPRENDIDO
+≠ ACCIÓN EJECUTADA
+```
+
+SHELL, ANIMA y E4 pueden participar en presentación o entrega sin recibir autoridad sobre el contenido material.
+
+---
+
+#### 32. Evidencia transversal
+
+La evidencia producida por una frontera debe poder reconstruir:
+
+- incidente o ejercicio relacionado;
+- fuente;
+- actor o principal;
+- objeto/capacidad;
+- acción;
+- tiempo;
+- versión;
+- resultado;
+- correlación;
+- procedencia;
+- restricciones de acceso y ciclo de vida aplicables.
+
+Reglas:
+
+1. log técnico no sustituye evidencia empresarial;
+2. captura de pantalla no sustituye el hecho propietario;
+3. hash no demuestra por sí solo contenido correcto;
+4. delivery receipt no demuestra resultado empresarial;
+5. evidencia no se edita para corregir la historia;
+6. evidencia sensible se minimiza y referencia;
+7. AA gobierna el ciclo de información aplicable;
+8. la aplicación propietaria conserva el hecho demostrado.
+
+---
+
+#### 33. Métricas, alertas y analítica
+
+AB puede calcular y presentar:
+
+- tiempo de detección;
+- tiempo de declaración;
+- tiempo de activación;
+- duración de degradación;
+- tiempos de recuperación;
+- cumplimiento observado frente a objetivos;
+- backlog;
+- incidencias;
+- cobertura;
+- eficacia de acciones;
+- readiness;
+- calidad y frescura de evidencia;
+
+cuando existan definiciones y datos válidos.
+
+Las métricas:
+
+- no cambian severidad automáticamente;
+- no alteran el BIA por observación aislada;
+- no autorizan una acción;
+- no sustituyen evidencia fuente;
+- no confirman causalidad por correlación;
+- conservan versión, corte y calidad.
+
+---
+
+#### 34. Relación con servicios transversales E4
+
+Para cada servicio E4 que participe en una contingencia, el contrato debe preservar:
+
+- servicio transversal;
+- productor/solicitante;
+- consumidor/destino;
+- trabajo u operación;
+- idempotencia;
+- intento;
+- resultado;
+- pendiente;
+- evidencia;
+- estado de degradación;
+- relación con el incidente.
+
+La aplicación propietaria mantiene el resultado empresarial.
+
+Una cola, worker, notificación, impresión, documento o webhook no se convierte en propietario del proceso.
+
+---
+
+#### 35. Relación con implementación E5/T
+
+Antes de una implementación que pueda afectar continuidad, E5/T deben poder demostrar que el paquete ha considerado:
+
+- dependencias;
+- health y observabilidad;
+- degradación;
+- contingencia;
+- backup/restore;
+- rollback;
+- compatibilidad;
+- datos pendientes;
+- doble efecto;
+- conciliación;
+- soporte;
+- comunicación;
+- suspensión;
+- evidencia.
+
+Esta lista es una entrada de continuidad a sus contratos existentes; no crea una nueva puerta paralela.
+
+---
+
+#### 36. Relación con certificación U
+
+U recibe requisitos y evidencia ya producida.
+
+Para continuidad, una certificación integral debe poder distinguir:
+
+- diseño aprobado;
+- implementación;
+- prueba ejecutada;
+- evidencia;
+- resultado;
+- excepción;
+- deuda;
+- bloqueo;
+- readiness.
+
+Una prueba fallida impide declarar satisfecho el requisito aplicable, pero U no modifica el hecho de origen para obtener un resultado favorable.
+
+---
+
+#### 37. Relación con X
+
+Toda integración material deberá:
+
+- preservar productora y consumidora;
+- mantener autoridad separada del transporte;
+- conservar event/request/correlation/idempotency cuando apliquen;
+- aplicar minimización;
+- evitar escritura cruzada;
+- manejar out-of-order;
+- preservar eventos tardíos;
+- reconciliar resultado desconocido;
+- impedir cascadas cuando corresponda;
+- conservar auditabilidad.
+
+Continuidad no crea un canal especial que evite estas reglas.
+
+---
+
+#### 38. Seguridad y privacidad durante continuidad
+
+Una interrupción no autoriza:
+
+- compartir credenciales;
+- reutilizar tokens fuera de finalidad;
+- elevar privilegio por urgencia;
+- ampliar audiencia;
+- ignorar retención o hold;
+- copiar datos completos por conveniencia;
+- escribir con una cuenta técnica fuera de alcance;
+- deshabilitar controles protectores;
+- ocultar actor efectivo.
+
+Break-glass y acceso excepcional permanecen gobernados por `CONT-AUTH-002` y contratos de autorización aplicables.
+
+---
+
+#### 39. Estado de la ruta prioritaria
+
+Esta tarea se ejecuta dentro de la fase documental aprobada de la ruta prioritaria vigente.
+
+Se preserva:
+
+| Control                                | Estado vigente preservado                        |
+| -------------------------------------- | ------------------------------------------------ |
+| `CONDITIONAL_DESIGN_ARTIFACTS`         | `APROBADA`                                       |
+| `CONDITIONAL_IMPLEMENTATION_SCOPE`     | `NO INICIADA`                                    |
+| `CONDITIONAL_IMPLEMENTATION_EXECUTION` | `NO INICIADA`                                    |
+| `QUEUE_CONDITIONAL`                    | no aplicable en la instancia prioritaria vigente |
+
+La tarea no modifica `active-sequence.json`, la selección de la ruta ni sus grupos de implementación.
+
+---
+
+#### 40. Pendientes físicos y destinos exactos
+
+| Pendiente físico                               | Estado en CONT-INT-002 | Propietario ya asignado                         | Condición de salida                                                       |
+| ---------------------------------------------- | ---------------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| contratos compartidos físicos de SHELL         | `FUERA_DE_ALCANCE`     | tareas `SHELL-CON-*` aplicables                 | tipos/contratos materializados y probados sin copia divergente            |
+| bindings de health/telemetría                  | `FUERA_DE_ALCANCE`     | BLOQUE Z y alcance de implementación autorizado | fuentes, frescura y relaciones implementadas con evidencia                |
+| persistencia/servicios del expediente VISO     | `FUERA_DE_ALCANCE`     | VISO + fase de implementación propietaria       | expediente y acciones implementados contra contrato aprobado              |
+| experiencia ANIMA de contingencia/comunicación | `FUERA_DE_ALCANCE`     | ANIMA + paquete de implementación aplicable     | experiencia consume contrato sin mutar estado ajeno                       |
+| servicios físicos de AA/evidencia              | `FUERA_DE_ALCANCE`     | BLOQUE AA, EVID-ARC y fase propietaria          | custodia/evidencia implementadas y reconciliadas                          |
+| pipelines/modelos de AB                        | `FUERA_DE_ALCANCE`     | BLOQUE AB + E3/E4/E5 aplicables                 | ingestión/proyección materializada sin segunda fuente                     |
+| servicios transversales E4                     | `FUERA_DE_ALCANCE`     | tareas E4 propietarias                          | servicio aplicable implementado, observado y probado                      |
+| paquete/readiness/cutover/hypercare            | `FUERA_DE_ALCANCE`     | E5                                              | paquete concreto aprobado antes de ejecución                              |
+| test/release/deploy/rollback                   | `FUERA_DE_ALCANCE`     | `SHELL-CI-001` a `SHELL-CI-024` según etapa     | ejecución reproducible y evidencia por paquete                            |
+| certificación transversal                      | `FUERA_DE_ALCANCE`     | BLOQUE U                                        | alcance implementado llega a certificación con evidencia                  |
+| transporte/bindings de integración             | `FUERA_DE_ALCANCE`     | BLOQUE X + H/E3/E4/E5 según contrato            | binding físico respeta productor, consumidor, idempotencia y autorización |
+| proveedores y dependencias externas            | `FUERA_DE_ALCANCE`     | `CONT-INT-003`                                  | contrato externo materializado sin proveedor inventado                    |
+| replay/reincorporación/conciliación            | `FUERA_DE_ALCANCE`     | `CONT-INT-004`                                  | contrato de retorno normal materializado                                  |
+
+No queda una decisión física pendiente sin propietario y condición de salida.
+
+---
+
+#### 41. Prohibiciones transversales
+
+Queda prohibido:
+
+1. crear un segundo incidente de continuidad en otra superficie;
+2. convertir el ticket tecnológico en expediente de continuidad;
+3. convertir un dashboard en fuente del hecho;
+4. convertir una notificación en transición empresarial;
+5. convertir una cola en fuente de verdad;
+6. convertir un deploy en validación funcional;
+7. convertir una certificación en autorización;
+8. convertir un evento en comando;
+9. convertir health en cierre;
+10. convertir una métrica en activación;
+11. convertir una evidencia en decisión;
+12. convertir el plan E5 en implementación;
+13. usar una cuenta técnica como autoridad humana;
+14. escribir directamente el estado privado de otra propietaria;
+15. reintentar a ciegas un resultado desconocido;
+16. hacer replay dentro de esta tarea;
+17. inventar proveedor, endpoint, topic, tabla, cola, worker o broker;
+18. activar el grupo de colas de la ruta prioritaria por inferencia;
+19. crear una ruta de fallback no aprobada;
+20. borrar la historia de degradación después de recuperar;
+21. ocultar pendientes para declarar recuperación;
+22. presentar evidencia de ejercicio como evidencia productiva;
+23. presentar una capacidad documentada como implementada;
+24. presentar una capacidad implementada como validada sin evidencia;
+25. avanzar a `CONT-INT-003` dentro de esta tarea.
+
+---
+
+#### 42. Estados del resultado
+
+| Resultado                       | Estado                     |
+| ------------------------------- | -------------------------- |
+| contrato con SHELL              | `ESPECIFICADO`             |
+| contrato con VISO               | `ESPECIFICADO`             |
+| contrato con ANIMA              | `ESPECIFICADO`             |
+| contrato con BLOQUE Z           | `ESPECIFICADO`             |
+| contrato con BLOQUE AA          | `ESPECIFICADO`             |
+| contrato con BLOQUE AB          | `ESPECIFICADO`             |
+| contrato con E4                 | `ESPECIFICADO`             |
+| contrato con E5                 | `ESPECIFICADO`             |
+| contrato con T                  | `ESPECIFICADO`             |
+| contrato con U                  | `ESPECIFICADO`             |
+| contrato con X                  | `ESPECIFICADO`             |
+| implementación física           | `FUERA_DE_ALCANCE`         |
+| ejecución operativa             | `FUERA_DE_ALCANCE`         |
+| evidencia runtime               | `PENDIENTE_DE_EVIDENCIA`   |
+| cambios Supabase                | `NO_APLICA`                |
+| cambios de requisitos de prueba | `NO_APLICA` — cero cambios |
+
+---
+
+#### 43. Handoff hacia CONT-INT-003
+
+`CONT-INT-003` permanece responsable de los contratos con:
+
+- Supabase;
+- nube;
+- energía;
+- ISP;
+- pagos;
+- mensajería;
+- transporte;
+- proveedores críticos.
+
+CONT-INT-002 no selecciona ni inventa:
+
+- proveedor;
+- SLA;
+- endpoint;
+- credencial;
+- región;
+- plan;
+- contrato;
+- alternativa;
+- failover externo.
+
+El handoff entrega únicamente:
+
+- contexto de incidente;
+- dependencia;
+- health/degradación;
+- autoridad;
+- correlación;
+- evidencia;
+- necesidades de los bloques internos.
+
+---
+
+#### 44. Handoff hacia CONT-INT-004
+
+`CONT-INT-004` permanece responsable de:
+
+- captura;
+- replay;
+- idempotencia de reincorporación;
+- conflictos;
+- deduplicación;
+- conciliación;
+- retorno al servicio normal.
+
+CONT-INT-002 deja disponibles para ese contrato:
+
+- incident_ref;
+- servicio/proceso;
+- aplicación;
+- dependencia;
+- trabajo pendiente;
+- correlación;
+- operación/idempotencia cuando exista;
+- estado de cada frontera;
+- evidencia;
+- versión;
+- actor/contexto;
+- resultado conocido/desconocido.
+
+No ejecuta replay ni conciliación.
+
+---
+
+#### 45. Cobertura vigente de prueba
+
+La conducta definida por esta tarea ya está protegida por requisitos vigentes.
+
+En particular:
+
+- `TREQ-CONT-002` asigna responsabilidad expresa a `CONT-INT-002` y protege separación de expedientes, clasificación, autoridad, activación, comunicación, recuperación y cierre;
+- `TREQ-INTEGRATION-003` protege idempotencia, retry y resultado recuperable;
+- `TREQ-INTEGRATION-004` protege reconstrucción de cadenas, disparadores, intentos, resultados, errores y efectos finales;
+- `TREQ-INTEGRATION-005` protege handoff entre aplicaciones;
+- `TREQ-INTEGRATION-006` protege captura única y ausencia de fuentes competidoras;
+- `TREQ-INTEGRATION-020` protege el contrato tecnológico transversal;
+- `TREQ-INTEGRATION-021` protege información, documentos y evidencia;
+- `TREQ-INTEGRATION-022` protege analítica, maestros, proyecciones y no escritura desde capas derivadas;
+- `TREQ-INTEGRATION-023` asigna expresamente responsabilidad a `CONT-INT-001` a `CONT-INT-004` y cubre E3, E4, E5, T, U, X, Z, AA y AB;
+- los requisitos posteriores del mini-bloque de eventos protegen productor/consumidor, autorización independiente, retry, circuit breaking, bulkheads, aislamiento y salidas explícitas de trabajo.
+
+CONT-INT-002 especializa documentalmente esas protecciones para sus once fronteras. No amplía el alcance normativo de los requisitos existentes.
+
+---
+
+#### 46. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: los comportamientos verificables materializados por esta tarea ya cuentan con cobertura vigente para separación de incidentes, autoridad, handoff, fuente única, idempotencia, resultados desconocidos, interoperabilidad tecnológica, información/evidencia, analítica y continuidad transversal. La tarea define la distribución exacta de esas obligaciones entre once fronteras sin introducir un comportamiento ejecutable nuevo, una nueva identidad, un nuevo estado, un nuevo permiso, un nuevo transporte ni un nuevo efecto.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 47. Criterios de aceptación
+
+1. existen exactamente once fronteras;
+2. las once fronteras del título están materializadas;
+3. no existe frontera faltante;
+4. no existe frontera duplicada;
+5. SHELL conserva cero procesos empresariales propietarios;
+6. SHELL conserva identidad, contexto, navegación y handoff;
+7. SHELL no declara continuidad;
+8. VISO conserva `VPROC-0062`;
+9. VISO registra decisiones sin convertirse en aprobador por persistirlas;
+10. incidente tecnológico e incidente de continuidad permanecen separados;
+11. ANIMA conserva experiencia personal y comunicación;
+12. entrega/lectura/ack en ANIMA no cambia el estado empresarial;
+13. Z conserva health e incidente tecnológico;
+14. recuperación técnica de Z no equivale a recuperación empresarial;
+15. AA conserva privacidad, retención, hold, custodia y evidencia;
+16. evidencia no equivale a estado empresarial;
+17. AB conserva métricas, calidad y analítica;
+18. métrica no equivale a decisión;
+19. E4 conserva capacidad técnica compartida sin propiedad del proceso;
+20. entrega E4 no equivale a efecto empresarial;
+21. las diez identidades E4 permanecen reconocidas;
+22. la no aplicabilidad de `QUEUE_CONDITIONAL` en la ruta prioritaria vigente se conserva;
+23. E5 conserva planificación antes de implementación;
+24. plan E5 no equivale a implementación;
+25. el alcance de implementación condicional permanece no iniciado;
+26. T conserva pruebas, release, deploy y rollback;
+27. deploy no equivale a recuperación;
+28. rollback no equivale a cierre;
+29. U conserva certificación transversal;
+30. U puede rechazar certificación sin mutar el hecho fuente;
+31. U no sustituye readiness/cutover/hypercare;
+32. X conserva contratos, eventos, productor, consumidor, retry y handoff;
+33. no se crea catálogo de eventos paralelo;
+34. health check no se publica como evento empresarial por inferencia;
+35. evento no concede permiso;
+36. consumidora no escribe directamente a productora;
+37. se conserva el contexto mínimo de continuidad;
+38. campos faltantes no se completan mediante supuestos favorables;
+39. se conserva idempotencia cuando existe riesgo de repetición;
+40. resultado desconocido exige reconciliación antes de repetir un efecto inseguro;
+41. una activación de continuidad no amplía autoridad de retry;
+42. se preserva correlación sin fusionar expedientes;
+43. se preserva evidencia sin duplicar fuentes;
+44. se preserva minimización durante incidentes;
+45. se preservan restricciones de autorización durante incidentes;
+46. la recuperación de una frontera no cierra automáticamente continuidad;
+47. el cierre exige validación de propietarios y pendientes tratados;
+48. no se inventa endpoint;
+49. no se inventa topic;
+50. no se inventa tabla;
+51. no se inventa cola;
+52. no se inventa worker;
+53. no se inventa proveedor;
+54. no se inventa SLA;
+55. no se inventa alternativa;
+56. no se ejecuta Supabase;
+57. no se ejecuta código;
+58. no se ejecuta deploy;
+59. no se ejecuta replay;
+60. no se modifica 04A;
+61. se crean cero requisitos de prueba;
+62. se modifican cero requisitos de prueba;
+63. cada pendiente físico tiene propietario y condición de salida;
+64. `CONT-INT-003` permanece reservada.
+
+---
+
+#### 48. Resultado de la tarea
+
+`CONT-INT-002` deja cerrada la semántica de interoperabilidad entre continuidad y las once superficies transversales requeridas.
+
+El resultado permite que una interrupción pueda correlacionar:
+
+```text
+IDENTIDAD / CONTEXTO
++
+EXPEDIENTE
++
+COMUNICACIÓN
++
+HEALTH TÉCNICO
++
+INFORMACIÓN Y EVIDENCIA
++
+MÉTRICAS
++
+SERVICIOS TRANSVERSALES
++
+READINESS / CUTOVER / HYPERCARE
++
+TEST / RELEASE / DEPLOY / ROLLBACK
++
+CERTIFICACIÓN
++
+CONTRATOS DE INTEGRACIÓN
+```
+
+sin convertir esa coordinación en:
+
+```text
+AUTORIDAD IMPLÍCITA
+FUENTE DE VERDAD PARALELA
+ESCRITURA CRUZADA
+ACTIVACIÓN AUTOMÁTICA
+RECUPERACIÓN EMPRESARIAL AUTOMÁTICA
+CIERRE AUTOMÁTICO
+IMPLEMENTACIÓN NO AUTORIZADA
+```
+
+La implementación física permanece fuera de esta tarea.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones`
+
+TAREA ACTUAL APROBADA
+
+`CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos`
+
+
 ### [ ] CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos
 ### [ ] CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal

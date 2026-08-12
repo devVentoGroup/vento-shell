@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **730** |
+| Tareas aprobadas | **731** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **864** |
+| Tareas no iniciadas | **863** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.80% (730/1594)** |
+| Porcentaje de completamiento | **45.86% (731/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones** |
-| Tarea actual | **CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X** |
+| Última tarea aprobada | **CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X** |
+| Tarea actual | **CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos** |
+| Siguiente tarea | **CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 154 de 157 aprobadas; CONT-INT-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 155 de 157 aprobadas; CONT-INT-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones |
-| Tarea actual | `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X — **NO INICIADA** |
-| Siguiente tarea | `CONT-INT-003` — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos |
+| Última aprobada | `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X |
+| Tarea actual | `CONT-INT-003` — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos — **NO INICIADA** |
+| Siguiente tarea | `CONT-INT-004` — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 154 DE 157 APROBADAS — ACTUAL CONT-INT-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 155 DE 157 APROBADAS — ACTUAL CONT-INT-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones
-        ↓
-TAREA ACTUAL
 CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 154 de 157 tareas aprobadas
+CARRIL NEXO — 155 de 157 tareas aprobadas
 ```
