@@ -4579,4 +4579,1222 @@ SIGUIENTE TAREA RESERVADA
 `INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones`
 
 
-### [ ] INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
+### ✅ INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase` — APROBADA
+**Tarea siguiente:** `INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra` — RESERVADA
+**Tipo de tarea:** documental; definición del contrato común mediante el cual SHELL y las aplicaciones consumen el contexto efectivo confirmado por los resolutores canónicos, incluyendo superficie compartida de consumo, semántica del snapshot, minimización por aplicación, navegación, caché, invalidación, handoff entre aplicaciones y reconciliación con la implementación observada, sin modificar código, tipos, RPC, RLS, migraciones, datos, Supabase ni configuración
+**Bloque:** X — Integraciones
+**Mini-bloque:** Contexto laboral
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca cómo SHELL y las aplicaciones de Vento OS deben consumir el contexto efectivo confirmado bajo `INT-WORK-004`, sin reconstruir por cuenta propia la programación, la asistencia, el rol operativo, el territorio o la autoridad.
+
+La regla cardinal queda:
+
+```text
+FUENTES PROPIETARIAS
+→ RESOLUCIÓN AUTORITATIVA DE CONTEXTO
+→ CONTRATO COMPARTIDO DE CONSUMO
+→ SHELL / APLICACIÓN
+→ PRESENTACIÓN, NAVEGACIÓN Y SOLICITUD DE ACCIÓN
+→ REVALIDACIÓN AUTORITATIVA ANTES DEL EFECTO
+```
+
+No:
+
+```text
+APLICACIÓN
+→ RECONSTRUYE TURNO + CHECK-IN + ROL + SEDE + ÁREA
+→ DECIDE AUTORIDAD LOCALMENTE
+```
+
+También se conserva expresamente:
+
+```text
+CONTEXTO RECIBIDO
+≠
+PERMISO UNIVERSAL
+```
+
+```text
+CONTEXTO EN CACHÉ
+≠
+AUTORIDAD FUTURA
+```
+
+```text
+NAVEGACIÓN HABILITADA
+≠
+MUTACIÓN AUTORIZADA
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-WORK-005` deja definido un contrato documental único de consumo transversal con los siguientes resultados materiales:
+
+1. `@vento/os-context` queda identificado como la frontera técnica compartida vigente que deberá converger con este contrato para las aplicaciones laborales internas que consuman contexto.
+2. `getEffectiveContext` queda identificado como la superficie compartida vigente de lectura de contexto efectivo.
+3. `hasEffectivePermission` queda identificado como la superficie compartida vigente para combinar permiso y contexto en una decisión de autorización, sin permitir que un booleano de contexto sustituya la autorización final.
+4. Se define la información lógica mínima que un snapshot de contexto debe transportar para ser consumible de forma segura.
+5. Se define qué información puede usar SHELL para estado, navegación y handoff sin convertir el shell en fuente de autoridad.
+6. Se define cómo cada aplicación consume únicamente el subconjunto necesario para su finalidad.
+7. Se materializa una decisión explícita para las diez aplicaciones canónicas.
+8. Se definen las reglas de caché, Realtime, offline, cambio de actor, cambio de aplicación e invalidación.
+9. Se define el contrato de traspaso entre aplicaciones sin transferir autoridad desde la aplicación emisora.
+10. Se reconcilia la implementación física observada y se asignan sus brechas a propietarios existentes con condiciones de salida.
+
+Balance documental:
+
+| Control                                                    |                        Resultado |
+| ---------------------------------------------------------- | -------------------------------: |
+| Aplicaciones canónicas evaluadas                           |                     **10 de 10** |
+| Aplicaciones faltantes                                     |                            **0** |
+| Aplicaciones duplicadas                                    |                            **0** |
+| Frontera compartida vigente identificada                   |      **1 — `@vento/os-context`** |
+| Superficie vigente de lectura identificada                 |    **1 — `getEffectiveContext`** |
+| Superficie vigente de autorización contextual identificada | **1 — `hasEffectivePermission`** |
+| Aplicación cliente excluida del paquete laboral normal     |                     **1 — PASS** |
+| Aplicación laboral con roadmap diferido                    |                     **1 — AURA** |
+| Nuevas definiciones normales de evento                     |                            **0** |
+| Cambios físicos                                            |                            **0** |
+| Requisitos de prueba creados o modificados                 |                            **0** |
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume y conserva sin redefinir las decisiones aprobadas en:
+
+- `INT-WORK-001`, con VISO como propietaria de la programación y la unidad `shift_id + revisión publicada`;
+- `INT-WORK-002`, con ANIMA como consumidora de presentación y sin propiedad sobre programación;
+- `INT-WORK-003`, con ANIMA como propietaria de asistencia y con hechos de asistencia confirmados como precondición de una sesión de check-in autoritativa;
+- `INT-WORK-004`, con Supabase y los resolutores canónicos como frontera de confirmación, invalidación y revalidación del contexto efectivo;
+- `TREQ-AUTH-001`, que exige permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-004`, que exige decisiones equivalentes entre evaluadores;
+- `TREQ-AUTH-008`, que separa capacidades administrativas de capacidades operativas dependientes de turno y check-in;
+- `TREQ-AUTH-009`, que exige sede y área efectivas deterministas;
+- `TREQ-AUTH-013`, que obliga a revalidar contexto requerido y recurso antes de una mutación;
+- `TREQ-AUTH-014`, que exige invalidación comprobable y reautorización de colas offline;
+- `TREQ-AUTH-015`, que exige evidencia correlacionable de las decisiones protegidas;
+- `TREQ-AUTH-016`, que exige revocación coordinada y evita autoridad residual;
+- `TREQ-INTEGRATION-005`, que obliga a revalidar autoridad en la aplicación receptora de un handoff;
+- `TREQ-INTEGRATION-006`, que prohíbe fuentes empresariales competidoras;
+- `TREQ-INTEGRATION-007`, que protege el contrato laboral único entre VISO, ANIMA, SHELL y Supabase.
+
+Nada de esta tarea transfiere a SHELL o a una aplicación consumidora la propiedad de programación, asistencia, identidad, territorio o autorización.
+
+---
+
+#### 4. Separación entre productores, resolutor y consumidoras
+
+La arquitectura documental queda separada en cuatro responsabilidades:
+
+```text
+VISO
+→ PRODUCE PROGRAMACIÓN PUBLICADA
+```
+
+```text
+ANIMA
+→ PRODUCE HECHOS DE ASISTENCIA
+```
+
+```text
+SUPABASE / RESOLUTORES CANÓNICOS
+→ CORRELACIONAN FUENTES
+→ CONFIRMAN / INVALIDAN CONTEXTO EFECTIVO
+```
+
+```text
+SHELL / APLICACIONES
+→ CONSUMEN CONTEXTO
+→ NO RECONSTRUYEN LAS FUENTES
+```
+
+Una aplicación consumidora puede iniciar una acción o presentar un estado contextual, pero no puede convertir sus lecturas locales en una nueva fuente empresarial.
+
+---
+
+#### 5. Unidad de consumo
+
+La unidad consumible es un **snapshot de contexto efectivo para una aplicación y un instante de resolución**, acompañado de suficiente identidad y versión para detectar incompatibilidad u obsolescencia.
+
+El snapshot no es:
+
+- una sesión universal;
+- un token de autoridad irrestricta;
+- una copia editable del turno;
+- una copia editable de la asistencia;
+- una selección de sede;
+- una preferencia de área;
+- una lista de permisos local;
+- el último check-in observado;
+- el último turno de una consulta;
+- una marca visual de “jornada activa”.
+
+Regla:
+
+```text
+SNAPSHOT DE CONTEXTO
+→ DESCRIBE EL CONTEXTO RESUELTO
+→ NO TRANSFIERE PROPIEDAD DE SUS FUENTES
+```
+
+---
+
+#### 6. Frontera compartida de consumo
+
+La implementación vigente ya contiene el paquete:
+
+```text
+@vento/os-context
+```
+
+`INT-WORK-005` lo adopta documentalmente como **frontera compartida que deberá converger** para el consumo de contexto en las aplicaciones laborales internas.
+
+Esta adopción no declara que su implementación actual ya satisfaga la totalidad de `INT-WORK-004`.
+
+El paquete compartido deberá cumplir simultáneamente:
+
+1. ofrecer una sola semántica de contexto por aplicación;
+2. conservar separadas identidad real, rol administrativo y rol operativo;
+3. consumir la resolución server-side y no reconstruirla en cliente;
+4. exponer suficiente información de identidad, versión y frescura;
+5. conservar separación entre contexto y autorización;
+6. evitar que `metadata`, flags o fallbacks locales amplíen autoridad;
+7. permitir a las aplicaciones diferenciar ausencia normal, bloqueo, contradicción e indisponibilidad cuando esa distinción sea necesaria;
+8. soportar invalidación y nueva resolución sin convertir la caché en fuente de verdad;
+9. preservar compatibilidad de consumidores mediante evolución versionada;
+10. mantener PASS fuera del consumo laboral normal mientras su identidad principal siga siendo de cliente.
+
+---
+
+#### 7. Superficie compartida de lectura
+
+La superficie vigente:
+
+```text
+getEffectiveContext
+```
+
+queda reconocida como la entrada compartida de lectura del snapshot contextual.
+
+Su semántica contractual es:
+
+```text
+APLICACIÓN IDENTIFICADA
++
+SESIÓN / PRINCIPAL RESOLUBLES
+→ RESOLUCIÓN SERVER-SIDE
+→ SNAPSHOT EFECTIVO O AUSENCIA / ERROR TIPABLE
+```
+
+No se permite que una aplicación sustituya esta frontera mediante una combinación local de:
+
+- `attendance_logs`;
+- `employee_shifts`;
+- `employees.role`;
+- `employee_settings`;
+- cookies de sede;
+- `navigation_role`;
+- último turno;
+- último check-in;
+- geolocalización;
+- estado React;
+- datos del dispositivo.
+
+Una aplicación puede consultar recursos de su dominio para su propia finalidad, pero no usarlos para crear un resolutor paralelo de contexto laboral.
+
+---
+
+#### 8. Superficie compartida de autorización contextual
+
+La superficie vigente:
+
+```text
+hasEffectivePermission
+```
+
+queda reconocida como la frontera compartida para solicitar una decisión de permiso que incorpore el contexto efectivo aplicable.
+
+La regla es:
+
+```text
+CONTEXTO
++
+PERMISO EXACTO
++
+MODALIDAD
++
+TERRITORIO
++
+RECURSO
++
+REGLAS SERVER-SIDE
+→ DECISIÓN
+```
+
+No:
+
+```text
+context.can_operate = true
+→ AUTORIZAR CUALQUIER ACCIÓN
+```
+
+`can_operate`, cuando exista como campo o proyección, puede expresar un estado resumido útil para experiencia o compatibilidad, pero no reemplaza la evaluación del permiso exacto ni sus prerrequisitos.
+
+---
+
+#### 9. Información lógica mínima del snapshot
+
+Sin prescribir nombres nuevos de propiedades físicas, el snapshot compartido deberá poder transportar o correlacionar, cuando aplique:
+
+| Información lógica                  | Obligación de consumo                                                                                                                              |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| procedencia contextual              | permite distinguir contexto real, dispositivo compartido, simulación o carril administrativo sin convertir la procedencia en autoridad por sí sola |
+| modo de sesión                      | diferencia actor humano y dispositivo compartido cuando corresponda                                                                                |
+| aplicación consumidora              | identifica la finalidad de la resolución                                                                                                           |
+| principal autenticado               | referencia suficiente para correlación                                                                                                             |
+| actor humano efectivo               | obligatorio cuando la acción requiera atribución humana                                                                                            |
+| rol administrativo real             | separado del rol operativo                                                                                                                         |
+| rol administrativo efectivo         | separado del rol operativo y sujeto a sus contratos                                                                                                |
+| rol operativo efectivo              | únicamente desde fuente autoritativa                                                                                                               |
+| sede efectiva                       | territorio exacto aplicable                                                                                                                        |
+| área efectiva                       | cuando corresponda, sin interpretar ausencia como wildcard                                                                                         |
+| `shift_id`                          | cuando el carril dependa de programación                                                                                                           |
+| identidad de revisión publicada     | obligatoria cuando el carril depende del turno; no puede reducirse a `published_at`                                                                |
+| referencia de sesión de check-in    | cuando la modalidad dependa de presencia                                                                                                           |
+| estado de vigencia de esa sesión    | suficiente para impedir reutilización después de cierre                                                                                            |
+| dispositivo compartido              | cuando forme parte del modo de sesión                                                                                                              |
+| simulación                          | únicamente como procedencia no ejecutable conforme a sus contratos                                                                                 |
+| resultado contextual                | suficiente para diferenciar contexto utilizable de ausencia, invalidación, contradicción o no resolución                                           |
+| razones seguras                     | minimizadas para la consumidora; no necesariamente equivalen a causas internas completas                                                           |
+| instante de resolución              | necesario para trazabilidad y frescura                                                                                                             |
+| versiones contractuales relevantes  | necesarias para detectar incompatibilidad                                                                                                          |
+| evidencia o fingerprint de frescura | suficiente para invalidar o exigir nueva resolución cuando cambien fundamentos                                                                     |
+
+Esta tabla es lógica. Los nombres físicos, migraciones, DTO exacto y compatibilidad de tipos pertenecen a los propietarios de implementación.
+
+---
+
+#### 10. Campos actuales compatibles y campos insuficientes
+
+La implementación observada de `EffectiveContext` ya expone, entre otros:
+
+- `source`;
+- `session_mode`;
+- `app_code`;
+- `user_id`;
+- roles administrativo y operativo;
+- `site_id`;
+- `area_id`;
+- `shift_id`;
+- referencias de simulación y dispositivo;
+- `can_operate`;
+- `blocked_reasons`;
+- `metadata`.
+
+Estos elementos pueden participar en la evolución del contrato cuando mantengan su semántica.
+
+Sin embargo, el tipo observado no acredita todavía de forma explícita:
+
+- identidad de la revisión publicada exacta;
+- referencia de la sesión de check-in autoritativa;
+- estado de cierre o vigencia de esa sesión;
+- instante de resolución contractual;
+- información explícita de versión/frescura suficiente para detectar un snapshot stale.
+
+Por tanto, la existencia actual del tipo no constituye certificación completa de `INT-WORK-004` ni de esta tarea.
+
+---
+
+#### 11. `source` es procedencia, no propiedad
+
+La procedencia del contexto puede indicar cómo fue resuelto un caso, pero no cambia la propiedad funcional.
+
+En particular:
+
+```text
+source = anima
+```
+
+no significa:
+
+```text
+ANIMA ES PROPIETARIA DEL CONTEXTO EFECTIVO COMPLETO
+```
+
+La propiedad se conserva:
+
+- programación: VISO;
+- asistencia: ANIMA;
+- confirmación de contexto: Supabase / resolutores canónicos;
+- consumo: SHELL y aplicaciones según finalidad.
+
+La procedencia es metadata de resolución y no debe ser interpretada como una fuente alternativa de autoridad.
+
+---
+
+#### 12. `metadata` no es una vía de autoridad
+
+Un contenedor extensible de metadata puede transportar correlación o información no autoritativa, pero no podrá utilizarse para introducir por fuera del contrato:
+
+- permisos;
+- roles efectivos;
+- sede efectiva;
+- área efectiva;
+- revisión del turno;
+- estado de check-in;
+- bypass;
+- autoridad simulada;
+- excepciones permanentes.
+
+Si un dato pasa a ser necesario para una decisión, deberá formar parte de un contrato versionado y validado, no de una clave libre interpretada localmente.
+
+---
+
+#### 13. Estados que una consumidora debe distinguir
+
+Una consumidora no debe colapsar en un único `null`, `false` o estado vacío situaciones materialmente distintas.
+
+Debe poder tratar de forma diferenciada, según su finalidad:
+
+1. contexto operativo efectivo;
+2. ausencia normal de contexto operativo;
+3. contexto invalidado que exige nueva resolución;
+4. contradicción o ambigüedad que impide confirmar contexto;
+5. imposibilidad técnica o lectura no concluyente;
+6. modalidad administrativa independiente que no requiere contexto laboral operativo;
+7. contexto simulado, que no concede autoridad real;
+8. dispositivo compartido, que exige sus propios límites y actor cuando corresponda.
+
+No se exige que todas estas clases se rendericen con etiquetas técnicas al usuario.
+
+---
+
+#### 14. SHELL como consumidor y coordinador
+
+SHELL puede utilizar el snapshot contextual para:
+
+- mostrar un resumen seguro de jornada o contexto;
+- escoger la experiencia de navegación apropiada;
+- determinar qué acciones requieren nueva resolución;
+- orientar al usuario a ANIMA cuando falte una precondición laboral;
+- conservar el contexto de retorno entre aplicaciones;
+- limpiar estado incompatible al cambiar actor, sesión o contexto;
+- solicitar decisiones de permiso mediante la frontera compartida.
+
+SHELL no puede:
+
+- publicar turnos;
+- registrar asistencia;
+- fabricar check-in;
+- modificar rol operativo;
+- cambiar sede o área efectivas;
+- conceder permisos por mostrar una aplicación;
+- declarar una acción autorizada únicamente porque la navegación está visible.
+
+---
+
+#### 15. Estado visual de SHELL
+
+El estado visual podrá representar de forma segura, cuando corresponda:
+
+- contexto operativo efectivo;
+- ausencia de jornada o presencia requerida;
+- acceso administrativo independiente;
+- dispositivo compartido;
+- contexto que necesita revalidación;
+- indisponibilidad de resolución.
+
+La presentación debe evitar equivalencias falsas como:
+
+```text
+“JORNADA ACTIVA”
+→ “TODAS LAS ACCIONES AUTORIZADAS”
+```
+
+O:
+
+```text
+“APP VISIBLE”
+→ “APP AUTORIZADA PARA TODA ACCIÓN”
+```
+
+Un componente visual no sustituye el resultado server-side de la acción protegida.
+
+---
+
+#### 16. Navegación
+
+La navegación puede usar contexto y permisos para reducir opciones visibles, pero sigue siendo una capa de experiencia.
+
+Reglas:
+
+1. una ruta visible no concede autoridad;
+2. una ruta oculta no sustituye el control server-side;
+3. deep link o URL directa revalida sesión, permiso, contexto, territorio y recurso;
+4. el cambio de aplicación no transfiere un `ALLOW` previo;
+5. un carril administrativo no se bloquea por falta de turno si su contrato no lo requiere;
+6. un carril operativo no se habilita por pertenecer a una aplicación de tipo operativo;
+7. la clasificación de la aplicación no sustituye la modalidad del permiso;
+8. la navegación stale debe converger después de una invalidación sin prolongar autoridad.
+
+---
+
+#### 17. Handoff entre aplicaciones
+
+Un traspaso entre aplicaciones puede conservar correlación de navegación y trabajo, pero no transportar autoridad final.
+
+El handoff podrá conservar, según necesidad:
+
+- aplicación de origen;
+- aplicación de destino;
+- recurso o proceso;
+- acción pendiente;
+- referencias seguras de sede o área;
+- identidad segura del turno o contexto cuando sea necesaria para localizar el recurso;
+- destino de retorno;
+- correlación.
+
+La aplicación receptora deberá:
+
+1. validar el contrato recibido;
+2. resolver o revalidar su contexto propio para la aplicación destino;
+3. evaluar el permiso exacto;
+4. validar recurso y territorio;
+5. ignorar cualquier campo que pretenda transportar un `ALLOW` como autoridad;
+6. rechazar o recuperar de forma segura cuando el contexto haya cambiado.
+
+Regla:
+
+```text
+HANDOFF
+→ CONTINUIDAD DE TRABAJO
+≠
+TRANSFERENCIA DE AUTORIDAD
+```
+
+---
+
+#### 18. Cambio de aplicación
+
+Cambiar de una aplicación a otra obliga a tratar la resolución como aplicación-específica.
+
+Aunque actor, turno o sede no cambien:
+
+- cambia `app_code`;
+- puede cambiar la modalidad de la acción;
+- cambia el catálogo de permisos aplicable;
+- pueden cambiar los recursos consultados;
+- puede cambiar la minimización de campos;
+- debe revalidarse la autorización para la acción destino.
+
+Una decisión obtenida para NEXO no se convierte en una decisión para FOGO, ORIGO, PULSO, NUMERA o VISO.
+
+---
+
+#### 19. Cambio de actor o sesión
+
+Cuando cambia el actor humano, la sesión personal o el principal aplicable:
+
+- se descarta el snapshot anterior para acciones nuevas;
+- se limpia el estado visual o de navegación vinculado al actor anterior;
+- se invalidan handoffs que ya no correspondan;
+- se resuelve nuevamente el contexto;
+- se reevalúan permisos;
+- se evita mostrar datos del actor anterior;
+- no se transfiere una reautenticación fuerte entre actores.
+
+En dispositivo compartido, el dispositivo no hereda ni conserva los permisos del último trabajador.
+
+---
+
+#### 20. Caché
+
+Una caché de contexto es una optimización y no una fuente de autoridad.
+
+Toda caché deberá quedar ligada a suficiente identidad para saber a qué corresponde, incluyendo como mínimo el actor o sesión, aplicación y los fundamentos contextuales relevantes.
+
+Reglas:
+
+1. una caché conocida como stale no autoriza una acción nueva;
+2. una caché sin identidad de revisión o frescura suficiente no acredita contexto operativo actual;
+3. un TTL local por sí solo no demuestra validez;
+4. esta tarea no fija un TTL numérico;
+5. una invalidación obliga a descartar o marcar no utilizable el snapshot afectado;
+6. el servidor revalida antes del efecto protegido aunque el cliente conserve una copia reciente;
+7. las aplicaciones no mantienen caches semánticamente incompatibles del mismo contexto.
+
+---
+
+#### 21. Realtime y señales de invalidación
+
+Realtime, eventos o señales de invalidación sirven para acelerar convergencia.
+
+Pueden indicar:
+
+```text
+EL SNAPSHOT PUEDE HABER CAMBIADO
+→ RESOLVER DE NUEVO
+```
+
+No pueden indicar por sí solos:
+
+```text
+ESTE PAYLOAD ES LA NUEVA AUTORIDAD COMPLETA
+```
+
+Una señal perdida, duplicada o tardía no puede convertir una decisión antigua en válida indefinidamente.
+
+---
+
+#### 22. Consumo offline
+
+Offline conserva experiencia e intención, no autoridad futura.
+
+Una aplicación podrá conservar un snapshot previo únicamente como información no autoritativa cuando la experiencia aprobada lo permita.
+
+Queda prohibido:
+
+- ejecutar una acción protegida nueva usando un snapshot conocido como stale;
+- convertir la última sede o área en territorio actual;
+- convertir el último rol en rol actual;
+- conservar un `ALLOW` como permiso offline permanente;
+- asumir que el turno sigue vigente porque no hubo señal de invalidación;
+- sincronizar una mutación sin reautorizar.
+
+Al volver la conectividad, la acción pendiente deberá pasar nuevamente por la frontera autoritativa correspondiente.
+
+---
+
+#### 23. Revalidación antes del efecto
+
+La lectura de contexto en SHELL o en una página puede mejorar experiencia, pero no sustituye la revalidación necesaria en la frontera que produce el efecto.
+
+La secuencia mínima es:
+
+```text
+LECTURA / PRESENTACIÓN
+→ INTENCIÓN DE ACCIÓN
+→ RESOLUCIÓN O REVALIDACIÓN SERVER-SIDE
+→ PERMISO EXACTO
+→ CONTEXTO / TERRITORIO / RECURSO
+→ EFECTO O DENEGACIÓN
+```
+
+Esto protege carreras con:
+
+- check-out;
+- nueva revisión de turno;
+- cambio de rol;
+- cambio de sede o área;
+- desactivación del trabajador;
+- revocación de permiso;
+- cambio de recurso;
+- cierre de sesión.
+
+---
+
+#### 24. Carriles administrativos
+
+Las aplicaciones administrativas o híbridas no deben exigir turno y check-in para toda capacidad por el solo hecho de consumir el contrato compartido.
+
+Se conserva:
+
+```text
+BASE / ADMINISTRATIVO
+→ SEGÚN MODALIDAD DEL PERMISO
+```
+
+```text
+OPERATIVO DEPENDIENTE DE JORNADA
+→ SEGÚN TURNO + CHECK-IN + ROL + TERRITORIO
+```
+
+El paquete común debe permitir representar ambos casos sin introducir un bypass por nombre de rol.
+
+---
+
+#### 25. Simulación
+
+Las superficies vigentes `startContextSimulation` y `stopContextSimulation` pertenecen al plano de simulación ya gobernado por sus contratos de autorización.
+
+Su presencia en `@vento/os-context` no permite mezclar autoridad real y simulada.
+
+Reglas:
+
+- una simulación debe quedar identificada como tal;
+- no produce autoridad real;
+- no modifica turno, check-in, rol o asignaciones reales;
+- salir de simulación exige resolver nuevamente el contexto real;
+- una aplicación no puede convertir un resultado simulado en un `ALLOW` real;
+- el consumo de contexto real y el preview simulado permanecen distinguibles en tipos, estado y auditoría.
+
+---
+
+#### 26. Dispositivo compartido
+
+El dispositivo compartido puede formar parte de la resolución, pero no sustituye al trabajador cuando la acción requiere actor humano.
+
+El consumo deberá conservar separados:
+
+```text
+PRINCIPAL TÉCNICO
+≠
+DISPOSITIVO
+≠
+ACTOR HUMANO
+≠
+SESIÓN DEL ACTOR
+≠
+CONTEXTO LABORAL
+```
+
+La aplicación no podrá usar `navigation_role`, aplicación permitida, sede del dispositivo o paquete del dispositivo como concesión suficiente para la acción del trabajador.
+
+---
+
+#### 27. Privacidad y minimización por consumidora
+
+El snapshot compartido no debe obligar a propagar toda la evidencia usada por el resolutor.
+
+Por defecto, una consumidora no recibe por el solo hecho de usar contexto:
+
+- geolocalización exacta;
+- notas privadas de asistencia;
+- evidencia completa del check-in;
+- historial completo de turnos;
+- razones internas sensibles;
+- datos de otros trabajadores;
+- credenciales o secretos;
+- payloads técnicos de las fuentes propietarias.
+
+La aplicación recibe únicamente las referencias y atributos necesarios para su finalidad y para explicar de manera segura el estado que deba presentar.
+
+---
+
+#### 28. Auditoría del consumo
+
+El consumo por sí solo no necesita crear un evento empresarial nuevo, pero las decisiones y acciones protegidas deberán poder correlacionarse con:
+
+- aplicación;
+- principal;
+- actor efectivo;
+- modo de sesión;
+- turno y revisión cuando apliquen;
+- sesión de check-in cuando aplique;
+- rol operativo;
+- sede y área;
+- permiso;
+- recurso;
+- resultado;
+- razones;
+- instante;
+- versión contractual;
+- snapshot o fingerprint de contexto suficiente para reproducibilidad.
+
+La auditoría no debe copiar indiscriminadamente el snapshot ni datos sensibles.
+
+---
+
+#### 29. Cobertura materializada de las diez aplicaciones canónicas
+
+La tarea materializa una decisión explícita para cada aplicación del catálogo canónico.
+
+| Aplicación | Decisión de consumo                                                   | Finalidad y límite                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shell`    | **CONSUME DIRECTAMENTE**                                              | Hub, navegación, estado compartido y coordinación; no produce programación, asistencia ni autoridad final                                                                                                    |
+| `anima`    | **CONSUME DE FORMA CONTROLADA**                                       | Puede presentar y usar el contexto confirmado para experiencia y acciones dependientes; sus hechos de asistencia siguen bajo `INT-WORK-003` y no se derivan del snapshot                                     |
+| `viso`     | **CONSUMO CONDICIONAL POR MODALIDAD**                                 | Sus capacidades administrativas pueden operar sin turno/check-in cuando el contrato lo permita; vistas o acciones dependientes de contexto usan la misma frontera compartida                                 |
+| `nexo`     | **CONSUME PARA CARRILES OPERATIVOS Y MIXTOS**                         | Inventario y logística usan contexto cuando el permiso lo exige; la aplicación no reconstruye asistencia o programación                                                                                      |
+| `fogo`     | **CONSUME PARA CARRILES OPERATIVOS**                                  | Producción usa rol, turno y territorio efectivos cuando corresponda; configuración administrativa conserva su modalidad independiente                                                                        |
+| `origo`    | **CONSUMO CONDICIONAL POR ACCIÓN**                                    | Compras administrativas y recepción física se mantienen separadas; recepción operativa usa contexto cuando su permiso lo exige                                                                               |
+| `pulso`    | **CONSUME PARA CARRILES OPERATIVOS**                                  | POS, caja y operación física usan contexto según modalidad; configuración no hereda autoridad desde una jornada                                                                                              |
+| `numera`   | **CONSUMO CONDICIONAL POR ACCIÓN**                                    | Capacidades financieras y administrativas no exigen contexto laboral por defecto; cualquier carril operativo o contextual usa el contrato común sin reconstruir asistencia                                   |
+| `aura`     | **DIFERIDO / SIN CONSUMO OPERATIVO CERTIFICADO EN EL ROADMAP ACTUAL** | Conserva código laboral válido, pero su adopción física permanece diferida; si se activa consumo deberá usar el contrato común                                                                               |
+| `pass`     | **NO CONSUME EL PAQUETE LABORAL EN SU IDENTIDAD CLIENTE NORMAL**      | Vento Pass mantiene identidad de cliente separada; operaciones internas laborales relacionadas con PASS siguen permisos laborales de sus aplicaciones propietarias sin convertir al cliente en actor laboral |
+
+Control de cobertura:
+
+```text
+10 APLICACIONES ESPERADAS
+=
+10 DECISIONES MATERIALIZADAS
+=
+0 FALTANTES
+=
+0 DUPLICADOS
+```
+
+---
+
+#### 30. SHELL
+
+SHELL es la consumidora transversal principal y la coordinadora de la experiencia compartida.
+
+Debe:
+
+- resolver contexto por `app_code`;
+- presentar una síntesis segura;
+- tratar ausencia, bloqueo y no resolución de forma distinta;
+- invalidar estado al cambiar actor o contexto;
+- no mantener un resolutor alterno;
+- no conceder aplicaciones por lista local de roles;
+- no convertir la selección de sede en sede efectiva;
+- no transferir un `ALLOW` en un handoff;
+- volver a evaluar la aplicación destino.
+
+---
+
+#### 31. ANIMA
+
+ANIMA conserva dos papeles distintos:
+
+1. propietaria de los hechos de asistencia;
+2. consumidora del contexto confirmado cuando una experiencia o acción lo requiera.
+
+Por tanto:
+
+- un check-in local pendiente no se consume como contexto efectivo;
+- una entrada confirmada puede originar la sesión que el resolutor usa;
+- ANIMA puede mostrar contexto, pero no sustituir el resolutor para conceder permisos de otras aplicaciones;
+- un cambio de programación visible exige revalidación antes de una nueva acción;
+- el snapshot no reemplaza el expediente original de asistencia.
+
+---
+
+#### 32. VISO
+
+VISO es principalmente administrativa y propietaria de programación.
+
+Su consumo debe preservar:
+
+- administración independiente de turno/check-in cuando la modalidad lo permita;
+- uso de contexto operativo únicamente en acciones que realmente lo exijan;
+- simulación separada de autoridad real;
+- no convertir un rol privilegiado en bypass universal;
+- no reconstruir asistencia para decidir presencia;
+- no usar el contexto para modificar retroactivamente la programación o asistencia que lo originó.
+
+---
+
+#### 33. NEXO
+
+NEXO debe consumir el contexto compartido para los permisos operativos que dependan de jornada, rol o territorio.
+
+Queda prohibido que NEXO:
+
+- mantenga una definición propia de `active_shift`;
+- cambie el rol operativo mediante lógica local para una acción real;
+- use una sede seleccionada como sede efectiva;
+- acepte un `can_operate` local como permiso exacto;
+- use `navigation_role` como concesión;
+- reconstruya contexto desde tablas de programación y asistencia para sustituir `getEffectiveContext`.
+
+---
+
+#### 34. FOGO
+
+FOGO debe consumir el mismo contrato común para ejecución productiva y otros carriles operativos.
+
+La producción no puede depender de:
+
+- último check-in leído localmente;
+- rol inferido desde texto;
+- sede o área seleccionadas;
+- privilegio administrativo como bypass de operación;
+- una navegación visible sin evaluación server-side.
+
+Las capacidades de configuración que sean administrativas conservan su modalidad propia.
+
+---
+
+#### 35. ORIGO
+
+ORIGO combina capacidades administrativas y recepción física.
+
+Debe conservar:
+
+```text
+ADMINISTRACIÓN DE COMPRAS
+≠
+RECEPCIÓN OPERATIVA
+```
+
+El contexto laboral operativo se consume únicamente cuando la modalidad de la acción lo exige.
+
+La tarea no adelanta los contratos `INT-PROC-*` del mini-bloque siguiente.
+
+---
+
+#### 36. PULSO
+
+PULSO consume contexto para caja y demás operaciones dependientes de jornada y territorio.
+
+Debe abandonar como fuente contractual cualquier reconstrucción local basada en el último evento de asistencia o un fallback de turno.
+
+Una vista de “jornada activa” puede permanecer como experiencia, pero la acción protegida debe resolverse mediante la frontera compartida y autorización exacta.
+
+---
+
+#### 37. NUMERA
+
+NUMERA conserva su naturaleza híbrida y su finalidad financiera.
+
+El consumo de asistencia reconciliada para efectos económicos no convierte a NUMERA en propietaria del contexto laboral ni obliga a usar un turno/check-in para toda capacidad financiera.
+
+Cuando una acción de NUMERA tenga modalidad contextual u operativa, deberá usar la misma frontera compartida y no reconstruir el contexto a partir de asistencia, centro de costo, sede o perfil.
+
+---
+
+#### 38. AURA
+
+AURA permanece como aplicación administrativa laboral con alcance de roadmap diferido.
+
+Esta tarea no declara un consumidor físico operativo existente ni crea implementación para AURA.
+
+Condición contractual para una activación futura:
+
+```text
+SI AURA REQUIERE CONTEXTO LABORAL
+→ DEBE CONSUMIR LA FRONTERA COMPARTIDA
+→ NO PUEDE CREAR UN RESOLUTOR LOCAL
+```
+
+No se genera una tarea nueva porque el estado diferido y su gobierno ya pertenecen al catálogo y roadmap vigentes.
+
+---
+
+#### 39. PASS
+
+PASS mantiene dominio de identidad de cliente para su uso normal.
+
+El paquete compartido observado declara expresamente que PASS no consume `@vento/os-context` en ese carril.
+
+Se conserva:
+
+```text
+IDENTIDAD CLIENTE PASS
+≠
+IDENTIDAD LABORAL
+```
+
+Por tanto:
+
+- una sesión de cliente no recibe turno, check-in o rol laboral por inferencia;
+- `pass.access` laboral no gobierna el acceso normal del cliente;
+- operaciones internas relacionadas con PASS deben conservar identidad y permiso laborales explícitos en la superficie propietaria correspondiente;
+- no se introduce contexto laboral en PASS solo para uniformar técnicamente las aplicaciones.
+
+---
+
+#### 40. Reconciliación con `@vento/os-context` observado
+
+La implementación actual acredita una base técnica real:
+
+| Superficie observada        | Evidencia funcional                                        | Lectura contractual                                                                                                                                                                                     |
+| --------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| paquete `@vento/os-context` | existe como paquete compartido dentro de `vento-shell`     | converge con la frontera común requerida                                                                                                                                                                |
+| `getEffectiveContext`       | invoca `get_effective_context_v1` por `app_code`           | dirección correcta para consumo centralizado; requiere demostrar paridad completa con `INT-WORK-004`                                                                                                    |
+| `hasEffectivePermission`    | invoca `has_effective_permission_v1`                       | dirección correcta para evitar que el contexto sustituya al permiso exacto                                                                                                                              |
+| `EffectiveContext`          | separa roles, sitio, área, turno, simulación y dispositivo | cobertura parcial; faltan referencias contractuales explícitas necesarias para revisión/check-in/frescura                                                                                               |
+| `source`                    | distingue varias procedencias de contexto                  | debe permanecer como procedencia y no como propiedad funcional                                                                                                                                          |
+| `metadata`                  | permite extensión libre                                    | no puede transportar autoridad no versionada                                                                                                                                                            |
+| README                      | declara un contexto por aplicación y PASS excluido         | compatible en estructura general; la frase que concentra la fuente de verdad del contexto laboral real en ANIMA debe converger con la propiedad distribuida aprobada en `INT-WORK-001` a `INT-WORK-004` |
+
+La tarea no modifica el paquete.
+
+---
+
+#### 41. Reconciliación con NEXO observado
+
+NEXO contiene actualmente una superficie `operational-context.ts` que:
+
+- llama a `get_operational_context`;
+- expone un tipo local de contexto operativo;
+- consulta `has_operational_permission`;
+- puede aplicar un override local de rol y área antes de devolver el contexto.
+
+Lectura contractual:
+
+1. demuestra que NEXO ya consume contexto operativo;
+2. no demuestra que consuma el mismo contrato que `@vento/os-context`;
+3. el tipo local no acredita identidad explícita de revisión publicada;
+4. una transformación local de rol o área no puede modificar autoridad real;
+5. la convergencia debe eliminar decisiones semánticas competidoras y conservar simulación únicamente bajo su plano autorizado.
+
+---
+
+#### 42. Reconciliación con PULSO y FOGO observados
+
+Las superficies de shell observadas en PULSO y FOGO reconstruyen un `ActiveWorkContext` localmente mediante:
+
+- último `check_in` o `check_out` de `attendance_logs`;
+- `shift_id` del log;
+- `device_info.operationalContext`;
+- fallback a `employee_shifts` para sede y rol;
+- selección o fallback de sede;
+- rol base o bypass administrativo en determinados casos.
+
+Esta implementación acredita una necesidad real de contexto, pero no satisface el contrato objetivo porque:
+
+1. el último evento leído no prueba por sí solo una sesión autoritativa vigente;
+2. no acredita identidad explícita de revisión publicada;
+3. el fallback local de rol, sede o turno puede divergir del resolutor canónico;
+4. el mismo algoritmo está replicado en aplicaciones;
+5. la navegación y el gate local no sustituyen autorización server-side;
+6. la resolución debe converger a la frontera común de `@vento/os-context` y a los resolutores canónicos.
+
+---
+
+#### 43. Brechas físicas y propietarios existentes
+
+Ninguna brecha observada queda sin destino documental.
+
+| Brecha física                                                                                                            | Propietario existente                                               | Condición de salida                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EffectiveContext` no acredita explícitamente revisión publicada, sesión de check-in y metadatos suficientes de frescura | `SHELL-CTX-002` a `SHELL-CTX-004`; `AUTH-DB-033`; `AUTH-DB-034`     | el contrato compartido transporta o correlaciona de forma inequívoca las referencias requeridas por `INT-WORK-004` y las mismas reglas se usan en servidor  |
+| `can_operate` o un gate visual puede ser interpretado como autoridad suficiente                                          | `SHELL-CTX-004`; `SHELL-AUTH-001` a `SHELL-AUTH-005`; `AUTH-DB-034` | toda acción protegida usa permiso exacto y revalidación contextual server-side; el estado visual queda como experiencia                                     |
+| README de `@vento/os-context` concentra la fuente de verdad del contexto laboral real en ANIMA                           | `SHELL-CTX-002`; contratos compartidos de contexto                  | documentación y tipos físicos reflejan programación VISO, asistencia ANIMA y confirmación por resolutores canónicos sin atribuir propiedad única incorrecta |
+| NEXO mantiene tipo y resolutor local de contexto                                                                         | `SHELL-CTX-002` a `SHELL-CTX-004`; `SHELL-AUTH-004`                 | NEXO consume el contrato compartido o un adapter compatible sin reglas locales que amplíen o cambien autoridad                                              |
+| NEXO puede aplicar override local de rol/área al contexto                                                                | `AUTH-SIM-001` a `AUTH-SIM-014`; `SHELL-CTX-004`; `AUTH-DB-034`     | simulación permanece separada, tipada y no ejecutable; ninguna mutación real recibe rol o área fabricados localmente                                        |
+| PULSO y FOGO reconstruyen contexto desde `attendance_logs`, `employee_shifts` y fallbacks locales                        | `SHELL-CTX-002` a `SHELL-CTX-004`; `AUTH-DB-033`; `AUTH-DB-034`     | ambas aplicaciones consumen resolución compartida y dejan de usar el algoritmo local como fuente de contexto autoritativo                                   |
+| caches y consumidores pueden conservar snapshots después de cambios relevantes                                           | `SHELL-CTX-006`; `AUTH-DB-035`; `AUTH-QA-025`; `AUTH-QA-026`        | check-out y cambios de turno, rol, actor, sede, área o asignación invalidan el snapshot y la acción posterior reautoriza                                    |
+| handoff puede transportar contexto sin revalidación destino                                                              | `SHELL-CON-014`; `SHELL-CON-015`; `INT-APP-008`; `AUTH-DB-034`      | la aplicación destino resuelve su propio contexto y permiso antes de usar el recurso o producir efecto                                                      |
+| paridad entre aplicación, Server Action, RPC y RLS aún debe demostrarse                                                  | `AUTH-DB-034`; `SHELL-AUTH-004`; `AUTH-QA-001` a `AUTH-QA-006`      | el mismo caso produce decisión equivalente y razones compatibles en todas las capas aplicables                                                              |
+
+No se crea una tarea adicional para brechas con propietario y condición de salida existentes.
+
+---
+
+#### 44. Invariantes
+
+1. VISO continúa siendo propietaria de programación.
+2. ANIMA continúa siendo propietaria de asistencia.
+3. Supabase y los resolutores canónicos confirman contexto efectivo.
+4. SHELL y las aplicaciones consumen contexto; no producen una segunda versión del mismo.
+5. `@vento/os-context` es la frontera técnica compartida vigente que debe converger con el contrato canónico.
+6. `getEffectiveContext` consume contexto; no concede por sí sola la acción solicitada.
+7. `hasEffectivePermission` evalúa permiso con contexto; no puede ser sustituida por un booleano local equivalente.
+8. `can_operate` no equivale a permiso universal.
+9. `metadata` no crea autoridad.
+10. la procedencia del contexto no cambia la propiedad funcional.
+11. una aplicación destino revalida después de un handoff.
+12. un cambio de aplicación no transfiere un `ALLOW`.
+13. un cambio de actor invalida el snapshot anterior.
+14. una caché no es fuente de verdad.
+15. Realtime es señal de convergencia, no fuente propietaria.
+16. una acción offline se reautoriza al sincronizar.
+17. navegación visible no equivale a permiso.
+18. carriles administrativos no requieren turno/check-in cuando su modalidad no lo exige.
+19. carriles operativos no reciben bypass por tipo de aplicación o nombre de rol.
+20. dispositivo compartido y actor humano permanecen separados.
+21. simulación y autoridad real permanecen separadas.
+22. PASS cliente permanece fuera del contexto laboral normal.
+23. AURA no se declara implementada por esta definición documental.
+24. toda consumidora recibe datos minimizados por finalidad.
+25. una decisión stale no puede producir un nuevo efecto protegido.
+26. ninguna aplicación reconstruye turno, revisión o asistencia para sustituir el resolutor compartido.
+
+---
+
+#### 45. Prohibiciones
+
+Queda prohibido considerar conforme cualquiera de estos atajos:
+
+1. leer el último `attendance_logs` y tratarlo como sesión activa autoritativa;
+2. leer `employee_shifts` desde cada aplicación para fabricar contexto efectivo;
+3. derivar revisión de turno desde `published_at` o máximo timestamp;
+4. completar rol operativo desde `employees.role`;
+5. completar sede efectiva desde una cookie o preferencia seleccionada;
+6. completar área efectiva desde estado local;
+7. aplicar un override de rol o área a una acción real fuera del plano de simulación;
+8. usar `can_operate=true` como autorización de toda acción;
+9. usar una aplicación visible como prueba de `<app>.access`;
+10. usar navegación oculta como única protección;
+11. transportar un `ALLOW` desde una aplicación a otra;
+12. confiar en un handoff sin revalidar destino;
+13. conservar permisos después de cambiar de actor;
+14. reutilizar una reautenticación fuerte entre aplicaciones o actores sin contrato;
+15. usar una caché stale para una mutación nueva;
+16. interpretar ausencia de señal Realtime como prueba de frescura;
+17. ejecutar offline con la autoridad observada al capturar la intención;
+18. tratar indisponibilidad de contexto como ausencia normal;
+19. tratar una contradicción como un `false` genérico sin preservar su semántica para recuperación y auditoría;
+20. enviar geolocalización o evidencia completa de asistencia a toda aplicación por conveniencia;
+21. convertir PASS cliente en consumidor de contexto laboral para uniformar código;
+22. declarar AURA consumidora implementada mientras su roadmap siga diferido;
+23. crear un resolutor distinto por aplicación;
+24. mantener copias divergentes de las reglas de contexto como contrato definitivo;
+25. considerar esta tarea documental como implementación de los cambios físicos identificados.
+
+---
+
+#### 46. Escenarios mínimos de aceptación contractual
+
+La implementación futura deberá demostrar como mínimo:
+
+1. SHELL obtiene contexto mediante la frontera compartida y no reconstruye turno/asistencia localmente;
+2. NEXO obtiene la misma semántica contextual que SHELL para el mismo actor, aplicación, instante y fuentes;
+3. FOGO obtiene la misma semántica sin leer el último evento de asistencia como fuente de autoridad;
+4. PULSO obtiene la misma semántica sin fallback local de rol o sede;
+5. ORIGO puede ejecutar una capacidad administrativa sin check-in cuando la modalidad lo permite;
+6. ORIGO exige contexto operativo en una acción física cuando su permiso lo requiera;
+7. VISO conserva administración independiente y no usa contexto laboral como requisito universal;
+8. NUMERA conserva capacidades financieras administrativas sin imponer jornada por defecto;
+9. ANIMA no convierte una intención local pendiente en contexto efectivo;
+10. PASS cliente no recibe contexto laboral ni depende de `employees.role`;
+11. AURA diferida no aparece como implementación certificada;
+12. cambiar de NEXO a FOGO obliga a evaluar el permiso de FOGO;
+13. un handoff conserva proceso y recurso pero la aplicación destino revalida autoridad;
+14. cambiar de actor elimina el contexto visual y decisiones del actor anterior;
+15. un check-out invalida el contexto consumido para acciones posteriores;
+16. una nueva revisión publicada invalida el snapshot cuando afecta la aplicabilidad;
+17. un cambio de área o sede obliga a resolver nuevamente el territorio;
+18. un snapshot stale puede mostrarse como no autoritativo si la experiencia lo permite, pero no autoriza una mutación;
+19. una pérdida de señal Realtime no prolonga autoridad;
+20. una acción offline reautoriza al sincronizar;
+21. `can_operate=true` con permiso exacto ausente produce denegación de la acción;
+22. contexto efectivo con recurso incompatible produce denegación;
+23. contexto efectivo con permiso exacto válido pero snapshot invalidado exige nueva resolución;
+24. un valor en `metadata` no puede crear rol, permiso, sede, área o bypass;
+25. una simulación no habilita una mutación real;
+26. un dispositivo compartido sin actor cuando la acción lo exige no actúa como trabajador;
+27. la UI puede ocultar una opción, pero una URL directa sigue protegida server-side;
+28. una falla de `getEffectiveContext` no se presenta automáticamente como “sin jornada” si la causa es indisponibilidad;
+29. el contexto consumido permite correlacionar turno y revisión exactos cuando el carril depende de programación;
+30. el contexto consumido permite correlacionar la sesión de check-in exacta cuando el carril depende de presencia;
+31. las diez aplicaciones canónicas conservan exactamente la decisión de consumo materializada en esta tarea;
+32. ninguna de estas validaciones requiere mutación física durante esta fase documental.
+
+---
+
+#### 47. Criterios de aceptación documental
+
+`INT-WORK-005` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. SHELL queda definido como consumidor/coordinador y no como propietario de contexto.
+2. `@vento/os-context` queda identificado como frontera compartida vigente de convergencia.
+3. `getEffectiveContext` queda definido como superficie compartida de lectura.
+4. `hasEffectivePermission` queda separado de la mera lectura del contexto.
+5. el snapshot de consumo conserva suficiente identidad de actor, aplicación, turno, revisión, check-in, rol, territorio, versión y frescura cuando aplique.
+6. `can_operate` no se interpreta como permiso universal.
+7. `metadata` no crea autoridad.
+8. navegación, handoff y estado visual permanecen separados de autorización final.
+9. la aplicación destino revalida después de un handoff.
+10. cambio de aplicación, actor o contexto invalida decisiones incompatibles.
+11. caché, Realtime y offline no se convierten en fuentes de autoridad.
+12. capacidades administrativas y operativas conservan sus modalidades diferentes.
+13. simulación y dispositivo compartido permanecen bajo sus límites propios.
+14. privacidad y minimización por consumidora quedan definidas.
+15. las diez aplicaciones canónicas tienen una decisión explícita, sin faltantes ni duplicados.
+16. PASS cliente queda fuera del paquete laboral normal.
+17. AURA permanece diferida sin falsa certificación de consumo físico.
+18. NEXO, FOGO y PULSO quedan reconciliadas contra la deriva observada sin declararla conforme.
+19. todas las brechas físicas observadas tienen propietario existente y condición de salida.
+20. no se crea una nueva definición normal de evento.
+21. no se modifica código, tipos, contratos físicos, RPC, RLS, migraciones, datos, Supabase ni configuración.
+22. no se crean ni modifican requisitos de prueba.
+23. el mini-bloque `INT-WORK` queda documentalmente cerrado con sus cinco tareas definidas.
+24. `INT-PROC-001` permanece reservada y sin desarrollar.
+
+---
+
+#### 48. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- `TREQ-AUTH-001` ya exige que toda capacidad protegida resuelva permiso, contexto y alcance canónicos;
+- `TREQ-AUTH-004` ya exige paridad de decisión entre evaluadores y prohíbe copias con reglas locales divergentes;
+- `TREQ-AUTH-008` ya exige que interfaz, SDK, acciones de servidor, RPC y RLS produzcan decisiones coherentes para capacidades administrativas y operativas;
+- `TREQ-AUTH-009` ya protege la resolución determinista de sede y área;
+- `TREQ-AUTH-013` ya obliga a validar server-side permiso exacto, actor, territorio, contexto y recurso antes de una mutación;
+- `TREQ-AUTH-014` ya exige invalidación de contexto, caché y tokens derivados, además de reautorización de colas offline;
+- `TREQ-AUTH-015` ya exige trazabilidad correlacionable de contexto y decisión;
+- `TREQ-AUTH-016` ya evita autoridad residual después de retiro o revocación;
+- `TREQ-INTEGRATION-005` ya exige que la aplicación receptora de un handoff revalide contrato y autoridad;
+- `TREQ-INTEGRATION-006` ya prohíbe fuentes empresariales competidoras;
+- `TREQ-INTEGRATION-007` ya cubre expresamente `INT-WORK-001` a `INT-WORK-005` y el contrato único entre VISO, ANIMA, SHELL y Supabase;
+- esta tarea materializa la semántica de consumo, la cobertura por aplicación y la reconciliación con el código observado sin introducir una nueva capacidad empresarial, permiso, proceso, evento, tecnología, repositorio o comportamiento físico ejecutable.
+
+Por tanto, el registro 04A vigente no requiere creación, modificación, diferimiento, descarte ni obsolescencia de filas por esta tarea.
+
+---
+
+#### 49. Resultado de la tarea
+
+`INT-WORK-005` queda **APROBADA** como definición documental del consumo del contexto efectivo por SHELL y las aplicaciones de Vento OS.
+
+Resultado consolidado:
+
+- frontera compartida vigente de convergencia: **`@vento/os-context`**;
+- lectura compartida vigente: **`getEffectiveContext`**;
+- autorización contextual compartida vigente: **`hasEffectivePermission`**;
+- aplicaciones canónicas evaluadas: **10 de 10**;
+- faltantes: **0**;
+- duplicados: **0**;
+- SHELL: **consumidor y coordinador, no propietario**;
+- ANIMA: **propietaria de asistencia y consumidora controlada de contexto**;
+- VISO: **propietaria de programación y consumidora condicional por modalidad**;
+- NEXO, FOGO, ORIGO y PULSO: **consumo operacional según modalidad**;
+- NUMERA: **consumo condicional, sin convertir asistencia en contexto propio**;
+- AURA: **diferida; sin consumo operativo certificado en esta fase**;
+- PASS: **sin consumo laboral normal en su identidad cliente**;
+- reconstrucción local de turno/asistencia como contexto: **prohibida**;
+- handoff con transferencia de autoridad: **prohibido**;
+- `can_operate` como permiso universal: **prohibido**;
+- cambios físicos: **0**;
+- requisitos de prueba creados o modificados: **0**.
+
+Invariante final:
+
+```text
+CONTEXTO EFECTIVO AUTORITATIVO
+→ CONTRATO COMPARTIDO VERSIONADO
+→ CONSUMO MINIMIZADO POR APLICACIÓN
+→ PRESENTACIÓN / NAVEGACIÓN / INTENCIÓN
+→ REVALIDACIÓN DE PERMISO + CONTEXTO + RECURSO
+→ EFECTO AUTORIZADO
+```
+
+sin permitir:
+
+```text
+APLICACIÓN
+→ CONTEXTO LOCAL COMPETIDOR
+```
+
+ni:
+
+```text
+SNAPSHOT / CACHÉ / HANDOFF
+→ AUTORIDAD PERMANENTE
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase`
+
+TAREA ACTUAL APROBADA
+
+`INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra`
+

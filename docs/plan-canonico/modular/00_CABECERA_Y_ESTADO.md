@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **751** |
+| Tareas aprobadas | **752** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **843** |
+| Tareas no iniciadas | **842** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.11% (751/1594)** |
+| Porcentaje de completamiento | **47.18% (752/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase** |
-| Tarea actual | **INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones** |
+| Última tarea aprobada | **INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones** |
+| Tarea actual | **INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra** |
+| Siguiente tarea | **INT-PROC-002 — Definir contrato para que ORIGO registre la recepción** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 35 de 83 aprobadas; INT-WORK-005 pendiente** |
+| Progreso del bloque | **BLOQUE X: 36 de 83 aprobadas; INT-PROC-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-WORK-004` — Definir confirmación autoritativa del contexto efectivo en Supabase |
-| Tarea actual | `INT-WORK-005` — Definir consumo del contexto por SHELL y las aplicaciones — **NO INICIADA** |
-| Siguiente tarea | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra |
+| Última aprobada | `INT-WORK-005` — Definir consumo del contexto por SHELL y las aplicaciones |
+| Tarea actual | `INT-PROC-001` — Definir contrato para que ORIGO apruebe la orden de compra — **NO INICIADA** |
+| Siguiente tarea | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 35 DE 83 APROBADAS — ACTUAL INT-WORK-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 36 DE 83 APROBADAS — ACTUAL INT-PROC-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
-        ↓
-TAREA ACTUAL
 INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 35 de 83 tareas aprobadas
+BLOQUE X — 36 de 83 tareas aprobadas
 ```
