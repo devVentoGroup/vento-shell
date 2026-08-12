@@ -2894,7 +2894,1943 @@ INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
 ```
 
 
-### [ ] INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+### ✅ INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROC-002 — Definir contrato para que ORIGO registre la recepción` — APROBADA  
+**Tarea siguiente:** `INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico` — RESERVADA  
+**Tipo de tarea:** documental; definición del contrato mediante el cual NEXO recibe un handoff autorizado de una recepción aceptada, crea y gobierna el efecto físico de ingreso, ubicación y custodia mediante `VPROC-0024`, preserva unidades, cantidades, presentación, lote, LPN, condición, ubicación, idempotencia, concurrencia, ledger, proyecciones y reconciliación, y mantiene separadas la aceptación comercial de ORIGO y la obligación económica de NUMERA, sin modificar código, tablas, RLS, RPC, funciones, migraciones, datos, Supabase ni configuración  
+**Bloque:** X — Integraciones  
+**Mini-bloque:** Compras, recepción e inventario  
+**Fase:** exclusivamente documental  
+**Aplicación propietaria del efecto físico:** NEXO  
+**Proceso propietario:** `VPROC-0024 — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados`  
+**Proceso precedente de compra:** `VPROC-0022 — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica`  
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca el contrato mediante el cual NEXO recibe una recepción de compra ya aceptada por ORIGO y materializa, cuando corresponde, el ingreso físico de inventario sin apropiarse de la aceptación comercial, sin crear una obligación económica, sin duplicar cantidades y sin permitir que una interfaz o una aplicación consumidora escriban directamente la verdad física del inventario.
+
+La regla cardinal queda:
+
+```text
+ORIGO
+RECEPCIÓN VERIFICADA Y ACEPTADA
+        ↓
+VPROC-0022.PUTAWAY_PENDING
+        ↓
+HANDOFF EMPRESARIAL AUTORIZADO
+        ↓
+NEXO
+VPROC-0024.INBOUND_MOVEMENT_REQUESTED
+        ↓
+VALIDACIÓN
+        ↓
+EJECUCIÓN FÍSICA
+        ↓
+CONFIRMACIÓN DE DESTINO
+        ↓
+UBICACIÓN
+        ↓
+POSTING DEL MOVIMIENTO CANÓNICO
+        ↓
+VPROC-0024.INBOUND_MOVEMENT_RECONCILED
+```
+
+No:
+
+```text
+ORIGO ACEPTA
+→ UPDATE DE STOCK POR ORIGO
+```
+
+No:
+
+```text
+FORMULARIO DECLARA source_app = origo
+→ NEXO ASUME QUE ORIGO AUTORIZÓ EL INGRESO
+```
+
+No:
+
+```text
+RECEPCIÓN REGISTRADA
+→ STOCK DISPONIBLE POR INFERENCIA
+```
+
+No:
+
+```text
+MOVIMIENTO CREADO
+→ OBLIGACIÓN ECONÓMICA DEFINITIVA
+```
+
+No:
+
+```text
+REINTENTO
+→ SEGUNDA ENTRADA
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-PROC-003` deja definido un único contrato documental de entrada física de inventario derivada de recepción con los siguientes resultados materiales:
+
+1. NEXO queda confirmada como única aplicación propietaria del efecto físico de ingreso, ubicación, custodia, ledger y proyecciones de existencia gobernadas por `VPROC-0024`.
+2. ORIGO conserva la propiedad de `VPROC-0022` y de la decisión comercial y documental de aceptar, aceptar con tratamiento permitido o rechazar una recepción.
+3. El handoff ordinario desde ORIGO hacia NEXO se vincula al hecho durable `VPROC-0022.PUTAWAY_PENDING` y a la definición normal `VPROC-0022.EVT-004` ya aprobada.
+4. NEXO no acepta como autoridad una cadena enviada por cliente, una bandera visual, un estado legacy, un nombre de aplicación, una URL, un formulario ni una copia mutable de datos protegidos.
+5. La entrada de compra en NEXO se gobierna mediante `VPROC-0024`, conservando exactamente su estado inicial, seis estados intermedios, estado final, siete transiciones, cuatro excepciones, cuatro acciones CCR y seis definiciones normales de evento.
+6. Se preservan como entradas obligatorias de `VPROC-0024` `movement_intent`, `item_ref`, `quantity`, `unit_ref`, `source_ref`, `destination_location_ref` y `occurred_or_expected_at`.
+7. Para una entrada originada en compra, `purchase_receipt_ref` pasa a ser información condicional aplicable y deberá identificar la recepción aceptada que origina el efecto físico.
+8. El movimiento deberá preservar cantidad, unidad, presentación, conversión, sede, LOC, posición cuando corresponda, lote o serial, LPN, condición y evidencia según el recurso afectado.
+9. El ledger físico y sus proyecciones deberán converger como una unidad lógica: ninguna proyección podrá representar una cantidad que no pueda explicarse por un movimiento correlacionado.
+10. Se prohíbe contabilizar simultáneamente la misma cantidad como stock suelto y como contenido de un LPN.
+11. Los reintentos, concurrencia, resultados inciertos y replays adoptan el contrato transversal vigente de idempotencia y reconciliación.
+12. El proceso finaliza normalmente únicamente en `VPROC-0024.INBOUND_MOVEMENT_RECONCILED`, cuando movimiento, ubicación y proyecciones coinciden o tienen diferencias resueltas.
+13. El cierre de `VPROC-0024` no confirma por sí mismo la conformidad comercial de ORIGO ni la obligación económica gobernada por NUMERA.
+14. La emisión del evento económico posterior permanece reservada a `INT-PROC-004`.
+15. El control end-to-end que impide duplicar una recepción entre ORIGO, NEXO y demás efectos permanece reservado a `INT-PROC-005`.
+16. Se reconcilia la implementación física observada de NEXO con el contrato objetivo sin autorizar cambios físicos ni duplicar backlog.
+17. No se crean ni modifican requisitos de prueba porque las reglas especializadas quedan cubiertas por requisitos canónicos vigentes.
+
+Balance documental:
+
+| Control                                     |                           Resultado |
+| ------------------------------------------- | ----------------------------------: |
+| Proceso propietario del efecto físico       |                **1 — `VPROC-0024`** |
+| Aplicación propietaria                      |                        **1 — NEXO** |
+| Proceso precedente de compra                |                **1 — `VPROC-0022`** |
+| Consumidoras directas de `VPROC-0024`       | **4 — ORIGO, FOGO, PULSO y NUMERA** |
+| Consumidoras condicionales                  |                               **0** |
+| Estado inicial preservado                   |                               **1** |
+| Estados intermedios preservados             |                               **6** |
+| Estado final normal preservado              |                               **1** |
+| Transiciones normales preservadas           |                               **7** |
+| Acciones excepcionales preservadas          |                               **4** |
+| Acciones CCR preservadas                    |                               **4** |
+| Definiciones normales de evento preservadas |                               **6** |
+| Nuevas definiciones normales de evento      |                               **0** |
+| Cambios físicos                             |                               **0** |
+| Requisitos de prueba creados o modificados  |                               **0** |
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume y conserva sin redefinir las decisiones aprobadas en:
+
+- `VPROC-0022`, para recepción, verificación, diferencias y aceptación comercial de la compra;
+- `VPROC-0023`, para identidad y elegibilidad de sedes, LOC, zonas, posiciones y condiciones de almacenamiento;
+- `VPROC-0024`, para ingreso, ubicación, reubicación, custodia, ledger y proyecciones físicas;
+- `PROC-CAT-004` a `PROC-CAT-008`, para propósito, propiedad, consumidoras e intervención de actores;
+- `PROC-CAT-009` a `PROC-CAT-014`, para estados, transiciones, excepciones y acciones de cancelación, anulación, retorno y ajuste;
+- `PROC-CAT-015` y `PROC-CAT-016`, para información recibida y producida;
+- `PROC-CAT-017`, para definiciones normales de evento;
+- `PROC-CAT-018`, para auditoría;
+- `PROC-CAT-019`, para métricas;
+- `PROC-CAT-020`, para la separación explícita entre recepción ORIGO y movimiento NEXO;
+- `INT-APP-001` a `INT-APP-010`, para eventos, consumidoras, idempotencia, reintentos, compensación, auditoría, sincronización, errores parciales y prohibición de escrituras cruzadas sin contrato;
+- los contratos vigentes de autorización, segregación, contexto, auditoría y mutación server-side;
+- los requisitos vigentes de inventario, recepción, integración, idempotencia, trazabilidad y fuente única.
+
+Nada de esta tarea convierte una decisión documental en implementación física ni altera las responsabilidades ya aprobadas.
+
+---
+
+#### 4. Propiedad empresarial y frontera obligatoria
+
+La propiedad queda:
+
+```text
+VPROC-0022
+ACEPTACIÓN COMERCIAL Y DOCUMENTAL
+ORIGO
+        ↓
+HANDOFF DE BIENES ACEPTADOS
+        ↓
+VPROC-0024
+INGRESO, UBICACIÓN, CUSTODIA Y LEDGER FÍSICO
+NEXO
+        ↓
+PROYECCIONES AUTORIZADAS
+        ↓
+ORIGO / FOGO / PULSO / NUMERA
+```
+
+Por tanto:
+
+1. ORIGO decide si la recepción comercial puede habilitar el handoff físico.
+2. NEXO decide y materializa cómo se registra el efecto físico dentro de su dominio.
+3. ORIGO no gobierna el ledger físico de NEXO.
+4. NEXO no gobierna la aprobación de la compra ni la aceptación comercial de la recepción.
+5. NUMERA no gobierna el movimiento físico.
+6. FOGO y PULSO pueden consumir proyecciones de disponibilidad o trazabilidad según finalidad, pero no escriben el ledger de NEXO.
+7. Supabase podrá materializar persistencia, funciones y transacciones posteriores, pero no adquiere propiedad empresarial.
+8. Un proceso compartido no se representa mediante un estado común escrito por varias aplicaciones.
+
+---
+
+#### 5. Propósito empresarial preservado de `VPROC-0024`
+
+Se preserva literalmente el resultado empresarial aprobado:
+
+> Asegurar que cada ingreso o cambio de ubicación modifique la custodia y disponibilidad de inventario de forma correlacionada y trazable.
+
+La tarea no reduce `VPROC-0024` a incrementar una columna de saldo.
+
+La instancia representa una operación física que debe conservar:
+
+- origen o procedencia;
+- recurso;
+- cantidad;
+- unidad;
+- destino;
+- custodia;
+- evidencia;
+- movimiento;
+- ubicación;
+- reconciliación.
+
+---
+
+#### 6. Separación obligatoria entre `VPROC-0022` y `VPROC-0024`
+
+La recepción de compra y la entrada de inventario son procesos correlacionados, no el mismo estado.
+
+| Concepto                   | Propietaria                  | Verdad protegida                                           |
+| -------------------------- | ---------------------------- | ---------------------------------------------------------- |
+| recepción física observada | ORIGO dentro de `VPROC-0022` | qué llegó y en qué condición fue observado                 |
+| verificación documental    | ORIGO                        | correspondencia con orden y documentos                     |
+| aceptación comercial       | ORIGO                        | qué alcance recibido se acepta comercialmente              |
+| handoff a inventario       | ORIGO → NEXO                 | qué bienes aceptados quedan habilitados para efecto físico |
+| movimiento de ingreso      | NEXO                         | qué cantidad física ingresa o cambia ubicación             |
+| ubicación y custodia       | NEXO                         | dónde queda y bajo qué condición física                    |
+| ledger y proyección        | NEXO                         | cómo se explica el saldo desde movimientos                 |
+| obligación económica       | NUMERA                       | qué hecho económico se reconoce según su contrato          |
+
+Queda prohibido usar un único valor genérico `received` como sustituto de todos estos momentos.
+
+---
+
+#### 7. Handoff ordinario desde ORIGO
+
+El hecho normal de ORIGO que habilita el handoff físico ya existe:
+
+```text
+VPROC-0022.EVT-004
+vento.process.vproc-0022.putaway-pending.v1
+HANDOFF_FACT
+VPROC-0022.PUTAWAY_PENDING
+```
+
+Su significado preservado es:
+
+```text
+LOS BIENES ACEPTADOS
+ESPERAN INGRESO Y UBICACIÓN FÍSICA EN NEXO
+```
+
+NEXO no podrá interpretar como equivalente a ese hecho:
+
+- una orden aprobada;
+- una orden emitida;
+- una llegada registrada;
+- una verificación física en curso;
+- una factura;
+- un estado legacy `received`;
+- una cadena `source_app` enviada por un formulario;
+- un mensaje técnico sin hecho empresarial durable.
+
+---
+
+#### 8. Inicio válido de `VPROC-0024`
+
+El estado inicial continúa siendo exactamente:
+
+```text
+VPROC-0024.INBOUND_MOVEMENT_REQUESTED
+```
+
+Etiqueta:
+
+```text
+Ingreso o reubicación solicitado
+```
+
+Patrón:
+
+```text
+SOLICITUD_REGISTRADA
+```
+
+La condición mínima preservada exige:
+
+- recurso identificable;
+- cantidad;
+- origen o procedencia;
+- destino esperado;
+- motivo de movimiento.
+
+Para el caso de compra, además deberá existir una referencia correlacionable al hecho de recepción aceptada que habilita el ingreso.
+
+Al nacer continúa siendo verdadero:
+
+```text
+LA EXISTENCIA NO SE CONSIDERA INGRESADA
+LA EXISTENCIA NO SE CONSIDERA UBICADA
+NO EXISTE POSTING CONFIRMADO
+```
+
+---
+
+#### 9. Fuentes válidas de inicio de `VPROC-0024`
+
+Se preservan los iniciadores aprobados:
+
+| Función            | Actor o fuente aprobada      |
+| ------------------ | ---------------------------- |
+| iniciador primario | `RECEPCION_EN_SEDE`          |
+| alterno            | `BODEGA_Y_ABASTECIMIENTO`    |
+| alterno            | `EVENTO_CANONICO_DE_PROCESO` |
+| alterno            | `LOGISTICA_Y_TRANSPORTE`     |
+| tipo               | `MIXTO`                      |
+
+Para el caso especializado de compra de `INT-PROC-003`, el origen empresarial deberá ser una recepción aceptada o el hecho canónico correlacionado que la represente.
+
+Una fuente válida de inicio no concede automáticamente permiso de mutación.
+
+---
+
+#### 10. Actores que continúan `VPROC-0024`
+
+Se preserva la participación funcional aprobada:
+
+| Función                   | Actor o clase aprobada                                         |
+| ------------------------- | -------------------------------------------------------------- |
+| continuadores principales | `RECEPCION_EN_SEDE`; `BODEGA_Y_ABASTECIMIENTO`                 |
+| apoyos                    | `LOGISTICA_Y_TRANSPORTE`; `RESPONSABLE_DE_CALIDAD_E_INOCUIDAD` |
+| control o aceptación      | `GERENCIA_O_SUPERVISION_DE_SEDE`                               |
+| técnico                   | `AUTOMATIZACION_ASISTIVA`                                      |
+
+Estas clases describen participación funcional.
+
+No sustituyen:
+
+- permiso exacto;
+- contexto operativo;
+- sede efectiva;
+- alcance sobre ubicación;
+- estado actual del recurso;
+- control server-side.
+
+---
+
+#### 11. Información obligatoria de entrada
+
+Se preservan exactamente los siete grupos obligatorios de `VPROC-0024`:
+
+```text
+movement_intent
+item_ref
+quantity
+unit_ref
+source_ref
+destination_location_ref
+occurred_or_expected_at
+```
+
+Interpretación para la entrada derivada de compra:
+
+| Campo                      | Regla                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| `movement_intent`          | identifica la intención física de ingreso o ubicación; no es una aprobación comercial |
+| `item_ref`                 | referencia estable al producto o recurso canónico                                     |
+| `quantity`                 | cantidad habilitada para el efecto físico dentro del alcance aceptado                 |
+| `unit_ref`                 | unidad canónica aplicable a la cantidad                                               |
+| `source_ref`               | referencia al origen empresarial autorizado y correlacionable                         |
+| `destination_location_ref` | ubicación NEXO elegible para recibir el recurso                                       |
+| `occurred_or_expected_at`  | momento del hecho o momento esperado según la etapa                                   |
+
+Los atributos protegidos deberán resolverse desde sus fuentes propietarias y no aceptarse como autoridad por texto libre de cliente.
+
+---
+
+#### 12. Información condicional
+
+Se preservan exactamente los siete grupos condicionales:
+
+```text
+lot_serial_ref
+lpn_ref
+purchase_receipt_ref
+condition
+cost_context
+evidence_refs
+client_event_id
+```
+
+Para una compra:
+
+1. `purchase_receipt_ref` identifica el origen en `VPROC-0022` y será aplicable al movimiento derivado de recepción.
+2. `lot_serial_ref` será obligatorio cuando el producto o su política exijan trazabilidad.
+3. `lpn_ref` será obligatorio cuando la custodia o unidad logística esté gobernada por LPN.
+4. `condition` será obligatorio cuando la condición determine elegibilidad, cuarentena, disponibilidad o destino.
+5. `cost_context` podrá acompañar el movimiento para trazabilidad y proyección permitida, sin convertir NEXO en propietaria de la obligación económica.
+6. `evidence_refs` será obligatorio cuando el tipo de operación, recurso, excepción o control lo exija.
+7. `client_event_id` podrá participar en el contrato idempotente cuando la captura o integración lo requiera.
+
+---
+
+#### 13. Sobre transversal obligatorio
+
+La solicitud deberá conservar, cuando aplique, el sobre transversal ya aprobado, incluyendo:
+
+- request o client event estable;
+- correlación;
+- proceso;
+- transición o acción solicitada;
+- principal autenticado;
+- actor efectivo;
+- aplicación o adaptador fuente;
+- momento del hecho;
+- momento de recepción;
+- zona temporal;
+- sede y área;
+- versión del recurso;
+- versión contractual;
+- razón estructurada cuando no sea avance ordinario;
+- referencias de evidencia.
+
+La ausencia de un campo visible en interfaz no autoriza a omitir su resolución en la frontera autoritativa.
+
+---
+
+#### 14. Fuente y procedencia no confiadas al cliente
+
+El origen empresarial no podrá decidirse mediante un campo editable como:
+
+```text
+source_app
+source
+origin
+approved
+received
+```
+
+cuando dicho campo provenga del cliente.
+
+Reglas:
+
+1. NEXO resuelve la procedencia desde un contrato, evento, recurso o referencia durable.
+2. Una cadena que diga `origo` no prueba que ORIGO aceptó la recepción.
+3. Un identificador de orden no prueba que exista recepción aceptada.
+4. Una factura no prueba aceptación física ni comercial.
+5. Un actor con acceso a una pantalla no puede fabricar un origen canónico.
+6. La procedencia queda auditada y correlacionada con el recurso fuente.
+
+---
+
+#### 15. Validaciones mínimas específicas
+
+Antes de permitir el efecto físico deberán comprobarse, según correspondan:
+
+1. existencia del recurso y vigencia de su identidad;
+2. unidad compatible con el producto y la operación;
+3. cantidad positiva y representable;
+4. conversión determinista cuando exista presentación o unidad de entrada distinta;
+5. origen autorizado y correlacionable;
+6. destino existente, activo y elegible;
+7. sede compatible con origen, actor y destino;
+8. condición compatible con el destino;
+9. lote, serial o LPN cuando la política lo exija;
+10. autoridad efectiva del actor;
+11. contexto operativo vigente cuando la acción lo requiera;
+12. versión vigente del recurso o agregado;
+13. identidad idempotente estable;
+14. ausencia de reutilización conflictiva de esa identidad;
+15. ausencia de doble contabilización de la misma cantidad;
+16. evidencia exigida por excepción, condición o trazabilidad;
+17. compatibilidad entre movimiento solicitado y estado actual de `VPROC-0024`.
+
+Ante ambigüedad material:
+
+```text
+NO APLICAR EFECTO
+→ CONSERVAR ESTADO
+→ REVISAR O RECONCILIAR
+```
+
+---
+
+#### 16. Unidad, presentación y conversión
+
+NEXO conserva la verdad sobre cómo una cantidad física se representa en inventario.
+
+Para cada línea deberán permanecer correlacionables, cuando apliquen:
+
+- cantidad en unidad de captura;
+- unidad de captura;
+- presentación;
+- factor de conversión;
+- cantidad en unidad de stock;
+- unidad de stock;
+- precisión aplicable;
+- versión de la regla o perfil utilizado.
+
+No se permite:
+
+```text
+CANTIDAD DE ENTRADA
+→ CONVERSIÓN IMPLÍCITA DIFERENTE POR PANTALLA
+```
+
+ni:
+
+```text
+PRESENTACIÓN FALTANTE
+→ ASUMIR FACTOR 1 SIN CONTRATO
+```
+
+La misma operación deberá producir la misma interpretación de unidades para todos los consumidores autorizados.
+
+---
+
+#### 17. Relación con la recepción aceptada
+
+Para una entrada de compra, NEXO deberá poder reconstruir:
+
+```text
+RECEPCIÓN ORIGO
+        ↓
+ALCANCE ACEPTADO
+        ↓
+LÍNEA O RECURSO ACEPTADO
+        ↓
+CANTIDAD Y UNIDAD HABILITADAS
+        ↓
+MOVIMIENTO NEXO
+        ↓
+UBICACIÓN
+        ↓
+PROYECCIÓN DE EXISTENCIA
+```
+
+La entrada no podrá ampliar silenciosamente:
+
+- producto;
+- cantidad;
+- unidad;
+- lote;
+- condición;
+- sede;
+- alcance aceptado.
+
+Si el movimiento requiere una diferencia material frente al alcance aceptado, deberá tratarse mediante los controles y excepciones correspondientes, no sobrescribiendo la recepción de ORIGO.
+
+---
+
+#### 18. Parcialidad y partición de cantidades
+
+Una recepción comercial puede contener varias líneas, ubicaciones, lotes, presentaciones o unidades logísticas.
+
+El contrato no exige que toda esa materialidad se reduzca a una única fila técnica.
+
+Sí exige:
+
+1. que toda partición conserve el mismo origen empresarial;
+2. que cada segmento tenga identidad trazable;
+3. que los segmentos no se solapen en cantidad;
+4. que la suma de efectos aplicados pueda reconciliarse contra el alcance habilitado;
+5. que lo pendiente permanezca explícitamente pendiente;
+6. que una partición no se interprete como una nueva recepción independiente;
+7. que reintentar un segmento no vuelva a contabilizarlo.
+
+---
+
+#### 19. Sede, LOC y posición
+
+La ubicación física se resuelve desde la estructura gobernada por NEXO.
+
+Reglas:
+
+1. `destination_location_ref` deberá corresponder a una ubicación vigente y elegible.
+2. La sede del movimiento deberá ser compatible con la ubicación.
+3. Una posición no podrá utilizarse si su LOC, jerarquía o condición la vuelve incompatible.
+4. La existencia no se publica en una ubicación inexistente o bloqueada.
+5. Cambiar destino antes de cierre requiere el tratamiento autorizado correspondiente.
+6. La existencia conserva el historial de ubicaciones; un cambio no borra su procedencia.
+
+---
+
+#### 20. Lote, serial y trazabilidad
+
+Cuando el producto esté sujeto a trazabilidad, el ingreso deberá conservar según aplique:
+
+- lote;
+- serial;
+- origen;
+- fecha relevante;
+- vencimiento o vida útil;
+- estado de liberación;
+- ubicación;
+- cantidad;
+- condición.
+
+La falta de una referencia obligatoria no podrá degradarse a ingreso sin trazabilidad.
+
+Un lote o serial no se crea por conveniencia visual cuando la identidad canónica provenga de otra fuente aprobada.
+
+---
+
+#### 21. LPN y prohibición de doble contabilización
+
+Cuando una cantidad ingrese asociada a un LPN:
+
+```text
+MISMA CANTIDAD FÍSICA
+→ UNA SOLA REPRESENTACIÓN CONTABLE DE EXISTENCIA
+```
+
+Queda prohibido:
+
+```text
+CANTIDAD EN LPN
++
+MISMA CANTIDAD COMO STOCK SUELTO
+=
+DOBLE EXISTENCIA
+```
+
+Desempacar, dividir, unir, trasladar o cambiar la composición de un LPN deberá conservar movimientos correlacionados y no fabricar saldo.
+
+---
+
+#### 22. Condición, cuarentena y disponibilidad
+
+La existencia física recibida no equivale automáticamente a existencia utilizable.
+
+Una condición puede exigir:
+
+- cuarentena;
+- destino restringido;
+- evaluación adicional;
+- bloqueo de disponibilidad;
+- tratamiento por el proceso de condición correspondiente.
+
+La entrada conserva el hecho físico sin confundirlo con una decisión posterior de liberación o disposición.
+
+La ausencia de lectura, evidencia o condición requerida no produce liberación automática.
+
+---
+
+#### 23. Estados canónicos de `VPROC-0024`
+
+La secuencia completa preservada es:
+
+```text
+VPROC-0024.INBOUND_MOVEMENT_REQUESTED
+→ VPROC-0024.VALIDATION_IN_PROGRESS
+→ VPROC-0024.READY_FOR_PHYSICAL_EXECUTION
+→ VPROC-0024.IN_EXECUTION
+→ VPROC-0024.PENDING_CONFIRMATION
+→ VPROC-0024.PUTAWAY_PENDING
+→ VPROC-0024.POSTING_PENDING
+→ VPROC-0024.INBOUND_MOVEMENT_RECONCILED
+```
+
+No existen bypass normales aprobados para `VPROC-0024`.
+
+No se sustituyen estos estados por:
+
+```text
+pending
+partial
+received
+created
+posted
+```
+
+como contrato objetivo.
+
+---
+
+#### 24. Significado de `INBOUND_MOVEMENT_REQUESTED`
+
+`VPROC-0024.INBOUND_MOVEMENT_REQUESTED` significa que existe una intención de ingreso o reubicación identificable, con causa, recurso, cantidad y destino esperado.
+
+No significa:
+
+- existencia aumentada;
+- movimiento ejecutado;
+- ubicación confirmada;
+- stock disponible;
+- recepción comercial aceptada por inferencia;
+- efecto económico.
+
+---
+
+#### 25. Significado de `VALIDATION_IN_PROGRESS`
+
+En `VPROC-0024.VALIDATION_IN_PROGRESS` se verifican, como mínimo:
+
+- origen;
+- destino;
+- recurso;
+- cantidad;
+- unidad;
+- conversión;
+- condición;
+- autorización;
+- trazabilidad aplicable;
+- versión;
+- idempotencia.
+
+Validar no aplica el movimiento.
+
+---
+
+#### 26. Significado de `READY_FOR_PHYSICAL_EXECUTION`
+
+`VPROC-0024.READY_FOR_PHYSICAL_EXECUTION` significa que la operación fue validada y puede comenzar físicamente.
+
+No significa que ya exista:
+
+- movimiento confirmado;
+- aceptación de destino;
+- putaway;
+- posting;
+- stock conciliado.
+
+---
+
+#### 27. Significado de `IN_EXECUTION`
+
+`VPROC-0024.IN_EXECUTION` representa la ejecución material del ingreso o cambio de ubicación.
+
+Durante esta etapa se captura lo realmente ocurrido sin alterar retrospectivamente la intención original.
+
+La cantidad ejecutada puede diferir de la esperada únicamente mediante una diferencia explícita y trazable; nunca mediante sobrescritura silenciosa.
+
+---
+
+#### 28. Significado de `PENDING_CONFIRMATION`
+
+`VPROC-0024.PENDING_CONFIRMATION` significa que la ejecución física espera aceptación del destino o responsable.
+
+La transición hacia este estado exige participación de emisor y receptor autorizados.
+
+Una captura física unilateral no equivale a aceptación de custodia cuando el contrato exige confirmación.
+
+---
+
+#### 29. Significado de `PUTAWAY_PENDING`
+
+`VPROC-0024.PUTAWAY_PENDING` significa que el recurso recibido espera asignación y confirmación de su ubicación definitiva.
+
+No debe confundirse con `VPROC-0022.PUTAWAY_PENDING`.
+
+La coincidencia de la etiqueta funcional no fusiona los procesos:
+
+```text
+VPROC-0022.PUTAWAY_PENDING
+= ORIGO HABILITA EL HANDOFF
+
+VPROC-0024.PUTAWAY_PENDING
+= NEXO TODAVÍA DEBE COMPLETAR UBICACIÓN FÍSICA
+```
+
+---
+
+#### 30. Significado de `POSTING_PENDING`
+
+`VPROC-0024.POSTING_PENDING` significa que el hecho físico validado espera el efecto canónico en ledger y proyecciones.
+
+En este estado:
+
+- la evidencia física ya existe;
+- el destino fue tratado conforme al flujo;
+- el efecto canónico todavía debe quedar confirmado como unidad lógica;
+- un fallo no puede mostrarse como éxito final;
+- un retry no puede crear un segundo movimiento.
+
+---
+
+#### 31. Estado final normal
+
+El final normal continúa siendo exactamente:
+
+```text
+VPROC-0024.INBOUND_MOVEMENT_RECONCILED
+```
+
+Etiqueta:
+
+```text
+Ingreso de inventario conciliado
+```
+
+Criterio mínimo preservado:
+
+> La recepción física, ubicación, movimiento canónico y proyecciones de existencia coinciden o tienen diferencias resueltas.
+
+Verdad final:
+
+```text
+EL INGRESO FUE CONTABILIZADO UNA SOLA VEZ
+Y PUEDE RECONSTRUIRSE DESDE EL MOVIMIENTO
+```
+
+Límite:
+
+```text
+NO CONFIRMA CONFORMIDAD COMERCIAL FUERA DE ORIGO
+NO CONFIRMA OBLIGACIÓN ECONÓMICA FUERA DE NUMERA
+```
+
+---
+
+#### 32. Transiciones normales preservadas
+
+| Transición          | Desde                          | Hacia                          | Modalidad         | Clase de autoridad              | Puertas               | Efecto           |
+| ------------------- | ------------------------------ | ------------------------------ | ----------------- | ------------------------------- | --------------------- | ---------------- |
+| `VPROC-0024.TR-001` | `INBOUND_MOVEMENT_REQUESTED`   | `VALIDATION_IN_PROGRESS`       | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`     | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-002` | `VALIDATION_IN_PROGRESS`       | `READY_FOR_PHYSICAL_EXECUTION` | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`     | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-003` | `READY_FOR_PHYSICAL_EXECUTION` | `IN_EXECUTION`                 | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`     | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-004` | `IN_EXECUTION`                 | `PENDING_CONFIRMATION`         | `NORMAL_FORWARD`  | `EMISOR_Y_RECEPTOR_AUTORIZADOS` | `G01,G02,G03,G04,G06` | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-005` | `PENDING_CONFIRMATION`         | `PUTAWAY_PENDING`              | `NORMAL_FORWARD`  | `EMISOR_Y_RECEPTOR_AUTORIZADOS` | `G01,G02,G03,G04,G06` | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-006` | `PUTAWAY_PENDING`              | `POSTING_PENDING`              | `NORMAL_FORWARD`  | `EMISOR_Y_RECEPTOR_AUTORIZADOS` | `G01,G02,G03,G04,G06` | `AVANCE_ATOMICO` |
+| `VPROC-0024.TR-007` | `POSTING_PENDING`              | `INBOUND_MOVEMENT_RECONCILED`  | `NORMAL_TERMINAL` | `CONTROL_ACEPTACION`            | `G01,G02,G03,G04,G07` | `CIERRE_ATOMICO` |
+
+La tarea conserva literalmente las identidades y no crea transiciones alternativas.
+
+---
+
+#### 33. Transición final autoritativa
+
+El cierre normal se produce mediante:
+
+```text
+VPROC-0024.TR-007
+POSTING_PENDING
+→ INBOUND_MOVEMENT_RECONCILED
+```
+
+Con autoridad:
+
+```text
+CONTROL_ACEPTACION
+```
+
+Y puertas:
+
+```text
+G01,G02,G03,G04,G07
+```
+
+El cierre exige que el movimiento y las proyecciones puedan considerarse conciliados dentro del alcance de la instancia.
+
+---
+
+#### 34. Ledger canónico
+
+NEXO deberá conservar una fuente canónica de movimientos capaz de explicar las proyecciones de existencia.
+
+Regla:
+
+```text
+MOVIMIENTO CANÓNICO
+        ↓
+PROYECCIONES DERIVADAS Y RECONCILIABLES
+```
+
+No:
+
+```text
+PROYECCIÓN EDITADA
+SIN MOVIMIENTO CORRELACIONADO
+```
+
+El ledger deberá permitir reconstruir, cuando aplique:
+
+- sede;
+- LOC;
+- posición;
+- producto;
+- presentación;
+- lote;
+- LPN;
+- estado o condición;
+- cantidad;
+- unidad;
+- origen;
+- destino;
+- actor;
+- instante;
+- causa;
+- correlación;
+- evidencia.
+
+---
+
+#### 35. Atomicidad lógica del posting
+
+El efecto final de una entrada puede requerir varias materializaciones físicas.
+
+El contrato exige que esas materializaciones se comporten como una única unidad lógica:
+
+```text
+O
+TODOS LOS EFECTOS NECESARIOS QUEDAN CONFIRMADOS
+
+O
+LA OPERACIÓN QUEDA EN UN ESTADO DURABLE,
+IDENTIFICABLE Y RECONCILIABLE
+```
+
+No se permite un cierre aparente cuando, por ejemplo:
+
+- existe cabecera pero faltan líneas;
+- existe movimiento pero no proyección esperada;
+- una ubicación fue afectada y otra no;
+- se actualizó un saldo sin movimiento;
+- se aplicó costo o cantidad de orden pero no el ingreso correspondiente;
+- el cliente recibió error después de que una parte sí quedó aplicada y procede a crear otra operación.
+
+---
+
+#### 36. Idempotencia
+
+Toda solicitud reintentable de efecto deberá recibir antes del primer intento una identidad estable y una huella lógica suficiente.
+
+Resultados lógicos preservados:
+
+```text
+APPLIED
+DUPLICATE_RESULT_RETURNED
+CONFLICTING_REUSE
+IN_PROGRESS_RECOVERABLE
+STALE_VERSION
+OUT_OF_ORDER_DEFERRED
+RECONCILIATION_REQUIRED
+REJECTED
+```
+
+Reglas:
+
+1. misma identidad y mismo contenido lógico no producen otro movimiento;
+2. un replay devuelve el resultado durable original;
+3. misma identidad con contenido incompatible produce conflicto;
+4. conocer una clave no concede autoridad;
+5. cada intento revalida contexto, recurso, estado y autoridad cuando corresponda;
+6. una respuesta perdida no autoriza una nueva entrada;
+7. un resultado desconocido se reconcilia antes de repetir un efecto no seguro.
+
+---
+
+#### 37. Alcance de la identidad idempotente
+
+La identidad deberá distinguir de forma suficiente la intención física real.
+
+Para una entrada de compra deberán participar, según el contrato materializado, referencias que permitan relacionar:
+
+- recepción fuente;
+- proceso o instancia;
+- línea o recurso;
+- cantidad o alcance lógico;
+- destino;
+- versión;
+- operación solicitada.
+
+La tarea no impone el formato físico final de la clave.
+
+Sí impone que una misma intención no pueda contabilizarse dos veces por cambiar de pantalla, dispositivo, conexión o intento.
+
+---
+
+#### 38. Concurrencia
+
+Dos operadores, pestañas, dispositivos, consumidores o retries concurrentes no podrán aplicar dos veces la misma intención.
+
+La frontera autoritativa deberá disponer del equivalente a:
+
+- claim atómico;
+- versión esperada;
+- lock;
+- constraint;
+- inbox;
+- ledger con identidad única;
+- u otro mecanismo que garantice el mismo resultado contractual.
+
+La elección física del mecanismo queda reservada a las tareas de arquitectura e implementación propietarias.
+
+---
+
+#### 39. Resultado desconocido
+
+Cuando el solicitante no pueda saber si el efecto fue aplicado:
+
+```text
+RESULT_UNKNOWN
+→ CONSULTAR / RECONCILIAR IDENTIDAD EXISTENTE
+→ NO CREAR OTRA INTENCIÓN
+```
+
+La interfaz no podrá resolver la incertidumbre generando una nueva clave automáticamente.
+
+El operador deberá recibir un resultado que distinga entre:
+
+- pendiente;
+- aplicado;
+- duplicado con resultado previo;
+- conflicto;
+- requiere reconciliación;
+- rechazado.
+
+---
+
+#### 40. Reintentos
+
+Los reintentos deberán conservar:
+
+- la misma intención lógica;
+- la identidad idempotente;
+- la correlación;
+- el recurso;
+- el alcance;
+- la versión aplicable.
+
+No deberán:
+
+- incrementar nuevamente el saldo;
+- crear otro movimiento;
+- duplicar un LPN;
+- reubicar una cantidad ya ubicada;
+- volver a sumar cantidad recibida en la orden;
+- fabricar éxito tras un conflicto permanente.
+
+---
+
+#### 41. Excepción `HOLD`
+
+Se preserva:
+
+```text
+VPROC-0024.EX-001 — Suspender movimiento de entrada
+```
+
+Código:
+
+```text
+HOLD
+```
+
+Momento:
+
+```text
+Antes de publicación final
+```
+
+Autoridad:
+
+```text
+PRINCIPAL_O_CONTROL_AUTORIZADO
+```
+
+Tratamiento:
+
+```text
+CONDITION_ONLY
+```
+
+Efecto:
+
+- conserva custodia;
+- conserva cantidades;
+- impide contabilización parcial no controlada;
+- no borra efectos ya confirmados.
+
+---
+
+#### 42. Excepción `REROUTE`
+
+Se preserva:
+
+```text
+VPROC-0024.EX-002 — Desviar a ubicación alternativa
+```
+
+Código:
+
+```text
+REROUTE
+```
+
+Momento:
+
+```text
+Antes o durante putaway
+```
+
+Autoridad:
+
+```text
+PRINCIPAL_Y_CONTROL_AUTORIZADOS
+```
+
+Tratamiento:
+
+```text
+ROUTE_CHANGE
+```
+
+Exige:
+
+- destino válido;
+- aceptación;
+- trazabilidad;
+- conservación de custodia y residuales.
+
+---
+
+#### 43. Excepción `ESCALATE`
+
+Se preserva:
+
+```text
+VPROC-0024.EX-003 — Escalar recepción sin correspondencia
+```
+
+Código:
+
+```text
+ESCALATE
+```
+
+Momento:
+
+```text
+Durante validación o confirmación
+```
+
+Autoridad:
+
+```text
+PRINCIPAL_O_CONTROL_AUTORIZADO
+```
+
+La escalación activa investigación sin inventar origen, producto, cantidad o autorización.
+
+Escalar no concede permiso para aplicar el movimiento.
+
+---
+
+#### 44. Excepción `QUARANTINE`
+
+Se preserva:
+
+```text
+VPROC-0024.EX-004 — Aislar entrada física
+```
+
+Código:
+
+```text
+QUARANTINE
+```
+
+Momento:
+
+```text
+Desde ejecución
+```
+
+Autoridad:
+
+```text
+PRINCIPAL_O_CONTROL_AUTORIZADO
+```
+
+Tratamiento:
+
+```text
+TEMPORARY_CONTROL
+```
+
+La existencia puede conservarse físicamente identificada sin volverse utilizable hasta resolver la condición.
+
+La cuarentena no decide disposición definitiva.
+
+---
+
+#### 45. Acción `CANCEL`
+
+Se preserva:
+
+```text
+VPROC-0024.CCR-001
+CANCEL
+```
+
+Cancela únicamente la ejecución restante.
+
+Debe conservar:
+
+- movimientos ya confirmados;
+- evidencia;
+- custodia;
+- cantidades residuales;
+- reconciliación pendiente;
+- notificaciones requeridas.
+
+Cancelar no borra el hecho físico ya ocurrido.
+
+---
+
+#### 46. Acción `VOID`
+
+Se preserva:
+
+```text
+VPROC-0024.CCR-002
+VOID
+```
+
+Solo aplica cuando la instrucción:
+
+- es inválida;
+- es duplicada;
+- no estaba autorizada;
+- y no produjo un movimiento válido.
+
+El registro original y la causa de nulidad permanecen consultables.
+
+---
+
+#### 47. Acción `RETURN`
+
+Se preserva:
+
+```text
+VPROC-0024.CCR-003
+RETURN
+```
+
+Cuando un efecto físico confirmado deba restituirse, devolverse o trasladarse, se crea un movimiento inverso o compensatorio vinculado.
+
+El retorno conserva:
+
+- origen;
+- destino;
+- custodia;
+- cantidad;
+- unidad;
+- condición;
+- aceptación;
+- evidencia.
+
+No reescribe el movimiento original.
+
+---
+
+#### 48. Acción `ADJUST`
+
+Se preserva:
+
+```text
+VPROC-0024.CCR-004
+ADJUST
+```
+
+Un ajuste requiere una observación o evidencia que demuestre diferencia respecto del registro.
+
+Debe conservar:
+
+- valor original;
+- observación;
+- diferencia;
+- causa;
+- autoridad;
+- decisión;
+- efecto compensatorio o movimiento relacionado.
+
+No existe sobrescritura silenciosa del ledger.
+
+---
+
+#### 49. Eventos empresariales preservados
+
+`INT-PROC-003` no crea definiciones normales de evento.
+
+Para `VPROC-0024` se conservan exactamente:
+
+| Definición           | Tipo                                                       | Clase                 | Hecho                                                                           |
+| -------------------- | ---------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------- |
+| `VPROC-0024.EVT-001` | `vento.process.vproc-0024.inbound-movement-requested.v1`   | `PROCESS_STARTED`     | existe una solicitud válida de ingreso o reubicación                            |
+| `VPROC-0024.EVT-002` | `vento.process.vproc-0024.validation-in-progress.v1`       | `VALIDATION_FACT`     | se validan origen, destino, recurso, cantidad, unidad, condición y autorización |
+| `VPROC-0024.EVT-003` | `vento.process.vproc-0024.ready-for-physical-execution.v1` | `READINESS_FACT`      | la operación está autorizada y puede comenzar físicamente                       |
+| `VPROC-0024.EVT-004` | `vento.process.vproc-0024.pending-confirmation.v1`         | `HANDOFF_FACT`        | la ejecución física espera aceptación del destino o responsable                 |
+| `VPROC-0024.EVT-005` | `vento.process.vproc-0024.posting-pending.v1`              | `RECONCILIATION_FACT` | el hecho físico validado espera efecto atómico en ledger y proyecciones         |
+| `VPROC-0024.EVT-006` | `vento.process.vproc-0024.inbound-movement-reconciled.v1`  | `PROCESS_COMPLETED`   | el ingreso quedó contabilizado una sola vez dentro del alcance de NEXO          |
+
+Sensibilidad preservada:
+
+```text
+RESTRICTED_FINANCIAL
+```
+
+---
+
+#### 50. Estados sin definición normal de evento propia
+
+El catálogo normal no contiene una definición adicional para cada estado de `VPROC-0024`.
+
+En particular, esta tarea no inventa eventos normales independientes para:
+
+```text
+VPROC-0024.IN_EXECUTION
+VPROC-0024.PUTAWAY_PENDING
+```
+
+La ausencia de una definición normal para esos estados no elimina su existencia como estados canónicos ni autoriza crear nombres nuevos en este contrato.
+
+---
+
+#### 51. Sobre de eventos
+
+Toda materialización posterior de eventos de `VPROC-0024` deberá heredar el sobre transversal aprobado, incluyendo según corresponda:
+
+- identidad de evento;
+- definición y versión;
+- proceso e instancia;
+- productora;
+- agregado y versión;
+- momento del hecho y registro;
+- principal y actor efectivo;
+- sede, área y dispositivo;
+- estado previo y actual;
+- correlación y causalidad;
+- request e idempotencia;
+- referencia de resultado;
+- evidencia;
+- auditoría;
+- razón;
+- sensibilidad;
+- alcance;
+- retención;
+- traza técnica.
+
+Cada consumidora recibe una proyección mínima autorizada.
+
+---
+
+#### 52. Consumidoras de `VPROC-0024`
+
+Se preservan exactamente como consumidoras directas:
+
+```text
+ORIGO
+FOGO
+PULSO
+NUMERA
+```
+
+No existen consumidoras condicionales aprobadas para `VPROC-0024`.
+
+Modalidad dominante:
+
+```text
+SOLICITUD_EFECTO_Y_EVENTO
+```
+
+Ninguna consumidora adquiere propiedad sobre el ledger por recibir una proyección.
+
+---
+
+#### 53. Proyección hacia ORIGO
+
+ORIGO podrá recibir la referencia necesaria para saber que el efecto físico derivado de su recepción:
+
+- fue solicitado;
+- quedó pendiente;
+- se confirmó;
+- se reconcilió;
+- o requiere intervención.
+
+ORIGO no podrá modificar el movimiento NEXO directamente.
+
+Una diferencia física que afecte la recepción comercial se correlaciona y se resuelve por los contratos propietarios; no se corrige sobrescribiendo saldos desde ORIGO.
+
+---
+
+#### 54. Proyección hacia FOGO y PULSO
+
+FOGO y PULSO podrán consumir únicamente información necesaria para su finalidad, como disponibilidad, trazabilidad o condición aplicable.
+
+No podrán:
+
+- crear movimientos de ingreso por escritura directa;
+- modificar cantidad existente;
+- cambiar ubicación sin contrato;
+- liberar cuarentena;
+- sustituir el ledger;
+- inferir disponibilidad antes de confirmación canónica.
+
+---
+
+#### 55. Proyección hacia NUMERA
+
+NUMERA puede consumir el hecho físico y el contexto de costo autorizado cuando su proceso financiero lo requiera.
+
+Pero:
+
+```text
+VPROC-0024.INBOUND_MOVEMENT_RECONCILED
+≠ OBLIGACIÓN ECONÓMICA DEFINITIVA
+```
+
+La definición contractual del evento económico posterior permanece en `INT-PROC-004`.
+
+NEXO no decide:
+
+- cuenta por pagar;
+- reconocimiento contable definitivo;
+- impuesto definitivo;
+- pago;
+- conciliación bancaria.
+
+---
+
+#### 56. Costo dentro del movimiento físico
+
+`cost_context` se preserva como información condicional de `VPROC-0024`.
+
+NEXO puede necesitar contexto de costo para:
+
+- valoración operativa;
+- trazabilidad;
+- proyección autorizada;
+- conciliación con fuentes financieras.
+
+Eso no convierte a NEXO en propietaria del hecho económico.
+
+Cuando exista diferencia entre costo físico utilizado por una proyección y el hecho financiero propietario, la divergencia deberá quedar identificada y conciliada; no se sobrescribirá una fuente para hacerla coincidir silenciosamente con la otra.
+
+---
+
+#### 57. Autorización server-side
+
+Toda mutación que materialice `VPROC-0024` deberá comprobar en servidor, como mínimo:
+
+- permiso exacto;
+- principal autenticado;
+- actor efectivo;
+- sede;
+- área cuando corresponda;
+- ubicación;
+- contexto operativo requerido;
+- recurso;
+- estado actual;
+- transición solicitada;
+- versión;
+- campos que pueden mutar.
+
+No se concede autoridad por:
+
+- nombre local de rol;
+- presencia de usuario autenticado;
+- pertenencia genérica a empleados;
+- acceso a la página;
+- campo oculto;
+- parámetro de formulario;
+- llamada directa a una API o RPC.
+
+---
+
+#### 58. Segregación y custodia
+
+Se preserva la segregación vigente:
+
+- compras puede crear o preparar según alcance sin convertirse en receptor general;
+- recepción puede recibir sin aprobar la compra;
+- quien produce no adquiere por ello capacidad de ajustar inventario global;
+- quien registra una entrada no adquiere por ello capacidad contable;
+- una concesión individual no neutraliza una denegación transversal.
+
+Cuando una misma persona pueda ejercer más de una capacidad por contrato explícito, deberá quedar demostrada la autoridad efectiva y la evidencia de esa combinación.
+
+---
+
+#### 59. Auditoría obligatoria
+
+Se preserva `VPROC-0024.AUDIT`.
+
+Foco obligatorio:
+
+- recepción física relevante;
+- movimiento;
+- origen;
+- destino;
+- lote o LPN;
+- cantidades;
+- unidad;
+- actor;
+- escaneo o evidencia;
+- aceptación;
+- conciliación.
+
+La evidencia mínima deberá permitir correlacionar:
+
+- movimiento u observación original;
+- origen y destino;
+- cantidades;
+- unidad;
+- lote o LPN;
+- resultado de conciliación.
+
+También deberán quedar reconstruibles denegaciones, retries, conflictos, excepciones y acciones CCR relevantes.
+
+---
+
+#### 60. Lecturas y extracciones sensibles
+
+Las mutaciones, ajustes, disposición, exportaciones y consultas privilegiadas de costo o trazabilidad pertenecen al perfil de auditoría del dominio físico.
+
+La clasificación de los eventos de `VPROC-0024` permanece:
+
+```text
+RESTRICTED_FINANCIAL
+```
+
+Cada consumidora deberá recibir únicamente la proyección necesaria para su finalidad y autorización.
+
+---
+
+#### 61. Métricas preservadas
+
+Se preservan las métricas de `VPROC-0024`:
+
+```text
+VPROC-0024.MET-001
+Ingresos ubicados y confirmados dentro del ciclo operativo
+```
+
+Drivers:
+
+```text
+VPROC-0024.MET-002
+Tiempo ingreso-ubicación
+
+VPROC-0024.MET-003
+Tasa de captura o escaneo correcto al primer intento
+```
+
+Guardrail:
+
+```text
+VPROC-0024.MET-004
+Stock sin ubicación,
+movimiento duplicado
+o ubicación incompatible con condición
+```
+
+Cadencia preservada:
+
+```text
+intradiaria y diaria;
+revisión semanal
+```
+
+Dimensiones mínimas:
+
+- sede;
+- LOC;
+- producto;
+- presentación;
+- lote;
+- LPN;
+- movimiento;
+- condición.
+
+---
+
+#### 62. Implementación física observada en NEXO
+
+La implementación vigente observada en NEXO ya contiene una acción de creación de entrada que puede:
+
+- resolver una sede activa;
+- recibir proveedor, factura, fecha y notas;
+- recibir un valor de aplicación fuente desde formulario;
+- recibir modo normal o emergencia;
+- resolver productos y perfiles de inventario;
+- convertir unidades y presentaciones;
+- calcular cantidades en unidad de stock;
+- calcular o propagar contexto de costo;
+- crear una cabecera de entrada;
+- crear líneas de entrada;
+- crear movimientos de tipo recepción;
+- actualizar proyección de stock por sede;
+- actualizar stock por ubicación;
+- actualizar stock por presentación cuando corresponda;
+- actualizar costos de producto y registrar eventos de costo en ciertos casos;
+- incrementar cantidades recibidas en líneas de orden de compra;
+- marcar una orden como recibida cuando las cantidades físicas observadas cumplen la condición implementada.
+
+Esta presencia física no equivale al contrato objetivo de `INT-PROC-003`.
+
+---
+
+#### 63. Estados físicos observados
+
+La acción vigente observada deriva estados físicos simplificados a partir de cantidades:
+
+```text
+received
+partial
+pending
+```
+
+Esos valores no sustituyen la secuencia canónica de `VPROC-0024`.
+
+En particular:
+
+```text
+status = received
+```
+
+no demuestra por sí mismo:
+
+- handoff ORIGO válido;
+- `VALIDATION_IN_PROGRESS` completado;
+- `READY_FOR_PHYSICAL_EXECUTION` alcanzado;
+- confirmación de destino;
+- putaway;
+- posting atómico;
+- reconciliación;
+- idempotencia end-to-end.
+
+---
+
+#### 64. Procedencia física observada
+
+La implementación observada acepta una aplicación fuente enviada desde el formulario y la normaliza hacia valores conocidos.
+
+Eso puede conservarse como dato informativo durante una transición técnica, pero no puede constituir la prueba autoritativa del origen empresarial.
+
+El contrato objetivo exige:
+
+```text
+ORIGEN
+= REFERENCIA / EVENTO / CONTRATO DURABLE
+
+NO
+= TEXTO DECLARADO POR CLIENTE
+```
+
+La procedencia protegida debe resolverse y verificarse en la frontera autoritativa.
+
+---
+
+#### 65. Secuencia física de escrituras observada
+
+La acción actual materializa diversos efectos mediante escrituras sucesivas.
+
+Se observan responsabilidades que alcanzan:
+
+```text
+CABECERA
+→ LÍNEAS
+→ MOVIMIENTOS
+→ STOCK POR SEDE
+→ STOCK POR UBICACIÓN
+→ STOCK POR PRESENTACIÓN CUANDO APLICA
+→ COSTO / EVENTO DE COSTO CUANDO APLICA
+→ CANTIDAD RECIBIDA DE ORDEN
+→ ESTADO DE ORDEN
+```
+
+La secuencia demuestra capacidad física existente, pero no demuestra por sí sola atomicidad lógica, idempotencia integral, recuperación ante fallo intermedio ni propiedad correcta de cada dato.
+
+---
+
+#### 66. Frontera física que deberá alcanzarse
+
+El contrato objetivo exige separar responsabilidades aunque la implementación física futura utilice una transacción, RPC, función o composición técnica común.
+
+La semántica deberá ser equivalente a:
+
+```text
+ORIGO
+CONFIRMA RECEPCIÓN ACEPTADA
+        ↓
+CONTRATO DE HANDOFF
+        ↓
+NEXO
+VALIDA ORIGEN Y AUTORIDAD
+        ↓
+NEXO
+CREA / RECUPERA INTENCIÓN IDEMPOTENTE
+        ↓
+NEXO
+EJECUTA MOVIMIENTO FÍSICO
+        ↓
+NEXO
+CONFIRMA DESTINO Y UBICACIÓN
+        ↓
+NEXO
+POSTEA LEDGER Y PROYECCIONES
+        ↓
+NEXO
+RECONCILIA RESULTADO
+        ↓
+PROYECCIONES A CONSUMIDORAS
+```
+
+---
+
+#### 67. Escrituras que no definen propiedad
+
+La existencia física de una tabla, RPC o helper compartido no cambia la propietaria empresarial.
+
+Reglas:
+
+1. ORIGO no adquiere propiedad de stock porque hoy pueda escribir una estructura física relacionada.
+2. NEXO no adquiere propiedad de la aceptación comercial porque hoy pueda actualizar cantidades recibidas de una orden.
+3. NUMERA no adquiere propiedad del movimiento físico porque consuma costo o cantidad.
+4. Una estructura temporal compartida deberá evolucionar sin crear dos fuentes de verdad permanentes.
+
+---
+
+#### 68. Cantidades recibidas de la orden
+
+Una cantidad física ingresada en NEXO puede ser evidencia consumida por ORIGO para reconciliar su recepción y orden.
+
+Pero la propiedad semántica deberá permanecer separada:
+
+```text
+NEXO
+HECHO FÍSICO
+        ↓
+PROYECCIÓN / EVENTO
+        ↓
+ORIGO
+ACTUALIZA SU PROPIA VERDAD COMERCIAL
+```
+
+No:
+
+```text
+NEXO
+→ ESCRITURA CRUZADA COMO CONTRATO FINAL
+→ ESTADO COMERCIAL ORIGO
+```
+
+La materialización física transitoria deberá ser reconciliada en las tareas propietarias de arquitectura e implementación ya existentes.
+
+---
+
+#### 69. Costo físico y evento económico
+
+La implementación observada puede actualizar contexto de costo dentro de la misma acción de entrada.
+
+`INT-PROC-003` no autoriza interpretar esa implementación como contrato económico definitivo.
+
+Se conserva:
+
+```text
+NEXO
+HECHO FÍSICO Y CONTEXTO PERMITIDO
+        ↓
+INT-PROC-004
+CONTRATO HACIA NUMERA
+        ↓
+NUMERA
+HECHO ECONÓMICO PROPIETARIO
+```
+
+No se adelanta la definición de `INT-PROC-004`.
+
+---
+
+#### 70. Reconciliación de la brecha física
+
+La diferencia entre implementación observada y contrato objetivo queda:
+
+| Aspecto         | Implementación observada                                        | Contrato objetivo                                                      |
+| --------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| origen          | valor de aplicación fuente puede llegar desde formulario        | origen durable validado contra contrato o hecho canónico               |
+| estados         | `pending`, `partial`, `received`                                | estados `VPROC-0024.*`                                                 |
+| cabecera        | entrada física directa                                          | instancia correlacionada con causa y proceso                           |
+| movimiento      | inserción de movimiento de recepción                            | movimiento canónico idempotente y reconciliable                        |
+| saldo por sede  | actualización sucesiva                                          | proyección derivada de movimiento y protegida contra concurrencia      |
+| ubicación       | efecto mediante operación física existente                      | destino válido, confirmado y reconciliado                              |
+| presentación    | proyección física disponible                                    | una sola cantidad lógica sin doble contabilización                     |
+| costo           | puede calcularse dentro de la acción                            | contexto físico separado del hecho económico propietario               |
+| orden de compra | NEXO puede incrementar cantidades y marcar estado físico legacy | ORIGO conserva verdad comercial y consume proyección de NEXO           |
+| atomicidad      | varias escrituras sucesivas                                     | efecto lógico atómico o estado durable y reconciliable                 |
+| idempotencia    | no queda demostrada integralmente por la acción observada       | identidad estable, huella, resultado recuperable y deduplicación       |
+| autorización    | autenticación y sede aparecen en la acción                      | permiso exacto, actor, contexto, recurso, estado y versión server-side |
+
+No se crea una brecha nueva porque estos riesgos ya están registrados y poseen responsables documentales existentes.
+
+---
+
+#### 71. Propietarios documentales de la brecha
+
+Se preservan como destinos existentes:
+
+- las tareas de dominio, autorización y experiencia de NEXO ya asignadas al ledger, movimientos, ubicaciones, trazabilidad y operación de entradas;
+- las tareas de auditoría y arquitectura Supabase ya asignadas a fuentes competidoras, integridad, ledger, proyecciones, transacciones e idempotencia;
+- `INT-PROC-004`, exclusivamente para el contrato del evento económico hacia NUMERA;
+- `INT-PROC-005`, exclusivamente para el control end-to-end que impide duplicar una recepción y sus efectos;
+- los paquetes E5 correspondientes, para materialización y pruebas integradas;
+- las tareas transversales de acciones server-side y autorización para proteger las mutaciones.
+
+No se reasignan responsabilidades ni se crean destinos narrativos sin dueño.
+
+---
+
+#### 72. Cambios físicos no autorizados
+
+`INT-PROC-003` no autoriza:
+
+- modificar NEXO;
+- modificar ORIGO, NUMERA, FOGO o PULSO;
+- modificar tablas de entrada, movimientos, stock, ubicaciones, productos, costos u órdenes;
+- crear o modificar estados físicos;
+- crear enums;
+- crear RPC;
+- crear triggers;
+- modificar RLS o grants;
+- crear constraints o índices;
+- crear outbox, inbox, colas o workers;
+- crear eventos físicos;
+- ejecutar migraciones;
+- alterar datos;
+- recalcular inventario histórico;
+- reprocesar entradas;
+- ajustar existencias;
+- crear obligaciones económicas;
+- regularizar órdenes productivas;
+- ejecutar pruebas destructivas u operativas sobre datos reales.
+
+Toda futura modificación de Supabase que materialice este contrato deberá crearse, versionarse, documentarse y ejecutarse desde `vento-shell` conforme al gobierno vigente.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente para la entrada física de compras comportamientos que ya cuentan con protección canónica específica: ledger y proyecciones reconciliables, atomicidad o estado durable, idempotencia, no doble contabilización, unidades y conversiones coherentes, trazabilidad por lote y LPN, segregación, autorización server-side, handoff entre propietarias, fuente única y recepción end-to-end. No introduce comportamiento ejecutable nuevo ni modifica el significado de un requisito existente; crear nuevas filas repetiría cobertura ya registrada.
+
+---
+
+#### 74. Cobertura de prueba existente preservada
+
+La tarea conserva sin modificar la cobertura vigente para:
+
+- `TREQ-NEXO-010`, sobre equivalencia de unidad de stock, unidad de entrada, factor de conversión, modalidad, disponibilidad y política entre consumidores;
+- `TREQ-NEXO-011`, sobre fuente canónica de movimientos, proyecciones reconciliables, atomicidad, idempotencia, compensación, no doble contabilización entre stock suelto y LPN, concurrencia y offline;
+- `TREQ-NEXO-012`, sobre lote, serial, origen, liberación, vencimiento, ubicación, condición, cuarentena y trazabilidad dentro y fuera de LPN;
+- `TREQ-ORIGO-001`, sobre modalidad de recepción y prohibición de duplicar cantidades, costos, orden recibida o evento financiero al convertir, corregir o repetir;
+- `TREQ-ORIGO-003`, que vincula expresamente `INT-PROC-003` con atomicidad o reconciliación durable, clave idempotente, replay seguro y corrección vinculada de recepción;
+- `TREQ-INTEGRATION-003`, sobre identidad estable, huella, retries, resultado desconocido, deduplicación y recuperación;
+- `TREQ-INTEGRATION-005`, sobre contexto y revalidación de autoridad en handoffs entre aplicaciones;
+- `TREQ-INTEGRATION-006`, sobre fuente única de cada dato empresarial y eliminación de fuentes competidoras;
+- `TREQ-AUTH-010`, sobre segregación de funciones;
+- `TREQ-AUTH-013`, sobre protección server-side de mutaciones;
+- `TREQ-AUTH-015`, sobre evidencia correlacionable de decisiones y acciones protegidas.
+
+Ninguna de esas filas se crea, modifica, difiere, descarta u obsolete en esta tarea.
+
+---
+
+#### 75. Criterios de aceptación
+
+- [ ] NEXO queda identificada como única propietaria del efecto físico gobernado por `VPROC-0024`.
+- [ ] ORIGO conserva la aceptación comercial y documental de `VPROC-0022`.
+- [ ] NUMERA conserva el efecto económico posterior.
+- [ ] Se preserva `VPROC-0022.EVT-004` como hecho normal de handoff hacia ingreso y ubicación física.
+- [ ] Una cadena enviada por cliente no se acepta como prueba de procedencia autoritativa.
+- [ ] El estado inicial es exactamente `VPROC-0024.INBOUND_MOVEMENT_REQUESTED`.
+- [ ] Se preservan exactamente seis estados intermedios.
+- [ ] El estado final es exactamente `VPROC-0024.INBOUND_MOVEMENT_RECONCILED`.
+- [ ] Se preservan exactamente siete transiciones normales.
+- [ ] No se inventan bypass normales.
+- [ ] `TR-007` conserva `CONTROL_ACEPTACION`, `G01,G02,G03,G04,G07` y `CIERRE_ATOMICO`.
+- [ ] Se preservan exactamente siete grupos obligatorios de entrada.
+- [ ] Se preservan exactamente siete grupos condicionales.
+- [ ] `purchase_receipt_ref` queda aplicado a la entrada derivada de recepción de compra.
+- [ ] Producto, cantidad y unidad se validan antes del efecto.
+- [ ] Presentación y conversión permanecen reproducibles.
+- [ ] Sede y ubicación deben ser válidas y compatibles.
+- [ ] Lote o serial se conservan cuando la política lo exige.
+- [ ] LPN no duplica la misma cantidad como stock suelto.
+- [ ] La condición puede bloquear disponibilidad sin borrar el hecho físico.
+- [ ] La parcialidad conserva cantidades aplicadas y pendientes sin solapamiento.
+- [ ] El ledger explica las proyecciones de existencia.
+- [ ] Ninguna proyección se modifica como verdad final sin movimiento correlacionado.
+- [ ] El posting se comporta como efecto lógico atómico o queda durable y reconciliable.
+- [ ] El replay de la misma intención no crea un segundo movimiento.
+- [ ] La reutilización conflictiva de identidad produce conflicto.
+- [ ] Un resultado desconocido se reconcilia antes de un nuevo efecto.
+- [ ] Se preservan `HOLD`, `REROUTE`, `ESCALATE` y `QUARANTINE`.
+- [ ] Se preservan `CANCEL`, `VOID`, `RETURN` y `ADJUST`.
+- [ ] Se preservan exactamente seis definiciones normales de evento.
+- [ ] No se inventan eventos normales para `IN_EXECUTION` ni `PUTAWAY_PENDING`.
+- [ ] Se preserva `VPROC-0024.AUDIT`.
+- [ ] Se preservan `VPROC-0024.MET-001` a `VPROC-0024.MET-004`.
+- [ ] ORIGO, FOGO, PULSO y NUMERA permanecen consumidoras directas sin adquirir propiedad.
+- [ ] La entrada NEXO no se interpreta como obligación económica definitiva.
+- [ ] La actualización comercial de ORIGO se plantea mediante proyección o contrato, no como propiedad de NEXO.
+- [ ] Se documenta la implementación física observada sin declararla contrato objetivo.
+- [ ] La brecha de procedencia desde formulario queda explícita y vinculada a controles existentes.
+- [ ] La secuencia de escrituras físicas observada no se presenta como atomicidad demostrada.
+- [ ] Cada brecha identificada conserva un destino documental existente.
+- [ ] No se desarrolla `INT-PROC-004`.
+- [ ] No se desarrolla `INT-PROC-005`.
+- [ ] No se modifica código, Supabase, migraciones, datos ni operación.
+- [ ] No se crean ni modifican requisitos de prueba.
+
+---
+
+#### 76. Estado de cierre documental
+
+`INT-PROC-003` queda documentalmente completa cuando las reglas anteriores se adopten como definición vigente del contrato mediante el cual NEXO materializa el efecto físico de una recepción de compra aceptada.
+
+Su aprobación documental no significa que:
+
+- la integración ORIGO → NEXO ya esté implementada;
+- el ledger actual sea transaccional o idempotente de extremo a extremo;
+- las escrituras cruzadas legacy hayan sido retiradas;
+- la autorización física vigente ya satisfaga todo el contrato;
+- NUMERA ya reciba el evento económico objetivo;
+- el control completo de duplicados ya esté materializado.
+
+Esas responsabilidades permanecen en sus tareas propietarias existentes.
+
+---
+
+#### 77. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+        ↓
+TAREA ACTUAL APROBADA
+INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico
+```
+
+
 ### [ ] INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico
 ### [ ] INT-PROC-005 — Definir control que evite una recepción duplicada
 

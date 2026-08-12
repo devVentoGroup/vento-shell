@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **754** |
+| Tareas aprobadas | **755** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **840** |
+| Tareas no iniciadas | **839** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.30% (754/1594)** |
+| Porcentaje de completamiento | **47.37% (755/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-PROC-002 — Definir contrato para que ORIGO registre la recepción** |
-| Tarea actual | **INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario** |
+| Última tarea aprobada | **INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario** |
+| Tarea actual | **INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico** |
+| Siguiente tarea | **INT-PROC-005 — Definir control que evite una recepción duplicada** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 38 de 83 aprobadas; INT-PROC-003 pendiente** |
+| Progreso del bloque | **BLOQUE X: 39 de 83 aprobadas; INT-PROC-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-PROC-002` — Definir contrato para que ORIGO registre la recepción |
-| Tarea actual | `INT-PROC-003` — Definir contrato para que NEXO cree la entrada de inventario — **NO INICIADA** |
-| Siguiente tarea | `INT-PROC-004` — Definir contrato para que NUMERA reciba el evento económico |
+| Última aprobada | `INT-PROC-003` — Definir contrato para que NEXO cree la entrada de inventario |
+| Tarea actual | `INT-PROC-004` — Definir contrato para que NUMERA reciba el evento económico — **NO INICIADA** |
+| Siguiente tarea | `INT-PROC-005` — Definir control que evite una recepción duplicada |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 38 DE 83 APROBADAS — ACTUAL INT-PROC-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 39 DE 83 APROBADAS — ACTUAL INT-PROC-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
-        ↓
-TAREA ACTUAL
 INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROC-005 — Definir control que evite una recepción duplicada
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 38 de 83 tareas aprobadas
+BLOQUE X — 39 de 83 tareas aprobadas
 ```
