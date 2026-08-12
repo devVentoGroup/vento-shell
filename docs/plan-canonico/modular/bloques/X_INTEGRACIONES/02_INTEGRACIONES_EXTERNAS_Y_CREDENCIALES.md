@@ -13419,7 +13419,7 @@ Reglas:
 1. retirar el provider binding no modifica `PermissionKey` ni contratos empresariales por conveniencia;
 2. `IntegrationPrincipal` se retira o desautoriza dentro del alcance técnico correspondiente sin reescribir actores humanos o ownership de dominio;
 3. `ExternalCredentialId` puede pasar a estado histórico/retirado sin borrar el registro de lifecycle;
-4. una API key, token o secret se invalida fuera de tablas expuestas y nunca se copia a la evidencia de retiro;
+4. cada material revocable se invalida en la autoridad y superficie correspondientes; los valores secretos recuperables se custodian fuera de tablas expuestas y los verificadores no conservan el original cuando basta una comprobación unidireccional; la evidencia de retiro no copia valores secretos ni reetiqueta credenciales publicables, configuración pública o identificadores de destino como secretos;
 5. una credencial de lectura no se convierte en sustituto temporal de una credencial de escritura;
 6. un ambiente no usa credenciales de otro ambiente durante el cierre;
 7. un consumidor que todavía depende de la credencial impide `LOCAL_REFERENCES_RETIRED` y debe resolverse antes del retiro terminal;
@@ -13680,8 +13680,26 @@ IntegrationPrincipal
 ExternalCredentialId
 → referencia interna a una credencial
 
-API key, token o secret
-→ valor secreto almacenado fuera de tablas expuestas
+Material de credencial o identificador técnico
+→ se clasifica antes de decidir su custodia, según `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001`
+
+`SECRET_STATIC_SERVER_SIDE` / `SECRET_DYNAMIC_RECOVERABLE`
+→ valor secreto recuperable custodiado fuera de tablas expuestas
+
+`SECRET_DYNAMIC_VERIFIER`
+→ hash o verificador no reversible cuando basta comprobar; no conserva el valor original
+
+`PUBLIC_CREDENTIAL_RESTRICTED` / `PUBLIC_CONFIGURATION`
+→ configuración publicable restringida por binding; no se reetiqueta como secreto ocultable
+
+`CREDENTIAL_REFERENCE`
+→ referencia no sensible; puede persistirse sin contener el valor de la credencial
+
+`DESTINATION_TOKEN_OR_IDENTIFIER`
+→ dato técnico de destino sujeto a privacidad; no es secreto de autenticación externo
+
+`NO_SECRET_APPLICABLE`
+→ no se inventa material secreto ni secret store
 ```
 
 La regla cardinal es:
@@ -14619,8 +14637,26 @@ IntegrationPrincipal
 ExternalCredentialId
 → referencia interna a una credencial
 
-API key, token o secret
-→ valor secreto almacenado fuera de tablas expuestas
+Material de credencial o identificador técnico
+→ se clasifica antes de decidir su custodia, según `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001`
+
+`SECRET_STATIC_SERVER_SIDE` / `SECRET_DYNAMIC_RECOVERABLE`
+→ valor secreto recuperable custodiado fuera de tablas expuestas
+
+`SECRET_DYNAMIC_VERIFIER`
+→ hash o verificador no reversible cuando basta comprobar; no conserva el valor original
+
+`PUBLIC_CREDENTIAL_RESTRICTED` / `PUBLIC_CONFIGURATION`
+→ configuración publicable restringida por binding; no se reetiqueta como secreto ocultable
+
+`CREDENTIAL_REFERENCE`
+→ referencia no sensible; puede persistirse sin contener el valor de la credencial
+
+`DESTINATION_TOKEN_OR_IDENTIFIER`
+→ dato técnico de destino sujeto a privacidad; no es secreto de autenticación externo
+
+`NO_SECRET_APPLICABLE`
+→ no se inventa material secreto ni secret store
 ```
 
 Reglas:

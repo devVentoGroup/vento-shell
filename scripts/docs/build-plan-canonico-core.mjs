@@ -13,6 +13,7 @@ import {
 import { validateBlockISurfaceMatrices } from './validate-block-i-surface-matrices.mjs';
 import { validatePriorityDeliveryLanes } from './validate-priority-delivery-lanes.mjs';
 import { validateEventApplicationBlock } from './validate-event-application-block.mjs';
+import { validateExternalCredentialTaxonomy } from './validate-external-credential-taxonomy.mjs';
 import { validateE3TransitionClosure } from './validate-e3-transition-closure.mjs';
 
 const root = process.cwd();
@@ -166,6 +167,16 @@ try {
   );
 } catch (error) {
   fail(`Mini-bloque INT-APP inválido:\n- ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const credentialStats = validateExternalCredentialTaxonomy({ root });
+  console.log(
+    `OK: taxonomía INT-EXT; ${credentialStats.classificationBlocks} resúmenes; `
+    + `${credentialStats.credentialClasses} clases/grupos obligatorios por resumen.`
+  );
+} catch (error) {
+  fail(`Taxonomía INT-EXT inválida:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {
