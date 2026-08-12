@@ -2242,6 +2242,1471 @@ SIGUIENTE TAREA RESERVADA
 `INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia`
 
 
-### [ ] INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
+### ✅ INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-WORK-002 — Definir contrato para que ANIMA presente el turno` — APROBADA
+**Tarea siguiente:** `INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase` — RESERVADA
+**Tipo de tarea:** documental; definición del contrato autoritativo mediante el cual ANIMA captura, persiste, sincroniza, valida y reconcilia hechos de asistencia vinculados al trabajador, vínculo laboral, turno y revisión publicada aplicables, sin implementar esquema físico, migraciones, RPC, RLS, colas nuevas, cambios de código ni modificaciones de Supabase
+**Bloque:** X — Integraciones
+**Mini-bloque:** Contexto laboral
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca qué significa que ANIMA registre asistencia dentro de Vento OS y qué condiciones deben cumplirse para que una intención de marcación se convierta en un hecho de asistencia durable, reconciliable y apto para consumo posterior.
+
+La decisión debe preservar simultáneamente:
+
+```text
+VISO
+→ GOBIERNA LA PROGRAMACIÓN PUBLICADA
+
+ANIMA
+→ GOBIERNA LOS HECHOS DE ASISTENCIA
+
+SHELL / SUPABASE
+→ RESUELVEN Y CONFIRMAN CONTEXTO BAJO SUS CONTRATOS
+```
+
+sin fusionar programación, asistencia y autorización.
+
+La regla cardinal es:
+
+```text
+TOCAR “MARCAR”
+≠
+ASISTENCIA CONFIRMADA
+```
+
+También se conserva:
+
+```text
+TURNO PUBLICADO
+≠
+CHECK-IN
+```
+
+```text
+CHECK-IN
+≠
+PERMISO OPERATIVO FINAL
+```
+
+```text
+EVENTO ENCOLADO
+≠
+EVENTO CONFIRMADO POR SERVIDOR
+```
+
+```text
+CORREGIR ASISTENCIA
+≠
+SOBRESCRIBIR EL HECHO ORIGINAL
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-WORK-003` deja definido un contrato documental único de registro de asistencia con nueve resultados materiales:
+
+1. ANIMA queda confirmada como aplicación propietaria de `VPROC-0008`.
+2. La unidad primaria de captura queda fijada como un hecho de asistencia identificado antes del primer intento de sincronización.
+3. Cada entrada, salida o descanso deberá vincularse determinísticamente con trabajador, vínculo laboral, turno y revisión publicada aplicables.
+4. Se separan intención local, persistencia local, recepción server-side, validación, conciliación y presentación al trabajador.
+5. Se define la semántica online y offline sin permitir que la ausencia de una ruta server-side degrade silenciosamente a una escritura alternativa no equivalente.
+6. Se fijan idempotencia, concurrencia, orden, replay y resultado desconocido.
+7. Se preserva la inmutabilidad del hecho original y el ciclo de corrección auditada de `VPROC-0008`.
+8. Se define la frontera exacta con programación VISO y con contexto efectivo, reservado a `INT-WORK-004`.
+9. Se reconciliarán las brechas observadas de ANIMA con propietarios documentales existentes, sin dejar pendientes huérfanos.
+
+Balance documental:
+
+| Control                                |                                                     Resultado |
+| -------------------------------------- | ------------------------------------------------------------: |
+| Proceso propietario                    |                                          **1 — `VPROC-0008`** |
+| Aplicación propietaria                 |                                                 **1 — ANIMA** |
+| Fuente propietaria de programación     |                                                  **1 — VISO** |
+| Consumidoras directas de asistencia    |                                  **3 — VISO, NUMERA y SHELL** |
+| Consumidoras condicionales             |                             **4 — NEXO, FOGO, ORIGO y PULSO** |
+| Acciones de asistencia cubiertas       | **4 — entrada, salida, inicio de descanso y fin de descanso** |
+| Definiciones normales de evento nuevas |                                                         **0** |
+| Cambios físicos                        |                                                         **0** |
+| Cambios en requisitos de prueba        |                                                         **0** |
+
+---
+
+#### 3. Decisiones canónicas preservadas
+
+Esta tarea consume y conserva sin reinterpretar las decisiones ya aprobadas sobre programación laboral, asistencia, contexto, autorización, eventos, idempotencia y corrección.
+
+Se preservan especialmente:
+
+- `CAP-02.06`, con VISO como fuente administrativa de turnos y ANIMA como consumidora de programación;
+- `CAP-02.07`, con ANIMA como superficie de captura y VISO como superficie posterior de revisión laboral;
+- `VPROC-0007`, como proceso propietario de programación publicada;
+- `VPROC-0008 — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables`;
+- la propiedad de ANIMA sobre `VPROC-0008`;
+- `INT-WORK-001`, que fija la unidad de programación como `shift_id + revisión publicada`;
+- `INT-WORK-002`, que obliga a ANIMA a presentar esa revisión sin convertirse en propietaria de programación;
+- `AUTH-CTX-010`, que separa turno publicado y vigente de check-in;
+- `AUTH-CTX-011`, que exige una sesión de check-in confirmada por servidor para construir `active_checkin_session`;
+- `INT-APP-004` a `INT-APP-009`, para idempotencia, reintentos, causalidad, auditoría y recuperación;
+- `INT-APP-010`, que impide escrituras cruzadas sin contrato;
+- los requisitos vigentes de asistencia offline, descansos, integración laboral, contexto, invalidación y auditoría;
+- la prohibición de tratar una respuesta técnica, un estado local o una cola como hecho empresarial confirmado.
+
+Nada de esta tarea modifica la propiedad funcional de VISO sobre programación ni adelanta la confirmación autoritativa del contexto efectivo de `INT-WORK-004`.
+
+---
+
+#### 4. Propiedad y autoridad
+
+La propiedad queda fijada así:
+
+```text
+VPROC-0007
+→ PROPIETARIA = VISO
+
+VPROC-0008
+→ PROPIETARIA = ANIMA
+```
+
+Por tanto:
+
+1. VISO crea, versiona y publica la programación laboral.
+2. ANIMA captura y gobierna los hechos de asistencia.
+3. ANIMA no crea un turno para justificar una marcación.
+4. ANIMA no modifica una revisión publicada como efecto de asistencia.
+5. VISO puede consumir, revisar y tramitar correcciones de asistencia únicamente bajo el contrato propietario de `VPROC-0008`.
+6. VISO no mantiene un registro competidor de entrada, salida o descanso.
+7. NUMERA consume resultados autorizados de asistencia para finalidades económicas posteriores, sin convertirse en propietaria del hecho.
+8. SHELL consume contexto y estado derivados, sin crear asistencia.
+9. NEXO, FOGO, ORIGO y PULSO solo consumen proyecciones cuando una finalidad aprobada lo exija.
+10. Supabase podrá materializar persistencia, transición y resolución, pero no constituye una aplicación propietaria distinta.
+
+Regla:
+
+```text
+QUIEN PUBLICA EL TURNO
+≠
+QUIEN CAPTURA LA ASISTENCIA
+≠
+QUIEN CONSUME EL CONTEXTO
+```
+
+---
+
+#### 5. Vocabulario contractual
+
+##### 5.1. Intención de marcación
+
+Acción iniciada por un trabajador o sistema autorizado que expresa la intención de registrar entrada, salida, inicio de descanso o fin de descanso.
+
+Todavía no demuestra que el efecto haya quedado confirmado.
+
+##### 5.2. Evento local persistido
+
+Representación durable en el dispositivo de una intención de asistencia que ya posee identidad estable, contenido suficiente y estado de sincronización.
+
+Puede sobrevivir cierre o reinicio de la aplicación.
+
+##### 5.3. Evento de asistencia recibido
+
+Hecho recibido por la frontera autoritativa y representado en el estado inicial aprobado de `VPROC-0008`.
+
+La recepción no confirma por sí sola validez, turno, contexto ni efecto laboral final.
+
+##### 5.4. Evento validado
+
+Evento cuya identidad, secuencia, actor, tiempo, relación laboral y referencias aplicables fueron comprobadas suficientemente para continuar.
+
+##### 5.5. Evento vinculado a contexto
+
+Evento asociado de forma inequívoca con el trabajador, vínculo, turno, revisión publicada y territorio aplicables cuando correspondan.
+
+##### 5.6. Evento aceptado para conciliación
+
+Evento original que superó las puertas necesarias para formar parte de la reconstrucción de asistencia.
+
+##### 5.7. Evento reconciliado
+
+Representación final de `VPROC-0008` en la que el hecho original y cualquier decisión de corrección aplicable quedaron vinculados al contexto correcto.
+
+No significa por sí solo cierre de turno, cierre de nómina ni cierre del periodo laboral.
+
+##### 5.8. Sesión de check-in
+
+Estado derivado y confirmado por servidor que representa una entrada abierta y compatible con el turno aplicable.
+
+No es el evento original y no concede permisos por sí solo.
+
+##### 5.9. Jornada derivada
+
+Resultado calculado a partir de hechos originales, reglas vigentes y correcciones aprobadas.
+
+No sustituye los eventos que la originaron.
+
+##### 5.10. Corrección
+
+Decisión auditada que modifica la interpretación o resultado derivado sin sobrescribir el hecho original.
+
+---
+
+#### 6. Acciones de asistencia cubiertas
+
+El contrato cubre exactamente estas familias funcionales de marcación:
+
+| Acción             | Significado                                                 |
+| ------------------ | ----------------------------------------------------------- |
+| entrada            | inicio de presencia laboral asociada a la jornada aplicable |
+| salida             | cierre de la presencia o sesión laboral aplicable           |
+| inicio de descanso | apertura de un descanso dentro de una sesión de asistencia  |
+| fin de descanso    | cierre del descanso correspondiente                         |
+
+La implementación podrá utilizar nombres técnicos distintos, pero no podrá cambiar su semántica por conveniencia local.
+
+Una novedad laboral, ausencia, reemplazo administrativo, corrección de programación o incidencia no se convierte automáticamente en una de estas cuatro acciones.
+
+---
+
+#### 7. Identidad estable de la intención
+
+Toda intención reintentable deberá obtener una identidad estable **antes del primer envío**.
+
+La identidad deberá:
+
+1. ser única dentro de su dominio de asistencia;
+2. permanecer igual durante retry, reconexión y replay de la misma intención;
+3. no cambiar porque la aplicación se cierre o reinicie;
+4. no reutilizarse para contenido materialmente distinto;
+5. poder correlacionarse con el hecho persistido y el resultado recuperable;
+6. permanecer separada de la identidad técnica del request, dispositivo, sesión o fila física;
+7. no ser sustituida por el timestamp como mecanismo de deduplicación.
+
+Regla:
+
+```text
+MISMA IDENTIDAD
++
+MISMO CONTENIDO LÓGICO
+→ MISMA INTENCIÓN
+```
+
+```text
+MISMA IDENTIDAD
++
+CONTENIDO MATERIALMENTE DISTINTO
+→ CONFLICTO
+```
+
+---
+
+#### 8. Contenido lógico mínimo de una intención
+
+Antes de sincronizar una intención de asistencia deberá existir información suficiente para resolver, según la acción:
+
+| Información                       | Obligación                                                 |
+| --------------------------------- | ---------------------------------------------------------- |
+| identidad estable de la intención | obligatoria                                                |
+| trabajador                        | obligatorio                                                |
+| vínculo laboral aplicable         | resoluble server-side                                      |
+| tipo de acción                    | obligatorio                                                |
+| instante real de ocurrencia       | obligatorio                                                |
+| fuente o dispositivo              | obligatorio cuando aplique                                 |
+| turno                             | obligatorio cuando la acción dependa de turno              |
+| revisión publicada                | obligatoria para vinculación determinista con programación |
+| sede                              | obligatoria cuando la acción dependa de territorio         |
+| área                              | cuando el turno o rol la requieran                         |
+| rol operativo                     | cuando el contrato operativo lo requiera                   |
+| sesión de asistencia previa       | obligatoria para salida y descansos cuando corresponda     |
+| geolocalización                   | cuando la política de marcación la exija                   |
+| precisión de ubicación            | cuando se use geolocalización                              |
+| momento de captura offline        | cuando aplique                                             |
+| evidencia adicional               | cuando una excepción o corrección la requiera              |
+| versión contractual               | resoluble en la frontera autoritativa                      |
+
+Esta tabla define información lógica, no nombres de columnas físicas.
+
+---
+
+#### 9. `occurred_at` y tiempo de recepción
+
+El instante en que ocurrió la marcación y el instante en que el servidor la recibió son conceptos distintos.
+
+Reglas:
+
+1. `occurred_at` representa el instante declarado y validado de ocurrencia.
+2. la recepción posterior no reemplaza `occurred_at`.
+3. una marcación offline conserva su tiempo original aun si sincroniza horas después.
+4. el servidor deberá evaluar plausibilidad, orden y reglas aplicables sin reescribir el instante original por conveniencia.
+5. la fecha del dispositivo no se acepta ciegamente como autoridad final.
+6. cualquier corrección temporal posterior queda auditada y no altera silenciosamente el evento original.
+7. la zona horaria necesaria para interpretar programación procede del contrato del turno y no de una inferencia local libre.
+
+---
+
+#### 10. Vinculación determinista con trabajador y vínculo laboral
+
+Cada hecho de asistencia deberá quedar asociado al trabajador exacto y al vínculo laboral aplicable.
+
+No podrá resolverse por:
+
+- nombre visible;
+- correo mostrado;
+- último empleado activo en el dispositivo;
+- usuario técnico del dispositivo;
+- fila de asistencia previa de otra persona;
+- rol compartido;
+- sede seleccionada;
+- turno de un tercero;
+- perfil cacheado no revalidado.
+
+Un trabajador retirado, vínculo terminado o identidad ambigua no se vuelve elegible por poseer una intención offline pendiente.
+
+La sincronización deberá revalidar la autoridad vigente sin borrar la evidencia de que el evento fue capturado anteriormente.
+
+---
+
+#### 11. Vinculación determinista con `shift_id + revisión publicada`
+
+La asistencia debe poder reconstruirse contra la programación exacta que le corresponde.
+
+La referencia contractual es:
+
+```text
+TRABAJADOR
++
+VÍNCULO
++
+SHIFT_ID
++
+REVISIÓN PUBLICADA APLICABLE
++
+ACCIÓN
++
+OCCURRED_AT
+→ EVENTO DE ASISTENCIA CONTEXTUALIZABLE
+```
+
+Reglas:
+
+1. mostrar un turno en ANIMA no basta para fijar la referencia autoritativa.
+2. el servidor deberá resolver o verificar el turno y la revisión aplicables.
+3. una revisión en borrador no puede recibir asistencia como si fuera publicada.
+4. una revisión sustituida no se selecciona por ser la última fila cacheada.
+5. una revisión futura no reescribe eventos históricos.
+6. una nueva revisión publicada no modifica automáticamente una entrada ya confirmada contra otra revisión.
+7. un evento offline se reconcilia con la revisión realmente aplicable al hecho, no con la revisión que casualmente esté visible al sincronizar.
+8. si la revisión no puede resolverse sin ambigüedad, el evento no se confirma por inferencia.
+9. una selección del cliente no puede fabricar la revisión autoritativa.
+10. turno y revisión deben conservarse en la trazabilidad aunque proyecciones posteriores minimicen campos.
+
+---
+
+#### 12. Separación entre turno vigente y turno elegible para marcar
+
+La existencia de un turno publicado y vigente no implica automáticamente que toda marcación sea válida.
+
+La frontera deberá distinguir:
+
+```text
+TURNO PUBLICADO Y VIGENTE
+```
+
+```text
+TURNO ELEGIBLE PARA LA ACCIÓN DE MARCACIÓN
+```
+
+```text
+SESIÓN DE CHECK-IN ACTIVA
+```
+
+No se inventan en esta tarea tolerancias cuantitativas de entrada, salida o descanso.
+
+Las ventanas y políticas temporales exactas permanecen bajo sus propietarios funcionales y deberán ser versionadas antes de materializarse.
+
+---
+
+#### 13. Contrato de entrada
+
+Una entrada válida deberá poder demostrar, como mínimo:
+
+1. trabajador identificable y activo;
+2. vínculo laboral compatible;
+3. intención con identidad estable;
+4. acción de entrada inequívoca;
+5. `occurred_at` válido;
+6. turno y revisión publicada aplicables;
+7. sede del turno;
+8. área cuando corresponda;
+9. rol operativo requerido cuando corresponda;
+10. fuente o dispositivo identificable según política;
+11. ubicación o evidencia física cuando la política la requiera;
+12. ausencia de otra entrada incompatible ya confirmada;
+13. autoridad y contexto suficientes para registrar el hecho;
+14. idempotencia y secuencia coherentes;
+15. posibilidad de reconstrucción auditada.
+
+La confirmación del evento no se deriva únicamente de que el cliente haya recibido una respuesta HTTP exitosa.
+
+---
+
+#### 14. Contrato de salida
+
+Una salida deberá cerrar la sesión de asistencia correcta sin fabricar una nueva sesión.
+
+Reglas:
+
+1. deberá vincularse al trabajador y sesión abiertos correspondientes;
+2. conservará el mismo turno y revisión aplicables a la sesión, salvo una decisión autoritativa explícita que demuestre otra relación;
+3. no escogerá una sesión por “última entrada” cuando existan varias candidatas o ambigüedad;
+4. no cerrará una sesión de otro trabajador;
+5. no cerrará una sesión ya cerrada como un segundo efecto;
+6. un replay de la misma intención devolverá el resultado ya determinado;
+7. un evento de salida capturado offline conservará su instante original;
+8. la expiración temporal del turno no autoriza a desligar la salida de la sesión que realmente se abrió;
+9. el check-out confirmado podrá participar posteriormente en el cierre del contexto, cuya confirmación integral pertenece a `INT-WORK-004`;
+10. una salida rechazada o pendiente no deberá presentarse como sesión cerrada.
+
+---
+
+#### 15. Contrato de inicio de descanso
+
+Un inicio de descanso deberá operar sobre una sesión de asistencia abierta, exacta y compatible.
+
+Reglas:
+
+1. identifica la sesión afectada;
+2. conserva trabajador, turno y revisión;
+3. no crea una segunda sesión de asistencia;
+4. no cierra autorización operativa por sí solo;
+5. no permite dos descansos incompatibles abiertos por replay o concurrencia;
+6. conserva identidad idempotente propia de la intención de descanso;
+7. un retry no genera un descanso adicional;
+8. una acción contra sesión cerrada o incompatible no se aplica por fallback;
+9. el resultado debe ser recuperable después de timeout;
+10. el hecho original permanece auditable.
+
+---
+
+#### 16. Contrato de fin de descanso
+
+Un fin de descanso deberá cerrar exactamente el descanso abierto correspondiente.
+
+Reglas:
+
+1. no elige arbitrariamente entre varios descansos;
+2. no cierra un descanso de otra sesión;
+3. no crea un descanso si no existe uno válido que cerrar;
+4. preserva la identidad de la intención;
+5. replay de la misma intención no produce un segundo cierre;
+6. intención con misma identidad y contenido diferente produce conflicto;
+7. conserva el instante real de ocurrencia;
+8. no convierte descanso terminado en check-out;
+9. no modifica programación;
+10. queda correlacionado con la sesión de asistencia y el turno/revisión aplicables.
+
+---
+
+#### 17. Puertas mínimas antes de confirmar un hecho
+
+Toda acción deberá evaluarse en la frontera autoritativa con las puertas aplicables.
+
+| Puerta        | Condición                                                 |
+| ------------- | --------------------------------------------------------- |
+| identidad     | principal y actor efectivos resolubles                    |
+| trabajador    | empleado exacto y estado laboral válido                   |
+| vínculo       | vínculo aplicable a la acción y al tiempo                 |
+| acción        | tipo permitido y coherente con el estado actual           |
+| intención     | identidad estable y contenido compatible                  |
+| turno         | turno aplicable resoluble                                 |
+| revisión      | revisión publicada exacta resoluble                       |
+| sede          | territorio compatible con turno y acción                  |
+| área          | compatible cuando sea requerida                           |
+| rol operativo | válido cuando sea requerido                               |
+| sesión previa | exacta para salida y descansos                            |
+| ubicación     | satisfecha cuando la política la exija                    |
+| secuencia     | transición posible frente al estado actual                |
+| idempotencia  | no existe colisión material                               |
+| concurrencia  | no existe una transición incompatible ya confirmada       |
+| frescura      | referencias de autorización y contexto no están obsoletas |
+| auditoría     | decisión correlacionable                                  |
+
+Una puerta aplicable desconocida, ambigua o contradictoria no se interpreta como satisfecha.
+
+---
+
+#### 18. Fallo cerrado
+
+Regla:
+
+```text
+CONTEXTO NECESARIO NO RESOLUBLE
+→ NO CONFIRMAR EL EFECTO
+```
+
+No se permite:
+
+- seleccionar la primera coincidencia;
+- usar la última marcación local como verdad;
+- asumir que `null` significa cualquier sede o área;
+- completar turno desde una tarjeta visible;
+- completar rol desde el perfil base;
+- escoger revisión por timestamp aproximado;
+- convertir un error técnico en confirmación optimista;
+- insertar por otra vía únicamente porque una RPC no está disponible;
+- omitir una identidad idempotente porque una columna o contrato físico no la soporte;
+- presentar error de servidor como lista vacía o jornada sin eventos.
+
+---
+
+#### 19. Persistencia durable antes de mostrar “encolado”
+
+En modo offline o conectividad incierta, ANIMA solo podrá presentar una intención como encolada después de confirmar su persistencia durable en el dispositivo.
+
+La secuencia contractual es:
+
+```text
+GENERAR IDENTIDAD ESTABLE
+→ CONSTRUIR CONTENIDO
+→ PERSISTIR LOCALMENTE
+→ CONFIRMAR PERSISTENCIA LOCAL
+→ MOSTRAR ESTADO ENCOLADO
+```
+
+No:
+
+```text
+TOCAR BOTÓN
+→ MOSTRAR ENCOLADO
+→ INTENTAR PERSISTIR DESPUÉS
+```
+
+Si la persistencia local falla, la interfaz no debe afirmar que la marcación está protegida para sincronización posterior.
+
+---
+
+#### 20. Cola offline
+
+La cola deberá conservar, como mínimo, por intención:
+
+- identidad estable;
+- acción;
+- trabajador;
+- vínculo o información suficiente para resolverlo;
+- turno;
+- revisión publicada aplicable o información suficiente para comprobarla sin inferencia;
+- sesión relacionada cuando corresponda;
+- instante de ocurrencia;
+- instante de captura offline cuando aplique;
+- sede;
+- área y rol cuando correspondan;
+- geolocalización y precisión cuando apliquen;
+- fuente o dispositivo;
+- estado de sincronización;
+- número o historia suficiente de intentos para gobernar retry;
+- último resultado o error clasificable;
+- versión contractual necesaria para interpretar el contenido.
+
+La tarea no fija un formato físico de almacenamiento local.
+
+---
+
+#### 21. Estados de experiencia offline
+
+La experiencia deberá distinguir conceptualmente:
+
+1. intención aún no persistida;
+2. persistida y pendiente de sincronización;
+3. sincronizando;
+4. confirmada por servidor;
+5. requiere atención por conflicto;
+6. fallo temporal con retry posible;
+7. rechazo definitivo o incompatibilidad que exige intervención;
+8. resultado desconocido que exige recuperar estado antes de repetir.
+
+Ninguno de estos estados puede presentarse como asistencia confirmada salvo cuando exista confirmación autoritativa.
+
+---
+
+#### 22. Reautorización al sincronizar
+
+Una intención capturada offline no conserva indefinidamente la autoridad observada al crearla.
+
+Al sincronizar deberá revalidarse, según aplique:
+
+- identidad y estado del trabajador;
+- vínculo laboral;
+- turno y revisión;
+- sede y área;
+- rol operativo;
+- estado de la sesión de asistencia;
+- cambios de programación;
+- reemplazos;
+- cancelaciones;
+- revocaciones;
+- estado del dispositivo;
+- política de ubicación;
+- secuencia y concurrencia;
+- reglas de autorización vigentes.
+
+La reautorización no borra el evento local ni cambia su `occurred_at`; determina si puede producir efecto autoritativo y cómo debe reconciliarse.
+
+---
+
+#### 23. Idempotencia
+
+Cada intención reintentable conserva una identidad idempotente estable.
+
+Reglas:
+
+1. mismo identificador y mismo contenido lógico producen como máximo un efecto empresarial;
+2. mismo identificador y contenido materialmente distinto producen conflicto;
+3. una respuesta perdida no autoriza a crear una intención nueva por conveniencia;
+4. antes de repetir después de timeout se intenta recuperar el resultado;
+5. la deduplicación no depende únicamente de timestamp, trabajador y tipo;
+6. la eliminación local prematura de una intención no debe volver imposible recuperar un resultado ya confirmado;
+7. entrada, salida, inicio de descanso y fin de descanso poseen intenciones distinguibles;
+8. una clave de programación no se reutiliza como clave universal de asistencia;
+9. una clave de asistencia no se reutiliza para contexto, notificación o corrección;
+10. la idempotencia deberá ser enforceable en la frontera autoritativa, no solo en memoria del cliente.
+
+---
+
+#### 24. Resultado desconocido
+
+Un timeout, corte de red o cierre de aplicación puede ocurrir después del commit autoritativo pero antes de que el cliente reciba la respuesta.
+
+Regla:
+
+```text
+RESULTADO DESCONOCIDO
+→ RECUPERAR ESTADO
+→ NO REPETIR A CIEGAS
+```
+
+El sistema deberá distinguir:
+
+- operación no enviada;
+- operación recibida pero no confirmada al cliente;
+- operación aplicada;
+- operación duplicada idempotentemente;
+- operación en conflicto;
+- operación rechazada;
+- operación pendiente de conciliación.
+
+La interfaz no decide el resultado por ausencia de respuesta.
+
+---
+
+#### 25. Concurrencia y múltiples dispositivos
+
+Dos dispositivos o sesiones pueden intentar afectar la misma jornada.
+
+El contrato deberá impedir que carreras produzcan:
+
+- dos entradas simultáneas incompatibles;
+- dos salidas para una misma sesión;
+- dos descansos abiertos incompatibles;
+- cierre del descanso equivocado;
+- una salida ligada a la entrada de otro dispositivo o trabajador;
+- dos eventos originales creados para una sola intención;
+- una corrección que sobrescriba un hecho concurrentemente;
+- selección arbitraria por “última escritura gana”.
+
+La decisión autoritativa debe validar el estado relevante inmediatamente antes del commit.
+
+---
+
+#### 26. Orden de eventos
+
+La red puede entregar eventos fuera de orden.
+
+Reglas:
+
+1. orden de llegada no equivale a orden de ocurrencia;
+2. `occurred_at` debe conservarse y validarse;
+3. una salida llegada antes que la entrada correspondiente no se aplica ciegamente como sesión nueva;
+4. un fin de descanso llegado antes del inicio correspondiente requiere conciliación;
+5. la reconciliación puede esperar información faltante sin reescribir el evento original;
+6. eventos tardíos conservan causalidad e identidad;
+7. una corrección posterior no altera la identidad del hecho original;
+8. el orden derivado de la jornada se reconstruye con reglas versionadas y evidencia, no con el orden físico de inserción.
+
+---
+
+#### 27. Turnos cruzados de medianoche
+
+Un turno overnight se interpreta por instantes reales y zona horaria contractual, no por igualdad de fecha civil.
+
+Reglas:
+
+1. una entrada antes de medianoche y salida después de medianoche pueden pertenecer al mismo turno y revisión;
+2. cambiar de fecha no crea otra jornada por sí solo;
+3. la salida debe cerrar la sesión correcta;
+4. un filtro diario no puede cortar la semántica del turno;
+5. la cola offline conserva los instantes completos;
+6. la conciliación no reasigna automáticamente la salida al “turno de hoy”;
+7. no se inventan tolerancias adicionales en esta tarea.
+
+---
+
+#### 28. Cambios de turno después de capturar asistencia
+
+La programación puede cambiar después de que exista un evento de asistencia.
+
+Reglas:
+
+1. una revisión posterior no reescribe el evento ya confirmado;
+2. el evento conserva la referencia a la revisión contra la que fue aceptado;
+3. una corrección de programación no se propaga como edición destructiva de asistencia;
+4. si una revisión nueva invalida contexto futuro, los consumidores deberán revalidar;
+5. una intención offline todavía no confirmada deberá evaluarse contra la historia y reglas aplicables al hecho, no solamente contra la revisión visible en el momento de sincronización;
+6. una ambigüedad real se reconcilia; no se resuelve por conveniencia de UI.
+
+---
+
+#### 29. Reemplazos de turno
+
+Un reemplazo administrativo no permite asumir que el trabajador sustituto hereda automáticamente una sesión o evento del trabajador original.
+
+Debe conservarse:
+
+- turno original y revisión;
+- decisión de reemplazo;
+- nueva revisión publicada cuando corresponda;
+- trabajador aplicable a cada evento;
+- vínculo laboral de cada actor;
+- causalidad entre cambio de programación y asistencia posterior;
+- historia de los eventos ya ocurridos.
+
+Una marcación anterior al reemplazo no cambia de trabajador por edición posterior de programación.
+
+---
+
+#### 30. Ausencia de turno
+
+La ausencia de un turno aplicable no debe resolverse inventando programación.
+
+El contrato distinguirá:
+
+- no existe turno publicado;
+- existe turno publicado pero no es aplicable a la acción;
+- existe ambigüedad entre revisiones;
+- existe información insuficiente;
+- existe excepción laboral que requiere tratamiento específico;
+- existe indisponibilidad técnica para resolver el turno.
+
+Una marcación sin turno válido podrá entrar en tratamiento de excepción o conciliación únicamente cuando el proceso aprobado lo permita; nunca crea un turno por inferencia.
+
+---
+
+#### 31. Falta de permiso y falta de turno
+
+La experiencia y la auditoría deben mantener separadas las causas.
+
+```text
+NO HAY TURNO APLICABLE
+≠
+NO HAY PERMISO
+```
+
+```text
+TURNO AMBIGUO
+≠
+FALLO DE RED
+```
+
+```text
+UBICACIÓN NO VÁLIDA
+≠
+TRABAJADOR INACTIVO
+```
+
+La capa cliente puede mostrar mensajes seguros, pero la razón autoritativa se determina en servidor.
+
+---
+
+#### 32. Sede y geolocalización
+
+La sede del turno sigue siendo la referencia territorial de programación.
+
+La geolocalización es evidencia de presencia física cuando la política la exige.
+
+Por tanto:
+
+```text
+GPS
+≠
+SEDE DEL TURNO
+```
+
+```text
+PUNTO DE CHECK-IN
+≠
+PROPIEDAD FUNCIONAL DEL TURNO
+```
+
+Reglas:
+
+1. una ubicación cercana no crea elegibilidad laboral;
+2. una ubicación fuera de política no cambia la sede del turno;
+3. el cliente no puede enviar otra sede para reparar una incompatibilidad;
+4. la precisión y disponibilidad de geolocalización deberán tratarse según política;
+5. una excepción controlada conserva razón y evidencia;
+6. la evidencia física se minimiza y protege como dato laboral restringido.
+
+---
+
+#### 33. Área y rol operativo
+
+Cuando la acción requiera área o rol operativo:
+
+1. el área procede del turno o contexto autoritativo aplicable;
+2. el rol operativo procede de la programación/contexto, no del rol base;
+3. área debe pertenecer a la sede correspondiente;
+4. rol debe ser compatible con sede y área según las reglas vigentes;
+5. ausencia de área solo es válida cuando el contrato del rol lo permita;
+6. `null` no significa toda la sede;
+7. un valor enviado por cliente no amplía autoridad;
+8. un cambio de rol o área invalida decisiones stale y exige revalidación.
+
+---
+
+#### 34. Dispositivo y fuente de captura
+
+El hecho deberá poder atribuir su fuente cuando el contrato la requiera.
+
+La identidad técnica del dispositivo no sustituye al trabajador.
+
+Debe mantenerse separado:
+
+```text
+PRINCIPAL TÉCNICO
+≠
+DISPOSITIVO
+≠
+ACTOR HUMANO
+≠
+SESIÓN PERSONAL
+≠
+EVENTO DE ASISTENCIA
+```
+
+Una reinstalación, cambio de dispositivo o replay desde otra sesión no altera la identidad empresarial de una intención ya creada.
+
+---
+
+#### 35. Sesión de check-in y contexto efectivo
+
+`INT-WORK-003` define el hecho de asistencia que puede originar o cerrar una sesión de check-in.
+
+No define todavía la confirmación integral del contexto efectivo.
+
+La frontera es:
+
+```text
+EVENTO DE ENTRADA CONFIRMADO
+→ PUEDE PRODUCIR SESIÓN DE CHECK-IN AUTORITATIVA
+→ INT-WORK-004 CONFIRMA CONTEXTO EFECTIVO
+```
+
+```text
+EVENTO DE SALIDA CONFIRMADO
+→ PUEDE CERRAR SESIÓN DE CHECK-IN
+→ INT-WORK-004 CONFIRMA INVALIDACIÓN DEL CONTEXTO EFECTIVO
+```
+
+Una intención local, una cola o una respuesta optimista no puede crear `active_checkin_session`.
+
+---
+
+#### 36. Descansos y autorización
+
+Un descanso es un hecho de asistencia asociado a una sesión abierta.
+
+Por sí solo:
+
+- no cambia el turno publicado;
+- no reasigna sede;
+- no reasigna área;
+- no cambia rol operativo;
+- no cierra la sesión de check-in;
+- no elimina permisos operativos por inferencia.
+
+La política de qué capacidades permanecen habilitadas durante descanso pertenece a los contratos de contexto/autorización correspondientes y no se redefine aquí.
+
+---
+
+#### 37. Correcciones de asistencia
+
+El hecho original es inmutable.
+
+Toda corrección deberá conservar:
+
+- solicitud de corrección;
+- evento original afectado;
+- evidencia de soporte;
+- actor que solicita;
+- autoridad que revisa y decide;
+- estado anterior derivado;
+- estado posterior derivado;
+- motivo;
+- timestamps relevantes;
+- turno y revisión relacionados;
+- impactos sobre jornada, contexto, métricas y consumidores;
+- versión de reglas aplicada;
+- auditoría.
+
+Regla:
+
+```text
+CORRECCIÓN
+→ NUEVA DECISIÓN / REPRESENTACIÓN DERIVADA
+→ HECHO ORIGINAL PRESERVADO
+```
+
+No:
+
+```text
+UPDATE SILENCIOSO DEL EVENTO ORIGINAL
+```
+
+---
+
+#### 38. `CANCEL`, `VOID`, `REVERSE` y `CORRECT`
+
+Se preservan las acciones aprobadas de `VPROC-0008`.
+
+##### 38.1. `CANCEL`
+
+Cancela el procesamiento de un evento todavía pendiente cuando la transición aplicable lo permita.
+
+No borra evidencia de la intención.
+
+##### 38.2. `VOID`
+
+Invalida un evento duplicado o técnicamente inválido preservando la fila o referencia original y la razón.
+
+No convierte un hecho válido ya ejecutado en inexistente.
+
+##### 38.3. `REVERSE`
+
+Revierte efectos derivados cuando sea necesario sin borrar el evento original.
+
+##### 38.4. `CORRECT`
+
+Crea una decisión de corrección auditable con antes, después, evidencia, autoridad y propagación controlada.
+
+---
+
+#### 39. Jornada derivada y horas trabajadas
+
+La jornada calculada es una proyección derivada.
+
+No se acepta como entrada autoritativa un número de horas enviado por cliente.
+
+La derivación deberá poder reconstruirse desde:
+
+- eventos originales;
+- orden y causalidad;
+- turno y revisión;
+- reglas de descansos;
+- correcciones aprobadas;
+- versión de reglas;
+- excepciones reconciliadas.
+
+Una corrección de horas no sustituye el historial de eventos que justificó el cálculo anterior.
+
+---
+
+#### 40. Estados canónicos de `VPROC-0008`
+
+La tarea conserva los estados ya aprobados:
+
+```text
+ATTENDANCE_EVENT_RECEIVED
+→ VALIDATION_IN_PROGRESS
+→ MATCHED_TO_CONTEXT
+→ ACCEPTED_FOR_RECONCILIATION
+→ ATTENDANCE_EVENT_RECONCILED
+```
+
+Cuando existe corrección:
+
+```text
+ACCEPTED_FOR_RECONCILIATION
+→ CORRECTION_UNDER_REVIEW
+→ CORRECTION_APPROVED
+→ ACCEPTED_FOR_RECONCILIATION
+→ ATTENDANCE_EVENT_RECONCILED
+```
+
+No se crea un estado nuevo por conveniencia de implementación.
+
+Los estados locales de la cola son estados técnicos de sincronización y no reemplazan el ciclo empresarial.
+
+---
+
+#### 41. Excepciones canónicas de `VPROC-0008`
+
+Se preservan las familias aprobadas:
+
+- `QUARANTINE`, para eventos observados que no pueden continuar de forma segura;
+- `REQUEST_INFO`, para solicitar corroboración cuando falte evidencia;
+- `ESCALATE`, para anomalías que requieren autoridad o revisión;
+- `REOPEN`, para reabrir una conciliación vinculada cuando nueva evidencia lo justifique.
+
+El uso de estas excepciones no autoriza a reescribir el evento original.
+
+---
+
+#### 42. Eventos empresariales existentes
+
+`INT-WORK-003` no crea nuevas definiciones normales de evento.
+
+Se conservan las definiciones ya aprobadas de `VPROC-0008` para:
+
+1. evento de asistencia recibido;
+2. validación iniciada;
+3. evento aceptado para conciliación;
+4. corrección aprobada;
+5. evento de asistencia reconciliado.
+
+Toda materialización futura deberá reutilizar esas identidades y su sobre empresarial versionado.
+
+Un ACK técnico, retry, almacenamiento local o actualización visual no crea por sí solo otra definición empresarial.
+
+---
+
+#### 43. Consumidoras y proyecciones
+
+Las consumidoras heredadas se mantienen así:
+
+| Consumidora | Finalidad contractual                                                |
+| ----------- | -------------------------------------------------------------------- |
+| VISO        | revisión administrativa, correcciones y gestión laboral autorizada   |
+| NUMERA      | efectos económicos posteriores que requieran asistencia reconciliada |
+| SHELL       | contexto, acceso y continuidad compartida donde corresponda          |
+| NEXO        | consumo condicional de contexto operativo aprobado                   |
+| FOGO        | consumo condicional de contexto operativo aprobado                   |
+| ORIGO       | consumo condicional de contexto operativo aprobado                   |
+| PULSO       | consumo condicional de contexto operativo aprobado                   |
+
+Las proyecciones deberán minimizar datos y no entregar evidencia personal innecesaria.
+
+Una consumidora no podrá corregir el hecho propietario mediante escritura directa sobre la fuente de ANIMA.
+
+---
+
+#### 44. Privacidad y minimización
+
+La asistencia es información laboral restringida.
+
+Reglas:
+
+1. cada consumidora recibe únicamente lo necesario para su finalidad;
+2. geolocalización exacta no se propaga por defecto;
+3. datos del dispositivo se minimizan en proyecciones;
+4. notas y evidencia de corrección no se exponen a consumidoras sin necesidad;
+5. logs no duplican payload sensible por defecto;
+6. exportaciones requieren autoridad y finalidad;
+7. un supervisor territorial no obtiene historia global por consumir asistencia;
+8. el trabajador puede consultar su información permitida sin acceder a la de terceros;
+9. los eventos empresariales conservan sensibilidad laboral restringida;
+10. auditoría y observabilidad usan referencias cuando sea suficiente.
+
+---
+
+#### 45. Auditoría mínima
+
+Debe poder reconstruirse, cuando aplique:
+
+- proceso `VPROC-0008`;
+- identidad del evento original;
+- trabajador;
+- vínculo laboral;
+- acción;
+- `occurred_at`;
+- instante de recepción;
+- turno;
+- revisión publicada;
+- sesión de asistencia;
+- sede;
+- área;
+- rol operativo;
+- fuente o dispositivo;
+- evidencia de ubicación cuando aplique;
+- identidad idempotente;
+- intentos y resultado recuperado;
+- decisión de validación;
+- excepción o cuarentena;
+- corrección;
+- aprobador;
+- resultado reconciliado;
+- correlación con contexto posterior;
+- versión contractual.
+
+La auditoría no sustituye la persistencia del hecho empresarial.
+
+---
+
+#### 46. Métricas preservadas
+
+La tarea no crea métricas nuevas.
+
+Se conservan las métricas de `VPROC-0008` orientadas a:
+
+- jornadas conciliadas con asistencia completa;
+- marcaciones válidas aceptadas en el primer intento;
+- antigüedad de jornadas abiertas o eventos offline pendientes;
+- guardrail de correcciones no autorizadas, duplicados y rechazos injustificados por contexto.
+
+Las métricas no cambian el estado del hecho ni constituyen fuente de verdad.
+
+---
+
+#### 47. Frontera con VISO y `VPROC-0007`
+
+VISO gobierna la programación; ANIMA gobierna asistencia.
+
+Por tanto:
+
+```text
+VISO PUBLICA TURNO
+→ ANIMA RESUELVE ESA PROGRAMACIÓN PARA MARCAR
+→ ANIMA REGISTRA HECHO DE ASISTENCIA
+```
+
+No:
+
+```text
+ANIMA MARCA
+→ CREA O EDITA EL TURNO
+```
+
+Una corrección de asistencia tampoco corrige programación.
+
+Si el problema real está en el turno, debe seguir el ciclo propietario de programación.
+
+---
+
+#### 48. Frontera con novedades y `VPROC-0009`
+
+Programación, asistencia y novedad laboral permanecen como procesos distintos.
+
+Una ausencia, novedad o incidencia:
+
+- puede explicar una anomalía de asistencia;
+- puede generar una solicitud de corrección;
+- puede afectar decisiones posteriores;
+
+pero no sustituye el evento original ni se convierte automáticamente en entrada o salida.
+
+Una asistencia sin turno válido no crea por inferencia una novedad ni un turno.
+
+---
+
+#### 49. Frontera con `INT-WORK-004`
+
+`INT-WORK-003` termina en la producción y conciliación de hechos de asistencia suficientemente autoritativos para ser consumidos por el contexto.
+
+`INT-WORK-004` será propietaria documental de confirmar el contexto efectivo en Supabase.
+
+Por tanto esta tarea no define:
+
+- esquema físico final de `AccessContext`;
+- RPC final de resolución;
+- RLS final;
+- triggers;
+- caché o invalidación física;
+- token derivado;
+- contrato de sesión materializado;
+- mecanismo físico de actualización del contexto.
+
+Sí fija la precondición:
+
+```text
+CONTEXTO EFECTIVO
+NO PUEDE BASARSE EN UNA MARCACIÓN
+QUE NO HAYA SIDO CONFIRMADA BAJO ESTE CONTRATO
+```
+
+---
+
+#### 50. Frontera con SHELL
+
+SHELL no registra asistencia.
+
+Podrá consumir hechos o contexto derivados únicamente mediante contratos aprobados.
+
+SHELL no podrá:
+
+- fabricar un check-in;
+- cerrar una sesión por navegación;
+- aceptar una intención offline como confirmada;
+- recalcular una revisión de turno distinta a la usada por ANIMA;
+- restaurar permisos porque apareció una marcación tardía;
+- corregir asistencia por escritura directa.
+
+El consumo transversal del contexto permanece reservado a `INT-WORK-005`.
+
+---
+
+#### 51. Reconciliación con la implementación observada de ANIMA
+
+La implementación actual acredita capacidades reales, pero no sustituye el contrato objetivo.
+
+| Superficie observada          | Evidencia actual                                                                                                                                  | Lectura contractual                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| proveedor de asistencia       | ANIMA centraliza el estado mediante su contexto de asistencia                                                                                     | confirma una superficie propietaria real en ANIMA                                                                                            |
+| resolución de turno al entrar | la captura intenta resolver contexto operativo y turno antes de registrar entrada                                                                 | evidencia parcial de la puerta de turno; no acredita por sí sola revisión publicada explícita                                                |
+| identidad de evento           | existe generación de `clientEventId` para intenciones reintentables                                                                               | converge con la identidad estable requerida                                                                                                  |
+| cola durable                  | existe persistencia local en almacenamiento del dispositivo con estados de sincronización                                                         | converge parcialmente con captura offline durable                                                                                            |
+| sincronización ordinaria      | entrada y salida utilizan una frontera `sync_attendance_events` cuando está disponible                                                            | superficie compatible con sincronización propietaria, pendiente de certificación server-side                                                 |
+| fallback de sincronización    | ante incompatibilidad de esquema o disponibilidad contractual, la implementación observada puede intentar una escritura alternativa de asistencia | no satisface el contrato si la vía alternativa no demuestra la misma identidad, autorización, idempotencia, revisión y resultado recuperable |
+| compatibilidad de identidad   | la vía alternativa observada puede reintentar sin `client_event_id` cuando el almacenamiento físico no lo admite                                  | incompatible con la obligación de identidad estable en la frontera autoritativa                                                              |
+| descansos                     | las intenciones de descanso llegan a RPC específicas y conservan `clientEventId` dentro de notas de contexto                                      | la firma observada no demuestra que esa identidad opere como clave de idempotencia server-side                                               |
+| turno en payload              | las intenciones observadas conservan `shiftId`                                                                                                    | no acredita referencia explícita de revisión publicada en el contrato transmitido                                                            |
+| estados de cola               | se distinguen pendiente, sincronizando, fallo y conflicto                                                                                         | útiles para UX; no sustituyen estados empresariales de `VPROC-0008`                                                                          |
+
+Esta tarea no modifica esa implementación.
+
+---
+
+#### 52. Brechas físicas observadas y propietarios
+
+Ninguna brecha queda sin dueño documental.
+
+| Brecha observada                                                                                                                               | Propietario existente                                                                  | Condición de salida                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| la intención de asistencia observada transporta `shiftId` pero no acredita una identidad explícita de revisión publicada                       | `ANIMA-AUTH-001`, `ANIMA-AUTH-008`, `ANIMA-AUTH-012`, `ANIMA-AUTH-013`                 | toda entrada, salida y descanso queda vinculada determinísticamente a turno y revisión aplicables antes de confirmarse                              |
+| el fallback de sincronización puede degradar a escritura alternativa cuando no está disponible el contrato server-side principal               | `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `QUEUE-ARC-003`, `QUEUE-ARC-009`, `NFR-REQ-004`    | toda ruta normal, retry y recuperación conserva paridad demostrable de identidad, autorización, idempotencia, auditoría y resultado o falla cerrado |
+| la vía alternativa puede omitir `client_event_id` ante incompatibilidad física                                                                 | `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `SUPA-TRANS-006`                                   | ninguna intención reintentable produce efecto sin identidad idempotente estable y recuperable                                                       |
+| descansos conservan la identidad de intención dentro de notas, pero la firma observada no acredita deduplicación server-side por esa identidad | `ANIMA-AUTH-010`, `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `QUEUE-ARC-003`, `QUEUE-ARC-009` | inicio y fin de descanso son atómicos e idempotentes y soportan replay, concurrencia y resultado perdido sin efecto duplicado                       |
+| la implementación cliente no acredita por sí sola toda la semántica server-side de conciliación, corrección e historia                         | propietarios de `VPROC-0008` en E2 y paquete E5 de ANIMA                               | implementación futura demuestra estados, excepciones, corrección inmutable, auditoría y proyecciones conforme al proceso aprobado                   |
+| el contexto posterior a entrada/salida no se certifica en esta tarea                                                                           | `INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase`   | el contexto converge con turno, revisión, sesión confirmada, territorio, rol y frescura sin autoridad derivada del cliente                          |
+| el consumo transversal del contexto no se certifica en esta tarea                                                                              | `INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones`             | consumidoras usan un contexto compartido y no reconstruyen asistencia o turno por cuenta propia                                                     |
+
+---
+
+#### 53. Cobertura de requisitos de prueba vigente
+
+El comportamiento definido por `INT-WORK-003` ya se encuentra protegido por requisitos vigentes, entre ellos:
+
+- `TREQ-INTEGRATION-007`, para el contrato laboral único entre programación, asistencia, contexto y Supabase;
+- `TREQ-INTEGRATION-003`, para identidad estable, contenido lógico, retry, resultado recuperable y deduplicación;
+- `TREQ-ANIMA-003`, para persistencia durable offline, replay e identidad estable de marcación;
+- `TREQ-ANIMA-004`, para descansos atómicos, concurrentes e idempotentes;
+- `TREQ-AUTH-008`, para la separación entre capacidad administrativa y capacidad operativa con turno/check-in;
+- `TREQ-AUTH-009`, para resolución territorial determinista;
+- `TREQ-AUTH-014`, para invalidación y reautorización ante cambios y sincronización offline;
+- `TREQ-AUTH-015`, para auditoría correlacionable de decisiones y acciones protegidas.
+
+Esta tarea especializa esas obligaciones en la frontera de registro de asistencia sin introducir una superficie ejecutable nueva.
+
+---
+
+#### 54. Prohibiciones
+
+Queda prohibido considerar conforme a este contrato cualquiera de los siguientes atajos:
+
+1. considerar el toque del botón como asistencia confirmada;
+2. considerar una intención en memoria como evento durable;
+3. mostrar “encolado” antes de persistir localmente;
+4. generar una nueva identidad en cada retry;
+5. reutilizar la misma identidad con contenido diferente;
+6. deduplicar únicamente por timestamp;
+7. asumir que timeout significa fallo y repetir a ciegas;
+8. asumir que timeout significa éxito sin recuperar resultado;
+9. insertar por una vía alternativa sin demostrar paridad contractual;
+10. omitir identidad idempotente porque una columna no exista;
+11. aceptar una revisión de turno elegida por cliente;
+12. enlazar asistencia solo al `shift_id` cuando el contrato exige revisión publicada;
+13. usar el turno actualmente visible para reescribir un evento histórico;
+14. usar sede seleccionada como sede autoritativa del hecho;
+15. usar rol base como rol operativo;
+16. usar GPS como fuente del turno;
+17. crear un turno para reparar una marcación;
+18. modificar programación como efecto del check-in;
+19. crear dos entradas por concurrencia;
+20. cerrar la sesión equivocada por “última fila”;
+21. crear dos descansos por replay;
+22. guardar `client_event_id` únicamente en texto no vinculante y asumir idempotencia server-side;
+23. tratar estado de cola como estado empresarial de `VPROC-0008`;
+24. considerar evento recibido como evento reconciliado;
+25. sobrescribir el evento original durante una corrección;
+26. borrar un evento para ocultar duplicado o invalidez;
+27. reordenar eventos por hora de recepción ignorando `occurred_at`;
+28. partir un turno overnight por cambio de fecha civil;
+29. convertir una novedad laboral en asistencia por inferencia;
+30. crear un evento empresarial nuevo porque exista un retry técnico;
+31. permitir que una consumidora escriba directamente la fuente propietaria de ANIMA;
+32. restaurar permisos o contexto a partir de un evento tardío sin revalidación.
+
+---
+
+#### 55. Escenarios mínimos de aceptación contractual
+
+La implementación futura deberá poder demostrar, como mínimo:
+
+1. registrar una entrada online válida vinculada a trabajador, vínculo, turno y revisión;
+2. registrar una salida contra la sesión exacta abierta;
+3. iniciar y finalizar un descanso de forma idempotente;
+4. rechazar entrada sin turno aplicable cuando no exista excepción aprobada;
+5. rechazar revisión ambigua sin seleccionar una por conveniencia;
+6. rechazar sede incompatible;
+7. rechazar área incompatible cuando sea requerida;
+8. rechazar rol operativo inválido cuando sea requerido;
+9. conservar `occurred_at` diferente del tiempo de recepción;
+10. persistir una intención offline antes de mostrarla como encolada;
+11. sobrevivir cierre y reinicio de la aplicación con la misma identidad;
+12. sincronizar una intención offline sin crear un segundo efecto;
+13. recuperar el resultado después de respuesta perdida;
+14. devolver el mismo resultado al replay de la misma intención;
+15. producir conflicto si se reutiliza identidad con contenido distinto;
+16. impedir dos entradas concurrentes incompatibles;
+17. impedir dos salidas para la misma sesión;
+18. impedir dos descansos abiertos incompatibles;
+19. procesar eventos fuera de orden sin inventar una sesión;
+20. resolver una jornada overnight sin dividirla por medianoche;
+21. conservar evento histórico frente a nueva revisión de turno;
+22. revalidar una intención offline después de cambio de turno, rol, sede o vínculo;
+23. conservar evidencia de una intención que ya no puede producir efecto;
+24. corregir asistencia sin sobrescribir el evento original;
+25. reconstruir antes, después, evidencia y aprobador de una corrección;
+26. mantener programación y asistencia como procesos distintos;
+27. impedir que VISO cree un hecho competidor de asistencia;
+28. impedir que SHELL fabrique una sesión de check-in;
+29. diferenciar evento pendiente de evento confirmado en interfaz;
+30. mantener contexto efectivo sin activar hasta confirmación autoritativa posterior;
+31. emitir únicamente las definiciones empresariales existentes de `VPROC-0008`;
+32. demostrar que una ruta de compatibilidad no degrada identidad, idempotencia, autorización ni auditoría.
+
+---
+
+#### 56. Criterios de aceptación documental
+
+`INT-WORK-003` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. ANIMA queda como única propietaria de `VPROC-0008`.
+2. VISO permanece como propietaria de programación y consumidora administrativa de asistencia.
+3. intención, evento local, evento recibido, evento validado, evento reconciliado y sesión de check-in quedan diferenciados.
+4. la identidad estable existe antes del primer envío.
+5. entrada, salida, inicio de descanso y fin de descanso quedan cubiertos.
+6. cada evento queda vinculable de forma determinista con trabajador, vínculo, turno y revisión publicada aplicables.
+7. `occurred_at` permanece separado de la recepción.
+8. un evento offline se persiste antes de mostrarse como encolado.
+9. la sincronización reautoriza y no reutiliza autoridad stale.
+10. replay de la misma intención no duplica efectos.
+11. colisión de identidad con contenido diferente produce conflicto.
+12. resultado desconocido exige recuperación antes de retry ciego.
+13. concurrencia y múltiples dispositivos no producen sesiones o descansos duplicados.
+14. eventos fuera de orden permanecen reconciliables sin reescritura del original.
+15. overnight se resuelve por instantes reales y zona contractual.
+16. cambios posteriores de programación no reescriben asistencia histórica.
+17. correcciones preservan evento original, evidencia, decisión y efectos derivados.
+18. se conservan estados, excepciones y acciones CCR ya aprobados de `VPROC-0008`.
+19. no se crean definiciones normales nuevas de eventos empresariales.
+20. se preservan consumidoras directas y condicionales aprobadas.
+21. privacidad, minimización y auditoría quedan definidas.
+22. `INT-WORK-004` conserva la propiedad de confirmar el contexto efectivo.
+23. `INT-WORK-005` conserva la propiedad del consumo transversal del contexto.
+24. las brechas físicas observadas tienen propietario y condición de salida.
+25. no se selecciona esquema físico, migración, RPC, tabla, trigger, RLS o mecanismo de cache definitivo.
+26. no se modifica código, Supabase, datos, migraciones, colas, configuración ni despliegue.
+27. no se crean ni modifican requisitos de prueba.
+
+---
+
+#### 57. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- el contrato laboral único ya protege la vinculación determinista entre programación, asistencia y contexto;
+- la captura offline durable, la identidad estable, el replay y la prohibición de una escritura alternativa degradada ya poseen protección específica vigente;
+- los descansos atómicos, la concurrencia, la deduplicación y el resultado recuperable ya poseen protección específica vigente;
+- la invalidación, reautorización, territorio y auditoría ya están cubiertos por requisitos transversales vigentes;
+- esta tarea especializa esas obligaciones en la frontera documental de registro de asistencia y no agrega una superficie ejecutable, esquema, permiso, transición, evento empresarial, endpoint, tecnología o comportamiento físico nuevo.
+
+---
+
+#### 58. Resultado de la tarea
+
+`INT-WORK-003` queda **APROBADA** como definición documental del contrato mediante el cual ANIMA registra hechos de asistencia contra la programación publicada aplicable y los conserva como evidencia inmutable, idempotente y reconciliable.
+
+Resultado consolidado:
+
+- proceso propietario de asistencia: **`VPROC-0008`**;
+- aplicación propietaria: **ANIMA**;
+- propietaria de programación: **VISO**;
+- unidad de programación referenciada: **turno + revisión publicada**;
+- acciones cubiertas: **entrada, salida, inicio de descanso y fin de descanso**;
+- identidad estable antes del primer envío: **obligatoria**;
+- persistencia local antes de mostrar estado encolado: **obligatoria**;
+- reautorización al sincronizar: **obligatoria**;
+- retry ciego después de resultado desconocido: **prohibido**;
+- overwrite del evento original: **prohibido**;
+- nuevas definiciones normales de evento: **0**;
+- cambios físicos: **0**;
+- requisitos de prueba creados o modificados: **0**.
+
+Invariante final:
+
+```text
+ACTOR EFECTIVO
++
+INTENCIÓN IDENTIFICADA
++
+PERSISTENCIA DURABLE CUANDO APLIQUE
++
+TRABAJADOR Y VÍNCULO RESOLUBLES
++
+TURNO Y REVISIÓN PUBLICADA APLICABLES
++
+SEDE / ÁREA / ROL SEGÚN CONTRATO
++
+VALIDACIÓN SERVER-SIDE
++
+IDEMPOTENCIA
++
+COMMIT DURABLE
+=
+HECHO DE ASISTENCIA AUTORITATIVO Y RECONCILIABLE
+```
+
+seguido por:
+
+```text
+HECHO DE ASISTENCIA CONFIRMADO
+→ SESIÓN / JORNADA DERIVADA
+→ PROYECCIONES CONTROLADAS
+→ CONTEXTO EFECTIVO SOLO BAJO INT-WORK-004
+→ CONSUMO TRANSVERSAL SOLO BAJO INT-WORK-005
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-WORK-002 — Definir contrato para que ANIMA presente el turno`
+
+TAREA ACTUAL APROBADA
+
+`INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase`
+
+
 ### [ ] INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
 ### [ ] INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones

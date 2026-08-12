@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **749** |
+| Tareas aprobadas | **750** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **845** |
+| Tareas no iniciadas | **844** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.99% (749/1594)** |
+| Porcentaje de completamiento | **47.05% (750/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-WORK-002 — Definir contrato para que ANIMA presente el turno** |
-| Tarea actual | **INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia** |
+| Última tarea aprobada | **INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia** |
+| Tarea actual | **INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase** |
+| Siguiente tarea | **INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 33 de 83 aprobadas; INT-WORK-003 pendiente** |
+| Progreso del bloque | **BLOQUE X: 34 de 83 aprobadas; INT-WORK-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno |
-| Tarea actual | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia — **NO INICIADA** |
-| Siguiente tarea | `INT-WORK-004` — Definir confirmación autoritativa del contexto efectivo en Supabase |
+| Última aprobada | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia |
+| Tarea actual | `INT-WORK-004` — Definir confirmación autoritativa del contexto efectivo en Supabase — **NO INICIADA** |
+| Siguiente tarea | `INT-WORK-005` — Definir consumo del contexto por SHELL y las aplicaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 33 DE 83 APROBADAS — ACTUAL INT-WORK-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 34 DE 83 APROBADAS — ACTUAL INT-WORK-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-WORK-002 — Definir contrato para que ANIMA presente el turno
-        ↓
-TAREA ACTUAL
 INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 33 de 83 tareas aprobadas
+BLOQUE X — 34 de 83 tareas aprobadas
 ```
