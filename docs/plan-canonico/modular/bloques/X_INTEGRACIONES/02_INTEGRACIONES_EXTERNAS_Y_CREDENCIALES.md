@@ -12187,7 +12187,462 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor`
 
 
-### [ ] INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor
+### ✅ INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación` — APROBADA
+**Tarea siguiente:** `INT-EXT-019 — Definir retiro de integración y revocación de credenciales` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de contingencia frente a indisponibilidad de proveedores externos, operación degradada, captura diferida, límites, activación, reincorporación y cierre, sin implementar failover, cambiar proveedores, desplegar código ni modificar Supabase
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Repositorio propietario:** `vento-shell`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+Definir, para las veintiuna identidades externas canónicas, cómo debe comportarse Vento OS cuando un proveedor, canal o servicio externo necesario se encuentre indisponible o suficientemente degradado como para impedir la operación normal, sin convertir la contingencia en un resultado empresarial, un failover automático, una segunda fuente de verdad o una autorización implícita para cambiar de proveedor.
+
+La tarea materializa:
+
+```text
+INDISPONIBILIDAD O DEGRADACIÓN MATERIAL
+        ↓
+EVALUACIÓN DE DEPENDENCIA Y ALCANCE
+        ↓
+ESTRATEGIA DE CONTINGENCIA YA AUTORIZADA
+        ↓
+OPERACIÓN MÍNIMA / DIFERIDA / BLOQUEADA SEGÚN EL CASO
+        ↓
+PRESERVACIÓN DE IDENTIDAD, CUSTODIA, RESULTADO E INCERTIDUMBRE
+        ↓
+RECUPERACIÓN OBSERVADA DEL PROVEEDOR
+        ↓
+CONCILIACIÓN + REINCORPORACIÓN CONTROLADA
+        ↓
+CIERRE SOLO CUANDO EXISTA CONVERGENCIA EMPRESARIAL
+```
+
+La indisponibilidad del proveedor no autoriza por sí sola a repetir efectos, cambiar canal, cambiar proveedor, completar operaciones, otorgar beneficios, confirmar entregas, declarar pagos ni cerrar obligaciones.
+
+---
+
+#### 2. Artefactos canónicos producidos
+
+```text
+VENTO-EXTERNAL-PROVIDER-CONTINGENCY-CONTRACT-001@1.0.0
+VENTO-EXTERNAL-PROVIDER-CONTINGENCY-MATRIX-001@1.0.0
+```
+
+| Propiedad                                    | Valor                             | Regla                                                                            |
+| -------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------- |
+| `contract_status`                            | `DEFINED`                         | definición documental; no acredita implementación ni disponibilidad operativa    |
+| `external_systems_expected`                  | **21**                            | universo heredado del registro canónico de integraciones externas                |
+| `external_systems_materialized`              | **21**                            | una decisión explícita por identidad                                             |
+| `missing_external_systems`                   | **0**                             | no existen faltantes en la matriz                                                |
+| `duplicate_external_systems`                 | **0**                             | cada identidad aparece una sola vez en la matriz                                 |
+| `contingency_strategies`                     | **8**                             | vocabulario heredado de continuidad; esta tarea no crea otro catálogo competidor |
+| `automatic_provider_failover`                | `PROHIBITED_UNLESS_PREACCREDITED` | no se designa sustituto por inferencia                                           |
+| `provider_recovery_equals_business_recovery` | `FALSE`                           | la recuperación técnica requiere reincorporación y conciliación antes del cierre |
+| `physical_or_data_changes`                   | **0**                             | no se crean colas, proveedores, endpoints, tablas, credenciales ni configuración |
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+Esta tarea consume sin redefinir:
+
+- el inventario vigente de veintiuna identidades externas y su estado de evidencia;
+- el contrato aprobado de autenticación, credenciales, ambientes y propiedad de integración;
+- el contrato de idempotencia y conciliación de intercambios externos;
+- el contrato de reintentos, backoff, límites y circuit breaker;
+- el contrato de cuarentena, dead-letter e intervención manual;
+- el contrato de auditoría, métricas, alertas y conciliación de integraciones externas;
+- los contratos de continuidad con proveedores críticos;
+- los contratos de captura, replay, reincorporación, conciliación y retorno al servicio normal;
+- la infraestructura futura de colas, incluida recuperación manual, métricas y autorización de reintento;
+- la propiedad empresarial de cada proceso y la prohibición de escrituras cruzadas sin contrato.
+
+Ninguna de estas decisiones cambia de propietaria ni de significado por activarse una contingencia.
+
+---
+
+#### 4. Principios normativos
+
+1. **Contingencia no es resultado.** Operar bajo contingencia no confirma pago, entrega, mensaje, suscripción, impresión, sincronización ni otro efecto empresarial.
+2. **Contingencia no es retry.** Un retry conserva la misma operación; la contingencia define qué operación mínima o diferida es segura mientras el camino normal no está disponible.
+3. **Contingencia no es conciliación.** La conciliación compara fuentes y resuelve divergencias o incertidumbre; la contingencia puede generar trabajo que después deba conciliarse.
+4. **Contingencia no es cuarentena ni dead-letter.** El aislamiento protege trabajo problemático; la contingencia protege continuidad ante una dependencia indisponible.
+5. **Contingencia no es failover automático.** No existe un proveedor, canal, credencial o endpoint sustituto por inferencia.
+6. **La fuente de verdad no se mueve.** Captura local, cola, procedimiento manual o canal alterno nunca adquieren propiedad sobre el hecho empresarial.
+7. **El resultado desconocido permanece desconocido.** Un timeout o pérdida de respuesta con efecto potencial bloquea la repetición ciega hasta consulta o conciliación suficiente.
+8. **La recuperación técnica no cierra la contingencia.** El proveedor puede responder de nuevo mientras aún existen backlog, operaciones desconocidas, efectos parciales o residuales.
+9. **La contingencia conserva autorización.** El modo degradado no amplía permisos, sede, área, actor, alcance, datos ni privilegios técnicos.
+10. **La contingencia conserva minimización.** No se copian secretos, credenciales, tokens, firmas completas ni payloads sensibles innecesarios para operar o reconciliar.
+11. **No se inventan compromisos del proveedor.** SLA, capacidad, RTO, RPO, cuotas, tiempos de recuperación y mecanismos de failover requieren evidencia contractual o técnica vigente.
+12. **Las capacidades independientes pueden continuar.** Solo se bloquea la parte materialmente dependiente del proveedor afectado; una indisponibilidad no debe propagarse a funciones no relacionadas.
+
+---
+
+#### 5. Vocabulario cerrado de estrategias de contingencia
+
+Se reutilizan exactamente las ocho estrategias aprobadas por continuidad:
+
+| Estrategia                   | Uso permitido                                                                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLOQUEO_SEGURO`             | impedir una operación cuando continuar podría fabricar, duplicar o comprometer un efecto sensible                                                  |
+| `READ_ONLY`                  | conservar consulta de información autoritativa ya disponible sin permitir mutaciones dependientes del proveedor                                    |
+| `CAPTURA_LOCAL`              | registrar temporalmente información donde el dominio ya autorice captura local, conservando actor, contexto, identidad y posterior reincorporación |
+| `COLA_DURABLE`               | preservar trabajo diferible con identidad e idempotencia estables para procesamiento posterior controlado                                          |
+| `PROCEDIMIENTO_MANUAL`       | ejecutar una alternativa humana previamente permitida, con límites, atribución, evidencia y conciliación posterior                                 |
+| `CANAL_ALTERNO`              | usar otro canal solamente cuando exista previamente acreditado, contratado o autorizado para ese alcance                                           |
+| `PROVEEDOR_DESIGNADO`        | cambiar a un proveedor sustituto únicamente cuando exista designación, contrato, credencial, mapping, capacidad y autorización vigentes            |
+| `OPERACION_MINIMA_DEGRADADA` | mantener exclusivamente capacidades seguras y suficientes sin fingir normalidad ni ampliar alcance                                                 |
+
+Reglas cerradas:
+
+- `CANAL_ALTERNO` no puede deducirse de que exista otra aplicación, correo, teléfono o medio disponible;
+- `PROVEEDOR_DESIGNADO` no puede deducirse de que exista otro proveedor en el mercado;
+- `CAPTURA_LOCAL` no se habilita para un dominio que no tenga contrato de captura compatible;
+- `PROCEDIMIENTO_MANUAL` no autoriza editar directamente una fuente empresarial ni omitir evidencia;
+- `COLA_DURABLE` no convierte una operación en enviada, aplicada o completada;
+- `READ_ONLY` no habilita mutaciones ni usa datos vencidos sin señalar su frescura;
+- `OPERACION_MINIMA_DEGRADADA` no equivale a servicio normal;
+- `BLOQUEO_SEGURO` conserva la operación, causa y siguiente acción cuando exista una intención ya registrada.
+
+---
+
+#### 6. Condiciones de activación
+
+Una contingencia para proveedor externo podrá activarse únicamente cuando concurran estas condiciones:
+
+1. existe una dependencia material entre la capacidad empresarial afectada y la identidad externa correspondiente;
+2. existe evidencia suficiente de indisponibilidad, degradación o imposibilidad de utilizar el camino normal para el alcance evaluado;
+3. continuar por el camino normal comprometería el mínimo empresarial, la seguridad, la integridad, la oportunidad o la capacidad de completar la operación;
+4. existe una estrategia permitida para ese alcance;
+5. existe autoridad vigente para activar la estrategia cuando esta requiera intervención o cambio operativo;
+6. quedan identificados el alcance afectado, las capacidades que continúan y las capacidades que se bloquean;
+7. identidad, idempotencia, actor, contexto, custodia y sensibilidad pueden preservarse;
+8. los resultados externos inciertos se mantienen explícitamente abiertos para consulta o conciliación.
+
+Una alerta, un health check fallido, un timeout aislado, una respuesta del proveedor, una caída del dashboard o un mensaje de soporte no activan automáticamente una contingencia. Son evidencia de entrada para la evaluación correspondiente.
+
+---
+
+#### 7. Registro conceptual mínimo del caso de contingencia
+
+Toda materialización posterior deberá poder preservar, cuando aplique:
+
+```text
+contingency_case_id
+external_system_id
+provider_or_service_reference
+dependency_reference
+environment
+surface
+affected_process_references
+affected_resource_references
+observed_unavailability_reference
+activated_at
+activation_authority_reference
+activation_evidence_references
+contingency_strategy
+contingency_scope
+allowed_operations
+prohibited_operations
+owner_application
+source_of_truth_reference
+capture_or_queue_reference
+operation_identity_reference
+idempotency_reference
+sensitivity_class
+unknown_outcome_reference
+backlog_reference
+recovery_evidence_references
+reconciliation_reference
+residual_owner
+next_safe_action
+deactivated_at
+closure_evidence_references
+```
+
+Este envelope es conceptual. No define una tabla, API, cola o esquema físico y no almacena valores secretos.
+
+---
+
+#### 8. Operación durante la contingencia
+
+Durante una contingencia deberán mantenerse simultáneamente las siguientes reglas:
+
+- cada unidad conserva la identidad de la intención empresarial original;
+- el actor humano y el principal técnico permanecen diferenciados;
+- el modo de contingencia declara qué se puede hacer y qué queda bloqueado;
+- una captura o cola conserva estado `pendiente` o equivalente, no resultado final;
+- todo trabajo enviado antes de perder respuesta conserva su resultado como desconocido hasta verificarlo;
+- una unidad ya confirmada no vuelve a ejecutarse al recuperar el proveedor;
+- los lotes conservan resultado por elemento y no se resumen como éxito global;
+- los efectos físicos, financieros o externos inciertos se consultan o concilian antes de repetir;
+- una contingencia manual conserva la atribución y la evidencia de cada acción;
+- la información sensible se minimiza y se referencia desde su fuente autorizada;
+- la indisponibilidad no habilita credenciales compartidas, permisos extraordinarios implícitos ni escrituras cruzadas.
+
+---
+
+#### 9. Prohibición de sustitución implícita
+
+No se considera contingencia válida:
+
+- cambiar a otro proveedor de pagos porque el principal está caído;
+- enviar por otro canal de mensajería porque el canal normal falla;
+- usar otra cuenta, credencial o entorno para evadir una limitación;
+- modificar endpoint, región, proyecto o tenant sin contrato y autorización;
+- usar una integración aún no acreditada como respaldo;
+- mover una operación entre aplicaciones para que otra escriba el resultado;
+- pedir al usuario que repita una operación sensible cuando el efecto anterior es incierto;
+- asumir que un proveedor alterno puede procesar identidades o receipts del proveedor original.
+
+`CANAL_ALTERNO` y `PROVEEDOR_DESIGNADO` solo son utilizables cuando la alternativa exista de forma previa, esté acreditada para la capacidad concreta y preserve seguridad, mapping, idempotencia, auditoría y reconciliación.
+
+---
+
+#### 10. Reincorporación y retorno al servicio normal
+
+La recuperación observada del proveedor inicia una fase de reincorporación; no cierra por sí misma la contingencia.
+
+El retorno deberá ejecutar, en este orden lógico:
+
+1. verificar que el camino normal vuelva a ser utilizable para el alcance y ambiente afectados;
+2. congelar el crecimiento de nueva captura de contingencia de forma controlada cuando proceda;
+3. inventariar las unidades capturadas, diferidas, pendientes, desconocidas, fallidas o intervenidas;
+4. conservar las mismas identidades e idempotency references de cada operación original;
+5. consultar y conciliar primero los efectos con resultado desconocido;
+6. deduplicar contra resultados ya confirmados;
+7. revalidar autorización, contexto, esquema, versión y dependencias antes de ejecutar trabajo diferido;
+8. drenar el backlog respetando causalidad, prioridad autorizada, límites y circuit breaker vigentes;
+9. comparar la fuente propietaria con receipts, estado externo, evidencia física o financiera cuando aplique;
+10. registrar diferencias y obligaciones residuales con responsable y siguiente acción;
+11. comprobar que la capacidad empresarial mínima y el flujo normal hayan convergido;
+12. cerrar la contingencia únicamente cuando no queden resultados desconocidos ni residuales sin propietario que impidan el retorno declarado.
+
+Un proveedor nuevamente accesible, un `200`, un heartbeat, un ACK o una consola verde no demuestran por sí solos el retorno empresarial al estado normal.
+
+---
+
+#### 11. Matriz materializada de contingencia por identidad externa
+
+|    # | Identidad     | Sistema externo                          | Evidencia heredada                   | Clase de contingencia                                  | Estrategia primaria                                | Estado documental | Decisión materializada                                                                                                                                                                                                                       |
+| ---: | ------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------ | -------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `EXT-SYS-001` | Supabase                                 | `BINDING_CONDICIONAL_OBSERVADO`      | `GOBERNADA_POR_CONTINUIDAD_INTERNA_VENTO`              | contrato de continuidad VENTO                      | `ESPECIFICADO`    | La indisponibilidad se gobierna por continuidad interna y reincorporación; esta tarea no designa nube, región ni backend sustituto.                                                                                                          |
+|    2 | `EXT-SYS-002` | Wompi                                    | `BINDING_TECNICO_OBSERVADO`          | `DEFER_AND_RECONCILE_CRITICAL_PROVIDER_EFFECT`         | `BLOQUEO_SEGURO`                                   | `ESPECIFICADO`    | Se preserva la intención de pago y se bloquea una repetición insegura. Timeout o respuesta perdida mantienen resultado incierto hasta consulta o conciliación; no se designa procesador alterno.                                             |
+|    3 | `EXT-SYS-003` | RevenueCat                               | `BINDING_TECNICO_OBSERVADO`          | `DEFER_AND_RECONCILE_CRITICAL_PROVIDER_EFFECT`         | `READ_ONLY`                                        | `ESPECIFICADO`    | Puede conservarse el último estado confirmado con frescura explícita; una indisponibilidad no otorga ni retira entitlement por inferencia. Los cambios dependientes del proveedor quedan diferidos y se reconcilian al retorno.              |
+|    4 | `EXT-SYS-004` | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `DEFER_ASYNC_DELIVERY_WITHOUT_FABRICATING_DELIVERY`    | `COLA_DURABLE`                                     | `ESPECIFICADO`    | La invitación o mensaje empresarial conserva su identidad y la entrega queda pendiente; una falla de Resend no se presenta como entrega. Otro canal requiere acreditación y autorización independientes.                                     |
+|    5 | `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | `TECH_PLATFORM_CONTINUITY_NO_RUNTIME_EXCHANGE`         | `OPERACION_MINIMA_DEGRADADA`                       | `ESPECIFICADO`    | La indisponibilidad del servicio de actualización no crea un canal de despliegue sustituto. La operación compatible continúa sobre la versión ya válida mientras publicación o actualización queden diferidas según continuidad tecnológica. |
+|    6 | `EXT-SYS-006` | Expo Push Service                        | `BINDING_CONDICIONAL_OBSERVADO`      | `DEFER_ASYNC_DELIVERY_WITHOUT_FABRICATING_DELIVERY`    | `COLA_DURABLE`                                     | `ESPECIFICADO`    | El hecho que origina la notificación no se revierte; la entrega push queda diferida y nunca se presenta como entregada sin receipt suficiente. Otro canal exige contrato separado.                                                           |
+|    7 | `EXT-SYS-007` | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | `BEST_EFFORT_OBSERVABILITY_CONTINUES_WITHOUT_PROVIDER` | `OPERACION_MINIMA_DEGRADADA`                       | `ESPECIFICADO`    | La telemetría best-effort puede degradarse sin detener el efecto empresarial. Auditoría, evidencia crítica y resultado propietario no dependen de Sentry ni se reemplazan por él.                                                            |
+|    8 | `EXT-SYS-008` | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | `INTERACTIVE_DEGRADED_READ_MODE`                       | `READ_ONLY`                                        | `ESPECIFICADO`    | Las consultas remotas pueden quedar no disponibles. Solo se usa información autoritativa ya existente o entrada manual cuando el proceso la permita; no se fabrica geocodificación, lugar ni review.                                         |
+|    9 | `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | `HYBRID_RESOURCE_CONTINUES_PUSH_DEFERRED`              | `COLA_DURABLE` + `BLOQUEO_SEGURO` según superficie | `ESPECIFICADO`    | El recurso de pass y el push permanecen separados. Un push puede diferirse; una creación o actualización que requiera un camino no disponible se bloquea de forma segura. No se genera un pass nuevo para evadir un resultado incierto.      |
+|   10 | `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_OBSERVADA`            | `TECH_PLATFORM_CONTINUITY_NO_RUNTIME_EXCHANGE`         | `OPERACION_MINIMA_DEGRADADA`                       | `ESPECIFICADO`    | La plataforma se trata dentro de continuidad tecnológica; esta tarea no presupone failover, región alterna, proyecto espejo ni proveedor sustituto.                                                                                          |
+|   11 | `EXT-SYS-011` | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | `CONTROLLED_MANUAL_PHYSICAL_CONTINGENCY`               | `PROCEDIMIENTO_MANUAL`                             | `ESPECIFICADO`    | La indisponibilidad local puede requerir procedimiento manual previamente autorizado. Si el efecto físico del intento anterior es incierto, debe verificarse antes de una nueva impresión; no existe reimpresión ciega.                      |
+|   12 | `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `MODEL_NO_REMOTE_BINDING`                              | —                                                  | `NO_APLICA`       | Existe modelo documental sin binding remoto acreditado; no se materializa contingencia runtime ni proveedor alterno.                                                                                                                         |
+|   13 | `EXT-SYS-013` | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | `BLOQUEADA_SIN_BINDING`                                | —                                                  | `BLOQUEADO`       | No existe proveedor/binding acreditado suficiente para definir una contingencia específica sin inventar capacidades, receipts, operación mínima o sustituto.                                                                                 |
+|   14 | `EXT-SYS-014` | Shopify / canal de comercio electrónico  | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin binding acreditado no existe intercambio runtime sobre el cual materializar contingencia.                                                                                                                                                |
+|   15 | `EXT-SYS-015` | Rappi / marketplace                      | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin binding acreditado no existe intercambio runtime sobre el cual materializar contingencia.                                                                                                                                                |
+|   16 | `EXT-SYS-016` | ManyChat / automatización conversacional | `PROVEEDOR_NO_ACREDITADO`            | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin binding acreditado no existe intercambio runtime sobre el cual materializar contingencia.                                                                                                                                                |
+|   17 | `EXT-SYS-017` | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin binding acreditado no se presume proveedor, API, número, canal alterno ni comportamiento de contingencia.                                                                                                                                |
+|   18 | `EXT-SYS-018` | Instagram / perfiles sociales            | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin binding acreditado no existe intercambio runtime sobre el cual materializar contingencia.                                                                                                                                                |
+|   19 | `EXT-SYS-019` | Correo corporativo y alias funcionales   | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | La existencia del canal organizacional no acredita una integración técnica, proveedor, API ni fallback; por tanto no se define contingencia runtime específica.                                                                              |
+|   20 | `EXT-SYS-020` | Telefonía / canal de voz                 | `PROVEEDOR_NO_ACREDITADO`            | `BLOQUEADA_SIN_BINDING`                                | —                                                  | `BLOQUEADO`       | No existe proveedor/binding acreditado suficiente para definir failover, desvío, numeración alterna, capacidad o procedimiento específico.                                                                                                   |
+|   21 | `EXT-SYS-021` | Transporte externo                       | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | `NO_APLICA_SIN_BINDING`                                | —                                                  | `NO_APLICA`       | Sin proveedor e integración acreditados no puede definirse una contingencia de transporte específica sin inventar canal, capacidad o sustituto.                                                                                              |
+
+Balance de la matriz:
+
+| Clase                                                  | Cantidad |
+| ------------------------------------------------------ | -------: |
+| `GOBERNADA_POR_CONTINUIDAD_INTERNA_VENTO`              |        1 |
+| `DEFER_AND_RECONCILE_CRITICAL_PROVIDER_EFFECT`         |        2 |
+| `DEFER_ASYNC_DELIVERY_WITHOUT_FABRICATING_DELIVERY`    |        2 |
+| `BEST_EFFORT_OBSERVABILITY_CONTINUES_WITHOUT_PROVIDER` |        1 |
+| `INTERACTIVE_DEGRADED_READ_MODE`                       |        1 |
+| `HYBRID_RESOURCE_CONTINUES_PUSH_DEFERRED`              |        1 |
+| `TECH_PLATFORM_CONTINUITY_NO_RUNTIME_EXCHANGE`         |        2 |
+| `CONTROLLED_MANUAL_PHYSICAL_CONTINGENCY`               |        1 |
+| `MODEL_NO_REMOTE_BINDING`                              |        1 |
+| `NO_APLICA_SIN_BINDING`                                |        7 |
+| `BLOQUEADA_SIN_BINDING`                                |        2 |
+| **Total**                                              |   **21** |
+
+Distribución de evidencia heredada:
+
+| Estado de evidencia                  | Cantidad |
+| ------------------------------------ | -------: |
+| `BINDING_TECNICO_OBSERVADO`          |        3 |
+| `BINDING_CONDICIONAL_OBSERVADO`      |        6 |
+| `CONFIGURACION_OBSERVADA`            |        2 |
+| `DOCUMENTADO_SIN_BINDING_ACREDITADO` |        6 |
+| `PROVEEDOR_NO_ACREDITADO`            |        4 |
+| **Total**                            |   **21** |
+
+---
+
+#### 12. Reglas específicas para pagos y resultados financieros
+
+Cuando la dependencia afectada pueda producir un efecto financiero:
+
+- la intención, referencia e idempotencia permanecen estables;
+- un timeout o pérdida de respuesta no se interpreta como rechazo ni aprobación;
+- no se intenta otro proveedor para conseguir éxito salvo que exista `PROVEEDOR_DESIGNADO` previamente acreditado para esa misma capacidad y con contrato de conciliación compatible;
+- no se repite una operación incierta hasta consultar o conciliar;
+- el retorno del proveedor exige comparar el resultado interno con receipt o estado externo suficiente;
+- la contingencia no crea, revierte ni corrige movimientos financieros directamente.
+
+---
+
+#### 13. Reglas específicas para mensajería y notificaciones
+
+- aceptar una solicitud de envío no equivale a entrega;
+- una notificación diferida no modifica el hecho empresarial que la originó;
+- el backlog debe conservar destinatario autorizado, generación, contenido lógico o referencia protegida y resultado individual;
+- una entrega ya confirmada no se repite al drenar el backlog;
+- `CANAL_ALTERNO` requiere canal previamente acreditado y reglas de audiencia, consentimiento, sensibilidad y trazabilidad compatibles;
+- la indisponibilidad de un canal no autoriza ampliar destinatarios ni cambiar finalidad.
+
+---
+
+#### 14. Reglas específicas para lectura interactiva y recursos externos
+
+Para búsquedas, catálogos o recursos remotos que no constituyen por sí mismos un efecto empresarial irreversible:
+
+- puede degradarse la experiencia a `READ_ONLY` cuando exista información autoritativa previa suficiente;
+- una entrada manual solo puede usarse si el proceso propietario ya admite ese dato y conserva su validación posterior;
+- el dato remoto ausente no se rellena mediante inferencia;
+- datos potencialmente vencidos muestran su condición de frescura;
+- una respuesta técnica recuperada no modifica automáticamente un dato empresarial persistido.
+
+---
+
+#### 15. Reglas específicas para efectos físicos
+
+- un callback de envío a periférico no demuestra el resultado físico final;
+- si la caída ocurre después de iniciar un envío y no puede conocerse el efecto, el caso entra a consulta o verificación manual antes de repetir;
+- el procedimiento manual conserva actor, equipo o recurso, unidad afectada, evidencia y resultado;
+- una segunda impresión, movimiento o acción física solo puede emitirse como operación nueva cuando realmente sea una nueva decisión empresarial, no como forma de ocultar incertidumbre.
+
+---
+
+#### 16. Auditoría, métricas y alertas durante contingencia
+
+La contingencia reutiliza el contrato aprobado de observabilidad externa:
+
+- toda activación, cambio de estrategia, intervención, recuperación observada, conciliación y cierre debe quedar enlazable a auditoría;
+- las métricas pueden mostrar duración, backlog, edad, resultados desconocidos, retries, fallos, recuperación y residuales, pero no sustituyen el estado propietario;
+- las alertas pueden convocar evaluación o intervención, pero no activan ni cierran automáticamente la contingencia;
+- la ausencia de telemetría no se interpreta como salud;
+- los umbrales, SLO, canales y tiempos específicos permanecen sujetos a evidencia y contratos vigentes; esta tarea no inventa valores por proveedor.
+
+---
+
+#### 17. Propiedad, handoffs y pendientes cerrados
+
+| Decisión o pendiente                                                         | Propietario documental                        | Condición de salida                                                                     |
+| ---------------------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------- |
+| idempotencia y conciliación compartidas                                      | `SHELL-CON-023`                               | contrato compartido implementable y consumible por adaptadores autorizados              |
+| evento externo recibido                                                      | `SHELL-CON-019`                               | envelope compartido adoptado por bindings inbound que lo requieran                      |
+| cuarentena, rechazo y compensación                                           | `SHELL-CON-024`                               | contrato compartido adoptado por las superficies que necesiten aislamiento o corrección |
+| retry, backoff y presupuesto de trabajo                                      | `QUEUE-ARC-006`                               | infraestructura de cola implemente los perfiles autorizados                             |
+| cola de fallos y recuperación manual                                         | `QUEUE-ARC-008`                               | mecanismo durable y operación manual controlada disponibles                             |
+| métricas de cola                                                             | `QUEUE-ARC-011`                               | telemetría de espera, ejecución y error implementada                                    |
+| autorización para reintentar o intervenir trabajos                           | `QUEUE-ARC-012`                               | enforcement de capacidades y trazabilidad disponible                                    |
+| continuidad de proveedores externos                                          | `CONT-INT-003`                                | contratos de dependencia y estrategia materializados en implementación autorizada       |
+| reincorporación, replay, conciliación y retorno normal                       | `CONT-INT-004`                                | flujo de recuperación implementado y verificado en el paquete correspondiente           |
+| proveedor, endpoint, SLA, capacidad o alternativa actualmente no acreditados | tarea propietaria del binding correspondiente | evidencia contractual y técnica suficiente antes de materializar operación runtime      |
+
+No queda un pendiente narrativo sin propietario y condición de salida.
+
+---
+
+#### 18. Cambios no autorizados
+
+Esta tarea no autoriza:
+
+- crear o cambiar proveedores, cuentas, proyectos, regiones, tenants, endpoints o dominios;
+- implementar failover, DNS failover, multi-region, multi-cloud o proveedor secundario;
+- crear colas, workers, cron, jobs, tablas, funciones, triggers, RPC, RLS o migraciones;
+- cambiar credenciales, secretos, scopes, permisos o ambientes;
+- ejecutar pagos, mensajes, pushes, reimpresiones, conciliaciones o compensaciones reales;
+- modificar datos productivos;
+- activar canales alternos no acreditados;
+- declarar SLO, SLA, cuotas, capacidades, RTO o RPO no respaldados por fuente vigente;
+- convertir una recuperación técnica en cierre empresarial;
+- iniciar la tarea reservada siguiente.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Justificación: el registro vigente ya protege la definición de estrategia de contingencia, límites, custodia, operación mínima, preservación de fuente de verdad, idempotencia, resultado desconocido, conciliación, reincorporación y retorno controlado. Esta tarea especializa esas obligaciones sobre las veintiuna identidades externas sin introducir un comportamiento verificable adicional ni modificar una obligación histórica.
+
+---
+
+#### 20. Criterios de aceptación
+
+- [x] Se materializan **21 de 21** identidades externas canónicas.
+- [x] Se conservan los **21 identificadores** sin faltantes ni duplicados.
+- [x] Se preserva la distribución heredada de evidencia **3 / 6 / 2 / 6 / 4**.
+- [x] Se reutilizan exactamente las **8 estrategias** de continuidad ya aprobadas.
+- [x] Se prohíbe el failover o proveedor sustituto por inferencia.
+- [x] Se define activación con dependencia material, evidencia, alcance, estrategia y autoridad.
+- [x] Se define operación degradada sin transferir fuente de verdad ni fabricar resultados.
+- [x] Se define tratamiento explícito de pagos, mensajería, lecturas interactivas, recursos externos y efectos físicos.
+- [x] Se conserva `UNKNOWN_OUTCOME` como condición que exige consulta o conciliación antes de repetir un efecto sensible.
+- [x] Se define reincorporación controlada y se separa recuperación técnica de recuperación empresarial.
+- [x] Todo pendiente queda asignado a propietario y condición de salida.
+- [x] Se crean **0** requisitos de prueba y se modifican **0**.
+- [x] Se autorizan **0** cambios físicos.
+
+---
+
+#### 21. Invariante final
+
+```text
+DEPENDENCIA EXTERNA IDENTIFICADA
++
+ESTRATEGIA PREVIAMENTE AUTORIZADA
++
+FUENTE DE VERDAD INALTERADA
++
+IDENTIDAD E IDEMPOTENCIA PRESERVADAS
++
+RESULTADO DESCONOCIDO NO FABRICADO
++
+OPERACIÓN MÍNIMA EXPLÍCITA
++
+ALTERNATIVA SOLO SI ESTÁ ACREDITADA
++
+REINCORPORACIÓN CON DEDUPLICACIÓN Y CONCILIACIÓN
++
+RESIDUALES CON PROPIETARIO
+=
+CONTINGENCIA CONTROLADA SIN FAILOVER INVENTADO NI CIERRE EMPRESARIAL FALSO
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-019 — Definir retiro de integración y revocación de credenciales`
+
+
 ### [ ] INT-EXT-019 — Definir retiro de integración y revocación de credenciales
 ### [ ] INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
 
