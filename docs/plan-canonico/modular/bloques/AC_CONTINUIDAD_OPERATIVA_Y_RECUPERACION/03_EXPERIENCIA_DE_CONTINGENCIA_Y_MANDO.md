@@ -3870,7 +3870,7 @@ Balance de cambios de requisitos:
 
 La conducta central de esta tarea ya está cubierta por `TREQ-CONT-003`, que asigna expresamente responsabilidad a `CONT-UX-003` y exige modalidad de contingencia, datos mínimos, identificadores/formularios controlados, responsables, límites, vigencia, custodia, seguridad, suministros y criterio de abandono, sin crear una segunda fuente de verdad ni afirmar un efecto empresarial no confirmado.
 
-`TREQ-CONT-006` protege la revisión periódica de runbooks y el principio de que un plan sin prueba vigente no puede declararse listo. `TREQ-UX-006`, `TREQ-UX-007` y `TREQ-UX-008` cubren comportamiento responsive, validación con roles/sedes/dispositivos representativos y accesibilidad/estados de interfaz sin depender exclusivamente de color o iconografía.
+`TREQ-CONT-006` protege la revisión periódica de runbooks y el principio de que un plan sin prueba vigente no puede declararse listo. `TREQ-UX-006`, `TREQ-UX-007` y `TREQ-UX-021` cubren comportamiento responsive, validación con roles/sedes/dispositivos representativos y accesibilidad/estados de interfaz sin depender exclusivamente de color o iconografía.
 
 La presente tarea materializa esas obligaciones en el diseño del runbook y checklist; no altera su alcance normativo.
 
