@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **728** |
+| Tareas aprobadas | **729** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **866** |
+| Tareas no iniciadas | **865** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.67% (728/1594)** |
+| Porcentaje de completamiento | **45.73% (729/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento** |
-| Tarea actual | **CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness** |
+| Última tarea aprobada | **CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness** |
+| Tarea actual | **CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones** |
+| Siguiente tarea | **CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 152 de 157 aprobadas; CONT-UX-007 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 153 de 157 aprobadas; CONT-INT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento |
-| Tarea actual | `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness — **NO INICIADA** |
-| Siguiente tarea | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones |
+| Última aprobada | `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness |
+| Tarea actual | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones — **NO INICIADA** |
+| Siguiente tarea | `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 152 DE 157 APROBADAS — ACTUAL CONT-UX-007** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 153 DE 157 APROBADAS — ACTUAL CONT-INT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
-        ↓
-TAREA ACTUAL
 CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 152 de 157 tareas aprobadas
+CARRIL NEXO — 153 de 157 tareas aprobadas
 ```

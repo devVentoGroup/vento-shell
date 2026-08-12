@@ -7689,4 +7689,1568 @@ SIGUIENTE TAREA RESERVADA
 `CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness`
 
 
-### [ ] CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness
+### ✅ CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento` — APROBADA
+**Tarea siguiente:** `CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de experiencia para planificar, conducir y observar ejercicios controlados de continuidad, ejecutar su revisión posterior, convertir hallazgos en acciones con propietario, comprobar eficacia y representar readiness por alcance, versión y evidencia sin ejecutar pruebas físicas ni fabricar capacidad demostrada
+**Bloque:** AC — Continuidad operativa y recuperación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md`
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Servicios BIA cubiertos por la experiencia:** 69 / 69
+**Servicios activos sin readiness operativo acreditado en la línea base:** 67 / 67
+**Servicios AURA bloqueados por aplicación diferida:** 2 / 2
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia completa mediante la cual Vento OS permitirá preparar y seguir el programa de ejercicios de continuidad, conducir un ejercicio controlado sin confundirlo con producción, registrar resultados y desviaciones, efectuar revisión posterior, convertir hallazgos en acciones, comprobar su eficacia y determinar qué afirmación de readiness puede sostenerse con evidencia vigente.
+
+La superficie deberá responder de forma determinista:
+
+```text
+¿QUE SERVICIO, PROCESO, SEDE O DEPENDENCIA DEBE EJERCITARSE?
+¿QUE MODALIDAD CORRESPONDE Y POR QUE?
+¿CUANDO VENCE LA EVIDENCIA VIGENTE?
+¿QUE CAMBIO MATERIAL INVALIDO UNA PRUEBA ANTERIOR?
+¿QUE VERSION DEL PLAN, RUNBOOK, OBJETIVO Y DEPENDENCIAS SE ESTA PROBANDO?
+¿QUE PARTICIPANTES Y FUNCIONES SON NECESARIOS?
+¿QUE AUTORIDAD ES REAL Y CUAL ES SOLO SIMULADA?
+¿QUE NO DEBE TOCARSE EN PRODUCCION?
+¿QUE ESCENARIO E INYECTORES SE UTILIZAN?
+¿QUE RESULTADO SE ESPERABA Y QUE OCURRIO REALMENTE?
+¿QUE TIEMPOS Y PERDIDAS SE OBSERVARON?
+¿QUE DESVIACIONES, PENDIENTES Y BLOQUEOS APARECIERON?
+¿QUE HALLAZGO ESTA RESPALDADO POR EVIDENCIA?
+¿QUE SIGUE SIENDO HIPOTESIS O DESCONOCIDO?
+¿QUE ACCION RESULTA, QUIEN ES SU PROPIETARIO Y CUAL ES SU CONDICION DE SALIDA?
+¿LA ACCION FUE IMPLEMENTADA?
+¿SU EFICACIA FUE DEMOSTRADA?
+¿QUE VERSIONES DEL PLAN O RUNBOOK DEBEN ACTUALIZARSE?
+¿QUE READINESS PUEDE AFIRMARSE HOY Y PARA QUE ALCANCE EXACTO?
+```
+
+La frontera principal es obligatoria:
+
+```text
+PLAN ESPECIFICADO
+!= EJERCICIO PROGRAMADO
+!= EJERCICIO EJECUTADO
+!= EVIDENCIA COMPLETA
+!= RESULTADO ACEPTABLE
+!= ACCION IMPLEMENTADA
+!= ACCION EFICAZ
+!= EVIDENCIA VIGENTE
+!= READINESS DEMOSTRADO
+!= CERTIFICACION INTEGRAL
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados los siguientes resultados documentales:
+
+1. una arquitectura UX con cinco contextos coordinados: preparación/readiness, planificación, ejercicio controlado, revisión/acciones y evidencia histórica;
+2. una vista ejecutiva de readiness que separa cobertura documental, evidencia vigente, vencimientos, invalidaciones, acciones abiertas y bloqueos;
+3. un calendario rodante que consume las ventanas aprobadas por criticidad sin inventar fechas de ejecuciones inexistentes;
+4. una ficha de cobertura por servicio que conserva la obligación de ejercicio de `CONT-DOM-014`, la versión de alcance, la última evidencia aplicable y el próximo vencimiento cuando pueda calcularse;
+5. una experiencia de planificación que resuelve modalidad, escenario, alcance, objetivos, participantes funcionales, precondiciones, seguridad, evidencias y criterios de abortado antes de iniciar;
+6. reutilización exacta de las seis modalidades documentales: walkthrough documental, tabletop de decisión, simulación técnica controlada, restauración aislada, ejercicio operativo y ejercicio integrado;
+7. una experiencia de conducción con contexto no productivo persistente, cronología, inyectores, decisiones, observaciones, bloqueos, tiempos y evidencia;
+8. una separación estricta entre autoridad simulada y autoridad productiva;
+9. una regla que impide transformar la participación en un ejercicio en permiso, break-glass, acceso o aprobación real;
+10. una experiencia de seguridad y abortado que prioriza SST, inocuidad, seguridad, privacidad, integridad, autorización y protección de producción;
+11. una ficha de resultado por servicio/proceso que compara resultado esperado y observado sin convertir objetivo en resultado;
+12. una vista de tiempos que permite comparar mediciones reales, cuando existan, con RTO, RPO y MTPD aplicables sin fabricar timestamps;
+13. una vista específica de restore aislado que separa integridad técnica, compatibilidad, tiempo observado, validación funcional y pendientes;
+14. una vista específica de operación manual/offline que exige evidencia, custodia, idempotencia, reincorporación y conciliación aplicables;
+15. una vista específica de failover/retorno que permanece bloqueada para ejecución mientras no exista capacidad habilitada y acreditada;
+16. una vista específica de alternativas físicas o de proveedor que distingue tabletop de una capacidad operativa realmente acreditada;
+17. un catálogo UX de las catorce familias de escenario aprobadas;
+18. una experiencia de revisión posterior basada en hechos y evidencia, no en memoria retrospectiva ni atribución automática de culpa;
+19. proyección completa del contrato de revisión posterior de `CONT-DOM-015`;
+20. separación entre observación, desviación, hipótesis de causa, causa confirmada, desconocido, hallazgo y lección;
+21. una bandeja de hallazgos que preserva riesgo, evidencia, alcance y destino documental;
+22. una bandeja de acciones con propietario funcional, ejecutor cuando sea distinto, dominio, prioridad, alcance, vencimiento o condición, dependencias, condición de salida y evidencia;
+23. una regla visible `ACCION_IMPLEMENTADA != ACCION_EFICAZ`;
+24. una experiencia de comprobación de eficacia mediante los nueve métodos aprobados, según riesgo y acción;
+25. tratamiento explícito de acciones ineficaces, parciales, vencidas, bloqueadas o canceladas sin borrarlas del historial;
+26. una vista de cambios derivados hacia BIA, dependencias, objetivos, contingencia, respaldos, runbooks, proveedores, autorización, experiencia e integraciones;
+27. un modelo append-only de revisión y actualización que preserva la versión vigente al momento del ejercicio o incidente;
+28. una experiencia de invalidación de evidencia ante cambios materiales;
+29. una decisión de readiness por servicio, alcance y versión, nunca un booleano global sin evidencia;
+30. una regla por la cual un plan sin prueba vigente no se presenta como listo;
+31. una regla por la cual una acción cerrada administrativamente no restablece readiness si su eficacia no está demostrada;
+32. una regla por la cual una prueba vencida o invalidada degrada la afirmación de readiness sin borrar la evidencia histórica;
+33. una regla que mantiene AURA restringida a walkthrough documental de vigencia mientras su aplicación permanezca diferida;
+34. una matriz explícita 69 / 69 que conserva todas las identidades del programa y proyecta su situación UX inicial sin reescribir BIA ni objetivos;
+35. reconciliación explícita de 67 servicios activos, 2 AURA bloqueados y distribución BIA 12 / 20 / 31 / 6;
+36. integración con `CONT-UX-006` para ejercitar comunicaciones sin emitir mensajes externos reales por defecto;
+37. integración con `CONT-UX-005` para ejercicios de restore/recuperación sin confundir la superficie de ejercicios con la consola de recuperación;
+38. integración con `CONT-UX-004` para ejercicios de captura/reincorporación sin ejecutar replay ciego;
+39. handoffs explícitos a `CONT-INT-*`, BLOQUE U, TI, datos, información y paquetes de implementación;
+40. cero ejercicios reales, cero interrupciones, cero restauraciones productivas, cero cambios Supabase y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume y conserva, sin redefinirlas:
+
+- `VPROC-0062`, como proceso transversal propietario del expediente de continuidad;
+- `CONT-DOM-001`, para gobierno federado, prueba antes de confianza, evidencia y mantenimiento;
+- `CONT-DOM-002` a `CONT-DOM-004`, para servicios BIA, dependencias, perfiles `CONT-OBJ-*`, MTPD, RTO, RPO, MBCO y prioridad;
+- `CONT-DOM-005` y `CONT-DOM-006`, para incidentes, mando, decisiones, bitácora y comunicación;
+- `CONT-DOM-007` a `CONT-DOM-010`, para operación mínima, contingencia, captura, reincorporación y conciliación;
+- `CONT-DOM-011` a `CONT-DOM-013`, para respaldo, recuperación, failover, proveedores, energía, red, pagos, transporte, canales y alternativas;
+- `CONT-DOM-014`, como fuente propietaria del programa recurrente de ejercicios, sus seis modalidades, ventanas, disparadores, catorce familias de escenario y cobertura 69 / 69;
+- `CONT-DOM-015`, como fuente propietaria del ciclo de revisión, hallazgos, lecciones, acciones, eficacia, invalidación y mantenimiento versionado;
+- `CONT-AUTH-001`, para autoridad real frente a simulada;
+- `CONT-AUTH-002`, para impedir que un ejercicio cree acceso extraordinario o break-glass productivo;
+- `CONT-AUTH-003`, para protección de runbooks, contactos, evidencia, formularios y datos sensibles;
+- `CONT-AUTH-004`, para separación entre ejecución, validación, reincorporación, conciliación, cierre, revisión posterior y certificación de eficacia;
+- `CONT-UX-001` y `CONT-UX-002`, para situación, impacto, mando, decisiones, cronología y bloqueos;
+- `CONT-UX-003`, para experiencia de runbooks y checklists;
+- `CONT-UX-004`, para captura controlada, estados inciertos, reincorporación y conciliación;
+- `CONT-UX-005`, para respaldo, restore, failover, validación y pendientes;
+- `CONT-UX-006`, para plantillas, canales, confirmación y escalamiento de comunicaciones;
+- los contratos no funcionales vigentes de recuperación, observabilidad, hardware y certificación;
+- la cobertura de requisitos vigente que ya exige ejercicios, evidencia, revisión, acciones, eficacia y readiness antes de confianza.
+
+La tarea no modifica identidades, propietarias, BIA, `CONT-OBJ-*`, MTPD, RTO, RPO, MBCO, prioridades, estrategias, autorizaciones, ventanas del programa ni estados de aplicación.
+
+---
+
+#### 4. Fronteras obligatorias de experiencia
+
+La interfaz conserva como invariantes:
+
+```text
+DOCUMENTO VIGENTE != EJERCICIO VIGENTE
+EJERCICIO EJECUTADO != EJERCICIO ACEPTABLE
+RESULTADO TECNICO != RESULTADO EMPRESARIAL
+RESULTADO ESPERADO != RESULTADO OBSERVADO
+OBSERVACION != HALLAZGO
+HIPOTESIS != CAUSA CONFIRMADA
+HALLAZGO != LECCION
+LECCION != ACCION
+ACCION ASIGNADA != ACCION IMPLEMENTADA
+ACCION IMPLEMENTADA != ACCION EFICAZ
+DOCUMENTO ACTUALIZADO != READINESS
+READINESS DE UN SERVICIO != READINESS GLOBAL
+READINESS DE UN ALCANCE != CERTIFICACION INTEGRAL
+AUTORIDAD SIMULADA != AUTORIDAD PRODUCTIVA
+PARTICIPANTE DEL EJERCICIO != ACTOR AUTORIZADO EN PRODUCCION
+FIN DEL EJERCICIO != CIERRE DEL INCIDENTE
+```
+
+Un color, porcentaje, score o mensaje de éxito nunca puede eliminar estas diferencias.
+
+---
+
+#### 5. Arquitectura de experiencia
+
+La experiencia se divide en cinco contextos complementarios:
+
+| Contexto                | Objetivo                                                    | Puede mostrar                                                                                       | No puede afirmar                                        |
+| ----------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| preparación y readiness | conocer cobertura, vencimientos, evidencia e invalidaciones | obligación, última evidencia, brecha, siguiente modalidad y propietario                             | capacidad real si la evidencia no existe o venció       |
+| planificación           | preparar un ejercicio concreto                              | modalidad, escenario, alcance, versiones, objetivos, participantes, seguridad y evidencia requerida | que el ejercicio ocurrió                                |
+| ejercicio controlado    | conducir y observar una ejecución autorizada                | inyectores, decisiones, tiempos, desviaciones, evidencia, bloqueos y abortado                       | resultado no observado o autoridad productiva implícita |
+| revisión y acciones     | convertir evidencia en aprendizaje y tratamiento            | observaciones, hallazgos, lecciones, acciones, eficacia y cambios derivados                         | causa o eficacia sin evidencia                          |
+| historial               | reconstruir versiones, ejercicios, revisiones y acciones    | evidencia, relaciones, invalidaciones y decisiones previas                                          | que una evidencia histórica siga vigente                |
+
+Las cinco vistas consumen las mismas identidades y fuentes propietarias; no crean un segundo programa de continuidad.
+
+---
+
+#### 6. Mapa de navegación
+
+```text
+CONTINUIDAD
+└─ Ejercicios y readiness
+   ├─ Readiness
+   │  ├─ Cobertura por servicio
+   │  ├─ Vencimientos e invalidaciones
+   │  ├─ Bloqueos y acciones
+   │  └─ Evidencia vigente
+   ├─ Programa de ejercicios
+   │  ├─ Calendario rodante
+   │  ├─ Escenarios
+   │  └─ Cobertura 69 / 69
+   ├─ Planificar ejercicio
+   │  ├─ Modalidad
+   │  ├─ Alcance y versiones
+   │  ├─ Objetivos y criterios
+   │  ├─ Participantes y autoridad
+   │  ├─ Seguridad y abortado
+   │  └─ Evidencia requerida
+   ├─ Conducir ejercicio
+   │  ├─ Cronología
+   │  ├─ Inyectores
+   │  ├─ Decisiones
+   │  ├─ Observaciones
+   │  ├─ Tiempos
+   │  └─ Evidencia
+   ├─ Revisión posterior
+   │  ├─ Esperado vs observado
+   │  ├─ Desviaciones
+   │  ├─ Hallazgos y lecciones
+   │  └─ Riesgo residual
+   ├─ Acciones y eficacia
+   └─ Historial
+```
+
+Poder abrir una vista no concede autoridad para iniciar una interrupción, restauración, conmutación, comunicación externa o modificación productiva.
+
+---
+
+#### 7. Encabezado persistente de un ejercicio
+
+Durante planificación o conducción se conserva un encabezado compacto con:
+
+```text
+exercise_ref
+contexto: EJERCICIO / SIMULACION / NO PRODUCTIVO
+modalidad
+escenario
+alcance
+servicios y procesos
+sedes o dependencias cuando apliquen
+versiones del plan y runbook
+objetivos empresariales aplicables
+responsable de continuidad
+director/conductor del ejercicio
+funcion efectiva del actor
+autoridad simulada / autoridad real
+estado de seguridad
+hora de inicio observada cuando exista
+proximo hito
+bloqueos
+```
+
+Si no existe una ejecución real, los tiempos de ejecución permanecen vacíos o no aplicables; la interfaz no fabrica una cronología.
+
+---
+
+#### 8. Modalidades de ejercicio reutilizadas
+
+Las modalidades se presentan exactamente como categorías documentales y no como nuevos enums persistentes:
+
+| Modalidad                     | Enfoque UX                                                                            | Evidencia que puede producir                                                  | Límite                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------- |
+| walkthrough documental        | recorrer plan, roles, dependencias, contactos, runbooks y handoffs                    | comprensión, contradicciones, faltantes, vigencia documental                  | no demuestra capacidad bajo presión               |
+| tabletop de decisión          | resolver inyectores y decisiones sin intervenir producción                            | mando, priorización, escalamiento, comunicación y límites                     | no demuestra infraestructura                      |
+| simulación técnica controlada | reproducir estados técnicos controlados/no destructivos                               | detección, aislamiento, observabilidad, degradación, compatibilidad, abortado | no demuestra recuperación empresarial por sí sola |
+| restauración aislada          | recuperar fuente/configuración en ambiente separado                                   | integridad, versión, punto, tiempo observado y pasos técnicos                 | no demuestra MBCO ni pendientes en cero           |
+| ejercicio operativo           | ejecutar personas, procedimiento, medios y handoffs controlados                       | capacidad humana/operativa, MBCO, tiempos, custodia, pendientes               | no acredita recursos fuera del alcance            |
+| ejercicio integrado           | combinar mando, comunicación, degradación, restore, operación, retorno y conciliación | comportamiento extremo a extremo del alcance declarado                        | no cubre automáticamente otros servicios o sedes  |
+
+---
+
+#### 9. Semántica de readiness
+
+`readiness` se presenta como una conclusión sustentada por alcance y versión, no como un interruptor global.
+
+Para la línea base actual:
+
+- los 67 servicios activos conservan **programa especificado sin ejecución acreditada** y, por tanto, la UX no muestra readiness operativo demostrado;
+- los 2 servicios AURA permanecen `BLOQUEADO_POR_APLICACION_DIFERIDA`;
+- el sistema conserva **0 servicios con readiness validado** hasta que exista evidencia real posterior.
+
+La interfaz puede usar rótulos humanos como “evidencia faltante”, “evidencia vigente”, “vencida”, “invalidada” o “bloqueada” únicamente como presentación de hechos propietarios. No crea un catálogo persistente paralelo.
+
+Una afirmación positiva de readiness requiere, para el alcance exacto:
+
+1. modalidades exigibles ejecutadas dentro de sus ventanas aplicables;
+2. evidencia vinculada con versión y alcance;
+3. ausencia de invalidación posterior por cambio material;
+4. resultado funcional suficiente para el MBCO o condición protectora aplicable;
+5. mediciones requeridas disponibles cuando el criterio dependa de tiempo o pérdida;
+6. validación funcional propietaria;
+7. pendientes materiales representados y sin bloqueo incompatible con la afirmación;
+8. hallazgos críticos tratados o con decisión de riesgo permitida por su propietario;
+9. acciones cuya eficacia sea necesaria para restaurar confianza efectivamente verificadas;
+10. seguridad, autorización, privacidad, custodia y segregación satisfechas;
+11. evidencia disponible y trazable;
+12. revisión por continuidad y propietario del proceso sobre la misma versión.
+
+---
+
+#### 10. Calendario rodante y vencimientos
+
+La UX consume, sin redefinir, estas dimensiones del programa:
+
+```text
+last_walkthrough_at
+last_tabletop_at
+last_operational_exercise_at
+last_restore_exercise_at cuando aplique
+last_integrated_exercise_at cuando aplique
+last_material_change_at
+next_due_at por modalidad aplicable
+exercise_scope_version
+current_evidence_state
+invalidation_reason cuando aplique
+```
+
+Reglas:
+
+1. ausencia de fecha real no se sustituye por la fecha de aprobación documental;
+2. `next_due_at` se muestra solo cuando pueda derivarse de una evidencia real y una ventana aprobada;
+3. un cambio material posterior puede invalidar una evidencia antes de su vencimiento temporal;
+4. el calendario diferencia “debe realizarse” de “está programado”;
+5. una programación sin participantes, ambiente o precondiciones no se presenta como ejecución garantizada;
+6. los vencimientos se agrupan por servicio, modalidad y riesgo sin perder identidad.
+
+---
+
+#### 11. Ventanas heredadas por criticidad
+
+La interfaz conserva las ventanas aprobadas de `CONT-DOM-014`:
+
+| BIA / perfil                            | Cobertura mínima                                                                                     | Ventana de experiencia                                                                                                           |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `CRITICA_PROTECCION` / `CONT-OBJ-001`   | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | decisión ≤ 6 meses; ejercicio operativo ≤ 12 meses; restauración ≤ 6 meses cuando exista afirmación de recuperabilidad crítica   |
+| `CRITICA_OPERACIONAL` / `CONT-OBJ-002`  | walkthrough + tabletop + ejercicio operativo; simulación/restauración cuando la dependencia lo exija | decisión y ejercicio ≤ 12 meses; restauración ≤ 12 meses cuando aplique                                                          |
+| `ALTA_CONTROL` / `CONT-OBJ-003`         | walkthrough + tabletop; ejercicio operativo o restauración dirigido por dependencia y riesgo         | revisión/decisión ≤ 12 meses; ejercicio integral ≤ 24 meses; restauración ≤ 12 meses cuando exista afirmación de recuperabilidad |
+| `DIFERIBLE_CONTROLADA` / `CONT-OBJ-004` | walkthrough; tabletop o ejercicio operativo dirigido por escenario y riesgo                          | revisión ≤ 12 meses; ejercicio ≤ 24 meses; restauración ≤ 24 meses cuando aplique                                                |
+| AURA diferida                           | walkthrough documental de vigencia                                                                   | revisar ante cambio de estado; no inicia ventana de readiness operativo                                                          |
+
+Estas ventanas gobiernan antigüedad máxima de evidencia aplicable; no generan automáticamente fechas históricas.
+
+---
+
+#### 12. Invalidación por cambio material
+
+La experiencia presenta una evidencia como potencialmente invalidada cuando exista un cambio material posterior que afecte su alcance, incluyendo, cuando corresponda:
+
+- BIA, MTPD, RTO, RPO o MBCO;
+- propietario, mando, suplencia o función crítica;
+- sede o capacidad física;
+- aplicación, arquitectura, base, Storage, integración o fuente de verdad;
+- runbook, procedimiento, formulario o mecanismo de contingencia;
+- proveedor, contrato, canal o recurso alternativo;
+- autorización, segregación, privacidad o controles protectores;
+- configuración técnica que cambie el comportamiento probado;
+- incidente o ejercicio posterior que contradiga el resultado previo;
+- hallazgo de integridad, seguridad o reconciliación material.
+
+La invalidación conserva la evidencia histórica y añade razón, alcance afectado, propietario de reevaluación y siguiente modalidad necesaria.
+
+---
+
+#### 13. Planificador de ejercicio
+
+Antes de marcar un ejercicio como preparado, la superficie debe resolver:
+
+| Grupo          | Información mínima                                                                       |
+| -------------- | ---------------------------------------------------------------------------------------- |
+| identidad      | referencia, título y modalidad                                                           |
+| origen         | programa, vencimiento, cambio material, hallazgo o necesidad                             |
+| alcance        | servicios, procesos, sedes, dependencias, aplicaciones y terceros                        |
+| baseline       | versiones de plan, runbook, BIA, objetivos, contratos y configuraciones que se evaluarán |
+| escenario      | familia, narrativa, supuestos e inyectores                                               |
+| objetivos      | resultados observables que se pretende evaluar                                           |
+| participantes  | funciones requeridas y observadores                                                      |
+| autoridad      | qué es simulado y qué acción real requeriría autorización independiente                  |
+| ambiente       | documental, sandbox, staging, aislado u otro ambiente autorizado                         |
+| datos          | tipo y sensibilidad de los datos permitidos                                              |
+| seguridad      | controles, prohibiciones y criterios de abortado                                         |
+| comunicaciones | si se simulan, plantillas/audiencias/canales y bloqueo de emisión real                   |
+| evidencia      | qué debe conservarse y por quién                                                         |
+| tiempos        | relojes que realmente pueden medirse                                                     |
+| cierre         | criterios para terminar el ejercicio y transferir a revisión posterior                   |
+
+Un campo obligatorio no resoluble produce bloqueo visible; no se completa con supuestos implícitos.
+
+---
+
+#### 14. Participantes, funciones y segregación
+
+La UX distingue:
+
+- conductor/director del ejercicio;
+- responsable de continuidad;
+- propietario de proceso;
+- ejecutor operativo;
+- ejecutor técnico;
+- validador técnico;
+- validador funcional;
+- responsable de protección aplicable;
+- responsable de comunicaciones;
+- custodio de evidencia;
+- observador;
+- autoridad ejecutiva cuando una decisión real la requiera;
+- proveedor o tercero participante.
+
+La misma persona puede ejercer varias funciones en una organización pequeña, pero la interfaz conserva cada función y muestra cualquier concentración que afecte independencia. Participar, observar, ejecutar un paso o preparar una decisión no concede autoridad para certificar su propia eficacia cuando el contrato exige segregación.
+
+---
+
+#### 15. Autoridad simulada y autoridad real
+
+La pantalla mantiene una banda persistente:
+
+```text
+CONTEXTO DE EJERCICIO
+AUTORIDAD SIMULADA NO PRODUCE EFECTOS PRODUCTIVOS
+```
+
+Reglas:
+
+1. una aprobación simulada no produce una aprobación real;
+2. una identidad de ejercicio no concede permisos productivos;
+3. break-glass productivo no se ensaya reutilizando una credencial real salvo autorización específica futura;
+4. una decisión que requiera efecto real debe salir de la superficie de simulación y resolver autoridad productiva de nuevo;
+5. un proveedor participante no obtiene autoridad empresarial;
+6. un ejercicio no crea una excepción permanente de seguridad;
+7. las acciones observadas se etiquetan por contexto para evitar contaminación de auditoría productiva.
+
+---
+
+#### 16. Seguridad, protección y abortado
+
+La experiencia debe hacer visibles antes y durante el ejercicio:
+
+- entorno autorizado;
+- recursos reales o simulados;
+- efectos externos bloqueados;
+- datos permitidos;
+- controles SST, inocuidad, seguridad, privacidad y autorización;
+- límites de impacto;
+- condición de parada;
+- responsable que puede detener por protección;
+- canal de escalamiento;
+- estado de aislamiento;
+- rollback o restauración del ambiente de ejercicio cuando aplique.
+
+Una parada protectora puede ser el resultado correcto. La interfaz no penaliza un ejercicio por detenerse cuando continuar violaría un control no dispensable.
+
+---
+
+#### 17. Catálogo de catorce familias de escenario
+
+|    # | Familia                                             | Modalidad mínima / tratamiento UX                                                 |
+| ---: | --------------------------------------------------- | --------------------------------------------------------------------------------- |
+|    1 | pérdida de mando o persona clave                    | walkthrough + tabletop                                                            |
+|    2 | indisponibilidad de sede o energía                  | tabletop + ejercicio operativo; simulación física solo con autorización posterior |
+|    3 | pérdida de red o conectividad                       | tabletop + simulación técnica + ejercicio operativo según alcance                 |
+|    4 | indisponibilidad de aplicación o backend            | simulación técnica + ejercicio operativo                                          |
+|    5 | restauración de datos o configuración               | restauración aislada + validación funcional                                       |
+|    6 | dispositivo, impresora o periférico indisponible    | walkthrough + simulación/ejercicio operativo cuando exista recurso real           |
+|    7 | proveedor de pago indisponible o resultado incierto | tabletop + simulación contractual/controlada                                      |
+|    8 | proveedor o canal de mensajería indisponible        | tabletop + simulación controlada                                                  |
+|    9 | transporte o recurso logístico indisponible         | tabletop + ejercicio operativo                                                    |
+|   10 | proveedor crítico de insumo o servicio indisponible | tabletop; ejercicio operativo solo con recurso acreditado                         |
+|   11 | operación manual u offline y reincorporación        | walkthrough + ejercicio operativo                                                 |
+|   12 | failover y retorno                                  | simulación técnica + ejercicio operativo solo cuando exista capacidad habilitada  |
+|   13 | alternativa física o proveedor sustituto            | tabletop; ejercicio operativo únicamente con alternativa acreditada               |
+|   14 | escenario integrado multidominio                    | tabletop + simulación/restauración/operativo según alcance                        |
+
+La experiencia conserva los bloqueos actuales: failover/retorno no se presenta como ejecutable sin capacidad habilitada y la alternativa física/proveedor no se presenta como ejercitable operacionalmente sin acreditación.
+
+---
+
+#### 18. Cronología e inyectores
+
+La vista de conducción separa:
+
+```text
+scheduled_at
+started_at real
+inject_released_at
+decision_recorded_at
+action_observed_at
+evidence_captured_at
+checkpoint_reached_at
+abort_at cuando aplique
+ended_at real
+review_opened_at
+```
+
+Cada inyector conserva:
+
+- identidad;
+- objetivo de aprendizaje;
+- momento o condición de liberación;
+- información entregada;
+- audiencia funcional;
+- respuesta esperada únicamente como criterio, no como guion obligatorio;
+- respuesta observada;
+- desviación;
+- evidencia;
+- impacto sobre siguientes inyectores;
+- condición de abortado si aplica.
+
+La interfaz no altera un timestamp para hacer coincidir el ejercicio con el objetivo.
+
+---
+
+#### 19. Walkthrough documental
+
+La vista de walkthrough recorre, como mínimo:
+
+- versión del plan y runbook;
+- propietario y suplencia;
+- servicios/procesos y alcance;
+- objetivos BIA aplicables;
+- dependencias y terceros;
+- contactos por referencia protegida;
+- precondiciones;
+- pasos;
+- formularios/medios;
+- controles de autorización y seguridad;
+- comunicación;
+- validación funcional y conciliación;
+- evidencia;
+- abortado;
+- handoffs;
+- cambios materiales desde la última revisión.
+
+Resultado UX posible: contradicción, faltante, versión dudosa, dependencia sin propietario, referencia no resoluble o recorrido documental satisfactorio. Ninguno de estos resultados acredita ejecución física.
+
+---
+
+#### 20. Tabletop de decisión
+
+La experiencia de tabletop prioriza decisiones sobre pasos mecánicos:
+
+```text
+inyector
+→ interpretación del impacto
+→ severidad/alcance según escenario
+→ prioridad y dependencia
+→ decisión propuesta
+→ autoridad simulada
+→ comunicación simulada
+→ siguiente inyector
+→ evidencia de razonamiento
+```
+
+La pantalla registra qué información estaba disponible al decidir. No evalúa a posteriori una decisión usando datos que los participantes todavía no conocían en ese punto del escenario.
+
+---
+
+#### 21. Simulación técnica controlada
+
+La vista técnica conserva:
+
+- ambiente y aislamiento;
+- fallo o degradación simulada;
+- señales esperadas;
+- señales observadas;
+- detección;
+- aislamiento;
+- observabilidad;
+- reintentos;
+- compatibilidad;
+- degradación segura;
+- decisión de abortado;
+- evidencia;
+- validación técnica;
+- handoff funcional.
+
+Un resultado técnico favorable no eleva automáticamente el resultado empresarial del servicio.
+
+---
+
+#### 22. Restauración aislada
+
+La experiencia consume `CONT-UX-005` y presenta:
+
+- objeto/grupo recuperable;
+- punto seleccionado;
+- integridad;
+- compatibilidad;
+- ambiente aislado;
+- efectos externos bloqueados;
+- hora real de inicio y fin cuando existan;
+- tiempo observado;
+- validación técnica;
+- validación funcional;
+- hechos posteriores al punto;
+- pendientes;
+- conciliación requerida;
+- evidencia.
+
+La restauración aislada no se presenta como prueba de recuperación total si no cubre proceso, MBCO y pendientes aplicables.
+
+---
+
+#### 23. Ejercicio operativo
+
+La vista operativa se centra en:
+
+- resultado mínimo a mantener o proteger;
+- personas y funciones;
+- sede/área real del ejercicio;
+- medio normal y contingente;
+- pasos y límites;
+- folios, registros o evidencia;
+- capacidad observada;
+- cola/backlog;
+- tiempos;
+- handoffs;
+- decisiones;
+- seguridad;
+- trabajo pendiente;
+- reincorporación;
+- conciliación;
+- validación propietaria.
+
+La UX diferencia ejercicio controlado de operación productiva y evita que un registro de prueba se mezcle con hechos reales.
+
+---
+
+#### 24. Ejercicio integrado
+
+El ejercicio integrado presenta un grafo de dominios y checkpoints, no una lista plana.
+
+Debe permitir observar:
+
+- mando y autoridad;
+- comunicaciones;
+- dependencias;
+- operación mínima;
+- degradación;
+- recuperación técnica;
+- validación funcional;
+- trabajo contingente;
+- reincorporación;
+- conciliación;
+- proveedores;
+- dispositivos;
+- retorno;
+- pendientes;
+- cierre del ejercicio;
+- transferencia a revisión.
+
+Una rama independiente puede avanzar sin ocultar el bloqueo de otra.
+
+---
+
+#### 25. Comparación de objetivos y resultados
+
+La superficie separa:
+
+| Dimensión | Objetivo                         | Resultado observado                                       | Regla                                                       |
+| --------- | -------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- |
+| MTPD      | límite máximo tolerable          | duración real cuando exista                               | no se presume cumplimiento por terminar antes si faltó MBCO |
+| RTO       | objetivo hasta MBCO verificado   | tiempo real hasta validación funcional aplicable          | no se mide hasta un simple health técnico                   |
+| RPO       | pérdida temporal objetivo        | edad/pérdida del punto realmente utilizado cuando aplique | no se infiere desde frecuencia nominal                      |
+| MBCO      | resultado mínimo                 | resultado funcional validado                              | requiere propietaria                                        |
+| WRT       | trabajo posterior a recuperación | tiempo observado cuando exista contrato y evidencia       | no se inventa valor objetivo                                |
+
+Cuando un reloj es incierto, la incertidumbre permanece en el resultado.
+
+---
+
+#### 26. Resultado por servicio y proceso
+
+Cada servicio incluido en un ejercicio conserva:
+
+```text
+service_id
+process_id
+exercise_ref
+scope_version
+expected_business_result
+observed_business_result
+protection_result
+technical_result
+functional_validation
+observed_times
+pending_items
+reconciliation_state
+evidence_refs
+owner_function
+deviations
+readiness_effect
+```
+
+`readiness_effect` es una conclusión derivada de la evidencia propietaria de revisión, no un estado que el ejecutor técnico pueda autoasignar.
+
+---
+
+#### 27. Evidencia del ejercicio
+
+La experiencia debe poder referenciar:
+
+- escenario y versión;
+- participantes y funciones;
+- baseline documental;
+- inyectores;
+- decisiones;
+- timestamps reales;
+- capturas o logs autorizados;
+- receipts;
+- formularios;
+- resultados técnicos;
+- validaciones funcionales;
+- pendientes;
+- incidentes de seguridad ocurridos durante el ejercicio;
+- abortado;
+- cierre del ejercicio;
+- evidencia de revisión posterior.
+
+El contenido sensible permanece en su repositorio o superficie propietaria; el tablero usa referencias protegidas.
+
+---
+
+#### 28. Revisión posterior
+
+La revisión se abre desde un incidente, ejercicio, restauración, cambio, auditoría, vencimiento o nueva evidencia, preservando el hecho original.
+
+Cada revisión material debe proyectar los veinte campos heredados:
+
+| Campo                      | Tratamiento UX                       |
+| -------------------------- | ------------------------------------ |
+| `review_id`                | identidad estable                    |
+| `trigger_type`             | origen de la revisión                |
+| `source_ref`               | referencia al hecho original         |
+| `scope`                    | alcance afectado                     |
+| `baseline_version_refs[]`  | versiones usadas para comparar       |
+| `observed_evidence_refs[]` | evidencia preservada                 |
+| `expected_result`          | expectativa vigente al momento       |
+| `observed_result`          | hecho observado sin reescritura      |
+| `deviations[]`             | diferencias                          |
+| `cause_hypotheses[]`       | hipótesis explícitas                 |
+| `confirmed_causes[]`       | causas confirmadas con evidencia     |
+| `unknowns[]`               | incertidumbres abiertas              |
+| `findings[]`               | hallazgos y riesgo                   |
+| `lessons[]`                | lecciones confirmadas o descartadas  |
+| `action_refs[]`            | acciones resultantes                 |
+| `residual_risk`            | riesgo remanente                     |
+| `plan_change_refs[]`       | cambios/versiones derivados          |
+| `review_state`             | estado propietario de la revisión    |
+| `review_authority`         | función que puede concluirla         |
+| `closed_at`                | fecha real solo cuando exista cierre |
+
+---
+
+#### 29. Regla de revisión basada en hechos
+
+La experiencia obliga a separar:
+
+```text
+HECHO
+→ lo que la evidencia demuestra
+
+OBSERVACION
+→ dato observado durante el evento
+
+DESVIACION
+→ diferencia contra expectativa vigente
+
+HIPOTESIS
+→ explicación todavía no demostrada
+
+CAUSA CONFIRMADA
+→ explicación respaldada por evidencia suficiente
+
+HALLAZGO
+→ condición relevante derivada del análisis
+
+LECCION
+→ aprendizaje aceptado o descartado con razón
+
+ACCION
+→ tratamiento asignado a propietario
+
+EFICACIA
+→ evidencia posterior de que el tratamiento produjo el control esperado
+```
+
+La pantalla no ofrece un campo “causa raíz” obligatorio que fuerce una conclusión ficticia.
+
+---
+
+#### 30. Revisión sin culpa automática
+
+La revisión se diseña para reconstruir sistema, contexto y decisiones.
+
+Debe permitir analizar:
+
+- información disponible al momento;
+- versión del procedimiento;
+- carga y capacidad;
+- dependencias;
+- herramientas;
+- autoridad;
+- comunicación;
+- entrenamiento;
+- controles;
+- fallos técnicos;
+- factores humanos y ambientales;
+- terceros;
+- evidencia faltante;
+- decisiones adecuadas que no produjeron el resultado esperado.
+
+La revisión de continuidad no sustituye procesos laborales, disciplinarios, SST, seguridad, privacidad o cumplimiento cuando estos sean aplicables.
+
+---
+
+#### 31. Hallazgos y lecciones
+
+Cada hallazgo visible conserva:
+
+- referencia estable;
+- revisión origen;
+- evidencia;
+- riesgo;
+- alcance;
+- condición observada;
+- propietario de tratamiento;
+- relación con requisitos/contratos cuando aplique;
+- estado;
+- acción o disposición resultante.
+
+Una lección no se trata como mejora hasta existir acción o decisión de no actuar con justificación y autoridad aplicable.
+
+---
+
+#### 32. Contrato UX de acciones
+
+Toda acción material proyecta los dieciséis campos heredados:
+
+| Campo                     | Tratamiento UX                                       |
+| ------------------------- | ---------------------------------------------------- |
+| `action_id`               | identidad estable                                    |
+| `finding_refs[]`          | hallazgos tratados                                   |
+| `lesson_refs[]`           | lecciones materializadas                             |
+| `owner_function`          | responsable interno del resultado                    |
+| `execution_owner`         | ejecutor cuando sea distinto                         |
+| `domain_owner`            | contrato/proceso/dominio de implementación           |
+| `priority`                | derivada de riesgo y criticidad                      |
+| `scope`                   | servicios/procesos/sedes/aplicaciones/terceros       |
+| `target_at_or_condition`  | fecha objetivo real o condición verificable          |
+| `dependencies[]`          | prerrequisitos/bloqueos                              |
+| `expected_control_result` | resultado de control esperado                        |
+| `exit_condition`          | condición verificable de implementación              |
+| `efficacy_method`         | método de comprobación                               |
+| `evidence_refs[]`         | evidencia de implementación y eficacia diferenciadas |
+| `residual_risk`           | riesgo restante                                      |
+| `state`                   | estado propietario actual                            |
+
+Una acción sin propietario o sin condición de salida no aparece como cerrable.
+
+---
+
+#### 33. Bandeja de acciones
+
+La bandeja permite vistas por intención:
+
+| Vista                                  | Contenido                                                          | Límite                                      |
+| -------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------- |
+| `POR_ASIGNAR`                          | hallazgos que requieren acción y carecen de propietario resoluble  | no se ocultan en el total general           |
+| `ABIERTAS`                             | acciones vigentes no implementadas                                 | no equivalen a control existente            |
+| `BLOQUEADAS`                           | dependencia/insumo impide avanzar                                  | muestra propietario del bloqueo             |
+| `VENCIDAS`                             | superaron fecha/condición objetivo                                 | permanecen visibles y escalan según impacto |
+| `IMPLEMENTADAS_PENDIENTES_DE_EFICACIA` | condición de implementación satisfecha, eficacia aún no demostrada | no restaura readiness por sí sola           |
+| `EFICACIA_NO_DEMOSTRADA`               | método ejecutado sin evidencia suficiente o resultado inconcluso   | exige siguiente decisión                    |
+| `INEFICACES_O_PARCIALES`               | tratamiento no produjo el control esperado completo                | conserva riesgo residual                    |
+| `EFICACES`                             | eficacia demostrada para alcance y riesgo definidos                | no implica readiness de otros alcances      |
+
+Estas etiquetas son categorías de vista y no nuevos estados persistentes.
+
+---
+
+#### 34. Comprobación de eficacia
+
+La UX soporta los nueve métodos heredados:
+
+1. `REEJERCICIO_CONTROLADO`;
+2. `RESTAURACION_AISLADA`;
+3. `PRUEBA_TECNICA`;
+4. `PRUEBA_FUNCIONAL`;
+5. `PRUEBA_DE_RECONCILIACION`;
+6. `INSPECCION_DOCUMENTADA`;
+7. `EVIDENCIA_OPERATIVA`;
+8. `REVISION_DE_CONFIGURACION`;
+9. `VALIDACION_DE_TERCERO_CORRELACIONADA`.
+
+Cada comprobación muestra:
+
+```text
+accion
+riesgo que pretende reducir
+resultado de control esperado
+metodo
+alcance
+version
+evidencia previa
+evidencia posterior
+resultado observado
+desviacion
+riesgo residual
+validador
+segregacion aplicable
+decision sobre eficacia
+siguiente accion
+```
+
+Cuando el método exige un nuevo ejercicio, la experiencia vuelve al planificador de ejercicios sin cerrar la acción antes de obtener evidencia.
+
+---
+
+#### 35. Acciones ineficaces, parciales o bloqueadas
+
+Tratamiento obligatorio:
+
+- **ineficaz:** conserva implementación realizada, evidencia y riesgo; crea nueva decisión de tratamiento;
+- **parcial:** distingue parte efectiva de parte pendiente;
+- **vencida:** conserva propietario, motivo y escalamiento;
+- **bloqueada:** identifica dependencia, propietario del bloqueo y condición de salida;
+- **cancelada:** exige razón y autoridad; no borra el hallazgo;
+- **superseded:** conserva relación con la acción sucesora;
+- **eficacia inconclusa:** no se eleva a eficaz por ausencia de fallo.
+
+---
+
+#### 36. Cambios derivados y mantenimiento
+
+La revisión puede generar impactos hacia:
+
+- política de continuidad;
+- BIA y criticidad;
+- MTPD, RTO, RPO, MBCO;
+- dependencias;
+- estrategias de contingencia;
+- formularios y medios manuales;
+- respaldo y recuperación;
+- runbooks;
+- proveedores y alternativas;
+- mando y autorizaciones;
+- comunicaciones;
+- experiencia;
+- integraciones;
+- observabilidad;
+- capacitación;
+- calendario de ejercicios.
+
+La experiencia crea referencias de cambio, no edita silenciosamente otras fuentes desde la revisión. El propietario correspondiente debe materializar el cambio en su contrato.
+
+---
+
+#### 37. Readiness por alcance
+
+La vista de readiness se calcula conceptualmente como una conclusión de evidencia, nunca como un porcentaje de checklist.
+
+Cada ficha muestra:
+
+```text
+servicio / proceso
+alcance / sede / dependencia
+BIA / CONT-OBJ
+version de alcance
+modalidades exigibles
+ultima evidencia por modalidad
+vencimientos
+cambios materiales posteriores
+objetivos observados
+validacion funcional
+hallazgos materiales
+acciones requeridas
+eficacia requerida
+riesgo residual
+bloqueos
+conclusion soportable
+evidencia
+propietario
+```
+
+La conclusión positiva se limita estrictamente al alcance probado. Un ejercicio integrado exitoso no certifica servicios o sedes fuera de su alcance.
+
+---
+
+#### 38. Condiciones que impiden afirmar readiness
+
+La superficie impide una apariencia de readiness sano cuando exista cualquiera de estas condiciones materiales:
+
+- modalidad obligatoria sin ejecución vigente;
+- evidencia vencida;
+- evidencia invalidada por cambio material;
+- versión probada diferente de la versión actual sin análisis de vigencia;
+- resultado funcional no validado;
+- restore técnico sin validación empresarial cuando aplique;
+- RTO/RPO/MTPD requerido sin evidencia suficiente;
+- MBCO no demostrado;
+- control protector fallido;
+- hallazgo crítico abierto;
+- acción crítica sin propietario;
+- acción crítica implementada pero con eficacia pendiente;
+- acción crítica ineficaz;
+- dependencia material no probada;
+- alternativa necesaria no acreditada;
+- failover no habilitado cuando el escenario depende de él;
+- pendiente de reincorporación/conciliación material;
+- evidencia de comunicación requerida ausente;
+- autoridad/segregación no demostrada;
+- evidencia sensible no accesible al validador autorizado;
+- AURA diferida para los servicios que dependan de su operación;
+- contradicción entre fuentes propietarias.
+
+---
+
+#### 39. Vista ejecutiva de readiness
+
+```text
+READINESS DE CONTINUIDAD
+
+Servicios BIA                   69
+Activos                         67
+AURA bloqueados                  2
+Readiness validado acreditado    0  ← línea base documental actual
+
+Cobertura documental      [ por modalidad ]
+Evidencia vigente         [ sin inferir ]
+Vencimientos próximos     [ solo fechas demostrables ]
+Evidencia invalidada      [ cambios materiales ]
+Hallazgos materiales      [ abiertos ]
+Acciones pendientes       [ por criticidad ]
+Eficacia pendiente        [ separada de implementación ]
+Bloqueos                  [ por propietario ]
+
+[Servicio] [BIA] [Modalidad exigible] [Última evidencia]
+[Vence] [Cambio posterior] [Acción crítica] [Eficacia]
+[Conclusión soportable] [Propietario]
+```
+
+Un porcentaje agregado puede usarse como navegación si existe denominador claro, pero nunca oculta un servicio crítico bloqueado ni se denomina “readiness” por sí solo.
+
+---
+
+#### 40. Integración con comunicaciones
+
+Cuando el escenario incluya comunicaciones:
+
+- se consume `CONT-UX-006`;
+- las siete clases de comunicación pueden ejercitarse dentro del alcance;
+- el mensaje se marca inequívocamente como ejercicio;
+- los destinatarios de prueba se resuelven desde el plan autorizado;
+- un canal externo real queda bloqueado por defecto;
+- una emisión externa real exige autorización específica independiente;
+- receipt, lectura, acuse y efecto empresarial se mantienen separados;
+- una falla de canal puede convertirse en inyector;
+- la revisión conserva resultados sin transformar el ejercicio en una comunicación real.
+
+---
+
+#### 41. Integración con recuperación y reincorporación
+
+Cuando el escenario incluya restore, failover u operación offline:
+
+- `CONT-UX-005` conserva la experiencia de recuperación;
+- `CONT-UX-004` conserva la experiencia de reincorporación;
+- `CONT-UX-007` añade el contexto de ejercicio, objetivos, observación, evidencia y revisión;
+- un resultado de prueba no se mezcla con datos productivos;
+- no se ejecuta replay ciego;
+- `RESULT_UNKNOWN`, `CONFLICT`, `QUARANTINED` y `RECONCILIATION_REQUIRED` se conservan cuando aparezcan en un ejercicio que use estados representativos;
+- failover y alternativas permanecen bloqueados para ejecución cuando no exista capacidad acreditada.
+
+---
+
+#### 42. AURA diferida
+
+Para `BCS-VPROC-0056` y `BCS-VPROC-0057`:
+
+- se conserva identidad, proceso, BIA y perfil propietario;
+- se permite walkthrough documental de vigencia y dependencias;
+- no se presenta ejercicio operativo de AURA como disponible;
+- no se inicia reloj de readiness operativo;
+- no se inventan usuarios, datos, canales, proveedores o entornos;
+- un cambio de estado de AURA invalida el supuesto anterior y obliga a revisar/programar cobertura antes de cualquier afirmación positiva.
+
+---
+
+#### 43. Vistas por función
+
+| Función                                     | Prioridad UX                                                                          | No implica                              |
+| ------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------- |
+| `RESPONSABLE_DE_CONTINUIDAD`                | cobertura, vencimientos, escenarios, coordinación, hallazgos, acciones y readiness    | propiedad de todos los procesos         |
+| `RESPONSABLE_DEL_PROCESO`                   | MBCO, validación funcional, hallazgos de su proceso, acciones y readiness del alcance | ejecución técnica privilegiada          |
+| `RESPONSABLE_TECNOLOGICO`                   | simulación técnica, restore, observabilidad, evidencia y acciones técnicas            | validación empresarial                  |
+| `COORDINACION_DE_OPERACIONES`               | operación mínima, participantes, sedes, handoffs y acciones operativas                | aprobación ejecutiva automática         |
+| `GERENCIA_GENERAL` / `GOBIERNO_Y_PROPIEDAD` | riesgo, excepciones, decisiones y readiness de gobierno cuando corresponda            | sustitución de validadores propietarios |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`            | capacidad territorial, ejercicio local, bloqueos y acciones de sede                   | alcance empresarial global              |
+| `CUSTODIO_DOCUMENTAL`                       | versiones, evidencia y mantenimiento                                                  | certificación de eficacia por custodiar |
+| observador/auditor                          | hechos, evidencia y desviaciones según alcance autorizado                             | permiso para ejecutar o aprobar         |
+| proveedor/tercero                           | segmento contractual y evidencia mínima                                               | autoridad de Vento o acceso total       |
+
+---
+
+#### 44. Responsive y accesibilidad
+
+**Escritorio:** permite calendario, matriz de cobertura, panel de ejercicio y evidencia en paralelo mediante detalle progresivo.
+
+**Tablet:** prioriza contexto, siguiente inyector, decisiones, observaciones y controles de seguridad.
+
+**Móvil:** prioriza identidad del ejercicio, contexto no productivo, seguridad, siguiente hito, bloqueo, observación y captura mínima de evidencia; no comprime matrices masivas.
+
+Obligaciones comunes:
+
+- navegación completa por teclado;
+- foco visible;
+- estructura semántica;
+- estados expresados con texto además de color;
+- tiempos con zona/contexto suficiente;
+- advertencia no productiva persistente;
+- controles de abortado inequívocos;
+- evidencia accesible según autorización;
+- zoom sin pérdida de contexto;
+- tablas con representación alternativa legible.
+
+---
+
+#### 45. Matriz de proyección 69 / 69
+
+La matriz conserva todas las identidades de `CONT-DOM-014`. No reescribe su propietaria, BIA, perfil, prioridad ni ventana. Para los servicios activos, la experiencia proyecta la fila propietaria del programa, su evidencia y su vencimiento; la línea base no acredita readiness operativo. Para AURA, mantiene el bloqueo por aplicación diferida.
+
+|    # | Servicio         | Proceso      | Decisión UX de readiness                                                                                                                                       | Línea base documental                             |
+| ---: | ---------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+|    1 | `BCS-VPROC-0001` | `VPROC-0001` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    2 | `BCS-VPROC-0002` | `VPROC-0002` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    3 | `BCS-VPROC-0003` | `VPROC-0003` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    4 | `BCS-VPROC-0004` | `VPROC-0004` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    5 | `BCS-VPROC-0005` | `VPROC-0005` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    6 | `BCS-VPROC-0006` | `VPROC-0006` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    7 | `BCS-VPROC-0007` | `VPROC-0007` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    8 | `BCS-VPROC-0008` | `VPROC-0008` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|    9 | `BCS-VPROC-0009` | `VPROC-0009` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   10 | `BCS-VPROC-0010` | `VPROC-0010` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   11 | `BCS-VPROC-0011` | `VPROC-0011` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   12 | `BCS-VPROC-0012` | `VPROC-0012` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   13 | `BCS-VPROC-0013` | `VPROC-0013` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   14 | `BCS-VPROC-0014` | `VPROC-0014` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   15 | `BCS-VPROC-0015` | `VPROC-0015` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   16 | `BCS-VPROC-0016` | `VPROC-0016` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   17 | `BCS-VPROC-0017` | `VPROC-0017` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   18 | `BCS-VPROC-0018` | `VPROC-0018` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   19 | `BCS-VPROC-0019` | `VPROC-0019` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   20 | `BCS-VPROC-0020` | `VPROC-0020` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   21 | `BCS-VPROC-0021` | `VPROC-0021` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   22 | `BCS-VPROC-0022` | `VPROC-0022` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   23 | `BCS-VPROC-0023` | `VPROC-0023` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   24 | `BCS-VPROC-0024` | `VPROC-0024` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   25 | `BCS-VPROC-0025` | `VPROC-0025` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   26 | `BCS-VPROC-0026` | `VPROC-0026` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   27 | `BCS-VPROC-0027` | `VPROC-0027` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   28 | `BCS-VPROC-0028` | `VPROC-0028` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   29 | `BCS-VPROC-0029` | `VPROC-0029` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   30 | `BCS-VPROC-0030` | `VPROC-0030` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   31 | `BCS-VPROC-0031` | `VPROC-0031` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   32 | `BCS-VPROC-0032` | `VPROC-0032` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   33 | `BCS-VPROC-0033` | `VPROC-0033` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   34 | `BCS-VPROC-0034` | `VPROC-0034` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   35 | `BCS-VPROC-0035` | `VPROC-0035` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   36 | `BCS-VPROC-0036` | `VPROC-0036` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   37 | `BCS-VPROC-0037` | `VPROC-0037` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   38 | `BCS-VPROC-0038` | `VPROC-0038` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   39 | `BCS-VPROC-0039` | `VPROC-0039` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   40 | `BCS-VPROC-0040` | `VPROC-0040` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   41 | `BCS-VPROC-0041` | `VPROC-0041` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   42 | `BCS-VPROC-0042` | `VPROC-0042` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   43 | `BCS-VPROC-0043` | `VPROC-0043` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   44 | `BCS-VPROC-0044` | `VPROC-0044` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   45 | `BCS-VPROC-0045` | `VPROC-0045` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   46 | `BCS-VPROC-0046` | `VPROC-0046` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   47 | `BCS-VPROC-0047` | `VPROC-0047` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   48 | `BCS-VPROC-0048` | `VPROC-0048` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   49 | `BCS-VPROC-0049` | `VPROC-0049` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   50 | `BCS-VPROC-0050` | `VPROC-0050` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   51 | `BCS-VPROC-0051` | `VPROC-0051` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   52 | `BCS-VPROC-0052` | `VPROC-0052` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   53 | `BCS-VPROC-0053` | `VPROC-0053` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   54 | `BCS-VPROC-0054` | `VPROC-0054` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   55 | `BCS-VPROC-0055` | `VPROC-0055` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   56 | `BCS-VPROC-0056` | `VPROC-0056` | Walkthrough documental de vigencia únicamente; no habilitar ejercicio operativo ni reloj de readiness mientras AURA permanezca diferida.                       | `BLOQUEADO_POR_APLICACION_DIFERIDA`               |
+|   57 | `BCS-VPROC-0057` | `VPROC-0057` | Walkthrough documental de vigencia únicamente; no habilitar ejercicio operativo ni reloj de readiness mientras AURA permanezca diferida.                       | `BLOQUEADO_POR_APLICACION_DIFERIDA`               |
+|   58 | `BCS-VPROC-0058` | `VPROC-0058` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   59 | `BCS-VPROC-0059` | `VPROC-0059` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   60 | `BCS-VPROC-0060` | `VPROC-0060` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   61 | `BCS-VPROC-0061` | `VPROC-0061` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   62 | `BCS-VPROC-0062` | `VPROC-0062` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   63 | `BCS-VPROC-0063` | `VPROC-0063` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   64 | `BCS-VPROC-0064` | `VPROC-0064` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   65 | `BCS-VPROC-0065` | `VPROC-0065` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   66 | `BCS-VPROC-0066` | `VPROC-0066` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   67 | `BCS-VPROC-0067` | `VPROC-0067` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   68 | `BCS-VPROC-0068` | `VPROC-0068` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+|   69 | `BCS-VPROC-0069` | `VPROC-0069` | Proyectar cobertura, ventana, última evidencia, invalidaciones, acciones y eficacia desde el programa propietario; no afirmar readiness sin evidencia vigente. | `PENDIENTE_DE_EVIDENCIA` para readiness operativo |
+
+**Reconciliación de la matriz:**
+
+| Control                                        |   Resultado |
+| ---------------------------------------------- | ----------: |
+| servicios BIA                                  | **69 / 69** |
+| procesos VPROC                                 | **69 / 69** |
+| servicios activos                              | **67 / 67** |
+| AURA bloqueados                                |   **2 / 2** |
+| `CRITICA_PROTECCION` / `CONT-OBJ-001`          |      **12** |
+| `CRITICA_OPERACIONAL` / `CONT-OBJ-002`         |      **20** |
+| `ALTA_CONTROL` / `CONT-OBJ-003`                |      **31** |
+| `DIFERIBLE_CONTROLADA` / `CONT-OBJ-004`        |       **6** |
+| readiness validado acreditado en la línea base |       **0** |
+| identidades faltantes                          |       **0** |
+| identidades duplicadas                         |       **0** |
+
+---
+
+#### 46. Casos deterministas
+
+| Escenario                                         | Presentación requerida                                                                   |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| plan vigente sin ejercicio                        | cobertura documental favorable + evidencia operativa faltante; no readiness              |
+| ejercicio programado aún no ejecutado             | fecha/planificación visible; no evidencia de ejecución                                   |
+| walkthrough satisfactorio                         | vigencia documental favorable; no capacidad física demostrada                            |
+| tabletop exitoso                                  | mando/decisión ejercitados; infraestructura no demostrada                                |
+| simulación técnica verde                          | resultado técnico favorable; validación funcional separada                               |
+| restore aislado completo                          | integridad/tiempo técnico visibles; MBCO y pendientes todavía independientes             |
+| ejercicio operativo alcanza MBCO                  | resultado funcional observado + tiempos + evidencia; revisión posterior aún pendiente    |
+| ejercicio abortado por control protector          | abortado trazable; puede ser comportamiento correcto, no fallo automático                |
+| ejercicio con timestamp incompleto                | tiempo no calculable; no se inventa cumplimiento                                         |
+| evidencia vence por ventana                       | historia preservada + readiness afectado                                                 |
+| cambio material posterior                         | evidencia invalidada o bajo revisión de vigencia                                         |
+| hallazgo crítico sin propietario                  | bloqueo explícito de readiness                                                           |
+| acción asignada                                   | mejora pendiente; no implementada                                                        |
+| acción implementada                               | eficacia pendiente; no readiness restaurado por sí solo                                  |
+| reejercicio demuestra eficacia                    | acción puede pasar a eficacia demostrada para su alcance, sujeto a autoridad y evidencia |
+| acción resulta ineficaz                           | riesgo residual + nuevo tratamiento; no se borra implementación                          |
+| alternativa física no acreditada                  | tabletop permitido; ejercicio operativo bloqueado                                        |
+| failover no habilitado                            | simulación/operación bloqueada según precondición                                        |
+| proveedor participa                               | evidencia contractual/técnica; no autoridad empresarial                                  |
+| comunicación simulada                             | contexto de ejercicio persistente; envío real bloqueado por defecto                      |
+| AURA                                              | walkthrough de vigencia; readiness operativo bloqueado                                   |
+| evidencia histórica de versión anterior           | consultable, no presentada como vigente                                                  |
+| un servicio crítico bloqueado con resto favorable | agregado no puede mostrar estado global sano                                             |
+| revisión con causa aún incierta                   | hipótesis/desconocido visibles; no se fuerza causa                                       |
+| acción de proveedor completada                    | aceptación interna y eficacia siguen separadas                                           |
+| ejercicio integrado parcial                       | ramas completadas y bloqueadas visibles por separado                                     |
+| cierre del ejercicio                              | transfiere a revisión; no cierra incidente real ni acciones                              |
+| certificación BLOQUE U pendiente                  | readiness de continuidad no se presenta como certificación integral                      |
+
+---
+
+#### 47. Handoffs y brechas de implementación
+
+| Materia                                     | Estado documental                           | Propietario / tarea                                              | Condición de salida                                                   |
+| ------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------- |
+| persistencia real del programa y calendario | `PENDIENTE_DE_EVIDENCIA`                    | paquete propietario de `VPROC-0062`                              | modelo implementado, versionado y probado                             |
+| ejecución real de walkthroughs/tabletops    | `PENDIENTE_DE_EVIDENCIA`                    | `CONT-DOM-014` + operación autorizada                            | ejercicio real registrado con evidencia                               |
+| simulaciones técnicas                       | `PENDIENTE_DE_EVIDENCIA`                    | TI/paquetes técnicos propietarios                                | entorno controlado y procedimiento ejecutable aprobados               |
+| restauraciones aisladas                     | `PENDIENTE_DE_EVIDENCIA`                    | `CONT-DOM-011`, `CONT-DOM-012`, TI y paquetes                    | punto recuperable y ambiente aislado disponibles, con validación      |
+| ejercicios operativos                       | `PENDIENTE_DE_EVIDENCIA`                    | propietarios de proceso + continuidad                            | personas, medios, ambiente y alcance autorizados                      |
+| failover/retorno ejercitable                | `BLOQUEADO`                                 | `CONT-DOM-012`, `CONT-DOM-013`, `CONT-INT-003` y paquete técnico | capacidad real habilitada y acreditada                                |
+| alternativas físicas/proveedor              | `BLOQUEADO` mientras no exista acreditación | `CONT-DOM-013` y propietario funcional                           | alternativa concreta acreditada                                       |
+| revisión y acciones persistidas             | `PENDIENTE_DE_EVIDENCIA`                    | paquete propietario de continuidad                               | contratos de revisión/acción implementados                            |
+| eficacia verificada                         | `PENDIENTE_DE_EVIDENCIA`                    | propietario de acción + validador aplicable                      | método ejecutado y evidencia suficiente                               |
+| invalidación automática por cambios         | `PENDIENTE_DE_EVIDENCIA`                    | `CONT-INT-*`, gobierno documental y paquetes                     | versiones/eventos correlacionados                                     |
+| métricas analíticas                         | `PENDIENTE_DE_EVIDENCIA`                    | `DATA-DOM-016` y tareas analíticas                               | definición y cálculo implementados con población/denominador          |
+| evidencia y retención                       | `PENDIENTE_DE_EVIDENCIA`                    | `INFO-DOM-012`, `INFO-DOM-013`                                   | almacenamiento, clasificación, retención e integridad implementados   |
+| autorización de ejercicio                   | `PENDIENTE_DE_EVIDENCIA`                    | `CONT-AUTH-004` y autorización física                            | evaluación de servidor/segregación implementada                       |
+| contratos entre aplicaciones                | `PENDIENTE_DE_EVIDENCIA`                    | `CONT-INT-001` a `CONT-INT-004`                                  | health, incidente, degradación, replay y reconciliación implementados |
+| certificación integral                      | `PENDIENTE_DE_EVIDENCIA`                    | BLOQUE U                                                         | certificación transversal ejecutada con su propio alcance             |
+
+No queda una brecha identificada por esta tarea sin propietario y condición de salida.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa en experiencia de usuario el programa de ejercicios, la revisión posterior, las acciones, la eficacia y la comprobación de readiness que ya están protegidos por los contratos canónicos vigentes. No introduce una nueva conducta ejecutable, permiso, transición física, integración ni criterio empresarial independiente; tampoco modifica el significado o estado de la cobertura de prueba existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 48. Criterios de aceptación
+1. CONT-UX-006 permanece como tarea anterior aprobada.
+2. CONT-INT-001 permanece exclusivamente reservada.
+3. La tarea permanece documental dentro de CONDITIONAL_DESIGN_ARTIFACTS.
+4. No se ejecuta walkthrough, tabletop, simulación, restauración ni ejercicio operativo real.
+5. No se interrumpe producción, sede, red, energía, aplicación, proveedor o dispositivo.
+6. No se modifica código, DDL, DML, migraciones, RLS, RPC, datos, secretos, configuración o Supabase.
+7. La experiencia representa exactamente seis modalidades documentales de ejercicio.
+8. Walkthrough documental no se presenta como prueba de capacidad bajo presión.
+9. Tabletop no se presenta como prueba de funcionamiento real de infraestructura.
+10. Simulación técnica no se presenta como recuperación empresarial.
+11. Restauración aislada no se presenta como MBCO validado.
+12. Ejercicio operativo no acredita recursos fuera del alcance declarado.
+13. Ejercicio integrado no cubre automáticamente servicios o sedes no incluidos.
+14. La interfaz distingue plan especificado de ejercicio programado.
+15. La interfaz distingue ejercicio programado de ejercicio ejecutado.
+16. La interfaz distingue ejercicio ejecutado de evidencia completa.
+17. La interfaz distingue evidencia completa de resultado aceptable.
+18. La interfaz distingue acción implementada de acción eficaz.
+19. La interfaz distingue evidencia vigente de evidencia histórica.
+20. Readiness se limita a alcance y versión.
+21. Readiness de continuidad no se presenta como certificación integral del BLOQUE U.
+22. La línea base conserva cero servicios con readiness validado.
+23. Los 67 servicios activos no reciben un estado positivo de readiness sin evidencia posterior.
+24. Los dos servicios AURA permanecen bloqueados para readiness operativo.
+25. AURA puede participar únicamente en walkthrough documental de vigencia mientras permanezca diferida.
+26. La matriz contiene exactamente 69 BCS-VPROC.
+27. La matriz contiene exactamente 69 VPROC.
+28. No existen identidades duplicadas.
+29. La distribución BIA heredada se conserva como 12/20/31/6.
+30. El calendario conserva las ventanas aprobadas por criticidad.
+31. No se inventa last_walkthrough_at.
+32. No se inventa last_tabletop_at.
+33. No se inventa last_operational_exercise_at.
+34. No se inventa last_restore_exercise_at.
+35. No se inventa last_integrated_exercise_at.
+36. No se inventa last_material_change_at.
+37. next_due_at solo se muestra cuando existe una base temporal real.
+38. exercise_scope_version permanece visible.
+39. current_evidence_state no se deriva de una mera fecha programada.
+40. invalidation_reason se muestra cuando una evidencia deja de ser confiable.
+41. Un cambio de BIA puede invalidar evidencia anterior.
+42. Un cambio de RTO/RPO/MTPD/MBCO puede invalidar evidencia anterior.
+43. Un cambio de propietario o función crítica puede exigir nueva prueba.
+44. Un cambio de sede/capacidad física puede exigir nueva prueba.
+45. Un cambio de arquitectura, base, Storage o integración puede exigir nueva prueba.
+46. Un cambio de runbook o contingencia puede exigir nueva prueba.
+47. Un cambio de proveedor o canal puede exigir nueva prueba.
+48. Un cambio de autorización o control protector puede exigir nueva prueba.
+49. La evidencia invalidada permanece en historia.
+50. La planificación resuelve modalidad antes de iniciar.
+51. La planificación resuelve alcance exacto.
+52. La planificación resuelve versiones baseline.
+53. La planificación define objetivos observables.
+54. La planificación define participantes por función.
+55. La planificación distingue autoridad simulada de real.
+56. La planificación identifica ambiente autorizado.
+57. La planificación identifica sensibilidad de datos.
+58. La planificación identifica controles de seguridad.
+59. La planificación identifica evidencia requerida.
+60. La planificación identifica criterios de abortado.
+61. Un precondición no resoluble bloquea el inicio en vez de inferirse.
+62. Participar en el ejercicio no concede autoridad productiva.
+63. Una aprobación simulada no produce una aprobación real.
+64. Una identidad de prueba no concede privilegios productivos.
+65. Un proveedor participante no obtiene autoridad de Vento.
+66. Una decisión que requiera efecto real revalida autorización fuera del contexto simulado.
+67. La superficie muestra de forma persistente que el contexto es no productivo.
+68. Los efectos externos permanecen bloqueados por defecto cuando el escenario lo exige.
+69. El ejercicio no usa datos productivos sin autorización específica futura.
+70. Una parada protectora se conserva como resultado legítimo cuando evita daño.
+71. Abortar no borra evidencia ya obtenida.
+72. La cronología distingue scheduled_at de started_at.
+73. El ejercicio no usa scheduled_at como hora real de inicio.
+74. Los inyectores conservan identidad y objetivo.
+75. Los inyectores conservan la información disponible en ese momento.
+76. La evaluación no usa retrospectivamente información futura para juzgar una decisión pasada.
+77. Los tiempos observados conservan incertidumbre cuando el reloj no es confiable.
+78. MTPD se presenta como límite, no como permiso para operar inseguro.
+79. RTO se compara contra MBCO validado y no solo health técnico.
+80. RPO se compara contra pérdida/punto real cuando aplique.
+81. MBCO exige validación propietaria.
+82. WRT no recibe un valor inventado.
+83. Un resultado técnico favorable permanece separado del resultado funcional.
+84. Un restore aislado conserva punto, integridad, compatibilidad y ambiente.
+85. Un restore aislado conserva hechos posteriores al punto.
+86. Un restore aislado conserva pendientes y conciliación.
+87. Una operación manual/offline conserva folios/evidencia aplicables.
+88. Un ejercicio offline no ejecuta replay ciego.
+89. RESULT_UNKNOWN permanece visible cuando sea parte del escenario representativo.
+90. CONFLICT permanece visible cuando sea parte del escenario representativo.
+91. QUARANTINED permanece visible cuando sea parte del escenario representativo.
+92. RECONCILIATION_REQUIRED permanece visible cuando sea parte del escenario representativo.
+93. Failover permanece bloqueado sin capacidad habilitada.
+94. Una alternativa física permanece no ejercitable operacionalmente sin acreditación.
+95. Una alternativa de proveedor permanece no ejercitable operacionalmente sin acreditación.
+96. El catálogo presenta exactamente catorce familias de escenario.
+97. Pérdida de mando se prueba al menos mediante walkthrough/tabletop según el programa.
+98. Indisponibilidad de sede/energía no fuerza una interrupción física real desde esta tarea.
+99. Pérdida de red distingue simulación controlada de corte productivo.
+100. Indisponibilidad de backend conserva validación funcional.
+101. Restauración de datos exige validación funcional.
+102. Periférico indisponible conserva bloqueo seguro o fallback permitido.
+103. Proveedor de pago incierto conserva riesgo de duplicación y conciliación.
+104. Canal de mensajería indisponible conserva destinatarios y evidencia.
+105. Transporte indisponible conserva custodia y retorno.
+106. Proveedor crítico no se sustituye por uno inventado.
+107. Operación manual/offline conserva incorporación posterior.
+108. Escenario integrado conserva ramas y dependencias.
+109. La evidencia del ejercicio usa referencias protegidas.
+110. La interfaz no revela secretos por comodidad de observación.
+111. La interfaz diferencia captura de evidencia de validación de evidencia.
+112. La revisión preserva source_ref al hecho original.
+113. La revisión conserva baseline_version_refs.
+114. La revisión conserva observed_evidence_refs.
+115. expected_result y observed_result permanecen separados.
+116. deviations no se convierten automáticamente en causas.
+117. cause_hypotheses se identifican como hipótesis.
+118. confirmed_causes requieren evidencia suficiente.
+119. unknowns no se cierran por inferencia.
+120. findings conservan riesgo y alcance.
+121. lessons pueden confirmarse o descartarse con razón.
+122. action_refs enlazan el tratamiento sin borrar el hallazgo.
+123. residual_risk permanece visible.
+124. plan_change_refs enlazan versiones derivadas.
+125. review_authority se conserva como función separada de ejecutores.
+126. closed_at solo existe cuando el cierre es real.
+127. La revisión no fuerza una causa raíz ficticia.
+128. La revisión de continuidad no sustituye investigación laboral/SST/seguridad cuando corresponda.
+129. Una observación no equivale a hallazgo.
+130. Un hallazgo no equivale a lección.
+131. Una lección no equivale a acción implementada.
+132. Una acción abierta no equivale a control implementado.
+133. action_id es estable.
+134. finding_refs y lesson_refs permanecen trazables.
+135. owner_function identifica responsable interno del resultado.
+136. execution_owner puede ser distinto del propietario.
+137. domain_owner identifica dónde se implementa el tratamiento.
+138. priority deriva del riesgo/criticidad y no de conveniencia visual.
+139. scope limita la acción a identidades concretas.
+140. target_at_or_condition es real o verificable.
+141. dependencies identifica prerequisitos y bloqueos.
+142. expected_control_result es observable.
+143. exit_condition es verificable.
+144. efficacy_method se define antes de declarar eficacia.
+145. evidence_refs distingue implementación de eficacia.
+146. residual_risk se conserva después del tratamiento.
+147. Una acción sin propietario no puede aparecer como cerrada.
+148. Una acción sin condición de salida no puede aparecer como cerrada.
+149. Una acción vencida permanece visible.
+150. Una acción bloqueada muestra insumo faltante y propietario del bloqueo.
+151. Una acción cancelada conserva razón y autoridad.
+152. Una acción parcial conserva la parte todavía abierta.
+153. Una acción ineficaz genera nueva decisión de tratamiento.
+154. Una eficacia inconclusa no se presenta como eficaz.
+155. La UX soporta REEJERCICIO_CONTROLADO.
+156. La UX soporta RESTAURACION_AISLADA como método de eficacia.
+157. La UX soporta PRUEBA_TECNICA.
+158. La UX soporta PRUEBA_FUNCIONAL.
+159. La UX soporta PRUEBA_DE_RECONCILIACION.
+160. La UX soporta INSPECCION_DOCUMENTADA.
+161. La UX soporta EVIDENCIA_OPERATIVA.
+162. La UX soporta REVISION_DE_CONFIGURACION.
+163. La UX soporta VALIDACION_DE_TERCERO_CORRELACIONADA.
+164. El método de eficacia se evalúa contra el resultado de control esperado.
+165. Un reejercicio exigido vuelve al planificador en vez de cerrar la acción por anticipado.
+166. Una acción eficaz se limita al alcance probado.
+167. Una acción eficaz no certifica otros servicios.
+168. Un documento actualizado no restablece readiness automáticamente.
+169. Una nueva versión conserva el historial anterior.
+170. La vista de readiness muestra modalidades exigibles.
+171. La vista de readiness muestra última evidencia por modalidad.
+172. La vista de readiness muestra vencimientos.
+173. La vista de readiness muestra cambios materiales posteriores.
+174. La vista de readiness muestra validación funcional.
+175. La vista de readiness muestra hallazgos materiales.
+176. La vista de readiness muestra acciones requeridas.
+177. La vista de readiness muestra eficacia pendiente.
+178. La vista de readiness muestra riesgo residual.
+179. La vista de readiness muestra bloqueos y propietario.
+180. Una modalidad obligatoria sin ejecución vigente bloquea afirmación positiva.
+181. Evidencia vencida bloquea afirmación positiva.
+182. Evidencia invalidada bloquea afirmación positiva hasta reevaluación.
+183. Versión probada distinta de la actual exige análisis de vigencia.
+184. Resultado funcional no validado bloquea readiness.
+185. Restore técnico sin validación empresarial no prueba readiness.
+186. Objetivos temporales sin evidencia suficiente no se declaran cumplidos.
+187. Hallazgo crítico abierto permanece visible.
+188. Acción crítica implementada con eficacia pendiente permanece visible.
+189. Acción crítica ineficaz bloquea una apariencia sana.
+190. Dependencia material no probada permanece visible.
+191. Alternativa necesaria no acreditada permanece visible.
+192. Pendiente material de conciliación permanece visible.
+193. Autoridad o segregación no demostrada permanece visible.
+194. Un porcentaje agregado no oculta un servicio crítico bloqueado.
+195. Los agregados permiten abrir sus identidades.
+196. Las comunicaciones de ejercicio usan CONT-UX-006.
+197. Una comunicación de ejercicio no se emite externamente por defecto.
+198. Un receipt simulado no se mezcla con delivery real.
+199. CONT-UX-005 conserva propiedad de la experiencia de recuperación.
+200. CONT-UX-004 conserva propiedad de la experiencia de reincorporación.
+201. CONT-UX-007 añade contexto, observación, revisión y readiness sin duplicar superficies propietarias.
+202. Las vistas respetan minimización por función.
+203. Los estados críticos no dependen únicamente de color.
+204. La navegación por teclado cubre planificación, conducción, revisión y acciones.
+205. El foco visible se conserva en controles de seguridad.
+206. La advertencia no productiva no desaparece al cambiar de panel.
+207. Los tiempos se presentan con contexto suficiente.
+208. El móvil no comprime la matriz completa hasta volverla ilegible.
+209. La evidencia sensible exige autorización al abrir detalle.
+210. Toda brecha de implementación tiene propietario y condición de salida.
+211. La tarea no crea un estado persistente paralelo de readiness.
+212. La tarea no crea métricas analíticas sin definición propietaria.
+213. La tarea no genera ni modifica requisitos de prueba.
+214. La ausencia de cambios TREQ evita generar un registro 04A innecesario.
+215. La tarea no inicia CONT-INT-001.
+
+---
+
+#### 49. Balance de cierre
+
+| Control                                        |   Resultado |
+| ---------------------------------------------- | ----------: |
+| contextos UX                                   |   **5 / 5** |
+| modalidades de ejercicio                       |   **6 / 6** |
+| familias de escenario                          | **14 / 14** |
+| campos del calendario heredado                 | **10 / 10** |
+| campos de revisión proyectados                 | **20 / 20** |
+| campos de acción proyectados                   | **16 / 16** |
+| métodos de eficacia                            |   **9 / 9** |
+| servicios BIA                                  | **69 / 69** |
+| servicios activos                              | **67 / 67** |
+| AURA bloqueados                                |   **2 / 2** |
+| readiness validado acreditado en la línea base |       **0** |
+| criterios de aceptación                        |     **215** |
+| ejercicios reales ejecutados                   |       **0** |
+| cambios físicos                                |       **0** |
+| cambios Supabase                               |       **0** |
+| cambios TREQ                                   |       **0** |
+
+---
+
+#### 50. Límites de la tarea
+
+Esta tarea no:
+
+- ejecuta walkthroughs, tabletops, simulaciones, restauraciones, pruebas operativas ni ejercicios integrados reales;
+- agenda personas nominales ni inventa disponibilidad;
+- interrumpe producción, energía, red, aplicaciones, sedes, dispositivos o proveedores;
+- provoca fallos reales;
+- ejecuta cobros, devoluciones, movimientos, impresiones, webhooks, mensajes o notificaciones reales para probar escenarios;
+- restaura datos productivos;
+- crea ambientes de recuperación;
+- ejecuta failover o failback;
+- acredita alternativas físicas o de proveedor;
+- crea usuarios, contactos, credenciales, secrets, tokens o accesos de ejercicio;
+- habilita break-glass;
+- modifica BIA, MTPD, RTO, RPO, MBCO o prioridades;
+- declara objetivos cumplidos sin medición;
+- declara un servicio listo sin evidencia vigente;
+- declara un plan listo por estar documentado;
+- declara una acción eficaz por estar implementada;
+- declara una causa confirmada por existir una hipótesis;
+- reemplaza la revisión propietaria de incidentes, seguridad, SST, privacidad o cumplimiento;
+- crea una métrica global de readiness sin contrato;
+- modifica código, DDL, DML, migraciones, RLS, RPC, Edge Functions, Storage, datos, secretos, configuración o Supabase;
+- modifica el registro canónico de requisitos;
+- inicia `CONT-INT-001`.
+
+---
+
+#### 51. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento`
+
+TAREA ACTUAL APROBADA
+`CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones`
+
