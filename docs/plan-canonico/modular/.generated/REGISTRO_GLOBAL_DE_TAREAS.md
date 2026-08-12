@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **727** |
+| Aprobadas | **728** |
 | En propuesta | **0** |
-| No iniciadas | **867** |
+| No iniciadas | **866** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.61% (727/1594)** |
+| Porcentaje de completamiento | **45.67% (728/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato | ✅ APROBADA |
-| Tarea actual | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-002` — Definir principal técnico independiente por integración | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad | ✅ APROBADA |
+| Tarea actual | `INT-EXT-002` — Definir principal técnico independiente por integración | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1434,7 +1434,7 @@
 | ✅ APROBADA | `INT-APP-008` | Definir estados pendientes de sincronización | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-009` | Definir manejo de errores parciales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-010` | Evitar escrituras cruzadas sin contrato | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `INT-EXT-001` | Inventariar sistemas externos, proveedores, propietarios y finalidad | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-001` | Inventariar sistemas externos, proveedores, propietarios y finalidad | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-002` | Definir principal técnico independiente por integración | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-003` | Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-004` | Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |

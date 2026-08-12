@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **727** |
+| Tareas aprobadas | **728** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **867** |
+| Tareas no iniciadas | **866** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.61% (727/1594)** |
+| Porcentaje de completamiento | **45.67% (728/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-APP-010 — Evitar escrituras cruzadas sin contrato** |
-| Tarea actual | **INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad** |
+| Última tarea aprobada | **INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad** |
+| Tarea actual | **INT-EXT-002 — Definir principal técnico independiente por integración** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-002 — Definir principal técnico independiente por integración** |
+| Siguiente tarea | **INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 0 de 72 aprobadas; INT-EXT-001 pendiente** |
+| Progreso del bloque | **BLOQUE X: 0 de 71 aprobadas; INT-EXT-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato |
-| Tarea actual | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-002` — Definir principal técnico independiente por integración |
+| Última aprobada | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad |
+| Tarea actual | `INT-EXT-002` — Definir principal técnico independiente por integración — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 72 APROBADAS — ACTUAL INT-EXT-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 71 APROBADAS — ACTUAL INT-EXT-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-APP-010 — Evitar escrituras cruzadas sin contrato
-        ↓
-TAREA ACTUAL
 INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-002 — Definir principal técnico independiente por integración
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 0 de 72 tareas aprobadas
+BLOQUE X — 0 de 71 tareas aprobadas
 ```
