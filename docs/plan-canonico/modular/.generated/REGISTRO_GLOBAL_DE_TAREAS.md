@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **755** |
+| Aprobadas | **756** |
 | En propuesta | **0** |
-| No iniciadas | **839** |
+| No iniciadas | **838** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **47.37% (755/1594)** |
+| Porcentaje de completamiento | **47.43% (756/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-PROC-003` — Definir contrato para que NEXO cree la entrada de inventario | ✅ APROBADA |
-| Tarea actual | `INT-PROC-004` — Definir contrato para que NUMERA reciba el evento económico | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-PROC-005` — Definir control que evite una recepción duplicada | ⬜ NO INICIADA |
+| Última aprobada | `INT-PROC-004` — Definir contrato para que NUMERA reciba el evento económico | ✅ APROBADA |
+| Tarea actual | `INT-PROC-005` — Definir control que evite una recepción duplicada | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-PROD-001` — Definir contrato para que FOGO solicite o reserve insumos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1462,7 +1462,7 @@
 | ✅ APROBADA | `INT-PROC-001` | Definir contrato para que ORIGO apruebe la orden de compra | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-PROC-002` | Definir contrato para que ORIGO registre la recepción | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-PROC-003` | Definir contrato para que NEXO cree la entrada de inventario | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
-| ⬜ NO INICIADA | `INT-PROC-004` | Definir contrato para que NUMERA reciba el evento económico | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
+| ✅ APROBADA | `INT-PROC-004` | Definir contrato para que NUMERA reciba el evento económico | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROC-005` | Definir control que evite una recepción duplicada | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-001` | Definir contrato para que FOGO solicite o reserve insumos | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-002` | Definir contrato para que NEXO registre el consumo | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
