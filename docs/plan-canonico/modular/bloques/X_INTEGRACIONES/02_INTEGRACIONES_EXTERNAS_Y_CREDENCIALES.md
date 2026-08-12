@@ -8059,7 +8059,908 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-014 — Definir conservación controlada del payload original`
 
 
-### [ ] INT-EXT-014 — Definir conservación controlada del payload original
+### ✅ INT-EXT-014 — Definir conservación controlada del payload original
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-013 — Definir mapeo de identificadores externos y canónicos` — APROBADA
+**Tarea siguiente:** `INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de captura, preservación, minimización, inmutabilidad, acceso, correlación, retención gobernada y disposición del payload original o de la evidencia fuente de intercambios externos para `EXT-SYS-001` a `EXT-SYS-021`, sin modificar código, Supabase, proveedores, datos, endpoints, Storage, secretos ni configuración remota
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, Storage, buckets, secretos, credenciales, endpoints, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VENTO conserva una afirmación externa en su forma fuente cuando esa evidencia es necesaria para demostrar qué recibió realmente el adaptador, sin convertir el payload del proveedor en modelo empresarial, sin duplicarlo indiscriminadamente en tablas de negocio o auditoría y sin retener contenido completo cuando una referencia, huella o proyección mínima sea suficiente.
+
+La tarea separa obligatoriamente:
+
+```text
+PAYLOAD ORIGINAL / EVIDENCIA FUENTE
+≠
+PAYLOAD NORMALIZADO O ADAPTADO
+≠
+HECHO CANÓNICO VENTO
+≠
+AUDITORÍA ORDINARIA
+≠
+LOG TÉCNICO
+≠
+RESPUESTA O RECIBO DEL PROVEEDOR
+≠
+CREDENCIAL O SECRETO
+```
+
+También separa:
+
+```text
+PRESERVACIÓN
+≠
+COPIA ORDINARIA
+≠
+RETENCIÓN
+≠
+BACKUP
+≠
+LEGAL HOLD
+≠
+ARCHIVO OPERATIVO
+```
+
+El objetivo no es guardar todo. El objetivo es conservar exactamente la evidencia fuente que sea necesaria, en una custodia protegida, correlacionable e inmutable, durante el periodo autorizado por el gobierno de información aplicable.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-ORIGINAL-PAYLOAD-CUSTODY-001`, contrato común de captura y preservación controlada de evidencia fuente externa.
+2. `VENTO-EXTERNAL-ORIGINAL-PAYLOAD-MATRIX-001`, decisión materializada para las veintiuna identidades externas heredadas.
+
+Balance:
+
+| Control                                              |    Resultado |
+| ---------------------------------------------------- | -----------: |
+| Identidades esperadas                                |       **21** |
+| Identidades materializadas                           | **21 de 21** |
+| Identificadores `EXT-SYS-*` únicos                   |       **21** |
+| Identidades faltantes                                |        **0** |
+| Identidades duplicadas                               |        **0** |
+| `PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA`          |        **2** |
+| `PRESERVACION_MINIMA_DE_OPERACION_POR_RECURSO`       |        **1** |
+| `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`       |        **5** |
+| `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`               |        **1** |
+| `CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO`    |        **2** |
+| `MODELO_DOCUMENTADO_SIN_BINDING_REMOTO`              |        **1** |
+| `NO_APLICA_SIN_BINDING`                              |        **7** |
+| `BLOQUEADA_SIN_BINDING`                              |        **2** |
+| Periodos de retención numéricos inventados           |        **0** |
+| Copias de payload autorizadas en auditoría ordinaria |        **0** |
+| Cambios físicos                                      |        **0** |
+| Requisitos de prueba creados o modificados           |        **0** |
+
+Reconciliación:
+
+```text
+2 + 1 + 5 + 1 + 2 + 1 + 7 + 2 = 21
+```
+
+La clasificación primaria determina si la superficie necesita evidencia fuente durable, evidencia mínima por recurso, solo un recibo/referencia mínima o ninguna conservación de payload completo en el corte actual.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `VENTO-EXTERNAL-SYSTEM-INVENTORY-001` y sus veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- principal técnico, credenciales, mecanismos, alcance, ambientes, custodia y lifecycle aprobados en `INT-EXT-002` a `INT-EXT-008`;
+- contratos I/O versionados de `INT-EXT-009`;
+- estrategia de intercambio de `INT-EXT-010`;
+- autenticidad, origen, timestamp y replay de `INT-EXT-011`;
+- identidad idempotente y deduplicación de `INT-EXT-012`;
+- mapeo de identificadores de `INT-EXT-013`;
+- la obligación vigente de conservar la afirmación externa, su payload protegido, el identificador externo, la recepción y la correlación antes de producir un hecho interno;
+- la obligación de minimizar payloads y no copiar documentos, datos personales completos, datos financieros, datos médicos, credenciales u otra información sensible cuando una referencia protegida sea suficiente;
+- la prohibición de incluir secretos, tokens, passwords, claves privadas, credenciales de proveedor o URLs firmadas persistentes en eventos, esquemas, ejemplos, auditoría ordinaria o evidencia no protegida;
+- la regla de que auditoría y logs registran referencias, huellas, estados y resultados sin convertirse en copia completa del payload;
+- `SHELL-CON-019` como destino del contrato compartido de evento externo recibido;
+- `SHELL-CON-022` como contrato separado de mapeo de identificadores;
+- `SHELL-CON-023` como contrato separado de idempotencia y conciliación;
+- `INFO-INT-001` y su frontera documental de preservación, archivo externo, correlación, clasificación, retención, hold y evidencia;
+- la propiedad de cada dominio VENTO sobre el hecho empresarial resultante.
+
+Esta tarea no selecciona bucket, tabla, proveedor de almacenamiento, algoritmo de cifrado administrado, periodo universal de retención ni mecanismo físico de archivo.
+
+---
+
+#### 4. Definiciones canónicas
+
+`VENTO-EXTERNAL-ORIGINAL-PAYLOAD-CUSTODY-001` usa las siguientes clases:
+
+| Concepto                        | Significado                                                                                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SOURCE_PAYLOAD`                | representación recibida del tercero antes de una transformación semántica destructiva                                                                |
+| `RAW_SOURCE_BYTES`              | bytes exactos recibidos cuando el protocolo de autenticidad o la fidelidad de evidencia requieren conservar la representación de transporte          |
+| `SOURCE_PAYLOAD_DIGEST`         | huella criptográfica de la representación fuente; permite demostrar integridad sin exponer el contenido                                              |
+| `NORMALIZED_EXTERNAL_ASSERTION` | interpretación tipada y validada del payload externo dentro del adaptador                                                                            |
+| `CANONICAL_BUSINESS_FACT`       | hecho interno producido por el dominio propietario después de validación; nunca es el payload externo                                                |
+| `PROTECTED_SOURCE_EVIDENCE`     | objeto de evidencia con acceso restringido que conserva la fuente necesaria y sus metadatos no secretos                                              |
+| `REDACTED_EVIDENCE_VIEW`        | vista derivada y minimizada destinada a investigación o soporte ordinario cuando no es necesario revelar el contenido fuente completo                |
+| `MINIMAL_EXTERNAL_RECEIPT`      | identificador, estado, error normalizado, referencia y huella mínima de una respuesta externa cuando no se justifica conservar la respuesta completa |
+| `BUSINESS_ROW_REFERENCE`        | referencia desde una entidad empresarial hacia evidencia, receipt o mapping; no contiene por defecto el payload fuente                               |
+| `AUDIT_REFERENCE`               | registro de sistema, ambiente, superficie, evidencia, huella, resultado y correlación sin duplicar el contenido fuente                               |
+| `RETENTION_POLICY_REF`          | referencia a la regla aprobada de retención/disposición aplicable; no es un número inventado por esta tarea                                          |
+| `PRESERVATION_OR_HOLD_REF`      | referencia a una condición autorizada que impide una disposición ordinaria cuando aplique                                                            |
+
+Una representación JSON parseada puede conservar valor semántico, pero no se considera equivalente a `RAW_SOURCE_BYTES` cuando firma, MAC, canonicalización o investigación dependen de la secuencia exacta recibida.
+
+---
+
+#### 5. `VENTO-EXTERNAL-ORIGINAL-PAYLOAD-CUSTODY-001`
+
+Toda evidencia fuente durable deberá poder representar como mínimo:
+
+| Dimensión                       | Regla                                                                               |
+| ------------------------------- | ----------------------------------------------------------------------------------- |
+| `external_system_id`            | identidad `EXT-SYS-*` exacta                                                        |
+| `environment`                   | ambiente exacto; la evidencia no se reutiliza entre ambientes                       |
+| `surface`                       | webhook, servicio de recurso, respuesta de proveedor u otra superficie material     |
+| `direction`                     | `EXTERNAL_TO_VENTO`, `VENTO_TO_EXTERNAL`, `BIDIRECTIONAL` o equivalente contractual |
+| `contract_version`              | versión VENTO que interpretó el intercambio                                         |
+| `received_at`                   | instante local de recepción cuando exista una entrada                               |
+| `media_type`                    | media type recibido cuando sea material                                             |
+| `content_encoding`              | encoding de transporte cuando sea material                                          |
+| `source_capture_mode`           | `RAW_BYTES`, `PROVIDER_OBJECT`, `MINIMAL_RECEIPT` o clase equivalente               |
+| `source_byte_length`            | tamaño de la fuente capturada sin convertirlo en criterio empresarial               |
+| `payload_digest_algorithm`      | algoritmo de huella versionado y aprobado por la implementación                     |
+| `payload_digest`                | huella de la fuente capturada                                                       |
+| `external_event_or_receipt_ref` | identificador externo cuando exista y esté acreditado                               |
+| `authenticity_result_ref`       | referencia al resultado de autenticidad; nunca el secreto                           |
+| `mapping_refs[]`                | relaciones acreditadas de `INT-EXT-013` cuando existan                              |
+| `idempotency_ref`               | relación con la operación de `INT-EXT-012` sin convertir el payload en clave        |
+| `sensitivity_class`             | clasificación efectiva de la evidencia                                              |
+| `retention_policy_ref`          | regla de retención/disposición aplicable                                            |
+| `preservation_or_hold_ref`      | bloqueo autorizado de disposición cuando exista                                     |
+| `protected_payload_locator`     | referencia opaca a la custodia del contenido; no se expone a clientes ordinarios    |
+| `redacted_view_ref`             | vista minimizada opcional para investigación o soporte                              |
+| `disposition_evidence_ref`      | evidencia de disposición cuando el lifecycle aplicable permita retirar el contenido |
+
+La denominación física final pertenece al contrato compartido y a las fases de implementación correspondientes. Esta tarea fija semántica, no una tabla o bucket.
+
+---
+
+#### 6. Orden obligatorio de captura y conversión
+
+Para una entrada externa que pueda producir un hecho VENTO:
+
+```text
+RECIBIR LA ENTREGA
+→ FIJAR VENTO_RECEIVED_AT
+→ CAPTURAR TRANSITORIAMENTE LA REPRESENTACIÓN FUENTE
+→ VALIDAR AUTENTICIDAD / ORIGEN SEGÚN EL PERFIL
+→ CALCULAR HUELLA DE LA FUENTE
+→ MATERIALIZAR EVIDENCIA PROTEGIDA CUANDO EL CONTRATO LA EXIJA
+→ PARSEAR / NORMALIZAR / MAPEAR
+→ RESOLVER IDEMPOTENCIA Y ESTADO
+→ VALIDAR DOMINIO PROPIETARIO
+→ PRODUCIR O RECHAZAR EL HECHO INTERNO
+```
+
+Reglas:
+
+1. si la firma cubre los bytes raw, la captura ocurre antes de `JSON.parse` o reserialización;
+2. preservar la fuente no autoriza procesarla;
+3. una entrada no auténtica no entra silenciosamente al flujo empresarial;
+4. la disposición de entradas inválidas o no procesables pertenece a `INT-EXT-016`;
+5. el storage normal de evidencia no se usa como sumidero ilimitado para tráfico no autenticado;
+6. si la autenticidad no puede decidirse sin los bytes fuente, esos bytes pueden mantenerse transitoriamente durante la verificación sin convertirlos todavía en evidencia empresarial durable;
+7. una entrada auténtica que deba respaldar un hecho interno materializa la evidencia requerida antes de que el hecho dependa de una copia mutable o de una transformación no reconstruible;
+8. el payload original no se transforma en fuente de verdad empresarial por ser preservado.
+
+---
+
+#### 7. Inmutabilidad, redelivery y versiones de evidencia
+
+La preservación de la fuente es append-only o equivalente.
+
+Reglas:
+
+1. una redelivery no sobrescribe la evidencia fuente de una recepción anterior;
+2. cada recepción puede conservar su `receipt` o intento técnico y vincularse con la misma operación lógica;
+3. mismo identificador externo y misma huella pueden converger en la misma operación idempotente, pero conservan trazabilidad de recepción cuando el contrato lo requiera;
+4. mismo identificador externo y huella distinta produce conflicto de identidad/contenido y no reescribe la evidencia original;
+5. una transformación o parser corregido crea una nueva interpretación derivada, no modifica los bytes fuente preservados;
+6. un cambio de mapping no modifica el payload histórico;
+7. una corrección del hecho interno no altera la afirmación externa que lo originó;
+8. una evidencia retirada por lifecycle conserva únicamente las referencias y constancias permitidas por su política; no se falsifica la historia haciendo aparecer un payload distinto.
+
+El contrato prohíbe usar un `UPSERT` que reemplace silenciosamente el contenido fuente de una recepción anterior cuando ese contenido constituye evidencia.
+
+---
+
+#### 8. Separación entre evidencia fuente, fila empresarial y auditoría
+
+La relación objetivo es:
+
+```text
+PROTECTED_SOURCE_EVIDENCE
+        ↓ referencia / huella
+ADAPTADOR / RECEIPT
+        ↓ interpretación
+HECHO EMPRESARIAL
+        ↓ referencias
+AUDITORÍA
+```
+
+Reglas:
+
+1. la entidad empresarial conserva campos canónicos, identificadores externos necesarios, estado, mapping y una referencia a evidencia; no necesita el payload completo por defecto;
+2. auditoría ordinaria conserva referencias, huellas, versión, actor/principal, resultado, tiempos y correlación; no copia el payload fuente completo;
+3. logs técnicos no almacenan bodies completos por conveniencia;
+4. una misma afirmación externa no se duplica en varias tablas para facilitar consultas;
+5. una copia adicional requiere una finalidad independiente, clasificación, acceso y lifecycle propios; comodidad de debugging no es una finalidad suficiente;
+6. una vista redacted puede exponer campos mínimos para soporte sin dar acceso al objeto fuente;
+7. una política RLS que permite al propio usuario consultar una fila empresarial no debe implicar acceso automático al payload externo protegido almacenado por esa fila.
+
+---
+
+#### 9. Secretos, headers y material de autenticación
+
+Queda prohibido conservar como contenido ordinario de evidencia:
+
+- `Authorization` bearer reutilizable;
+- `service_role`;
+- API keys privadas;
+- webhook secrets;
+- signing secrets;
+- passwords;
+- private keys;
+- material P8/P12 privado;
+- tokens de sesión reutilizables;
+- URLs firmadas persistentes;
+- cookies de sesión;
+- cualquier valor cuya exposición permita autenticar una nueva petición.
+
+Reglas:
+
+1. el secreto que valida una firma jamás se copia junto al payload;
+2. auditoría conserva la referencia de credencial o mecanismo, no el valor;
+3. firma, checksum o MAC recibidos pueden conservarse únicamente dentro de la evidencia protegida cuando sean necesarios para demostrar la fuente; la vista ordinaria conserva una huella o referencia suficiente;
+4. si un header contiene además metadata no secreta necesaria, se captura de forma allowlist y no mediante copia indiscriminada de todos los headers;
+5. el payload protegido no se usa como mecanismo de custodia de secretos.
+
+---
+
+#### 10. Minimización y decisión de conservar contenido completo
+
+La regla por defecto es:
+
+```text
+SI UNA REFERENCIA + HUELLA + METADATA MÍNIMA
+PERMITEN DEMOSTRAR EL INTERCAMBIO NECESARIO
+→ NO RETENER EL PAYLOAD COMPLETO
+```
+
+La preservación completa se justifica únicamente cuando al menos una de estas condiciones está acreditada:
+
+- la afirmación externa puede producir o justificar un hecho empresarial material y debe poder reconstruirse;
+- el mecanismo de autenticidad depende de los bytes exactos y la evidencia de seguridad requiere preservarlos;
+- existe necesidad de conciliación, investigación o disputa que no puede satisfacerse con una proyección mínima;
+- una política de información, legal, contractual o de evidencia exige conservar la fuente;
+- el proveedor no ofrece una fuente recuperable posterior y perder el payload impediría demostrar la decisión aplicada.
+
+No justifican por sí solas conservar el payload completo:
+
+- que el proveedor envíe JSON;
+- que exista una columna `jsonb`;
+- que el almacenamiento sea barato;
+- que el contenido pueda ser útil en debugging futuro;
+- que la respuesta sea fácil de serializar;
+- que una librería devuelva el objeto completo;
+- que una consulta read-only produzca muchos campos;
+- que el tercero pueda reenviar la misma información.
+
+---
+
+#### 11. Retención, preservación, hold y disposición
+
+`INT-EXT-014` no fija un número universal de días.
+
+Cada objeto de evidencia fuente deberá resolver:
+
+```text
+CLASIFICACIÓN
++
+FINALIDAD
++
+PROCESO / RECURSO
++
+POLÍTICA DE RETENCIÓN APLICABLE
++
+RESTRICCIONES DE PRESERVACIÓN O HOLD
+→ FECHA / CONDICIÓN DE DISPOSICIÓN
+```
+
+Reglas:
+
+1. la duración no se deriva del proveedor por defecto;
+2. la duración no se deriva de la vida de la fila empresarial por defecto;
+3. un mapping retirado no elimina automáticamente evidencia aún retenida;
+4. una operación cerrada no elimina evidencia sujeta a una obligación vigente;
+5. un hold autorizado suspende la disposición ordinaria sin cambiar la fuente;
+6. finalizado el periodo y sin bloqueo aplicable, el contenido puede disponerse mediante el procedimiento aprobado;
+7. la evidencia de disposición no contiene el payload eliminado;
+8. conservar indefinidamente por ausencia de política no se presenta como cumplimiento;
+9. cuando no exista un periodo físico acreditado para una implementación concreta, el estado correcto es pendiente de evidencia de la política aplicable, no un número estimado.
+
+Las reglas de retención, preservación, archivo y hold se consumen del gobierno de información y no se redefinen localmente por proveedor.
+
+---
+
+#### 12. Acceso y separación de responsabilidades
+
+El payload fuente completo se considera una superficie de evidencia restringida.
+
+Reglas:
+
+1. no se expone mediante consultas ordinarias de la entidad empresarial;
+2. un usuario que puede ver su pago, suscripción o perfil no obtiene por ello acceso al payload completo del proveedor;
+3. el principal técnico que recibe la entrada puede materializar la evidencia sin adquirir permiso para leerla después fuera de su función;
+4. soporte ordinario usa la vista redacted o referencias mínimas;
+5. investigación autorizada puede requerir acceso al contenido fuente conforme a finalidad, clasificación y evidencia de acceso;
+6. administradores del storage no adquieren autoridad empresarial por administrar la custodia;
+7. una aplicación consumidora no accede a payloads de otro dominio por compartir Supabase;
+8. el acceso a producción no se hereda desde development o staging;
+9. cualquier exportación o copia de investigación mantiene la clasificación y lifecycle aplicables.
+
+---
+
+#### 13. Wompi — `EXT-SYS-002`
+
+Decisión primaria:
+
+`PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA`
+
+Superficie material:
+
+- webhook de resultado de pago;
+- identificador de evento cuando exista;
+- transacción/reference y estado externos;
+- propiedades y checksum de firma;
+- timestamp de proveedor;
+- correlación con transacción y orden VENTO.
+
+Contrato objetivo:
+
+```text
+ENTREGA WOMPI AUTENTICADA
+→ RECEIPT DE RECEPCIÓN
+→ HUELLA DE FUENTE
+→ EVIDENCIA FUENTE PROTEGIDA E INMUTABLE
+→ REFERENCIAS DE EVENTO / TRANSACCIÓN / MAPPING
+→ EFECTO DE PAGO EN DOMINIO PROPIETARIO
+```
+
+Reglas específicas:
+
+1. el body fuente se conserva como evidencia separada cuando la entrega pueda producir un cambio de estado de pago;
+2. el objeto preservado no contiene el secreto de eventos;
+3. checksum y metadata de autenticidad permanecen referenciables sin exponer credenciales;
+4. el mismo payload no debe copiarse además como `raw_response` de la transacción solo por conveniencia;
+5. una redelivery no sobrescribe el payload fuente de una recepción anterior;
+6. el receipt conserva relación con la identidad idempotente de `INT-EXT-012` y con el mapping de `INT-EXT-013`;
+7. una entrada sin identidad suficiente puede conservar evidencia según su disposición de seguridad, pero no habilita un hecho nuevo.
+
+Estado técnico observado:
+
+- el runtime parsea la petición mediante JSON antes de conservar una representación fuente separada;
+- `payments.webhook_events.payload` persiste el objeto JSON parseado;
+- el mismo objeto se entrega además a la actualización de transacción y termina en `payments.transactions.raw_response`;
+- la tabla de transacciones es consultable por el usuario propietario mediante RLS;
+- el registro del webhook se actualiza con `payload = excluded.payload`, por lo que una redelivery puede reemplazar la copia anterior;
+- no se observa una referencia separada a evidencia fuente inmutable ni una huella de los bytes recibidos.
+
+Resultado del corte:
+
+`WOMPI_ORIGINAL_PAYLOAD_STATE = IMPLEMENTADO_PARCIAL_NO_INMUTABLE_Y_DUPLICADO`
+
+---
+
+#### 14. RevenueCat — `EXT-SYS-003`
+
+Decisión primaria:
+
+`PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA`
+
+La evidencia fuente es especialmente material porque el perfil de autenticidad aprobado requiere validar una firma sobre timestamp y cuerpo raw.
+
+Contrato objetivo:
+
+```text
+RAW BODY REVENUECAT
+→ HUELLA
+→ VALIDACIÓN DE AUTENTICIDAD
+→ EVIDENCIA FUENTE PROTEGIDA
+→ PARSEO Y NORMALIZACIÓN
+→ RECEIPT / IDEMPOTENCIA
+→ SUBSCRIPCIÓN / ENTITLEMENT CANÓNICOS
+```
+
+Reglas específicas:
+
+1. el cuerpo se captura antes de parsear cuando el perfil de firma dependa de bytes raw;
+2. la copia empresarial no conserva el payload completo;
+3. la auditoría ordinaria no conserva el payload completo;
+4. `app_user_id`, producto, transacción externa, entitlement y tiempos relevantes se proyectan como campos tipados o referencias según los contratos anteriores;
+5. la evidencia fuente conserva correlación con la suscripción, el receipt de evento y el mapping sin convertirse en la suscripción;
+6. una redelivery no genera una nueva copia empresarial del mismo payload;
+7. el secreto de autenticidad no se almacena con la evidencia.
+
+Estado técnico observado:
+
+- el runtime usa `req.json()` y no conserva los bytes raw antes del parseo;
+- el payload completo se inserta en `club.subscriptions.raw_payload`;
+- el mismo payload completo se inserta además en `club.audit_events.event_data`;
+- tanto la suscripción propia como la auditoría propia tienen políticas de lectura para el usuario autenticado correspondiente;
+- no existe una custodia separada de evidencia fuente ni una referencia opaca desde las filas empresariales observadas.
+
+Resultado del corte:
+
+`REVENUECAT_ORIGINAL_PAYLOAD_STATE = NO_CONFORME_DUPLICADO_EN_FILAS_EMPRESARIALES_Y_SIN_RAW_BYTES`
+
+---
+
+#### 15. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Decisión primaria:
+
+`PRESERVACION_MINIMA_DE_OPERACION_POR_RECURSO`
+
+Las llamadas observadas del PassKit Web Service son operaciones técnicas sobre recursos concretos, no webhooks de hechos empresariales firmados por un proveedor.
+
+Reglas:
+
+1. registro y retiro de dispositivo conservan como evidencia mínima la operación, `deviceLibraryIdentifier`, `passTypeIdentifier`, `serialNumber`, resultado y correlación necesarios;
+2. el `authenticationToken` del pase no se copia a evidencia ordinaria;
+3. el push token se trata como routing ref sensible y solo se conserva donde el contrato de registro lo necesita;
+4. consultas de seriales y obtención del pase no requieren archivar el body completo de cada request;
+5. `If-Modified-Since` y `passesUpdatedSince` son metadata técnica y no justifican un archivo completo de request;
+6. la firma del `.pkpass` y el JWT APNs saliente permanecen fuera del payload entrante;
+7. el endpoint técnico de log no se convierte en un repositorio ilimitado de contenido arbitrario; cualquier evidencia futura deberá ser acotada, minimizada y clasificada.
+
+Estado técnico observado:
+
+- el servicio procesa body y path de registro y actualiza relaciones de dispositivo/pase;
+- no se observa una custodia de raw request;
+- el endpoint de log responde sin persistir el body;
+- esa ausencia no es una brecha por sí sola para estas operaciones mientras exista evidencia estructurada suficiente y no se requiera reconstruir un hecho externo autónomo.
+
+Resultado:
+
+`PASSKIT_ORIGINAL_PAYLOAD_STATE = EVIDENCIA_MINIMA_POR_RECURSO_SIN_ARCHIVO_RAW_GENERAL`
+
+---
+
+#### 16. Superficies donde no se conserva payload completo por defecto
+
+##### 16.1. Resend — `EXT-SYS-004`
+
+La superficie observada es salida VENTO hacia proveedor de correo.
+
+- el body del correo se deriva de la invitación canónica y no constituye una afirmación original del proveedor;
+- una respuesta exitosa del proveedor debe conservar como máximo receipt/message ref y estado necesarios cuando el contrato los acredite;
+- una respuesta de error se normaliza y limita; no se usa texto arbitrario del proveedor como payload empresarial;
+- el código observado no conserva un message ID exitoso estructurado y guarda una porción de texto de error dentro de metadata de invitación cuando falla;
+- la evolución objetivo separa error/receipt técnico de la fila empresarial y no introduce una copia íntegra de la respuesta.
+
+Decisión:
+
+`RESEND_ORIGINAL_PAYLOAD_STATE = NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`
+
+##### 16.2. Expo Push Service — `EXT-SYS-006`
+
+- el mensaje enviado se deriva del anuncio canónico;
+- la respuesta técnica se consume actualmente para detectar `DeviceNotRegistered`;
+- la respuesta completa no necesita conservarse por defecto;
+- tickets/receipts futuros, cuando se acrediten, se conservan como referencias mínimas ligadas a la operación de entrega;
+- el push token continúa siendo destino técnico sensible y no payload empresarial.
+
+Decisión:
+
+`EXPO_PUSH_ORIGINAL_PAYLOAD_STATE = NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`
+
+##### 16.3. Sentry — `EXT-SYS-007`
+
+- la superficie observada es telemetría saliente;
+- la fuente de la observación pertenece a la aplicación VENTO, no a un payload entrante autónomo de Sentry;
+- grouping, issue o respuesta del proveedor no justifican crear un archivo paralelo de telemetría completa en VENTO;
+- correlación futura con un caso tecnológico utiliza referencias mínimas y clasificación de observabilidad.
+
+Decisión:
+
+`SENTRY_ORIGINAL_PAYLOAD_STATE = NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`
+
+##### 16.4. Google Maps / Google Reviews — `EXT-SYS-008`
+
+- las respuestas de autocomplete y detalle son consultas read-only bajo demanda;
+- el runtime proyecta únicamente `place_id`, descripción/dirección, coordenadas y campos mínimos requeridos;
+- no persiste la respuesta completa observada;
+- la ausencia de persistencia completa es coherente con minimización mientras el proceso no requiera una evidencia contractual adicional;
+- una futura relación durable con una sede se gobierna mediante mapping explícito, no mediante archivo del response completo.
+
+Decisión:
+
+`GOOGLE_PLACES_ORIGINAL_PAYLOAD_STATE = NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`
+
+##### 16.5. Zebra BrowserPrint — `EXT-SYS-011`
+
+- ZPL es contenido generado por VENTO para una operación física, no una afirmación original del proveedor;
+- el contrato de impresión debe conservar job, plantilla/versión, hash lógico, impresora, generación y resultado necesarios para evidenciar el efecto;
+- no se crea dentro de esta tarea un archivo externo de cada string ZPL por defecto;
+- UID de impresora y resultado del bridge permanecen referencias técnicas, no payload empresarial.
+
+Decisión:
+
+`ZEBRA_ORIGINAL_PAYLOAD_STATE = NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`
+
+---
+
+#### 17. Supabase — `EXT-SYS-001`
+
+Supabase continúa gobernada por los contratos internos de cada dominio y superficie.
+
+Decisión:
+
+`SUPABASE_ORIGINAL_PAYLOAD_DECISION = GOBERNADA_POR_CONTRATO_INTERNO_VENTO`
+
+Reglas:
+
+1. no se crea un archivo universal de todos los requests Supabase;
+2. Auth, RPC, Storage, Realtime, Edge Functions y base de datos conservan evidencia según el contrato propietario;
+3. la plataforma no convierte un body interno en payload externo solo por transportarlo;
+4. cuando una Edge Function actúe como adaptador de proveedor externo, la identidad `EXT-SYS-*` del proveedor y este contrato de evidencia sí aplican a esa frontera;
+5. cualquier materialización Supabase perteneciente a VENTO deberá originarse y versionarse desde `vento-shell`.
+
+---
+
+#### 18. Configuraciones de plataforma sin payload acreditado
+
+##### 18.1. Expo / EAS Update — `EXT-SYS-005`
+
+Perfiles, channels, project ID, runtime y configuración no acreditan una operación externa cuyo payload fuente deba conservarse bajo esta tarea.
+
+Decisión:
+
+`EXPO_EAS_ORIGINAL_PAYLOAD_STATE = CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO`
+
+##### 18.2. Vercel — `EXT-SYS-010`
+
+Hosting, rewrites, domains y configuración observada no acreditan una API administrativa o callback cuyo payload fuente deba conservarse.
+
+Decisión:
+
+`VERCEL_ORIGINAL_PAYLOAD_STATE = CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO`
+
+Una futura automatización material deberá volver a esta política si incorpora request, response, callback o evidencia externa relevante.
+
+---
+
+#### 19. Google Wallet — `EXT-SYS-012`
+
+Existe un modelo documental de objeto y JWT de guardado, pero no se acredita un binding remoto operativo ni una respuesta del proveedor que deba archivarse como fuente.
+
+Decisión:
+
+`GOOGLE_WALLET_ORIGINAL_PAYLOAD_STATE = MODELO_DOCUMENTADO_SIN_BINDING_REMOTO`
+
+Reglas:
+
+1. el JWT generado por VENTO no se convierte en payload original del proveedor;
+2. issuer, class y object ID permanecen referencias de configuración/modelo;
+3. no se inventa una respuesta remota para satisfacer la matriz;
+4. cualquier binding futuro deberá definir qué receipt o respuesta merece preservación y qué campos son suficientes antes de activarse.
+
+---
+
+#### 20. `VENTO-EXTERNAL-ORIGINAL-PAYLOAD-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Naturaleza de la superficie actual                      | Clasificación primaria                            | Estado técnico del corte                                              | Decisión materializada                                                                                                                                     |
+| ------------- | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | plataforma interna compartida y fronteras propietarias  | `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`            | `SEGUN_CONTRATO_PROPIETARIO`                                          | no existe archivo universal de requests; el contrato aplica cuando una frontera Supabase actúa como adaptador de un proveedor externo                      |
+| `EXT-SYS-002` | Wompi                                    | webhook externo que puede producir efecto de pago       | `PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA`       | `IMPLEMENTADO_PARCIAL_NO_INMUTABLE_Y_DUPLICADO`                       | conservar fuente protegida y receipt antes del hecho; evitar duplicación en transacción y evitar que redelivery reemplace evidencia previa                 |
+| `EXT-SYS-003` | RevenueCat                               | webhook externo de suscripción/entitlement              | `PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA`       | `NO_CONFORME_DUPLICADO_EN_FILAS_EMPRESARIALES_Y_SIN_RAW_BYTES`        | capturar raw body antes de firma/parseo; almacenar evidencia separada; suscripción y auditoría conservan referencias y campos mínimos, no payload completo |
+| `EXT-SYS-004` | Resend                                   | envío outbound y respuesta técnica                      | `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`    | `RESPUESTA_EXITOSA_NO_PERSISTIDA_Y_ERROR_TECNICO_PARCIAL_EN_METADATA` | conservar receipt/ref y error normalizado cuando exista; no copiar body/respuesta completa dentro de invitación                                            |
+| `EXT-SYS-005` | Expo / EAS Update                        | configuración de plataforma sin contrato I/O acreditado | `CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO` | `SIN_PAYLOAD_EXTERNO_ACREDITADO`                                      | no inventar evidencia fuente; si se materializa API o callback futuro, aplicar este contrato antes de activación                                           |
+| `EXT-SYS-006` | Expo Push Service                        | envío outbound por destino y respuesta técnica          | `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`    | `RESPUESTA_TECNICA_TRANSITORIA`                                       | conservar solo receipt/error/ref necesarios; el anuncio canónico y la operación de entrega son la fuente VENTO                                             |
+| `EXT-SYS-007` | Sentry                                   | telemetría outbound                                     | `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`    | `TELEMETRIA_SALIENTE`                                                 | no crear archivo espejo de telemetría de proveedor; correlación futura utiliza referencias y evidencia mínima                                              |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | consulta read-only y normalización de respuesta         | `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`    | `RESPUESTA_NORMALIZADA_TRANSITORIA_SIN_PERSISTENCIA_COMPLETA`         | mantener solo los campos necesarios o mapping explícito; respuesta completa no se conserva por defecto                                                     |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | operaciones de recurso, lecturas y señal outbound       | `PRESERVACION_MINIMA_DE_OPERACION_POR_RECURSO`    | `EVIDENCIA_ESTRUCTURADA_SIN_ARCHIVO_RAW_GENERAL`                      | conservar receipt de operación y refs de recurso; no archivar auth token ni bodies completos indiscriminadamente                                           |
+| `EXT-SYS-010` | Vercel                                   | hosting/configuración sin API administrativa acreditada | `CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO` | `SIN_PAYLOAD_EXTERNO_ACREDITADO`                                      | no inventar request/response; futura automatización vuelve a esta política                                                                                 |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | adaptador local y contenido ZPL generado por VENTO      | `NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION`    | `CONTENIDO_OUTBOUND_LOCAL_SIN_EVIDENCIA_FUENTE_EXTERNA`               | conservar identidad de job, hash, plantilla/versión, impresora y resultado en su contrato propietario; no crear archivo raw externo por defecto            |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | modelo de payload/JWT sin binding remoto acreditado     | `MODELO_DOCUMENTADO_SIN_BINDING_REMOTO`           | `SIN_RESPUESTA_REMOTA_ACREDITADA`                                     | no conservar una interacción que no está acreditada; binding futuro define receipt/payload necesario                                                       |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, interfaz y payload no acreditados            | `BLOQUEADA_SIN_BINDING`                           | `BLOCKED`                                                             | `INT-POS-001` debe acreditar proveedor, payloads y sensibilidad antes de fijar captura y preservación                                                      |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | binding no acreditado                                   | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | no se inventa retención de order/customer/product payload sin contrato real                                                                                |
+| `EXT-SYS-015` | Rappi / marketplace                      | binding no acreditado                                   | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | no se inventa payload ni conservación sin binding                                                                                                          |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | binding no acreditado                                   | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | no se inventa payload conversacional ni archivo sin API/bot acreditado                                                                                     |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API/binding no acreditados                    | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | número, mensaje o conversación no se archivan por inferencia sin proveedor, contrato, clasificación y finalidad                                            |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                              | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | no se inventa preservación de mensajes, perfiles o eventos sin binding                                                                                     |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                  | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | correo/alias como canal no define por sí solo qué mensajes o payloads deben preservarse                                                                    |
+| `EXT-SYS-020` | Telefonía / voz                          | operador, interfaz y payload no acreditados             | `BLOQUEADA_SIN_BINDING`                           | `BLOCKED`                                                             | `TI-INT-003` debe acreditar operador, interfaz, grabaciones/eventos y sensibilidad antes de definir preservación                                           |
+| `EXT-SYS-021` | Transporte externo                       | proveedor, tracking e interfaz no acreditados           | `NO_APLICA_SIN_BINDING`                           | `NOT_APPLICABLE`                                                      | tracking o guía no autorizan archivar payloads de un proveedor no acreditado                                                                               |
+
+Reconciliación:
+
+```text
+PRESERVACION_DURABLE_DE_ENTRADA_REQUERIDA = 002,003 = 2
+PRESERVACION_MINIMA_DE_OPERACION_POR_RECURSO = 009 = 1
+NO_RETENER_PAYLOAD_COMPLETO_POR_MINIMIZACION = 004,006,007,008,011 = 5
+GOBERNADA_POR_CONTRATO_INTERNO_VENTO = 001 = 1
+CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO = 005,010 = 2
+MODELO_DOCUMENTADO_SIN_BINDING_REMOTO = 012 = 1
+NO_APLICA_SIN_BINDING = 014,015,016,017,018,019,021 = 7
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+---
+
+#### 21. Regla para bindings futuros
+
+Una identidad actualmente `NO_APLICA_SIN_BINDING`, `BLOQUEADA_SIN_BINDING`, `CONFIGURACION_PLATAFORMA_SIN_PAYLOAD_ACREDITADO` o `MODELO_DOCUMENTADO_SIN_BINDING_REMOTO` no puede activar un intercambio nuevo sin resolver previamente:
+
+1. proveedor e instancia;
+2. superficie y dirección;
+3. contrato I/O y versión;
+4. autenticidad aplicable;
+5. identificadores externos y mapping;
+6. identidad idempotente cuando exista efecto;
+7. sensibilidad del payload;
+8. si requiere `RAW_SOURCE_BYTES`, objeto fuente o solo receipt mínimo;
+9. campos o headers que deben excluirse por contener secretos;
+10. clasificación y acceso;
+11. política de retención aplicable;
+12. preservación o hold cuando corresponda;
+13. forma de disposición;
+14. referencia de evidencia y correlación con el hecho interno.
+
+No se permite activar tráfico y decidir después qué evidencia debía haberse conservado.
+
+---
+
+#### 22. Relación con mapping, idempotencia y autenticidad
+
+Las cuatro responsabilidades permanecen separadas:
+
+```text
+AUTENTICIDAD
+→ ¿LA AFIRMACIÓN PUEDE ATRIBUIRSE A LA FUENTE ESPERADA?
+```
+
+```text
+IDEMPOTENCIA
+→ ¿ESTA OPERACIÓN YA FUE RECLAMADA Y QUÉ RESULTADO DEBE RECUPERARSE?
+```
+
+```text
+MAPPING
+→ ¿A QUÉ RECURSO CANÓNICO CORRESPONDE LA REFERENCIA EXTERNA?
+```
+
+```text
+EVIDENCIA FUENTE
+→ ¿QUÉ ENTREGÓ REALMENTE EL PROVEEDOR Y QUÉ HUELLA LO DEMUESTRA?
+```
+
+Reglas:
+
+1. un payload auténtico puede ser duplicado;
+2. un payload deduplicable puede apuntar a un mapping no resuelto;
+3. un mapping resuelto no demuestra que el payload recibido sea auténtico;
+4. una huella demuestra integridad de la fuente preservada, no autorización empresarial;
+5. el payload completo no se utiliza como primary key de mapping;
+6. el payload completo no sustituye `operation_key`;
+7. receipt, mapping, operation y evidencia conservan IDs separados y correlacionables.
+
+---
+
+#### 23. Handoffs y condiciones de salida
+
+| Trabajo derivado                                               | Estado                    | Propietario / tarea responsable | Condición de salida                                                                                                                                            |
+| -------------------------------------------------------------- | ------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Contrato compartido de evento externo recibido                 | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                 | el contrato consumible representa sistema, ambiente, receipt, evidencia fuente, huella, autenticidad, mapping, idempotencia y correlación sin exponer secretos |
+| Contrato compartido de mapping                                 | `FUERA_DE_ALCANCE`        | `SHELL-CON-022`                 | la referencia de evidencia puede relacionarse con mappings tipados sin usar el payload como identidad                                                          |
+| Contrato compartido de idempotencia y conciliación             | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                 | operación, receipt y evidencia permanecen separadas y recuperables                                                                                             |
+| Preservación y archivo externo gobernados                      | `FUERA_DE_ALCANCE`        | `INFO-INT-001`                  | la implementación consumible conserva clasificación, fuente, versión, retención, hold, disposición, integridad y evidencia conforme al gobierno de información |
+| Disposición de entradas inválidas, conflictivas o no mapeables | `FUERA_DE_ALCANCE`        | `INT-EXT-016` / `SHELL-CON-024` | la entrada no procesable tiene rechazo o cuarentena explícitos sin contaminar el flujo normal de evidencia                                                     |
+| Auditoría, métricas, alertas y conciliación de evidencia       | `FUERA_DE_ALCANCE`        | `INT-EXT-017`                   | acceso, conflicto, ausencia de evidencia, duplicados y reconciliación quedan reconstruibles sin copiar payload sensible en auditoría ordinaria                 |
+| Binding y payload del POS vigente                              | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | proveedor, interfaz, payload, IDs y sensibilidad quedan acreditados antes de seleccionar conservación                                                          |
+| Operador, interfaz y payload de telefonía/voz                  | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                    | proveedor/operador, interfaz, eventos, grabaciones y sensibilidad quedan acreditados antes de seleccionar conservación                                         |
+
+No queda una decisión sustantiva de preservación sin propietario documental y condición de salida.
+
+---
+
+#### 24. Fronteras reservadas a `INT-EXT-015` a `INT-EXT-020`
+
+| Materia                                                     | Tarea propietaria |
+| ----------------------------------------------------------- | ----------------- |
+| rate limits, retry, backoff y circuit breaker               | `INT-EXT-015`     |
+| cuarentena o dead-letter                                    | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación                 | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor            | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales          | `INT-EXT-019`     |
+| prohibición de credenciales compartidas entre integraciones | `INT-EXT-020`     |
+
+Esta tarea no fija presupuestos de tráfico, número de intentos, cadence, reintentos, backoff, circuit breaker, política de dead-letter, alertas ni procedimiento de contingencia.
+
+---
+
+#### 25. Prohibiciones
+
+Queda prohibido:
+
+1. usar una tabla empresarial como archivo general de payload externo;
+2. copiar el mismo payload completo en entidad empresarial y auditoría;
+3. exponer payload protegido a un usuario únicamente porque puede consultar la entidad canónica relacionada;
+4. reemplazar evidencia histórica durante una redelivery;
+5. reserializar y afirmar que el resultado representa los bytes exactos cuando el protocolo depende del raw body;
+6. mezclar payloads entre ambientes;
+7. conservar secretos de webhook, API keys, passwords, private keys o tokens de sesión dentro del payload protegido;
+8. copiar todos los headers cuando basta una allowlist de metadata no secreta;
+9. usar logs como almacenamiento de evidencia fuente;
+10. usar auditoría como almacenamiento del body completo;
+11. conservar indefinidamente porque no se conoce todavía una política de retención;
+12. inventar un periodo universal de retención;
+13. eliminar evidencia sujeta a preservación o hold vigente;
+14. presentar backup como mecanismo de preservación canónica;
+15. presentar una copia operativa como evidencia inmutable por el solo hecho de existir;
+16. retener respuestas completas de consultas read-only sin finalidad acreditada;
+17. archivar cada respuesta de Resend o Expo Push cuando un receipt mínimo sea suficiente;
+18. crear un archivo espejo de Sentry dentro de VENTO por precaución genérica;
+19. usar `place_id`, push token, UID de impresora, email o número telefónico como prueba de que el payload completo debe retenerse;
+20. inventar payloads para Expo/EAS, Vercel, Google Wallet remoto o sistemas sin binding;
+21. usar payload completo como clave idempotente o mapping canónico;
+22. convertir la preservación de una afirmación externa en autorización del hecho;
+23. definir retry/backoff de `INT-EXT-015`;
+24. definir cuarentena de `INT-EXT-016`;
+25. definir auditoría operativa de `INT-EXT-017`;
+26. modificar código, Supabase, Storage, proveedor, secretos, endpoints o datos durante esta tarea;
+27. cambiar las veintiuna identidades heredadas;
+28. iniciar o desarrollar `INT-EXT-015`.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa por identidad externa obligaciones ya protegidas por el registro vigente: preservar de forma protegida la afirmación y payload de una fuente externa antes del hecho interno cuando corresponda, minimizar contenido, impedir secretos en eventos o evidencia ordinaria, conservar huella/correlación y evitar que auditoría replique payload sensible. Los hallazgos actuales de Wompi y RevenueCat son diferencias de implementación frente a esos controles existentes y no introducen una familia verificable nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 27. Criterios de aceptación
+
+`INT-EXT-014` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución es exactamente `2 + 1 + 5 + 1 + 2 + 1 + 7 + 2 = 21`;
+7. payload original, payload normalizado, hecho interno, auditoría y log permanecen separados;
+8. preservación, retención, backup, archivo operativo y hold permanecen separados;
+9. bytes raw se capturan antes de parsear cuando el mecanismo de autenticidad los requiera;
+10. cada evidencia durable dispone de huella, ambiente, sistema, superficie, versión y correlación;
+11. el payload fuente protegido no contiene secretos de autenticación reutilizables;
+12. una redelivery no sobrescribe evidencia histórica;
+13. mismo ID externo con huella distinta no reescribe el payload anterior;
+14. filas empresariales no conservan por defecto el payload completo cuando una referencia protegida basta;
+15. auditoría ordinaria no copia el payload completo;
+16. logs no se usan como evidence store;
+17. el acceso al hecho empresarial no concede acceso automático a la evidencia fuente;
+18. no se fija un periodo universal de retención;
+19. retención y disposición heredan políticas de gobierno de información;
+20. un hold autorizado bloquea disposición sin modificar la fuente;
+21. Wompi exige evidencia durable separada para el webhook de pago;
+22. la duplicación actual de Wompi entre evento y `raw_response` no se presenta como diseño conforme;
+23. el upsert actual de Wompi no se presenta como evidencia inmutable;
+24. RevenueCat exige raw body cuando el perfil de autenticidad aprobado dependa de él;
+25. RevenueCat no conserva el payload completo simultáneamente en suscripción y auditoría en el contrato objetivo;
+26. Apple PassKit conserva evidencia mínima por recurso sin copiar auth token ni archivar todas las lecturas;
+27. Resend y Expo Push conservan recibos/errores mínimos cuando existan, no respuestas completas por defecto;
+28. Sentry no crea archivo espejo de telemetría en VENTO;
+29. Google Places conserva respuesta normalizada/transitoria y no respuesta completa por defecto;
+30. Zebra conserva referencias y hash del job bajo su contrato propietario sin convertir ZPL en payload externo fuente;
+31. Supabase conserva gobierno por contrato interno;
+32. Expo/EAS y Vercel no reciben payload ficticio;
+33. Google Wallet permanece modelo sin binding remoto;
+34. POS permanece bloqueado hasta `INT-POS-001`;
+35. telefonía/voz permanece bloqueada hasta `TI-INT-003`;
+36. los siete sistemas sin binding no reciben políticas físicas inventadas;
+37. `SHELL-CON-019` conserva la materialización compartida del evento externo recibido;
+38. `INFO-INT-001` conserva la frontera de preservación/archivo externo;
+39. no se modifica código;
+40. no se modifica Supabase;
+41. no se crean buckets, tablas, RPC, Edge Functions ni registros físicos;
+42. no se crean ni modifican requisitos de prueba;
+43. `INT-EXT-015` permanece reservada.
+
+---
+
+#### 28. Resultado de la tarea
+
+`INT-EXT-014` queda **APROBADA** como definición documental completa de conservación controlada del payload original para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- preservación durable de entrada requerida: **2**;
+- preservación mínima por recurso: **1**;
+- superficies donde no se conserva payload completo por minimización: **5**;
+- plataforma gobernada por contrato interno: **1**;
+- configuraciones sin payload acreditado: **2**;
+- modelo sin binding remoto: **1**;
+- identidades sin binding a las que no aplica conservación actual: **7**;
+- identidades bloqueadas sin binding: **2**;
+- periodos numéricos de retención inventados: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+AFIRMACIÓN EXTERNA MATERIAL
++
+CAPTURA FIEL CUANDO CORRESPONDA
++
+HUELLA
++
+CUSTODIA PROTEGIDA
++
+REFERENCIAS DE AUTENTICIDAD / MAPPING / IDEMPOTENCIA
++
+RETENCIÓN GOBERNADA
+=
+EVIDENCIA FUENTE RECONSTRUIBLE
+SIN CONVERTIR EL PAYLOAD EN HECHO EMPRESARIAL
+NI DUPLICARLO EN AUDITORÍA ORDINARIA
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-013 — Definir mapeo de identificadores externos y canónicos`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-014 — Definir conservación controlada del payload original`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker`
+
+
 ### [ ] INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker
 ### [ ] INT-EXT-016 — Definir cuarentena o dead-letter
 ### [ ] INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **740** |
+| Aprobadas | **741** |
 | En propuesta | **0** |
-| No iniciadas | **854** |
+| No iniciadas | **853** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.42% (740/1594)** |
+| Porcentaje de completamiento | **46.49% (741/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-013` — Definir mapeo de identificadores externos y canónicos | ✅ APROBADA |
-| Tarea actual | `INT-EXT-014` — Definir conservación controlada del payload original | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-015` — Definir rate limits, reintentos, backoff y circuit breaker | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-014` — Definir conservación controlada del payload original | ✅ APROBADA |
+| Tarea actual | `INT-EXT-015` — Definir rate limits, reintentos, backoff y circuit breaker | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-016` — Definir cuarentena o dead-letter | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1447,7 +1447,7 @@
 | ✅ APROBADA | `INT-EXT-011` | Definir validación de firma, origen, timestamp y replay | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-012` | Definir idempotencia y deduplicación por sistema externo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-013` | Definir mapeo de identificadores externos y canónicos | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-014` | Definir conservación controlada del payload original | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-014` | Definir conservación controlada del payload original | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-015` | Definir rate limits, reintentos, backoff y circuit breaker | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-016` | Definir cuarentena o dead-letter | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-017` | Definir auditoría, métricas, alertas y conciliación | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
