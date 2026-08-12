@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **730** |
+| Tareas aprobadas | **731** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **864** |
+| Tareas no iniciadas | **863** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.80% (730/1594)** |
+| Porcentaje de completamiento | **45.86% (731/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento** |
-| Tarea actual | **INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo** |
+| Última tarea aprobada | **INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo** |
+| Tarea actual | **INT-EXT-005 — Definir alcance mínimo de cada credencial** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-005 — Definir alcance mínimo de cada credencial** |
+| Siguiente tarea | **INT-EXT-006 — Separar credenciales de desarrollo, staging y producción** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 0 de 69 aprobadas; INT-EXT-004 pendiente** |
+| Progreso del bloque | **BLOQUE X: 0 de 68 aprobadas; INT-EXT-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento |
-| Tarea actual | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-005` — Definir alcance mínimo de cada credencial |
+| Última aprobada | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo |
+| Tarea actual | `INT-EXT-005` — Definir alcance mínimo de cada credencial — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-006` — Separar credenciales de desarrollo, staging y producción |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 69 APROBADAS — ACTUAL INT-EXT-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 68 APROBADAS — ACTUAL INT-EXT-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
-        ↓
-TAREA ACTUAL
 INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-005 — Definir alcance mínimo de cada credencial
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 0 de 69 tareas aprobadas
+BLOQUE X — 0 de 68 tareas aprobadas
 ```

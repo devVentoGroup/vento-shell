@@ -1630,7 +1630,614 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo`
 
 
-### [ ] INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
+### ✅ INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento` — APROBADA
+**Tarea siguiente:** `INT-EXT-005 — Definir alcance mínimo de cada credencial` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del mecanismo de autenticación o verificación técnica aplicable a cada frontera de `EXT-SYS-001` a `EXT-SYS-021`, preservando mecanismos observados, señalando controles parciales y dejando sin selección los bindings no acreditados, sin crear credenciales, secretos, cuentas, scopes, ambientes, almacenamiento, rotación, configuración ni cambios físicos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, configuración productiva o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir, para las veintiuna identidades externas heredadas, el mecanismo técnico mediante el cual una frontera acredita al presentador, verifica autenticidad o demuestra posesión de material criptográfico cuando la evidencia vigente permite hacerlo.
+
+La tarea distingue obligatoriamente:
+
+```text
+MECANISMO DE AUTENTICACIÓN O VERIFICACIÓN
+≠
+CREDENCIAL O MATERIAL CRIPTOGRÁFICO
+≠
+PRINCIPAL TÉCNICO
+≠
+ACTOR HUMANO
+≠
+AUTORIZACIÓN EMPRESARIAL
+≠
+IDENTIFICADOR DE DESTINO
+```
+
+Una API key, token, certificado, firma, DSN o secreto técnicamente válido nunca concede por sí solo una `PermissionKey`, propiedad sobre un dominio VENTO ni autorización para producir un efecto empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado `VENTO-EXTERNAL-AUTHENTICATION-MECHANISM-REGISTER-001` para `EXT-SYS-001` a `EXT-SYS-021`.
+
+Balance de identidades:
+
+| Control                                                                                       |    Resultado |
+| --------------------------------------------------------------------------------------------- | -----------: |
+| Identidades heredadas esperadas                                                               |       **21** |
+| Decisiones documentales materializadas                                                        | **21 de 21** |
+| Identidades faltantes                                                                         |        **0** |
+| Identidades duplicadas                                                                        |        **0** |
+| Identidades con uno o más mecanismos técnicos observados                                      |        **7** |
+| Bindings observados sin autenticación externa de cliente en la llamada o bridge inspeccionado |        **2** |
+| Configuraciones observadas sin mecanismo físico acreditado                                    |        **2** |
+| Modelo de mecanismo documentado sin binding acreditado                                        |        **1** |
+| Identidades sin binding actual y sin mecanismo seleccionable                                  |        **9** |
+| OAuth acreditado en binding actual                                                            |        **0** |
+| HMAC acreditado en binding actual                                                             |        **0** |
+| mTLS acreditado en binding actual                                                             |        **0** |
+| Cambios físicos                                                                               |        **0** |
+
+Reconciliación:
+
+```text
+21 IDENTIDADES
+= 7 CON_MECANISMO_OBSERVADO
++ 2 SIN_AUTENTICACION_EXTERNA_DE_CLIENTE_OBSERVADA
++ 2 CONFIGURACION_SIN_MECANISMO_ACREDITADO
++ 1 MODELO_DOCUMENTADO_SIN_BINDING
++ 9 NO_APLICA_ACTUAL
+```
+
+La clasificación se realiza por identidad y, cuando una plataforma posee varias superficies independientes, por superficie. Una plataforma no se fuerza a un único mecanismo.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea conserva sin alterar:
+
+- `EXT-SYS-001` a `EXT-SYS-021` y su identidad estable;
+- la distribución heredada de evidencia **3 + 6 + 2 + 6 + 4 = 21**;
+- la separación de `IntegrationPrincipal`, actor humano, autoridad empresarial, cuenta externa, endpoint, dispositivo y secreto;
+- la procedencia de credenciales establecida por `INT-EXT-003`;
+- la prohibición de entregar `service_role` a integraciones externas;
+- la prohibición de tratar `service_role` como sesión humana, principal empresarial o autorización funcional;
+- la obligación de conservar referencias de credencial sin exponer valores secretos en metadatos empresariales, respuestas ordinarias o logs;
+- la obligación de autenticar o verificar de forma fail-closed las superficies que lo requieran antes de habilitar acceso privilegiado;
+- la obligación de que un adaptador externo solicite el efecto a la aplicación propietaria y no utilice una credencial externa como escritor transversal.
+
+Esta tarea no redefine alcance de credenciales, ambientes, custodia, rotación, expiración, revocación, contratos de payload, idempotencia ni conciliación.
+
+---
+
+#### 4. Vocabulario de mecanismos
+
+La tarea usa las siguientes clases documentales sin convertirlas en una enumeración cerrada para proveedores futuros:
+
+| Clase                              | Significado documental                                                                       |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| `API_KEY`                          | clave de proyecto, aplicación o proveedor presentada según su contrato                       |
+| `API_KEY_BEARER`                   | API key transportada como Bearer en la solicitud                                             |
+| `BEARER_TOKEN`                     | token opaco o token de sesión presentado como Bearer o esquema equivalente                   |
+| `BEARER_JWT`                       | JWT presentado como token portador y validado por la contraparte                             |
+| `CHECKSUM_SHA256_SHARED_SECRET`    | huella SHA-256 construida con datos del mensaje y un secreto compartido; no se denomina HMAC |
+| `SHARED_SECRET_HEADER`             | secreto compartido presentado en header y comparado por la contraparte                       |
+| `INGESTION_DSN`                    | referencia de ingestión propia de un SDK; no equivale a permiso empresarial                  |
+| `CERTIFICATE_SIGNATURE`            | firma de artefacto con certificado y clave privada; no equivale a mTLS                       |
+| `SERVICE_ACCOUNT_KEY`              | material de cuenta de servicio documentado para autenticación máquina-a-máquina              |
+| `NO_EXTERNAL_CLIENT_AUTH_OBSERVED` | la llamada externa o bridge inspeccionado no presenta credencial de cliente                  |
+| `MECHANISM_NOT_ACCREDITED`         | existe sistema o configuración, pero las fuentes actuales no prueban mecanismo físico        |
+| `NO_APLICA_ACTUAL`                 | no existe binding acreditado sobre el cual seleccionar mecanismo                             |
+
+`OAuth`, `HMAC` y `mTLS` son mecanismos permitidos conceptualmente cuando un contrato concreto los exija, pero no se declaran activos por analogía, marca, costumbre o documentación genérica.
+
+---
+
+#### 5. Principio de selección por evidencia
+
+La selección documental sigue esta precedencia:
+
+```text
+BINDING OBSERVADO
+→ preservar mecanismo realmente consumido
+
+CONFIGURACIÓN OBSERVADA SIN CREDENCIAL
+→ no inferir mecanismo
+
+DOCUMENTACIÓN SIN BINDING
+→ conservar únicamente el modelo explícitamente documentado
+
+PROVEEDOR O BINDING NO ACREDITADO
+→ NO_APLICA_ACTUAL
+```
+
+Reglas:
+
+1. no se declara OAuth porque un proveedor lo soporte en términos generales;
+2. no se declara HMAC cuando el código concatena valores y calcula SHA-256 sin una construcción HMAC;
+3. no se declara mTLS por la mera existencia de un certificado;
+4. un certificado usado para firmar un pase se clasifica como firma de artefacto, no autenticación TLS mutua;
+5. una API key pública continúa siendo API key aunque no deba tratarse como secreto;
+6. un DSN de ingestión continúa siendo una referencia de ingestión aunque sea visible en cliente;
+7. un push token de dispositivo es un identificador de destino mientras no exista evidencia de que autentica al llamador;
+8. `projectId`, URL, `place_id`, UID, correo, número telefónico y tracking no son mecanismos de autenticación;
+9. un secreto compartido solo autentica o verifica la frontera exacta para la cual fue establecido;
+10. la ausencia de credencial externa en una llamada observada no convierte automáticamente la integración completa en anónima.
+
+---
+
+#### 6. Matriz materializada `VENTO-EXTERNAL-AUTHENTICATION-MECHANISM-REGISTER-001`
+
+| ID            | Sistema / plataforma                     | Evidencia heredada                   | Superficie                                                  | Mecanismo definido                                                                                                                                                    | Estado físico                        | Decisión                                                                                                                                                                                                                                                                                                                                         |
+| ------------- | ---------------------------------------- | ------------------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `EXT-SYS-001` | Supabase                                 | `BINDING_TECNICO_OBSERVADO`          | Data API/Auth y operaciones server-side                     | `API_KEY` de proyecto combinada con `BEARER_JWT` cuando existe actor; clave privilegiada de proyecto solo server-side para operaciones administrativas internas       | `OBSERVADO`                          | La clave de proyecto identifica la frontera Supabase; el JWT identifica sesión/usuario cuando aplica. La clave privilegiada no sustituye principal, actor ni autorización empresarial y no se comparte con terceros.                                                                                                                             |
+| `EXT-SYS-002` | Wompi                                    | `BINDING_CONDICIONAL_OBSERVADO`      | checkout saliente y webhook entrante                        | `API_KEY` pública + `CHECKSUM_SHA256_SHARED_SECRET` para integridad de checkout; `CHECKSUM_SHA256_SHARED_SECRET` para evento entrante                                 | `OBSERVADO`                          | El código calcula SHA-256 sobre datos concatenados y secreto. Se prohíbe denominar este mecanismo HMAC mientras la implementación no use una construcción HMAC real.                                                                                                                                                                             |
+| `EXT-SYS-003` | RevenueCat                               | `BINDING_CONDICIONAL_OBSERVADO`      | SDK móvil y webhook                                         | `API_KEY` de SDK por plataforma; `SHARED_SECRET_HEADER` para webhook                                                                                                  | `OBSERVADO`                          | El SDK se configura con API key. El webhook compara directamente el header recibido con el secreto esperado; no existe evidencia de HMAC en el binding observado.                                                                                                                                                                                |
+| `EXT-SYS-004` | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | API de envío de correo                                      | `API_KEY_BEARER`                                                                                                                                                      | `OBSERVADO`                          | VENTO presenta la API key de Resend en `Authorization: Bearer`. La autenticación del actor que solicita la invitación permanece separada de la autenticación VENTO→Resend.                                                                                                                                                                       |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | proyecto y servicio de actualizaciones                      | `MECHANISM_NOT_ACCREDITED`                                                                                                                                            | `PENDIENTE_DE_EVIDENCIA`             | `projectId` y URL de actualización acreditan configuración, no el mecanismo de autenticación utilizado para publicar o administrar actualizaciones. No se inventa token, OAuth ni cuenta técnica.                                                                                                                                                |
+| `EXT-SYS-006` | Expo Push Service                        | `BINDING_TECNICO_OBSERVADO`          | envío HTTP de push                                          | `NO_EXTERNAL_CLIENT_AUTH_OBSERVED`                                                                                                                                    | `OBSERVADO_NO_CREDENCIAL_EXTERNA`    | La llamada inspeccionada envía JSON y tokens de destino sin credencial externa de cliente. El token de dispositivo es destino, no autenticación del llamador. El ingreso al servicio VENTO que origina el envío conserva autenticación interna independiente.                                                                                    |
+| `EXT-SYS-007` | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | SDK de ingestión móvil                                      | `INGESTION_DSN`                                                                                                                                                       | `OBSERVADO`                          | ANIMA inicializa Sentry con DSN. El DSN habilita el canal de ingestión correspondiente, pero no se interpreta como secreto empresarial, actor, principal ni autorización funcional.                                                                                                                                                              |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | vista cartográfica y navegación pública                     | `API_KEY` para Maps; sin autenticación técnica para enlaces públicos de navegación/reseña                                                                             | `OBSERVADO`                          | La API key solo aplica a la superficie cartográfica. URL, coordenadas, `place_id` y enlace de reseña no son credenciales ni mecanismos de autenticación.                                                                                                                                                                                         |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | emisión inicial, firma de `.pkpass`, servicio Wallet y APNs | `BEARER_TOKEN` de sesión para emisión; `CERTIFICATE_SIGNATURE` para `.pkpass`; `BEARER_TOKEN` opaco VENTO por pase para servicio Wallet; `BEARER_JWT` ES256 para APNs | `OBSERVADO_PARCIALMENTE_CONFORME`    | Son cuatro superficies independientes. La firma del pase no es mTLS. APNs usa JWT ES256 firmado con clave P8. El servicio Wallet usa token VENTO por pase; registro, baja y obtención del pase comparan el token, pero la consulta de actualizaciones observada solo exige presencia de token y no acredita comparación contra un pase concreto. |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURACION_OBSERVADA`            | hosting, rewrites y headers                                 | `MECHANISM_NOT_ACCREDITED`                                                                                                                                            | `PENDIENTE_DE_EVIDENCIA`             | La configuración inspeccionada acredita publicación de superficies y headers, no token, OAuth, certificado o cuenta técnica usada para administración/despliegue.                                                                                                                                                                                |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | bridge local de navegador hacia impresora                   | `NO_EXTERNAL_CLIENT_AUTH_OBSERVED`                                                                                                                                    | `OBSERVADO_NO_CREDENCIAL_EXTERNA`    | El código detecta `window.BrowserPrint`, enumera dispositivos y usa UID local. UID, nombre o tipo de impresora no autentican al actor ni constituyen credencial externa.                                                                                                                                                                         |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | cuenta de servicio para Wallet                              | `SERVICE_ACCOUNT_KEY` documentada                                                                                                                                     | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | La guía vigente documenta issuer, class y una cuenta de servicio con material JSON. No existe binding actual acreditado en el repositorio inspeccionado; por tanto no se declara OAuth, JWT runtime ni implementación efectiva.                                                                                                                  |
+| `EXT-SYS-013` | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | proveedor e interfaz no acreditados                         | `NO_APLICA_ACTUAL`                                                                                                                                                    | `BLOQUEADO_POR_EVIDENCIA`            | `INT-POS-001` debe acreditar proveedor, interfaces y límites antes de que pueda seleccionarse mecanismo sin inventarlo.                                                                                                                                                                                                                          |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                   | `NO_APLICA_ACTUAL`                                                                                                                                                    | `NO_APLICA`                          | Nombrar la plataforma no permite elegir API key, OAuth, HMAC, certificado u otro mecanismo. La activación futura deberá acreditar el binding antes de habilitarse.                                                                                                                                                                               |
+| `EXT-SYS-015` | Rappi / marketplace                      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                   | `NO_APLICA_ACTUAL`                                                                                                                                                    | `NO_APLICA`                          | No se presume mecanismo a partir de la plataforma. La activación futura deberá acreditar el binding y su contrato técnico.                                                                                                                                                                                                                       |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | integración no acreditada                                   | `NO_APLICA_ACTUAL`                                                                                                                                                    | `NO_APLICA`                          | No se presume API key, OAuth ni token. La activación futura requiere evidencia de cuenta, binding y mecanismo.                                                                                                                                                                                                                                   |
+| `EXT-SYS-017` | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | canal sin proveedor/API acreditados                         | `NO_APLICA_ACTUAL`                                                                                                                                                    | `NO_APLICA`                          | El nombre del canal no determina proveedor ni mecanismo. La activación futura debe acreditar proveedor, cuenta técnica y binding antes de seleccionar autenticación.                                                                                                                                                                             |
+| `EXT-SYS-018` | Instagram / social                       | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | canal sin API/binding acreditados                           | `NO_APLICA_ACTUAL`                                                                                                                                                    | `NO_APLICA`                          | Un perfil social no determina OAuth, token ni cuenta técnica. No se selecciona mecanismo sin binding.                                                                                                                                                                                                                                            |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `PROVEEDOR_NO_ACREDITADO`            | proveedor e integración no acreditados                      | `NO_APLICA_ACTUAL`                                                                                                                                                    | `BLOQUEADO_POR_EVIDENCIA`            | Dirección, buzón o alias no son mecanismo de autenticación. La selección depende de proveedor y binding acreditados.                                                                                                                                                                                                                             |
+| `EXT-SYS-020` | Telefonía / voz                          | `PROVEEDOR_NO_ACREDITADO`            | operador e integración no acreditados                       | `NO_APLICA_ACTUAL`                                                                                                                                                    | `BLOQUEADO_POR_EVIDENCIA`            | Número, extensión o caller ID no autentican una integración. La selección depende del contrato del proveedor acreditado.                                                                                                                                                                                                                         |
+| `EXT-SYS-021` | Transporte externo                       | `PROVEEDOR_NO_ACREDITADO`            | proveedor, tracking e interfaz no acreditados               | `NO_APLICA_ACTUAL`                                                                                                                                                    | `BLOQUEADO_POR_EVIDENCIA`            | Tracking, número de guía o portal no son credencial. `INT-EXT-004` no inventa un mecanismo antes de existir proveedor y binding acreditados.                                                                                                                                                                                                     |
+
+---
+
+#### 7. Decisiones por familia de mecanismo
+
+##### 7.1. API key
+
+`API_KEY` queda acreditada actualmente en superficies de Supabase, Wompi, RevenueCat, Resend y Google Maps.
+
+Reglas:
+
+- la API key se vincula a la integración exacta y nunca a un permiso empresarial;
+- una API key publicable o destinada a cliente no se reetiqueta como secreto de servidor;
+- una API key privilegiada permanece server-side;
+- la presencia de una API key no habilita escrituras sobre dominios ajenos;
+- los límites de operación concretos pertenecen a la tarea siguiente.
+
+##### 7.2. OAuth
+
+No existe binding actual de las veintiuna identidades cuya evidencia inspeccionada permita afirmar OAuth como mecanismo efectivo.
+
+Por tanto:
+
+```text
+OAUTH_ACTUAL_ACREDITADO = 0
+```
+
+Un binding futuro solo podrá usar OAuth cuando el contrato del proveedor, la cuenta técnica y el flujo autorizado estén acreditados. No se selecciona OAuth por ser una práctica habitual del proveedor.
+
+##### 7.3. HMAC
+
+No existe binding actual cuya implementación inspeccionada utilice una construcción HMAC acreditada.
+
+En particular, Wompi calcula SHA-256 sobre datos concatenados con un secreto compartido. Ese patrón queda clasificado como `CHECKSUM_SHA256_SHARED_SECRET` y no como HMAC.
+
+```text
+HMAC_ACTUAL_ACREDITADO = 0
+```
+
+##### 7.4. Certificado y clave privada
+
+Apple Wallet acredita `CERTIFICATE_SIGNATURE` para firmar el artefacto `.pkpass` mediante certificado de Pass Type, clave privada y cadena WWDR.
+
+La finalidad es autenticidad e integridad del artefacto firmado. No se declara TLS mutua.
+
+```text
+MTLS_ACTUAL_ACREDITADO = 0
+```
+
+##### 7.5. JWT firmado
+
+APNs acredita un `BEARER_JWT` creado con:
+
+```text
+alg = ES256
+kid = identificador de clave
+iss = team identifier
+iat = instante de emisión
+firma = clave P8
+```
+
+El JWT autentica la llamada a APNs dentro de esa superficie. No sustituye el principal técnico VENTO ni autoriza el efecto empresarial que originó la notificación.
+
+##### 7.6. Token opaco emitido por VENTO
+
+El servicio Wallet de PASS acredita un token aleatorio por pase generado por VENTO.
+
+Contrato objetivo:
+
+```text
+PASE EXACTO
++
+TOKEN OPACO DEL PASE
++
+SERVICIO WALLET
+→ AUTENTICACIÓN TÉCNICA DE ESA RELACIÓN
+```
+
+El token puede presentarse mediante el esquema `ApplePass` o el esquema de portador admitido por el servicio, pero debe validarse contra el pase o registro exacto alcanzado antes de entregar información o modificar registros.
+
+La implementación observada no demuestra esa comparación en la consulta de actualizaciones por dispositivo; por ello esa superficie permanece `PENDIENTE_DE_EVIDENCIA` para conformidad física completa.
+
+##### 7.7. Secreto compartido
+
+Los secretos compartidos observados se limitan a la frontera exacta que los consume.
+
+Se distinguen:
+
+- secreto usado como componente de checksum;
+- secreto presentado directamente en un header;
+- secreto interno VENTO usado para invocaciones entre servicios internos.
+
+No se fusionan estas formas bajo una sola etiqueta y no se asume que un secreto compartido sea HMAC.
+
+---
+
+#### 8. Autenticación de entrada y de salida
+
+Toda integración material deberá distinguir dirección:
+
+```text
+VENTO → PROVEEDOR
+```
+
+requiere autenticar a VENTO cuando el proveedor lo exija.
+
+```text
+PROVEEDOR / CLIENTE TÉCNICO → VENTO
+```
+
+requiere verificar origen o posesión de credencial cuando el contrato lo exija.
+
+Una plataforma puede utilizar mecanismos distintos en cada dirección.
+
+Ejemplos ya observados:
+
+- Wompi: checkout saliente y webhook entrante usan superficies distintas aunque compartan familia de secreto;
+- RevenueCat: API key de SDK y secreto de webhook son mecanismos independientes;
+- Apple: emisión, firma, servicio Wallet y APNs son superficies independientes;
+- Supabase: sesión de usuario y acceso privilegiado server-side no son intercambiables.
+
+---
+
+#### 9. Autenticación y autorización permanecen separadas
+
+Secuencia obligatoria para un efecto protegido:
+
+```text
+SOLICITUD / EVENTO
+→ mecanismo técnico válido
+→ principal técnico identificable
+→ contrato vigente
+→ aplicación propietaria
+→ autorización empresarial independiente
+→ validación de recurso y estado
+→ efecto o rechazo
+→ auditoría
+```
+
+Reglas:
+
+1. autenticación exitosa no implica `ALLOW` empresarial;
+2. un webhook auténtico puede contener un evento inválido, duplicado, fuera de contrato o no aplicable;
+3. una API key válida no habilita un RPC ajeno;
+4. un JWT válido no concede propiedad de datos;
+5. un certificado válido no convierte un artefacto en hecho empresarial;
+6. un token de servicio válido no sustituye al actor humano cuando el contrato exige actor;
+7. una respuesta técnica del proveedor no cierra conciliación ni resultado empresarial.
+
+---
+
+#### 10. Regla fail-closed
+
+Cuando una superficie exija autenticación o verificación:
+
+- ausencia de credencial requerida bloquea la operación;
+- credencial inválida bloquea la operación;
+- firma o checksum inválidos bloquean antes del uso privilegiado posterior;
+- mecanismo desconocido no recibe fallback permisivo;
+- una referencia de credencial sin material disponible no se interpreta como autenticada;
+- indisponibilidad de la verificación no se convierte en autenticación exitosa;
+- el error no habilita `service_role` hacia el solicitante;
+- el proveedor no recibe una credencial interna VENTO para compensar una integración mal configurada.
+
+La tarea no define todavía política de reintento, expiración ni rotación.
+
+---
+
+#### 11. Materiales que no deben confundirse con mecanismo
+
+No constituyen por sí solos autenticación:
+
+- `PermissionKey`;
+- `IntegrationPrincipal`;
+- `external_system_id`;
+- `external_instance_id`;
+- URL o endpoint;
+- `projectId`;
+- `place_id`;
+- coordenadas;
+- UID o nombre de impresora;
+- push token usado como destino;
+- número telefónico;
+- alias o dirección de correo;
+- tracking o número de guía;
+- identificador de evento o transacción;
+- `provider_account_ref`;
+- nombre del proveedor;
+- una firma ya calculada sin la regla que permite verificarla.
+
+---
+
+#### 12. Estado especial de Apple Wallet
+
+`EXT-SYS-009` requiere preservar cuatro planos:
+
+| Plano                                 | Mecanismo                                               | Evidencia documental                           |
+| ------------------------------------- | ------------------------------------------------------- | ---------------------------------------------- |
+| Solicitud inicial de pase por usuario | `BEARER_TOKEN` de sesión Supabase                       | observado                                      |
+| Autenticidad del `.pkpass`            | `CERTIFICATE_SIGNATURE` con certificado y clave privada | observado                                      |
+| Servicio web del pase                 | token opaco VENTO por pase                              | observado con control parcial en una operación |
+| Push APNs                             | `BEARER_JWT` ES256 firmado con clave P8                 | observado                                      |
+
+El fallback actual que permite recibir el token de sesión inicial por parámetro de consulta se registra como comportamiento observado y no amplía el mecanismo aprobado: el contrato objetivo exige un canal de autorización que no convierta el token en identificador de navegación, logging o referencia compartible.
+
+La consulta de actualizaciones por dispositivo deberá demostrar validación del token contra el conjunto de pases autorizado; comprobar únicamente que el header contiene algún token no satisface el contrato objetivo.
+
+---
+
+#### 13. Estado especial de Google Wallet
+
+`EXT-SYS-012` conserva únicamente el mecanismo documentado:
+
+```text
+CUENTA DE SERVICIO
++
+MATERIAL JSON DE LA CUENTA
++
+ISSUER / CLASS
+```
+
+La guía no acredita un binding runtime vigente en el estado inspeccionado. Por tanto:
+
+- no se declara implementación;
+- no se declara OAuth activo;
+- no se declara JWT runtime activo;
+- no se declara cuenta de servicio existente o vigente más allá del modelo documental;
+- no se reutiliza el material Apple;
+- la futura evidencia física deberá demostrar la cuenta, binding y mecanismo efectivo antes de cambiar el estado.
+
+---
+
+#### 14. Bindings sin autenticación externa observada
+
+`EXT-SYS-006` y `EXT-SYS-011` no reciben un mecanismo ficticio.
+
+Para Expo Push:
+
+- la llamada externa inspeccionada no presenta credencial de cliente;
+- los tokens de push son destinos;
+- la función VENTO que origina el envío puede exigir autenticación propia en su frontera interna;
+- esa autenticación interna no se reetiqueta como credencial de Expo.
+
+Para Zebra BrowserPrint:
+
+- el bridge local y el UID permiten descubrir/seleccionar dispositivo;
+- no se observó handshake de credencial externa;
+- identidad del dispositivo y autorización del actor permanecen problemas separados.
+
+---
+
+#### 15. Identidades sin binding acreditado
+
+Para `EXT-SYS-013` a `EXT-SYS-021`, excepto los modelos documentales ya diferenciados, la decisión es deliberadamente no elegir un mecanismo.
+
+Regla de activación futura:
+
+```text
+PROVEEDOR ACREDITADO
++
+INSTANCIA ACREDITADA
++
+BINDING ACREDITADO
++
+DIRECCIÓN DE INTERCAMBIO
+→ SELECCIÓN DEL MECANISMO REAL
+→ REFERENCIA DE CREDENCIAL
+→ PRUEBA FAIL-CLOSED
+→ ACTIVACIÓN
+```
+
+No se habilitará una integración porque el proveedor soporte una lista conocida de mecanismos. El mecanismo debe corresponder al binding que VENTO realmente contrate y materialice.
+
+---
+
+#### 16. Handoffs y condiciones de salida
+
+| Pendiente                                                                                        | Estado                    | Propietario / tarea responsable                                                                                        | Condición de salida                                                                                                       |
+| ------------------------------------------------------------------------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Referencia física de credencial asociada al mecanismo                                            | `FUERA_DE_ALCANCE`        | `SHELL-CON-018`                                                                                                        | contrato consumible enlaza principal, sistema, credencial y mecanismo sin exponer secreto                                 |
+| Alcance técnico mínimo por credencial                                                            | `FUERA_DE_ALCANCE`        | `INT-EXT-005`                                                                                                          | cada credencial queda limitada a capacidades técnicas mínimas documentadas                                                |
+| Separación por ambiente                                                                          | `FUERA_DE_ALCANCE`        | `INT-EXT-006`                                                                                                          | material y referencias independientes por ambiente según contrato aprobado                                                |
+| Custodia de secretos                                                                             | `FUERA_DE_ALCANCE`        | `INT-EXT-007`                                                                                                          | mecanismo de almacenamiento y acceso aprobado sin exposición en cliente o metadata empresarial                            |
+| Rotación, expiración y revocación                                                                | `FUERA_DE_ALCANCE`        | `INT-EXT-008`                                                                                                          | lifecycle completo definido por familia de credencial                                                                     |
+| Proveedor y binding exactos del POS                                                              | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                                                                                                          | proveedor, interfaces, credenciales y límites auditados con evidencia                                                     |
+| Verificación completa del token del servicio Wallet en consulta de actualizaciones               | `PENDIENTE_DE_EVIDENCIA`  | `INT-EXT-004` como contrato de autenticación hasta que una fase de implementación autorizada materialice `EXT-SYS-009` | la consulta rechaza tokens ausentes o no vinculados al conjunto de pases solicitado y existe prueba negativa reproducible |
+| Binding físico de Google Wallet                                                                  | `PENDIENTE_DE_EVIDENCIA`  | `INT-EXT-004` como contrato de autenticación hasta que una fase de implementación autorizada materialice `EXT-SYS-012` | cuenta de servicio, issuer, class y autenticación runtime acreditados sin exponer la clave                                |
+| Mecanismos de Expo/EAS y Vercel administrativos                                                  | `PENDIENTE_DE_EVIDENCIA`  | `INT-EXT-004` para la decisión de mecanismo; BLOQUE Z conserva gobierno tecnológico de la plataforma                   | la automatización o cuenta técnica efectiva queda inventariada con principal, mecanismo y referencia de credencial        |
+| Bindings futuros de Shopify, Rappi, ManyChat, WhatsApp, Instagram y demás canales no acreditados | `NO_APLICA` actualmente   | `INT-EXT-004` conserva la puerta de mecanismo hasta que exista una tarea canónica concreta que autorice el binding     | antes de activar, el binding vuelve con evidencia suficiente para materializar mecanismo y referencia de credencial       |
+
+Los pendientes sin paquete ejecutable específico permanecen vinculados a `INT-EXT-004` como contrato de autenticación y no generan identificadores ficticios. Cuando la secuencia canónica cree o active una tarea de implementación aplicable, el handoff podrá trasladarse explícitamente sin perder la condición de salida.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: la tarea selecciona o clasifica documentalmente mecanismos sobre fronteras ya inventariadas y no incorpora una nueva capacidad ejecutable, una nueva credencial, un nuevo endpoint, una nueva autoridad, un nuevo transporte ni una nueva operación empresarial. El registro vigente ya protege autenticación mínima de integraciones, verificación de origen, separación entre principal técnico y actor, tratamiento fail-closed de servicios privilegiados, prohibición de exposición de secretos y prohibición de convertir credenciales técnicas en autoridad empresarial.
+
+La brecha física observada en una operación del servicio Wallet es una falta de conformidad de implementación frente a controles ya existentes; no crea una regla protegida nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 18. Prohibiciones
+
+Queda prohibido:
+
+1. declarar OAuth sin evidencia del flujo efectivo;
+2. declarar HMAC cuando solo existe SHA-256 con secreto concatenado;
+3. declarar mTLS por observar un certificado de firma;
+4. convertir un push token en credencial de la integración;
+5. convertir `projectId`, URL, UID, `place_id`, correo, teléfono o tracking en autenticación;
+6. entregar `service_role` a un proveedor externo;
+7. tratar `service_role` como actor, principal empresarial o permiso;
+8. reutilizar una credencial técnica como `PermissionKey`;
+9. inferir autenticación desde el nombre de una variable;
+10. inferir autenticación desde una cuenta documentada que no tiene binding acreditado;
+11. compartir un mecanismo o credencial entre integraciones únicamente por pertenecer al mismo proveedor;
+12. asumir que autenticidad de mensaje equivale a autorización del efecto;
+13. omitir validación del vínculo entre token y recurso cuando el mecanismo sea por recurso;
+14. aceptar fallback permisivo cuando falta material requerido;
+15. crear credenciales, secretos o cuentas dentro de esta tarea;
+16. cambiar scopes dentro de esta tarea;
+17. cambiar credenciales por ambiente dentro de esta tarea;
+18. definir almacenamiento físico de secretos dentro de esta tarea;
+19. rotar, revocar o expirar credenciales dentro de esta tarea;
+20. modificar Supabase;
+21. modificar código;
+22. desplegar servicios;
+23. cambiar las veintiuna identidades heredadas;
+24. iniciar o desarrollar `INT-EXT-005`.
+
+---
+
+#### 19. Criterios de aceptación
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones materializadas;
+3. faltantes = 0;
+4. duplicados = 0;
+5. se conserva la distribución heredada 3 + 6 + 2 + 6 + 4;
+6. siete identidades conservan uno o más mecanismos observados;
+7. dos bindings observados conservan ausencia de autenticación externa de cliente sin inventar credencial;
+8. dos configuraciones observadas permanecen sin mecanismo acreditado;
+9. un modelo de cuenta de servicio permanece documentado sin binding acreditado;
+10. nueve identidades sin binding permanecen sin mecanismo seleccionado;
+11. OAuth activo acreditado = 0;
+12. HMAC activo acreditado = 0;
+13. mTLS activo acreditado = 0;
+14. Wompi se clasifica como API key y checksum SHA-256 con secreto, no HMAC;
+15. RevenueCat separa API key de SDK y secreto compartido de webhook;
+16. Resend conserva API key transportada como Bearer;
+17. Sentry conserva DSN de ingestión;
+18. Google Maps conserva API key y sus enlaces públicos no se convierten en credenciales;
+19. Apple conserva emisión, firma, servicio Wallet y APNs como superficies distintas;
+20. la firma `.pkpass` con certificado no se declara mTLS;
+21. APNs conserva JWT ES256 firmado con clave P8;
+22. el token Wallet permanece por pase y debe validarse contra el recurso alcanzado;
+23. Expo Push no convierte push token en autenticación del llamador;
+24. Zebra no convierte UID del dispositivo en credencial;
+25. Google Wallet conserva solo el modelo de cuenta de servicio documentado;
+26. no se crean credenciales;
+27. no se crean secretos;
+28. no se crean cuentas;
+29. no se definen scopes;
+30. no se definen ambientes;
+31. no se define almacenamiento físico de secretos;
+32. no se define rotación;
+33. no se modifica Supabase;
+34. no se modifica código;
+35. no se ejecuta despliegue;
+36. se crean cero requisitos de prueba;
+37. se modifican cero requisitos de prueba;
+38. `INT-EXT-005` permanece reservada.
+
+---
+
+#### 20. Resultado de la tarea
+
+`INT-EXT-004` deja materializada la selección documental de mecanismos para las veintiuna identidades externas sin convertir soporte teórico del proveedor en implementación VENTO.
+
+El modelo resultante exige conservar:
+
+```text
+SISTEMA / INSTANCIA
++
+DIRECCIÓN DEL BINDING
++
+PRINCIPAL TÉCNICO
++
+REFERENCIA DE CREDENCIAL
++
+PROCEDENCIA DE CREDENCIAL
++
+MECANISMO REAL
++
+RECURSO O MENSAJE ALCANZADO
++
+AUTORIZACIÓN EMPRESARIAL INDEPENDIENTE
++
+AUDITORÍA
+```
+
+sin transformar API key, token, firma, certificado, DSN, cuenta de servicio o secreto en autoridad empresarial.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-005 — Definir alcance mínimo de cada credencial`
+
+
 ### [ ] INT-EXT-005 — Definir alcance mínimo de cada credencial
 ### [ ] INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
 ### [ ] INT-EXT-007 — Definir almacenamiento seguro de secretos

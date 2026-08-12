@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **730** |
+| Aprobadas | **731** |
 | En propuesta | **0** |
-| No iniciadas | **864** |
+| No iniciadas | **863** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.80% (730/1594)** |
+| Porcentaje de completamiento | **45.86% (731/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-003` — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | ✅ APROBADA |
-| Tarea actual | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-005` — Definir alcance mínimo de cada credencial | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-004` — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | ✅ APROBADA |
+| Tarea actual | `INT-EXT-005` — Definir alcance mínimo de cada credencial | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-006` — Separar credenciales de desarrollo, staging y producción | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1437,7 +1437,7 @@
 | ✅ APROBADA | `INT-EXT-001` | Inventariar sistemas externos, proveedores, propietarios y finalidad | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-002` | Definir principal técnico independiente por integración | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-003` | Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-004` | Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-004` | Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-005` | Definir alcance mínimo de cada credencial | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-006` | Separar credenciales de desarrollo, staging y producción | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-007` | Definir almacenamiento seguro de secretos | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
