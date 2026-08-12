@@ -1431,7 +1431,1469 @@ INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
 ```
 
 
-### [ ] INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+### ✅ INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra` — APROBADA  
+**Tarea siguiente:** `INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario` — RESERVADA  
+**Tipo de tarea:** documental; definición del contrato empresarial de recepción en ORIGO para `VPROC-0022`, incluyendo apertura, captura, verificación física y documental, tratamiento de diferencias, aceptación total, parcial o condicional, rechazo y cuarentena, handoffs posteriores hacia NEXO y NUMERA, idempotencia, concurrencia, reconciliación y relación con la implementación observada, sin modificar código, tablas, RLS, RPC, funciones, migraciones, datos, Supabase ni configuración  
+**Bloque:** X — Integraciones  
+**Mini-bloque:** Compras, recepción e inventario  
+**Fase:** exclusivamente documental  
+**Aplicación propietaria:** ORIGO  
+**Proceso propietario:** `VPROC-0022 — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica`  
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca el contrato mediante el cual ORIGO abre y registra una recepción asociada con un compromiso de compra válido, conserva lo efectivamente observado y documentado, resuelve diferencias y produce una decisión comercial de aceptación o rechazo antes de habilitar los efectos posteriores de inventario y conciliación económica.
+
+La regla cardinal queda:
+
+```text
+COMPROMISO DE COMPRA IDENTIFICABLE
+→ RECEPCIÓN ESPERADA
+→ LLEGADA REGISTRADA
+→ VERIFICACIÓN FÍSICA
+→ VERIFICACIÓN DOCUMENTAL
+→ DIFERENCIAS, SI EXISTEN
+→ DECISIÓN DE ACEPTACIÓN
+→ HANDOFF DE BIENES ACEPTADOS HACIA NEXO
+→ HANDOFF ECONÓMICO HACIA NUMERA
+→ RECONCILIACIÓN DE LA RECEPCIÓN
+```
+
+No:
+
+```text
+ENTREGA LLEGÓ
+→ STOCK DISPONIBLE
+```
+
+No:
+
+```text
+FACTURA EXISTE
+→ OBLIGACIÓN ECONÓMICA DEFINITIVA
+```
+
+No:
+
+```text
+FORMULARIO GUARDADO
+→ RECEPCIÓN ACEPTADA
+```
+
+No:
+
+```text
+ORIGO REGISTRA RECEPCIÓN
+→ ESCRIBE DIRECTAMENTE LA VERDAD PROPIETARIA DE NEXO O NUMERA
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-PROC-002` deja definido un único contrato documental de recepción de compra con los siguientes resultados materiales:
+
+1. ORIGO queda confirmada como propietaria de `VPROC-0022` y de la aceptación comercial y documental de la recepción.
+2. La recepción conserva separadas llegada, observación física, verificación documental, diferencias, decisión de aceptación, ingreso físico posterior y conciliación económica.
+3. La aceptación se identifica exactamente con la transición `VPROC-0022.TR-007`, desde `VPROC-0022.ACCEPTANCE_PENDING` hacia `VPROC-0022.PUTAWAY_PENDING`.
+4. La recepción puede decidirse total, parcial o condicionalmente según la evidencia y el alcance efectivamente verificados, sin inventar tolerancias en esta tarea.
+5. Cuando no existen diferencias, se preserva el bypass canónico `VPROC-0022.TR-005`; cuando existen, se conserva el tratamiento `DOCUMENT_CHECK_IN_PROGRESS → DIFFERENCE_UNDER_REVIEW → ACCEPTANCE_PENDING`.
+6. Los bienes aceptados quedan habilitados para un handoff hacia NEXO; ORIGO no materializa por contrato la entrada, ubicación ni custodia propietaria de NEXO.
+7. La información económica queda habilitada para un handoff posterior hacia NUMERA; ORIGO no reconoce por sí sola una obligación definitiva ni ejecuta pago.
+8. Se preserva una identidad estable de la operación de recepción, su huella lógica, versión, correlación y resultado recuperable para reintentos y concurrencia.
+9. Una recepción se trata como una sola operación empresarial correlacionada aunque sus efectos pertenezcan a aplicaciones distintas; ningún participante puede reclamar propiedad sobre la verdad de otro dominio.
+10. Se preserva de forma explícita la modalidad de recepción que determina si existe efecto de inventario o si la recepción es solo registral, sin inventar movimientos cuando ese efecto no corresponde.
+11. Se preservan parcialidad, cantidades, unidades, presentaciones, lotes, vencimientos, condición y evidencia sin convertir una recepción parcial en cierre total de la orden.
+12. Se conservan exactamente nueve transiciones normales, cuatro acciones excepcionales, cuatro acciones CCR y seis definiciones normales de evento de `VPROC-0022`.
+13. No se crea un evento normal adicional para la mera decisión de aceptación.
+14. Se reconcilia la implementación física actual de ORIGO y se mantiene su brecha bajo requisitos y tareas ya existentes, sin duplicar backlog.
+15. No se crean ni modifican requisitos `TREQ-*` porque los comportamientos quedan protegidos por requisitos canónicos vigentes.
+
+Balance documental:
+
+| Control                                     |             Resultado |
+| ------------------------------------------- | --------------------: |
+| Proceso propietario                         |  **1 — `VPROC-0022`** |
+| Aplicación propietaria                      |         **1 — ORIGO** |
+| Consumidoras directas                       | **2 — NEXO y NUMERA** |
+| Consumidoras condicionales                  |  **2 — FOGO y PULSO** |
+| Estado inicial preservado                   |                 **1** |
+| Estados intermedios preservados             |                 **7** |
+| Estado final normal preservado              |                 **1** |
+| Transiciones normales preservadas           |                 **9** |
+| Bypass normal preservado                    |                 **1** |
+| Acciones excepcionales preservadas          |                 **4** |
+| Acciones CCR preservadas                    |                 **4** |
+| Definiciones normales de evento preservadas |                 **6** |
+| Nuevas definiciones normales de evento      |                 **0** |
+| Cambios físicos                             |                 **0** |
+| Requisitos de prueba creados o modificados  |                 **0** |
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume y conserva sin redefinir las decisiones aprobadas en:
+
+- `VPROC-0021`, para el compromiso de compra formalizado que antecede a la recepción;
+- `VPROC-0022`, para recepción, conformidad, diferencias, aceptación y reconciliación;
+- `VPROC-0024`, para la entrada, ubicación y custodia física posterior en NEXO;
+- `PROC-CAT-004` a `PROC-CAT-008`, para propósito, propiedad, consumidoras y actores;
+- `PROC-CAT-009` a `PROC-CAT-014`, para estado inicial, estados intermedios, estado final, transiciones, excepciones y acciones de cancelación, anulación, reversión y corrección;
+- `PROC-CAT-015` y `PROC-CAT-016`, para entradas y salidas;
+- `PROC-CAT-017`, para las definiciones normales de evento;
+- `PROC-CAT-018`, para auditoría;
+- `PROC-CAT-019`, para métricas;
+- `INT-APP-001` a `INT-APP-010`, para eventos, consumidoras, idempotencia, reintentos, compensación, auditoría, sincronización, errores parciales y prohibición de escrituras cruzadas sin contrato;
+- `INT-PROC-001`, para la frontera previa de aprobación y formalización de la compra;
+- los requisitos vigentes que ya protegen modalidad, atomicidad, idempotencia, segregación, handoff, auditoría y unicidad de fuente.
+
+Nada de esta tarea convierte una definición documental en implementación física ni altera responsabilidades aprobadas de ORIGO, NEXO o NUMERA.
+
+---
+
+#### 4. Propósito empresarial de `VPROC-0022`
+
+Se preserva literalmente el propósito aprobado:
+
+> Confirmar que lo recibido física, documental y económicamente corresponde con lo solicitado y resolver diferencias antes de aceptar la obligación.
+
+Por tanto, `VPROC-0022` no es un simple formulario de entrada ni una actualización del estado de la orden.
+
+La recepción debe preservar la relación entre:
+
+```text
+LO SOLICITADO / COMPROMETIDO
++
+LO ENTREGADO FÍSICAMENTE
++
+LO DOCUMENTADO POR EL PROVEEDOR
++
+LO ACEPTADO COMERCIALMENTE
++
+LO INGRESADO Y UBICADO POR NEXO
++
+LO CONCILIADO ECONÓMICAMENTE
+```
+
+sin colapsar esas verdades en una sola bandera genérica de recibido.
+
+---
+
+#### 5. Frontera propietaria
+
+La propiedad queda:
+
+```text
+VPROC-0021 — COMPROMISO DE COMPRA
+ORIGO
+        ↓
+VPROC-0022 — RECEPCIÓN, CONFORMIDAD Y ACEPTACIÓN COMERCIAL
+ORIGO
+        ↓
+VPROC-0024 — ENTRADA, UBICACIÓN Y CUSTODIA FÍSICA
+NEXO
+        ↓
+EFECTO ECONÓMICO AUTORIZADO
+NUMERA
+```
+
+Reglas:
+
+1. ORIGO abre, verifica, acepta, rechaza y reconcilia la recepción empresarial.
+2. NEXO no decide la aceptación comercial de la compra.
+3. ORIGO no se convierte en propietaria del ledger físico de NEXO por capturar una recepción.
+4. NUMERA no decide si la mercancía fue físicamente conforme.
+5. ORIGO no se convierte en propietaria de la obligación o pago por capturar documentos económicos.
+6. El proveedor aporta entrega, documentos y afirmaciones externas; no se autoacepta una recepción.
+7. Una integración o adaptador puede transportar información, pero no adquiere propiedad empresarial.
+8. Cada aplicación receptora revalida contrato, autoridad, recurso, alcance y versión antes de producir su propio efecto.
+
+---
+
+#### 6. Condición canónica de inicio
+
+El estado inicial continúa siendo:
+
+```text
+VPROC-0022.RECEIPT_EXPECTED
+```
+
+Patrón:
+
+```text
+TRABAJO_PENDIENTE
+```
+
+La condición mínima preservada es que exista una entrega física anunciada o un documento de compra, devolución o traslado que justifique recibir.
+
+Además, el inicio funcional aprobado conserva:
+
+- una entrega física o documental asociable a una compra;
+- un punto autorizado de recepción;
+- una orden, compromiso o excepción válida que justifique la recepción;
+- un receptor identificable.
+
+Al nacer continúa siendo verdadero:
+
+```text
+MERCANCÍA NO ACEPTADA
+NO UBICADA
+NO CONTABILIZADA
+NO CONCILIADA
+```
+
+---
+
+#### 7. Iniciadores y participantes
+
+Se preserva la asignación funcional aprobada:
+
+| Función                   | Actor o clase aprobada                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| iniciador primario        | `RECEPCION_EN_SEDE`                                                                                          |
+| iniciadores alternos      | `PROVEEDOR`; `EVENTO_EXTERNO_DE_ENTREGA`                                                                     |
+| continuadores principales | `RECEPCION_EN_SEDE`; `BODEGA_Y_ABASTECIMIENTO`                                                               |
+| apoyos                    | `RESPONSABLE_DE_COMPRAS`; `RESPONSABLE_DE_CALIDAD_E_INOCUIDAD`; `AREA_SOLICITANTE`; `RESPONSABLE_FINANCIERO` |
+| control o aceptación      | `GERENCIA_O_SUPERVISION_DE_SEDE`                                                                             |
+| externos o técnicos       | `PROVEEDOR`; `ADAPTADOR_DE_INTEGRACION`                                                                      |
+
+Estas clases describen participación funcional. La autorización efectiva continúa dependiendo de permisos, contexto, territorio, recurso, estado y demás reglas canónicas aplicables.
+
+---
+
+#### 8. Información obligatoria de entrada
+
+Se preservan exactamente como grupos obligatorios de `VPROC-0022`:
+
+```text
+purchase_commitment_ref
+supplier_document_refs
+received_lines
+received_at
+receiving_site_ref
+receiver_actor_ref
+physical_condition
+```
+
+Interpretación:
+
+- `purchase_commitment_ref` vincula la recepción con la compra o compromiso que la justifica;
+- `supplier_document_refs` conserva los documentos externos recibidos sin tratarlos automáticamente como verdad interna;
+- `received_lines` representa lo observado o declarado para recepción, no una copia editable de la orden;
+- `received_at` identifica el momento del hecho de recepción y no debe confundirse con la hora de registro técnico;
+- `receiving_site_ref` fija el territorio empresarial aplicable;
+- `receiver_actor_ref` identifica al humano responsable de la recepción cuando corresponda;
+- `physical_condition` conserva la condición observada de los bienes recibidos.
+
+---
+
+#### 9. Información condicional
+
+Se preservan exactamente como grupos condicionales:
+
+```text
+lot_expiry_serials
+temperature_readings
+differences
+rejection_reason
+tax_document_data
+return_instructions
+```
+
+Su obligatoriedad depende del producto, presentación, lote, condición, regulación, diferencia, rechazo o efecto económico aplicables.
+
+La ausencia de un dato condicional requerido no podrá resolverse suponiendo conformidad.
+
+---
+
+#### 10. Sobre transversal obligatorio
+
+Toda solicitud o transición de recepción deberá conservar, cuando aplique:
+
+- identidad idempotente estable de la operación;
+- correlación con compra, documentos y efectos derivados;
+- `process_id` e instancia de proceso;
+- transición o acción solicitada;
+- principal y actor efectivo;
+- aplicación fuente;
+- momento del hecho y momento de recepción técnica;
+- zona horaria;
+- sede y área cuando correspondan;
+- versión del recurso;
+- versión contractual;
+- razón estructurada cuando no sea un avance ordinario;
+- referencias de evidencia.
+
+La interfaz no podrá aportar como autoridad final permiso, rol, estado objetivo, saldo, total, disponibilidad, impuesto o timestamps de auditoría protegidos.
+
+---
+
+#### 11. Identidad de la operación de recepción
+
+Una recepción deberá tener identidad empresarial estable y correlacionable antes de producir efectos repetibles o distribuidos.
+
+La identidad debe permitir distinguir como mínimo:
+
+- una nueva entrega;
+- un replay de la misma entrega;
+- una recepción parcial posterior legítima;
+- una corrección vinculada;
+- una operación con contenido materialmente diferente;
+- una devolución o tratamiento excepcional relacionado.
+
+No se deduplica únicamente por:
+
+- número de factura aislado;
+- proveedor aislado;
+- fecha aislada;
+- compra aislada;
+- producto aislado;
+- click o request HTTP aislado.
+
+La clave estable y su huella lógica se rigen por el contrato transversal de idempotencia ya aprobado.
+
+---
+
+#### 12. Modalidad de recepción
+
+Se preserva la regla vigente de que toda recepción debe declarar si genera un efecto de inventario o si es exclusivamente registral.
+
+La modalidad:
+
+- debe quedar visible y auditable;
+- forma parte del contenido lógico relevante de la operación;
+- no podrá cambiarse silenciosamente después de confirmar efectos;
+- no autoriza a ORIGO a escribir directamente la verdad propietaria de NEXO;
+- no permite fabricar un movimiento de inventario cuando el efecto físico no corresponde;
+- no permite usar una recepción solo registral para declarar stock disponible.
+
+Los nombres físicos actualmente usados por una implementación no se convierten por esta tarea en vocabulario canónico adicional.
+
+Cuando la modalidad no requiera efecto de inventario, `INT-PROC-003` deberá preservar esa decisión y no crear una entrada física ficticia. Cuando sí lo requiera, `INT-PROC-003` deberá materializar el contrato de NEXO sin interpretar el registro ORIGO como stock ya aplicado.
+
+---
+
+#### 13. Correspondencia orden–entrega
+
+Antes de avanzar la recepción deberán validarse, cuando correspondan:
+
+1. existencia y vigencia del compromiso o excepción que justifica recibir;
+2. proveedor esperado frente al proveedor de la entrega;
+3. sede receptora frente al alcance de la compra;
+4. líneas recibidas frente a líneas comprometidas;
+5. cantidades y unidades;
+6. presentación y conversión aplicable;
+7. precio o referencia económica cuando deba verificarse documentalmente;
+8. documentos del proveedor;
+9. condición física;
+10. lote, serial, vencimiento o temperatura cuando aplique;
+11. estado actual del recurso;
+12. identidad del receptor;
+13. evidencia mínima requerida;
+14. ausencia de una operación duplicada de la misma intención.
+
+Una diferencia no se corrige modificando silenciosamente la orden o la observación de recepción.
+
+---
+
+#### 14. Cantidades, unidades y presentaciones
+
+Las cantidades observadas deben conservar simultáneamente:
+
+- cantidad recibida en la unidad observada;
+- unidad o presentación identificable;
+- factor de conversión aplicable cuando exista;
+- unidad de stock de referencia cuando corresponda;
+- relación con la línea de orden cuando exista;
+- cantidad previamente recibida de esa línea cuando sea necesaria para evaluar parcialidad;
+- cantidad pendiente resultante como dato derivado, no enviado por el cliente como autoridad.
+
+Una conversión no podrá alterar retroactivamente el significado de una recepción ya confirmada.
+
+---
+
+#### 15. Recepciones parciales
+
+La recepción podrá cubrir solo una parte del compromiso cuando el negocio y la evidencia lo permitan.
+
+Reglas:
+
+1. una recepción parcial conserva su propia identidad y alcance;
+2. la cantidad aceptada de una línea no transforma automáticamente el resto pendiente en recibido;
+3. una nueva entrega posterior es una nueva operación correlacionada, no un replay de la anterior;
+4. la suma acumulada debe poder reconciliarse contra lo comprometido sin doble contabilización;
+5. líneas rechazadas, retenidas o no entregadas no se convierten en aceptadas por compartir la misma recepción;
+6. no se inventan tolerancias de sobreentrega o subentrega en esta tarea;
+7. una política posterior podrá permitir tolerancias solo si existe autoridad y regla canónica explícita.
+
+---
+
+#### 16. Lotes, vencimientos, seriales y temperatura
+
+Cuando el producto o la condición lo exijan, deberán conservarse los identificadores y lecturas aplicables sin degradarlos a notas libres.
+
+La ausencia o invalidez de una evidencia requerida puede:
+
+- impedir aceptación;
+- llevar a diferencia;
+- activar cuarentena;
+- exigir revisión especializada;
+- producir rechazo cuando corresponda.
+
+Registrar un lote, serial, vencimiento o temperatura no demuestra por sí solo conformidad.
+
+---
+
+#### 17. Documentos del proveedor
+
+Factura, remisión, certificado, nota, soporte tributario u otro documento externo se conserva como evidencia o afirmación externa hasta su validación.
+
+Por tanto:
+
+```text
+DOCUMENTO RECIBIDO
+≠
+RECEPCIÓN ACEPTADA
+```
+
+Y:
+
+```text
+FACTURA RECIBIDA
+≠
+OBLIGACIÓN ECONÓMICA DEFINITIVA
+```
+
+La fuente, versión, identificador externo, integridad y relación con la recepción deberán permanecer trazables.
+
+---
+
+#### 18. Estados canónicos completos
+
+Se preserva exactamente la secuencia normal:
+
+```text
+VPROC-0022.RECEIPT_EXPECTED
+→ VPROC-0022.ARRIVAL_REGISTERED
+→ VPROC-0022.PHYSICAL_CHECK_IN_PROGRESS
+→ VPROC-0022.DOCUMENT_CHECK_IN_PROGRESS
+→ VPROC-0022.DIFFERENCE_UNDER_REVIEW, cuando existen diferencias
+→ VPROC-0022.ACCEPTANCE_PENDING
+→ VPROC-0022.PUTAWAY_PENDING
+→ VPROC-0022.ECONOMIC_RECONCILIATION_PENDING
+→ VPROC-0022.RECEIPT_RECONCILED
+```
+
+`DIFFERENCE_UNDER_REVIEW` puede omitirse únicamente mediante el bypass canónico aprobado cuando no existen diferencias.
+
+No se sustituyen estos estados por valores físicos como `pending_review`, `received` o `recorded` como contrato objetivo.
+
+---
+
+#### 19. Significado de `ARRIVAL_REGISTERED`
+
+`VPROC-0022.ARRIVAL_REGISTERED` significa que se identificó la llegada con los datos disponibles de entrega, proveedor, documento, momento y contexto.
+
+No significa:
+
+- cantidades verificadas;
+- condición aceptada;
+- documentos conciliados;
+- inventario ingresado;
+- obligación reconocida.
+
+---
+
+#### 20. Verificación física
+
+La transición:
+
+```text
+VPROC-0022.TR-002
+ARRIVAL_REGISTERED
+→ PHYSICAL_CHECK_IN_PROGRESS
+```
+
+abre la verificación material de productos, presentaciones, cantidades, lote, condición y temperatura aplicable.
+
+La observación física deberá preservarse aunque después exista una diferencia, rechazo, cuarentena o corrección.
+
+No se sobrescribe la observación original para hacerla coincidir con la orden.
+
+---
+
+#### 21. Verificación documental
+
+La transición:
+
+```text
+VPROC-0022.TR-003
+PHYSICAL_CHECK_IN_PROGRESS
+→ DOCUMENT_CHECK_IN_PROGRESS
+```
+
+permite comparar, según corresponda:
+
+- orden o compromiso;
+- factura;
+- remisión;
+- certificados;
+- condiciones pactadas;
+- cantidades y unidades;
+- referencias fiscales o contractuales.
+
+La verificación documental no reemplaza la verificación física ni viceversa.
+
+---
+
+#### 22. Tratamiento de diferencias
+
+Cuando exista una discrepancia material se preserva:
+
+```text
+VPROC-0022.TR-004
+DOCUMENT_CHECK_IN_PROGRESS
+→ DIFFERENCE_UNDER_REVIEW
+```
+
+Una diferencia debe conservar:
+
+- alcance afectado;
+- tipo de discrepancia;
+- valor esperado;
+- valor observado o documentado;
+- evidencia;
+- actor o fuente;
+- responsable de resolución;
+- decisión resultante;
+- efectos pendientes o bloqueados.
+
+No se resuelve una diferencia editando destructivamente la observación original.
+
+---
+
+#### 23. Bypass cuando no existen diferencias
+
+Se preserva exactamente:
+
+```text
+VPROC-0022.TR-005
+DOCUMENT_CHECK_IN_PROGRESS
+→ ACCEPTANCE_PENDING
+```
+
+con:
+
+```text
+NORMAL_BYPASS
+G01,G02,G03,G04,G09
+OMISION_JUSTIFICADA
+```
+
+Este bypass existe solo cuando no hay diferencias que requieran `DIFFERENCE_UNDER_REVIEW`.
+
+No permite omitir la verificación física, la verificación documental ni la decisión de aceptación.
+
+---
+
+#### 24. Cierre de revisión de diferencias
+
+Cuando sí hubo diferencias, se preserva:
+
+```text
+VPROC-0022.TR-006
+DIFFERENCE_UNDER_REVIEW
+→ ACCEPTANCE_PENDING
+```
+
+La llegada a `ACCEPTANCE_PENDING` exige que la discrepancia tenga tratamiento suficiente para someter la recepción a una decisión autorizada.
+
+Una diferencia puede quedar asociada con efectos residuales siempre que esos residuales tengan propietario, autoridad y tratamiento explícitos; no se ocultan para cerrar la recepción.
+
+---
+
+#### 25. Significado de `ACCEPTANCE_PENDING`
+
+`VPROC-0022.ACCEPTANCE_PENDING` significa que la recepción fue verificada y espera una decisión de aceptar total, parcial o condicionalmente.
+
+No significa:
+
+- aceptación tácita;
+- stock utilizable;
+- putaway confirmado;
+- obligación económica definitiva;
+- pago autorizado;
+- ausencia de reclamaciones futuras.
+
+---
+
+#### 26. Transición autoritativa de aceptación
+
+La transición exacta es:
+
+```text
+VPROC-0022.TR-007
+```
+
+Con frontera:
+
+```text
+VPROC-0022.ACCEPTANCE_PENDING
+        ↓
+DECISIÓN AUTORIZADA
+        ↓
+VPROC-0022.PUTAWAY_PENDING
+```
+
+Se preserva su clase:
+
+```text
+CONTROL_ACEPTACION
+```
+
+Y sus puertas:
+
+```text
+G01,G02,G03,G04,G05,G06
+```
+
+La aceptación es el punto contractual que habilita el handoff de los bienes aceptados hacia la operación física de NEXO.
+
+---
+
+#### 27. Alcance de la aceptación
+
+La decisión deberá identificar exactamente qué parte de la recepción queda:
+
+- aceptada;
+- aceptada parcialmente;
+- aceptada bajo condición autorizada;
+- retenida o en cuarentena;
+- rechazada;
+- pendiente de resolución.
+
+La decisión no podrá ampliar el alcance más allá de lo efectivamente observado y verificado.
+
+Una recepción con líneas mixtas no convierte automáticamente todas las líneas en el mismo resultado.
+
+---
+
+#### 28. Aceptación no equivale a inventario aplicado
+
+El estado:
+
+```text
+VPROC-0022.PUTAWAY_PENDING
+```
+
+significa que los bienes aceptados esperan ingreso y ubicación física en NEXO.
+
+Por tanto:
+
+```text
+PUTAWAY_PENDING
+≠
+STOCK DISPONIBLE
+```
+
+Y:
+
+```text
+ACEPTACIÓN ORIGO
+≠
+MOVIMIENTO NEXO YA CONFIRMADO
+```
+
+La materialización exacta del efecto físico pertenece a `INT-PROC-003`.
+
+---
+
+#### 29. Handoff hacia NEXO
+
+El handoff debe conservar, como mínimo según aplique:
+
+- proceso e instancia de recepción;
+- referencia de compra;
+- referencia de recepción;
+- sede;
+- actor y principal pertinentes;
+- alcance aceptado;
+- productos y cantidades aceptadas;
+- unidades y conversiones;
+- lote, serial, vencimiento o condición;
+- acción pendiente;
+- versión contractual;
+- correlación e idempotencia;
+- evidencia mínima necesaria;
+- modalidad que determina si existe efecto de inventario.
+
+NEXO deberá revalidar su propia autoridad, ubicación, recurso, estado y contrato.
+
+`INT-PROC-003` materializará el contrato específico mediante el cual NEXO crea —o determina que no corresponde crear— la entrada de inventario. Esta tarea no define sus tablas, RPC, DTO, payload físico ni mecanismo de persistencia.
+
+---
+
+#### 30. Evento material para el handoff físico
+
+Se preserva como evento normal:
+
+```text
+VPROC-0022.EVT-004
+vento.process.vproc-0022.putaway-pending.v1
+HANDOFF_FACT
+```
+
+Hecho confirmado:
+
+```text
+LOS BIENES ACEPTADOS
+ESPERAN INGRESO Y UBICACIÓN FÍSICA EN NEXO
+```
+
+El evento no declara que el inventario ya aumentó.
+
+---
+
+#### 31. Transición hacia conciliación económica
+
+Se preserva:
+
+```text
+VPROC-0022.TR-008
+PUTAWAY_PENDING
+→ ECONOMIC_RECONCILIATION_PENDING
+```
+
+con clase:
+
+```text
+EMISOR_Y_RECEPTOR_AUTORIZADOS
+```
+
+La transición exige correlación entre el handoff de la recepción y la confirmación necesaria del efecto físico según el contrato aplicable; no autoriza a ORIGO a suplantar el resultado de NEXO.
+
+---
+
+#### 32. Handoff hacia NUMERA
+
+`VPROC-0022.ECONOMIC_RECONCILIATION_PENDING` significa que debe correlacionarse la recepción aceptada con factura, obligación y diferencias económicas.
+
+NUMERA es consumidora directa de `VPROC-0022` para esa finalidad.
+
+La proyección hacia NUMERA debe limitarse al contenido requerido para su proceso y preservar:
+
+- referencia de compra y recepción;
+- proveedor;
+- alcance aceptado;
+- cantidades y valores aplicables;
+- documentos económicos autorizados;
+- diferencias o retenciones relevantes;
+- correlación con el resultado físico cuando corresponda;
+- versión, identidad y auditoría.
+
+El contrato específico del evento económico permanece reservado a `INT-PROC-004`.
+
+---
+
+#### 33. Evento material para la conciliación económica
+
+Se preserva:
+
+```text
+VPROC-0022.EVT-005
+vento.process.vproc-0022.economic-reconciliation-pending.v1
+RECONCILIATION_FACT
+```
+
+Hecho confirmado:
+
+```text
+SE ESPERA CORRELACIONAR
+RECEPCIÓN ACEPTADA
++ FACTURA
++ OBLIGACIÓN
++ DIFERENCIAS
+```
+
+Este evento no afirma que la obligación ya fue reconocida ni que el proveedor fue pagado.
+
+---
+
+#### 34. Estado final normal
+
+El estado final normal continúa siendo:
+
+```text
+VPROC-0022.RECEIPT_RECONCILED
+```
+
+Etiqueta:
+
+```text
+Recepción conciliada
+```
+
+Tipo:
+
+```text
+RECONCILIADO
+```
+
+Criterio mínimo preservado:
+
+> Cantidad, condición, documentos, orden, inventario y efecto económico fueron comparados y las diferencias quedaron resueltas o asignadas.
+
+Verdad final y límite preservados:
+
+> La recepción quedó aceptada y conciliada dentro de su alcance; no equivale al pago del proveedor ni oculta devoluciones o reclamaciones.
+
+---
+
+#### 35. Transición de cierre
+
+Se preserva:
+
+```text
+VPROC-0022.TR-009
+ECONOMIC_RECONCILIATION_PENDING
+→ RECEIPT_RECONCILED
+```
+
+con:
+
+```text
+NORMAL_TERMINAL
+CONTROL_ACEPTACION
+G01,G02,G03,G04,G07
+CIERRE_ATOMICO
+```
+
+El cierre requiere un resultado conocido y reconciliable. Un efecto físico o económico desconocido no puede convertirse en `RECEIPT_RECONCILED` por timeout, retry agotado o ausencia de respuesta.
+
+---
+
+#### 36. Nueve transiciones normales preservadas
+
+| Transición          | Desde                             | Hacia                             | Modalidad         | Clase de autoridad              | Puertas                   | Efecto                |
+| ------------------- | --------------------------------- | --------------------------------- | ----------------- | ------------------------------- | ------------------------- | --------------------- |
+| `VPROC-0022.TR-001` | `RECEIPT_EXPECTED`                | `ARRIVAL_REGISTERED`              | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`         | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-002` | `ARRIVAL_REGISTERED`              | `PHYSICAL_CHECK_IN_PROGRESS`      | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`         | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-003` | `PHYSICAL_CHECK_IN_PROGRESS`      | `DOCUMENT_CHECK_IN_PROGRESS`      | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`         | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-004` | `DOCUMENT_CHECK_IN_PROGRESS`      | `DIFFERENCE_UNDER_REVIEW`         | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`         | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-005` | `DOCUMENT_CHECK_IN_PROGRESS`      | `ACCEPTANCE_PENDING`              | `NORMAL_BYPASS`   | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04,G09`     | `OMISION_JUSTIFICADA` |
+| `VPROC-0022.TR-006` | `DIFFERENCE_UNDER_REVIEW`         | `ACCEPTANCE_PENDING`              | `NORMAL_FORWARD`  | `PRINCIPAL_O_APOYO_AUTORIZADO`  | `G01,G02,G03,G04`         | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-007` | `ACCEPTANCE_PENDING`              | `PUTAWAY_PENDING`                 | `NORMAL_FORWARD`  | `CONTROL_ACEPTACION`            | `G01,G02,G03,G04,G05,G06` | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-008` | `PUTAWAY_PENDING`                 | `ECONOMIC_RECONCILIATION_PENDING` | `NORMAL_FORWARD`  | `EMISOR_Y_RECEPTOR_AUTORIZADOS` | `G01,G02,G03,G04,G06`     | `AVANCE_ATOMICO`      |
+| `VPROC-0022.TR-009` | `ECONOMIC_RECONCILIATION_PENDING` | `RECEIPT_RECONCILED`              | `NORMAL_TERMINAL` | `CONTROL_ACEPTACION`            | `G01,G02,G03,G04,G07`     | `CIERRE_ATOMICO`      |
+
+No se crean transiciones alternativas.
+
+---
+
+#### 37. Acciones excepcionales preservadas
+
+Se preservan exactamente:
+
+```text
+VPROC-0022.EX-001 — QUARANTINE
+VPROC-0022.EX-002 — HOLD
+VPROC-0022.EX-003 — ESCALATE
+VPROC-0022.EX-004 — REJECT
+```
+
+Reglas:
+
+- `QUARANTINE` aplica desde llegada hasta aceptación e impide putaway utilizable y efecto económico definitivo mientras se resuelve la condición;
+- `HOLD` suspende aceptación durante revisiones física o documental y mantiene mercancía segregada y evidencia abierta;
+- `ESCALATE` añade nivel, destinatario, motivo y plazo para una diferencia material, sin conceder aprobación;
+- `REJECT` rehúsa la recepción antes de aceptación, conserva fundamento, prueba y custodia de retorno.
+
+---
+
+#### 38. Cuarentena
+
+Una recepción o línea en cuarentena:
+
+- conserva identidad y evidencia;
+- no se presenta como aceptada utilizable;
+- no habilita stock disponible;
+- no habilita efecto económico definitivo;
+- no borra la observación física original;
+- requiere decisión posterior autorizada para liberación, devolución u otro tratamiento aplicable.
+
+La cuarentena es un control temporal, no una disposición final automática.
+
+---
+
+#### 39. Rechazo y devolución
+
+Un rechazo de recepción:
+
+- ocurre antes de la aceptación aplicable;
+- conserva motivo estructurado y evidencia;
+- conserva proveedor, entrega, documentos y alcance rechazado;
+- debe preservar la custodia o instrucción de retorno aplicable;
+- no elimina el hecho de que la entrega llegó;
+- no modifica retroactivamente la orden para aparentar que nunca hubo intento de entrega.
+
+Una devolución posterior a una aceptación ya aplicada se trata mediante el contrato de reversión o compensación correspondiente, no reescribiendo el rechazo histórico.
+
+---
+
+#### 40. Acciones CCR preservadas
+
+Se preservan exactamente:
+
+```text
+VPROC-0022.CCR-001 — CANCEL
+VPROC-0022.CCR-002 — VOID
+VPROC-0022.CCR-003 — REVERSE
+VPROC-0022.CCR-004 — RESTATE
+```
+
+Reglas:
+
+- `CANCEL` detiene trabajo futuro permitido y conserva evidencia y obligaciones residuales;
+- `VOID` marca como nulo un instrumento inválido o duplicado y lo enlaza con el registro correcto cuando exista;
+- `REVERSE` crea un efecto inverso autorizado y vinculado cuando ya existe un efecto aplicado;
+- `RESTATE` rectifica referencias o clasificación sin editar destructivamente el hecho operacional original.
+
+---
+
+#### 41. Corrección de una recepción
+
+Una corrección deberá:
+
+1. referenciar la recepción original;
+2. conservar el antes y el después;
+3. conservar motivo y autoridad;
+4. identificar qué efectos derivados fueron afectados;
+5. no eliminar el registro original;
+6. no volver a aplicar cantidades, costos o movimientos ya confirmados;
+7. coordinar reversión o compensación cuando el efecto original no pueda deshacerse literalmente;
+8. mantener correlación con NEXO y NUMERA cuando esos dominios ya hayan producido efectos.
+
+La corrección no puede producir una ventana en la que la recepción original quede revertida definitivamente sin existir el reemplazo o plan de tratamiento autorizado que preserve consistencia.
+
+---
+
+#### 42. Idempotencia de la recepción
+
+La recepción adopta el contrato transversal de idempotencia.
+
+Resultados lógicos preservados:
+
+```text
+APPLIED
+DUPLICATE_RESULT_RETURNED
+CONFLICTING_REUSE
+IN_PROGRESS_RECOVERABLE
+STALE_VERSION
+OUT_OF_ORDER_DEFERRED
+RECONCILIATION_REQUIRED
+REJECTED
+```
+
+Reglas:
+
+1. misma identidad y misma huella lógica no producen una segunda recepción;
+2. un replay devuelve el resultado durable previo;
+3. misma identidad con contenido incompatible produce conflicto;
+4. una clave conocida no concede autorización;
+5. el retry revalida actor, recurso, estado, alcance y versión;
+6. un timeout con resultado desconocido se reconcilia antes de repetir un efecto no seguro;
+7. el identificador permanece estable durante retries técnicos de la misma intención;
+8. una nueva entrega parcial legítima utiliza una identidad de operación distinta y correlacionada.
+
+---
+
+#### 43. Control específico de recepción duplicada
+
+`INT-PROC-002` exige que la recepción tenga identidad y resultado idempotentes, pero no agota el control transversal de duplicidad del mini-bloque.
+
+La definición completa que impide que una misma recepción o replay vuelva a producir cantidades, costos, movimientos, estado de orden o evento económico queda reservada a:
+
+```text
+INT-PROC-005 — Definir control que evite una recepción duplicada
+```
+
+`INT-PROC-005` deberá consumir este contrato sin redefinir la propiedad o el ciclo de `VPROC-0022`.
+
+---
+
+#### 44. Concurrencia
+
+Dos pestañas, dispositivos, receptores o retries concurrentes no podrán confirmar dos veces la misma intención ni aplicar una recepción contra una versión obsoleta.
+
+La frontera autoritativa debe proteger, cuando corresponda:
+
+- versión del recurso;
+- claim o exclusión mutua;
+- cantidad acumulada contra la orden;
+- estado de la recepción;
+- efectos ya confirmados;
+- resultado durable previo.
+
+Una carrera no se resuelve tomando el último write como verdad silenciosa.
+
+---
+
+#### 45. Una operación empresarial, múltiples efectos propietarios
+
+Se preserva el requisito de que la recepción sea una sola operación empresarial correlacionada.
+
+Eso significa:
+
+```text
+UNA IDENTIDAD Y CORRELACIÓN DE RECEPCIÓN
+        ↓
+ORIGO CONFIRMA SU PROPIO EFECTO
+        ↓
+NEXO CONFIRMA SU PROPIO EFECTO FÍSICO, SI APLICA
+        ↓
+NUMERA CONFIRMA SU PROPIO EFECTO ECONÓMICO, SI APLICA
+        ↓
+ORIGO RECONCILIA EL RESULTADO GLOBAL
+```
+
+No significa:
+
+```text
+ORIGO ESCRIBE DIRECTAMENTE
+EN TODAS LAS FUENTES DE VERDAD
+```
+
+La atomicidad empresarial entre propietarios se obtiene mediante estados durables, idempotencia, handoffs, confirmaciones y reconciliación; no mediante pérdida de fronteras de propiedad.
+
+---
+
+#### 46. Resultados desconocidos y parciales
+
+Cuando una operación distribuida no pueda demostrar el resultado completo:
+
+- no se fabrica éxito;
+- no se repite ciegamente un efecto irreversible;
+- se conserva qué unidad sí fue confirmada;
+- se conserva qué unidad quedó pendiente o incierta;
+- se entra en reconciliación o intervención según el contrato transversal aplicable;
+- el cierre de `VPROC-0022` permanece bloqueado hasta conocer o resolver los efectos exigidos.
+
+Un HTTP `2xx`, un ACK, una inserción en outbox o una publicación de evento no equivalen por sí solos al efecto empresarial de la consumidora.
+
+---
+
+#### 47. Eventos empresariales preservados
+
+`INT-PROC-002` no crea definiciones normales de evento.
+
+Para `VPROC-0022` se conservan exactamente:
+
+| Definición           | Tipo                                                          | Clase                 | Hecho confirmado                                                                                |
+| -------------------- | ------------------------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------- |
+| `VPROC-0022.EVT-001` | `vento.process.vproc-0022.receipt-expected.v1`                | `PROCESS_STARTED`     | la recepción está esperada; la mercancía no está aceptada, ubicada, contabilizada ni conciliada |
+| `VPROC-0022.EVT-002` | `vento.process.vproc-0022.arrival-registered.v1`              | `READINESS_FACT`      | se identificó llegada, proveedor, documento y momento                                           |
+| `VPROC-0022.EVT-003` | `vento.process.vproc-0022.physical-check-in-progress.v1`      | `EXECUTION_FACT`      | comenzó la verificación física                                                                  |
+| `VPROC-0022.EVT-004` | `vento.process.vproc-0022.putaway-pending.v1`                 | `HANDOFF_FACT`        | los bienes aceptados esperan ingreso y ubicación en NEXO                                        |
+| `VPROC-0022.EVT-005` | `vento.process.vproc-0022.economic-reconciliation-pending.v1` | `RECONCILIATION_FACT` | se espera correlacionar recepción, factura, obligación y diferencias                            |
+| `VPROC-0022.EVT-006` | `vento.process.vproc-0022.receipt-reconciled.v1`              | `PROCESS_COMPLETED`   | la recepción quedó aceptada y conciliada dentro de su alcance                                   |
+
+Sensibilidad preservada:
+
+```text
+RESTRICTED_FINANCIAL
+```
+
+---
+
+#### 48. No se crea un evento normal de aceptación
+
+El catálogo aprobado no contiene una definición normal separada para:
+
+```text
+ACCEPTANCE_PENDING
+```
+
+ni para una etiqueta genérica de `ACCEPTED`.
+
+Por tanto, esta tarea no inventa un evento adicional como:
+
+```text
+purchase-receipt-accepted
+receipt-accepted
+purchase-accepted
+```
+
+La aceptación queda demostrada por la transición `VPROC-0022.TR-007`, el estado resultante `PUTAWAY_PENDING`, la auditoría y la evidencia correlacionada.
+
+---
+
+#### 49. Consumidoras
+
+Se preservan:
+
+```text
+DIRECTAS
+NEXO
+NUMERA
+
+CONDICIONALES
+FOGO
+PULSO
+```
+
+Reglas:
+
+- NEXO consume el alcance aceptado para su efecto físico;
+- NUMERA consume la proyección económica necesaria para su proceso;
+- FOGO solo recibe proyección cuando una finalidad productiva aprobada lo requiera;
+- PULSO solo recibe proyección cuando una finalidad comercial aprobada lo requiera;
+- ninguna consumidora puede ampliar la recepción, cambiar su aceptación o reescribir la verdad propietaria de ORIGO.
+
+---
+
+#### 50. Prohibición de escrituras cruzadas
+
+Se preserva el principio:
+
+```text
+CONSUMIDORA
+→ RECIBE EVENTO O SOLICITA EFECTO
+→ PROPIETARIA REVALIDA
+→ PROPIETARIA PRODUCE SU EFECTO
+→ DEVUELVE RESULTADO CORRELACIONADO
+```
+
+No:
+
+```text
+ORIGO
+→ UPDATE DIRECTO DEL LEDGER NEXO COMO CONTRATO OBJETIVO
+```
+
+No:
+
+```text
+ORIGO
+→ CREA OBLIGACIÓN NUMERA DIRECTAMENTE COMO VERDAD AJENA
+```
+
+No:
+
+```text
+NEXO / NUMERA
+→ CAMBIAN LA ACEPTACIÓN COMERCIAL DE ORIGO
+```
+
+---
+
+#### 51. Auditoría obligatoria
+
+Se preserva `VPROC-0022.AUDIT` con foco en:
+
+- documentos;
+- cantidades;
+- condición;
+- diferencias;
+- rechazo;
+- cuarentena;
+- aceptación comercial;
+- handoffs físicos;
+- handoffs económicos.
+
+La evidencia deberá permitir reconstruir, cuando aplique:
+
+- compra y compromiso de origen;
+- proveedor;
+- llegada;
+- actor y principal;
+- sede;
+- observaciones físicas;
+- documentos;
+- cantidades, unidades y conversiones;
+- lotes, vencimientos, seriales y temperatura;
+- diferencias y su resolución;
+- aceptación o rechazo;
+- cuarentena o hold;
+- handoff hacia NEXO;
+- resultado de NEXO;
+- handoff hacia NUMERA;
+- resultado económico;
+- correcciones, reversas o reexpresiones;
+- resultado final de reconciliación;
+- retries, duplicados, conflictos y resultados desconocidos relevantes.
+
+---
+
+#### 52. Métricas preservadas
+
+Se conservan:
+
+```text
+VPROC-0022.MET-001
+Recepciones conciliadas sin diferencias pendientes
+```
+
+Drivers:
+
+```text
+VPROC-0022.MET-002
+Tiempo llegada-verificación
+
+VPROC-0022.MET-003
+Conformidad al primer control
+```
+
+Guardrail:
+
+```text
+VPROC-0022.MET-004
+Aceptación de no conformidad crítica,
+recepción duplicada
+o diferencia cerrada sin compensación
+```
+
+Cadencia y dimensiones mínimas preservadas:
+
+```text
+diaria y semanal; cierre mensual
+entidad
+sede solicitante
+proveedor
+categoría
+moneda
+urgencia
+```
+
+---
+
+#### 53. Implementación física observada
+
+La implementación vigente observada en ORIGO presenta una operación de recepción que combina responsabilidades que el contrato objetivo debe separar por propiedad y handoff.
+
+Se observa una modalidad física que distingue una operación con efecto de inventario de una operación solo registral.
+
+La implementación física también utiliza estados de entrada como:
+
+```text
+pending_review
+received
+recorded
+```
+
+Estos valores no sustituyen la secuencia `VPROC-0022.*` como contrato objetivo.
+
+---
+
+#### 54. Escrituras físicas observadas
+
+En una recepción con efecto de inventario, la implementación observada puede ejecutar desde la misma acción ORIGO, de forma secuencial, efectos sobre:
+
+- cabecera de entrada;
+- líneas de entrada;
+- movimientos de inventario;
+- stock por sede;
+- stock por ubicación;
+- costos y eventos de costo;
+- cantidades recibidas relacionadas con la orden;
+- estado de la orden;
+- solicitudes relacionadas con maestro de datos;
+- firma o evidencia asociada.
+
+La existencia de esas escrituras demuestra una implementación parcial actual; no demuestra el contrato objetivo distribuido ni una transacción empresarial atómica entre propietarios.
+
+---
+
+#### 55. Estado físico de la orden observado
+
+La implementación observada puede marcar una orden como `received` cuando sus líneas físicas aparecen completamente recibidas.
+
+Ese valor no equivale por sí solo a:
+
+```text
+VPROC-0022.RECEIPT_RECONCILED
+```
+
+porque el cierre canónico también exige condición, documentos, inventario, efecto económico y diferencias resueltas o asignadas.
+
+Una recepción parcial tampoco puede cerrar toda la orden por inferencia.
+
+---
+
+#### 56. Riesgo de secuencia parcial observada
+
+La implementación observada realiza múltiples escrituras con comprobaciones y salidas intermedias.
+
+Por tanto, sin un mecanismo transaccional o de coordinación durable que lo demuestre, no puede suponerse que:
+
+- todas las escrituras confirman juntas;
+- un fallo intermedio deja cero efectos;
+- un retry no duplica un efecto ya aplicado;
+- una corrección reconstituye todos los derivados;
+- NEXO y NUMERA hayan confirmado sus verdades propietarias.
+
+La materialización física deberá converger posteriormente al contrato ya protegido por requisitos existentes y por las tareas propietarias del mini-bloque.
+
+---
+
+#### 57. Reconciliación de la brecha física
+
+La diferencia entre implementación observada y contrato objetivo queda explícita:
+
+| Aspecto             | Implementación observada                                           | Contrato objetivo                                                       |
+| ------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| estado de recepción | `pending_review`, `received`, `recorded`                           | estados `VPROC-0022.*`                                                  |
+| aceptación          | no queda representada por toda la secuencia canónica               | `TR-007` con `CONTROL_ACEPTACION`                                       |
+| inventario          | ORIGO puede escribir movimientos y stock en la misma acción        | handoff aceptado hacia NEXO; efecto propietario de NEXO                 |
+| economía/costo      | la misma acción puede producir efectos de costo                    | handoff y reconciliación económica con NUMERA según `INT-PROC-004`      |
+| atomicidad          | múltiples escrituras secuenciales observadas                       | efecto atómico por frontera o estado durable y reconciliable            |
+| idempotencia        | no queda demostrada integralmente para toda la operación observada | identidad estable, huella, resultado recuperable y deduplicación        |
+| parcialidad         | cantidades físicas pueden acumularse                               | cada recepción conserva alcance y no cierra por inferencia lo pendiente |
+| cierre              | PO puede quedar `received`                                         | `RECEIPT_RECONCILED` exige conciliación completa del alcance            |
+
+No se crea una brecha nueva porque el desajuste ya está registrado y tiene propietarios canónicos.
+
+---
+
+#### 58. Propietarios documentales de la brecha
+
+Se preservan los destinos ya existentes:
+
+- `INT-PROC-003`, para el contrato mediante el cual NEXO crea o determina que no corresponde crear la entrada física;
+- `INT-PROC-004`, para el contrato mediante el cual NUMERA recibe el evento económico;
+- `INT-PROC-005`, para el control end-to-end que impide una recepción duplicada;
+- `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014` y `ORIGO-UX-016`, según las responsabilidades ya asignadas a la materialización de recepción;
+- `SUPA-AUD-019` y `SUPA-AUD-023`, según la asignación vigente del requisito de atomicidad y reconciliación;
+- los paquetes E5 y las tareas físicas posteriores que materialicen los contratos aprobados.
+
+No se crean destinos narrativos sin identificador ni se reasignan responsabilidades ya aprobadas.
+
+---
+
+#### 59. Cambios físicos no autorizados
+
+`INT-PROC-002` no autoriza:
+
+- modificar ORIGO;
+- modificar NEXO, NUMERA, FOGO o PULSO;
+- modificar tablas de recepción, inventario, órdenes o costos;
+- crear estados físicos nuevos;
+- crear enums;
+- crear RPC;
+- crear triggers;
+- modificar RLS o grants;
+- crear índices o constraints;
+- crear outbox, inbox, colas o workers;
+- crear eventos físicos;
+- ejecutar migraciones;
+- alterar datos;
+- regularizar recepciones históricas;
+- simular recepciones productivas;
+- ejecutar entradas de inventario;
+- crear obligaciones económicas;
+- ajustar stock o costos.
+
+Toda futura modificación de Supabase que materialice este contrato deberá crearse, versionarse, documentarse y ejecutarse desde `vento-shell` conforme al gobierno vigente.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa documentalmente para `VPROC-0022` comportamientos ya protegidos de forma específica por el registro vigente: modalidad de recepción, integridad de la operación, atomicidad o estado reconciliable, idempotencia, no duplicación, separación de propiedad, autorización, handoff, auditoría y unicidad de fuente. No introduce un comportamiento ejecutable nuevo ni modifica el significado de una regla de prueba existente; crear requisitos adicionales repetiría cobertura ya registrada.
+
+---
+
+#### 61. Cobertura de prueba existente preservada
+
+La tarea conserva sin modificar la cobertura ya registrada para:
+
+- `TREQ-ORIGO-001`, sobre modalidad visible y auditable de recepción y prevención de duplicación al convertir, corregir o repetir;
+- `TREQ-ORIGO-003`, sobre la recepción como una operación empresarial única, efectos atómicos o durables y reconciliables, clave idempotente, replay seguro y corrección vinculada;
+- `TREQ-ORIGO-004`, sobre separación del ciclo de abastecimiento y capacidades entre aprobación y recepción;
+- `TREQ-AUTH-010`, sobre segregación de funciones;
+- `TREQ-AUTH-013`, sobre autorización server-side de toda mutación;
+- `TREQ-AUTH-015`, sobre evidencia correlacionable de decisiones y acciones protegidas;
+- `TREQ-INTEGRATION-003`, sobre idempotencia, retries, concurrencia, resultado desconocido y reconciliación;
+- `TREQ-INTEGRATION-005`, sobre preservación de contexto y revalidación en handoffs entre aplicaciones;
+- `TREQ-INTEGRATION-006`, sobre una única fuente de verdad por dato empresarial y prohibición de fuentes competidoras.
+
+Ninguna de esas filas se crea, modifica, difiere, descarta u obsolete en esta tarea.
+
+---
+
+#### 62. Criterios de aceptación
+
+- [ ] ORIGO queda identificada como propietaria de `VPROC-0022`.
+- [ ] El propósito empresarial se conserva sin reinterpretación.
+- [ ] Se preserva la frontera: ORIGO acepta o rechaza; NEXO registra entrada, ubicación y custodia después de aceptación.
+- [ ] Se preservan NEXO y NUMERA como consumidoras directas y FOGO/PULSO como condicionales.
+- [ ] El estado inicial es exactamente `VPROC-0022.RECEIPT_EXPECTED`.
+- [ ] El final normal es exactamente `VPROC-0022.RECEIPT_RECONCILED`.
+- [ ] Se preservan exactamente nueve transiciones normales.
+- [ ] Se preserva `TR-005` como bypass únicamente cuando no existen diferencias.
+- [ ] La aceptación se vincula exactamente a `VPROC-0022.TR-007`.
+- [ ] `TR-007` conserva `CONTROL_ACEPTACION` y `G01,G02,G03,G04,G05,G06`.
+- [ ] Se preservan exactamente los siete grupos de entrada obligatorios.
+- [ ] Se preservan exactamente los seis grupos condicionales.
+- [ ] Se distinguen observación física y verificación documental.
+- [ ] Las diferencias conservan evidencia y resolución sin sobrescribir el hecho original.
+- [ ] Se admite decisión total, parcial o condicional sin inventar tolerancias.
+- [ ] Una recepción parcial no cierra por inferencia cantidades no recibidas.
+- [ ] Lotes, vencimientos, seriales y temperatura se conservan cuando aplican.
+- [ ] La factura no se presenta como obligación definitiva.
+- [ ] La aceptación no se presenta como inventario aplicado.
+- [ ] `PUTAWAY_PENDING` se usa como handoff hacia NEXO, no como stock disponible.
+- [ ] El contrato específico de entrada NEXO permanece reservado a `INT-PROC-003`.
+- [ ] El contrato económico permanece reservado a `INT-PROC-004`.
+- [ ] El control end-to-end contra recepción duplicada permanece reservado a `INT-PROC-005`.
+- [ ] Se preserva la modalidad de recepción con o sin efecto de inventario sin inventar movimiento físico.
+- [ ] Se preservan `QUARANTINE`, `HOLD`, `ESCALATE` y `REJECT`.
+- [ ] Se preservan `CANCEL`, `VOID`, `REVERSE` y `RESTATE`.
+- [ ] Se adopta idempotencia, concurrencia y reconciliación transversal.
+- [ ] Un resultado desconocido no se presenta como recepción cerrada.
+- [ ] Se preservan exactamente seis definiciones normales de evento.
+- [ ] No se crea un evento normal adicional para la aceptación.
+- [ ] Se preserva `VPROC-0022.AUDIT`.
+- [ ] Se preservan `VPROC-0022.MET-001` a `VPROC-0022.MET-004`.
+- [ ] Se documenta la brecha física actual sin convertirla en contrato canónico.
+- [ ] Cada brecha observada conserva un destino documental existente.
+- [ ] No se modifica código, Supabase, migraciones, datos ni operación.
+- [ ] No se crean ni modifican requisitos `TREQ-*`.
+
+---
+
+#### 63. Estado de cierre documental
+
+`INT-PROC-002` queda documentalmente completa cuando las reglas anteriores se adopten como definición vigente del contrato de recepción de compra en ORIGO.
+
+Su aprobación documental no significa que la implementación actual ya cumpla físicamente el contrato, ni que NEXO o NUMERA hayan materializado sus handoffs posteriores.
+
+La implementación deberá demostrar en sus tareas y paquetes propietarios que la recepción, aceptación, idempotencia, handoffs, efectos derivados y reconciliación convergen sin duplicación, pérdida de propiedad ni estados desconocidos ocultos.
+
+---
+
+#### 64. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra
+        ↓
+TAREA ACTUAL APROBADA
+INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+```
+
+
 ### [ ] INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
 ### [ ] INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico
 ### [ ] INT-PROC-005 — Definir control que evite una recepción duplicada
