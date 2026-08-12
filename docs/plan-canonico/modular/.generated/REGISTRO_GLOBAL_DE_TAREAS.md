@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **742** |
+| Aprobadas | **743** |
 | En propuesta | **0** |
-| No iniciadas | **852** |
+| No iniciadas | **851** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.55% (742/1594)** |
+| Porcentaje de completamiento | **46.61% (743/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-015` — Definir rate limits, reintentos, backoff y circuit breaker | ✅ APROBADA |
-| Tarea actual | `INT-EXT-016` — Definir cuarentena o dead-letter | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-017` — Definir auditoría, métricas, alertas y conciliación | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-016` — Definir cuarentena o dead-letter | ✅ APROBADA |
+| Tarea actual | `INT-EXT-017` — Definir auditoría, métricas, alertas y conciliación | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-018` — Definir contingencia ante indisponibilidad del proveedor | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1449,7 +1449,7 @@
 | ✅ APROBADA | `INT-EXT-013` | Definir mapeo de identificadores externos y canónicos | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-014` | Definir conservación controlada del payload original | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-015` | Definir rate limits, reintentos, backoff y circuit breaker | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-016` | Definir cuarentena o dead-letter | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-016` | Definir cuarentena o dead-letter | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-017` | Definir auditoría, métricas, alertas y conciliación | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-018` | Definir contingencia ante indisponibilidad del proveedor | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-019` | Definir retiro de integración y revocación de credenciales | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
