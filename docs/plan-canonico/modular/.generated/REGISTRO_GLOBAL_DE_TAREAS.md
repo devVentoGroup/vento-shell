@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **729** |
+| Aprobadas | **730** |
 | En propuesta | **0** |
-| No iniciadas | **865** |
+| No iniciadas | **864** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.73% (729/1594)** |
+| Porcentaje de completamiento | **45.80% (730/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness | ✅ APROBADA |
-| Tarea actual | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X | ⬜ NO INICIADA |
+| Última aprobada | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones | ✅ APROBADA |
+| Tarea actual | `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X | ⬜ NO INICIADA |
+| Siguiente reservada | `CONT-INT-003` — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1618,7 +1618,7 @@
 | ✅ APROBADA | `CONT-UX-005` | Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ✅ APROBADA | `CONT-UX-006` | Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
 | ✅ APROBADA | `CONT-UX-007` | Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/03_EXPERIENCIA_DE_CONTINGENCIA_Y_MANDO.md` |
-| ⬜ NO INICIADA | `CONT-INT-001` | Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md` |
+| ✅ APROBADA | `CONT-INT-001` | Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md` |
 | ⬜ NO INICIADA | `CONT-INT-002` | Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md` |
 | ⬜ NO INICIADA | `CONT-INT-003` | Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md` |
 | ⬜ NO INICIADA | `CONT-INT-004` | Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md` |
