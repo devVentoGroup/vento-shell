@@ -3153,5 +3153,1393 @@ SIGUIENTE TAREA RESERVADA
 `CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos`
 
 
-### [ ] CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos
+### ✅ CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X` — APROBADA
+**Tarea siguiente:** `CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de contratos de continuidad con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos, sin selección de proveedor, binding físico ni ejecución operativa
+**Bloque:** AC — Continuidad operativa y recuperación
+**Mini-bloque:** Integraciones de continuidad y reincorporación
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, proveedores, contratos comerciales, infraestructura, despliegues, datos o configuración productiva:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato de continuidad entre Vento OS y ocho familias de dependencias externas o de infraestructura cuya indisponibilidad, degradación, recuperación o comportamiento ambiguo puede afectar procesos empresariales: Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos.
+
+La tarea fija qué autoridad conserva VENTO, qué hechos externos pueden consumirse, cómo se correlacionan con servicios y procesos, qué condiciones permiten declarar degradación, qué acciones requieren autoridad explícita, cómo se manejan resultados parciales o desconocidos y qué evidencia debe conservarse sin convertir al tercero en fuente de verdad empresarial.
+
+El contrato debe impedir que una señal externa produzca por inferencia:
+
+```text
+DECLARACIÓN DE CONTINUIDAD
+ACTIVACIÓN
+FAILOVER
+CAMBIO DE PROVEEDOR
+RECUPERACIÓN EMPRESARIAL
+CIERRE DEL INCIDENTE
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializadas exactamente ocho familias contractuales:
+
+1. Supabase;
+2. nube;
+3. energía;
+4. ISP;
+5. pagos;
+6. mensajería;
+7. transporte;
+8. proveedores críticos.
+
+Para cada familia se define:
+
+- autoridad interna y externa;
+- objeto o dependencia que puede relacionarse;
+- contexto mínimo de continuidad;
+- fuentes admisibles de estado;
+- health y degradación;
+- identidad y correlación;
+- autorización;
+- autenticación técnica cuando exista integración;
+- sensibilidad y minimización;
+- idempotencia y deduplicación;
+- rate limits y reintentos;
+- tratamiento de timeout y resultado desconocido;
+- circuit breaking o aislamiento cuando corresponda;
+- contingencia;
+- failover o sustitución solamente cuando exista alternativa aprobada;
+- recuperación y retorno;
+- evidencia;
+- estado AS-IS que puede afirmarse con evidencia actual;
+- límites de lo que permanece pendiente de evidencia;
+- propietario y condición de salida de toda materialización futura.
+
+Balance:
+
+| Control                                    |  Resultado |
+| ------------------------------------------ | ---------: |
+| Familias esperadas                         |      **8** |
+| Familias materializadas                    | **8 de 8** |
+| Familias faltantes                         |      **0** |
+| Familias duplicadas                        |      **0** |
+| Proveedores alternos inventados            |      **0** |
+| SLA externos inventados                    |      **0** |
+| Regiones o zonas cloud inventadas          |      **0** |
+| Endpoints inventados                       |      **0** |
+| Credenciales inventadas                    |      **0** |
+| Failovers declarados sin evidencia         |      **0** |
+| Cambios físicos                            |      **0** |
+| Requisitos de prueba creados o modificados |      **0** |
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+CONT-INT-003 consume y conserva, sin redefinir:
+
+- `CONT-DOM-001` a `CONT-DOM-015` para gobierno de continuidad, BIA, dependencias, objetivos, incidente, mando, operación mínima, contingencia, recuperación, proveedores, ejercicios y aprendizaje;
+- `CONT-AUTH-001` a `CONT-AUTH-004` para declaración, activación, break-glass, protección y segregación;
+- `CONT-UX-001` a `CONT-UX-007` para mando, comunicación, contingencia, recuperación y ejercicios;
+- `CONT-INT-001` para criticidad, dependencia, health, degradación e incidente con las aplicaciones;
+- `CONT-INT-002` para las fronteras internas con SHELL, VISO, ANIMA, Z, AA, AB, E4, E5, T, U y X;
+- la separación entre incidente tecnológico e incidente de continuidad;
+- la autoridad de las aplicaciones propietarias sobre sus hechos empresariales;
+- el gobierno de información, clasificación, finalidad, custodia y evidencia del BLOQUE AA;
+- el gobierno de métricas, calidad, snapshots y analítica del BLOQUE AB;
+- los contratos del BLOQUE X para identidad técnica, credenciales, firma/origen, versionado, idempotencia, deduplicación, rate limits, retry, circuit breaker, cuarentena, auditoría, conciliación, contingencia y retiro de integraciones externas;
+- los servicios transversales E4, incluidos integraciones externas/webhooks, notificaciones, trabajos asíncronos, outbox, evidencia y monitoreo;
+- los contratos tecnológicos de BLOQUE Z para red, proveedores, aplicaciones, telemetría, health, cambios, respaldo y recuperación técnica;
+- E5, T y U para readiness, cutover, piloto, hypercare, pruebas, release, despliegue, rollback y certificación;
+- el contrato de eventos empresariales, sus productoras y consumidoras, sin transformar webhooks, health checks o estados de proveedor en eventos empresariales por defecto;
+- la ruta prioritaria vigente y su frontera documental, sin activar alcance de implementación.
+
+La tarea no modifica la propiedad de procesos, el BIA, los objetivos de continuidad, las identidades de aplicaciones, el catálogo de eventos, las matrices de consumidoras, las reglas de autorización ni la fase vigente.
+
+---
+
+#### 4. Decisión principal
+
+Las dependencias externas se gobiernan mediante un modelo de **autoridad interna preservada y evidencia externa correlacionada**.
+
+```text
+TERCERO / INFRAESTRUCTURA
+→ observa o ejecuta una capacidad externa
+→ entrega estado, respuesta o evidencia técnica
+
+VENTO
+→ valida identidad, autenticidad, vigencia y alcance
+→ correlaciona con dependencia, servicio y proceso
+→ conserva su autoridad empresarial
+→ decide degradación, contingencia, recuperación y cierre conforme a sus contratos
+```
+
+Regla cardinal:
+
+```text
+ESTADO DEL PROVEEDOR
+≠
+ESTADO EMPRESARIAL DE VENTO
+```
+
+Una dependencia externa puede ser necesaria, pero no adquiere autoridad para declarar el resultado del proceso que la consume.
+
+---
+
+#### 5. Fronteras obligatorias
+
+Se preservan las siguientes separaciones:
+
+```text
+PROVEEDOR DISPONIBLE
+≠ SERVICIO BIA RECUPERADO
+```
+
+```text
+PROVEEDOR CAÍDO
+≠ CONTINUIDAD ACTIVADA
+```
+
+```text
+SLA DE PROVEEDOR
+≠ MTPD
+≠ RTO
+≠ RPO
+≠ MBCO
+```
+
+```text
+CONECTIVIDAD DE RED
+≠ HEALTH DE APLICACIÓN
+≠ DISPONIBILIDAD EMPRESARIAL
+```
+
+```text
+ENERGÍA RESTAURADA
+≠ SISTEMAS RECUPERADOS
+≠ DATOS CONCILIADOS
+```
+
+```text
+WEBHOOK RECIBIDO
+≠ HECHO EMPRESARIAL CONFIRMADO
+```
+
+```text
+MENSAJE ENVIADO
+≠ MENSAJE ENTREGADO
+≠ MENSAJE LEÍDO
+≠ ACCIÓN EJECUTADA
+```
+
+```text
+ESTADO EXTERNO DE TRANSPORTE
+≠ ESTADO CANÓNICO DEL PROCESO VENTO
+```
+
+```text
+FAILOVER TÉCNICAMENTE POSIBLE
+≠ FAILOVER AUTORIZADO
+```
+
+---
+
+#### 6. Contrato transversal de dependencia externa
+
+Toda integración de continuidad con una dependencia externa debe poder identificar, cuando aplique:
+
+| Dimensión                 | Regla                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `dependency_ref`          | referencia estable a la dependencia material, sin usar el nombre del proveedor como identidad universal |
+| `provider_ref`            | referencia al tercero o prestador cuando esté gobernada por su dominio propietario                      |
+| `contract_ref`            | referencia contractual cuando exista y esté autorizada                                                  |
+| `service_ref`             | servicio tecnológico o empresarial relacionado                                                          |
+| `process_ref`             | proceso `VPROC-*` que depende de la capacidad                                                           |
+| `bcs_ref`                 | servicio BIA `BCS-VPROC-*` aplicable                                                                    |
+| `application_ref`         | aplicación VENTO afectada cuando corresponda                                                            |
+| `site_scope`              | sede, región operacional o alcance físico cuando sea material y conocido                                |
+| `capability_ref`          | capacidad exacta consumida del tercero                                                                  |
+| `external_object_ref`     | identidad externa del objeto, transacción, mensaje, envío o recurso cuando exista                       |
+| `external_status`         | estado recibido sin reinterpretarlo como estado VENTO                                                   |
+| `observed_at`             | instante de observación                                                                                 |
+| `received_at`             | instante de recepción por VENTO                                                                         |
+| `freshness`               | vigencia utilizable de la observación                                                                   |
+| `correlation_ref`         | vínculo entre incidente, operación, callback, intento y evidencia                                       |
+| `idempotency_ref`         | identidad estable para efectos reintentables cuando aplique                                             |
+| `contract_version`        | versión del contrato de integración cuando exista                                                       |
+| `evidence_ref`            | referencia a evidencia suficiente y minimizada                                                          |
+| `continuity_incident_ref` | incidente de continuidad relacionado cuando realmente exista                                            |
+
+Los campos no conocidos no se completan mediante inferencia favorable.
+
+---
+
+#### 7. Identidad de proveedor, dependencia y capacidad
+
+Se preserva:
+
+```text
+PROVEEDOR
+≠ CONTRATO
+≠ SERVICIO
+≠ CAPACIDAD
+≠ DEPENDENCIA
+≠ ENDPOINT
+≠ CREDENCIAL
+```
+
+Reglas:
+
+1. una empresa proveedora puede prestar varias capacidades;
+2. una capacidad puede depender de varios componentes;
+3. un contrato comercial no demuestra que la capacidad esté operativa;
+4. un endpoint no demuestra por sí solo la identidad empresarial del proveedor;
+5. una credencial no determina la autoridad empresarial;
+6. una dependencia crítica requiere relación material con un resultado empresarial;
+7. la mera existencia de un SDK, URL, webhook, token, cuenta o integración no convierte al tercero en proveedor crítico;
+8. los aliases externos se mapean a identidades canónicas sin fusionarlas por texto libre.
+
+---
+
+#### 8. Autoridad y autenticación
+
+Toda integración externa debe preservar dos decisiones separadas:
+
+```text
+AUTENTICAR AL TERCERO O A LA INTEGRACIÓN
+≠
+AUTORIZAR EL EFECTO EMPRESARIAL
+```
+
+La integración podrá usar el mecanismo técnico aprobado por su tarea propietaria, pero CONT-INT-003 no selecciona API key, OAuth, HMAC, certificado, secreto compartido u otro mecanismo para una familia que no tenga esa decisión materializada.
+
+Reglas mínimas:
+
+- cada integración conserva identidad técnica independiente;
+- credenciales de desarrollo, staging y producción permanecen separadas;
+- secretos no se transportan como datos ordinarios del incidente;
+- logs y evidencia referencian credenciales sin exponer su valor;
+- una credencial de lectura no se reutiliza como escritura por conveniencia;
+- una credencial revocada no se reactiva por contingencia;
+- la urgencia no autoriza `service_role` como bypass de fronteras empresariales;
+- el receptor interno vuelve a validar la acción sobre su recurso.
+
+---
+
+#### 9. Modelo de estado externo
+
+La observación externa debe conservar el estado original y, cuando exista mapping aprobado, una interpretación interna separada.
+
+Estados externos pueden expresar, según el proveedor concreto:
+
+- disponibilidad;
+- indisponibilidad;
+- degradación;
+- mantenimiento;
+- rechazo;
+- aceptación técnica;
+- procesamiento;
+- entrega;
+- resultado final;
+- desconocido.
+
+CONT-INT-003 no impone esos nombres al tercero.
+
+La normalización interna de continuidad utiliza únicamente hechos suficientemente autenticados, frescos y correlacionados. Si no existe mapping validado:
+
+```text
+EXTERNAL_STATUS
+→ EVIDENCIA EXTERNA
+→ NO SE FABRICA HEALTH VENTO
+```
+
+---
+
+#### 10. Health y degradación externa
+
+Una dependencia externa puede aportar señales para el contrato de health, pero el health de VENTO sigue dependiendo de la capacidad empresarial y del alcance.
+
+Reglas:
+
+1. el estado del proveedor no se copia como health VENTO;
+2. se conserva frescura y fuente;
+3. la ausencia de respuesta no equivale automáticamente a `UNAVAILABLE` del proceso;
+4. un status page favorable no prueba el resultado real desde las sedes o aplicaciones VENTO;
+5. una falla local no se atribuye al proveedor sin evidencia;
+6. una falla del proveedor no se propaga a todas las capacidades que no dependan materialmente de él;
+7. la degradación conserva la capacidad mínima todavía disponible;
+8. el alcance se calcula por consumidores y dependencias reales, no por nombre del proveedor.
+
+---
+
+#### 11. Contrato con Supabase
+
+##### 11.1 Frontera
+
+Supabase actúa como sustrato técnico compartido para capacidades que pueden incluir base de datos, autenticación, Storage, funciones, Realtime u otros componentes efectivamente consumidos por VENTO.
+
+El hecho de persistir información no convierte a Supabase en propietaria funcional del proceso.
+
+##### 11.2 Autoridad conservada por VENTO
+
+Las aplicaciones propietarias conservan:
+
+- semántica y estados empresariales;
+- reglas de transición;
+- propiedad de expedientes;
+- autorización empresarial;
+- datos y documentos conforme a AA;
+- criterios de recuperación funcional.
+
+SHELL conserva sus decisiones de identidad, acceso y contexto conforme a su contrato.
+
+##### 11.3 Señales admisibles
+
+Una integración futura o existente puede aportar señales de:
+
+- disponibilidad del sustrato;
+- error de acceso;
+- error de persistencia;
+- error de autenticación;
+- error de Storage;
+- error de función;
+- latencia;
+- degradación de una dependencia;
+- fallo de una operación concreta.
+
+La tarea no declara que todos esos componentes estén habilitados para todas las aplicaciones.
+
+##### 11.4 Reglas de continuidad
+
+1. una base accesible no prueba que el proceso esté recuperado;
+2. autenticación disponible no prueba que la aplicación pueda completar su función;
+3. Storage disponible no prueba integridad del documento requerido;
+4. una réplica o sincronización no equivale a backup recuperable;
+5. backup exitoso no equivale a restauración probada;
+6. restore técnico no equivale a recuperación empresarial;
+7. una operación ambigua se reconcilia antes de repetirse si puede duplicar efecto;
+8. el retorno del sustrato no autoriza vaciar trabajo pendiente sin control;
+9. el acceso técnico compartido no autoriza escritura cruzada;
+10. cualquier modificación Supabase de VENTO permanece gobernada y versionada desde `vento-shell` en su fase propietaria.
+
+##### 11.5 Failover
+
+CONT-INT-003 no declara una región secundaria, proyecto alterno, réplica promocionable ni proveedor sustituto.
+
+Un failover de Supabase solo puede considerarse materializado cuando una tarea propietaria demuestre:
+
+- destino alterno exacto;
+- versión y compatibilidad;
+- datos y RPO alcanzables;
+- credenciales y autorización;
+- redireccionamiento;
+- consistencia de Storage y funciones aplicables;
+- estrategia de retorno;
+- prueba de restauración o conmutación;
+- evidencia.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Binding de failover concreto:** `PENDIENTE_DE_EVIDENCIA`.
+
+---
+
+#### 12. Contrato con nube
+
+##### 12.1 Definición
+
+La familia nube agrupa infraestructura o servicios administrados externos que soporten una capacidad VENTO y cuya identidad concreta deba provenir del inventario o contrato propietario.
+
+No se presume un único proveedor cloud universal.
+
+##### 12.2 Relación con continuidad
+
+Una dependencia cloud debe poder vincular:
+
+- proveedor o plataforma cuando esté identificado;
+- servicio concreto;
+- cuenta/proyecto/tenant gobernado cuando corresponda;
+- ambiente;
+- aplicación o servicio consumidor;
+- sede o población afectada cuando sea material;
+- dependencia superior e inferior;
+- health y evidencia;
+- plan de contingencia;
+- propietario interno.
+
+##### 12.3 Reglas
+
+- status regional no equivale a estado empresarial;
+- una región no se declara alternativa sin arquitectura aprobada;
+- una zona no se declara redundante por la sola capacidad comercial del proveedor;
+- escalar recursos no es failover por definición;
+- recrear infraestructura no prueba recuperación de datos;
+- migrar a otro prestador no se improvisa durante el incidente;
+- cambios de infraestructura protegida siguen autorización, change y BLOQUE T cuando corresponda.
+
+##### 12.4 Resultado
+
+El contrato neutral queda `ESPECIFICADO`.
+
+Proveedor, región, zona, cuenta, arquitectura de redundancia y mecanismo de failover permanecen `PENDIENTE_DE_EVIDENCIA` cuando no exista una decisión canónica concreta en la fuente propietaria.
+
+---
+
+#### 13. Contrato con energía
+
+##### 13.1 Frontera
+
+La energía se trata como dependencia física de sede, equipo, red, punto de atención, dispositivo o infraestructura cuando el BIA y el mapa de dependencias demuestren esa relación.
+
+##### 13.2 Estado y alcance
+
+El contrato debe distinguir:
+
+- energía normal disponible;
+- pérdida de energía;
+- energía parcial;
+- suministro inestable;
+- capacidad respaldada cuando exista evidencia;
+- autonomía restante cuando exista un mecanismo que la mida;
+- restablecimiento de suministro.
+
+Esos estados no se presumen si no existe fuente verificable.
+
+##### 13.3 Contingencia
+
+La estrategia aplicable puede ser, solo si fue aprobada para el proceso:
+
+- operación bloqueada;
+- procedimiento manual;
+- ubicación alternativa;
+- dispositivo alterno;
+- energía de respaldo;
+- reducción de capacidad;
+- suspensión controlada.
+
+CONT-INT-003 no declara la existencia de UPS, planta, batería, generador, circuito alterno ni sede sustituta sin evidencia propietaria.
+
+##### 13.4 Recuperación
+
+```text
+ENERGÍA RESTAURADA
+→ validar infraestructura
+→ validar red
+→ validar dispositivos
+→ validar aplicaciones
+→ validar datos y pendientes
+→ validar capacidad empresarial
+```
+
+El primer paso no confirma los siguientes.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Inventario físico de respaldo y autonomía:** `PENDIENTE_DE_EVIDENCIA` por sede/capacidad cuando no esté materializado en su fuente propietaria.
+
+---
+
+#### 14. Contrato con ISP
+
+##### 14.1 Frontera
+
+El ISP provee conectividad externa; BLOQUE Z conserva el modelo técnico de red y continuidad conserva la evaluación empresarial de la capacidad afectada.
+
+##### 14.2 Señales
+
+Pueden correlacionarse, cuando exista fuente válida:
+
+- reachability;
+- pérdida de conectividad;
+- latencia;
+- pérdida de paquetes;
+- degradación;
+- incidencia del proveedor;
+- mantenimiento;
+- restablecimiento.
+
+##### 14.3 No equivalencias
+
+```text
+ISP UP
+≠ APLICACIÓN HEALTHY
+```
+
+```text
+ISP DOWN
+≠ PROCESO TOTALMENTE INDISPONIBLE
+```
+
+```text
+SEGUNDO ENLACE COMERCIALMENTE DISPONIBLE
+≠ FAILOVER IMPLEMENTADO
+```
+
+##### 14.4 Failover
+
+Una alternativa ISP solo se considera utilizable si existen, como mínimo:
+
+- proveedor/enlace concreto;
+- sede y alcance;
+- capacidad suficiente;
+- direccionamiento/routing requerido;
+- configuración y seguridad;
+- mecanismo de detección y conmutación;
+- autorización;
+- prueba;
+- retorno al enlace normal.
+
+CONT-INT-003 no presume redundancia de ISP ni balanceo.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Redundancia ISP concreta por sede:** `PENDIENTE_DE_EVIDENCIA` salvo evidencia propietaria posterior.
+
+---
+
+#### 15. Contrato con pagos
+
+##### 15.1 Autoridad
+
+El dominio propietario del pago conserva el hecho empresarial y su estado canónico. El proveedor externo conserva su transacción y respuesta externa. La integración correlaciona ambas identidades.
+
+##### 15.2 Evidencia AS-IS verificable
+
+Existe en `vento-shell` un adaptador `payments-webhook` que actualmente:
+
+- recibe eventos del proveedor identificado como Wompi;
+- valida checksum del webhook;
+- correlaciona evento y transacción;
+- consulta eventos ya procesados;
+- reconoce duplicados procesados;
+- registra el evento recibido;
+- aplica el resultado mediante RPC propietaria;
+- conserva payload técnico como parte del tratamiento actual.
+
+Esta evidencia acredita código existente del adaptador. No acredita por sí sola disponibilidad productiva, SLA, RTO, proveedor alterno, failover, cobertura de todos los pagos ni operación remota validada.
+
+##### 15.3 Regla de estado
+
+```text
+PROVIDER_STATUS
+→ VALIDACIÓN DEL CONTRATO
+→ CORRELACIÓN CON TRANSACCIÓN
+→ APLICACIÓN POR PROPIETARIA
+→ HECHO INTERNO
+```
+
+El webhook por sí solo no adquiere autoridad para inventar la transacción interna.
+
+##### 15.4 Resultado ambiguo
+
+Ante timeout, pérdida de callback o resultado desconocido:
+
+- no se repite ciegamente el cobro;
+- se conserva la identidad de la intención;
+- se consulta o reconcilia el estado cuando el contrato lo permita;
+- se impide doble efecto;
+- se conserva evidencia externa e interna;
+- cualquier compensación o reversión sigue contrato propietario.
+
+##### 15.5 Contingencia
+
+La indisponibilidad del proveedor de pagos puede llevar a:
+
+- degradación del canal;
+- suspensión de la operación afectada;
+- método alterno únicamente si ya está aprobado por el proceso;
+- comunicación verdadera de pendiente o indisponibilidad.
+
+No se promete confirmación de pago sin evidencia autoritativa.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Adaptador Wompi observado en código:** `IMPLEMENTADO` como activo técnico; validación operativa/remota `PENDIENTE_DE_EVIDENCIA`.
+**Proveedor alterno de pagos:** no se declara sin evidencia canónica.
+
+---
+
+#### 16. Contrato con mensajería
+
+##### 16.1 Frontera
+
+Mensajería abarca canales externos o capacidades de entrega utilizados para notificaciones, alertas, comunicaciones o interacciones, sin convertir la entrega técnica en resultado empresarial.
+
+##### 16.2 Evidencia AS-IS verificable
+
+Existe en `vento-shell` una función `register-push-token` que:
+
+- exige usuario autenticado;
+- registra token de dispositivo;
+- conserva plataforma;
+- conserva estado de permiso;
+- conserva habilitación de notificaciones;
+- conserva nombre de dispositivo cuando se proporciona;
+- actualiza `last_seen`;
+- marca actividad conforme al permiso informado.
+
+Este activo demuestra registro de direccionamiento push. No demuestra una cadena transversal completa de renderizado, cola, envío, entrega, retry, historial y reconciliación multicanal.
+
+##### 16.3 Estados separados
+
+```text
+PREPARADO
+≠ ENCOLADO
+≠ ENVIADO
+≠ ACEPTADO POR CANAL
+≠ ENTREGADO
+≠ LEÍDO
+≠ COMPRENDIDO
+≠ ACCIÓN EJECUTADA
+```
+
+##### 16.4 Multicanal
+
+Una estrategia multicanal solo puede usar canales realmente autorizados y configurados.
+
+El fallo de un canal:
+
+- no autoriza copiar el mensaje a cualquier canal disponible;
+- conserva clasificación y audiencia;
+- aplica fallback únicamente si fue aprobado;
+- evita duplicación de efectos asociados a una respuesta del usuario;
+- conserva estado individual por canal.
+
+##### 16.5 Continuidad
+
+Una comunicación crítica debe poder conservar:
+
+- incidente;
+- mensaje/version;
+- audiencia;
+- canal;
+- intento;
+- resultado de entrega;
+- vigencia;
+- clasificación;
+- acknowledgement cuando aplique;
+- fallback aplicado cuando exista.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Registro de tokens push observado:** `IMPLEMENTADO` como activo parcial.
+**Servicio multicanal completo:** `PENDIENTE_DE_EVIDENCIA`.
+
+---
+
+#### 17. Contrato con transporte
+
+##### 17.1 Frontera
+
+Transporte representa una dependencia externa de movilidad, entrega, traslado o ejecución física cuando un proceso VENTO dependa materialmente de un tercero o servicio de transporte.
+
+CONT-INT-003 no presupone proveedor, flota, API, tracking, GPS, webhook ni agregador.
+
+##### 17.2 Estado externo
+
+Cuando exista integración, pueden consumirse referencias como:
+
+- solicitud externa;
+- asignación;
+- aceptación;
+- retiro/recogida;
+- tránsito;
+- entrega;
+- cancelación;
+- rechazo;
+- incidencia;
+- ubicación o ETA cuando estén autorizadas y sean suficientemente frescas.
+
+Esos conceptos deben mapearse al proceso propietario, no copiarse automáticamente como estado canónico VENTO.
+
+##### 17.3 Resultado empresarial
+
+```text
+PROVEEDOR DICE ENTREGADO
+≠ ENTREGA EMPRESARIAL VENTO CONFIRMADA
+```
+
+La propietaria define qué evidencia, aceptación o reconciliación convierte un resultado externo en hecho interno.
+
+##### 17.4 Contingencia
+
+Ante indisponibilidad:
+
+- el proceso evalúa si puede esperar, reprogramar, operar manualmente o usar alternativa aprobada;
+- la alternativa conserva identidad separada;
+- no se reasigna a un tercero no aprobado por urgencia;
+- trabajos ya aceptados conservan su estado y no se duplican al cambiar de prestador;
+- el retorno del proveedor original no anula operaciones ya reasignadas.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Binding concreto de proveedor/transporte:** `PENDIENTE_DE_EVIDENCIA` cuando no esté materializado por la tarea propietaria.
+
+---
+
+#### 18. Contrato con proveedores críticos
+
+##### 18.1 Criterio de criticidad
+
+Un proveedor se clasifica como dependencia crítica únicamente cuando la relación con un resultado empresarial esté materializada en BIA/dependencias y el impacto de su pérdida supere los umbrales aplicables.
+
+No basta con:
+
+- tener contrato;
+- tener gasto alto;
+- aparecer en una integración;
+- disponer de credenciales;
+- suministrar tecnología;
+- ser conocido por el equipo;
+- tener una alerta crítica propia.
+
+##### 18.2 Registro mínimo
+
+Para cada proveedor crítico materializado por sus tareas propietarias deben poder resolverse, cuando apliquen:
+
+- proveedor canónico;
+- capacidad suministrada;
+- contrato;
+- servicio/proceso consumidor;
+- propietario interno;
+- dependencia BIA;
+- ventana de impacto;
+- contacto/escalamiento autorizado;
+- evidencia de health;
+- método de soporte;
+- contingencia;
+- alternativa aprobada si existe;
+- condición de sustitución;
+- condición de retorno;
+- salida/portabilidad cuando corresponda.
+
+##### 18.3 Proveedor sustituto
+
+```text
+PROVEEDOR SUSTITUTO
+≠ PROVEEDOR POTENCIAL
+```
+
+La condición de sustituto exige evidencia suficiente de:
+
+- aprobación;
+- alcance;
+- capacidad;
+- seguridad;
+- contrato o mecanismo permitido;
+- datos/configuración necesarios;
+- compatibilidad;
+- prueba o readiness aplicable.
+
+##### 18.4 Concentración y dependencia común
+
+Debe identificarse cuando varias capacidades dependan del mismo:
+
+- proveedor;
+- tenant;
+- cuenta;
+- circuito;
+- región;
+- credencial;
+- canal;
+- integrador;
+- infraestructura compartida.
+
+La coincidencia solo se declara cuando exista evidencia. La tarea no inventa concentraciones no demostradas.
+
+**Contrato semántico:** `ESPECIFICADO`.
+**Inventario completo de proveedores críticos y sustitutos:** se conserva en las tareas propietarias de BIA/proveedores y permanece sujeto a evidencia vigente; CONT-INT-003 no crea un maestro paralelo.
+
+---
+
+#### 19. Matriz consolidada de las ocho familias
+
+| Familia           | Autoridad externa/técnica                | Autoridad VENTO conservada                           | Señal utilizable                                                     | Efecto que no puede inferirse                       | Estado contractual |
+| ----------------- | ---------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------- | ------------------ |
+| Supabase          | estado técnico del sustrato              | semántica, autorización y hechos de las propietarias | disponibilidad/error/latencia por componente cuando exista evidencia | proceso recuperado, autorización cruzada o failover | `ESPECIFICADO`     |
+| nube              | estado del servicio cloud concreto       | evaluación de dependencia y resultado empresarial    | status técnico autenticado y fresco                                  | redundancia, región alterna o recovery empresarial  | `ESPECIFICADO`     |
+| energía           | suministro físico observado              | decisión de contingencia por capacidad               | pérdida, parcialidad o restablecimiento cuando exista fuente         | sistemas/datos/proceso recuperados                  | `ESPECIFICADO`     |
+| ISP               | conectividad del enlace/proveedor        | health de red y resultado empresarial                | reachability/degradación/incidencia                                  | app saludable o continuidad activada                | `ESPECIFICADO`     |
+| pagos             | transacción/estado externo del proveedor | hecho de pago en dominio propietario                 | callback/consulta validada y correlacionada                          | cobro interno confirmado sin aceptación propietaria | `ESPECIFICADO`     |
+| mensajería        | entrega técnica del canal                | contenido, audiencia, acción y resultado empresarial | estados de entrega por canal                                         | lectura, comprensión o acción                       | `ESPECIFICADO`     |
+| transporte        | ejecución externa del servicio           | hecho logístico del proceso propietario              | status/evidencia externa correlacionada                              | entrega VENTO confirmada por status aislado         | `ESPECIFICADO`     |
+| proveedor crítico | capacidad externa contratada/prestada    | criticidad BIA, activación, contingencia y cierre    | health/soporte/evidencia contractual o técnica                       | criticidad o sustitución por mera existencia        | `ESPECIFICADO`     |
+
+Reconciliación:
+
+- esperadas: **8**;
+- materializadas: **8**;
+- faltantes: **0**;
+- duplicadas: **0**.
+
+---
+
+#### 20. Relación con BIA y objetivos de recuperación
+
+Toda dependencia externa debe conservar relación con el BIA aplicable.
+
+Reglas:
+
+1. MTPD pertenece al resultado empresarial, no al proveedor;
+2. RTO del proceso no se reemplaza por tiempo estimado de reparación del proveedor;
+3. RPO no se deriva de una política comercial de backup;
+4. MBCO no se satisface porque el proveedor declare servicio disponible;
+5. el SLA puede ser una restricción o insumo contractual, pero no redefine el objetivo de continuidad;
+6. si un objetivo empresarial es más estricto que la capacidad externa demostrada, la brecha debe quedar explícita;
+7. si una alternativa no puede satisfacer el mínimo empresarial, no se presenta como estrategia suficiente.
+
+---
+
+#### 21. Declaración y activación
+
+Una señal externa puede disparar evaluación, no activación automática.
+
+```text
+SEÑAL DE PROVEEDOR
+→ VALIDAR FUENTE Y FRESCURA
+→ RESOLVER DEPENDENCIA AFECTADA
+→ CALCULAR ALCANCE EN SERVICIOS/PROCESOS
+→ EVALUAR IMPACTO Y UMBRALES
+→ DECISIÓN AUTORIZADA
+→ DECLARACIÓN / ACTIVACIÓN CUANDO CORRESPONDA
+```
+
+Se prohíbe activar continuidad por:
+
+- status page aislado;
+- error HTTP aislado;
+- caída de un webhook;
+- alerta de ISP sin alcance resuelto;
+- pérdida de un token;
+- un dispositivo sin energía;
+- timeout de pago aislado;
+- mensaje no entregado aislado;
+- atraso de un transporte aislado;
+- severidad asignada unilateralmente por un proveedor.
+
+---
+
+#### 22. Rate limits, retries y resultado desconocido
+
+Las integraciones externas reintentables deben heredar los contratos X aplicables.
+
+Reglas:
+
+- identidad lógica estable antes del primer efecto;
+- deduplicación por proveedor/operación/alcance según contrato;
+- backoff y jitter;
+- respeto de `Retry-After` cuando sea válido;
+- presupuesto por destino y credencial;
+- separación de cuotas entre integraciones;
+- revalidación de autorización antes de un nuevo efecto sensible;
+- edad máxima del trabajo;
+- salida explícita al agotar presupuesto;
+- no reinicio del presupuesto por reiniciar proceso o cliente;
+- resultado posiblemente confirmado se consulta o reconcilia antes de repetir.
+
+```text
+TIMEOUT
+≠ FALLO CONFIRMADO
+≠ ÉXITO CONFIRMADO
+```
+
+---
+
+#### 23. Circuit breaker, bulkheads y aislamiento
+
+Cuando una implementación futura aplique circuit breaking o aislamiento:
+
+1. el circuito protege al sistema de una dependencia degradada;
+2. abrirlo no elimina trabajo;
+3. abrirlo no confirma trabajo;
+4. las pruebas half-open permanecen limitadas;
+5. proveedores y capacidades se aíslan cuando sea posible;
+6. una dependencia crítica no puede consumir toda la concurrencia y dejar starvation permanente al resto;
+7. el restablecimiento no libera simultáneamente todo el backlog;
+8. la prioridad no autoriza bypass de idempotencia ni autorización;
+9. el estado del circuito es técnico y no equivale a activación de continuidad.
+
+---
+
+#### 24. Failover y proveedor alterno
+
+CONT-INT-003 define el gate, no la alternativa concreta.
+
+Un failover solo puede ejecutarse cuando exista:
+
+1. alternativa identificada;
+2. autoridad para usarla;
+3. compatibilidad comprobada;
+4. datos/configuración necesarios;
+5. credenciales vigentes y separadas;
+6. capacidad suficiente;
+7. criterio de activación;
+8. secuencia de cutover;
+9. mecanismo contra doble efecto;
+10. observabilidad;
+11. rollback o retorno;
+12. prueba/readiness aplicable.
+
+Sin esos elementos:
+
+```text
+ALTERNATIVA = NO DEMOSTRADA
+```
+
+No se improvisa un proveedor sustituto durante el incidente.
+
+---
+
+#### 25. Contingencia sin proveedor alterno
+
+La ausencia de alternativa no permite fabricar una.
+
+El proceso debe usar únicamente estrategias ya aprobadas, por ejemplo:
+
+- operación bloqueada;
+- lectura de snapshot;
+- borrador controlado;
+- cola offline cuando aplique;
+- procedimiento manual;
+- ubicación alternativa;
+- reducción de capacidad;
+- comunicación de pendiente.
+
+La selección concreta pertenece al servicio/proceso y debe respetar `CONT-DOM-*`, autorización y UX de contingencia.
+
+---
+
+#### 26. Evidencia y auditoría
+
+Toda interacción material con un tercero debe permitir reconstruir, cuando aplique:
+
+- dependencia;
+- proveedor;
+- operación externa;
+- objeto externo;
+- incidente;
+- servicio/proceso;
+- actor o principal técnico;
+- credencial referenciada, nunca el secreto;
+- contrato/version;
+- request/callback;
+- firma o validación de origen;
+- tiempo del tercero y de VENTO;
+- intento;
+- respuesta;
+- resultado;
+- error;
+- decisión posterior;
+- evidencia original permitida;
+- reconciliación pendiente.
+
+La evidencia externa no se edita para hacerla concordar con el estado interno.
+
+---
+
+#### 27. Información, privacidad y secretos
+
+Durante una interrupción se preservan:
+
+- clasificación;
+- finalidad;
+- minimización;
+- retención;
+- legal hold;
+- territorialidad cuando aplique;
+- acceso por necesidad;
+- custodia de evidencia.
+
+No se colocan en tickets, eventos ordinarios, mensajes o bitácoras:
+
+- API keys;
+- service role keys;
+- tokens reutilizables;
+- secretos de webhook;
+- claves privadas;
+- OTP;
+- credenciales de proveedor;
+- cookies de sesión;
+- payload completo sensible cuando una referencia es suficiente.
+
+---
+
+#### 28. AS-IS verificable y límite de evidencia
+
+La tarea distingue código observado de operación validada.
+
+| Activo observado          | Evidencia actual                | Qué sí demuestra                                                                                                  | Qué no demuestra                                                                 |
+| ------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `payments-webhook`        | código vigente en `vento-shell` | adaptador de webhook Wompi, validación de checksum, correlación, deduplicación/registro y aplicación de estado    | operación productiva, SLA, failover, proveedor alterno o cobertura total         |
+| `club-revenuecat-webhook` | código vigente en `vento-shell` | adaptador externo autenticado por secreto que procesa eventos RevenueCat y actualiza superficies del dominio Club | idempotencia transversal completa, continuidad productiva, SLA o alternativa     |
+| `register-push-token`     | código vigente en `vento-shell` | registro autenticado de tokens y metadatos de notificación del trabajador                                         | servicio completo de entrega, retry, historial, multicanal o confirmación humana |
+
+La existencia de estos activos no permite generalizar su diseño a energía, ISP, nube, transporte u otros proveedores.
+
+Las familias cuyo binding concreto no está demostrado permanecen bajo contrato neutral y `PENDIENTE_DE_EVIDENCIA` para su materialización propietaria.
+
+---
+
+#### 29. Relación con Supabase y cambios físicos
+
+Toda futura modificación de Supabase perteneciente a VENTO:
+
+- se crea y versiona desde `vento-shell`;
+- revisa migraciones y esquema;
+- revisa consumidores;
+- revisa grants y RLS;
+- revisa funciones, triggers, Realtime y Storage cuando apliquen;
+- actualiza tipos y contratos;
+- define rollback;
+- se valida en la fase autorizada.
+
+CONT-INT-003 no ejecuta ninguna de esas acciones físicas.
+
+---
+
+#### 30. Relación con BLOQUE Z
+
+BLOQUE Z conserva:
+
+- red;
+- conectividad;
+- endpoints;
+- aplicaciones;
+- telemetría;
+- health técnico;
+- incidentes tecnológicos;
+- cambios;
+- soporte a proveedores tecnológicos;
+- recuperación técnica.
+
+Continuidad consume esa evidencia sin asumir que:
+
+- ISP = red;
+- cloud = aplicación;
+- provider status = health VENTO;
+- recuperación técnica = recuperación empresarial.
+
+La tarea no duplica los contratos tecnológicos externos definidos por Z; los especializa para la decisión empresarial de continuidad.
+
+---
+
+#### 31. Relación con ORIGO, NUMERA y autoridad contractual
+
+Cuando proveedor, compra, contrato o costo formen parte de una dependencia:
+
+- ORIGO conserva proveedor, compra y contrato dentro de su autoridad;
+- NUMERA conserva compromiso, gasto, costo y hecho económico;
+- continuidad conserva criticidad, dependencia, alternativa y decisión operativa;
+- BLOQUE Z conserva necesidad y contexto técnico cuando aplique.
+
+La continuidad no edita contrato o costo para resolver un incidente.
+
+Un contrato vigente no demuestra capacidad disponible.
+
+---
+
+#### 32. Relación con E4 y X
+
+E4 aporta capacidades técnicas compartidas cuando estén materializadas.
+
+X gobierna contratos externos y credenciales.
+
+CONT-INT-003 consume esas capacidades sin crear:
+
+- un bus de continuidad;
+- un endpoint universal;
+- un topic universal;
+- una tabla universal;
+- una credencial compartida;
+- un proveedor universal;
+- un webhook genérico que adquiera autoridad empresarial.
+
+---
+
+#### 33. Relación con E5, T y U
+
+Cuando una contingencia o alternativa requiera implementación física:
+
+- E5 debe planificar paquete, pruebas, readiness, cutover, piloto, hypercare, suspensión y rollback;
+- T debe ejecutar las pruebas, compatibilidad, release, deploy y rollback que correspondan;
+- U certifica transversalmente cuando el alcance llegue a esa etapa.
+
+CONT-INT-003 no convierte el contrato documental en readiness ni en autorización de implementación.
+
+---
+
+#### 34. Retorno del proveedor y recuperación
+
+Cuando una dependencia externa vuelva a estar disponible:
+
+```text
+PROVEEDOR DISPONIBLE
+→ validar estabilidad
+→ validar integración
+→ validar datos/operaciones pendientes
+→ validar capacidad técnica
+→ validar capacidad empresarial
+→ decidir retorno
+→ reconciliar pendientes conforme a CONT-INT-004
+```
+
+No se permite:
+
+- reactivar todo el backlog de forma ciega;
+- duplicar operaciones ejecutadas por contingencia;
+- sobrescribir hechos manuales;
+- cerrar el incidente antes de tratar pendientes;
+- volver al proveedor primario si el retorno no está autorizado o es inseguro.
+
+El contrato detallado de reincorporación y conciliación pertenece a `CONT-INT-004`.
+
+---
+
+#### 35. Pendientes y condiciones de salida
+
+| Pendiente                                 | Estado                                                   | Propietario                                                       | Condición de salida                                                        |
+| ----------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| failover concreto de Supabase             | `PENDIENTE_DE_EVIDENCIA`                                 | arquitectura/implementación propietaria de Supabase y continuidad | alternativa implementada, probada y reconciliable                          |
+| redundancia cloud concreta                | `PENDIENTE_DE_EVIDENCIA`                                 | arquitectura propietaria + E5/T                                   | región/zona/servicio alterno aprobado y probado                            |
+| energía de respaldo por sede/capacidad    | `PENDIENTE_DE_EVIDENCIA`                                 | instalaciones/continuidad + propietarios de sede                  | inventario, autonomía, mantenimiento y prueba materializados               |
+| ISP alterno por sede                      | `PENDIENTE_DE_EVIDENCIA`                                 | BLOQUE Z + continuidad + propietario contractual                  | enlace alterno identificado, configurado, autorizado y probado             |
+| alternativa de pagos                      | `PENDIENTE_DE_EVIDENCIA`                                 | dominio propietario de pagos + ORIGO/X + continuidad              | proveedor/método alterno aprobado con idempotencia y conciliación          |
+| servicio multicanal completo              | `PENDIENTE_DE_EVIDENCIA`                                 | E4 + ANIMA/SHELL + X                                              | entrega, retry, evidencia y fallback implementados y probados              |
+| binding de transporte                     | `PENDIENTE_DE_EVIDENCIA`                                 | proceso propietario + X + ORIGO cuando aplique                    | proveedor/contrato/mapping/evidencia materializados                        |
+| inventario vigente de sustitutos críticos | `PENDIENTE_DE_EVIDENCIA` por cada relación no demostrada | propietarios BIA/proveedor                                        | alternativa aprobada, capaz y probada por dependencia                      |
+| replay y reincorporación                  | `FUERA_DE_ALCANCE`                                       | `CONT-INT-004`                                                    | contrato completo de captura, replay, idempotencia, conciliación y retorno |
+
+No queda un pendiente sin propietario y condición de salida.
+
+---
+
+#### 36. Estado de la ruta prioritaria
+
+Se preserva el estado vigente:
+
+| Elemento                               | Estado          |
+| -------------------------------------- | --------------- |
+| `CONDITIONAL_DESIGN_ARTIFACTS`         | `APROBADA`      |
+| `CONDITIONAL_IMPLEMENTATION_SCOPE`     | `NO INICIADA`   |
+| `CONDITIONAL_IMPLEMENTATION_EXECUTION` | `NO INICIADA`   |
+| implementación física desde esta tarea | `NO AUTORIZADA` |
+
+La definición de contratos externos no modifica el carril prioritario ni activa implementación.
+
+---
+
+#### 37. Prohibiciones transversales
+
+Queda prohibido:
+
+1. convertir status externo en estado canónico sin mapping y aceptación propietaria;
+2. activar continuidad automáticamente desde una alerta de proveedor;
+3. cerrar continuidad porque el tercero vuelva a estar disponible;
+4. igualar SLA con RTO/RPO/MTPD/MBCO;
+5. declarar proveedor alterno sin evidencia;
+6. declarar redundancia cloud sin evidencia;
+7. declarar ISP redundante sin evidencia;
+8. declarar UPS, generador o autonomía sin evidencia;
+9. repetir un pago ambiguo a ciegas;
+10. convertir un webhook en fuente de verdad universal;
+11. convertir un token push en prueba de entrega;
+12. convertir `sent` en `delivered` o `read`;
+13. convertir tracking externo en hecho logístico interno sin aceptación propietaria;
+14. compartir secretos en tickets o mensajes;
+15. reutilizar credenciales entre ambientes o integraciones;
+16. usar `service_role` como autoridad empresarial;
+17. ampliar audiencia por contingencia;
+18. crear escritura cruzada para evitar una dependencia caída;
+19. inventar endpoint, región, SLA, credencial, plan, contrato o proveedor;
+20. ejecutar failover desde esta tarea;
+21. ejecutar cambios Supabase desde esta tarea;
+22. ejecutar replay desde esta tarea;
+23. desarrollar `CONT-INT-004` dentro de esta tarea.
+
+---
+
+#### 38. Estados de materialización
+
+| Resultado                              | Estado                                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------------------------- |
+| contrato Supabase                      | `ESPECIFICADO`                                                                            |
+| contrato nube                          | `ESPECIFICADO`                                                                            |
+| contrato energía                       | `ESPECIFICADO`                                                                            |
+| contrato ISP                           | `ESPECIFICADO`                                                                            |
+| contrato pagos                         | `ESPECIFICADO`                                                                            |
+| contrato mensajería                    | `ESPECIFICADO`                                                                            |
+| contrato transporte                    | `ESPECIFICADO`                                                                            |
+| contrato proveedores críticos          | `ESPECIFICADO`                                                                            |
+| webhook Wompi observado en código      | `IMPLEMENTADO` como activo técnico; operación remota `PENDIENTE_DE_EVIDENCIA`             |
+| webhook RevenueCat observado en código | `IMPLEMENTADO` como activo técnico; operación remota `PENDIENTE_DE_EVIDENCIA`             |
+| registro push observado en código      | `IMPLEMENTADO` como activo parcial; servicio de entrega completo `PENDIENTE_DE_EVIDENCIA` |
+| failovers concretos                    | `PENDIENTE_DE_EVIDENCIA` salvo decisión propietaria demostrada                            |
+| proveedores sustitutos concretos       | `PENDIENTE_DE_EVIDENCIA` salvo decisión propietaria demostrada                            |
+| implementación física                  | `FUERA_DE_ALCANCE`                                                                        |
+| replay/reincorporación                 | `FUERA_DE_ALCANCE` — `CONT-INT-004`                                                       |
+| cambios Supabase                       | `NO_APLICA` en esta tarea                                                                 |
+| cambios de requisitos de prueba        | `NO_APLICA` — cero cambios                                                                |
+
+---
+
+#### 39. Cobertura vigente de prueba
+
+La conducta materializada por CONT-INT-003 ya está protegida por el registro vigente.
+
+La cobertura existente incluye:
+
+- BIA, dependencia y objetivos empresariales de continuidad;
+- incidente, autoridad, declaración, activación, comunicación, recuperación y cierre;
+- contingencia y operación mínima;
+- respaldo, restauración y recuperación;
+- idempotencia, retry, resultado desconocido, deduplicación y reconciliación;
+- trazabilidad de triggers, webhooks, jobs y notificaciones;
+- contrato tecnológico transversal con ISP, proveedores, licenciamiento y telemetría;
+- ciclo de información y evidencia con terceros;
+- analítica y fuentes externas sin autoridad de escritura;
+- continuidad transversal con proveedores, red, energía, dispositivos, aplicaciones y bases;
+- perfiles de retry para eventos críticos y proveedores limitados por cuota;
+- circuit breaker y bulkheads;
+- control de concurrencia y prevención de retry storms;
+- revalidación de identidad, permiso, finalidad, contexto y versión antes de efectos sensibles.
+
+CONT-INT-003 distribuye y especializa esas reglas entre las ocho familias sin crear una conducta verificable nueva que requiera otra identidad de prueba.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: la tarea materializa el contrato documental de ocho familias que ya están cubiertas por requisitos vigentes de continuidad, integraciones externas, tecnología, información, analítica, idempotencia, resiliencia y reconciliación. No introduce un nuevo estado empresarial, permiso, transporte, proveedor, efecto, algoritmo de failover ni comportamiento ejecutable adicional.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 41. Criterios de aceptación
+
+- [x] se materializan exactamente ocho familias de ocho esperadas;
+- [x] Supabase conserva condición de sustrato técnico y no adquiere propiedad empresarial;
+- [x] compartir infraestructura no autoriza escritura cruzada;
+- [x] backup, réplica, sincronización y restore permanecen separados de recuperación empresarial;
+- [x] no se inventa failover de Supabase;
+- [x] nube queda definida sin inventar proveedor, región o zona;
+- [x] status cloud no equivale a recovery empresarial;
+- [x] energía se correlaciona por capacidad/sede y no por inferencia global;
+- [x] no se inventan UPS, generador, autonomía ni sede alterna;
+- [x] restablecimiento eléctrico exige revalidación técnica y empresarial;
+- [x] ISP conserva reachability separada de health y resultado empresarial;
+- [x] no se inventa segundo ISP ni balanceo;
+- [x] failover ISP exige alternativa identificada, configurada, autorizada y probada;
+- [x] pagos separa estado externo de hecho interno;
+- [x] el adaptador Wompi actual se registra como evidencia de código, no como validación operativa;
+- [x] resultado de pago desconocido no autoriza doble cobro;
+- [x] mensajería separa preparado, enviado, entregado, leído, comprendido y ejecutado;
+- [x] registro push actual se trata como activo parcial y no como servicio completo;
+- [x] fallback multicanal requiere canales aprobados;
+- [x] transporte conserva status externo separado de hecho canónico;
+- [x] no se inventa proveedor de transporte ni API;
+- [x] proveedor crítico exige relación material BIA;
+- [x] contrato, gasto o integración no bastan para declarar criticidad;
+- [x] proveedor sustituto exige capacidad, aprobación y evidencia;
+- [x] SLA externo no reemplaza objetivos BIA;
+- [x] señal externa puede iniciar evaluación pero no activar continuidad automáticamente;
+- [x] proveedor disponible no cierra continuidad;
+- [x] se conserva autenticación separada de autorización empresarial;
+- [x] secretos permanecen fuera de tickets, eventos y mensajes ordinarios;
+- [x] se hereda idempotencia y deduplicación por integración;
+- [x] se heredan rate limits, backoff, jitter y `Retry-After` cuando aplique;
+- [x] timeout se distingue de éxito y fallo confirmados;
+- [x] circuit breaker no pierde ni confirma trabajo;
+- [x] restablecimiento evita drenaje ciego del backlog;
+- [x] failover solo puede ejecutarse con alternativa materializada;
+- [x] contingencia sin alternativa usa únicamente estrategias aprobadas;
+- [x] evidencia conserva fuente, tiempo, resultado y correlación;
+- [x] evidencia externa no se reescribe para concordar con VENTO;
+- [x] se conserva clasificación, finalidad, minimización y retención;
+- [x] las ocho familias tienen estado contractual `ESPECIFICADO`;
+- [x] los bindings no demostrados quedan `PENDIENTE_DE_EVIDENCIA` con propietario y salida;
+- [x] la tarea crea cero cambios físicos;
+- [x] la tarea crea cero requisitos de prueba;
+- [x] la tarea modifica cero requisitos de prueba;
+- [x] no se actualiza 04A;
+- [x] no se modifica la ruta prioritaria;
+- [x] el alcance de implementación continúa `NO INICIADA`;
+- [x] replay y reincorporación permanecen fuera del alcance actual;
+- [x] `CONT-INT-004` permanece únicamente reservada.
+
+---
+
+#### 42. Handoff hacia CONT-INT-004
+
+CONT-INT-003 entrega al contrato posterior, por referencia y sin ejecutarlo:
+
+- dependencia;
+- proveedor;
+- servicio/proceso;
+- operación externa;
+- identidad externa e interna;
+- estado observado;
+- intentos;
+- idempotencia cuando aplique;
+- resultado conocido o desconocido;
+- evidencia;
+- trabajo pendiente;
+- contingencia aplicada;
+- proveedor/canal utilizado;
+- cambios de ruta o alternativa autorizada;
+- necesidad de reconciliación;
+- estado del incidente.
+
+`CONT-INT-004` conserva la responsabilidad de definir de forma completa captura, replay, idempotencia de reincorporación, deduplicación, conflictos, conciliación y retorno al servicio normal.
+
+---
+
+#### 43. Resultado de la tarea
+
+CONT-INT-003 deja cerrado el contrato documental de continuidad con las ocho familias externas e infraestructurales requeridas.
+
+El resultado permite que VENTO relacione una afectación externa con la operación empresarial sin convertir al tercero en dueño de la decisión:
+
+```text
+DEPENDENCIA EXTERNA
+→ SEÑAL / RESULTADO EXTERNO
+→ VALIDACIÓN DE FUENTE
+→ CORRELACIÓN
+→ HEALTH / DEGRADACIÓN VENTO
+→ EVALUACIÓN EMPRESARIAL
+→ DECISIÓN AUTORIZADA
+→ CONTINGENCIA / RECUPERACIÓN
+→ VALIDACIÓN
+→ PENDIENTES PARA REINCORPORACIÓN
+```
+
+La tarea no selecciona nueva infraestructura ni ejecuta integración, failover, cambio, replay o recuperación productiva.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`CONT-INT-002 — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X`
+
+TAREA ACTUAL APROBADA
+
+`CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos`
+
+SIGUIENTE TAREA RESERVADA
+
+`CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal`
+
+
 ### [ ] CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
