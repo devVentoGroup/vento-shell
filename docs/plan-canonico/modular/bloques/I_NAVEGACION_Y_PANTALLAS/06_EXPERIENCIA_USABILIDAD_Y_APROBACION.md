@@ -5,6 +5,35 @@ Esta sección organiza **experiencia usabilidad y aprobación** dentro de **I NA
 
 **Cobertura canónica:** `AUTH-UI-046` a `AUTH-UI-060` — 15 tareas.
 
+## Rectificación integral de `AUTH-UI-052..060`
+
+La evidencia producida para NEXO durante el carril histórico
+`NEXO-REMISSIONS-001` se conserva, pero no constituye aprobación global de las
+tareas `AUTH-UI-052` a `AUTH-UI-057`. Desde esta rectificación, esas seis tareas
+vuelven a `NO INICIADA` y deberán extender sus entregables a todas las
+aplicaciones canónicas: ANIMA, FOGO, NEXO, NUMERA, ORIGO, PASS, PULSO, TALENTO,
+VISO y VITAL.
+
+El trabajo NEXO contenido debajo de cada marcador es una subsección ya
+materializada que podrá reutilizarse. El cierre integral exige además:
+
+| Tarea | Cobertura global pendiente | Condición mínima de cierre |
+| --- | --- | --- |
+| `AUTH-UI-052` | entrada o página inicial de cada aplicación según actor, función, contexto y dispositivo | matriz de las diez aplicaciones, con `NO_APLICA` justificado cuando no exista inicio interactivo |
+| `AUTH-UI-053` | navegación por tareas frecuentes de cada aplicación | disposición por actor y tarea, sin convertir frecuencia o visibilidad en autoridad |
+| `AUTH-UI-054` | reducción de opciones irrelevantes en todas las superficies aplicables | decisión por superficie del inventario canónico, sin faltantes ni ocultamiento de trabajo autorizado |
+| `AUTH-UI-055` | prototipos testeables por rol, aplicación y estado crítico | catálogo de prototipos vinculado a las superficies aplicables y cobertura explícita de normalidad y recuperación |
+| `AUTH-UI-056` | validación interna previa de todos los prototipos | matriz de integridad, coherencia, accesibilidad y aptitud de prueba; no sustituye pruebas con usuarios |
+| `AUTH-UI-057` | criterio medible de usabilidad por cada superficie aplicable | relación completa con el inventario de 177 superficies y justificación expresa de cada `NO_APLICA` |
+| `AUTH-UI-058` | sesiones con usuarios reales sobre el universo aplicable | evidencia por aplicación, actor, dispositivo, superficie y escenario, sin datos productivos creados para la prueba |
+| `AUTH-UI-059` | registro y resolución de todos los problemas observados | severidad, evidencia, propietario, destino canónico, retest y estado por hallazgo |
+| `AUTH-UI-060` | decisión final por superficie | ninguna aprobación sin evidencia válida, criterios satisfechos y bloqueadores cerrados |
+
+Ninguna aplicación podrá declararse cubierta por asociación con NEXO. Ninguna
+tarea global podrá aprobarse mediante una sola instancia o paquete. Los cambios
+físicos posteriores se planificarán mediante `DELIV-PKG-001..025::<package_id>`
+y se ejecutarán únicamente después de la puerta aplicable del paquete.
+
 **Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
 
 **Límites funcionales:** comienza con “Mostrar contexto activo en cada aplicación” y concluye con “Aprobar la pantalla antes de retirarla del roadmap”.
@@ -16,18 +45,16 @@ Esta sección organiza **experiencia usabilidad y aprobación** dentro de **I NA
 ### [ ] AUTH-UI-049 — Estandarizar estados de carga
 ### [ ] AUTH-UI-050 — Estandarizar estados vacíos
 ### [ ] AUTH-UI-051 — Estandarizar errores recuperables
-### ✅ AUTH-UI-052 — Diseñar página inicial según actor
+### [ ] AUTH-UI-052 — Diseñar página inicial según actor
 
-**Estado:** APROBADA
-**Tarea anterior:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo` — APROBADA
-**Tarea siguiente:** `AUTH-UI-053 — Diseñar navegación según tareas frecuentes` — RESERVADA
-**Tipo de tarea:** documental; diseño funcional materializado de la página inicial de NEXO según actor efectivo, función activa, contexto territorial, trabajo autorizado y modalidad de dispositivo
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-051 — Estandarizar errores recuperables` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-053 — Diseñar navegación según tareas frecuentes` — NO INICIADA
+**Tipo de tarea:** documental global; diseño funcional de la entrada de cada aplicación según actor efectivo, función activa, contexto territorial, trabajo autorizado y modalidad de dispositivo
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, roles, procesos, datos, Supabase, migraciones, RLS, configuración ni despliegues
 
 ---
@@ -529,7 +556,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 19. Continuidad canónica
+#### 19. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -544,18 +573,16 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-053 — Diseñar navegación según tareas frecuentes`
 
 
-### ✅ AUTH-UI-053 — Diseñar navegación según tareas frecuentes
+### [ ] AUTH-UI-053 — Diseñar navegación según tareas frecuentes
 
-**Estado:** APROBADA
-**Tarea anterior:** `AUTH-UI-052 — Diseñar página inicial según actor` — APROBADA
-**Tarea siguiente:** `AUTH-UI-054 — Reducir opciones irrelevantes` — RESERVADA
-**Tipo de tarea:** documental; diseño funcional materializado de navegación de NEXO según tareas frecuentes, elegibilidad autoritativa, función activa, trabajo vigente, recurrencia verificable, continuidad reciente y modalidad de dispositivo
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-052 — Diseñar página inicial según actor` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-054 — Reducir opciones irrelevantes` — NO INICIADA
+**Tipo de tarea:** documental global; navegación de cada aplicación según tareas frecuentes, elegibilidad autoritativa, función activa, trabajo vigente, recurrencia verificable, continuidad reciente y modalidad de dispositivo
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie inicial consumida:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, roles, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
 
 ---
@@ -1145,7 +1172,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 17. Continuidad canónica
+#### 17. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -1160,18 +1189,16 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-054 — Reducir opciones irrelevantes`
 
 
-### ✅ AUTH-UI-054 — Reducir opciones irrelevantes
+### [ ] AUTH-UI-054 — Reducir opciones irrelevantes
 
-**Estado:** APROBADA
-**Tarea anterior:** `AUTH-UI-053 — Diseñar navegación según tareas frecuentes` — APROBADA
-**Tarea siguiente:** `AUTH-UI-055 — Crear prototipo por rol` — RESERVADA
-**Tipo de tarea:** documental; diseño funcional materializado de reducción de opciones de NEXO según relevancia autoritativa, función activa, trabajo vigente, disposición canónica, recurrencia válida, modalidad de dispositivo y necesidad de descubrimiento secundario
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-053 — Diseñar navegación según tareas frecuentes` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-055 — Crear prototipo por rol` — NO INICIADA
+**Tipo de tarea:** documental global; reducción de opciones de cada aplicación según relevancia autoritativa, función activa, trabajo vigente, disposición canónica, recurrencia válida, modalidad de dispositivo y necesidad de descubrimiento secundario
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie inicial consumida:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, roles, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
 
 ---
@@ -1783,7 +1810,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 18. Continuidad canónica
+#### 18. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -1798,18 +1827,16 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-055 — Crear prototipo por rol`
 
 
-### ✅ AUTH-UI-055 — Crear prototipo por rol
+### [ ] AUTH-UI-055 — Crear prototipo por rol
 
-**Estado:** APROBADA
-**Tarea anterior:** `AUTH-UI-054 — Reducir opciones irrelevantes` — APROBADA
-**Tarea siguiente:** `AUTH-UI-056 — Validar prototipo antes de implementar` — RESERVADA
-**Tipo de tarea:** documental; creación de prototipo visual testeable y cuestionario único de prueba para la superficie inicial de NEXO en ocho contextos de actor, función y dispositivo
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-054 — Reducir opciones irrelevantes` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-056 — Validar prototipo antes de implementar` — NO INICIADA
+**Tipo de tarea:** documental global; creación de prototipos visuales testeables por aplicación, rol, función, dispositivo y estado crítico
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código productivo, componentes de aplicación, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
 **Artefacto visual asociado:** `NEXO_PROTOTIPO_TEST_USUARIOS_AUTH_UI_055_057.pptx`
 **Instrumento asociado:** cuestionario único `NEXO-USABILITY-SINGLE-QUESTIONNAIRE-001`
@@ -2159,7 +2186,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 15. Continuidad canónica
+#### 15. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -2173,18 +2202,16 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 `AUTH-UI-056 — Validar prototipo antes de implementar`
 
-### ✅ AUTH-UI-056 — Validar prototipo antes de implementar
+### [ ] AUTH-UI-056 — Validar prototipo antes de implementar
 
-**Estado:** APROBADA
-**Tarea anterior:** `AUTH-UI-055 — Crear prototipo por rol` — APROBADA
-**Tarea siguiente:** `AUTH-UI-057 — Definir criterio de usabilidad por pantalla` — RESERVADA
-**Tipo de tarea:** documental; validación interna de integridad, coherencia y aptitud de prueba del prototipo visual testeable y cuestionario único, sin ejecución con usuarios
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-055 — Crear prototipo por rol` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-057 — Definir criterio de usabilidad por pantalla` — NO INICIADA
+**Tipo de tarea:** documental global; validación interna de integridad, coherencia, accesibilidad y aptitud de prueba de todos los prototipos aplicables, sin ejecución con usuarios
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código productivo, componentes de aplicación, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
 **Artefacto evaluado:** `NEXO_PROTOTIPO_TEST_USUARIOS_AUTH_UI_055_057.pptx`
 **Instrumento evaluado:** `NEXO-USABILITY-SINGLE-QUESTIONNAIRE-001`
@@ -2413,7 +2440,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 13. Continuidad canónica
+#### 13. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -2427,18 +2456,16 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 `AUTH-UI-057 — Definir criterio de usabilidad por pantalla`
 
-### ✅ AUTH-UI-057 — Definir criterio de usabilidad por pantalla
+### [ ] AUTH-UI-057 — Definir criterio de usabilidad por pantalla
 
-**Estado:** APROBADA
-**Tarea anterior:** `AUTH-UI-056 — Validar prototipo antes de implementar` — APROBADA
-**Tarea siguiente:** `AUTH-UI-058 — Probar con usuarios reales` — RESERVADA
-**Tipo de tarea:** documental; definición de criterios, umbrales y reglas de decisión para evaluar las dieciséis pantallas testeables mediante un único cuestionario de prueba
+**Estado:** NO INICIADA; evidencia parcial NEXO conservada
+**Tarea anterior:** `AUTH-UI-056 — Validar prototipo antes de implementar` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-058 — Probar con usuarios reales` — NO INICIADA
+**Tipo de tarea:** documental global; definición de criterios, umbrales y reglas de decisión por cada superficie aplicable del inventario canónico
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
-**Repositorio de aplicación inspeccionado:** `vento-nexo`
-**Ruta prioritaria:** `NEXO-REMISSIONS-001`
-**Etapa prioritaria:** `NEXO_UI_VALIDATION`
-**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Evidencia parcial inspeccionada:** `vento-nexo`, `NEXO-ROUTE-001` — `/`
+**Ruta vigente:** flujo canónico integral; el carril `NEXO-REMISSIONS-001` queda únicamente como procedencia histórica de la evidencia NEXO
 **Cambios físicos autorizados:** ninguno; no modifica código productivo, componentes de aplicación, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
 **Artefacto evaluable:** `NEXO_PROTOTIPO_TEST_USUARIOS_AUTH_UI_055_057.pptx`
 **Instrumento de recolección:** `NEXO-USABILITY-SINGLE-QUESTIONNAIRE-001`
@@ -2684,7 +2711,9 @@ Ningún destino anterior se inicia mediante esta tarea.
 
 ---
 
-#### 14. Continuidad canónica
+#### 14. Traza histórica del carril NEXO
+
+> Esta fotografía dejó de ser continuidad vigente. Se conserva únicamente como evidencia de la ejecución parcial que originó los artefactos NEXO.
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -2699,5 +2728,96 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-058 — Probar con usuarios reales`
 
 ### [ ] AUTH-UI-058 — Probar con usuarios reales
+
+**Estado:** NO INICIADA
+**Tarea anterior:** `AUTH-UI-057 — Definir criterio de usabilidad por pantalla` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-059 — Registrar problemas encontrados` — NO INICIADA
+**Tipo de tarea:** validación operativa integral; ejecución de sesiones con usuarios reales sobre las aplicaciones, actores, dispositivos, superficies y escenarios aplicables
+**Cambios físicos autorizados:** ninguno; la tarea observa y registra, pero no corrige código, datos, configuración ni infraestructura durante una sesión
+
+#### Alcance y entregables obligatorios
+
+1. Consumir el inventario íntegro de superficies y la matriz aprobada en
+   `AUTH-UI-057`; queda prohibido limitar la muestra a NEXO o Remisiones.
+2. Definir participantes por actor efectivo, función y aplicación, sin usar el
+   cargo como sustituto de permisos o trabajo real.
+3. Cubrir escritorio, móvil, tableta, quiosco o dispositivo compartido cuando
+   la superficie los declare aplicables.
+4. Ejecutar los estados normal, vacío, carga, denegación, error recuperable,
+   expiración, revocación y recuperación que correspondan.
+5. Registrar por sesión: aplicación, superficie, escenario, actor, dispositivo,
+   versión del prototipo, duración, resultado, ayuda, error crítico,
+   observaciones y referencia de evidencia saneada.
+6. No crear datos operativos o productivos para completar una prueba sin
+   autorización explícita; utilizar fixtures, entornos o datos autorizados y
+   declarar cualquier escenario no ejecutado.
+7. Conservar cada resultado real sin convertir inspección documental, build,
+   typecheck o simulación interna en evidencia de usuario.
+
+#### Condición de cierre
+
+La tarea solo podrá aprobarse cuando toda superficie aplicable tenga evidencia
+de sesión suficiente o una justificación `NO_APLICA` revisable; toda ausencia,
+bloqueo o imposibilidad queda registrada y enrutada, nunca omitida.
+
 ### [ ] AUTH-UI-059 — Registrar problemas encontrados
+
+**Estado:** NO INICIADA
+**Tarea anterior:** `AUTH-UI-058 — Probar con usuarios reales` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-060 — Aprobar la pantalla antes de retirarla del roadmap` — NO INICIADA
+**Tipo de tarea:** documental y de enrutamiento integral; consolidación de todos los hallazgos reales de usabilidad sin corregirlos silenciosamente
+**Cambios físicos autorizados:** ninguno; cada corrección se asigna a su tarea o paquete propietario
+
+#### Registro obligatorio por hallazgo
+
+Cada problema deberá conservar un identificador estable, aplicación,
+superficie, actor, dispositivo, escenario, criterio fallido, severidad,
+evidencia, riesgo, pasos de reproducción, propietario, tarea o paquete destino,
+criterio de corrección, prueba de regresión, estado y evidencia de retest.
+
+El registro deberá reconciliarse contra todas las sesiones de `AUTH-UI-058` y
+demostrar explícitamente:
+
+- cero observaciones sin decisión;
+- cero hallazgos sin propietario y destino canónico;
+- cero problemas críticos cerrados solo por aceptación verbal;
+- cero cambios de permisos, procesos o contratos ocultos dentro de una
+  corrección visual;
+- separación entre defecto, deuda, solicitud de cambio, bloqueo de datos,
+  bloqueo físico y resultado `NO_APLICA`.
+
+#### Condición de cierre
+
+La tarea termina cuando el universo de observaciones está reconciliado y cada
+hallazgo tiene resolución demostrada, diferimiento explícito que bloquee la
+aprobación correspondiente o destino posterior completo.
+
 ### [ ] AUTH-UI-060 — Aprobar la pantalla antes de retirarla del roadmap
+
+**Estado:** NO INICIADA
+**Tarea anterior:** `AUTH-UI-059 — Registrar problemas encontrados` — NO INICIADA
+**Tarea siguiente:** `AUTH-UI-061 — Confirmar que todas las pantallas tienen responsable funcional y técnico` — NO INICIADA
+**Tipo de tarea:** puerta documental integral; decisión individual de aprobación, bloqueo o no aplicabilidad por superficie canónica
+**Cambios físicos autorizados:** ninguno
+
+#### Matriz final obligatoria
+
+La decisión deberá cubrir las 177 superficies canónicas y registrar, como
+mínimo: aplicación, identidad de superficie, propietario funcional, propietario
+técnico, actores probados, dispositivos probados, criterios consumidos,
+sesiones de evidencia, problemas vinculados, bloqueadores abiertos, resultado,
+revisor y fecha.
+
+Los únicos resultados admisibles son `APROBADA`, `BLOQUEADA` y `NO_APLICA`
+justificado. Una superficie no puede aprobarse si carece de evidencia real,
+mantiene problemas críticos o altos sin resolución aceptada, incumple
+autorización/accesibilidad/recuperación, o depende de una implementación que
+continúa pendiente.
+
+#### Condición de cierre
+
+`AUTH-UI-060` solo podrá aprobarse globalmente cuando las 177 identidades estén
+reconciliadas exactamente una vez, sin faltantes ni duplicados, y toda pantalla
+bloqueada conserve una tarea o paquete posterior que impida retirarla del
+roadmap. La aprobación de NEXO, una aplicación o un paquete no aprueba las
+demás.

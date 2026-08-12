@@ -105,6 +105,19 @@ test('acepta avanzar el carril después de aprobar un control virtual con guione
   assert.equal(result.handoffTask, 'SHELL-AUD-001');
 });
 
+test('acepta continuar por el flujo canónico integral sin carril prioritario', () => {
+  const sources = validSources();
+  sources.activeSequence = JSON.stringify({
+    generated_from: 'execution-route.json',
+    route_id: 'NORMAL-CANONICAL-FLOW-001',
+    sequence_id: 'PHASE-04-E2-CROSS-DOMAIN-DESIGN',
+    previous_task_id: 'INT-APP-010',
+    handoff_task_id: 'INT-EXT-002',
+  });
+  const result = validateE3TransitionClosureSources(sources);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
 test('rechaza una secuencia ajena que no demuestre avance desde E3 hacia H', () => {
   const sources = validSources();
   sources.activeSequence = JSON.stringify({

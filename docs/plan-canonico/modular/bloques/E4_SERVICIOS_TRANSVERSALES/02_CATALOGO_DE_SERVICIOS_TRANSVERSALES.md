@@ -1,5 +1,12 @@
 ### CATÁLOGO DE SERVICIOS TRANSVERSALES
 
+> **Semántica vigente:** las matrices de diez servicios por diez aplicaciones
+> son el alcance canónico aprobado. Toda mención posterior a
+> `NEXO-REMISSIONS-001` conserva únicamente la especialización histórica que se
+> produjo para ese carril y no define prioridad, propietario, paquete ni
+> continuidad actuales. La implementación se asignará mediante
+> `DELIV-PKG-001..025::<package_id>`.
+
 ### ✅ TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
 
 **Estado:** APROBADA
@@ -23,7 +30,7 @@ Materializar el inventario canónico, exhaustivo y trazable de los servicios té
 - servicios transversales canónicos completos;
 - brechas que deben ser resueltas por las tareas posteriores del bloque `TSVC-CAT` y por las fases de implementación correspondientes.
 
-El inventario sirve como universo estable para continuar la línea prioritaria `NEXO-REMISSIONS-001` sin tratar como servicio transversal completo una pantalla, una tabla, una función, un webhook, un registro de dispositivo o una integración local aislada.
+El inventario sirve como universo estable para continuar el flujo canónico integral. La especialización histórica `NEXO-REMISSIONS-001` se conserva sin tratar como servicio transversal completo una pantalla, una tabla, una función, un webhook, un registro de dispositivo o una integración local aislada.
 
 ---
 
@@ -6575,5 +6582,4 @@ TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
 SIGUIENTE TAREA RESERVADA
 AUTH-UI-030 — Asignar permiso de lectura a cada vista
 ```
-
 

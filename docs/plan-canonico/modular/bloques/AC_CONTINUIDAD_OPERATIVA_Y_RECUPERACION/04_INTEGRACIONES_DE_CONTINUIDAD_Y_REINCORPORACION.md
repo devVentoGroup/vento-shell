@@ -1301,7 +1301,7 @@ Esta tarea consume y conserva, sin redefinir:
 - BLOQUE X, especialmente `INT-APP-001` a `INT-APP-010`, para catálogo de eventos, productores, consumidores, idempotencia, retry, compensación, auditoría y prohibición de escritura cruzada;
 - `EVENT-ENVELOPE-001` cuando el intercambio sea un evento empresarial;
 - los contratos compartidos de SHELL cuando la interacción corresponda a contexto, acción, evento, handoff, trabajo pendiente o propiedad funcional;
-- la ruta prioritaria vigente `NEXO-REMISSIONS-001`, cuya fase de diseño condicional está aprobada y cuyo alcance de implementación condicional permanece no iniciado.
+- el registro histórico suspendido `NEXO-REMISSIONS-001`, cuya evidencia documental se conserva y cuya implementación física nunca fue iniciada ni habilitada.
 
 La tarea no modifica propiedad de procesos, identidades de aplicación, criticidades BIA, objetivos de continuidad, contratos de autorización, catálogo de eventos, consumidores, servicios transversales ni alcance de la ruta prioritaria.
 
@@ -4546,7 +4546,7 @@ SIGUIENTE TAREA RESERVADA
 
 **Estado:** APROBADA
 **Tarea anterior:** `CONT-INT-003 — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos` — APROBADA
-**Tarea siguiente:** `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE` — RESERVADA
+**Tarea siguiente dentro del flujo integral:** `NEXO-DOM-002 — Definir propósito y tipos canónicos de LPN` — NO INICIADA; `NEXO-DOM-001` ya conserva su aprobación documental
 **Tipo de tarea:** documental; contrato transversal de integración para captura, reconexión, replay controlado, idempotencia, reincorporación, conciliación y retorno al servicio normal sin duplicar efectos ni transferir propiedad entre dominios
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/04_INTEGRACIONES_DE_CONTINUIDAD_Y_REINCORPORACION.md`
@@ -5727,5 +5727,5 @@ Esta tarea no:
 TAREA ACTUAL APROBADA
 `CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal`
 
-SIGUIENTE TAREA RESERVADA
-`NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE`
+SIGUIENTE TAREA PENDIENTE DENTRO DEL FLUJO INTEGRAL
+`NEXO-DOM-002 — Definir propósito y tipos canónicos de LPN`

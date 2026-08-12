@@ -23,8 +23,8 @@ Esta sección organiza **produccion e inventario** dentro de **X INTEGRACIONES**
 ### ✅ INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
 
 **Estado:** APROBADA  
-**Tarea anterior:** `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS` — APROBADA  
-**Tarea siguiente:** `PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo` — RESERVADA  
+**Tarea anterior dentro del flujo integral:** `INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado` — NO INICIADA
+**Tarea siguiente dentro del flujo integral:** `INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente` — NO INICIADA
 **Tipo de tarea:** documental; definición contractual, funcional, cuantitativa, de estados, integración, excepciones, idempotencia, conciliación y handoff para vincular faltantes de remisiones NEXO con planificación y ejecución productiva FOGO  
 **Repositorio propietario:** `vento-shell`  
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md`  
@@ -631,7 +631,7 @@ La conciliación no reescribe saldos directamente. Toda corrección cuantitativa
 La implementación posterior deberá:
 
 1. materializar contratos compartidos y tipos desde `vento-shell`;
-2. incluir `INT-PROD-005` en el paquete `NEXO-REMISSIONS-001`;
+2. incluir `INT-PROD-005` únicamente en el paquete propietario que se defina mediante `DELIV-PKG-001::<package_id>`;
 3. activar el grupo condicional `PRODUCTION_LINK_IMPLEMENTATION` y ejecutar `NEXO-AUTH-007`;
 4. definir almacenamiento propietario sin escrituras cruzadas;
 5. versionar desde `vento-shell` cualquier migración o configuración Supabase de VENTO;
@@ -694,17 +694,17 @@ La tarea se considera documentalmente completa cuando:
 
 ---
 
-#### 25. Continuidad canónica
+#### 25. Continuidad integral rectificada
 
 ```text
-ÚLTIMA TAREA APROBADA
-NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS
+PREDECESORA CANÓNICA PENDIENTE
+INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
         ↓
-TAREA ACTUAL APROBADA
+EVIDENCIA DOCUMENTAL YA APROBADA
 INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
         ↓
-SIGUIENTE TAREA RESERVADA
-PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo
+SIGUIENTE TAREA DEL FLUJO INTEGRAL
+INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente
 ```
 
 

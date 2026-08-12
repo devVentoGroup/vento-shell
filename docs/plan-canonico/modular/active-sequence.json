@@ -1,281 +1,57 @@
 {
-  "schema_version": 2,
+  "schema_version": 1,
   "generated_from": "execution-route.json",
-  "route_id": "NEXO-REMISSIONS-001",
-  "sequence_id": "PRIORITY-NEXO-REMISSIONS-001-STAGE-017",
-  "block_code": "CARRIL NEXO",
-  "block_title": "Remisiones NEXO como primer paquete vertical — etapa 17: PACKAGE_DEFINITION",
-  "previous_task_id": "NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE",
-  "latest_treq_task_id": "NEXO-UX-025",
-  "handoff_task_id": "READY-GATE-001::NEXO-REMISSIONS-001",
-  "handoff_sequence_id": "PRIORITY-NEXO-REMISSIONS-001-STAGE-018",
-  "task_ids": [
-    "DELIV-PKG-001::NEXO-REMISSIONS-001",
-    "DELIV-PKG-002::NEXO-REMISSIONS-001",
-    "DELIV-PKG-003::NEXO-REMISSIONS-001",
-    "DELIV-PKG-004::NEXO-REMISSIONS-001",
-    "DELIV-PKG-005::NEXO-REMISSIONS-001",
-    "DELIV-PKG-006::NEXO-REMISSIONS-001",
-    "DELIV-PKG-007::NEXO-REMISSIONS-001",
-    "DELIV-PKG-008::NEXO-REMISSIONS-001",
-    "DELIV-PKG-009::NEXO-REMISSIONS-001",
-    "DELIV-PKG-010::NEXO-REMISSIONS-001",
-    "DELIV-PKG-011::NEXO-REMISSIONS-001",
-    "DELIV-PKG-012::NEXO-REMISSIONS-001",
-    "DELIV-PKG-013::NEXO-REMISSIONS-001",
-    "DELIV-PKG-014::NEXO-REMISSIONS-001",
-    "DELIV-PKG-015::NEXO-REMISSIONS-001",
-    "DELIV-PKG-016::NEXO-REMISSIONS-001",
-    "DELIV-PKG-017::NEXO-REMISSIONS-001",
-    "DELIV-PKG-018::NEXO-REMISSIONS-001",
-    "DELIV-PKG-019::NEXO-REMISSIONS-001",
-    "DELIV-PKG-020::NEXO-REMISSIONS-001",
-    "DELIV-PKG-021::NEXO-REMISSIONS-001",
-    "DELIV-PKG-022::NEXO-REMISSIONS-001",
-    "DELIV-PKG-023::NEXO-REMISSIONS-001",
-    "DELIV-PKG-024::NEXO-REMISSIONS-001",
-    "DELIV-PKG-025::NEXO-REMISSIONS-001"
-  ],
-  "virtual_tasks": [
+  "route_id": "NORMAL-CANONICAL-FLOW-001",
+  "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
+  "block_code": "BLOQUE X",
+  "block_title": "Contratos de integración y transiciones",
+  "previous_task_id": "INT-APP-010",
+  "latest_treq_task_id": "SUPA-TRANS-006",
+  "handoff_task_id": "QUEUE-ARC-001",
+  "handoff_sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
+  "segments": [
     {
-      "id": "NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE",
-      "title": "Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE",
-      "state": "APROBADA",
-      "marker": "✅",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-EXT",
+      "from": 1,
+      "to": 20
     },
     {
-      "id": "DELIV-PKG-001::NEXO-REMISSIONS-001",
-      "title": "Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-WORK",
+      "from": 1,
+      "to": 5
     },
     {
-      "id": "DELIV-PKG-002::NEXO-REMISSIONS-001",
-      "title": "Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-PROC",
+      "from": 1,
+      "to": 5
     },
     {
-      "id": "DELIV-PKG-003::NEXO-REMISSIONS-001",
-      "title": "Definir aplicación, dominio y repositorio propietarios [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-PROD",
+      "from": 1,
+      "to": 4
     },
     {
-      "id": "DELIV-PKG-004::NEXO-REMISSIONS-001",
-      "title": "Definir estado AS-IS y resultado TO-BE verificable [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-POS",
+      "from": 1,
+      "to": 24
     },
     {
-      "id": "DELIV-PKG-005::NEXO-REMISSIONS-001",
-      "title": "Definir alcance incluido, excluido y diferido [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-SALES",
+      "from": 1,
+      "to": 11
     },
     {
-      "id": "DELIV-PKG-006::NEXO-REMISSIONS-001",
-      "title": "Definir pantallas, componentes y navegación que se crearán o modificarán [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-007::NEXO-REMISSIONS-001",
-      "title": "Definir lógica de dominio, Server Actions, API, RPC y Edge Functions [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-008::NEXO-REMISSIONS-001",
-      "title": "Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-009::NEXO-REMISSIONS-001",
-      "title": "Definir migraciones, backfills, compatibilidad y retiro legacy [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-010::NEXO-REMISSIONS-001",
-      "title": "Definir eventos emitidos, consumidos, colas y compensaciones [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-011::NEXO-REMISSIONS-001",
-      "title": "Definir impresión, notificaciones, documentos y evidencia requeridos [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-012::NEXO-REMISSIONS-001",
-      "title": "Definir permisos, modalidad, alcance, contexto y contrato de recurso [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-013::NEXO-REMISSIONS-001",
-      "title": "Definir requisitos no funcionales aplicables [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-014::NEXO-REMISSIONS-001",
-      "title": "Enumerar archivos exactos que se crearán, modificarán o retirarán [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-015::NEXO-REMISSIONS-001",
-      "title": "Definir dependencias, bloqueos y orden de aplicación [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-016::NEXO-REMISSIONS-001",
-      "title": "Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-017::NEXO-REMISSIONS-001",
-      "title": "Definir observabilidad, métricas, logs, alertas y auditoría [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-018::NEXO-REMISSIONS-001",
-      "title": "Definir feature flags, configuración y activación progresiva [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-019::NEXO-REMISSIONS-001",
-      "title": "Definir estrategia de despliegue y rollout [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-020::NEXO-REMISSIONS-001",
-      "title": "Definir rollback técnico, funcional y de datos [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-021::NEXO-REMISSIONS-001",
-      "title": "Definir documentación, procedimiento y capacitación [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-022::NEXO-REMISSIONS-001",
-      "title": "Definir alcance, actores, datos y duración del piloto [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-023::NEXO-REMISSIONS-001",
-      "title": "Definir criterios de aceptación y evidencia de cierre [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-024::NEXO-REMISSIONS-001",
-      "title": "Vincular el paquete con el registro canónico de brechas [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "DELIV-PKG-025::NEXO-REMISSIONS-001",
-      "title": "Aprobar el paquete antes de iniciar implementación física [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
-    },
-    {
-      "id": "READY-GATE-001::NEXO-REMISSIONS-001",
-      "title": "Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo [NEXO-REMISSIONS-001]",
-      "state": "NO INICIADA",
-      "marker": "[ ]",
-      "relativePath": "priority-route-progress.json",
-      "virtual": true
+      "prefix": "INT-MKT",
+      "from": 1,
+      "to": 3
     }
   ],
-  "priority_stage": {
-    "order": 17,
-    "stage_id": "PACKAGE_DEFINITION",
-    "total_stages": 44
-  },
-  "deferred_task_ids": [
-    "AUTH-UI-058",
-    "AUTH-UI-059",
-    "AUTH-UI-060"
-  ],
-  "deferred_to_stage_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
-  "deferred_reason": "AUTH-UI-058 a AUTH-UI-060 se ejecutan después de implementar las pantallas NEXO. Las pantallas implementadas y utilizables son la superficie de prueba; el prototipo visual y el cuestionario aprobado se conservan únicamente como línea base e instrumento de recolección.",
-  "return_policy": "RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION",
-  "priority_route_complete": false,
-  "post_priority_route": {
-    "route_id": "NORMAL-CANONICAL-FLOW-001",
-    "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
-    "first_pending_task_id": "INT-EXT-001",
+  "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 861,
+    "pending_tasks": 867,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 5
-  }
+  },
+  "selected_route_id": "NORMAL-CANONICAL-FLOW-001"
 }

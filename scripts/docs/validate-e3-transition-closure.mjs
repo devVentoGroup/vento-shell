@@ -72,8 +72,12 @@ export function validateE3TransitionClosureSources({
         active.previous_task_id ?? '',
       )
     );
-  if (!e3StillActive && !hSequenceActive && !priorityLaneActive) {
-    fail('active-sequence.json debe reservar H desde E3, haber avanzado por H-SHARED-* o proyectar el carril NEXO aprobado después de sus prerrequisitos E3/H.');
+  const normalCanonicalFlowActive = active.generated_from === 'execution-route.json'
+    && active.route_id === 'NORMAL-CANONICAL-FLOW-001'
+    && /^PHASE-\d{2}-[A-Z0-9-]+$/u.test(active.sequence_id ?? '')
+    && /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}$/u.test(active.previous_task_id ?? '');
+  if (!e3StillActive && !hSequenceActive && !priorityLaneActive && !normalCanonicalFlowActive) {
+    fail('active-sequence.json debe reservar H desde E3, haber avanzado por H-SHARED-*, proyectar el flujo canónico integral o proyectar el carril NEXO aprobado después de sus prerrequisitos E3/H.');
   }
 
   requireOrdered(supa016, [

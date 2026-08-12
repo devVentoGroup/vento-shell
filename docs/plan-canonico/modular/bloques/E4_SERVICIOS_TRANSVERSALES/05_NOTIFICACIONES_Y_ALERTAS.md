@@ -1184,7 +1184,7 @@ Esta diferencia no impide cerrar el diseño documental de `NOTIFY-ARC-005`, pero
 
 **Propietario de corrección:** `SUPA-TRANS-007`, que ya gobierna la adaptación exacta de repositorios y consumidores.
 
-**Puerta de inclusión en el carril prioritario:** `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`.
+**Puerta de inclusión en el carril prioritario:** `DELIV-PKG-001..025::<package_id>`.
 
 **Condición de salida:** las funciones desplegadas que permanezcan necesarias deberán tener fuente versionada y trazable en `vento-shell`, con consumidores reconciliados, antes de considerarse implementación canónica cerrada.
 
@@ -1304,7 +1304,7 @@ DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-005: 0
 | Privacidad, contenido sensible y minimización por canal                        | `NOTIFY-ARC-009`                                        |
 | Métricas, trazas y auditoría de entrega                                        | `NOTIFY-ARC-010`                                        |
 | Paridad de fuente de Edge Functions y adaptación exacta de consumidores        | `SUPA-TRANS-007`                                        |
-| Decisión de incluir esa corrección en la ejecución prioritaria NEXO            | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| Decisión de incluir esa corrección en la ejecución prioritaria NEXO            | `DELIV-PKG-001..025::<package_id>` |
 
 No queda una decisión de selección de canal sin resolver dentro de `NOTIFY-ARC-005`.
 
@@ -1685,7 +1685,7 @@ Una preferencia podrá actualizarse sin destruir su historia cuando el gobierno 
 | Reintentos, fallos de permiso o canal, resultado desconocido y contingencia | `NOTIFY-ARC-008`                                        |
 | Privacidad, contenido sensible y minimización de payload por canal          | `NOTIFY-ARC-009`                                        |
 | Métricas, auditoría de entrega y observabilidad                             | `NOTIFY-ARC-010`                                        |
-| Inclusión física del contrato de preferencias en el paquete prioritario     | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| Inclusión física del contrato de preferencias en el paquete prioritario     | `DELIV-PKG-001..025::<package_id>` |
 
 No queda una decisión de preferencia sin propietario. Esta tarea no selecciona tabla, endpoint, RPC, Edge Function ni mecanismo de almacenamiento.
 
@@ -2179,7 +2179,7 @@ Cuando `GERENCIA_O_SUPERVISION_DE_SEDE` aparece en la matriz, deberá resolverse
 | Reintentos de entrega, errores técnicos, resultados desconocidos, `UNRESOLVED_RECIPIENT` y contingencia de canal | `NOTIFY-ARC-008`                                                                                        |
 | Minimización, contenido sensible y exposición permitida por canal                                                | `NOTIFY-ARC-009`                                                                                        |
 | Métricas, trazas, auditoría, SLI y evidencia de entrega                                                          | `NOTIFY-ARC-010`                                                                                        |
-| Implementación física de estados de lectura, confirmación y escalamiento dentro de paquetes                      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando el alcance de implementación los incluya |
+| Implementación física de estados de lectura, confirmación y escalamiento dentro de paquetes                      | `DELIV-PKG-001..025::<package_id>` cuando el alcance de implementación los incluya |
 
 No queda una decisión de confirmación, lectura o escalamiento sin propietario dentro del alcance de `NOTIFY-ARC-007`.
 
@@ -2886,7 +2886,7 @@ Ejemplos normativos:
 | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | Minimización del contenido de notificación, contenido sensible, exposición de errores y datos permitidos por canal | `NOTIFY-ARC-009`                                                                        |
 | Métricas, SLI, trazas consolidadas, auditoría de entrega y evidencia operacional                                   | `NOTIFY-ARC-010`                                                                        |
-| Implementación física del registro de proyecciones, intentos, conciliación, scheduler y recuperación               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Implementación física del registro de proyecciones, intentos, conciliación, scheduler y recuperación               | `DELIV-PKG-001..025::<package_id>` cuando ese alcance sea aprobado |
 | Paridad de fuente de las funciones PASS desplegadas y adaptación coordinada de consumidores                        | `SUPA-TRANS-007`                                                                        |
 
 No queda una decisión de reintento, clasificación de fallo, agotamiento o contingencia sin propietario dentro de `NOTIFY-ARC-008`.
@@ -3347,17 +3347,17 @@ La revisión técnica actual identifica diferencias concretas entre el estado im
 
 | Superficie actual                         | Evidencia observable                                                                                       | Resultado frente a esta tarea                                                                              | Propietario de materialización                                                                   |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Push de novedades ANIMA                   | el cuerpo usa el título libre de la publicación                                                            | `BRECHA_DE_MINIMIZACION`: el título puede revelar contenido interno en lock screen                         | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando el alcance incluya notificaciones |
-| Push y notificación local de documentos   | muestran nombre/tipo del documento y fecha exacta de vencimiento                                           | `BRECHA_DE_MINIMIZACION`: deben usar contenido genérico fuera de ANIMA autenticada                         | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
-| Push de publicación/cambio de turno       | muestra fecha y rango horario; el payload transporta `shift_date`                                          | `BRECHA_DE_MINIMIZACION`: horario y fecha salen de la superficie autenticada sin necesidad                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
-| Recordatorios runtime de turno            | muestran sede y hecho de turno abierto/próximo a finalizar; payload conserva fecha                         | `BRECHA_DE_MINIMIZACION`: estado laboral y sede deben quedar dentro de ANIMA                               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
-| Push de soporte                           | el cuerpo usa hasta 120 caracteres del mensaje o el título del ticket                                      | `BRECHA_CRITICA_DE_PREVIEW`: el cuerpo de soporte no debe viajar en push                                   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Push de novedades ANIMA                   | el cuerpo usa el título libre de la publicación                                                            | `BRECHA_DE_MINIMIZACION`: el título puede revelar contenido interno en lock screen                         | `DELIV-PKG-001..025::<package_id>` cuando el alcance incluya notificaciones |
+| Push y notificación local de documentos   | muestran nombre/tipo del documento y fecha exacta de vencimiento                                           | `BRECHA_DE_MINIMIZACION`: deben usar contenido genérico fuera de ANIMA autenticada                         | `DELIV-PKG-001..025::<package_id>`                                          |
+| Push de publicación/cambio de turno       | muestra fecha y rango horario; el payload transporta `shift_date`                                          | `BRECHA_DE_MINIMIZACION`: horario y fecha salen de la superficie autenticada sin necesidad                 | `DELIV-PKG-001..025::<package_id>`                                          |
+| Recordatorios runtime de turno            | muestran sede y hecho de turno abierto/próximo a finalizar; payload conserva fecha                         | `BRECHA_DE_MINIMIZACION`: estado laboral y sede deben quedar dentro de ANIMA                               | `DELIV-PKG-001..025::<package_id>`                                          |
+| Push de soporte                           | el cuerpo usa hasta 120 caracteres del mensaje o el título del ticket                                      | `BRECHA_CRITICA_DE_PREVIEW`: el cuerpo de soporte no debe viajar en push                                   | `DELIV-PKG-001..025::<package_id>`                                          |
 | Invitación por correo                     | el enlace de acción se transporta dentro del correo, como requiere el flujo                                | `COMPATIBLE_CON_RESTRICCION`: el enlace es `S4` y debe permanecer confinado al artefacto de correo         |
-| Error de Resend en invitación             | parte de la respuesta cruda puede persistirse en metadata y devolverse parcialmente                        | `BRECHA_DE_REDACCION`: debe normalizarse a código/status/request id seguro                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Error de Resend en invitación             | parte de la respuesta cruda puede persistirse en metadata y devolverse parcialmente                        | `BRECHA_DE_REDACCION`: debe normalizarse a código/status/request id seguro                                 | `DELIV-PKG-001..025::<package_id>`                                          |
 | Push PASS de mensaje de pedido desplegado | muestra etiqueta de pedido y preview de hasta 140 caracteres del mensaje                                   | `BRECHA_CRITICA_DE_PREVIEW`: push debe ser genérico y recuperar el mensaje tras autenticación              | `SUPA-TRANS-007` para paridad de fuente; implementación física en el alcance aprobado            |
-| PASS local                                | el contrato cliente admite `productName`, `siteName`, `tier`, `orderLabel` y otros datos en notificaciones | `BRECHA_DE_GOBIERNO_DE_PRODUCTOR`: cada productor debe limitar visible y payload a la matriz de esta tarea | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
-| Notification API de PULSO para pedido     | muestra tipo de fulfillment y total                                                                        | `BRECHA_DE_MINIMIZACION`: la notificación del navegador debe ser genérica                                  | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
-| Notification API de PULSO para pago       | muestra condición de domicilio y monto                                                                     | `BRECHA_DE_MINIMIZACION_FINANCIERA`: el monto no sale de PULSO autenticado                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| PASS local                                | el contrato cliente admite `productName`, `siteName`, `tier`, `orderLabel` y otros datos en notificaciones | `BRECHA_DE_GOBIERNO_DE_PRODUCTOR`: cada productor debe limitar visible y payload a la matriz de esta tarea | `DELIV-PKG-001..025::<package_id>`                                          |
+| Notification API de PULSO para pedido     | muestra tipo de fulfillment y total                                                                        | `BRECHA_DE_MINIMIZACION`: la notificación del navegador debe ser genérica                                  | `DELIV-PKG-001..025::<package_id>`                                          |
+| Notification API de PULSO para pago       | muestra condición de domicilio y monto                                                                     | `BRECHA_DE_MINIMIZACION_FINANCIERA`: el monto no sale de PULSO autenticado                                 | `DELIV-PKG-001..025::<package_id>`                                          |
 
 Estas brechas no autorizan modificaciones físicas durante `NOTIFY-ARC-009`. La tarea fija el resultado objetivo que deberá consumir el alcance de implementación correspondiente.
 
@@ -3469,7 +3469,7 @@ Esta tarea no modifica el alcance de esos controles; los materializa para las qu
 | Decisión no tomada                                                                                            | Tarea propietaria                                                                       |
 | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | Métricas, SLI, trazas consolidadas, auditoría y evidencia operacional de entrega                              | `NOTIFY-ARC-010`                                                                        |
-| Implementación física de plantillas, minimización de payload, redacción de errores y persistencia de intentos | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Implementación física de plantillas, minimización de payload, redacción de errores y persistencia de intentos | `DELIV-PKG-001..025::<package_id>` cuando ese alcance sea aprobado |
 | Paridad de fuente de `pass-register-push-token` y `order-message-notify` desplegadas                          | `SUPA-TRANS-007`                                                                        |
 | Clasificación definitiva de información, custodios, consentimiento, retención y derechos                      | tareas `INFO-DOM-*` y `NFR-REQ-006` ya propietarias de esas decisiones                  |
 
@@ -4425,7 +4425,7 @@ No se declara un fallo de producción ni se infiere que una notificación no hay
 | Arquitectura transversal de señales, correlación, métricas, trazas y auditoría                                         | `OBS-ARC-001` a `OBS-ARC-016`                                                           |
 | Operación de monitoreo, health y soporte tecnológico                                                                   | `TI-DOM-010`; `TI-INT-001`                                                              |
 | Modelo operativo general de tecnología y servicios                                                                     | `TI-DOM-001` cuando llegue su turno canónico                                            |
-| Materialización física del servicio de notificaciones, registros de proyección/intento, instrumentación y conciliación | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Materialización física del servicio de notificaciones, registros de proyección/intento, instrumentación y conciliación | `DELIV-PKG-001..025::<package_id>` cuando ese alcance sea aprobado |
 | Paridad de fuente de funciones PASS desplegadas y adaptación coordinada de consumidores                                | `SUPA-TRANS-007`                                                                        |
 | Privacidad y sensibilidad                                                                                              | `NFR-REQ-005`; `NOTIFY-ARC-009`; `INFO-DOM-*`                                           |
 | Retención y disposición                                                                                                | `NFR-REQ-006`; tareas `INFO-DOM-*` propietarias                                         |

@@ -16,7 +16,10 @@
     {
       "lane_id": "NEXO-REMISSIONS-001",
       "title": "Remisiones NEXO como primer paquete vertical",
-      "status": "DESIGNATED_NOT_READY",
+      "status": "SUSPENDED",
+      "active": false,
+      "suspension_reason": "Decisión empresarial explícita de continuar por el flujo canónico integral sin priorizar Remisiones, NEXO ni otra aplicación.",
+      "historical_evidence_only": true,
       "owner_application": "nexo",
       "application_repository": "vento-nexo",
       "supabase_repository": "vento-shell",

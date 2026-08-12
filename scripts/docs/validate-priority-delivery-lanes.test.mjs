@@ -77,7 +77,7 @@ const taskIds = new Set([
 ]);
 const documents = {
   order:
-    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? execution-route.json Orden ejecutable de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Ninguna tarea de implementación, migración o cambio físico comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
+    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? execution-route.json Registro histórico inactivo de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Ninguna tarea de implementación, migración o cambio físico comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
   protocol:
     '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id> NORMAL_CANONICAL_FLOW execution-route.json ordered_execution_stages deberá completar todo BLOQUE H',
   principles:
@@ -86,7 +86,7 @@ const documents = {
   delivery:
     'SHELL-CI-020::<package_id> SHELL-CI-024::<package_id> no modifica el estado de la tarea canónica',
   nexo:
-    'Primer paquete vertical designado NEXO-REMISSIONS-001 no es una tarea nueva',
+    'Carril histórico suspendido NEXO-REMISSIONS-001 no es una tarea nueva',
 };
 
 function validData() {
@@ -100,13 +100,51 @@ function group(data, collection, groupId) {
 }
 
 test('acepta un carril que separa diseño, puerta e implementación física', () => {
+  const data = validData();
+  data.lanes[0].status = 'DESIGNATED_NOT_READY';
+  data.lanes[0].active = true;
+  const activeDocuments = {
+    ...documents,
+    order: documents.order.replace(
+      'Registro histórico inactivo de NEXO-REMISSIONS-001',
+      'Orden ejecutable de NEXO-REMISSIONS-001',
+    ),
+    nexo: documents.nexo.replace(
+      'Carril histórico suspendido',
+      'Primer paquete vertical designado',
+    ),
+  };
   const stats = validatePriorityDeliveryLaneData({
-    data: validData(),
+    data,
     taskIds,
-    documents,
+    documents: activeDocuments,
   });
   assert.equal(stats.lanes, 1);
   assert.equal(stats.designated, 1);
+});
+
+test('acepta conservar el carril como registro histórico mientras gobierna el flujo normal', () => {
+  const data = validData();
+  data.lanes[0].status = 'SUSPENDED';
+  data.lanes[0].active = false;
+  data.lanes[0].historical_evidence_only = true;
+  const historicalDocuments = {
+    ...documents,
+    order: documents.order.replace(
+      'Orden ejecutable de NEXO-REMISSIONS-001',
+      'Registro histórico inactivo de NEXO-REMISSIONS-001',
+    ),
+    nexo: documents.nexo.replace(
+      'Primer paquete vertical designado',
+      'Carril histórico suspendido',
+    ),
+  };
+  const stats = validatePriorityDeliveryLaneData({
+    data,
+    taskIds,
+    documents: historicalDocuments,
+  });
+  assert.equal(stats.designated, 0);
 });
 
 test('rechaza habilitar aprobación parcial de tareas globales', () => {

@@ -696,7 +696,7 @@ No se adelanta ninguna de esas tareas.
 
 El resultado de esta tarea es consumible por una implementación posterior sin tomar nuevas decisiones de UX sobre el flujo primario.
 
-La etapa vigente `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` deberá decidir si los cambios físicos de soporte pertenecen al paquete prioritario actual. Si se incluyen, su ejecución corresponde a `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_EXECUTION` dentro de los repositorios propietarios y con las autorizaciones que correspondan.
+`DELIV-PKG-001..025::<package_id>` deberá decidir si los cambios físicos de soporte pertenecen a cada paquete propietario. Si se incluyen y el paquete supera su puerta, la ejecución corresponde a `SHELL-CI-020::<package_id>` dentro de los repositorios propietarios y con las autorizaciones que correspondan.
 
 El handoff físico deberá preservar, como mínimo:
 
@@ -717,7 +717,7 @@ La implementación no podrá mapear `open`, `in_progress`, `resolved` o `closed`
 
 Los hallazgos `H-TI-DOM-007-003` y `H-TI-DOM-007-004` reciben en TI-UX-001 una decisión concreta de experiencia objetivo, pero no cambian de estado físico ni satisfacen su condición de salida hasta que una implementación autorizada separe mensajería, validación y cierre en servidor.
 
-La minimización física del preview push detectada por `TI-AUTH-004` conserva como propietario de decisión de alcance `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; TI-UX-001 fija únicamente la presentación segura que la implementación deberá respetar.
+La minimización física del preview push detectada por `TI-AUTH-004` conserva como propietario de decisión de alcance `DELIV-PKG-001..025::<package_id>`; TI-UX-001 fija únicamente la presentación segura que la implementación deberá respetar.
 
 ---
 
@@ -1876,7 +1876,7 @@ Ninguna de estas tareas se inicia desde TI-UX-002.
 
 | Pendiente físico                                                          | Bloqueo concreto                                                            | Propietario o destino exacto                                                                        | Condición de salida                                                         |
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| identidad física de navegación y registro en inventario de pantallas VISO | la fase actual no autoriza implementación ni alta física de superficie      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete E5 VISO que resulte autorizado    | alcance físico aprobado y superficie registrada antes de implementación     |
+| identidad física de navegación y registro en inventario de pantallas VISO | la fase actual no autoriza implementación ni alta física de superficie      | `DELIV-PKG-001..025::<package_id>` y paquete E5 VISO que resulte autorizado    | alcance físico aprobado y superficie registrada antes de implementación     |
 | materialización de campos de caso, estados, SLA, validación y relaciones  | `support_tickets` AS-IS no demuestra el contrato completo                   | paquete de implementación VISO/Supabase gobernado desde `vento-shell` cuando el alcance lo autorice | modelo físico compatible, transición determinista y pruebas aprobadas       |
 | desacoplar mensajería de cambio de estado                                 | comportamiento legacy conserva acoplamiento en el flujo observado           | paquete E5 ANIMA/VISO cuando sea incluido por el alcance de implementación                          | enviar mensaje no muta estado empresarial y existe regresión comprobada     |
 | retirar cierre canónico desde experiencia personal                        | ANIMA legacy puede marcar conversación `closed` y `resolved_at`             | paquete E5 ANIMA/VISO + autorización de servidor                                                    | cerrar conversación queda separado de validar y cerrar el caso              |
@@ -3063,10 +3063,10 @@ Requiere revisión de evidencia.
 | diagnóstico guiado, runbooks y aprendizaje contextual                                  | `FUERA_DE_ALCANCE`                       | `TI-UX-006`                                                                                                        | experiencia guiada y gobierno de conocimiento aprobados                                         |
 | configuración protegida desde cualquier superficie futura                              | `ESPECIFICADO`; implementación pendiente | `TI-AUTH-003` + alcance de implementación aplicable                                                                | enforcement real de actor, permiso, recurso, cambio, privilegio y evidencia                     |
 | logs y diagnóstico sensible desde cualquier drill-down futuro                          | `ESPECIFICADO`; implementación pendiente | `TI-AUTH-004` + alcance de implementación aplicable                                                                | acceso minimizado, autorizado y auditable implementado                                          |
-| poblamiento validado de topología de red                                               | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-004`; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba | identidades y relaciones verificadas sin inferencias por IP, nombre o ubicación                 |
-| reconciliación impresora ↔ activo físico                                               | `PENDIENTE_DE_EVIDENCIA`                 | NEXO + PRINT-ARC; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba       | las 9 impresoras resuelven o justifican explícitamente su relación física                       |
-| persistencia transversal de endpoint                                                   | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-003`; materialización bajo `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si se aprueba | identidades, lifecycle, baseline, posture y relaciones disponibles en fuente canónica           |
-| implementación física de la experiencia de mapa en VISO                                | `NO_APLICA` en esta fase                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado                                        | alcance de implementación autoriza explícitamente la superficie y sus consumidores              |
+| poblamiento validado de topología de red                                               | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-004`; materialización bajo `DELIV-PKG-001..025::<package_id>` si se aprueba | identidades y relaciones verificadas sin inferencias por IP, nombre o ubicación                 |
+| reconciliación impresora ↔ activo físico                                               | `PENDIENTE_DE_EVIDENCIA`                 | NEXO + PRINT-ARC; materialización bajo `DELIV-PKG-001..025::<package_id>` si se aprueba       | las 9 impresoras resuelven o justifican explícitamente su relación física                       |
+| persistencia transversal de endpoint                                                   | `PENDIENTE_DE_EVIDENCIA`                 | autoridad `TI-DOM-003`; materialización bajo `DELIV-PKG-001..025::<package_id>` si se aprueba | identidades, lifecycle, baseline, posture y relaciones disponibles en fuente canónica           |
+| implementación física de la experiencia de mapa en VISO                                | `NO_APLICA` en esta fase                 | `DELIV-PKG-001..025::<package_id>` si resulta aprobado                                        | alcance de implementación autoriza explícitamente la superficie y sus consumidores              |
 
 No queda una decisión documental propia de TI-UX-003 diferida. Las brechas listadas corresponden a datos, integración, autorización, tareas vecinas o implementación física ya asignados.
 
@@ -7344,10 +7344,10 @@ Las superficies administrativas de publicación y auditoría se mantienen separa
 
 | Pendiente físico                                      | Estado en esta tarea     | Propietario o destino                                                                                      | Condición de salida                                                              |
 | ----------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| persistencia de artículos, versiones, fuentes y ciclo | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete de implementación que resulte autorizado | alcance físico aprobado, modelo persistido y pruebas aplicables                  |
-| experiencia física de diagnóstico en VISO             | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete VISO autorizado                          | superficie implementada, protegida y validada contra caso y autorización         |
-| consumo de conocimiento contextual en ANIMA           | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete ANIMA autorizado                         | cliente consume fuente versionada sin FAQ competidora y conserva fallback seguro |
-| asignación, progreso y comprobación de capacitación   | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete ANIMA/VISO que resulte autorizado        | estados persistidos y separados de autorización                                  |
+| persistencia de artículos, versiones, fuentes y ciclo | `FUERA_DE_ALCANCE`       | `DELIV-PKG-001..025::<package_id>` y paquete de implementación que resulte autorizado | alcance físico aprobado, modelo persistido y pruebas aplicables                  |
+| experiencia física de diagnóstico en VISO             | `FUERA_DE_ALCANCE`       | `DELIV-PKG-001..025::<package_id>` y paquete VISO autorizado                          | superficie implementada, protegida y validada contra caso y autorización         |
+| consumo de conocimiento contextual en ANIMA           | `FUERA_DE_ALCANCE`       | `DELIV-PKG-001..025::<package_id>` y paquete ANIMA autorizado                         | cliente consume fuente versionada sin FAQ competidora y conserva fallback seguro |
+| asignación, progreso y comprobación de capacitación   | `FUERA_DE_ALCANCE`       | `DELIV-PKG-001..025::<package_id>` y paquete ANIMA/VISO que resulte autorizado        | estados persistidos y separados de autorización                                  |
 | vínculo entre anuncio, cambio y conocimiento          | `FUERA_DE_ALCANCE`       | `TI-INT-002` y paquete autorizado                                                                          | contrato interaplicación materializado y probado                                 |
 | señales de adopción y frescura                        | `FUERA_DE_ALCANCE`       | `TI-INT-001` y paquete autorizado                                                                          | fuentes instrumentadas y observaciones reconciliables disponibles                |
 | integración con documentación o herramientas externas | `FUERA_DE_ALCANCE`       | `TI-INT-003`                                                                                               | contrato de proveedor, autenticación, alcance, sanitización y salida definidos   |
@@ -7481,4 +7481,3 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 `TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos`
-

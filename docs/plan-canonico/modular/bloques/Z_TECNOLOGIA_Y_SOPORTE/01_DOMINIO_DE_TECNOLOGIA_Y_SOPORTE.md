@@ -1068,7 +1068,7 @@ Reglas:
 | licencias, contratos, garantías, renovación, uso y costos                                        | `TI-DOM-012`                                                                | modelo económico y contractual aprobado                                                                |
 | conocimiento, capacitación y adopción                                                            | `TI-DOM-013`                                                                | contrato de conocimiento aprobado                                                                      |
 | privilegios, soporte remoto, logs sensibles y segregación                                        | `TI-AUTH-001` a `TI-AUTH-004`                                               | autorización tecnológica completa antes de operación real                                              |
-| implementación física del grafo y sus relaciones                                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete de implementación autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
+| implementación física del grafo y sus relaciones                                                 | `DELIV-PKG-001..025::<package_id>` si resulta aprobada | paquete de implementación autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
 
 No queda una decisión sustantiva propia de `TI-DOM-002` sin dueño documental.
 
@@ -2024,7 +2024,7 @@ La cobertura existente es suficiente para el comportamiento definido aquí. No s
 | soporte remoto privilegiado, secretos, sesiones elevadas y segregación                 | `TI-AUTH-001` a `TI-AUTH-004`                                               | autorización tecnológica completa                                                    |
 | identidad, sesión, revocación y límites de dispositivo compartido                      | `AUTH-DEV-*`                                                                | contratos de dispositivo compartido consumidos por la implementación                 |
 | activo físico, ubicación, custodia, mantenimiento y disposición                        | NEXO                                                                        | evidencia física y proceso de activo aplicable                                       |
-| persistencia física de endpoint, baseline, postura y transiciones                      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
+| persistencia física de endpoint, baseline, postura y transiciones                      | `DELIV-PKG-001..025::<package_id>` si resulta aprobada | paquete autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
 
 No queda un pendiente sustantivo propio de `TI-DOM-003` sin propietario documental.
 
@@ -2818,7 +2818,7 @@ La materialización deberá comparar primero contra la línea base de esta tarea
 | backup, restore, recuperación y ejercicios de configuración                       | `TI-DOM-011`                                                                | política de recuperación aprobada                                                                           |
 | contratos, renovaciones, garantías y costos de enlaces/proveedores                | `TI-DOM-012`                                                                | modelo contractual y económico aprobado                                                                     |
 | acceso privilegiado y soporte de proveedor                                        | `TI-AUTH-*`                                                                 | autorización tecnológica aprobada                                                                           |
-| materialización física del inventario, topología, segmentación y direccionamiento | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete de implementación autorizado, evidencia física disponible, cambios versionados y pruebas aplicables |
+| materialización física del inventario, topología, segmentación y direccionamiento | `DELIV-PKG-001..025::<package_id>` si resulta aprobada | paquete de implementación autorizado, evidencia física disponible, cambios versionados y pruebas aplicables |
 | continuidad empresarial y prioridad de recuperación de procesos                   | dominio de continuidad                                                      | análisis de impacto y decisiones de continuidad aprobadas                                                   |
 
 No queda una decisión sustantiva propia de `TI-DOM-004` sin propietario.
@@ -3714,7 +3714,7 @@ No se marca como reparada una impresora porque el ticket se cierre.
 | monitoreo runtime                     | `TI-DOM-010` + PRINT-ARC                                                    | proporcionar dimensiones físicas estables                   | señales correlacionables con printer/asset/site                              |
 | contrato, garantía, costo             | `TI-DOM-012`                                                                | referenciar, no duplicar                                    | fuente económica/contractual vigente                                         |
 | acceso privilegiado                   | `TI-AUTH-*`                                                                 | exigir autorización antes de intervención                   | principal, alcance, vigencia y evidencia                                     |
-| implementación física del carril NEXO | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | entregar el contrato y la matriz como entrada               | alcance aprobado y cambios ejecutados por su paquete, con pruebas aplicables |
+| implementación física del carril NEXO | `DELIV-PKG-001..025::<package_id>` si resulta aprobada | entregar el contrato y la matriz como entrada               | alcance aprobado y cambios ejecutados por su paquete, con pruebas aplicables |
 
 ---
 
@@ -9739,7 +9739,7 @@ No se interpreta la ausencia de una tabla dedicada como ausencia absoluta de log
 | Señales de respaldo, restauración y recuperación                                       | `FUERA_DE_ALCANCE`            | `TI-DOM-011`                                                                | contrato de respaldo y restauración aprobado                                        |
 | Señales de licencias, garantías, contratos, renovaciones, uso y costo                  | `FUERA_DE_ALCANCE`            | `TI-DOM-012`                                                                | modelo contractual y económico aprobado                                             |
 | Runbooks, conocimiento y aprendizaje                                                   | `FUERA_DE_ALCANCE`            | `TI-DOM-013`                                                                | base de conocimiento y gobierno de capacitación aprobados                           |
-| Implementación física del alcance tecnológico aplicable al carril                      | `NO_APLICA` en la fase actual | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado | alcance de implementación explícitamente aprobado antes de cambios físicos          |
+| Implementación física del alcance tecnológico aplicable al carril                      | `NO_APLICA` en la fase actual | `DELIV-PKG-001..025::<package_id>` si resulta aprobado | alcance de implementación explícitamente aprobado antes de cambios físicos          |
 
 No queda una brecha de esta tarea sin propietario documental.
 
@@ -10643,7 +10643,7 @@ Los conteos AS-IS sirven para delimitar la superficie actual. No constituyen pru
 | Aprendizaje y actualización posterior                         | `FUERA_DE_ALCANCE`                   | `CONT-DOM-015`; `TI-DOM-013`                                                | acciones y conocimiento versionados                   |
 | Señales y alertas de protección/restore                       | `FUERA_DE_ALCANCE` de implementación | `TI-DOM-010`; `TI-INT-001`                                                  | adaptadores y reglas implementados en fase autorizada |
 | Autorización de restore, secretos y acceso privilegiado       | `FUERA_DE_ALCANCE`                   | `TI-AUTH-001` a `TI-AUTH-004`; `CONT-AUTH-*`                                | matriz de segregación aprobada                        |
-| Implementación Supabase de cualquier mecanismo nuevo          | `NO_APLICA` en la fase actual        | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobado | alcance físico explícitamente autorizado              |
+| Implementación Supabase de cualquier mecanismo nuevo          | `NO_APLICA` en la fase actual        | `DELIV-PKG-001..025::<package_id>` si resulta aprobado | alcance físico explícitamente autorizado              |
 
 No queda una brecha detectada sin propietario y condición de salida.
 

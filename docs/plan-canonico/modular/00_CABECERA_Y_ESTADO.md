@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **733** |
+| Tareas aprobadas | **727** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **861** |
+| Tareas no iniciadas | **867** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.98% (733/1594)** |
+| Porcentaje de completamiento | **45.61% (727/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE** |
-| Tarea actual | **DELIV-PKG-001::NEXO-REMISSIONS-001 — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]** |
+| Última tarea aprobada | **INT-APP-010 — Evitar escrituras cruzadas sin contrato** |
+| Tarea actual | **INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-002::NEXO-REMISSIONS-001 — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001]** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 17: PACKAGE_DEFINITION** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 25 aprobadas; DELIV-PKG-001::NEXO-REMISSIONS-001 pendiente** |
+| Siguiente tarea | **INT-EXT-002 — Definir principal técnico independiente por integración** |
+| Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
+| Progreso del bloque | **BLOQUE X: 0 de 72 aprobadas; INT-EXT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE |
-| Tarea actual | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-002::NEXO-REMISSIONS-001` — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001] |
+| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato |
+| Tarea actual | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-002` — Definir principal técnico independiente por integración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 25 APROBADAS — ACTUAL DELIV-PKG-001::NEXO-REMISSIONS-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 72 APROBADAS — ACTUAL INT-EXT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE
+INT-APP-010 — Evitar escrituras cruzadas sin contrato
         ↓
 TAREA ACTUAL
-DELIV-PKG-001::NEXO-REMISSIONS-001 — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]
+INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad
         ↓
 SIGUIENTE TAREA RESERVADA
-DELIV-PKG-002::NEXO-REMISSIONS-001 — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001]
+INT-EXT-002 — Definir principal técnico independiente por integración
         ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 25 tareas aprobadas
+BLOQUE X — 0 de 72 tareas aprobadas
 ```

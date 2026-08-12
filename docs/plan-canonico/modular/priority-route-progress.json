@@ -1,6 +1,10 @@
 {
   "schema_version": 1,
   "route_id": "NEXO-REMISSIONS-001",
+  "route_status": "SUSPENDED_BY_EXPLICIT_NORMAL_FLOW",
+  "active": false,
+  "superseded_by": "NORMAL-CANONICAL-FLOW-001",
+  "state_semantics": "Registro histórico de decisiones del carril; no gobierna continuidad, no aprueba tareas globales y no habilita paquetes físicos.",
   "conditional_scopes": {
     "CONDITIONAL_DESIGN_ARTIFACTS": {
       "decision_state": "APROBADA",

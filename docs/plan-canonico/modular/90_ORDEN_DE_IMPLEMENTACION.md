@@ -284,14 +284,17 @@ las tareas que solo tengan una instancia de paquete aprobada. Las condiciones
 y decisiones de continuidad se conservan en su etapa propietaria.
 
 <!-- NEXO-REMISSIONS-ORDER:START -->
-#### Orden ejecutable de NEXO-REMISSIONS-001
+#### Registro histórico inactivo de NEXO-REMISSIONS-001
 
 Esta tabla se genera automáticamente desde `priority-delivery-lanes.json` y
-la selección vigente de `execution-route.json`.
+se conserva exclusivamente para trazabilidad. `execution-route.json` selecciona el flujo normal integral.
+Ninguna fila de este registro constituye una tarea vigente, un `package_id`,
+una aprobación global o una autorización de implementación. Los destinos
+operativos actuales se definen mediante `DELIV-PKG-001..025::<package_id>`.
 Las etapas son secuenciales y no se avanza mientras la anterior carezca
 de resultado y evidencia. Las tareas de diseño terminan antes de E5.
 Ninguna tarea de implementación, migración o cambio físico comienza antes
-de `E5-GATE-008::NEXO-REMISSIONS-001`.
+de `E5-GATE-008::<package_id>` para el paquete propietario que llegue a aprobarse.
 
 | Etapa | Grupo | Tareas exactas | Resultado para avanzar |
 | ----: | ----- | -------------- | ---------------------- |
@@ -308,7 +311,7 @@ de `E5-GATE-008::NEXO-REMISSIONS-001`.
 | 11 | `AUTHORIZATION_ERRORS` | `AUTH-ERR-001` a `AUTH-ERR-020` | contrato completo de razones y mensajes de bloqueo, sin filtrar información sensible |
 | 12 | `NEXO_INVENTORY_CLASSIFICATION` | `NEXO-DOM-001` | clasificación canónica de consumibles, stock por cantidad, reutilizables, activos, repuestos, kits y contenedores antes de diseñar o implementar inventario y remisiones |
 | 13 | `NEXO_FUNCTIONAL_UX` | `NEXO-UX-001` a `NEXO-UX-025` | inventario, navegación por actor, flujo completo de remisiones, movimientos, excepciones, prototipos y métricas de piloto |
-| 14 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-057` | diseño, prototipos, validación interna y criterios de usabilidad completos antes de implementar; la prueba con usuarios, el registro de problemas y la aprobación final quedan diferidos |
+| 14 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-060` | diseño, prototipos, validación con usuarios y aprobación de pantallas NEXO antes de implementar |
 | 15 | `CONDITIONAL_DESIGN_ARTIFACTS` | Evaluar la matriz condicional de diseño mostrada debajo | cada grupo queda completado o justificado como no aplicable antes de DELIV-PKG |
 | 16 | `CONDITIONAL_IMPLEMENTATION_SCOPE` | Evaluar la matriz condicional de implementación mostrada debajo | cada grupo de implementación queda incluido o excluido expresamente en DELIV-PKG antes de E5-GATE-008 |
 | 17 | `PACKAGE_DEFINITION` | `DELIV-PKG-001` a `DELIV-PKG-025` | paquete ejecutable, verificable y reversible |
@@ -334,7 +337,7 @@ de `E5-GATE-008::NEXO-REMISSIONS-001`.
 | 37 | `AUTH_UI_ENFORCEMENT` | `AUTH-UI-040` a `AUTH-UI-051` | protección de navegación, URL, acciones y estados transversales implementada |
 | 38 | `H_FINAL_AUTH_ADOPTION` | `SHELL-AUTH-005` | consumidores migrados y certificados al SDK compartido después de backend, adapters, UI y protecciones |
 | 39 | `U_AUTHORIZATION_CERTIFICATION` | `AUTH-QA-001` a `AUTH-QA-030` | autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas |
-| 40 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `AUTH-UI-058` a `AUTH-UI-060`; `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | AUTH-UI-058 a AUTH-UI-060 se ejecutan después de implementar las pantallas NEXO. Las pantallas implementadas y utilizables son la superficie de prueba; el prototipo visual y el cuestionario aprobado se conservan únicamente como línea base e instrumento de recolección. experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
+| 40 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
 | 41 | `READINESS` | `SHELL-CI-021::NEXO-REMISSIONS-001` | Validar readiness técnico y operativo. |
 | 42 | `PILOT` | `SHELL-CI-022::NEXO-REMISSIONS-001` | Ejecutar piloto controlado y conservar evidencia. |
 | 43 | `HYPERCARE` | `SHELL-CI-023::NEXO-REMISSIONS-001` | Estabilizar, conciliar y resolver defectos del alcance. |
@@ -417,13 +420,13 @@ La ejecución prioritaria no permite:
   transversales;
 - convertir deuda o alcance diferido en una omisión sin tarea y propietario.
 
-#### Primer carril designado
+#### Carril histórico suspendido
 
 `NEXO-REMISSIONS-001 — Remisiones NEXO como primer paquete vertical`
 
-Su designación no autoriza implementación inmediata. El estado inicial es
-`DESIGNATED_NOT_READY`; solo podrá cambiar después de demostrar las
-dependencias y puertas declaradas en `priority-delivery-lanes.json`.
+Su antigua designación no autoriza implementación. El estado vigente es
+`SUSPENDED`, `active = false`; se conserva para trazabilidad y no puede cambiar
+la tarea actual, aprobar marcadores globales ni crear paquetes.
 
 El cierre de este paquete significa exclusivamente que solicitud, preparación,
 despacho, custodia, tránsito, recepción, cancelación, movimientos y
@@ -732,9 +735,10 @@ Este habilitador:
 
 FASE 5 — NEXO
 
-El primer paquete vertical candidato de esta fase es
-`NEXO-REMISSIONS-001`. Podrá entrar antes a ejecución únicamente por el
-carril controlado anterior; la secuencia restante de la fase no cambia.
+No existe un primer paquete vertical preseleccionado para esta fase. El alias
+histórico `NEXO-REMISSIONS-001` no reserva ejecución. Cada paquete se definirá
+cuando corresponda mediante `DELIV-PKG-001..025::<package_id>` después de
+completar el flujo canónico integral aplicable.
 
 33. Consumir la matriz E1 y auditar implementación real de NEXO
 34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística

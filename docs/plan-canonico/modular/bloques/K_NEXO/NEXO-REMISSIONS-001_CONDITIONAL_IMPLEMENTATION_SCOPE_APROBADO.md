@@ -1,5 +1,13 @@
 # REGISTRO DE APROBACIÓN — CONDITIONAL_IMPLEMENTATION_SCOPE DE NEXO-REMISSIONS-001
 
+> **REGISTRO HISTÓRICO INACTIVO.** La aprobación consignada aquí conserva la
+> trazabilidad de la clasificación realizada para el carril, pero dejó de
+> gobernar la continuidad cuando `execution-route.json` seleccionó
+> `NORMAL-CANONICAL-FLOW-001`. No aprueba tareas globales, no crea un
+> `package_id`, no habilita `DELIV-PKG-*` para Remisiones y no autoriza
+> implementación física. Cualquier paquete futuro deberá definirse desde cero
+> mediante `DELIV-PKG-001..025::<package_id>` dentro del flujo integral.
+
 ### ✅ Control virtual `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE
 
 **Estado:** APROBADA  

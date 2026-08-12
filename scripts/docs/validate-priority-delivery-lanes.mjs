@@ -609,13 +609,20 @@ export function validatePriorityDeliveryLaneData({
     }
   }
 
+  const retiredLane = (data.lanes ?? []).find(
+    (lane) => lane.lane_id === 'NEXO-REMISSIONS-001',
+  );
+  const laneIsActive = retiredLane?.active !== false
+    && retiredLane?.status !== 'SUSPENDED';
   const requiredFragments = {
     order: [
       '<!-- PRIORITY-DELIVERY-LANES:START -->',
       'NEXO-REMISSIONS-001',
       'canonical_sequence_unchanged = true',
       '¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO?',
-      'Orden ejecutable de NEXO-REMISSIONS-001',
+      laneIsActive
+        ? 'Orden ejecutable de NEXO-REMISSIONS-001'
+        : 'Registro histórico inactivo de NEXO-REMISSIONS-001',
       'desde la etapa 1 hasta la 44',
       'NEXO_INVENTORY_CLASSIFICATION',
       'CONDITIONAL_IMPLEMENTATION_SCOPE',
@@ -649,11 +656,9 @@ export function validatePriorityDeliveryLaneData({
       'SHELL-CI-024::<package_id>',
       'no modifica el estado de la tarea canónica',
     ],
-    nexo: [
-      'Primer paquete vertical designado',
-      'NEXO-REMISSIONS-001',
-      'no es una tarea nueva',
-    ],
+    nexo: laneIsActive
+      ? ['Primer paquete vertical designado', 'NEXO-REMISSIONS-001', 'no es una tarea nueva']
+      : ['Carril histórico suspendido', 'NEXO-REMISSIONS-001', 'no es una tarea nueva'],
   };
 
   for (const [documentId, fragments] of Object.entries(requiredFragments)) {

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **733** |
+| Aprobadas | **727** |
 | En propuesta | **0** |
-| No iniciadas | **861** |
+| No iniciadas | **867** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **45.98% (733/1594)** |
+| Porcentaje de completamiento | **45.61% (727/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-002::NEXO-REMISSIONS-001` — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001] | ⬜ NO INICIADA |
+| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato | ✅ APROBADA |
+| Tarea actual | `INT-EXT-001` — Inventariar sistemas externos, proveedores, propietarios y finalidad | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-002` — Definir principal técnico independiente por integración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -858,12 +858,12 @@
 | ⬜ NO INICIADA | `AUTH-UI-049` | Estandarizar estados de carga | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-050` | Estandarizar estados vacíos | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-051` | Estandarizar errores recuperables | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-052` | Diseñar página inicial según actor | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-053` | Diseñar navegación según tareas frecuentes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-054` | Reducir opciones irrelevantes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-055` | Crear prototipo por rol | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-056` | Validar prototipo antes de implementar | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ✅ APROBADA | `AUTH-UI-057` | Definir criterio de usabilidad por pantalla | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-052` | Diseñar página inicial según actor | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-053` | Diseñar navegación según tareas frecuentes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-054` | Reducir opciones irrelevantes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-055` | Crear prototipo por rol | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-056` | Validar prototipo antes de implementar | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-057` | Definir criterio de usabilidad por pantalla | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-058` | Probar con usuarios reales | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-059` | Registrar problemas encontrados | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-060` | Aprobar la pantalla antes de retirarla del roadmap | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |

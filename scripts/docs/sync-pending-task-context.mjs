@@ -51,7 +51,7 @@ export function describePendingTask(title) {
   return `Completar ${subject.toLowerCase()}, definiendo el resultado material, sus límites, responsables, evidencia y criterios de cierre.`;
 }
 
-function readPendingTasks(baseDir) {
+function readCanonicalTasks(baseDir) {
   const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
   const tasks = [];
   for (const relativePath of manifest.files) {
@@ -60,7 +60,6 @@ function readPendingTasks(baseDir) {
     const source = maskFencedCode(fs.readFileSync(fullPath, 'utf8').replace(/\r\n?/gu, '\n'));
     for (const match of source.matchAll(TASK_REGEX)) {
       const state = stateFromMarker(match.groups?.marker ?? '');
-      if (state === 'APROBADA') continue;
       tasks.push({
         id: match.groups.id,
         title: (match.groups.title ?? '(sin título canónico)').trim(),
@@ -70,26 +69,170 @@ function readPendingTasks(baseDir) {
     }
   }
   const ids = tasks.map(({ id }) => id);
-  if (new Set(ids).size !== ids.length) throw new Error('Existen tareas pendientes duplicadas.');
+  if (new Set(ids).size !== ids.length) throw new Error('Existen tareas canónicas duplicadas.');
   return tasks;
 }
 
-function render(tasks) {
+function taskIdentity(id) {
+  const match = id.match(/^(?<prefix>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+)-(?<number>\d{3})$/u);
+  if (!match) throw new Error(`Identificador canónico inválido: ${id}.`);
+  return { prefix: match.groups.prefix, number: Number(match.groups.number) };
+}
+
+export function orderPendingTasksByRoute(tasks, route) {
+  const byId = new Map(tasks.map((task) => [task.id, task]));
+  const ordered = [];
+  const seen = new Set();
+  const canonicalOrderById = new Map();
+  let canonicalOrder = 0;
+
+  const expandStage = (stage) => {
+    const stageTasks = [];
+    for (const selector of stage.selectors) {
+      let selected;
+      if (typeof selector.prefix === 'string') {
+        const from = selector.from ?? 1;
+        const to = selector.to ?? Number.MAX_SAFE_INTEGER;
+        selected = tasks
+          .filter(({ id }) => taskIdentity(id).prefix === selector.prefix)
+          .filter(({ id }) => {
+            const { number } = taskIdentity(id);
+            return number >= from && number <= to;
+          })
+          .sort((left, right) => taskIdentity(left.id).number - taskIdentity(right.id).number);
+      } else if (Array.isArray(selector.task_ids)) {
+        selected = selector.task_ids.map((id) => {
+          const task = byId.get(id);
+          if (!task) throw new Error(`La guía referencia una tarea inexistente: ${id}.`);
+          return task;
+        });
+      } else {
+        throw new Error(`Selector inválido en ${stage.sequence_id}.`);
+      }
+      stageTasks.push(...selected);
+    }
+
+    return stageTasks;
+  };
+
+  const expandedStages = route.stages.map((stage, stageIndex) => ({
+    ...stage,
+    stageOrder: stageIndex + 1,
+    tasks: expandStage(stage),
+  }));
+
+  for (const stage of expandedStages) {
+    for (const task of stage.tasks) {
+      if (canonicalOrderById.has(task.id)) throw new Error(`La guía asigna dos veces ${task.id}.`);
+      canonicalOrder += 1;
+      canonicalOrderById.set(task.id, canonicalOrder);
+    }
+  }
+
+  const executionStages = [
+    ...expandedStages.filter((stage) => stage.activation_state !== 'DEFERRED'),
+    ...expandedStages.filter((stage) => stage.activation_state === 'DEFERRED'),
+  ];
+
+  for (const stage of executionStages) {
+    for (const task of stage.tasks) {
+      if (seen.has(task.id)) throw new Error(`La guía asigna dos veces ${task.id}.`);
+      seen.add(task.id);
+      if (task.state === 'APROBADA') continue;
+      ordered.push({
+        ...task,
+        canonicalOrder: canonicalOrderById.get(task.id),
+        stageOrder: stage.stageOrder,
+        sequenceId: stage.sequence_id,
+        blockCode: stage.block_code,
+        blockTitle: stage.block_title,
+        activationState: stage.activation_state ?? 'ACTIVE',
+      });
+    }
+  }
+
+  const missing = tasks.filter(({ id }) => !seen.has(id));
+  if (missing.length > 0) {
+    throw new Error(`La guía no ubica tareas canónicas: ${missing.map(({ id }) => id).join(', ')}.`);
+  }
+  return ordered;
+}
+
+function render(tasks, route, active) {
+  const activeTaskId = active.segments?.[0]
+    ? `${active.segments[0].prefix}-${String(active.segments[0].from).padStart(3, '0')}`
+    : 'NINGUNA';
+  const stageIds = new Set();
+  const stages = tasks.filter((task) => {
+    if (stageIds.has(task.sequenceId)) return false;
+    stageIds.add(task.sequenceId);
+    return true;
+  });
   const lines = [
-    '# REGISTRO DE TAREAS PENDIENTES CON CONTEXTO — VENTO OS',
+    '# GUÍA MAESTRA DE EJECUCIÓN TAREA POR TAREA — VENTO OS',
     '',
     '> Archivo derivado. No editar manualmente.',
     '>',
-    '> Cada descripción resume el trabajo principal a partir del título canónico; no reemplaza el contenido completo de la tarea ni autoriza cambios de alcance.',
+    '> Esta guía ordena todas las tareas pendientes del flujo canónico integral. El contenido completo y los criterios específicos permanecen en el fragmento propietario enlazado por cada fila.',
+    '>',
+    '> Una fila no puede aprobarse solo por producir documentación: debe demostrar la cobertura y la evidencia exigidas por su naturaleza real.',
     '',
-    `**Tareas pendientes descritas:** ${tasks.length}`,
+    '## Estado ejecutivo',
     '',
-    '| Estado | Identificador | Título canónico | Qué se hace | Archivo propietario |',
-    '| --- | --- | --- | --- | --- |',
+    `- **Ruta activa:** \`${active.route_id}\``,
+    `- **Etapa actual:** \`${active.sequence_id}\` — ${active.block_title}`,
+    `- **Tarea actual:** \`${activeTaskId}\``,
+    `- **Siguiente etapa:** \`${active.handoff_sequence_id ?? 'NINGUNA'}\``,
+    `- **Tareas pendientes ordenadas:** **${tasks.length}**`,
+    `- **Tareas canónicas cubiertas por la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas, exactamente una vez' : route.coverage_policy}**`,
+    '',
+    '## Contrato obligatorio para ejecutar cada tarea',
+    '',
+    'Antes de desarrollar:',
+    '',
+    '1. consultar la rama canónica vigente y verificar que la fila continúa siendo la tarea actual;',
+    '2. leer completa la sección propietaria, sus TREQ, decisiones, dependencias y consumidores;',
+    '3. reconciliar el alcance contra el código vigente de todos los repositorios afectados;',
+    '4. enumerar cada superficie afectada y asignarle disposición `CREAR`, `MODIFICAR`, `REUTILIZAR`, `RETIRAR`, `SIN_CAMBIO_JUSTIFICADO` o `DIFERIR_A_<TASK-ID>`;',
+    '5. declarar archivos exactos, funciones/símbolos, contratos, datos, permisos, integraciones, pruebas y evidencia esperada.',
+    '',
+    'No puede quedar sin revisar ninguna categoría aplicable:',
+    '',
+    '- aplicaciones, rutas, layouts, pantallas, componentes, formularios y navegación;',
+    '- acciones de usuario, hooks, servicios, adaptadores, consultas, estado local y utilidades;',
+    '- Server Actions, API/route handlers, RPC, funciones SQL, triggers, Edge Functions, jobs, cron, colas y webhooks;',
+    '- tablas, vistas, relaciones, constraints, RLS, grants, Storage, Realtime, tipos y migraciones;',
+    '- eventos, productores, consumidores, idempotencia, retry, compensación y conciliación;',
+    '- configuración, variables, secretos, feature flags, observabilidad, logs y alertas;',
+    '- pruebas unitarias, contractuales, integración, seguridad, E2E, regresión, dispositivo y operación;',
+    '- documentación, capacitación, rollout, rollback, piloto, evidencia y soporte.',
+    '',
+    'Para cerrar:',
+    '',
+    '1. cada superficie descubierta debe estar resuelta por esta tarea o vinculada a otra tarea canónica exacta;',
+    '2. toda exclusión o diferimiento debe tener justificación, propietario y momento de resolución;',
+    '3. deben ejecutarse las validaciones proporcionales y registrarse resultados reales, incluidos los fallos;',
+    '4. el compilador, el registro TREQ y la continuidad deben quedar consistentes;',
+    '5. el estado solo cambia mediante aprobación explícita; la siguiente fila no se inicia por inferencia.',
+    '',
+    '**Regla de cero omisiones:** una función, archivo, ruta, objeto de datos o consumidor descubierto sin tarea propietaria bloquea el cierre. Debe incorporarse al alcance actual o asignarse expresamente a una tarea posterior existente; si ninguna existe, se crea primero la tarea canónica faltante y se regenera esta guía.',
+    '',
+    '## Etapas pendientes',
+    '',
+    '| Orden | Etapa | Bloque | Activación | Primera tarea pendiente |',
+    '| ---: | --- | --- | --- | --- |',
+    ...stages.map((stage) => `| ${stage.stageOrder} | \`${stage.sequenceId}\` | ${stage.blockCode} — ${stage.blockTitle} | ${stage.activationState} | \`${stage.id}\` |`),
+    '',
+    '## Secuencia pendiente exacta',
+    '',
+    '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
+    '',
+    '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Resultado material esperado | Fragmento propietario |',
+    '| ---: | ---: | --- | --- | --- | --- | --- | --- |',
   ];
-  for (const task of tasks) {
+  for (const [pendingIndex, task] of tasks.entries()) {
     const esc = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
-    lines.push(`| ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describePendingTask(task.title))} | \`${esc(task.relativePath)}\` |`);
+    lines.push(`| ${pendingIndex + 1} | ${task.canonicalOrder} | \`${task.sequenceId}\` | ${task.state} | \`${task.id}\` | ${esc(task.title)} | ${esc(describePendingTask(task.title))} | \`${esc(task.relativePath)}\` |`);
   }
   lines.push('');
   return lines.join('\n');
@@ -98,7 +241,10 @@ function render(tasks) {
 export function syncPendingTaskContext({ root = process.cwd(), check = false } = {}) {
   const baseDir = path.join(root, 'docs/plan-canonico/modular');
   const outputPath = path.join(baseDir, OUTPUT);
-  const expected = render(readPendingTasks(baseDir));
+  const route = JSON.parse(fs.readFileSync(path.join(baseDir, 'continuity-route.json'), 'utf8'));
+  const active = JSON.parse(fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8'));
+  const tasks = orderPendingTasksByRoute(readCanonicalTasks(baseDir), route);
+  const expected = render(tasks, route, active);
   const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
   if (current === expected) return { changed: false };
   if (check) throw new Error('El registro de tareas pendientes con contexto está desactualizado.');

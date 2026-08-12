@@ -23,15 +23,15 @@
 ### [ ] NEXO-AUTH-019 — Eliminar helpers duplicados
 ### [ ] NEXO-AUTH-020 — Ejecutar pruebas integrales
 
-### Primer paquete vertical designado
+### Carril histórico suspendido
 
-`NEXO-REMISSIONS-001 — Remisiones NEXO como primer paquete vertical`
+`NEXO-REMISSIONS-001 — alias histórico suspendido; no reserva ni define un paquete vigente`
 
-Este identificador corresponde a un carril de entrega y a su futuro
-`package_id`; no es una tarea nueva ni reemplaza `NEXO-AUTH-*`,
+Este identificador correspondió a un carril de entrega; ya no reserva ni crea
+un futuro `package_id`, no es una tarea nueva ni reemplaza `NEXO-AUTH-*`,
 `NEXO-UX-*`, `AUTH-UI-*`, E3, E4, E5, H, J, R, S o T.
 
-El alcance mínimo deberá cubrir:
+El alcance histórico contemplaba:
 
 - solicitar, editar y cancelar;
 - preparar cantidades y registrar diferencias;

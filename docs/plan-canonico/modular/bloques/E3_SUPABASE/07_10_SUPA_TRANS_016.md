@@ -215,9 +215,9 @@ La decisión de inclusión o exclusión debe quedar en `DELIV-PKG` antes de `E5-
 
 #### 12. Paquetes iniciales y ausencia de autorización global
 
-El carril prioritario vigente identifica `NEXO-REMISSIONS-001` como `DESIGNATED_NOT_READY`. Esta designación no habilita ejecución.
+El registro histórico identifica `NEXO-REMISSIONS-001` como un carril anteriormente designado. Su estado vigente es `SUSPENDED`, `active = false`, y no habilita ejecución.
 
-El paquete deberá completar sus etapas declaradas, resolver condicionales y superar `E5-GATE-008::NEXO-REMISSIONS-001`. Cerrar ese paquete tampoco cerrará NEXO, inventario, BLOQUE R ni Vento OS.
+Todo paquete futuro deberá completar `DELIV-PKG-001..025::<package_id>`, resolver sus condicionales y superar `E5-GATE-008::<package_id>`. Cerrar un paquete tampoco cerrará una aplicación, un dominio, BLOQUE R ni Vento OS.
 
 #### 13. Evidencia heredada frente a evidencia futura
 

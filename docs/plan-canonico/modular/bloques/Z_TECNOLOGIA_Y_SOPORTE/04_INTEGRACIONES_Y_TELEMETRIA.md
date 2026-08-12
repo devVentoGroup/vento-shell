@@ -1732,7 +1732,7 @@ No se permite:
 | -------------------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | Semántica NEXO ↔ TI                          | `ESPECIFICADO`           | `TI-INT-002`                                                                                       | cumplida en esta tarea                                    |
 | Fuente física de activos AS-IS               | `IMPLEMENTADO`           | NEXO / `vento-shell` para migraciones                                                              | se conserva; no requiere sustitución por esta tarea       |
-| Reconciliación activo ↔ identidades técnicas | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-002`, `TI-DOM-003`, `TI-DOM-005` y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | relación estable materializada y validada sin inferencias |
+| Reconciliación activo ↔ identidades técnicas | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-002`, `TI-DOM-003`, `TI-DOM-005` y `DELIV-PKG-001..025::<package_id>` | relación estable materializada y validada sin inferencias |
 
 ---
 
@@ -1829,8 +1829,8 @@ La implementación podrá reutilizar persistencia existente si demuestra que res
 | ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------- |
 | Semántica ANIMA ↔ VISO        | `ESPECIFICADO`                                 | `TI-INT-002` + `TI-UX-001`/`TI-UX-002`                               | cumplida documentalmente                                 |
 | Bandeja/mensajería AS-IS      | `IMPLEMENTADO` parcialmente                    | ANIMA + persistencia en `vento-shell`                                | se conserva como evidencia actual                        |
-| Cambio automático por mensaje | `IMPLEMENTADO` legacy, no conforme al objetivo | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` + ANIMA/VISO | mensaje deja de mutar estado canónico por efecto lateral |
-| Cierre desde cliente          | `IMPLEMENTADO` legacy, no conforme al objetivo | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` + ANIMA/VISO | cierre queda bajo contrato y autoridad de VISO           |
+| Cambio automático por mensaje | `IMPLEMENTADO` legacy, no conforme al objetivo | `DELIV-PKG-001..025::<package_id>` + ANIMA/VISO | mensaje deja de mutar estado canónico por efecto lateral |
+| Cierre desde cliente          | `IMPLEMENTADO` legacy, no conforme al objetivo | `DELIV-PKG-001..025::<package_id>` + ANIMA/VISO | cierre queda bajo contrato y autoridad de VISO           |
 | Handoff compartido            | `NO INICIADA` físicamente como contrato común  | `SHELL-CON-014`                                                      | handoff versionado y probado por ambos consumidores      |
 
 ---
@@ -1921,7 +1921,7 @@ Por tanto:
 | Elemento                                   | Estado                                 | Propietario                                                    | Condición de salida                                                          |
 | ------------------------------------------ | -------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | Semántica VISO ↔ TI                        | `ESPECIFICADO`                         | `TI-INT-002` + `TI-DOM-007` a `TI-DOM-009`                     | cumplida documentalmente                                                     |
-| Contrato físico completo del caso objetivo | `PENDIENTE_DE_EVIDENCIA`               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` + VISO | persistencia/API/acciones implementadas y probadas contra el modelo objetivo |
+| Contrato físico completo del caso objetivo | `PENDIENTE_DE_EVIDENCIA`               | `DELIV-PKG-001..025::<package_id>` + VISO | persistencia/API/acciones implementadas y probadas contra el modelo objetivo |
 | Handoff ANIMA ↔ VISO                       | `NO INICIADA` como contrato compartido | `SHELL-CON-014` + consumidores                                 | compatibilidad y pruebas de ambos lados                                      |
 
 ---
@@ -1992,7 +1992,7 @@ No se permite:
 | --------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------- |
 | Semántica ORIGO ↔ TI                                      | `ESPECIFICADO`              | `TI-INT-002` + `TI-DOM-012`                                                          | cumplida documentalmente                                |
 | Fuente de proveedores/compras AS-IS                       | `IMPLEMENTADO` parcialmente | ORIGO                                                                                | se conserva como autoridad operativa existente          |
-| Binding proveedor/contrato ↔ servicio/aplicación/licencia | `PENDIENTE_DE_EVIDENCIA`    | `TI-DOM-006`, `TI-DOM-012` y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | relación estable, autorizada y reconciliada con pruebas |
+| Binding proveedor/contrato ↔ servicio/aplicación/licencia | `PENDIENTE_DE_EVIDENCIA`    | `TI-DOM-006`, `TI-DOM-012` y `DELIV-PKG-001..025::<package_id>` | relación estable, autorizada y reconciliada con pruebas |
 
 ---
 
@@ -2046,7 +2046,7 @@ La ausencia de esa evidencia no se interpreta como ausencia de NUMERA ni de sus 
 | Elemento                                           | Estado                   | Propietario                                                            | Condición de salida                                                                                      |
 | -------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Semántica NUMERA ↔ TI                              | `ESPECIFICADO`           | `TI-INT-002` + `TI-DOM-012`                                            | cumplida documentalmente                                                                                 |
-| Binding técnico costo ↔ servicio/licencia/contrato | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | mapping estable hacia el hecho económico propietario, sin fuente competidora, con prueba de conciliación |
+| Binding técnico costo ↔ servicio/licencia/contrato | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + `DELIV-PKG-001..025::<package_id>` | mapping estable hacia el hecho económico propietario, sin fuente competidora, con prueba de conciliación |
 
 ---
 
@@ -2129,7 +2129,7 @@ Además:
 | ------------------------------ | ----------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------- |
 | Semántica PRINT-ARC ↔ TI       | `ESPECIFICADO`                | `TI-INT-002` + PRINT-ARC                                | cumplida documentalmente                                                   |
 | Contratos PRINT-ARC            | `ESPECIFICADO`                | `PRINT-ARC-001` a `PRINT-ARC-020`                       | cerrados documentalmente según su propio bloque                            |
-| Binding físico transversal     | `NO INICIADA`                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | workers/adaptadores/colas implementados y validados sin sustituir contrato |
+| Binding físico transversal     | `NO INICIADA`                 | `DELIV-PKG-001..025::<package_id>` | workers/adaptadores/colas implementados y validados sin sustituir contrato |
 | Superficie BrowserPrint actual | `IMPLEMENTADO` legacy/parcial | NEXO                                                    | no se presenta como conformidad hasta consumir contratos PRINT-ARC         |
 
 ---
@@ -2617,11 +2617,11 @@ También se prohíbe:
 | Materializar paquete común de contratos                             | implementación compartida                               | `SHELL-CON-001`                                                        | package real, versionado, probado y consumible                          |
 | Materializar acciones/eventos/handoffs comunes                      | tipos y contratos físicos                               | `SHELL-CON-012` a `SHELL-CON-016`                                      | contratos compartidos sin duplicación local                             |
 | Sustituir efectos laterales legacy de ANIMA sobre estado de soporte | implementación ANIMA/VISO                               | alcance de implementación autorizado                                   | mensaje y cierre personal dejan de mutar estado canónico por inferencia |
-| Completar binding de caso VISO objetivo                             | persistencia/servicio físico alineados con `VPROC-0058` | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` + VISO         | caso completo implementado y probado                                    |
+| Completar binding de caso VISO objetivo                             | persistencia/servicio físico alineados con `VPROC-0058` | `DELIV-PKG-001..025::<package_id>` + VISO         | caso completo implementado y probado                                    |
 | Reconciliar activo físico con endpoint/red/impresora                | evidencia de relación estable                           | `TI-DOM-002`, `TI-DOM-003`, `TI-DOM-005` + implementación autorizada   | relaciones persistidas o derivadas de forma explícita y validadas       |
 | Reconciliar proveedor/contrato con servicio, app y licencia         | vínculo técnico estable                                 | `TI-DOM-006`, `TI-DOM-012` + implementación autorizada                 | referencias trazables y autorizadas sin duplicar ORIGO                  |
-| Reconciliar costo tecnológico con hecho económico                   | mapping NUMERA demostrado                               | `TI-DOM-012` + `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | relación única al hecho económico y prueba de conciliación              |
-| Implementar PRINT-ARC transversal                                   | workers, adaptadores, cola y persistencia               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                | contratos PRINT-ARC consumidos y resultado físico verificable           |
+| Reconciliar costo tecnológico con hecho económico                   | mapping NUMERA demostrado                               | `TI-DOM-012` + `DELIV-PKG-001..025::<package_id>` | relación única al hecho económico y prueba de conciliación              |
+| Implementar PRINT-ARC transversal                                   | workers, adaptadores, cola y persistencia               | `DELIV-PKG-001..025::<package_id>`                | contratos PRINT-ARC consumidos y resultado físico verificable           |
 | Implementar releases y consumer tests                               | CI, package y ambientes                                 | `SHELL-CI-001` a `SHELL-CI-019`                                        | pruebas, matrices, gates y evidencia reproducible                       |
 | Implementar ciclo de despliegue por paquete                         | paquete previamente aprobado                            | `SHELL-CI-020` a `SHELL-CI-024`                                        | readiness, cutover, piloto, hypercare y transferencia cerrados          |
 | Profundizar dominio y contratos de continuidad                      | tareas AC todavía no iniciadas                          | `CONT-DOM-001` a `CONT-DOM-015`; `CONT-INT-001` a `CONT-INT-004`       | continuidad desarrolla su lado del contrato y reconciliación            |

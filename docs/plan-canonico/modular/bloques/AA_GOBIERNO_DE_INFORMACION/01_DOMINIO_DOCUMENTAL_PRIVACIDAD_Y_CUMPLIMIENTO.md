@@ -488,7 +488,7 @@ INFO-DOM-001 define el campo de gobierno y el estado actual; no adelanta el cont
 | territorio completo por activo y copia                            | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-005` + `INFO-DOM-010`                                             | ubicación física/técnica, entidad y territorio de terceros registrados sin inferencia                     |
 | inventario de copias locales, hojas de cálculo y exportaciones    | `PENDIENTE_DE_EVIDENCIA` | `INFO-DOM-005` + `INFO-INT-002`                                             | copia identificada por fuente, propietaria, finalidad, custodio, ubicación y condición de vigencia/retiro |
 | evaluación de buckets técnicamente públicos frente a sensibilidad | `FUERA_DE_ALCANCE`       | `INFO-DOM-002` + `INFO-AUTH-002`                                            | clasificación efectiva y autorización de acceso reconciliadas por contenido y recurso                     |
-| materialización física del inventario corporativo                 | `FUERA_DE_ALCANCE`       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | modelo físico versionado, migraciones desde `vento-shell`, consumidores adaptados y pruebas aplicables    |
+| materialización física del inventario corporativo                 | `FUERA_DE_ALCANCE`       | `DELIV-PKG-001..025::<package_id>` si resulta aprobada | modelo físico versionado, migraciones desde `vento-shell`, consumidores adaptados y pruebas aplicables    |
 
 Ninguno de estos pendientes autoriza a cambiar datos o infraestructura en la fase documental actual.
 

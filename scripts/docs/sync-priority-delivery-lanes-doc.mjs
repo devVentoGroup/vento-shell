@@ -209,6 +209,8 @@ function resolveDeferral(routeSelector, lane) {
 export function renderPriorityLaneOrderSection(data, routeSelector = {}) {
   const lane = data.lanes.find(({ lane_id: laneId }) => laneId === 'NEXO-REMISSIONS-001');
   if (!lane) throw new Error('Falta el carril NEXO-REMISSIONS-001.');
+  const laneIsActive = lane.active !== false
+    && routeSelector.selected_route_id === lane.lane_id;
   const deferred = resolveDeferral(routeSelector, lane);
   const requiredById = mapById(lane.required_task_artifacts);
   const prerequisitesById = mapById(lane.execution_prerequisite_artifacts);
@@ -285,14 +287,25 @@ export function renderPriorityLaneOrderSection(data, routeSelector = {}) {
 
   return [
     START_MARKER,
-    '#### Orden ejecutable de NEXO-REMISSIONS-001',
+    laneIsActive
+      ? '#### Orden ejecutable de NEXO-REMISSIONS-001'
+      : '#### Registro histórico inactivo de NEXO-REMISSIONS-001',
     '',
     'Esta tabla se genera automáticamente desde `priority-delivery-lanes.json` y',
-    'la selección vigente de `execution-route.json`.',
+    laneIsActive
+      ? 'la selección vigente de `execution-route.json`.'
+      : 'se conserva exclusivamente para trazabilidad. `execution-route.json` selecciona el flujo normal integral.',
+    ...(laneIsActive ? [] : [
+      'Ninguna fila de este registro constituye una tarea vigente, un `package_id`,',
+      'una aprobación global o una autorización de implementación. Los destinos',
+      'operativos actuales se definen mediante `DELIV-PKG-001..025::<package_id>`.',
+    ]),
     'Las etapas son secuenciales y no se avanza mientras la anterior carezca',
     'de resultado y evidencia. Las tareas de diseño terminan antes de E5.',
     'Ninguna tarea de implementación, migración o cambio físico comienza antes',
-    'de `E5-GATE-008::NEXO-REMISSIONS-001`.',
+    laneIsActive
+      ? 'de `E5-GATE-008::NEXO-REMISSIONS-001`.'
+      : 'de `E5-GATE-008::<package_id>` para el paquete propietario que llegue a aprobarse.',
     '',
     '| Etapa | Grupo | Tareas exactas | Resultado para avanzar |',
     '| ----: | ----- | -------------- | ---------------------- |',

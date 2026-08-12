@@ -3479,7 +3479,7 @@ Fronteras no modificadas:
 | conservación legal, hold y eliminación de documentos                      | `EVID-ARC-009`; gobierno definitivo en `INFO-DOM-006`          |
 | autenticidad, hash corporativo y cadena de custodia definitiva            | `INFO-DOM-007`                                                 |
 | contingencia de Storage                                                   | `EVID-ARC-010`                                                 |
-| habilitación de implementación física del carril                          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`        |
+| habilitación de implementación física del carril                          | `DELIV-PKG-001..025::<package_id>`        |
 
 ---
 
@@ -4743,7 +4743,7 @@ El handoff recibido de `EVID-ARC-009` no autoriza cambiar identidad documental, 
 | revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan      | `CONT-DOM-015`                                          |
 | tablas y fundamentos definitivos de retención, hold y disposición                         | `INFO-DOM-006`                                          |
 | autenticidad, integridad, procedencia, preservación y cadena de custodia                  | `INFO-DOM-007`                                          |
-| habilitación de implementación física del carril                                          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| habilitación de implementación física del carril                                          | `DELIV-PKG-001..025::<package_id>` |
 
 Esta tarea no fija RTO/RPO, topología de failover, proveedor de almacenamiento, sincronizador, mecanismo de backup, intervalos de sondeo ni credenciales de emergencia.
 
