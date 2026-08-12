@@ -2238,7 +2238,347 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-005 — Definir alcance mínimo de cada credencial`
 
 
-### [ ] INT-EXT-005 — Definir alcance mínimo de cada credencial
+### ✅ INT-EXT-005 — Definir alcance mínimo de cada credencial
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo` — APROBADA
+**Tarea siguiente:** `INT-EXT-006 — Separar credenciales de desarrollo, staging y producción` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del alcance técnico mínimo aplicable a cada credencial o superficie de credencial de `EXT-SYS-001` a `EXT-SYS-021`, preservando mecanismos y bindings acreditados, cerrando por defecto los no acreditados y sin crear credenciales, secretos, cuentas, ambientes, almacenamiento, rotación, configuración ni cambios físicos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, configuración productiva o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Esta tarea materializa el contrato `VENTO-EXTERNAL-CREDENTIAL-MINIMUM-SCOPE-001` para las veintiuna identidades `EXT-SYS-001..021` heredadas de `INT-EXT-001`.
+
+El contrato fija, para cada identidad y para cada superficie de credencial acreditada o documentada, el **máximo alcance técnico permitido**. Una credencial técnica no concede autoridad empresarial por sí misma y no puede ampliar el principal, actor, recurso, dominio, sede, área, operación o efecto autorizado por los contratos internos de VENTO.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado `VENTO-EXTERNAL-CREDENTIAL-MINIMUM-SCOPE-001` para `EXT-SYS-001` a `EXT-SYS-021`.
+
+- 21 identidades esperadas;
+- 21 identidades materializadas;
+- 0 identidades faltantes;
+- 0 identidades duplicadas;
+- 0 credenciales autorizadas con alcance global por defecto;
+- 0 terceros autorizados a recibir `service_role`;
+- 0 credenciales de lectura autorizadas para reutilización de escritura;
+- 0 credenciales externas autorizadas para mutar múltiples dominios empresariales por el solo hecho de autenticarse correctamente.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea conserva sin alterar:
+
+- las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021` heredadas de `INT-EXT-001`;
+- el principal técnico independiente definido por `INT-EXT-002`;
+- la procedencia separada de credenciales establecida por `INT-EXT-003`;
+- el mecanismo técnico o estado de mecanismo materializado por `INT-EXT-004`;
+- la separación obligatoria entre `PermissionKey`, `IntegrationPrincipal`, `ExternalCredentialId` y valor secreto;
+- la prohibición de entregar `service_role` a integraciones externas, aplicaciones cliente, navegadores o dispositivos;
+- la obligación de que autenticación técnica y autorización empresarial permanezcan separadas;
+- la regla de que una credencial de lectura no se reutiliza para escritura;
+- la regla de que una credencial externa no convierte al proveedor en escritor transversal de dominios VENTO;
+- la distribución heredada de 21 identidades sin faltantes ni duplicados.
+
+Esta tarea no redefine ambientes, custodia, rotación, expiración, revocación, contratos de payload, idempotencia, rate limits, contingencia ni retiro de integración.
+
+---
+
+#### 4. Vocabulario de alcance
+
+| Término                | Definición                                                                                                                                               |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `minimum_scope`        | Conjunto mínimo de operaciones, recursos y superficies que justifican la existencia de una credencial.                                                   |
+| `scope_ceiling`        | Techo que la credencial no puede superar aunque el proveedor o el secreto físico técnicamente permitan más.                                              |
+| `provider_enforcement` | Restricción aplicada por el proveedor mediante scopes, permisos, roles, restricciones de API, proyecto, aplicación, issuer, clase, tópico o equivalente. |
+| `vento_enforcement`    | Restricción adicional aplicada por adapter, función, contrato, RPC, RLS, allowlist de operación o validación server-side de VENTO.                       |
+| `business_authority`   | Autorización empresarial de VENTO. Nunca se deriva de una API key, token, firma, certificado, DSN, service account o `service_role`.                     |
+| `destination_token`    | Identificador de destino, como un push token. No se clasifica como credencial de autoridad del proveedor.                                                |
+| `public_identifier`    | Identificador público o semipúblico usado para seleccionar proyecto, aplicación, issuer, clase o recurso. No se eleva a secreto por su sola presencia.   |
+
+---
+
+#### 5. Principio de mínimo privilegio
+
+1. **Default deny de alcance.** Toda operación no listada en el contrato de una credencial se considera fuera de alcance.
+2. **Separación de autenticación y autorización.** Una credencial válida acredita una relación técnica; no concede permiso empresarial sobre datos o acciones VENTO.
+3. **Separación lectura/escritura.** Una credencial destinada exclusivamente a lectura, consulta, ingestión o verificación no puede reutilizarse para mutación.
+4. **Separación inbound/outbound.** Un secreto usado para validar un webhook no puede convertirse en credencial de salida al proveedor.
+5. **Separación por proveedor e integración.** Una credencial no puede reutilizarse para otra identidad `EXT-SYS-*` ni para otro proveedor.
+6. **Separación por dominio.** Una credencial externa no puede justificar mutaciones laterales en varios dominios empresariales. El adapter propietario transforma el intercambio y el dueño del hecho aplica el efecto interno autorizado.
+7. **`service_role` no sale de VENTO.** No se entrega a proveedores, aplicaciones cliente, navegadores, dispositivos ni integraciones externas. Cuando una función interna lo usa, el alcance permitido queda limitado por su contrato de invocación, operaciones server-side y recursos propietarios, aunque la clave física sea técnicamente más amplia.
+8. **Restricción por proveedor cuando exista.** Si el proveedor soporta scopes, roles, APIs habilitadas, application restrictions, issuer/class, topic, proyecto o recurso, se deberá seleccionar la restricción mínima compatible con el uso aprobado.
+9. **Restricción VENTO complementaria.** Cuando el mecanismo del proveedor no pueda expresar el mínimo privilegio requerido, el adapter VENTO deberá imponer una allowlist estricta de endpoint, método, recurso, acción y efecto.
+10. **Nada implícito por `null`, ausencia o desconocido.** Falta de evidencia de scope no significa scope global; significa alcance físico no acreditado.
+11. **Sin reutilización por conveniencia.** Una credencial con capacidad técnica sobrante no habilita usos futuros. Todo uso nuevo exige revisión contractual y nueva decisión de alcance.
+12. **Sin mezcla con ambientes.** La separación entre desarrollo, staging y producción pertenece a `INT-EXT-006`; esta tarea define el alcance funcional, no la distribución ambiental.
+13. **Custodia y rotación separadas.** Almacenamiento seguro pertenece a `INT-EXT-007` y rotación, expiración y revocación a `INT-EXT-008`; ninguna de esas tareas podrá ampliar el alcance aquí fijado.
+
+---
+
+#### 6. Matriz materializada `VENTO-EXTERNAL-CREDENTIAL-MINIMUM-SCOPE-001`
+
+| ID            | Sistema / proveedor           | Superficie de credencial o mecanismo                                                                   | Alcance mínimo autorizado                                                                                                                                                                                                                                                                                                                                                              | Prohibiciones expresas                                                                                                                                                                                                                                      | Estado                                 | Evidencia / bloqueo y propietario                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `EXT-SYS-001` | Supabase                      | project key pública o publishable/anon + bearer de usuario + credencial privilegiada server-side       | La clave cliente solo identifica el proyecto y accede a superficies permitidas por RLS/contratos; el bearer representa únicamente la sesión del actor autenticado; la credencial privilegiada solo puede ser consumida server-side por funciones/adapters propietarios para las operaciones exactas que su contrato requiera.                                                          | Nada de `service_role` en cliente o tercero; nada de bypass genérico; ninguna clave técnica sustituye permiso, actor, scope o recurso; ninguna función puede usar privilegio amplio para mutar dominios ajenos.                                             | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Uso server-side amplio físicamente por naturaleza de `service_role`; la conformidad se demuestra en la frontera de función/RPC/grants. Gobierno y hardening: `SUPA-ARC-015`, `SUPA-AUD-014`, `SUPA-AUD-015`, `SHELL-CI-017`.                                                                                                                                                                                                                           |
+| `EXT-SYS-002` | Wompi                         | `WOMPI_PUBLIC_KEY` + `WOMPI_INTEGRITY_SECRET` + secreto de eventos                                     | Checkout: construir exclusivamente la solicitud de checkout de una transacción VENTO ya autorizada con referencia, monto, moneda, expiración y redirect aprobados. Eventos: verificar exclusivamente autenticidad/checksum del webhook recibido.                                                                                                                                       | La public key o secreto de integridad no autorizan reembolsos, administración de comercio, lectura masiva, cambio de transacciones ni otras APIs; el secreto de eventos no puede usarse como credencial outbound; el webhook no muta directamente dominios. | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Alcance funcional observable en `payments-create-intent` y `payments-webhook`; restricciones proveedor-side adicionales deberán reconciliarse en `INT-EXT-009` y auditarse en `INT-EXT-017`.                                                                                                                                                                                                                                                           |
+| `EXT-SYS-003` | RevenueCat                    | API key pública de SDK por plataforma + secreto de webhook                                             | SDK: configurar exclusivamente la aplicación PASS/Club, consultar offerings disponibles, comprar el paquete seleccionado y restaurar compras del usuario de la aplicación. Webhook: autenticar exclusivamente eventos RevenueCat destinados al contrato Club.                                                                                                                          | Sin administración de proyecto/cuenta desde la app; sin API administrativa por la key pública; el secreto webhook no puede invocar APIs outbound; un evento válido solo habilita el adapter a evaluar el efecto Club previsto.                              | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Uso observable en SDK y webhook. Restricciones exactas de proyecto/app del proveedor se reconcilian en `INT-EXT-009` y `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                  |
+| `EXT-SYS-004` | Resend                        | `RESEND_API_KEY` como bearer server-side                                                               | Enviar correo transaccional de invitación laboral ANIMA al destinatario exacto de una invitación autorizada, usando el remitente aprobado.                                                                                                                                                                                                                                             | Sin administración de dominios, contactos, listas, broadcasts, cuenta, usuarios ni lectura masiva; no usar desde cliente; no reutilizar para otros flujos de correo sin contrato explícito.                                                                 | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | El uso observado es `POST /emails`; no se acredita que la key física tenga restricciones provider-side equivalentes. Reconciliación de contrato: `INT-EXT-009`; auditoría de alcance: `INT-EXT-017`.                                                                                                                                                                                                                                                   |
+| `EXT-SYS-005` | Expo / EAS Update             | proyecto/URL observados; credencial de publicación no acreditada                                       | No existe scope operativo acreditado para una credencial. Cualquier futura credencial solo podrá operar sobre el proyecto móvil VENTO expresamente vinculado y sobre acciones de build/update/publicación aprobadas.                                                                                                                                                                   | Sin administración global de organización/cuenta por defecto; sin asumir que `projectId`, owner o URL son credenciales.                                                                                                                                     | `CONFIGURACION_SIN_SCOPE_ACREDITADO`   | La credencial real y sus permisos deben acreditarse antes de activar el binding; contrato proveedor en `INT-EXT-009`, auditoría en `INT-EXT-017`.                                                                                                                                                                                                                                                                                                      |
+| `EXT-SYS-006` | Expo Push Service             | sin credencial externa de cliente observada; push token = destino                                      | No aplica scope de credencial externa en el intercambio observado. El adapter solo puede enviar notificaciones a push tokens obtenidos desde el dominio propietario y para eventos autorizados.                                                                                                                                                                                        | Un push token no se interpreta como identidad, sesión, permiso ni credencial administrativa; la capacidad de enviar no autoriza el evento empresarial.                                                                                                      | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`     | Envío observado sin auth de proveedor. Contrato del canal permanece sujeto a `INT-EXT-009`, idempotencia `INT-EXT-012` y auditoría `INT-EXT-017`.                                                                                                                                                                                                                                                                                                      |
+| `EXT-SYS-007` | Sentry                        | DSN de ingestión                                                                                       | Ingerir errores/eventos de observabilidad únicamente en el proyecto Sentry configurado para ANIMA y con la metadata mínima necesaria para diagnóstico.                                                                                                                                                                                                                                 | El DSN no autoriza lectura de issues, administración de proyecto, releases, miembros, organizaciones ni otras APIs; no se convierte en secreto administrativo.                                                                                              | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Uso de ingestión observable mediante `Sentry.init({ dsn })`. Minimización/observabilidad continúa en `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                    |
+| `EXT-SYS-008` | Google Maps / Google Reviews  | API key de Maps; URLs públicas de Maps/Reviews                                                         | La API key solo puede habilitar las APIs de mapas estrictamente necesarias para la experiencia PASS que efectivamente las consuma; las URLs de mapas/reseñas siguen siendo enlaces públicos.                                                                                                                                                                                           | Sin APIs Google no requeridas; sin acceso a Cloud/IAM/Wallet; ninguna URL pública se clasifica como credencial; ningún key client-side debe recibir privilegios server-side.                                                                                | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Uso de key para mapas observable; las restricciones provider-side por API/aplicación no están acreditadas. Reconciliación en `INT-EXT-009` y auditoría `INT-EXT-017`.                                                                                                                                                                                                                                                                                  |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs | bearer de usuario, certificado/clave de firma `.pkpass`, token opaco VENTO por pase, P8/JWT ES256 APNs | Bearer: emitir únicamente el pase propio del usuario autenticado. Certificado: firmar únicamente pases del Pass Type ID aprobado. Token por pase: registrar/desregistrar dispositivo, entregar y consultar actualizaciones exclusivamente del pase vinculado. P8/JWT: enviar pushes APNs exclusivamente al tópico/Pass Type ID del pase aprobado y a tokens registrados para ese pase. | Sin acceso de un pase a otro; sin usar certificado o P8 para otros productos/topics; sin usar bearer de usuario como credencial administrativa; sin usar token de pase para enumerar pases o registros ajenos.                                              | `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Registro/baja/obtención comparan token exacto, pero la consulta observada de actualizaciones solo exige presencia de token y no acredita vínculo exacto. Reconciliación contractual: `INT-EXT-009`; auditoría y cierre de brecha: `INT-EXT-017`; hardening de superficie privilegiada: `SUPA-ARC-015`/`SHELL-CI-017` cuando corresponda. El carné laboral Apple de ANIMA permanece fuera de este binding operativo: su endpoint actual responde `501`. |
+| `EXT-SYS-010` | Vercel                        | configuración de hosting/routing observada; credencial operativa no acreditada                         | No existe scope de credencial Vercel acreditado. Una futura credencial solo podrá actuar sobre los proyectos/superficies VENTO expresamente vinculados y las acciones de despliegue necesarias.                                                                                                                                                                                        | Sin administración global de cuenta/team por defecto; un deployment URL, project name o rewrite no constituye credencial.                                                                                                                                   | `CONFIGURACION_SIN_SCOPE_ACREDITADO`   | Identidad de proyecto y token real deben acreditarse en `INT-EXT-009`; auditoría en `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                     |
+| `EXT-SYS-011` | Zebra BrowserPrint            | sin credencial externa observada; UID de dispositivo local                                             | No aplica scope de credencial externa. El cliente solo puede descubrir/seleccionar el dispositivo local presentado por BrowserPrint para la operación de impresión autorizada.                                                                                                                                                                                                         | UID, nombre, IP o detección local no se convierten en identidad empresarial, actor, permiso ni credencial de proveedor.                                                                                                                                     | `SIN_CREDENCIAL_EXTERNA_OBSERVADA`     | Binding local observado sin credencial externa. Contrato de operación externa, si se formaliza, continúa en `INT-EXT-009` y auditoría en `INT-EXT-017`.                                                                                                                                                                                                                                                                                                |
+| `EXT-SYS-012` | Google Wallet                 | service account documentada; firma RS256 de JWT `savetowallet`                                         | Firmar únicamente JWT de guardado para objetos de carné laboral del issuer y clase de empleado aprobados, con datos mínimos del trabajador elegible y expiración corta del token de entrega.                                                                                                                                                                                           | Sin APIs Google Cloud/IAM no relacionadas; sin objetos de otras clases/issuers; sin administración global de Wallet; sin reutilizar la service account para otros proveedores o productos.                                                                  | `SCOPE_DOCUMENTADO_SIN_BINDING`        | Código actual materializa el JWT de una clase/issuer, pero no acredita despliegue o binding remoto operativo. Acreditación y contrato: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                        |
+| `EXT-SYS-013` | POS externo actual            | proveedor/credencial no acreditados                                                                    | No existe scope operativo autorizado. Antes de cualquier credencial deberá limitarse a los endpoints y operaciones del adapter de transición POS explícitamente auditados.                                                                                                                                                                                                             | Sin escritura directa en tablas internas, sin Supabase, sin `service_role`, sin autoridad sobre NEXO/NUMERA/PASS por la sola integración.                                                                                                                   | `NO_APLICA_ACTUAL`                     | Proveedor, API, endpoints y credenciales son responsabilidad de `INT-POS-001`; la activación deberá respetar esta política de mínimo privilegio.                                                                                                                                                                                                                                                                                                       |
+| `EXT-SYS-014` | Shopify / e-commerce          | sin binding/credencial acreditados                                                                     | No existe scope operativo autorizado. Una futura credencial deberá cubrir únicamente las operaciones de e-commerce expresamente contratadas por el adapter VENTO.                                                                                                                                                                                                                      | Sin administración global de tienda/cuenta, datos no requeridos o escritura en dominios VENTO fuera del contrato.                                                                                                                                           | `NO_APLICA_ACTUAL`                     | Binding y contrato exactos deberán acreditarse en `INT-EXT-009`; auditoría en `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                           |
+| `EXT-SYS-015` | Rappi / marketplace           | sin binding/credencial acreditados                                                                     | No existe scope operativo autorizado. Una futura credencial deberá limitarse a las operaciones de marketplace expresamente contratadas.                                                                                                                                                                                                                                                | Sin acceso administrativo amplio, datos no requeridos o mutación directa de dominios internos.                                                                                                                                                              | `NO_APLICA_ACTUAL`                     | Binding y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `EXT-SYS-016` | ManyChat                      | sin binding/credencial acreditados                                                                     | No existe scope operativo autorizado. Una futura credencial deberá limitarse al flujo conversacional expresamente vinculado al adapter VENTO.                                                                                                                                                                                                                                          | Sin administración global de automatizaciones/audiencias ni acceso a canales no contratados.                                                                                                                                                                | `NO_APLICA_ACTUAL`                     | Binding y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `EXT-SYS-017` | WhatsApp                      | proveedor/API/credencial no acreditados                                                                | No existe scope operativo autorizado. Una futura credencial deberá limitarse al número/cuenta, plantillas, mensajes y eventos estrictamente requeridos por el canal aprobado.                                                                                                                                                                                                          | Sin administración de otras cuentas/números, contactos o activos; una conversación externa no concede autoridad empresarial.                                                                                                                                | `NO_APLICA_ACTUAL`                     | Proveedor y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `EXT-SYS-018` | Instagram / social            | cuenta/API/credencial no acreditados                                                                   | No existe scope operativo autorizado. Una futura credencial deberá limitarse a la cuenta y operaciones sociales expresamente aprobadas.                                                                                                                                                                                                                                                | Sin administración de otros activos, cuentas, publicidad o permisos Meta no requeridos.                                                                                                                                                                     | `NO_APLICA_ACTUAL`                     | Binding y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `EXT-SYS-019` | Correo corporativo / aliases  | proveedor/credencial no acreditados                                                                    | No existe scope operativo autorizado. Una futura credencial deberá limitarse a los buzones, aliases u operaciones de mensajería expresamente contratados.                                                                                                                                                                                                                              | Sin administración global del tenant, usuarios, dominios o buzones no necesarios.                                                                                                                                                                           | `NO_APLICA_ACTUAL`                     | Proveedor y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `EXT-SYS-020` | Telefonía / voz               | proveedor/credencial no acreditados                                                                    | No existe scope operativo autorizado. Una futura credencial deberá limitarse a números, llamadas, eventos y registros estrictamente requeridos por el flujo aprobado.                                                                                                                                                                                                                  | Sin administración global de cuenta, números o grabaciones ajenas al contrato; sin usar metadata telefónica como autoridad empresarial.                                                                                                                     | `NO_APLICA_ACTUAL`                     | Proveedor y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                 |
+| `EXT-SYS-021` | Transporte externo            | proveedor/credencial no acreditados                                                                    | No existe scope operativo autorizado. Una futura credencial deberá limitarse a cotización, solicitud, seguimiento y conciliación del servicio de transporte expresamente contratado.                                                                                                                                                                                                   | Sin administración global de cuenta, conductores, flota o datos no requeridos; sin mutación directa de estados internos ajenos al adapter.                                                                                                                  | `NO_APLICA_ACTUAL`                     | Proveedor y contrato exactos: `INT-EXT-009`; auditoría: `INT-EXT-017`.                                                                                                                                                                                                                                                                                                                                                                                 |
+
+---
+
+#### 7. Decisiones por familia y superficie de credencial
+
+##### 7.1. Supabase
+
+`EXT-SYS-001` conserva tres planos:
+
+1. **clave pública/publishable o anon**: identifica el proyecto y queda subordinada a RLS, RPC y contratos cliente;
+2. **bearer de usuario**: prueba la sesión del actor y no añade permisos empresariales;
+3. **credencial privilegiada server-side**: habilita capacidades técnicas internas, pero cada función/adaptador debe reducir su uso a operaciones exactas y recursos propios.
+
+La amplitud técnica de `service_role` no se acepta como `minimum_scope`; es una capacidad física de alto privilegio que debe quedar contenida por arquitectura, funciones, grants y pruebas negativas.
+
+##### 7.2. Wompi
+
+Se separan dos alcances que no son intercambiables:
+
+- **checkout outbound**: construir la intención/redirección ya autorizada por VENTO;
+- **webhook inbound**: verificar autenticidad del evento.
+
+La validación correcta de un evento no autoriza por sí sola el estado final interno; el adapter debe resolver referencia, idempotencia y contrato propietario antes de aplicar el efecto.
+
+##### 7.3. RevenueCat
+
+Se separan:
+
+- **SDK móvil**: offerings, compra y restauración para el usuario/app;
+- **webhook**: autenticidad de eventos de suscripción/entitlement.
+
+Ninguna de las dos superficies concede administración general de RevenueCat ni autoridad empresarial transversal en VENTO.
+
+##### 7.4. Apple Wallet / PassKit / APNs
+
+Se mantienen cuatro superficies independientes:
+
+1. sesión/bearer para solicitar el pase propio;
+2. certificado y clave privada para firmar el `.pkpass` del Pass Type ID aprobado;
+3. token opaco por pase para el servicio web de ese pase;
+4. clave APNs para generar JWT ES256 y notificar exclusivamente el tópico del Pass Type ID aprobado.
+
+**Brecha física observada:** el flujo de consulta de actualizaciones del servicio Wallet acepta un token presente, pero la evidencia revisada no demuestra que lo compare contra el `auth_token` del conjunto de pases consultado. El contrato aquí aprobado exige vínculo exacto; `INT-EXT-017` deberá reconciliar y evidenciar la conformidad de todas las rutas del servicio, y `INT-EXT-009` deberá conservar el contrato de entrada/salida que impida enumeración transversal.
+
+El endpoint laboral Apple actual de ANIMA responde `501` y, por tanto, no introduce una credencial activa adicional.
+
+##### 7.5. Google Wallet
+
+El código disponible construye un JWT `savetowallet` RS256 para un `genericObject` cuyo `id` y `classId` se derivan del issuer, clase laboral y usuario elegible. Esta evidencia permite fijar el **scope documental objetivo** de la service account: firmar únicamente pases laborales del issuer/clase aprobados. No acredita por sí sola despliegue, asociación remota de la cuenta de servicio ni aceptación operativa por Google Wallet.
+
+---
+
+#### 8. Autenticación, alcance y autorización permanecen separados
+
+Secuencia obligatoria para cualquier efecto protegido asociado a una integración externa:
+
+```text
+MECANISMO TÉCNICO VÁLIDO
+→ PRINCIPAL TÉCNICO IDENTIFICABLE
+→ CREDENCIAL DENTRO DE SU MINIMUM_SCOPE
+→ CONTRATO VIGENTE
+→ APLICACIÓN O DOMINIO PROPIETARIO
+→ AUTORIZACIÓN EMPRESARIAL INDEPENDIENTE
+→ EFECTO O RECHAZO
+→ AUDITORÍA
+```
+
+Una credencial técnicamente válida no amplía el alcance aprobado, no transforma un `scope_ceiling` en permiso y no autoriza recursos, dominios, sedes, áreas, acciones o efectos no incluidos expresamente.
+
+Cuando el proveedor no permita expresar físicamente el alcance mínimo, VENTO deberá imponer el límite complementario en su adapter, función, RPC, RLS, allowlist o contrato server-side. La amplitud física de una credencial no se convierte en autorización documental.
+
+---
+
+#### 9. Estados de alcance
+
+| Estado                                 | Semántica                                                                                                        |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` | Existe mecanismo y uso técnico observables suficientes para fijar el techo funcional actual.                     |
+| `SIN_CREDENCIAL_EXTERNA_OBSERVADA`     | Existe binding técnico, pero el intercambio observado no usa credencial externa de cliente.                      |
+| `CONFIGURACION_SIN_SCOPE_ACREDITADO`   | Existe configuración o superficie, pero no se acredita una credencial de proveedor cuyo scope pueda verificarse. |
+| `SCOPE_DOCUMENTADO_SIN_BINDING`        | Existe un modelo técnico concreto de credencial y alcance, pero no se acredita binding remoto/operativo.         |
+| `NO_APLICA_ACTUAL`                     | No existe proveedor/binding/credencial actual acreditado; no hay scope operativo que conceder.                   |
+
+---
+
+#### 10. Reconciliación de cobertura
+
+| Clasificación                          | Cantidad |
+| -------------------------------------- | -------: |
+| `SCOPE_MATERIALIZADO_EN_USO_OBSERVADO` |        7 |
+| `SIN_CREDENCIAL_EXTERNA_OBSERVADA`     |        2 |
+| `CONFIGURACION_SIN_SCOPE_ACREDITADO`   |        2 |
+| `SCOPE_DOCUMENTADO_SIN_BINDING`        |        1 |
+| `NO_APLICA_ACTUAL`                     |        9 |
+| **TOTAL**                              |   **21** |
+
+La distribución conserva la clasificación heredada de `INT-EXT-004`:
+
+- siete identidades con mecanismos observados y alcance materializable;
+- dos bindings observados sin autenticación externa de cliente;
+- dos configuraciones sin mecanismo/scope acreditado;
+- una identidad con modelo de credencial documentado sin binding;
+- nueve identidades sin binding actual.
+
+No se promueve ninguna identidad de `DOCUMENTADO_SIN_BINDING_ACREDITADO` o `PROVEEDOR_NO_ACREDITADO` a integración operativa por el solo hecho de existir código, guía, URL, variable o configuración.
+
+---
+
+#### 11. Handoffs y condiciones de salida
+
+| Tarea         | Recibe de `INT-EXT-005`                                                                    | Prohibición de reinterpretación                                                              |
+| ------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `INT-EXT-006` | Cada `minimum_scope` por identidad y superficie                                            | Separar ambientes no puede ampliar operaciones ni recursos.                                  |
+| `INT-EXT-007` | Credenciales clasificadas y su sensibilidad                                                | Elegir custodia no altera scope.                                                             |
+| `INT-EXT-008` | Credenciales y límites aprobados                                                           | Rotar/revocar no crea capacidades nuevas.                                                    |
+| `INT-EXT-009` | Techo funcional que deberá aparecer en contratos/versiones de entrada y salida             | El contrato del proveedor no podrá convertir credencial técnica en autoridad empresarial.    |
+| `INT-EXT-012` | Superficies con efecto potencial y límites de operación                                    | Idempotencia no autoriza efectos fuera del scope.                                            |
+| `INT-EXT-017` | Casos donde debe demostrarse que provider/VENTO enforcement coincide con el scope aprobado | Métricas o evidencia no podrán cerrar una brecha sin prueba del límite efectivo.             |
+| `INT-EXT-020` | Separación por integración y prohibición de reutilización                                  | Ninguna credencial podrá compartirse para eludir el scope individual.                        |
+| `INT-POS-001` | `EXT-SYS-013` sin credencial activa y con scope cerrado por defecto                        | No se habilitará POS externo antes de auditar proveedor, API, endpoints, webhooks y límites. |
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Esta tarea crea **0** requisitos `TREQ-*`, modifica **0**, difiere **0**, descarta **0** y declara obsoletos **0**.
+
+Justificación: el mínimo privilegio, el control de scopes, la separación entre credencial técnica y autorización empresarial, la contención de `service_role`, la custodia con identidad mínima, la no expansión de autoridad durante refresh y la prohibición de usar credenciales externas para mutar múltiples dominios ya están protegidos por requisitos vigentes de `AUTH`, `SUPABASE` e `INTEGRATION`. `INT-EXT-005` materializa esos controles sobre las veintiuna identidades de integración sin introducir una regla de riesgo nueva.
+
+---
+
+#### 13. Prohibiciones
+
+Queda prohibido:
+
+1. interpretar una credencial válida como autorización empresarial;
+2. conceder alcance global por ausencia, `null`, desconocimiento o falta de evidencia;
+3. reutilizar una credencial de lectura para escritura;
+4. reutilizar una credencial inbound como credencial outbound;
+5. reutilizar una credencial entre identidades `EXT-SYS-*` distintas por conveniencia;
+6. usar una credencial externa para justificar mutaciones laterales en múltiples dominios empresariales;
+7. entregar `service_role` a proveedor, cliente, navegador, dispositivo o integración externa;
+8. tratar `service_role` como actor humano, principal empresarial o `PermissionKey`;
+9. convertir API key, token, secreto, certificado, DSN, service account, issuer, class o tópico en permiso empresarial;
+10. ampliar el alcance porque el proveedor o la credencial física permitan capacidades adicionales;
+11. inferir scopes de proveedor no acreditados;
+12. afirmar restricciones provider-side que las fuentes actuales no demuestran;
+13. habilitar operaciones futuras bajo una credencial actual sin revisión contractual;
+14. convertir un push token o identificador de destino en credencial de autoridad;
+15. convertir configuración, URL, `projectId`, issuer, class, UID o identificador público en scope operativo;
+16. promover un binding documentado o candidato a integración activa por existir código o guía;
+17. crear credenciales, secretos o cuentas dentro de esta tarea;
+18. separar credenciales por ambiente dentro de esta tarea;
+19. definir almacenamiento físico de secretos dentro de esta tarea;
+20. rotar, revocar o expirar credenciales dentro de esta tarea;
+21. modificar Supabase;
+22. modificar código;
+23. desplegar servicios;
+24. cambiar las veintiuna identidades heredadas;
+25. iniciar o desarrollar `INT-EXT-006`.
+
+---
+
+#### 14. Criterios de aceptación
+
+1. Las veintiuna identidades heredadas tienen una decisión explícita de alcance.
+2. Las superficies multiclave se descomponen y no comparten autoridad por inferencia.
+3. Cada credencial observada tiene operaciones mínimas y prohibiciones expresas.
+4. Los bindings sin credencial externa no reciben un scope artificial.
+5. Las configuraciones sin credencial acreditada permanecen cerradas por defecto.
+6. Los proveedores futuros permanecen `NO_APLICA_ACTUAL` hasta acreditar binding, credencial y contrato.
+7. `service_role` queda explícitamente excluido de terceros y clientes.
+8. La autenticación técnica no sustituye permisos, scopes empresariales ni dueño del hecho.
+9. La distribución total reconcilia exactamente 21 identidades sin faltantes ni duplicados.
+10. Los handoffs posteriores conservan el scope como techo y no pueden ampliarlo silenciosamente.
+
+---
+
+#### 15. Resultado de la tarea
+
+`INT-EXT-005` deja materializado el alcance técnico mínimo permitido para las veintiuna identidades externas sin transformar la capacidad física de una credencial en autoridad empresarial.
+
+El modelo resultante exige conservar:
+
+```text
+SISTEMA / INSTANCIA
++
+PRINCIPAL TÉCNICO
++
+REFERENCIA DE CREDENCIAL
++
+PROCEDENCIA DE CREDENCIAL
++
+MECANISMO REAL
++
+MINIMUM_SCOPE
++
+SCOPE_CEILING
++
+RECURSO / OPERACIÓN ALCANZADOS
++
+AUTORIZACIÓN EMPRESARIAL INDEPENDIENTE
++
+AUDITORÍA
+```
+
+Los límites aquí definidos constituyen un techo para `INT-EXT-006` a `INT-EXT-020`; ninguna tarea posterior podrá ampliarlos silenciosamente.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-005 — Definir alcance mínimo de cada credencial`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-006 — Separar credenciales de desarrollo, staging y producción`
+
+
 ### [ ] INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
 ### [ ] INT-EXT-007 — Definir almacenamiento seguro de secretos
 ### [ ] INT-EXT-008 — Definir rotación, expiración y revocación
