@@ -3084,7 +3084,7 @@ SIGUIENTE TAREA RESERVADA
 
 **Estado:** APROBADA
 **Tarea anterior:** `INT-EXT-006 — Separar credenciales de desarrollo, staging y producción` — APROBADA
-**Tarea siguiente:** `INT-EXT-008 — Definir rotación, expiración y revocación de credenciales` — RESERVADA
+**Tarea siguiente:** `INT-EXT-008 — Definir rotación, expiración y revocación` — RESERVADA
 **Tipo de tarea:** documental; definición normativa y materializada de la custodia segura de secretos para cada identidad `EXT-SYS-001` a `EXT-SYS-021`, distinguiendo material secreto, credenciales públicas, configuración no secreta, referencias de credencial y tokens operativos, sin crear, mover, rotar, revocar ni desplegar secretos o modificar código, datos, proveedores o configuración remota
 **Bloque:** X — Integraciones
 **Mini-bloque:** Integraciones externas y credenciales
@@ -3576,7 +3576,7 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 
-`INT-EXT-008 — Definir rotación, expiración y revocación de credenciales`
+`INT-EXT-008 — Definir rotación, expiración y revocación`
 
 
 ### ✅ INT-EXT-008 — Definir rotación, expiración y revocación
