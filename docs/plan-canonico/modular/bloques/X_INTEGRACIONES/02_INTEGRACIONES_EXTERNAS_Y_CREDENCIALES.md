@@ -8961,7 +8961,938 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker`
 
 
-### [ ] INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker
+### ✅ INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-014 — Definir conservación controlada del payload original` — APROBADA
+**Tarea siguiente:** `INT-EXT-016 — Definir cuarentena o dead-letter` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de límites de tasa, elegibilidad de reintentos, presupuestos, backoff, tratamiento de `Retry-After`, resultado desconocido, circuit breaker, bulkheads y drenaje controlado para `EXT-SYS-001` a `EXT-SYS-021`, especializando la política transversal vigente sin crear mecanismos físicos ni modificar código, Supabase, proveedores, endpoints o datos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, colas, workers, schedulers, circuit breakers físicos, secretos, credenciales, endpoints, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo cada integración externa de VENTO limita presión sobre proveedores y sobre sus propias fronteras, cuándo una misma operación puede volver a intentarse, cuánto puede durar ese presupuesto, cómo se calcula la demora entre intentos y cómo se aísla una dependencia degradada sin perder trabajo ni convertir un fallo técnico en un efecto empresarial nuevo.
+
+La tarea separa obligatoriamente:
+
+```text
+RATE LIMIT
+≠
+RETRY
+≠
+BACKOFF
+≠
+CIRCUIT BREAKER
+≠
+BULKHEAD
+≠
+IDEMPOTENCIA
+≠
+CONCILIACIÓN
+≠
+CUARENTENA / DEAD-LETTER
+≠
+CONTINGENCIA EMPRESARIAL
+```
+
+Y también:
+
+```text
+REDELIVERY DEL PROVEEDOR
+≠
+REINTENTO OUTBOUND DE VENTO
+≠
+REPROCESAMIENTO INTERNO DE UN RECEIPT YA CAPTURADO
+```
+
+Un reintento nunca crea una operación nueva. Conserva la identidad, huella, finalidad, recurso, audiencia y contrato aprobados y solo cambia la identidad técnica del intento.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-RETRY-RESILIENCE-CONTRACT-001`, especialización externa de rate limiting, retry, backoff, circuit breaker y bulkheads sobre la política transversal ya aprobada.
+2. `VENTO-EXTERNAL-RETRY-RESILIENCE-MATRIX-001`, decisión materializada para las veintiuna identidades `EXT-SYS-*`.
+
+Balance:
+
+| Control                                              | Resultado |
+| ---------------------------------------------------- | --------: |
+| Identidades esperadas                                |    **21** |
+| Identidades materializadas                           | **21/21** |
+| Identificadores `EXT-SYS-*` únicos                   |    **21** |
+| Faltantes                                            |     **0** |
+| Duplicados                                           |     **0** |
+| `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`               |     **1** |
+| `WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR` |     **2** |
+| `OUTBOUND_PROVIDER_RATE_LIMITED`                     |     **2** |
+| `BEST_EFFORT_OBSERVABILITY_ISOLATED`                 |     **1** |
+| `INTERACTIVE_READ_ONLY_PROVIDER_CALL`                |     **1** |
+| `HYBRID_RESOURCE_AND_PUSH_BY_SURFACE`                |     **1** |
+| `CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT`            |     **2** |
+| `PHYSICAL_EFFECT_UNKNOWN_OUTCOME_GUARDED`            |     **1** |
+| `MODEL_NO_REMOTE_BINDING`                            |     **1** |
+| `NO_APLICA_SIN_BINDING`                              |     **7** |
+| `BLOQUEADA_SIN_BINDING`                              |     **2** |
+| Cuotas numéricas de proveedor inventadas             |     **0** |
+| Umbrales numéricos de circuit breaker inventados     |     **0** |
+| Cambios físicos                                      |     **0** |
+| Requisitos de prueba creados o modificados           |     **0** |
+
+Reconciliación:
+
+```text
+1 + 2 + 2 + 1 + 1 + 1 + 2 + 1 + 1 + 7 + 2 = 21
+```
+
+La tarea no crea una política paralela de reintentos. Consume `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0` y fija qué parte de esa política aplica a cada frontera externa.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `VENTO-EXTERNAL-SYSTEM-INVENTORY-001` y las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- principal técnico, credenciales, mecanismos, alcance, ambientes, custodia y lifecycle aprobados en `INT-EXT-002` a `INT-EXT-008`;
+- `VENTO-EXTERNAL-IO-CONTRACT-001` y su matriz versionada de `INT-EXT-009`;
+- `VENTO-EXTERNAL-DELIVERY-STRATEGY-001` y su matriz de `INT-EXT-010`, incluida la distribución de dos `WEBHOOK`, cero `POLLING`, una `HIBRIDA_PUSH_PULL`, dieciséis `NO_APLICA_RECEPCION_ASINCRONA` y dos `BLOQUEADA_SIN_BINDING`;
+- autenticidad, origen, timestamp y replay de `INT-EXT-011`;
+- `VENTO-EXTERNAL-IDEMPOTENCY-CONTRACT-001` de `INT-EXT-012`;
+- `VENTO-EXTERNAL-ID-MAPPING-CONTRACT-001` de `INT-EXT-013`;
+- `VENTO-EXTERNAL-ORIGINAL-PAYLOAD-CUSTODY-001` de `INT-EXT-014`;
+- `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0` de `INT-APP-005`;
+- la cobertura vigente de `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004` y `TREQ-INTEGRATION-138` a `TREQ-INTEGRATION-167`;
+- `SHELL-CON-019`, `SHELL-CON-022` y `SHELL-CON-023` como contratos compartidos posteriores de evento recibido, mapping e idempotencia/conciliación;
+- `QUEUE-ARC-006`, `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` como destinos de materialización física de retry, fallos, concurrencia, métricas y autorización de trabajos;
+- `CONT-INT-003` y `CONT-INT-004` para dependencia externa, salud, reincorporación y retorno controlado al servicio normal;
+- la propiedad de cada dominio VENTO sobre el hecho empresarial y su recuperación.
+
+Nada de lo definido aquí cambia una clave idempotente, autoriza una operación, sustituye una política de continuidad o crea una cola física.
+
+---
+
+#### 4. Herencia obligatoria de `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0`
+
+Toda operación externa reintentable deberá consumir la política transversal vigente en lugar de definir números locales arbitrarios.
+
+Invariantes heredados:
+
+1. el primer envío cuenta como intento uno;
+2. la misma operación conserva clave idempotente, huella, payload lógico, recurso, audiencia y finalidad;
+3. solo cambian `attempt_id`, `delivery_id`, tiempos, conexión, worker o traza técnica;
+4. un error desconocido no habilita retry automático;
+5. la autorización, contexto y vigencia se revalidan antes de cualquier intento que pueda producir o revelar un efecto;
+6. el presupuesto termina al alcanzar primero intentos, edad, cancelación, expiración, error permanente o pérdida de autoridad;
+7. agotar reintentos no ejecuta compensación ni declara éxito;
+8. un timeout no se convierte en fracaso seguro cuando el receptor pudo haber aplicado el efecto;
+9. una redelivery legítima conserva identidad de operación y nunca se transforma en un hecho nuevo;
+10. un componente local no puede ampliar los presupuestos máximos aprobados.
+
+---
+
+#### 5. Taxonomía cerrada de error y disposición
+
+`VENTO-EXTERNAL-RETRY-RESILIENCE-CONTRACT-001` reutiliza exactamente las doce clases de la política transversal:
+
+| Clase                    | Disposición                                                  |
+| ------------------------ | ------------------------------------------------------------ |
+| `TRANSIENT_CONNECTIVITY` | retry automático dentro del perfil aplicable                 |
+| `TRANSIENT_DEPENDENCY`   | retry automático dentro del perfil aplicable                 |
+| `RATE_LIMITED`           | esperar `Retry-After` o presupuesto local compatible         |
+| `CONCURRENCY_RETRYABLE`  | retry automático solo con claim/lease seguro                 |
+| `OUT_OF_ORDER_WAIT`      | esperar dependencia; no sondeo agresivo                      |
+| `AUTH_REFRESH_REQUIRED`  | refrescar mecanismo autorizado y reevaluar antes de reenviar |
+| `UNKNOWN_OUTCOME`        | consultar o conciliar antes de reejecutar                    |
+| `PERMANENT_CONTRACT`     | no retry automático                                          |
+| `PERMANENT_BUSINESS`     | no retry automático                                          |
+| `SECURITY_DENIED`        | no retry automático                                          |
+| `CONFLICTING_REUSE`      | no retry automático                                          |
+| `CANCELLED_OR_EXPIRED`   | no retry automático                                          |
+
+Reglas externas adicionales:
+
+- un `429` se clasifica `RATE_LIMITED` cuando el contrato lo acredita;
+- un `5xx` no se clasifica automáticamente como transitorio sin considerar la semántica del proveedor y si el resultado pudo quedar confirmado;
+- `401` o credencial expirada puede convertirse en `AUTH_REFRESH_REQUIRED`, pero solo si el lifecycle aprobado permite renovar y reautorizar;
+- `403`, firma inválida, contrato revocado o payload incompatible no se convierten en retry mediante fallback;
+- un texto de error, excepción SDK o código HTTP aislado no altera esta taxonomía.
+
+---
+
+#### 6. Perfiles canónicos reutilizados
+
+Los máximos contractuales vigentes se conservan sin modificación:
+
+| Perfil                        | Intentos totales |     Base | Tope por demora | Edad máxima |
+| ----------------------------- | ---------------: | -------: | --------------: | ----------: |
+| `RETRY_NONE`                  |            **1** |      `0` |             `0` |         `0` |
+| `RETRY_INTERACTIVE_SAFE`      |            **3** | `500 ms` |           `5 s` |      `30 s` |
+| `RETRY_OWNER_COMMAND`         |            **6** |    `2 s` |         `2 min` |    `30 min` |
+| `RETRY_EVENT_STANDARD`        |           **12** |    `5 s` |        `15 min` |      `24 h` |
+| `RETRY_EVENT_CRITICAL`        |           **20** |    `2 s` |        `10 min` |      `72 h` |
+| `RETRY_PROVIDER_RATE_LIMITED` |           **12** |   `30 s` |           `6 h` |       `7 d` |
+| `RETRY_OFFLINE_SYNC`          |           **20** |   `10 s` |        `30 min` |       `7 d` |
+| `RETRY_OUT_OF_ORDER`          |           **20** |   `30 s` |           `1 h` |      `72 h` |
+
+Estos valores son techos, no objetivos de consumo. Una operación puede terminar en el primer intento o detenerse antes por resultado definitivo, cancelación, expiración, autorización o error permanente.
+
+Una integración externa no puede crear `RETRY_WOMPI`, `RETRY_RESEND`, `RETRY_EXPO` u otro perfil local nuevo sin versionar primero la política transversal correspondiente.
+
+---
+
+#### 7. Backoff obligatorio
+
+Cuando un perfil permita retry automático, se reutiliza `EXPONENTIAL_FULL_JITTER`:
+
+```text
+exponential_ceiling = min(delay_cap, base_delay × 2^(n - 2))
+next_delay = random_uniform(0, exponential_ceiling)
+```
+
+Reglas:
+
+1. `n` representa el número del nuevo intento posterior al primero;
+2. el jitter se calcula por operación e intento;
+3. no existe una demora fija universal para todos los proveedores;
+4. el scheduler no puede adelantar un instante impuesto por el proveedor;
+5. reiniciar proceso, función, dispositivo o worker no reinicia el presupuesto;
+6. el estado durable conserva `first_attempt_at`, `attempt_number` y `next_attempt_at` cuando exista ejecución asíncrona;
+7. el tiempo de espera por circuit breaker abierto no consume un nuevo intento de envío, aunque sí consume la edad máxima de la operación.
+
+---
+
+#### 8. Contrato de rate limiting
+
+Rate limiting gobierna capacidad y cuota; no decide por sí solo idempotencia ni éxito.
+
+Toda superficie outbound activa deberá poder resolver conceptualmente:
+
+```text
+EXTERNAL_SYSTEM_ID
++
+ENVIRONMENT
++
+PROVIDER / INSTANCE
++
+CREDENTIAL_REF O PRINCIPAL_REF CUANDO APLIQUE
++
+ENDPOINT / SURFACE
++
+OPERATION_KIND
++
+QUOTA_OR_RATE_POLICY_REF
+→ BUCKET DE LÍMITE INDEPENDIENTE
+```
+
+Reglas:
+
+1. las cuotas no se comparten entre development, staging y production;
+2. una cuota de una credencial o tenant no se evade rotando worker, proceso o credencial;
+3. una cuota de un endpoint no se interpreta como permiso para saturar otro endpoint del mismo proveedor;
+4. cuando el proveedor entregue `Retry-After` o equivalente válido:
+
+```text
+next_attempt_at = max(calculated_backoff_at, provider_retry_after_at)
+```
+
+5. un `Retry-After` inválido no produce retry inmediato; se utiliza el perfil local y se registra la anomalía;
+6. si la espera exigida excede la edad máxima de la operación, el resultado sale a conciliación o intervención según el contrato, no a un envío tardío silencioso;
+7. no se inventa un número de requests por segundo cuando las fuentes actuales no acreditan la cuota del proveedor;
+8. una cuota numérica física solo puede declararse validada cuando exista fuente de proveedor, configuración o evidencia operativa vigente;
+9. `QUEUE-ARC-006` deberá materializar los límites operativos por binding antes de activar workers o schedulers que los necesiten;
+10. `QUEUE-ARC-011` deberá medir espera, tasa, throttling y error sin copiar payload sensible.
+
+Para webhooks inbound, la protección de capacidad de VENTO se mantiene separada de la cuota outbound. La recepción no se convierte en una operación outbound reintentable y un control de admisión no puede descartar silenciosamente una entrega ya autenticada que deba conservar receipt o evidencia.
+
+---
+
+#### 9. Circuit breaker y bulkheads
+
+El circuit breaker protege a VENTO y al proveedor frente a una dependencia degradada. No es una cola, no es una compensación y no demuestra que una operación haya fallado.
+
+Estados lógicos:
+
+| Estado      | Semántica                                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------------ |
+| `CLOSED`    | los intentos elegibles pueden pasar dentro de rate limit, concurrencia y presupuesto             |
+| `OPEN`      | se suspenden nuevos intentos contra el destino degradado; el trabajo conserva identidad y estado |
+| `HALF_OPEN` | se habilita un número limitado de probes controlados para comprobar recuperación                 |
+
+Reglas:
+
+1. el breaker se delimita como mínimo por sistema externo, ambiente, superficie y destino material; no existe un breaker global que derribe integraciones sanas;
+2. un `PERMANENT_BUSINESS`, `SECURITY_DENIED` o `CONFLICTING_REUSE` no se usa como señal de salud del proveedor;
+3. `RATE_LIMITED` activa la espera de cuota y puede contribuir a degradación de capacidad, pero no se reinterpreta automáticamente como caída total;
+4. `TRANSIENT_DEPENDENCY`, fallos de conexión y respuestas de servicio degradado pueden alimentar la política del breaker cuando el binding lo defina;
+5. el breaker abierto no consume intentos de envío adicionales;
+6. la edad máxima sigue transcurriendo mientras el circuito permanece abierto;
+7. `HALF_OPEN` usa probes limitados y nunca libera todo el backlog;
+8. un probe no cambia la identidad empresarial de las operaciones pendientes;
+9. cerrar el breaker no confirma trabajo que todavía no se ha ejecutado;
+10. reabrirlo no elimina backlog ni receipts;
+11. los umbrales físicos de error, ventana, tiempo abierto y número de probes deben ser versionados por binding en E4 antes de implementación; esta tarea no inventa valores numéricos sin evidencia;
+12. bulkheads separan como mínimo proveedores, aplicaciones, consumidoras y clases de criticidad para impedir cascadas;
+13. una prioridad crítica no permite starvation indefinido de trabajo ordinario ni bypass de idempotencia o rate limits;
+14. el restablecimiento aplica drenaje controlado con jitter y límites de concurrencia.
+
+---
+
+#### 10. Resultado desconocido antes de cualquier nuevo envío
+
+Cuando una llamada pudo llegar al proveedor pero la respuesta se perdió:
+
+```text
+UNKNOWN_OUTCOME
+→ CONSULTAR POR CLAVE / EVENT ID / ID EXTERNO / RECEIPT
+   ├── CONFIRMADO → recuperar resultado; no reenviar
+   ├── NO APLICADO DEMOSTRADO → mismo operation ref puede reintentarse
+   └── INDETERMINADO → RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. pagos, correos entregados, push, actualizaciones Wallet, movimientos físicos e impresiones no se repiten a ciegas;
+2. un timeout no es prueba de fracaso;
+3. si el proveedor no ofrece consulta y VENTO no conserva receipt suficiente, el contrato no autoriza auto-retry de una operación irreversible o perceptible por el usuario;
+4. una repetición intencional del usuario usa una nueva generación o intención cuando el proceso lo permita;
+5. la resolución posterior de estados inciertos pertenece a `INT-EXT-017`; la disposición de fallos no procesables pertenece a `INT-EXT-016`.
+
+---
+
+#### 11. Separación entre redelivery inbound y retry outbound
+
+##### 11.1. Webhook inbound
+
+Para Wompi y RevenueCat:
+
+```text
+PROVEEDOR REENVÍA
+→ VENTO AUTENTICA
+→ IDENTIFICA RECEIPT / EVENTO
+→ DEDUPLICA
+→ CONSERVA EVIDENCIA SEGÚN INT-EXT-014
+→ PROCESA O RECUPERA RESULTADO
+```
+
+VENTO no genera un segundo webhook contra sí mismo ni crea un loop outbound al proveedor para “reintentar” la recepción.
+
+Si el procesamiento interno posterior al receipt falla de forma transitoria, ese trabajo interno usa los perfiles de evento aplicables y la misma identidad capturada; no se inventa un nuevo evento externo.
+
+##### 11.2. Operación outbound
+
+Para una llamada iniciada por VENTO:
+
+```text
+OPERACIÓN VENTO ESTABLE
+→ RATE LIMIT
+→ BREAKER
+→ INTENTO
+→ CLASIFICAR RESPUESTA
+→ RESULTADO O NEXT_ATTEMPT_AT
+```
+
+El orden evita enviar primero y preguntar después si existía cuota, circuito abierto o presupuesto agotado.
+
+---
+
+#### 12. Wompi — `EXT-SYS-002`
+
+Clasificación primaria:
+
+`WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR`
+
+Superficie actual:
+
+- checkout basado en URL generada por VENTO;
+- webhook de pago como entrada asíncrona acreditada;
+- no existe polling puro acreditado para descubrir el estado del pago.
+
+Decisión:
+
+1. el webhook recibido no usa un perfil de retry outbound VENTO;
+2. una redelivery de Wompi conserva `source_system + provider_event_id` o el receipt estable definido por `INT-EXT-012`;
+3. el procesamiento interno de un receipt de pago, cuando deba diferirse, usa `RETRY_EVENT_CRITICAL` por criticidad de pago, sin crear otro evento externo;
+4. `UNKNOWN_OUTCOME` del efecto de pago exige consulta/conciliación antes de cualquier nuevo cobro;
+5. el checkout actual no ejecuta una llamada API de creación de intención al proveedor; construir de nuevo una URL no se interpreta como retry de un request remoto;
+6. no se acredita un rate limit numérico de Wompi en las fuentes actuales;
+7. un breaker futuro de dependencia Wompi debe aislar la superficie externa sin eliminar receipts ya recibidos;
+8. cualquier política física queda vinculada a `QUEUE-ARC-006` y a la conciliación de `SHELL-CON-023`.
+
+Estado técnico observado:
+
+`WOMPI_RETRY_RESILIENCE_STATE = REDELIVERY_DEDUP_PARCIAL_SIN_RATE_LIMIT_O_BREAKER_ACREDITADO`
+
+El webhook actual reconoce eventos previamente procesados, pero no implementa rate limiting, scheduler de reintentos, backoff ni circuit breaker.
+
+---
+
+#### 13. RevenueCat — `EXT-SYS-003`
+
+Clasificación primaria:
+
+`WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR`
+
+Decisión:
+
+1. el webhook de entitlement es entrada inbound; VENTO no lo reenvía al proveedor;
+2. una redelivery debe converger sobre la misma identidad idempotente de `INT-EXT-012`;
+3. el procesamiento interno de un receipt válido puede utilizar `RETRY_EVENT_CRITICAL` cuando la actualización de entitlement sea material, preservando la misma operación;
+4. compra y restore del SDK son operaciones bajo demanda y no se convierten en polling ni en loops custom de retry sin contrato del SDK;
+5. un resultado incierto de compra/restore se resuelve mediante estado/restauración/conciliación, no mediante una segunda compra ciega;
+6. no se acredita una cuota numérica de RevenueCat en las fuentes actuales;
+7. el breaker de la dependencia no puede revocar un entitlement ya confirmado ni convertir ausencia temporal del proveedor en expiración empresarial;
+8. `QUEUE-ARC-006` materializará cualquier trabajo diferido; `INT-EXT-017` conserva la conciliación.
+
+Estado técnico observado:
+
+`REVENUECAT_RETRY_RESILIENCE_STATE = SIN_DEDUP_DURABLE_RETRY_BACKOFF_RATE_LIMIT_NI_BREAKER_ACREDITADOS`
+
+La función actual procesa una entrega en línea y no evidencia claim durable, política de reintento, backoff o circuit breaker.
+
+---
+
+#### 14. Resend — `EXT-SYS-004`
+
+Clasificación primaria:
+
+`OUTBOUND_PROVIDER_RATE_LIMITED`
+
+Perfil objetivo ordinario:
+
+`RETRY_PROVIDER_RATE_LIMITED`
+
+Reglas:
+
+1. la unidad de operación es una generación de entrega de invitación, no solamente el correo destinatario;
+2. un retry conserva invitación, generación, destinatario, subject lógico, finalidad e identidad de entrega;
+3. un reenvío voluntario posterior es una nueva generación y no comparte la identidad del retry técnico;
+4. `429` o cuota acreditada usa `RATE_LIMITED` y respeta `Retry-After`;
+5. un rechazo de destinatario, contrato o payload permanente no se reintenta;
+6. un timeout después del envío queda `UNKNOWN_OUTCOME`; sin receipt consultable no se autoriza reenviar automáticamente el mismo correo;
+7. el breaker se delimita por ambiente, cuenta/credencial, endpoint y operación de envío;
+8. abrir el breaker conserva la invitación y la intención de entrega; no la marca como enviada ni fallida por inferencia;
+9. no se acredita una cuota numérica de Resend en las fuentes actuales.
+
+Estado técnico observado:
+
+`RESEND_RETRY_RESILIENCE_STATE = LLAMADA_UNICA_SIN_RETRY_AFTER_BACKOFF_BREAKER_NI_RECEIPT_DE_EXITO_PERSISTIDO`
+
+La implementación actual realiza un único `fetch`, trata cualquier respuesta no exitosa como fallo inmediato y no evidencia scheduler, `Retry-After`, backoff, circuit breaker o receipt exitoso estructurado.
+
+---
+
+#### 15. Expo Push Service — `EXT-SYS-006`
+
+Clasificación primaria:
+
+`OUTBOUND_PROVIDER_RATE_LIMITED`
+
+Perfil objetivo ordinario:
+
+`RETRY_PROVIDER_RATE_LIMITED`
+
+Reglas:
+
+1. la identidad de entrega se compone de anuncio, destino y generación aprobados por `INT-EXT-012`;
+2. `DeviceNotRegistered` es condición permanente para ese token y no se reintenta;
+3. `429` y cuotas acreditadas respetan `Retry-After`;
+4. un fallo transitorio conserva los mensajes exactos del mismo lote lógico o los divide conservando identidad por destino; no genera anuncios nuevos;
+5. un resultado incierto usa receipt/ticket cuando se materialice antes de reenviar a un destino;
+6. el breaker se delimita por ambiente, endpoint y cuenta/proyecto aplicables, con bulkhead por clase de entrega para evitar que una campaña bloquee avisos críticos;
+7. el drenaje tras recuperación respeta rate limit y jitter; no libera todos los tokens a la vez;
+8. no se acredita una cuota numérica de Expo Push en las fuentes actuales.
+
+Estado técnico observado:
+
+`EXPO_PUSH_RETRY_RESILIENCE_STATE = BATCH_LIMITADO_LOCALMENTE_SIN_RETRY_AFTER_BACKOFF_BREAKER_NI_RECEIPT_DURABLE`
+
+El código actual divide mensajes en lotes de hasta 100 y desactiva `DeviceNotRegistered`, pero no evidencia política durable de retry, lectura de `Retry-After`, circuit breaker ni persistencia de tickets/receipts.
+
+---
+
+#### 16. Sentry — `EXT-SYS-007`
+
+Clasificación primaria:
+
+`BEST_EFFORT_OBSERVABILITY_ISOLATED`
+
+Decisión:
+
+1. telemetría no es un efecto empresarial cuya entrega deba bloquear procesos de negocio;
+2. VENTO no crea un backlog empresarial general para reintentar indefinidamente eventos Sentry;
+3. el SDK puede aplicar su transporte interno conforme a su contrato, pero ese comportamiento no se eleva a autoridad empresarial;
+4. el breaker/bulkhead de observabilidad aísla Sentry de los flujos propietarios;
+5. una caída de Sentry no revierte operaciones confirmadas ni vuelve fallida una transacción empresarial;
+6. el perfil empresarial por defecto es `RETRY_NONE`; cualquier buffer técnico del SDK sigue siendo infraestructura de observabilidad y debe respetar sensibilidad y límites propios;
+7. no se acredita una cuota numérica ni un breaker físico Sentry en las fuentes actuales.
+
+Estado:
+
+`SENTRY_RETRY_RESILIENCE_STATE = BEST_EFFORT_SIN_CONTRATO_EMPRESARIAL_DE_RETRY`
+
+---
+
+#### 17. Google Maps / Google Reviews — `EXT-SYS-008`
+
+Clasificación primaria:
+
+`INTERACTIVE_READ_ONLY_PROVIDER_CALL`
+
+Perfil objetivo ordinario:
+
+`RETRY_INTERACTIVE_SAFE`
+
+Decisión:
+
+1. autocomplete y detalle son lecturas bajo demanda y no producen por sí mismas un hecho irreversible;
+2. solo errores realmente transitorios pueden usar el perfil interactivo;
+3. `RATE_LIMITED` respeta `Retry-After`, pero una espera que exceda la edad máxima interactiva devuelve estado degradado o error controlado en lugar de crear un job oculto de larga duración;
+4. `ZERO_RESULTS` y respuestas semánticamente válidas sin resultado no son fallos reintentables;
+5. claves inválidas, denegación o contrato incompatible no se reintentan;
+6. el breaker se delimita por ambiente, credencial y superficie de Places; al abrirse, el flujo debe degradarse sin inventar dirección, coordenadas o `place_id`;
+7. la misma consulta puede reintentarse dentro del presupuesto sin crear mapping canónico;
+8. no se acredita una cuota numérica Google Places en las fuentes actuales.
+
+Estado técnico observado:
+
+`GOOGLE_PLACES_RETRY_RESILIENCE_STATE = REQUEST_RESPONSE_UNICO_SIN_RETRY_AFTER_BACKOFF_O_BREAKER_ACREDITADOS`
+
+La función actual ejecuta una llamada por solicitud y convierte errores del proveedor en respuesta controlada, sin bucle de reintentos ni breaker observable.
+
+---
+
+#### 18. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Clasificación primaria:
+
+`HYBRID_RESOURCE_AND_PUSH_BY_SURFACE`
+
+La política se separa por superficie:
+
+##### 18.1. PassKit Web Service inbound
+
+- registro, baja, consulta de cambios y descarga son requests iniciados por Wallet/dispositivo;
+- VENTO no reintenta esas requests contra Apple;
+- una repetición inbound debe ser idempotente por recurso cuando modifica registro técnico;
+- `401`, `404`, request inválida u otra condición contractual no se convierten en loops internos.
+
+##### 18.2. APNs outbound
+
+Perfil objetivo ordinario:
+
+`RETRY_PROVIDER_RATE_LIMITED`
+
+Reglas:
+
+1. el push APNs es una señal de actualización, no el contenido autoritativo del pase;
+2. la misma señal conserva pass, dispositivo y generación;
+3. un retry no genera una nueva versión del pase;
+4. `RATE_LIMITED` o espera indicada por APNs se respeta dentro del presupuesto aplicable;
+5. un token permanentemente inválido se retira o desactiva según su lifecycle y no se reintenta indefinidamente;
+6. el breaker de APNs no impide que el recurso del pase siga disponible por su web service cuando corresponda;
+7. al recuperar APNs se drena la señalización con límite y jitter;
+8. no se acredita una cuota numérica APNs en las fuentes actuales.
+
+Estado técnico observado:
+
+`PASSKIT_APNS_RETRY_RESILIENCE_STATE = PUSH_HTTP2_UNICO_SIN_RETRY_AFTER_BACKOFF_BREAKER_NI_CLASIFICACION_DE_STATUS_ACREDITADOS`
+
+La función de push observada abre una conexión HTTP/2, envía una vez y resuelve o rechaza por evento de transporte; no evidencia scheduler, backoff, breaker ni tratamiento estructurado de rate limits.
+
+---
+
+#### 19. Zebra BrowserPrint — `EXT-SYS-011`
+
+Clasificación primaria:
+
+`PHYSICAL_EFFECT_UNKNOWN_OUTCOME_GUARDED`
+
+Reglas:
+
+1. detectar o conectar impresora puede usar interacción corta reintentable cuando no existe efecto físico;
+2. enviar ZPL es una operación física y requiere identidad estable de job/generación antes de cualquier retry automático;
+3. si la llamada demuestra que el trabajo no alcanzó el dispositivo, un reintento puede usar el perfil crítico del trabajo conservando la misma identidad;
+4. si BrowserPrint confirma solo envío técnico, no se afirma impresión física;
+5. timeout, callback perdido o desconexión después de enviar se clasifica `UNKNOWN_OUTCOME` y bloquea auto-retry hasta reconciliación o intervención;
+6. una reimpresión voluntaria es una nueva generación y no un retry técnico del job anterior;
+7. el breaker se delimita por bridge/estación/impresora y no abre el circuito de otras impresoras sanas;
+8. al abrir el breaker no se marcan jobs como impresos ni se eliminan de la intención operativa;
+9. `QUEUE-ARC-006`, `QUEUE-ARC-009` y el contrato transversal de impresión materializarán el comportamiento físico correspondiente.
+
+Estado técnico observado:
+
+`ZEBRA_RETRY_RESILIENCE_STATE = ENVIO_UNICO_CON_CALLBACK_SIN_JOB_DURABLE_RETRY_BACKOFF_O_BREAKER_ACREDITADO`
+
+El cliente actual ejecuta una llamada `device.send` y muestra éxito técnico o error; no evidencia job durable, retry automático, backoff o circuit breaker.
+
+---
+
+#### 20. Supabase, plataformas de configuración y modelo sin binding
+
+##### 20.1. Supabase — `EXT-SYS-001`
+
+Clasificación:
+
+`GOBERNADA_POR_CONTRATO_INTERNO_VENTO`
+
+No existe un rate limiter o circuit breaker externo universal para toda actividad Supabase. Cada RPC, Edge Function, Storage, Auth, Realtime o llamada interna conserva su contrato propietario. Cuando Supabase aloje un adaptador hacia un tercero, la política se aplica a la identidad `EXT-SYS-*` de ese tercero.
+
+##### 20.2. Expo / EAS Update — `EXT-SYS-005`
+
+Clasificación:
+
+`CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT`
+
+La configuración actual no acredita una operación administrativa runtime sobre la cual definir retry físico. Builds, updates o APIs futuras deberán versionar su binding antes de activar un scheduler propio.
+
+##### 20.3. Vercel — `EXT-SYS-010`
+
+Clasificación:
+
+`CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT`
+
+Hosting y configuración observados no acreditan una llamada administrativa o job externo que justifique retry/breaker específico de esta identidad.
+
+##### 20.4. Google Wallet — `EXT-SYS-012`
+
+Clasificación:
+
+`MODEL_NO_REMOTE_BINDING`
+
+Existe modelo de objeto/JWT, pero no respuesta remota acreditada. No se inventan cuotas, códigos, retries o breaker para una interacción no materializada.
+
+---
+
+#### 21. `VENTO-EXTERNAL-RETRY-RESILIENCE-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Clasificación primaria                               | Perfil o regla objetivo                                                                      | Rate limit / breaker                                                                                         | Estado del corte                                                                          |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`               | según contrato propietario                                                                   | sin bucket externo universal; aislamiento por superficie propietaria                                         | `SEGUN_CONTRATO_PROPIETARIO`                                                              |
+| `EXT-SYS-002` | Wompi                                    | `WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR` | inbound sin retry outbound; procesamiento diferido `RETRY_EVENT_CRITICAL`                    | protección por fuente/ambiente; breaker solo sobre dependencia o procesamiento, no sobre receipt ya recibido | `REDELIVERY_DEDUP_PARCIAL_SIN_RATE_LIMIT_O_BREAKER_ACREDITADO`                            |
+| `EXT-SYS-003` | RevenueCat                               | `WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR` | inbound sin retry outbound; procesamiento diferido `RETRY_EVENT_CRITICAL`                    | aislamiento por fuente/ambiente; no inventar cuota                                                           | `SIN_DEDUP_DURABLE_RETRY_BACKOFF_RATE_LIMIT_NI_BREAKER_ACREDITADOS`                       |
+| `EXT-SYS-004` | Resend                                   | `OUTBOUND_PROVIDER_RATE_LIMITED`                     | `RETRY_PROVIDER_RATE_LIMITED`, condicionado a identidad y resolución de resultado incierto   | bucket por ambiente/cuenta/credencial/endpoint; `Retry-After`; breaker por destino                           | `LLAMADA_UNICA_SIN_RETRY_AFTER_BACKOFF_BREAKER_NI_RECEIPT_DE_EXITO_PERSISTIDO`            |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT`            | `RETRY_NONE` en el corte                                                                     | no se configura breaker de operación inexistente                                                             | `SIN_OPERACION_RUNTIME_ACREDITADA`                                                        |
+| `EXT-SYS-006` | Expo Push Service                        | `OUTBOUND_PROVIDER_RATE_LIMITED`                     | `RETRY_PROVIDER_RATE_LIMITED` por anuncio+destino+generación                                 | bucket por ambiente/proyecto/endpoint; `Retry-After`; bulkhead por criticidad                                | `BATCH_LOCAL_SIN_RETRY_DURABLE_O_BREAKER`                                                 |
+| `EXT-SYS-007` | Sentry                                   | `BEST_EFFORT_OBSERVABILITY_ISOLATED`                 | `RETRY_NONE` empresarial; transporte SDK separado                                            | bulkhead de observabilidad; una caída no bloquea negocio                                                     | `BEST_EFFORT_SIN_CONTRATO_EMPRESARIAL_DE_RETRY`                                           |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `INTERACTIVE_READ_ONLY_PROVIDER_CALL`                | `RETRY_INTERACTIVE_SAFE` solo para error transitorio                                         | bucket por ambiente/credencial/superficie; breaker degradable                                                | `REQUEST_RESPONSE_UNICO_SIN_RETRY_AFTER_BACKOFF_O_BREAKER_ACREDITADOS`                    |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `HYBRID_RESOURCE_AND_PUSH_BY_SURFACE`                | inbound PassKit sin self-retry; APNs `RETRY_PROVIDER_RATE_LIMITED`                           | breaker APNs separado del web service; bucket por ambiente/topic/destino aplicable                           | `PUSH_HTTP2_UNICO_SIN_RETRY_AFTER_BACKOFF_BREAKER_NI_CLASIFICACION_DE_STATUS_ACREDITADOS` |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT`            | `RETRY_NONE` en el corte                                                                     | no se inventa quota/breaker de API no acreditada                                                             | `SIN_OPERACION_RUNTIME_ACREDITADA`                                                        |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `PHYSICAL_EFFECT_UNKNOWN_OUTCOME_GUARDED`            | discovery interactivo; print solo si no-aplicación demostrada; unknown → conciliación/manual | breaker por bridge/estación/impresora; nunca libera reimpresiones masivas                                    | `ENVIO_UNICO_SIN_JOB_DURABLE_RETRY_BACKOFF_O_BREAKER_ACREDITADO`                          |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `MODEL_NO_REMOTE_BINDING`                            | `RETRY_NONE`                                                                                 | no existe cuota o breaker remoto acreditado                                                                  | `SIN_BINDING_REMOTO`                                                                      |
+| `EXT-SYS-013` | POS externo vigente                      | `BLOQUEADA_SIN_BINDING`                              | `BLOCKED`                                                                                    | `INT-POS-001` debe acreditar proveedor, operaciones, cuotas y resultado incierto                             | `BLOCKED`                                                                                 |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-018` | Instagram / social                       | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+| `EXT-SYS-020` | Telefonía / voz                          | `BLOQUEADA_SIN_BINDING`                              | `BLOCKED`                                                                                    | `TI-INT-003` debe acreditar operador, interfaz, cuotas y semántica de resultado                              | `BLOCKED`                                                                                 |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_SIN_BINDING`                              | `NOT_APPLICABLE`                                                                             | no inventar cuota, retry o breaker                                                                           | `NOT_APPLICABLE`                                                                          |
+
+Reconciliación:
+
+```text
+GOBERNADA_POR_CONTRATO_INTERNO_VENTO = 001 = 1
+WEBHOOK_INBOUND_REDELIVERY_GOBERNADA_POR_PROVEEDOR = 002,003 = 2
+OUTBOUND_PROVIDER_RATE_LIMITED = 004,006 = 2
+BEST_EFFORT_OBSERVABILITY_ISOLATED = 007 = 1
+INTERACTIVE_READ_ONLY_PROVIDER_CALL = 008 = 1
+HYBRID_RESOURCE_AND_PUSH_BY_SURFACE = 009 = 1
+CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT = 005,010 = 2
+PHYSICAL_EFFECT_UNKNOWN_OUTCOME_GUARDED = 011 = 1
+MODEL_NO_REMOTE_BINDING = 012 = 1
+NO_APLICA_SIN_BINDING = 014,015,016,017,018,019,021 = 7
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+---
+
+#### 22. Estado de implementación observado
+
+La definición documental no certifica que los runtimes actuales cumplan la política.
+
+Hallazgos materiales del corte:
+
+| Superficie         | Evidencia observada                                                 | Brecha frente al contrato objetivo                                                                |
+| ------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Wompi webhook      | lookup de evento y retorno de duplicado cuando ya está procesado    | no existe rate limiter, backoff, breaker ni worker durable acreditado para procesamiento diferido |
+| RevenueCat webhook | procesamiento directo en una sola request                           | no existe claim/dedup durable, retry/backoff, rate limiter ni breaker acreditados                 |
+| Resend             | un `fetch` outbound por envío                                       | no existe `Retry-After`, scheduler, backoff, breaker ni receipt exitoso persistido acreditado     |
+| Expo Push          | lotes locales de hasta 100 y desactivación de `DeviceNotRegistered` | no existe retry durable, `Retry-After`, breaker ni ticket/receipt durable acreditado              |
+| Google Places      | una llamada por request interactiva                                 | no existe retry, backoff ni breaker acreditados                                                   |
+| APNs               | una llamada HTTP/2 por señal                                        | no existe retry, `Retry-After`, breaker ni clasificación estructurada del status acreditados      |
+| Zebra BrowserPrint | una llamada `device.send` con callbacks                             | no existe job durable, retry/backoff/breaker ni prueba de efecto físico acreditados               |
+
+Estos hallazgos son estados de implementación, no autorización para corregir código durante `INT-EXT-015`.
+
+---
+
+#### 23. Activación de bindings futuros
+
+Una identidad `NO_APLICA_SIN_BINDING`, `BLOQUEADA_SIN_BINDING`, `CONFIGURATION_NO_RUNTIME_RETRY_CONTRACT` o `MODEL_NO_REMOTE_BINDING` no podrá activarse sin resolver antes:
+
+1. proveedor e instancia exactos;
+2. ambiente;
+3. endpoint/superficie y dirección;
+4. contrato I/O y versión;
+5. autenticidad y credencial aplicables;
+6. identidad idempotente y regla de resultado recuperable;
+7. mapping de identificadores cuando aplique;
+8. evidencia/payload que deba conservarse;
+9. códigos externos → taxonomía de error canónica;
+10. perfil de retry aplicable;
+11. quota/rate policy y fuente de esa cuota;
+12. semántica de `Retry-After` o mecanismo equivalente;
+13. condición `UNKNOWN_OUTCOME` y forma de inquiry/receipt;
+14. scope del circuit breaker;
+15. señales que abren/cerran el breaker;
+16. umbral, ventana, duración abierta y límite half-open físicamente versionados;
+17. bulkhead y límite de concurrencia;
+18. salida al agotar presupuesto;
+19. tareas de cuarentena, auditoría y contingencia aplicables;
+20. evidencia de pruebas antes de producción.
+
+No se permite activar tráfico y decidir después cómo limitarlo o recuperarlo.
+
+---
+
+#### 24. Agotamiento del presupuesto
+
+Al alcanzar el primer límite aplicable, la operación no queda silenciosamente pendiente.
+
+Destinos permitidos heredados:
+
+| Destino                        | Uso                                                                        |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| `RECONCILIATION_REQUIRED`      | existe posibilidad de efecto o divergencia que exige consulta/conciliación |
+| `MANUAL_INTERVENTION_REQUIRED` | falta una decisión humana o una resolución automática segura               |
+| `DEAD_LETTER_CANDIDATE`        | el elemento puede aislarse para tratamiento controlado posterior           |
+| `PERMANENTLY_REJECTED`         | contrato, seguridad o negocio impiden continuar                            |
+| `CANCELLED_OR_EXPIRED`         | la intención dejó de ser vigente                                           |
+
+`INT-EXT-015` define cuándo deja de reintentarse. `INT-EXT-016` define la cuarentena/dead-letter. `INT-EXT-017` define auditoría, métricas, alertas y conciliación. `INT-EXT-018` define contingencia empresarial ante indisponibilidad del proveedor.
+
+---
+
+#### 25. Handoffs y condiciones de salida
+
+| Trabajo derivado                                            | Estado                    | Propietario / tarea responsable | Condición de salida                                                                              |
+| ----------------------------------------------------------- | ------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Contrato compartido de idempotencia y resultado recuperable | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                 | operación, intento, receipt y resultado permanecen correlacionables y no se duplica el efecto    |
+| Evento externo recibido y receipt                           | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                 | redelivery inbound conserva fuente, autenticidad, evidencia e identidad estable                  |
+| Scheduler, retry, backoff y límite máximo físicos           | `FUERA_DE_ALCANCE`        | `QUEUE-ARC-006`                 | cada trabajo ejecutable consume perfil, presupuesto, `next_attempt_at` y rate policy versionados |
+| Cola de fallos y recuperación manual                        | `FUERA_DE_ALCANCE`        | `QUEUE-ARC-008`                 | agotamiento y error no procesable tienen destino controlado sin pérdida silenciosa               |
+| Claim, lease, bloqueo de duplicados y concurrencia          | `FUERA_DE_ALCANCE`        | `QUEUE-ARC-009`                 | no existen dos intentos concurrentes del mismo alcance idempotente                               |
+| Métricas de espera, ejecución, throttling y error           | `FUERA_DE_ALCANCE`        | `QUEUE-ARC-011`                 | rate limit, breaker, backlog e intentos son observables sin payload sensible                     |
+| Autorización para retry manual o automático                 | `FUERA_DE_ALCANCE`        | `QUEUE-ARC-012`                 | retry manual conserva motivo, actor, alcance y reautorización cuando aplique                     |
+| Cuarentena o dead-letter externo                            | `FUERA_DE_ALCANCE`        | `INT-EXT-016` / `SHELL-CON-024` | entrada o salida agotada/no procesable queda aislada con disposición explícita                   |
+| Auditoría, métricas, alertas y conciliación externa         | `FUERA_DE_ALCANCE`        | `INT-EXT-017`                   | intentos, rate limiting, breaker, unknown outcome y resultados quedan reconstruibles             |
+| Contingencia por indisponibilidad prolongada                | `FUERA_DE_ALCANCE`        | `INT-EXT-018`                   | un proveedor degradado tiene modo empresarial alterno sin crear doble fuente de verdad           |
+| Contratos de proveedor crítico y reincorporación            | `FUERA_DE_ALCANCE`        | `CONT-INT-003` / `CONT-INT-004` | salud externa y retorno al servicio normal se validan antes de drenar backlog completo           |
+| Binding del POS vigente                                     | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | proveedor, operaciones, códigos, cuotas y garantías permiten instanciar esta política            |
+| Binding de telefonía/voz                                    | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                    | operador, interfaz, operaciones, cuotas y resultado quedan acreditados                           |
+
+No queda una brecha sustantiva de esta tarea sin propietario y condición de salida.
+
+---
+
+#### 26. Fronteras reservadas a `INT-EXT-016` a `INT-EXT-020`
+
+| Materia                                                     | Tarea propietaria |
+| ----------------------------------------------------------- | ----------------- |
+| cuarentena o dead-letter                                    | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación                 | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor            | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales          | `INT-EXT-019`     |
+| prohibición de credenciales compartidas entre integraciones | `INT-EXT-020`     |
+
+Esta tarea no diseña todavía la cola de cuarentena, el dashboard de alertas, el runbook de contingencia ni el retiro del proveedor.
+
+---
+
+#### 27. Prohibiciones
+
+Queda prohibido:
+
+1. reintentar porque un error “parece temporal” sin clasificación canónica;
+2. reintentar un `SECURITY_DENIED`, `PERMANENT_CONTRACT`, `PERMANENT_BUSINESS`, `CONFLICTING_REUSE` o `CANCELLED_OR_EXPIRED`;
+3. tratar timeout como fracaso seguro cuando el efecto pudo confirmarse;
+4. cambiar idempotency key, payload lógico, importe, destinatario, recurso o audiencia para obtener éxito;
+5. crear una operación nueva en cada intento;
+6. reiniciar presupuesto al reiniciar proceso, dispositivo, función o worker;
+7. usar demora fija universal sin jitter;
+8. ignorar un `Retry-After` válido;
+9. cambiar credencial, tenant, worker o ambiente para evadir cuota;
+10. inventar requests/segundo, cuotas diarias o ventanas de proveedor sin evidencia vigente;
+11. inventar threshold, sampling window, open duration o probe count de breaker sin binding/evidencia;
+12. usar un circuit breaker global para todos los proveedores;
+13. contar errores empresariales permanentes como falla de salud del proveedor;
+14. liberar todo el backlog cuando un breaker cierre;
+15. permitir que prioridad crítica elimine rate limit, idempotencia o aislamiento;
+16. agotar retry y marcar automáticamente éxito;
+17. agotar retry y ejecutar automáticamente compensación;
+18. reintentar un webhook inbound “enviándolo” de nuevo al proveedor;
+19. convertir redelivery del proveedor en un evento externo nuevo;
+20. reenviar correo, push, pago o impresión con `UNKNOWN_OUTCOME` sin inquiry/conciliación cuando el primer efecto pudo ocurrir;
+21. confundir callback técnico de impresora con prueba de impresión física;
+22. crear backlog empresarial para telemetría Sentry por defecto;
+23. convertir Google Maps request/response en polling oculto;
+24. crear loops de compra/restore RevenueCat fuera del contrato del SDK;
+25. inventar rate limit o retry para Expo/EAS, Vercel, Google Wallet remoto o identidades sin binding;
+26. crear colas, workers, cron, schedulers, tablas, RPC, triggers o circuit breakers físicos durante esta tarea;
+27. modificar código, Supabase, proveedor, endpoints, credenciales, Storage o datos;
+28. cambiar las veintiuna identidades heredadas;
+29. desarrollar `INT-EXT-016`.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-EXT-015` especializa por identidad externa reglas de retry y resiliencia ya materializadas y protegidas por el registro vigente. La cobertura existente ya exige backoff con jitter, límites de intentos y edad, respeto de `Retry-After`, tratamiento de resultado desconocido, claim/locking, perfiles cerrados, circuit breaker, bulkheads, concurrencia, agotamiento, reautorización, observabilidad, conciliación y recuperación. La tarea no introduce una nueva familia verificable, no cambia límites numéricos existentes y no declara un mecanismo físico implementado.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 29. Criterios de aceptación
+
+`INT-EXT-015` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución primaria es exactamente `1 + 2 + 2 + 1 + 1 + 1 + 2 + 1 + 1 + 7 + 2 = 21`;
+7. se reutiliza `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0` sin crear perfiles paralelos;
+8. se conservan exactamente ocho perfiles canónicos y sus máximos aprobados;
+9. se conservan exactamente doce clases de error;
+10. error desconocido no habilita retry automático;
+11. full jitter usa la fórmula canónica aprobada;
+12. `Retry-After` válido impone el instante mínimo de siguiente intento;
+13. cuotas se separan por ambiente, proveedor/instancia, credencial/principal, endpoint y operación cuando apliquen;
+14. no se inventan cuotas numéricas de proveedor;
+15. reiniciar runtime no reinicia presupuesto;
+16. breaker `OPEN` no consume nuevos intentos de envío;
+17. breaker abierto sí consume edad máxima de la operación;
+18. `HALF_OPEN` usa probes limitados y no libera backlog masivo;
+19. bulkheads aíslan proveedores, aplicaciones, consumidoras y criticidad;
+20. no se inventan umbrales numéricos de breaker sin evidencia;
+21. `UNKNOWN_OUTCOME` obliga inquiry/conciliación antes de repetir un efecto material;
+22. redelivery inbound se mantiene separada del retry outbound;
+23. Wompi webhook no se convierte en retry outbound de VENTO;
+24. procesamiento diferido de un receipt de pago conserva identidad y perfil crítico;
+25. RevenueCat webhook no se convierte en loop custom de compra/restore;
+26. Resend usa perfil objetivo `RETRY_PROVIDER_RATE_LIMITED` solo con identidad estable y protección de resultado desconocido;
+27. Expo Push distingue `DeviceNotRegistered` como permanente y conserva identidad por anuncio/destino/generación;
+28. Sentry permanece best-effort y aislado del negocio;
+29. Google Places usa como máximo perfil interactivo para lecturas transitorias y no crea job oculto de larga duración;
+30. Apple separa requests inbound de PassKit y señales outbound APNs;
+31. Zebra bloquea auto-retry ante resultado físico desconocido y distingue reimpresión intencional;
+32. Supabase permanece gobernada por contratos propietarios;
+33. Expo/EAS y Vercel no reciben políticas runtime ficticias;
+34. Google Wallet no recibe rate limit o breaker remoto sin binding;
+35. POS permanece bloqueado hasta `INT-POS-001`;
+36. telefonía/voz permanece bloqueada hasta `TI-INT-003`;
+37. los siete sistemas sin binding no reciben cuotas, retries ni breakers inventados;
+38. `QUEUE-ARC-006` conserva la materialización física de scheduler/retry/backoff/límites;
+39. `QUEUE-ARC-008`, `009`, `011` y `012` conservan fallos, concurrencia, métricas y autorización;
+40. `INT-EXT-016` conserva cuarentena/dead-letter;
+41. `INT-EXT-017` conserva auditoría, métricas, alertas y conciliación;
+42. `INT-EXT-018` conserva contingencia empresarial;
+43. no se modifica código;
+44. no se modifica Supabase;
+45. no se crean colas, workers, tablas, RPC, cron, schedulers ni circuit breakers físicos;
+46. no se crean ni modifican requisitos de prueba;
+47. `INT-EXT-016` permanece reservada.
+
+---
+
+#### 30. Resultado de la tarea
+
+`INT-EXT-015` queda **APROBADA** como definición documental completa de rate limits, reintentos, backoff y circuit breaker para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- política transversal reutilizada: **1** (`ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0`);
+- perfiles canónicos preservados: **8**;
+- clases de error preservadas: **12**;
+- webhooks inbound gobernados por redelivery del proveedor: **2**;
+- superficies outbound clasificadas como provider-rate-limited: **2**;
+- telemetría best-effort aislada: **1**;
+- lectura interactiva externa: **1**;
+- familia híbrida PassKit/APNs: **1**;
+- configuraciones sin contrato runtime: **2**;
+- efecto físico con unknown outcome protegido: **1**;
+- modelo sin binding remoto: **1**;
+- identidades sin binding no aplicables: **7**;
+- identidades bloqueadas sin binding: **2**;
+- cuotas numéricas de proveedor inventadas: **0**;
+- parámetros numéricos de breaker inventados: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+MISMA OPERACIÓN
++
+ERROR CLASIFICADO
++
+PERFIL CANÓNICO
++
+RATE LIMIT
++
+FULL JITTER
++
+PRESUPUESTO FINITO
++
+BREAKER / BULKHEAD POR DESTINO
++
+UNKNOWN OUTCOME ANTES DE REPETIR EFECTOS
+=
+REINTENTO CONTROLADO SIN DUPLICAR HECHOS NI PRODUCIR CASCADAS
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-014 — Definir conservación controlada del payload original`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-016 — Definir cuarentena o dead-letter`
+
+
 ### [ ] INT-EXT-016 — Definir cuarentena o dead-letter
 ### [ ] INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación
 ### [ ] INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor

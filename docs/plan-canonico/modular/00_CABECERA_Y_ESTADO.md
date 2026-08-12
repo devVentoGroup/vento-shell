@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **741** |
+| Tareas aprobadas | **742** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **853** |
+| Tareas no iniciadas | **852** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.49% (741/1594)** |
+| Porcentaje de completamiento | **46.55% (742/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-014 — Definir conservación controlada del payload original** |
-| Tarea actual | **INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker** |
+| Última tarea aprobada | **INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker** |
+| Tarea actual | **INT-EXT-016 — Definir cuarentena o dead-letter** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-016 — Definir cuarentena o dead-letter** |
+| Siguiente tarea | **INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 25 de 83 aprobadas; INT-EXT-015 pendiente** |
+| Progreso del bloque | **BLOQUE X: 26 de 83 aprobadas; INT-EXT-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-014` — Definir conservación controlada del payload original |
-| Tarea actual | `INT-EXT-015` — Definir rate limits, reintentos, backoff y circuit breaker — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-016` — Definir cuarentena o dead-letter |
+| Última aprobada | `INT-EXT-015` — Definir rate limits, reintentos, backoff y circuit breaker |
+| Tarea actual | `INT-EXT-016` — Definir cuarentena o dead-letter — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-017` — Definir auditoría, métricas, alertas y conciliación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 25 DE 83 APROBADAS — ACTUAL INT-EXT-015** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 26 DE 83 APROBADAS — ACTUAL INT-EXT-016** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-014 — Definir conservación controlada del payload original
-        ↓
-TAREA ACTUAL
 INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-016 — Definir cuarentena o dead-letter
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 25 de 83 tareas aprobadas
+BLOQUE X — 26 de 83 tareas aprobadas
 ```
