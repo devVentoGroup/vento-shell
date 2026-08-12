@@ -1223,7 +1223,1025 @@ SIGUIENTE TAREA RESERVADA
 `INT-WORK-002 — Definir contrato para que ANIMA presente el turno`
 
 
-### [ ] INT-WORK-002 — Definir contrato para que ANIMA presente el turno
+### ✅ INT-WORK-002 — Definir contrato para que ANIMA presente el turno
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-WORK-001 — Definir contrato para que VISO publique el turno` — APROBADA
+**Tarea siguiente:** `INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia` — RESERVADA
+**Tipo de tarea:** documental; definición del contrato mediante el cual ANIMA consume y presenta la programación publicada por VISO al trabajador y, cuando exista autorización suficiente, proyecciones territoriales de solo lectura, sin implementar código, esquema físico, migraciones, RPC, RLS, eventos, colas, cambios de Supabase ni mutaciones de programación
+**Bloque:** X — Integraciones
+**Mini-bloque:** Contexto laboral
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Implementación física autorizada:** ninguna
+
+---
+
+#### 1. Objetivo
+
+Definir de forma inequívoca qué significa que ANIMA presente un turno publicado por VISO y qué condiciones deben cumplirse para que la información mostrada al trabajador corresponda a la revisión autoritativa aplicable, sin crear una segunda fuente de programación ni confundir presentación con contexto operativo, asistencia o autorización.
+
+La regla cardinal es:
+
+```text
+VISO PUBLICA
+→ ANIMA RESUELVE LA REVISIÓN PUBLICADA APLICABLE
+→ ANIMA PRESENTA UNA PROYECCIÓN MINIMIZADA
+```
+
+No:
+
+```text
+ANIMA LEE UNA FILA CUALQUIERA
+→ LA TRATA COMO TURNO AUTORITATIVO
+```
+
+Y se conserva expresamente:
+
+```text
+ANIMA PRESENTA
+≠
+ANIMA PUBLICA
+```
+
+```text
+ANIMA PRESENTA
+≠
+ANIMA MODIFICA PROGRAMACIÓN
+```
+
+```text
+TURNO MOSTRADO
+≠
+CHECK-IN CONFIRMADO
+```
+
+```text
+TURNO MOSTRADO
+≠
+AUTORIZACIÓN OPERATIVA FINAL
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-WORK-002` deja definido un único contrato documental de presentación de programación con los siguientes resultados materiales:
+
+1. ANIMA queda confirmada como consumidora y superficie personal de la programación publicada por VISO.
+2. La unidad consumida y presentada queda fijada como `shift_id + revisión publicada autoritativa`.
+3. Se separan las vistas personales, las proyecciones territoriales autorizadas y las capacidades administrativas.
+4. Se define qué información debe transportar la proyección aunque no toda tenga que renderizarse.
+5. Se define qué información debe ser visible al trabajador para interpretar correctamente su turno.
+6. Se define cómo resolver turno actual, siguiente turno, semana personal, historial reciente, descanso, cancelación y sustitución.
+7. Se distingue un estado vacío verdadero de una falla de lectura, una revisión ambigua o una proyección obsoleta.
+8. Se prohíbe usar notificaciones, caché, orden de filas, timestamps aproximados o selección de cliente como fuente de revisión.
+9. Se prohíbe que las superficies de ANIMA creen, publiquen, editen, confirmen, cancelen o reasignen programación mediante escritura propietaria de ANIMA.
+10. Se reconcilian las brechas físicas observadas con tareas propietarias existentes y condiciones de salida explícitas.
+
+Balance documental:
+
+| Control                                     |                      Resultado |
+| ------------------------------------------- | -----------------------------: |
+| Proceso de programación consumido           |           **1 — `VPROC-0007`** |
+| Aplicación propietaria de programación      |                   **1 — VISO** |
+| Aplicación consumidora objeto de esta tarea |                  **1 — ANIMA** |
+| Unidad autoritativa presentada              | **turno + revisión publicada** |
+| Fuente competidora autorizada en ANIMA      |                          **0** |
+| Nuevas definiciones normales de evento      |                          **0** |
+| Cambios físicos                             |                          **0** |
+| Requisitos de prueba creados o modificados  |                          **0** |
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume y conserva sin reinterpretación las decisiones aprobadas en:
+
+- `INT-WORK-001`, que fija VISO como propietaria, la revisión publicada como unidad autoritativa y ANIMA como consumidora;
+- `CAP-SCOPE-002` y `CAP-02.06`, que definen VISO como fuente administrativa de turnos y ANIMA como superficie personal;
+- `VPROC-0007 — Administrar asignaciones laborales y programación publicada con historial y revisión controlada`;
+- `INT-APP-010`, que prohíbe escrituras cruzadas sin contrato y conserva la propiedad funcional entre VISO y ANIMA;
+- `AUTH-MOD-009`, que separa turno publicado, turno vigente y demás estados temporales;
+- `AUTH-CTX-010`, que exige una revisión publicada autoritativa para resolver `active_shift`;
+- `ANIMA-AUTH-001` a `ANIMA-AUTH-020`, que reservan controles de publicación, sede, área, rol, contexto, cambios, overnight, offline, auditoría y fuente de verdad;
+- `ANIMA-UX-003` a `ANIMA-UX-005`, que separan experiencia personal y administrativa y reservan la presentación de turno actual, siguiente turno, sede, área, horario y rol;
+- `TREQ-INTEGRATION-007`, que exige expresamente que ANIMA presente la revisión vigente;
+- `TREQ-ANIMA-016`, que separa lectura personal, semana de sede y gestión, y exige control efectivo para mutaciones;
+- `TREQ-AUTH-008`, `TREQ-AUTH-009`, `TREQ-AUTH-014` y `TREQ-AUTH-015`, que protegen contexto, territorio, invalidación, frescura y trazabilidad.
+
+Ninguna decisión de esta tarea transfiere a ANIMA la propiedad de la programación.
+
+---
+
+#### 4. Propiedad funcional y frontera entre aplicaciones
+
+La propiedad permanece:
+
+```text
+VPROC-0007
+→ VISO
+```
+
+ANIMA cumple dos funciones permitidas respecto de programación:
+
+1. **presentación personal**, para que el trabajador consulte su programación publicada;
+2. **presentación territorial autorizada**, cuando un actor autorizado consulte una proyección de equipo que su alcance permita.
+
+ANIMA no adquiere por ello capacidad propietaria para:
+
+- crear un turno;
+- publicar una revisión;
+- sobrescribir una revisión publicada;
+- reasignar trabajador;
+- cambiar sede, área o rol del turno;
+- confirmar o cancelar programación por escritura directa;
+- decidir una corrección de programación;
+- alterar `published_at` o su equivalente futuro;
+- construir una segunda regla de solapamiento o publicación;
+- mantener una fuente administrativa paralela.
+
+Cuando una capacidad administrativa puntual permanezca expuesta desde ANIMA, deberá usar el mismo contrato y servicio propietario de VISO, con autorización y outcome de VISO. La ubicación de la interfaz no cambia la propiedad del proceso.
+
+---
+
+#### 5. Vocabulario de presentación
+
+##### 5.1. Revisión publicada autoritativa
+
+Versión exacta de un turno que fue publicada por VISO y es resoluble como la revisión vigente o aplicable según las relaciones de publicación, sustitución, corrección, cancelación y vigencia aprobadas.
+
+##### 5.2. Proyección publicada
+
+Representación minimizada de la revisión publicada para una finalidad consumidora. Puede ocultar datos administrativos sin perder identidad, versión ni semántica.
+
+##### 5.3. Turno presentado
+
+Proyección que ANIMA muestra como programación del trabajador porque corresponde a una revisión publicada autoritativa y cumple las reglas de alcance de esta tarea.
+
+##### 5.4. Turno actual presentado
+
+Turno publicado cuya ventana temporal aplicable contiene el instante de resolución conforme a la semántica temporal canónica. Es una clasificación de presentación y no prueba por sí sola check-in, presencia física ni autorización operativa.
+
+##### 5.5. Siguiente turno presentado
+
+Primera revisión publicada futura aplicable al trabajador al ordenar por instante canónico de inicio, no por orden de recepción, fila, pantalla ni timestamp de publicación.
+
+##### 5.6. Turno histórico presentado
+
+Proyección de un turno publicado cuyo periodo ya pasó o cuyo estado autoritativo posterior es cancelado, retirado, completado u otro resultado histórico permitido para la consulta personal.
+
+##### 5.7. Vista territorial de programación
+
+Proyección de turnos de otros trabajadores dentro de un territorio autorizado. No equivale a administración ni permite mutar programación.
+
+---
+
+#### 6. Unidad de consumo y de presentación
+
+ANIMA debe conservar en toda proyección la identidad lógica:
+
+```text
+shift_id
++
+revisión publicada autoritativa
+```
+
+La interfaz puede agrupar múltiples turnos por:
+
+- día;
+- semana;
+- mes;
+- sede;
+- área;
+- trabajador;
+- estado visual.
+
+La agrupación nunca sustituye la identidad de cada unidad.
+
+Queda prohibido usar como unidad autoritativa:
+
+- una semana completa;
+- una tarjeta visual;
+- una fecha sin identidad de turno;
+- una fila mutable sin revisión resoluble;
+- `published_at` por sí solo;
+- la última fila recibida;
+- el primer registro de una consulta;
+- el contenido de una notificación;
+- el estado local de la aplicación.
+
+---
+
+#### 7. Fuente de lectura
+
+La presentación deberá consumir una proyección derivada de la publicación propietaria de VISO.
+
+La fuente física futura podrá materializarse mediante tablas, vistas, RPC, contratos compartidos o adapters aprobados, pero deberá preservar esta semántica:
+
+```text
+FUENTE PROPIETARIA DE VISO
+→ REVISIÓN PUBLICADA EXACTA
+→ PROYECCIÓN AUTORIZADA
+→ ANIMA
+```
+
+Una consulta directa a una tabla compartida solo será conforme si representa la misma fuente propietaria y no permite a ANIMA crear semántica alternativa de revisión, vigencia o propiedad.
+
+---
+
+#### 8. Identidad del trabajador
+
+La vista personal deberá estar vinculada al actor laboral efectivo.
+
+Reglas:
+
+1. el trabajador de la proyección personal se resuelve desde identidad autenticada y vínculo laboral aplicable;
+2. un `employee_id` enviado por cliente no puede ampliar el alcance personal;
+3. cambiar de cuenta o actor invalida la proyección anterior;
+4. una cuenta inactiva no recupera programación operativa por conservar una caché local;
+5. un reingreso no debe mezclar automáticamente turnos de un vínculo laboral anterior con programación actual;
+6. una vista territorial de terceros exige autorización separada y no nace de la vista personal.
+
+---
+
+#### 9. Información que la proyección debe transportar
+
+La proyección consumida por ANIMA deberá poder resolver, cuando aplique:
+
+| Información               | Regla                                                            |
+| ------------------------- | ---------------------------------------------------------------- |
+| `shift_id`                | identidad estable del turno                                      |
+| revisión publicada        | identidad exacta y resoluble                                     |
+| versión contractual       | permite detectar incompatibilidad de contrato                    |
+| trabajador                | referencia exacta del titular del turno                          |
+| vínculo laboral           | referencia suficiente para no mezclar vínculos                   |
+| periodo de planificación  | contexto del ciclo de programación                               |
+| sede                      | sede exacta del turno                                            |
+| área                      | área exacta cuando aplique                                       |
+| rol operativo             | referencia o código canónico                                     |
+| inicio                    | instante inequívoco                                              |
+| fin                       | instante inequívoco                                              |
+| zona horaria              | explícita y válida                                               |
+| naturaleza del turno      | laboral, descanso u otra clasificación aprobada                  |
+| descanso previsto         | cuando corresponda                                               |
+| estado aplicable          | coherente con la revisión                                        |
+| momento de publicación    | referencia de publicación, sin usarla como identidad de revisión |
+| revisión sustituida       | cuando exista                                                    |
+| cancelación o retiro      | referencia autoritativa cuando aplique                           |
+| punto de entrada o salida | solo cuando la finalidad de ANIMA lo requiera                    |
+| reemplazo relacionado     | cuando exista y sea pertinente para el trabajador                |
+| referencias de auditoría  | correlacionables y minimizadas                                   |
+
+Esta forma es lógica y no prescribe nombres de columnas ni DTO físicos adicionales.
+
+---
+
+#### 10. Información mínima visible al trabajador
+
+ANIMA deberá presentar de forma comprensible, cuando aplique al turno:
+
+- fecha o día;
+- hora de inicio;
+- hora de fin o representación autorizada de cierre;
+- sede;
+- área cuando sea relevante para la función;
+- rol operativo con etiqueta canónica comprensible;
+- naturaleza de turno o descanso;
+- estado que afecte al trabajador;
+- cambio, cancelación o sustitución cuando corresponda;
+- indicación suficiente para distinguir programación oficial de un estado pendiente o no disponible.
+
+La interfaz no está obligada a mostrar al trabajador:
+
+- identificadores técnicos completos;
+- actor que publicó;
+- permisos del publicador;
+- historial administrativo completo;
+- notas internas;
+- evidencia de auditoría completa;
+- datos de otros trabajadores fuera de una vista autorizada;
+- motivos sensibles que no sean necesarios para comprender su programación.
+
+La identidad de revisión puede permanecer como metadata no visual siempre que la aplicación la conserve para frescura, correlación y acciones posteriores.
+
+---
+
+#### 11. Presentación del rol operativo
+
+El rol mostrado al trabajador deberá corresponder al rol operativo de la revisión publicada.
+
+Reglas:
+
+1. no se deriva del rol base;
+2. no se deriva de `navigation_role`;
+3. no se infiere por fragmentos de texto, prefijos o coincidencias aproximadas;
+4. una etiqueta amigable debe provenir del catálogo o mapeo canónico compatible con el código del rol;
+5. un alias visual no modifica la identidad del rol;
+6. una referencia de rol desconocida o incompatible no se presenta como otro rol parecido.
+
+---
+
+#### 12. Presentación de sede y área
+
+La sede y el área mostradas proceden del turno publicado.
+
+No proceden de:
+
+- sede seleccionada para navegación;
+- sede primaria por conveniencia;
+- área seleccionada;
+- última sede utilizada;
+- geolocalización actual;
+- punto de check-in;
+- perfil general del trabajador.
+
+Si el turno es válido sin área por corresponder a una función site-wide, la ausencia de área no se traduce como “todas las áreas”.
+
+---
+
+#### 13. Tiempo, zona horaria y cambio de día
+
+ANIMA deberá interpretar la ventana temporal con la zona horaria autoritativa del turno.
+
+Reglas:
+
+1. la zona del dispositivo no sustituye la zona del turno;
+2. la configuración regional del dispositivo puede afectar formato visual, no el instante empresarial;
+3. un turno cruzado de medianoche se presenta usando inicio y fin reales y no como una duración negativa o cero;
+4. el cambio de mes o año no parte el turno en dos identidades;
+5. “hoy”, “actual” y “siguiente” se resuelven respecto del instante canónico y la zona aplicable;
+6. ordenar por texto de fecha y hora sin semántica de zona no acredita orden temporal correcto;
+7. una fecha civil aislada no basta para decidir vigencia.
+
+---
+
+#### 14. Turno actual
+
+Cuando ANIMA muestre “turno actual”, deberá utilizar la misma revisión publicada y semántica temporal compatibles con el contrato de `active_shift`.
+
+Un turno actual presentado debe satisfacer como mínimo:
+
+- pertenecer al trabajador aplicable;
+- ser una revisión publicada resoluble;
+- no estar retirada o cancelada para el instante aplicable;
+- contener una ventana temporal válida;
+- contener los campos operativos mínimos exigidos por su tipo;
+- ser la única candidata inequívoca para esa clasificación.
+
+Si existen dos candidatos incompatibles, ANIMA no elegirá uno por orden de consulta.
+
+La etiqueta “turno actual” no significa:
+
+- trabajador presente;
+- check-in realizado;
+- geocerca válida;
+- permiso operativo concedido;
+- sesión de asistencia abierta.
+
+---
+
+#### 15. Siguiente turno
+
+El siguiente turno se determina entre revisiones publicadas futuras aplicables.
+
+Reglas:
+
+1. se ordena por inicio autoritativo;
+2. se excluyen revisiones retiradas o canceladas para el horizonte aplicable;
+3. un borrador futuro no desplaza al siguiente turno publicado;
+4. una sucesora aún no publicada no desplaza a la revisión autoritativa;
+5. un empate o conflicto no se resuelve escogiendo la primera fila;
+6. un descanso puede presentarse como descanso, pero no debe confundirse con un turno laboral operativo.
+
+---
+
+#### 16. Semana personal
+
+La vista semanal personal es una agrupación de revisiones publicadas del trabajador.
+
+Debe:
+
+- conservar identidad por turno;
+- ordenar por instantes canónicos;
+- representar descansos sin convertir la ausencia de turno en descanso aprobado;
+- mostrar cambios y cancelaciones relevantes;
+- evitar duplicados por revisiones sucesivas;
+- no incluir borradores administrativos;
+- no mezclar programación de otro trabajador o vínculo;
+- mantener coherencia con las vistas de turno actual y siguiente.
+
+Una semana vacía después de una lectura autoritativa exitosa significa ausencia de programación publicada en esa ventana. No significa error técnico ni indisponibilidad de fuente.
+
+---
+
+#### 17. Descanso y día sin turno
+
+Se distinguen tres situaciones:
+
+1. **descanso publicado**: existe una unidad de programación aprobada que representa descanso;
+2. **día sin turno publicado**: no existe programación laboral ni descanso publicado para ese día;
+3. **información no resoluble**: la fuente no pudo determinar de manera confiable la programación.
+
+ANIMA no mostrará “Descanso” o “Libre” como hecho empresarial cuando únicamente exista ausencia de datos por error, timeout, incompatibilidad o consulta incompleta.
+
+---
+
+#### 18. Historial reciente
+
+La vista histórica personal podrá mostrar turnos publicados anteriores y sus estados aplicables sin convertir una revisión antigua en la revisión actual.
+
+Reglas:
+
+1. una revisión sustituida permanece histórica;
+2. la vista principal de un turno lógico utiliza la revisión autoritativa aplicable al periodo consultado;
+3. una cancelación posterior no borra el hecho de que existió programación publicada;
+4. una corrección de programación no reescribe asistencia histórica;
+5. el detalle histórico ampliado se minimiza a la finalidad del trabajador;
+6. un turno retirado no desaparece silenciosamente cuando su conservación es necesaria para comprender cambios ya comunicados o hechos posteriores.
+
+---
+
+#### 19. Cancelación y retiro
+
+Cuando un turno publicado sea cancelado o retirado:
+
+- deja de presentarse como obligación laboral vigente cuando la decisión sea efectiva;
+- conserva identidad e historia;
+- la cancelación se presenta de forma comprensible cuando sea relevante para el trabajador;
+- la desaparición de una fila no se interpreta como cancelación;
+- una notificación de cancelación no sustituye el cambio autoritativo;
+- la versión anterior no se reescribe para aparentar que el turno nunca existió.
+
+---
+
+#### 20. Revisión sucesora y cambios publicados
+
+Cuando VISO publique una revisión sucesora:
+
+```text
+REVISIÓN PUBLICADA ANTERIOR
+→ NUEVA REVISIÓN PUBLICADA AUTORITATIVA
+→ ANIMA INVALIDA LA PROYECCIÓN ANTERIOR
+→ ANIMA PRESENTA LA SUCESORA
+```
+
+Reglas:
+
+1. la revisión anterior permanece preservada;
+2. ANIMA no mezcla campos de ambas revisiones;
+3. un cambio en borrador no altera lo que el trabajador ve como oficial;
+4. la interfaz puede indicar que hubo un cambio sin exponer auditoría administrativa innecesaria;
+5. la relación con la revisión anterior se conserva para trazabilidad;
+6. una vista stale no puede alimentar una acción operativa posterior sin revalidación.
+
+---
+
+#### 21. Estado de programación y estado de asistencia
+
+ANIMA debe mantener separados:
+
+- estado de programación;
+- estado temporal del turno;
+- estado de check-in;
+- estado de check-out;
+- estado de descanso de asistencia;
+- estado de sincronización offline;
+- estado de autorización operativa.
+
+Por tanto:
+
+```text
+PROGRAMADO / PUBLICADO
+≠
+PRESENTE
+```
+
+```text
+CONFIRMADO EN PROGRAMACIÓN
+≠
+CHECK-IN CONFIRMADO
+```
+
+```text
+COMPLETADO EN PRESENTACIÓN
+≠
+ASISTENCIA CONCILIADA
+```
+
+La semántica exacta de registro de asistencia pertenece a `INT-WORK-003`.
+
+---
+
+#### 22. Notificaciones y enlaces hacia programación
+
+Una notificación relacionada con un turno puede dirigir al trabajador a la superficie de programación permitida.
+
+La notificación:
+
+- no contiene autoridad suficiente para decidir la revisión vigente;
+- no debe ser la fuente de sede, área, rol, horario o estado final;
+- no convierte un payload atrasado en programación actual;
+- no debe permitir navegar a un destino arbitrario;
+- al abrirse, debe provocar o permitir la resolución de la revisión autoritativa aplicable;
+- puede conservar `shift_id` o correlación segura para localizar el recurso, pero el servidor o contrato propietario decide la versión vigente.
+
+Un mensaje exitosamente entregado no prueba que la pantalla haya cargado la revisión correcta.
+
+---
+
+#### 23. Frescura, caché y actualización
+
+La caché puede optimizar experiencia, pero no se convierte en fuente de programación.
+
+Reglas:
+
+1. una revisión sustituida no puede continuar presentándose como vigente después de que el consumidor conozca o deba revalidar el cambio;
+2. una notificación, retorno a primer plano, refresh o señal de invalidación puede iniciar relectura, pero no reemplaza la fuente autoritativa;
+3. una caché sin identidad de revisión no acredita frescura;
+4. una proyección stale puede conservarse únicamente como información explícitamente no fresca si la experiencia futura lo permite, nunca como base para una acción operativa nueva;
+5. las acciones de asistencia deberán revalidar bajo su propio contrato y no confiar en el estado visual mostrado;
+6. invalidación y frescura físicas permanecen bajo `AUTH-CTX-029`, `AUTH-DB-035` y `SHELL-CTX-006`.
+
+---
+
+#### 24. Estado vacío, falla de lectura y conflicto
+
+ANIMA debe distinguir al menos semánticamente:
+
+- lectura autoritativa exitosa con turnos;
+- lectura autoritativa exitosa sin turnos publicados en la ventana;
+- fuente temporalmente no disponible;
+- contrato o versión incompatible;
+- revisión ambigua o contradictoria;
+- proyección conocida como obsoleta y pendiente de actualización.
+
+Regla:
+
+```text
+ERROR DE LECTURA
+≠
+NO HAY TURNOS
+```
+
+También:
+
+```text
+REVISIÓN AMBIGUA
+≠
+ESCOGER LA PRIMERA
+```
+
+La interfaz no debe informar al trabajador que “no tiene turno” si la aplicación únicamente perdió la capacidad de determinarlo.
+
+---
+
+#### 25. Vista territorial o de equipo
+
+Una vista de turnos de otras personas es una proyección laboral restringida.
+
+Debe cumplir simultáneamente:
+
+- actor autenticado;
+- capacidad de lectura aplicable;
+- alcance territorial suficiente;
+- sede y, cuando aplique, área compatibles;
+- minimización de información por finalidad;
+- revisión publicada para las vistas operativas de equipo;
+- protección equivalente en servidor y datos, no solo en la pestaña o botón.
+
+El hecho de que el trabajador tenga una sede asociada no concede por sí solo derecho a consultar la semana de toda la sede.
+
+Una vista territorial no habilita edición.
+
+---
+
+#### 26. Superficie administrativa expuesta desde ANIMA
+
+`CAP-02.06` permite que una capacidad administrativa puntual esté expuesta en ANIMA únicamente cuando use el mismo contrato y servicio de VISO.
+
+Por tanto, si ANIMA conserva en el futuro controles administrativos de programación:
+
+```text
+INTERFAZ ANIMA
+→ COMANDO CONTRA SERVICIO PROPIETARIO VISO
+→ VALIDACIÓN VISO
+→ OUTCOME VISO
+→ PROYECCIÓN ACTUALIZADA EN ANIMA
+```
+
+Queda prohibido:
+
+```text
+INTERFAZ ANIMA
+→ ESCRITURA DIRECTA DE PROGRAMACIÓN
+```
+
+La tarea no decide si la interfaz administrativa final permanecerá en ANIMA o se trasladará completamente a VISO. Sí fija que la propiedad y las reglas no pueden duplicarse.
+
+---
+
+#### 27. Borradores y revisiones no publicadas
+
+Los borradores, revisiones en validación y revisiones pendientes de publicación no forman parte de la programación oficial personal del trabajador.
+
+Reglas:
+
+1. la vista personal no los muestra como turnos oficiales;
+2. una vista administrativa autorizada puede mostrarlos como planificación, con estado inequívoco;
+3. un borrador no desplaza la revisión publicada anterior;
+4. un borrador no produce turno actual;
+5. un borrador no produce siguiente turno oficial;
+6. una notificación no puede volver oficial un borrador;
+7. una consulta de equipo destinada a operación no mezcla borradores con turnos publicados sin distinguirlos expresamente.
+
+---
+
+#### 28. Privacidad y minimización
+
+La programación laboral se trata como información laboral restringida.
+
+La vista personal puede recibir los campos necesarios para que el trabajador comprenda su horario y contexto esperado.
+
+La vista territorial de equipo debe evitar por defecto:
+
+- notas privadas innecesarias;
+- datos de contacto;
+- información salarial;
+- motivos médicos;
+- novedades sensibles;
+- documentos laborales;
+- datos de identidad no necesarios;
+- historial administrativo completo;
+- permisos o razones de autorización internas.
+
+La necesidad de ver quién trabaja en una sede no habilita acceso al expediente laboral de esas personas.
+
+---
+
+#### 29. Reemplazos y novedades
+
+Un reemplazo o novedad laboral que afecte programación debe llegar a ANIMA como resultado autoritativo de los procesos propietarios correspondientes.
+
+ANIMA no debe:
+
+- crear un reemplazo por inferencia visual;
+- reasignar el turno por selección local;
+- convertir una ausencia reportada en cancelación de turno sin decisión;
+- modificar la programación para hacerla coincidir con asistencia;
+- ocultar un conflicto de reemplazo seleccionando una de varias filas.
+
+Cuando una revisión publicada refleje un reemplazo autorizado, ANIMA presenta la revisión aplicable al trabajador correspondiente.
+
+---
+
+#### 30. Turnos cruzados de medianoche
+
+Un turno overnight mantiene una sola identidad lógica y una ventana temporal real.
+
+ANIMA deberá evitar:
+
+- calcular duración usando la misma fecha civil para inicio y fin cuando el turno termina al día siguiente;
+- clasificarlo como finalizado al cambiar el calendario a medianoche;
+- duplicarlo en dos turnos por conveniencia visual;
+- presentar el día siguiente como un nuevo turno sin identidad propia;
+- escoger un siguiente turno antes de que finalice correctamente el turno overnight actual.
+
+La implementación específica se completa con `ANIMA-AUTH-013` y las tareas de programación VISO aplicables.
+
+---
+
+#### 31. Relación con `active_shift`
+
+La programación presentada y `active_shift` deben ser compatibles, pero no son el mismo contrato.
+
+La presentación responde principalmente:
+
+```text
+¿QUÉ PROGRAMACIÓN PUBLICADA DEBO MOSTRAR?
+```
+
+El contexto responde:
+
+```text
+¿QUÉ TURNO PUBLICADO Y VIGENTE PARTICIPA EN LA RESOLUCIÓN OPERATIVA AHORA?
+```
+
+Por tanto:
+
+- una lista semanal puede incluir turnos futuros que no son `active_shift`;
+- un turno histórico puede presentarse sin ser contexto operativo;
+- un turno actual presentado no concede permiso;
+- la confirmación autoritativa del contexto efectivo permanece reservada a `INT-WORK-004`;
+- ANIMA no debe construir un `active_shift` alternativo únicamente desde su UI.
+
+---
+
+#### 32. Relación con asistencia
+
+`INT-WORK-002` no registra entrada, salida ni descanso.
+
+Su obligación hacia `INT-WORK-003` consiste en preservar una referencia inequívoca de:
+
+- trabajador;
+- vínculo aplicable;
+- `shift_id`;
+- revisión publicada;
+- ventana temporal;
+- sede;
+- área cuando aplique;
+- rol operativo;
+- versión contractual.
+
+La acción de asistencia posterior deberá resolver nuevamente lo necesario y no asumir que el turno visible continúa vigente solo porque la pantalla lo conserva.
+
+---
+
+#### 33. Eventos empresariales
+
+Esta tarea no crea una nueva definición normal `VPROC-0007.EVT-*`.
+
+Presentar una pantalla, refrescar una lista, abrir una notificación o cambiar una tarjeta visual no constituye por sí mismo un nuevo evento empresarial.
+
+Las definiciones vigentes de `VPROC-0007` permanecen sin modificación.
+
+La futura emisión de un nuevo hecho material deberá seguir el gobierno propietario de procesos y el catálogo transversal antes de aparecer en código.
+
+---
+
+#### 34. Reconciliación con la implementación observada de lectura personal
+
+La implementación actual de ANIMA acredita una superficie real de consulta de programación.
+
+| Comportamiento observado | Evidencia técnica actual                                                   | Lectura contractual                                                         |
+| ------------------------ | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| consulta personal        | filtra `employee_shifts` por usuario y exige `published_at` no nulo        | acredita consumo de publicación, pero no identidad explícita de revisión    |
+| rango visible            | consulta aproximadamente una ventana pasada/futura y ordena por fecha/hora | acredita experiencia de agenda, no semántica completa de zona horaria       |
+| semana personal          | agrupa filas por fecha                                                     | agrupación permitida si conserva identidad y revisión                       |
+| próximos y recientes     | clasifica usando fecha, hora, estado y reloj del dispositivo               | funcionalidad parcial; debe converger con instantes y zona autoritativos    |
+| sede                     | muestra nombre asociado al turno                                           | compatible si la referencia procede de la revisión publicada                |
+| rol visible              | construye una etiqueta mediante normalización textual                      | no acredita vínculo con una etiqueta canónica de rol                        |
+| error de carga           | el fallo termina con una lista vacía                                       | no permite distinguir ausencia real de turnos frente a fuente no disponible |
+
+La evidencia anterior describe estado físico actual; no cambia el contrato objetivo.
+
+---
+
+#### 35. Reconciliación con la implementación observada de administración en ANIMA
+
+La implementación actual contiene además capacidades administrativas que exceden una presentación de solo lectura.
+
+| Comportamiento observado | Evidencia técnica actual                                                 | Lectura contractual                                                                             |
+| ------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| crear turno              | `CreateShiftModal` inserta directamente en `employee_shifts`             | escritura propietaria de programación desde ANIMA; debe converger con la frontera VISO          |
+| publicar al crear        | la interfaz puede fijar `published_at` y `published_by`                  | no satisface por sí sola el contrato de publicación de `INT-WORK-001`                           |
+| editar turno             | `EditShiftModal` actualiza la fila por `id`                              | una revisión publicada puede quedar sobrescrita in-place; incompatible con historial versionado |
+| confirmar o cancelar     | la lógica de turnos actualiza directamente `status`                      | mutación de programación fuera de un outcome propietario de VISO                                |
+| lectura de sede          | la pantalla combina semana personal, semana de sede y gestión            | la separación visual existe parcialmente, pero debe alinearse con autoridad y propiedad         |
+| fallback de gestión      | la pantalla conserva una lista local de roles mientras carga capacidades | una lista local no puede conceder autoridad final                                               |
+
+`INT-WORK-002` no modifica estos archivos. La tarea fija la frontera que la implementación posterior deberá satisfacer.
+
+---
+
+#### 36. Brechas físicas y propietarios
+
+Ninguna brecha observada queda sin destino documental.
+
+| Brecha                                                                                          | Propietario exacto                                                            | Condición de salida                                                                                      |
+| ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| consumo personal basado en `published_at` sin identidad explícita de revisión                   | `AUTH-CTX-028`; `ANIMA-AUTH-001`; `ANIMA-UX-004`; `ANIMA-UX-005`              | ANIMA recibe o resuelve `shift_id + revisión publicada` y no infiere versión desde una marca temporal    |
+| clasificación temporal con fecha/hora local sin zona contractual explícita                      | `VISO-SCH-002`; `VISO-SCH-003`; `ANIMA-UX-004`; `ANIMA-UX-005`                | inicio, fin, overnight, actual y siguiente se presentan con semántica temporal autoritativa              |
+| etiqueta de rol derivada por coincidencia aproximada de texto                                   | `ANIMA-UX-005`                                                                | la etiqueta visible procede del rol operativo canónico o de un mapeo canónico compatible                 |
+| error de consulta degradado a lista vacía y mensaje equivalente a ausencia de programación      | `ANIMA-UX-004`; `ANIMA-UX-005`                                                | la UI distingue lectura vacía válida de indisponibilidad, incompatibilidad o conflicto                   |
+| vista de sede resuelta principalmente desde datos locales de empleado y capacidades de interfaz | `ANIMA-UX-014`; `ANIMA-AUTH-019`; `AUTH-QA-030`                               | la lectura territorial se valida con capacidad y alcance server-side antes de exponer turnos de terceros |
+| creación directa de turnos desde ANIMA                                                          | `ANIMA-UX-003`; `ANIMA-UX-014`; `VISO-SCH-005`; `VISO-SCH-007`; `VISO-UX-003` | toda capacidad administrativa en ANIMA usa el contrato/servicio propietario de VISO o se traslada a VISO |
+| publicación directa desde ANIMA mediante `published_at`                                         | `VISO-SCH-005`; `VISO-SCH-007`; `VISO-CORE-005`                               | solo el flujo propietario de VISO produce una revisión publicada conforme a `INT-WORK-001`               |
+| edición in-place de un turno ya publicado                                                       | `VISO-SCH-005`; `VISO-SCH-006`; `VISO-CORE-005`                               | un cambio posterior crea revisión sucesora, preserva la anterior y aplica concurrencia controlada        |
+| actualización directa de estados de programación desde ANIMA                                    | `ANIMA-UX-003`; `ANIMA-UX-014`; `VISO-SCH-005`; `VISO-SCH-007`                | ANIMA deja de mutar estados propietarios y consume outcomes de VISO                                      |
+| invalidez o stale después de una revisión nueva                                                 | `AUTH-CTX-029`; `AUTH-DB-035`; `SHELL-CTX-006`                                | caches y consumidores dejan de reutilizar una revisión sustituida para decisiones posteriores            |
+| vínculo contractual de asistencia con turno y revisión                                          | `INT-WORK-003`                                                                | cada hecho de asistencia queda referenciado determinísticamente a turno y revisión aplicables            |
+| confirmación autoritativa de contexto efectivo                                                  | `INT-WORK-004`                                                                | Supabase y resolutores canónicos confirman contexto con revisión, tiempo, check-in y frescura            |
+
+---
+
+#### 37. Flujo canónico de presentación personal
+
+El flujo lógico aprobado queda:
+
+```text
+ACTOR LABORAL AUTENTICADO
+→ RESOLVER VÍNCULO APLICABLE
+→ CONSULTAR PROYECCIÓN PUBLICADA AUTORIZADA
+→ RESOLVER REVISIÓN AUTORITATIVA POR TURNO
+→ VALIDAR COMPATIBILIDAD DE CONTRATO Y FRESCURA
+→ ORDENAR POR INSTANTES CANÓNICOS
+→ MINIMIZAR POR FINALIDAD
+→ PRESENTAR
+```
+
+Para cualquier acción operativa posterior:
+
+```text
+PRESENTACIÓN
+→ NUEVA RESOLUCIÓN / REVALIDACIÓN SEGÚN CONTRATO DE LA ACCIÓN
+```
+
+La pantalla no se convierte en prueba de autoridad.
+
+---
+
+#### 38. Invariantes
+
+1. VISO continúa siendo la única propietaria de programación.
+2. ANIMA presenta la revisión publicada, no un borrador.
+3. `shift_id` y revisión permanecen correlacionados.
+4. la revisión no se elige por máximo timestamp.
+5. una sucesora en borrador no altera la revisión publicada actual.
+6. una nueva revisión publicada invalida la presentación anterior cuando corresponda.
+7. una cancelación no equivale a borrar el turno.
+8. una semana o tarjeta no sustituye la identidad del turno.
+9. turno publicado no equivale a turno vigente.
+10. turno vigente no equivale a check-in.
+11. presentación no equivale a autorización.
+12. notificación no equivale a fuente de programación.
+13. caché no equivale a fuente de programación.
+14. ausencia de datos por error no equivale a día libre.
+15. descanso publicado no equivale a ausencia de turno.
+16. sede seleccionada no sustituye sede del turno.
+17. área seleccionada no sustituye área del turno.
+18. rol base no sustituye rol operativo.
+19. una etiqueta de rol no se infiere por texto aproximado.
+20. una vista de equipo exige alcance territorial real.
+21. una vista de equipo no concede capacidad de edición.
+22. una interfaz administrativa en ANIMA no transfiere propiedad de VISO.
+23. una escritura directa de ANIMA sobre programación no satisface el contrato.
+24. cambios posteriores a publicación preservan historia.
+25. overnight se resuelve por instantes reales.
+26. historial de programación y asistencia permanecen separados.
+27. la acción de asistencia deberá revalidar la revisión aplicable.
+28. no se crea un evento empresarial por renderizar una pantalla.
+
+---
+
+#### 39. Prohibiciones
+
+Queda prohibido considerar conforme cualquiera de estos atajos:
+
+1. mostrar una fila porque `published_at` no es nulo sin poder resolver la revisión aplicable;
+2. tratar `published_at` como identificador de revisión;
+3. elegir la última fila por timestamp;
+4. mostrar un borrador como horario oficial;
+5. mezclar campos de revisión anterior y sucesora;
+6. usar datos de notificación como fuente del turno;
+7. usar caché stale como programación vigente;
+8. informar “sin turnos” después de una falla de lectura;
+9. asumir “libre” porque no hubo respuesta de la fuente;
+10. calcular overnight como intervalo inválido por usar una sola fecha civil;
+11. usar la zona del dispositivo como autoridad temporal;
+12. inferir rol visible por coincidencias aproximadas;
+13. usar `employee.site_id` o equivalente local como permiso para ver toda una sede;
+14. usar una lista local de roles como autorización final;
+15. crear o publicar turnos directamente desde ANIMA;
+16. editar una revisión publicada in-place desde ANIMA;
+17. cancelar programación mediante una actualización directa de estado ajeno;
+18. ocultar una cancelación eliminando la fila;
+19. convertir un turno mostrado en check-in confirmado;
+20. convertir una vista administrativa en propiedad funcional de programación.
+
+---
+
+#### 40. Escenarios mínimos de aceptación contractual
+
+La implementación futura deberá demostrar como mínimo:
+
+1. trabajador con un turno publicado ve la revisión exacta correspondiente;
+2. trabajador no ve un borrador futuro del mismo turno;
+3. una revisión sucesora publicada sustituye la presentada sin mezclar campos;
+4. la revisión anterior permanece histórica;
+5. un turno cancelado deja de ser programado vigente y conserva historia;
+6. una semana sin turnos después de lectura válida muestra un estado vacío legítimo;
+7. una falla de fuente no se presenta como “sin turnos”;
+8. una revisión ambigua no se resuelve por primera fila;
+9. turno actual no implica check-in;
+10. siguiente turno se ordena por instante autoritativo;
+11. overnight mantiene identidad y duración correctas;
+12. sede del turno no se sustituye por sede seleccionada;
+13. área del turno no se sustituye por área seleccionada;
+14. rol operativo visible corresponde al catálogo canónico;
+15. descanso publicado se distingue de un día sin programación;
+16. una notificación atrasada abre la programación actual y no revive una revisión anterior;
+17. una caché stale no autoriza una acción posterior;
+18. trabajador solo consulta su programación personal permitida;
+19. vista de sede exige autorización territorial real;
+20. actor sin alcance suficiente no obtiene turnos de terceros;
+21. la vista territorial permanece de solo lectura respecto de propiedad de VISO;
+22. una capacidad administrativa expuesta desde ANIMA usa el contrato/servicio de VISO;
+23. un intento de edición directa de programación desde ANIMA no forma parte del contrato conforme;
+24. cambio de actor invalida la proyección personal anterior;
+25. la acción posterior de asistencia puede correlacionar `shift_id` y revisión sin depender de lo renderizado.
+
+---
+
+#### 41. Criterios de aceptación documental
+
+`INT-WORK-002` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. VISO permanece como propietaria única de la programación.
+2. ANIMA queda definida como consumidora y superficie personal.
+3. la unidad presentada es `shift_id + revisión publicada autoritativa`.
+4. los campos internos necesarios y los campos visibles quedan diferenciados.
+5. turno actual, siguiente, semana, historial, descanso y cancelación quedan definidos sin crear fuentes alternativas.
+6. presentación, check-in, asistencia, contexto y autorización permanecen separados.
+7. la zona horaria autoritativa gobierna la clasificación temporal.
+8. un error de lectura no se degrada a ausencia de turnos.
+9. una revisión ambigua falla cerrada para la selección automática.
+10. las notificaciones sirven para comunicación y navegación, no como fuente.
+11. la vista territorial exige autoridad y minimización.
+12. la administración eventual desde ANIMA debe invocar VISO y no escribir como propietaria.
+13. las mutaciones directas observadas quedan clasificadas como deriva física a corregir por tareas existentes.
+14. todas las brechas observadas tienen propietario y condición de salida.
+15. no se crea una definición nueva de evento.
+16. no se modifica código, Supabase, datos, migraciones, RPC, RLS, colas ni configuración.
+17. no se crean ni modifican requisitos de prueba.
+18. `INT-WORK-003` permanece sin desarrollar.
+
+---
+
+#### 42. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- el requisito de integración laboral vigente ya exige que VISO sea la fuente de turnos, que cada turno publicado tenga revisión estable y que ANIMA presente la revisión vigente;
+- los requisitos vigentes de ANIMA ya protegen la separación entre lectura personal, semana de sede y gestión, y exigen capacidad efectiva y control de servidor para las mutaciones;
+- los requisitos vigentes de autorización ya protegen coherencia del turno publicado, contexto, territorio, invalidación, frescura y evidencia correlacionable;
+- las obligaciones de evitar una fuente competidora y escritura cruzada ya están protegidas por los contratos de integración aprobados;
+- esta tarea especializa la presentación de esas obligaciones en ANIMA, sin introducir una capacidad empresarial nueva, nuevo permiso, nuevo proceso, nueva transición, nuevo evento, nuevo repositorio, nuevo esquema ni comportamiento físico ejecutable.
+
+---
+
+#### 43. Resultado de la tarea
+
+`INT-WORK-002` queda **APROBADA** como definición documental del contrato mediante el cual ANIMA presenta la programación publicada por VISO.
+
+Resultado consolidado:
+
+- propietaria de programación: **VISO**;
+- consumidora de presentación: **ANIMA**;
+- proceso: **`VPROC-0007`**;
+- unidad autoritativa: **`shift_id + revisión publicada`**;
+- vista personal basada en borradores: **prohibida**;
+- selección de revisión por `published_at` aislado: **prohibida**;
+- escritura propietaria directa desde ANIMA: **prohibida**;
+- edición in-place de publicación: **prohibida**;
+- turno mostrado equivalente a check-in: **prohibido**;
+- error de lectura equivalente a ausencia de programación: **prohibido**;
+- vista territorial sin autoridad: **prohibida**;
+- nuevas definiciones normales de evento: **0**;
+- cambios físicos: **0**;
+- requisitos de prueba creados o modificados: **0**.
+
+Invariante final:
+
+```text
+VISO
+→ REVISIÓN PUBLICADA AUTORITATIVA
+→ PROYECCIÓN MINIMIZADA Y VERSIONADA
+→ ANIMA
+→ PRESENTACIÓN PERSONAL O TERRITORIAL AUTORIZADA
+```
+
+sin permitir:
+
+```text
+PRESENTACIÓN
+→ PROPIEDAD
+```
+
+ni:
+
+```text
+UI ANIMA
+→ MUTACIÓN DIRECTA DE PROGRAMACIÓN VISO
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-WORK-001 — Definir contrato para que VISO publique el turno`
+
+TAREA ACTUAL APROBADA
+
+`INT-WORK-002 — Definir contrato para que ANIMA presente el turno`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia`
+
+
 ### [ ] INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
 ### [ ] INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
 ### [ ] INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **748** |
+| Tareas aprobadas | **749** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **846** |
+| Tareas no iniciadas | **845** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.93% (748/1594)** |
+| Porcentaje de completamiento | **46.99% (749/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-WORK-001 — Definir contrato para que VISO publique el turno** |
-| Tarea actual | **INT-WORK-002 — Definir contrato para que ANIMA presente el turno** |
+| Última tarea aprobada | **INT-WORK-002 — Definir contrato para que ANIMA presente el turno** |
+| Tarea actual | **INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia** |
+| Siguiente tarea | **INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 32 de 83 aprobadas; INT-WORK-002 pendiente** |
+| Progreso del bloque | **BLOQUE X: 33 de 83 aprobadas; INT-WORK-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-WORK-001` — Definir contrato para que VISO publique el turno |
-| Tarea actual | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno — **NO INICIADA** |
-| Siguiente tarea | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia |
+| Última aprobada | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno |
+| Tarea actual | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia — **NO INICIADA** |
+| Siguiente tarea | `INT-WORK-004` — Definir confirmación autoritativa del contexto efectivo en Supabase |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 32 DE 83 APROBADAS — ACTUAL INT-WORK-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 33 DE 83 APROBADAS — ACTUAL INT-WORK-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-WORK-001 — Definir contrato para que VISO publique el turno
-        ↓
-TAREA ACTUAL
 INT-WORK-002 — Definir contrato para que ANIMA presente el turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 32 de 83 tareas aprobadas
+BLOQUE X — 33 de 83 tareas aprobadas
 ```

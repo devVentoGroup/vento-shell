@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **748** |
+| Aprobadas | **749** |
 | En propuesta | **0** |
-| No iniciadas | **846** |
+| No iniciadas | **845** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.93% (748/1594)** |
+| Porcentaje de completamiento | **46.99% (749/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-WORK-001` — Definir contrato para que VISO publique el turno | ✅ APROBADA |
-| Tarea actual | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia | ⬜ NO INICIADA |
+| Última aprobada | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno | ✅ APROBADA |
+| Tarea actual | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-WORK-004` — Definir confirmación autoritativa del contexto efectivo en Supabase | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1455,7 +1455,7 @@
 | ✅ APROBADA | `INT-EXT-019` | Definir retiro de integración y revocación de credenciales | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-020` | Prohibir credenciales compartidas entre integraciones | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-WORK-001` | Definir contrato para que VISO publique el turno | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
-| ⬜ NO INICIADA | `INT-WORK-002` | Definir contrato para que ANIMA presente el turno | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
+| ✅ APROBADA | `INT-WORK-002` | Definir contrato para que ANIMA presente el turno | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ⬜ NO INICIADA | `INT-WORK-003` | Definir contrato para que ANIMA registre la asistencia | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ⬜ NO INICIADA | `INT-WORK-004` | Definir confirmación autoritativa del contexto efectivo en Supabase | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
 | ⬜ NO INICIADA | `INT-WORK-005` | Definir consumo del contexto por SHELL y las aplicaciones | `bloques/X_INTEGRACIONES/03_CONTEXTO_LABORAL.md` |
