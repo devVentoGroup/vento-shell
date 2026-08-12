@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **727** |
+| Tareas aprobadas | **728** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **867** |
+| Tareas no iniciadas | **866** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.61% (727/1594)** |
+| Porcentaje de completamiento | **45.67% (728/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes** |
-| Tarea actual | **CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento** |
+| Última tarea aprobada | **CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento** |
+| Tarea actual | **CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness** |
+| Siguiente tarea | **CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 151 de 157 aprobadas; CONT-UX-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 152 de 157 aprobadas; CONT-UX-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes |
-| Tarea actual | `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento — **NO INICIADA** |
-| Siguiente tarea | `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness |
+| Última aprobada | `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento |
+| Tarea actual | `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness — **NO INICIADA** |
+| Siguiente tarea | `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 151 DE 157 APROBADAS — ACTUAL CONT-UX-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 152 DE 157 APROBADAS — ACTUAL CONT-UX-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes
-        ↓
-TAREA ACTUAL
 CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness
         ↓
+SIGUIENTE TAREA RESERVADA
+CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 151 de 157 tareas aprobadas
+CARRIL NEXO — 152 de 157 tareas aprobadas
 ```

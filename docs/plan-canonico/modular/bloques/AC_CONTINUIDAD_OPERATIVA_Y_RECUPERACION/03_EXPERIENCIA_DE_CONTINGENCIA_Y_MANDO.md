@@ -6455,5 +6455,1238 @@ SIGUIENTE TAREA RESERVADA
 `CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento`
 
 
-### [ ] CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
+### ✅ CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento
+
+**Estado:** APROBADA
+**Tarea anterior:** `CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes` — APROBADA
+**Tarea siguiente:** `CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de experiencia para preparar, revisar, aprobar, emitir, seguir, corregir y escalar comunicaciones internas y externas de continuidad mediante plantillas, canales, confirmación y trazabilidad, sin ejecutar comunicaciones reales ni crear una segunda fuente de verdad
+**Bloque:** AC — Continuidad operativa y recuperación
+**Repositorio propietario:** `vento-shell`
+**Fase:** exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`
+**Implementación técnica u operativa:** no autorizada
+**Clases de comunicación materializadas:** 7 / 7
+**Plantillas base materializadas:** 7 / 7
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia completa mediante la cual Vento OS permite coordinar comunicaciones de continuidad sin convertir velocidad, canal disponible, receipt técnico, apertura de mensaje o presión del incidente en autorización, lectura, compromiso empresarial o recuperación confirmada.
+
+La experiencia deberá responder de forma determinista:
+
+```text
+¿QUE CLASE DE COMUNICACION SE NECESITA?
+¿QUE AUDIENCIA DEBE RECIBIRLA?
+¿QUE HECHOS ESTAN CONFIRMADOS?
+¿QUE SIGUE SIENDO INCIERTO?
+¿QUE NO DEBE DIVULGARSE A ESA AUDIENCIA?
+¿QUIEN PUEDE PREPARAR EL MENSAJE?
+¿QUIEN DEBE VALIDAR O APROBAR SU CONTENIDO?
+¿QUE CANAL ES ELEGIBLE Y ESTA AUTORIZADO?
+¿EXISTE UN CANAL ALTERNO REALMENTE ACREDITADO?
+¿EL TRANSPORTE ACEPTO EL ENVIO?
+¿EL DESTINATARIO LO LEYO?
+¿SE REQUIERE ACUSE EXPLICITO?
+¿SE REQUIERE UNA ACCION EMPRESARIAL POSTERIOR?
+¿CUANDO DEBE ACTUALIZARSE EL MENSAJE?
+¿QUE CONDICION ACTIVA ESCALAMIENTO?
+¿COMO SE CORRIGE UN MENSAJE SIN BORRAR HISTORIA?
+```
+
+La frontera principal es obligatoria:
+
+```text
+MENSAJE PREPARADO
+!= MENSAJE APROBADO
+!= MENSAJE EMITIDO
+!= ENTREGA TECNICA
+!= LECTURA
+!= ACUSE
+!= EFECTO EMPRESARIAL
+!= RECUPERACION
+!= CIERRE
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados los siguientes resultados documentales:
+
+1. una arquitectura UX común para preparación/readiness, incidente activo e historial de comunicaciones;
+2. una experiencia de composición que parte del incidente, clase, audiencia, hechos y autoridad antes de elegir canal;
+3. reutilización exacta de las siete clases canónicas de comunicación: técnica, operativa interna, ejecutiva, laboral, cliente, proveedor y autoridad / tercero regulado;
+4. siete plantillas base materializadas, una por clase, con lenguaje y campos adecuados a su audiencia;
+5. un contrato común de quince campos mínimos para toda comunicación material;
+6. una separación explícita entre hechos confirmados, incertidumbres, hipótesis, estimaciones y compromisos;
+7. una regla por la cual una ETA técnica no se convierte automáticamente en compromiso empresarial;
+8. una experiencia de revisión que muestra qué contenido está confirmado, qué requiere aprobación y qué no puede divulgarse;
+9. una experiencia de previsualización por audiencia y por canal antes de emitir;
+10. una decisión de canales por clase que consume los contratos transversales vigentes y no inventa endpoints, teléfonos, correos, proveedores o cuentas;
+11. una regla que impide tratar un canal observado en AS-IS como canal oficial de continuidad sin acreditación y autoridad;
+12. una regla que impide usar AURA como canal operativo oficial mientras su capacidad permanezca diferida;
+13. una experiencia de emisión que conserva versión, emisor funcional, audiencia, canal, timestamp y evidencia disponible;
+14. reutilización de los estados canónicos de entrega `DELIVERY_*` sin crear un estado paralelo de mensajería;
+15. separación visual de `TRANSPORT_ACCEPTED`, `PRESENTED`, `READ`, `ACKNOWLEDGED`, `PROCESS_EFFECT` y `ESCALATED`;
+16. una experiencia de confirmación por destinatario que nunca propaga la lectura o acuse de una persona a otra;
+17. una regla por la cual un `2xx`, receipt de proveedor, push aceptado, correo aceptado o socket activo no demuestra lectura humana;
+18. una regla por la cual `READ` no equivale a aceptación contractual, ejecución de una orden ni cierre de un proceso;
+19. una regla por la cual `ACKNOWLEDGED` confirma conocimiento, pero no concede autoridad ni sustituye el efecto empresarial requerido;
+20. una experiencia de escalamiento que distingue falla de canal, falta de lectura, falta de acuse y falta de acción empresarial;
+21. una regla que evita broadcast como respuesta a un destinatario no resoluble o un canal bloqueado;
+22. una regla que exige reconciliar `DELIVERY_UNKNOWN` antes de duplicar un envío cuando el canal pudo haber aceptado la operación;
+23. una experiencia de canal alterno únicamente cuando exista referencia autorizada y capacidad acreditada;
+24. una ruta de escalamiento por responsabilidad y no por expansión indiscriminada de audiencia;
+25. una experiencia específica para proveedor que conserva propietario interno y no permite al tercero aprobar el estado de continuidad de Vento;
+26. una experiencia específica para autoridad o tercero regulado que exige función competente, obligación aplicable y canal formal resoluble;
+27. una experiencia específica para cliente que impide promesas de disponibilidad, causa o tiempo no confirmadas;
+28. una experiencia específica laboral que minimiza información y conserva autoridad laboral, privacidad y seguridad;
+29. una experiencia ejecutiva que separa información, decisión solicitada y aprobación efectiva;
+30. una experiencia técnica que permite detalle suficiente para coordinación sin exponer secretos ni convertir diagnóstico en decisión empresarial;
+31. una experiencia operativa interna que muestra qué cambia, qué continúa, qué se detiene y qué acción concreta corresponde;
+32. un modelo de actualización que no inventa frecuencia universal y obliga a cada mensaje de seguimiento a declarar próximo momento o condición de actualización;
+33. un modelo de corrección que crea una nueva versión relacionada con la anterior sin borrar el mensaje emitido;
+34. un modelo de consistencia multiaudiencia que parte de un conjunto común de hechos confirmados y genera proyecciones adecuadas sin contradicciones materiales;
+35. un centro de seguimiento que separa mensajes por emitir, enviados, entrega incierta, confirmación pendiente, escalados, corregidos y cerrados sin convertir esas vistas en nuevos estados de dominio;
+36. tratamiento explícito de privacidad, contenido sensible, contactos y previsualizaciones conforme a autorización y finalidad;
+37. tratamiento explícito de degradación de canales, fallos, reintentos y resultados inciertos reutilizando el contrato transversal de notificaciones;
+38. escenarios deterministas de comunicación inicial, actualización, acción requerida, corrección, canal bloqueado, falta de confirmación y coordinación externa;
+39. handoffs explícitos hacia implementación de notificaciones, autorización, evidencia, gobierno de información, integración externa y ejercicios;
+40. cero comunicaciones reales, cero cambios de configuración, cero cambios Supabase y cero cambios de requisitos de prueba.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+Esta tarea consume y conserva, sin redefinirlas:
+
+- `VPROC-0062`, como proceso transversal propietario del expediente de continuidad;
+- `CONT-DOM-005`, para estados del incidente, severidad, alcance, activación, escalamiento, desactivación y cierre;
+- `CONT-DOM-006`, para mando, sustitución, bitácora, siete clases de comunicación, quince campos mínimos, comunicación de crisis y coordinación externa;
+- `CONT-DOM-007` a `CONT-DOM-010`, para operación mínima, contingencia, captura, pendientes, reincorporación y conciliación que pueden requerir comunicación;
+- `CONT-DOM-011` a `CONT-DOM-013`, para respaldo, recuperación y proveedores sin convertir estado técnico o externo en estado empresarial;
+- `CONT-DOM-014` y `CONT-DOM-015`, para ejercicios, revisión posterior y mantenimiento de contactos/runbooks sin adelantar su experiencia;
+- `CONT-AUTH-001`, para separar preparación, aprobación, emisión y autoridad de comunicación;
+- `CONT-AUTH-003`, para minimización, contactos protegidos, evidencia y datos sensibles de contingencia;
+- `CONT-AUTH-004`, para separar ejecución, validación, recuperación total, cierre y revisión posterior;
+- `CONT-UX-001`, para estado ejecutivo, impacto, prioridades, responsables y decisiones;
+- `CONT-UX-002`, para centro de mando, línea de tiempo y referencia de comunicaciones;
+- `CONT-UX-003`, para runbooks y handoffs operativos;
+- `CONT-UX-004`, para trabajo contingente, resultados inciertos y reincorporación;
+- `CONT-UX-005`, para recuperación, validación y pendientes que pueden originar mensajes técnicos, operativos o ejecutivos;
+- `NOTIFY-ARC-001` a `NOTIFY-ARC-010`, para inventario de canales, evento originador, destinatarios, prioridad, vigencia, deduplicación, canales, preferencias, lectura, confirmación, escalamiento, fallos, contingencia, privacidad, métricas y auditoría de entrega;
+- los requisitos vigentes de continuidad y experiencia que ya protegen comunicación, autorización, estados, errores, privacidad, contingencia y escalamiento.
+
+La tarea no modifica identidades, severidades, BIA, MTPD, RTO, RPO, MBCO, prioridades, responsabilidades, autorizaciones, políticas de notificación, canales físicos, proveedores, contactos ni estados de readiness.
+
+---
+
+#### 4. Fronteras obligatorias
+
+La experiencia conserva como invariantes:
+
+```text
+CLASE DE COMUNICACION != CANAL
+CANAL != AUDIENCIA
+AUDIENCIA != AUTORIDAD
+PREPARAR != APROBAR
+APROBAR != EMITIR
+EMITIR != ENTREGA TECNICA
+ENTREGA TECNICA != LECTURA
+LECTURA != ACUSE
+ACUSE != EFECTO EMPRESARIAL
+ESCALAMIENTO != BROADCAST
+CORRECCION != BORRADO
+ETA TECNICA != COMPROMISO EMPRESARIAL
+ESTADO DE PROVEEDOR != ESTADO DEL PROCESO VENTO
+MENSAJE DE CIERRE != CIERRE DEL INCIDENTE
+```
+
+Ningún color, badge, receipt o canal alterno puede eliminar estas diferencias.
+
+---
+
+#### 5. Arquitectura de experiencia
+
+La experiencia se divide en tres contextos complementarios:
+
+| Contexto                | Objetivo                                                                                      | Puede mostrar                                                                            | No puede afirmar                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| preparación y readiness | comprobar que clases, plantillas, canales, contactos y aprobaciones son resolubles            | vigencia documental, referencias de canal, reglas de aprobación y brechas                | que un canal funcionará durante una crisis sin evidencia vigente |
+| incidente activo        | preparar, aprobar, emitir, seguir, corregir y escalar mensajes de un caso real                | hechos del incidente, audiencia, versión, entrega, lectura, acuse, acción y escalamiento | recuperación, cierre o atención empresarial por el solo envío    |
+| historial               | reconstruir qué se comunicó, a quién, cuándo, por qué, mediante qué canal y con qué resultado | versiones, correcciones, evidencia y relaciones                                          | que una versión antigua continúa vigente                         |
+
+Las tres vistas consumen las mismas fuentes propietarias; no crean una biblioteca paralela de incidentes, contactos o mensajes empresariales.
+
+---
+
+#### 6. Mapa de navegación
+
+```text
+CONTINUIDAD
+└─ Comunicaciones
+   ├─ Necesidades de comunicación
+   ├─ Preparar mensaje
+   │  ├─ Clase y audiencia
+   │  ├─ Hechos e incertidumbres
+   │  ├─ Plantilla
+   │  ├─ Canal
+   │  ├─ Aprobación
+   │  └─ Previsualización
+   ├─ Seguimiento
+   │  ├─ Entrega
+   │  ├─ Lectura / acuse
+   │  ├─ Acción empresarial
+   │  └─ Escalamiento
+   ├─ Correcciones y actualizaciones
+   └─ Historial y evidencia
+```
+
+Poder abrir una comunicación no concede lectura sobre su contenido sensible ni capacidad para emitirla.
+
+---
+
+#### 7. Encabezado persistente de comunicación
+
+Durante un incidente activo, la superficie conserva un encabezado mínimo con:
+
+```text
+incidente
+estado y severidad vigentes
+alcance
+clase de comunicacion
+audiencia
+version del mensaje
+estado de aprobacion aplicable
+canal seleccionado
+estado de entrega
+confirmacion requerida
+proxima actualizacion o condicion
+funcion efectiva del actor
+ultima modificacion
+```
+
+Si uno de estos valores es desconocido cuando resulta necesario para emitir, la experiencia muestra el bloqueo; no completa el dato por inferencia.
+
+---
+
+#### 8. Contrato común de quince campos
+
+Toda comunicación material debe poder presentar y conservar los quince campos heredados:
+
+|    # | Campo                                               | Tratamiento UX                                                |
+| ---: | --------------------------------------------------- | ------------------------------------------------------------- |
+|    1 | referencia al incidente                             | vínculo visible con el expediente correcto                    |
+|    2 | clase de comunicación                               | una de las siete clases canónicas                             |
+|    3 | severidad y alcance vigentes                        | se muestran como contexto, no como permiso                    |
+|    4 | audiencia exacta                                    | población o destinatarios resolubles sin expansión automática |
+|    5 | emisor funcional autorizado                         | función que emite, separada de la identidad técnica del canal |
+|    6 | aprobador o verificador requerido                   | visible solo cuando la regla aplicable lo exige               |
+|    7 | hechos confirmados                                  | hechos con fuente y frescura suficientes                      |
+|    8 | incertidumbres, supuestos o causa no confirmada     | se presentan como inciertos y no se mezclan con hechos        |
+|    9 | acción requerida o información necesaria            | instrucción o propósito concreto de la audiencia              |
+|   10 | datos que no deben divulgarse                       | restricción visible en revisión y previsualización            |
+|   11 | canal principal y alterno por referencia autorizada | no se inventan direcciones ni proveedores                     |
+|   12 | confirmación o acuse requerido                      | tipo de evidencia necesaria por destinatario o proceso        |
+|   13 | próximo momento o condición de actualización        | obligatorio cuando el mensaje requiere seguimiento            |
+|   14 | mensaje anterior que corrige, sustituye o cierra    | mantiene historia y relación de versiones                     |
+|   15 | versión, timestamp y evidencia de emisión/entrega   | permite reconstrucción sin convertir receipt en lectura       |
+
+La ausencia de un campo no aplicable debe estar justificada por el contrato propietario; un campo necesario ausente bloquea la emisión.
+
+---
+
+#### 9. Las siete clases canónicas de comunicación
+
+| Clase                        | Propósito UX                                                            | Preparación principal                                               | Regla de autoridad                                      | Riesgo que la interfaz debe impedir                                      |
+| ---------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| técnica                      | coordinar diagnóstico, health, restore y dependencias                   | `RESPONSABLE_TECNOLOGICO` o función técnica autorizada              | detalle técnico no concede autoridad empresarial        | publicar diagnóstico como causa final o recuperación                     |
+| operativa interna            | coordinar operación mínima, sedes, turnos, responsables y acciones      | `COORDINACION_DE_OPERACIONES`, continuidad o propietaria aplicable  | debe permanecer dentro del mandato y alcance vigentes   | instruir operación fuera de estrategia o autoridad                       |
+| ejecutiva                    | informar impacto, riesgo, decisiones y necesidades de gobierno          | continuidad con insumos propietarios                                | una actualización no sustituye aprobación ejecutiva     | presentar propuesta como decisión aprobada                               |
+| laboral                      | informar medidas que afectan a trabajadores o responsables              | continuidad/operación con función laboral competente cuando aplique | conserva privacidad, seguridad y autoridad laboral      | exponer detalle personal o convertir aviso en acto laboral no autorizado |
+| cliente                      | informar afectación, disponibilidad, alternativa o compromiso permitido | propietaria comercial/servicio con coordinación de continuidad      | promesa material exige validación propietaria aplicable | prometer causa, disponibilidad o ETA no confirmadas                      |
+| proveedor                    | coordinar soporte, SLA, evidencia, alternativa o escalamiento externo   | propietario interno de la dependencia o servicio                    | el proveedor no dirige ni valida continuidad de Vento   | tratar respuesta del tercero como recuperación empresarial               |
+| autoridad / tercero regulado | atender obligación, reporte o coordinación formal                       | función interna competente                                          | exige obligación, autoridad y canal formal aplicables   | enviar por canal informal o revelar más información de la necesaria      |
+
+Una clase puede proyectarse por varios canales. Cambiar canal no cambia clase, autoridad, audiencia ni contenido autorizado.
+
+---
+
+#### 10. Ciclo UX de una comunicación
+
+La experiencia presenta el ciclo como una secuencia verificable:
+
+```text
+NECESIDAD IDENTIFICADA
+→ CLASE Y AUDIENCIA RESUELTAS
+→ HECHOS E INCERTIDUMBRES COMPUESTOS
+→ PLANTILLA APLICADA
+→ CONTENIDO REVISADO
+→ AUTORIDAD / APROBACION RESUELTA
+→ CANAL ELEGIBLE RESUELTO
+→ PREVISUALIZACION FINAL
+→ EMISION
+→ SEGUIMIENTO DE ENTREGA
+→ LECTURA / ACUSE CUANDO APLIQUE
+→ EFECTO EMPRESARIAL CUANDO APLIQUE
+→ ACTUALIZACION / CORRECCION / ESCALAMIENTO
+→ CIERRE DE LA NECESIDAD COMUNICACIONAL
+```
+
+El cierre de la necesidad comunicacional no equivale a cierre del incidente.
+
+---
+
+#### 11. Compositor de comunicación
+
+La pantalla de composición se organiza en siete zonas:
+
+1. **Contexto:** incidente, severidad, alcance, servicio/proceso y última actualización.
+2. **Clase y audiencia:** qué comunicación es y quién realmente debe recibirla.
+3. **Hechos confirmados:** seleccionados desde fuentes propietarias o registrados con referencia suficiente.
+4. **Incertidumbres:** causa, alcance, ETA, dependencia o resultado que todavía no está confirmado.
+5. **Acción e instrucciones:** qué necesita hacer o saber la audiencia, con límites explícitos.
+6. **Canal y confirmación:** canal elegible, alterno acreditado cuando exista, evidencia esperada y regla de escalamiento.
+7. **Autoridad y previsualización:** quién prepara, quién valida/aprueba, cómo se verá por canal y qué datos quedan excluidos.
+
+El botón de emisión no aparece como acción ordinaria si falta una aprobación material, la audiencia no es resoluble o el contenido contiene una restricción no resuelta.
+
+---
+
+#### 12. Hechos, incertidumbre, causa y estimaciones
+
+La composición presenta cuatro bloques semánticos separados:
+
+| Bloque                       | Contenido admisible                                      | Regla                                                                 |
+| ---------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- |
+| hechos confirmados           | estados y resultados con fuente suficiente               | puede comunicarse como hecho dentro de la audiencia autorizada        |
+| incertidumbres               | elementos aún no demostrados                             | deben conservar lenguaje de incertidumbre                             |
+| hipótesis / causa preliminar | explicación de trabajo o investigación                   | nunca se presenta como causa confirmada                               |
+| estimaciones                 | ETA, capacidad o ventana estimada con fuente y supuestos | no se transforma en compromiso empresarial sin validación propietaria |
+
+Si una estimación cambia, la nueva versión conserva la estimación anterior y la razón de actualización.
+
+---
+
+#### 13. Gramática común de las plantillas
+
+Las siete plantillas usan una misma gramática de bloques, activando solo los necesarios:
+
+```text
+IDENTIDAD
+- incidente
+- clase
+- audiencia
+- version
+
+SITUACION
+- hechos confirmados
+- impacto aplicable
+- incertidumbre explicita
+
+ACCION
+- que debe hacer o saber la audiencia
+- que no debe hacer
+- limite o condicion
+
+SEGUIMIENTO
+- confirmacion requerida
+- proxima actualizacion o condicion
+- contacto o superficie propietaria por referencia
+
+TRAZABILIDAD
+- emisor funcional
+- aprobacion aplicable
+- mensaje anterior relacionado
+- evidencia de emision/entrega
+```
+
+La plantilla organiza el mensaje; no crea hechos, destinatarios, autoridad ni canales.
+
+---
+
+#### 14. Plantilla técnica
+
+**Objetivo:** coordinar diagnóstico, contención, restauración o dependencia técnica sin elevar detalle innecesario al resto de audiencias.
+
+```text
+ACTUALIZACION TECNICA DE CONTINUIDAD
+
+Incidente:
+Componente o dependencia afectada:
+Hechos tecnicos confirmados:
+Impacto empresarial conocido:
+Hipotesis o incertidumbres:
+Accion tecnica requerida:
+Bloqueo o control de seguridad:
+Resultado observable esperado:
+Evidencia o receipt requerido:
+Responsable del siguiente handoff:
+Proxima actualizacion o condicion:
+```
+
+Reglas:
+
+- no incluye secretos, tokens, credenciales o payloads sensibles;
+- un health check favorable no se redacta como recuperación empresarial;
+- una causa preliminar permanece identificada como tal;
+- cuando requiera acción privilegiada, la comunicación referencia la autorización; no la sustituye.
+
+---
+
+#### 15. Plantilla operativa interna
+
+**Objetivo:** indicar a operación qué cambia y qué acción segura corresponde durante el incidente.
+
+```text
+INSTRUCCION OPERATIVA DE CONTINUIDAD
+
+Incidente y alcance:
+Que esta afectado:
+Que continua disponible:
+Que queda detenido, limitado o pendiente:
+Accion requerida ahora:
+Quien debe ejecutarla por funcion:
+Limites y prohibiciones:
+Donde conservar evidencia o referencia:
+Confirmacion requerida:
+Condicion para escalar o detener:
+Proxima actualizacion o condicion:
+```
+
+Reglas:
+
+- operación reducida se identifica como reducida;
+- un mensaje no modifica por sí mismo el MBCO, estrategia o autoridad;
+- si una acción no está autorizada, la plantilla no la presenta como workaround;
+- sede, turno o área se muestran solo cuando son necesarios y autorizados.
+
+---
+
+#### 16. Plantilla ejecutiva
+
+**Objetivo:** permitir a la autoridad empresarial comprender impacto, riesgo y decisión pendiente sin obligarla a leer detalle técnico.
+
+```text
+PARTE EJECUTIVO DE CONTINUIDAD
+
+Incidente, estado y severidad:
+Alcance empresarial:
+Resultados o procesos afectados:
+Impacto confirmado:
+MBCO / RTO / MTPD aplicables y estado observado:
+Hechos confirmados:
+Incertidumbres materiales:
+Decisiones requeridas:
+Riesgo de no decidir:
+Recomendacion o alternativas ya autorizadas para considerar:
+Proxima actualizacion o condicion:
+```
+
+Reglas:
+
+- una recomendación no aparece como aprobación;
+- una aprobación no aparece como ejecución;
+- RTO, MTPD o severidad no se convierten en autorización;
+- una ETA técnica solo aparece como estimación si conserva fuente y supuestos.
+
+---
+
+#### 17. Plantilla laboral
+
+**Objetivo:** informar a trabajadores o responsables sobre continuidad y medidas aplicables con mínimo dato necesario.
+
+```text
+AVISO DE CONTINUIDAD PARA PERSONAL
+
+Que esta ocurriendo en terminos necesarios:
+A quien aplica:
+Desde cuando aplica:
+Que debe hacer la persona:
+Que no debe hacer:
+Medida de seguridad o proteccion relevante:
+Que servicio o proceso permanece disponible:
+Canal o superficie para soporte por referencia autorizada:
+Lectura o acuse requerido cuando aplique:
+Proxima actualizacion o condicion:
+```
+
+Reglas:
+
+- no incluye diagnóstico disciplinario, detalle médico, geolocalización u otros datos no necesarios;
+- el aviso no crea una sanción, aceptación laboral o cambio de condiciones por sí solo;
+- un acuse confirma conocimiento únicamente cuando esa sea la regla aplicable;
+- la audiencia se resuelve desde contexto laboral vigente y no desde listas duplicadas.
+
+---
+
+#### 18. Plantilla cliente
+
+**Objetivo:** informar al cliente con precisión sobre afectación, disponibilidad y acción permitida sin promesas no demostradas.
+
+```text
+ACTUALIZACION DE SERVICIO
+
+Servicio o experiencia afectada:
+Que sabemos con certeza:
+Que sigue disponible:
+Que esta temporalmente limitado o no disponible:
+Alternativa autorizada, si existe:
+Que debe hacer el cliente, si aplica:
+Que todavia no podemos confirmar:
+Compromiso o plazo validado por el propietario, si existe:
+Proxima actualizacion o condicion:
+```
+
+Reglas:
+
+- no comunica causa como definitiva sin confirmación;
+- no comunica una alternativa no acreditada;
+- no publica una ETA técnica como promesa al cliente;
+- no expone detalles internos, vulnerabilidades, proveedores, datos de otros clientes ni estados técnicos innecesarios;
+- la ausencia de plazo validado se comunica como incertidumbre, no con una fecha inventada.
+
+---
+
+#### 19. Plantilla proveedor
+
+**Objetivo:** coordinar con un tercero sin transferirle autoridad empresarial.
+
+```text
+COORDINACION DE CONTINUIDAD CON PROVEEDOR
+
+Incidente o referencia interna:
+Servicio o dependencia contratada:
+Sintoma o hecho confirmado:
+Impacto empresarial relevante:
+Alcance tecnico necesario para el tercero:
+Accion o evidencia solicitada:
+Receipt, ticket o referencia externa:
+Condicion de escalamiento contractual aplicable:
+Responsable interno de aceptar el resultado:
+Proxima coordinacion o condicion:
+```
+
+Reglas:
+
+- el proveedor recibe solo el contexto necesario;
+- no recibe secretos o evidencia interna no necesaria;
+- un ticket cerrado o servicio restaurado por el tercero no declara proceso Vento recuperado;
+- no se inventan SLA, contactos, alternativas o niveles de soporte;
+- la función interna propietaria conserva la aceptación del resultado.
+
+---
+
+#### 20. Plantilla autoridad / tercero regulado
+
+**Objetivo:** atender una obligación, notificación o coordinación formal con trazabilidad y minimización.
+
+```text
+COMUNICACION FORMAL DE CONTINUIDAD
+
+Expediente o incidente de referencia:
+Obligacion o fundamento aplicable:
+Hechos confirmados que deben reportarse:
+Alcance temporal y organizacional:
+Medidas de contencion o proteccion confirmadas:
+Impacto conocido y limitaciones de conocimiento:
+Informacion requerida por la contraparte:
+Informacion excluida por no ser necesaria o autorizada:
+Funcion competente que prepara:
+Aprobacion o firma aplicable:
+Canal formal por referencia autorizada:
+Evidencia de presentacion o recepcion:
+Siguiente hito u obligacion:
+```
+
+Reglas:
+
+- no se utiliza una plantilla informal como sustituto de una obligación formal;
+- no se inventa obligación, término, autoridad o destinatario;
+- la evidencia de recepción se conserva separada de cualquier aceptación del contenido;
+- el expediente de continuidad no sustituye el expediente regulatorio propietario cuando exista.
+
+---
+
+#### 21. Resolución de canales
+
+La interfaz resuelve el canal después de determinar clase, audiencia, finalidad, sensibilidad y autoridad.
+
+Orden obligatorio:
+
+```text
+CLASE
+→ AUDIENCIA
+→ FINALIDAD
+→ SENSIBILIDAD
+→ CANALES ELEGIBLES DEL CONTRATO PROPIETARIO
+→ CAPACIDAD ACTUAL
+→ PREFERENCIA CUANDO SEA APLICABLE
+→ CANAL PRINCIPAL AUTORIZADO
+→ CANAL ALTERNO ACREDITADO, SI EXISTE
+```
+
+Reglas:
+
+1. la existencia de correo, push, navegador, mensajería o teléfono no los convierte en canal oficial para toda crisis;
+2. un canal manual observado en AS-IS no se promueve automáticamente a política objetivo;
+3. un canal externo debe estar vinculado con la contraparte y finalidad correctas;
+4. el canal alterno se usa únicamente cuando está acreditado y autorizado;
+5. si no existe canal alterno demostrado, la experiencia registra el bloqueo y escala; no inventa uno;
+6. el fallo de un canal no amplía audiencia;
+7. cambiar de canal no modifica el contenido autorizado;
+8. un canal con vista previa insegura recibe contenido minimizado o se considera no elegible;
+9. AURA permanece fuera del rol de canal oficial mientras su capacidad esté diferida;
+10. el endpoint real se resuelve desde la fuente protegida vigente y no se duplica en plantillas generales.
+
+---
+
+#### 22. Matriz de decisión de canal por clase
+
+| Clase                        | Superficie principal de experiencia                     | Familias de canal elegibles                                                       | Alterno                                             | Confirmación                                                        | Límite                                                                 |
+| ---------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| técnica                      | coordinación técnica autenticada                        | canal interno, push/alerta o canal contractual del proveedor cuando corresponda   | solo referencia acreditada                          | depende de si informa, solicita acción o requiere efecto técnico    | no exponer secretos ni usar detalle técnico como broadcast             |
+| operativa interna            | superficie interna de continuidad/operación             | bandeja interna, aviso en aplicación, push o mecanismo corporativo autorizado     | solo si está acreditado para la audiencia           | lectura, acuse o efecto según la acción real                        | no convertir canal en orden fuera del mandato                          |
+| ejecutiva                    | vista ejecutiva de continuidad                          | superficie autenticada y canal corporativo directo autorizado                     | solo cuando la regla de escalamiento lo permita     | decisión o acuse explícito cuando sea requerido; lectura no aprueba | no sustituir la decisión protegida con un botón cosmético              |
+| laboral                      | superficie laboral autorizada                           | aplicación/bandeja laboral, push minimizado o canal corporativo permitido         | según cobertura real del trabajador                 | lectura, acuse o efecto laboral según contrato propietario          | no usar contacto personal fuera de la finalidad autorizada             |
+| cliente                      | superficie propietaria de cliente                       | canal de aplicación, correo o mensajería externa aprobada por el proceso          | únicamente canal alterno aprobado para esa relación | lectura externa no se presume autoritativa                          | no escalar al cliente por no leer salvo obligación propietaria expresa |
+| proveedor                    | superficie interna de coordinación + referencia externa | portal, ticket, correo, mensajería o llamada contractual cuando estén acreditados | según contrato vigente                              | receipt/respuesta externa y aceptación interna separadas            | proveedor no valida recuperación empresarial                           |
+| autoridad / tercero regulado | expediente formal propietario                           | canal formal exigido por obligación o autoridad competente                        | solo mecanismo formal alterno válido                | evidencia de presentación/recepción según el mecanismo              | no sustituir formalidad con un canal informal                          |
+
+La tabla define tratamiento UX, no habilita físicamente ningún canal.
+
+---
+
+#### 23. Estados de entrega reutilizados
+
+La experiencia reutiliza los estados de entrega del servicio transversal de notificaciones:
+
+| Estado                | Lectura UX                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| `DELIVERY_PENDING`    | la proyección es elegible y aún no inició envío                                      |
+| `DELIVERY_ATTEMPTING` | existe un intento técnico en curso                                                   |
+| `DELIVERY_ACCEPTED`   | el transportista aceptó el intento; no demuestra lectura                             |
+| `DELIVERY_CONFIRMED`  | existe confirmación técnica posterior del transportista; no demuestra lectura        |
+| `DELIVERY_UNKNOWN`    | pudo existir aceptación, pero la evidencia es insuficiente                           |
+| `DELIVERY_RETRY_WAIT` | existe un fallo reintentable y se espera el siguiente intento permitido              |
+| `DELIVERY_BLOCKED`    | falta destinatario, endpoint, permiso, configuración, contrato o adaptador necesario |
+| `DELIVERY_EXHAUSTED`  | se agotó la recuperación técnica automática permitida                                |
+| `DELIVERY_CANCELLED`  | la necesidad dejó de estar vigente o elegible                                        |
+| `DELIVERY_SUPERSEDED` | una revisión posterior sustituyó la proyección anterior                              |
+
+La UX no crea “enviado correctamente” como estado agregado cuando la evidencia real es más débil.
+
+---
+
+#### 24. Fallos y resultado incierto
+
+La experiencia distingue la clase de fallo sin obligar al usuario a interpretar códigos técnicos:
+
+- transporte transitorio;
+- limitación de cuota o frecuencia;
+- resultado de envío incierto;
+- endpoint inválido o revocado;
+- configuración o contrato inválido;
+- canal no disponible;
+- destinatario no resoluble;
+- necesidad expirada o sustituida.
+
+Reglas:
+
+1. un fallo desconocido no se convierte en éxito;
+2. `DELIVERY_UNKNOWN` exige conciliación o mecanismo idempotente antes de repetir cuando el primer intento pudo producir efecto;
+3. un endpoint inválido no se reintenta indefinidamente;
+4. un destinatario no resoluble no se reemplaza por “todos”;
+5. la falta de canal no se resuelve con un proveedor personal o cuenta no autorizada;
+6. los reintentos técnicos no reinician la vigencia empresarial del mensaje;
+7. agotamiento de entrega no equivale a fracaso del proceso empresarial;
+8. la pantalla muestra siguiente acción segura y propietario del bloqueo.
+
+---
+
+#### 25. Entrega, lectura, acuse y efecto empresarial
+
+La experiencia muestra seis conceptos separados:
+
+| Evidencia            | Significado visible                                                          | Puede afirmar lectura             | Puede cerrar la atención                         |
+| -------------------- | ---------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------ |
+| `TRANSPORT_ACCEPTED` | el mecanismo aceptó el intento                                               | no                                | no                                               |
+| `PRESENTED`          | una superficie pudo mostrar el aviso                                         | no por sí sola                    | no                                               |
+| `READ`               | el destinatario autenticado cargó la ocurrencia o contexto                   | sí                                | solo cuando la regla aplicable exige lectura     |
+| `ACKNOWLEDGED`       | el destinatario confirmó explícitamente conocimiento de la versión correcta  | implica lectura                   | solo cuando el contrato exige acuse explícito    |
+| `PROCESS_EFFECT`     | el proceso propietario registró el hecho que satisface la acción pendiente   | es evidencia superior de atención | sí cuando esa acción es la condición propietaria |
+| `ESCALATED`          | la falta de atención proyectó la necesidad a otra responsabilidad autorizada | no                                | no por sí sola                                   |
+
+Una comunicación puede estar leída y continuar pendiente. Un efecto empresarial puede resolver la necesidad sin existir una transición de lectura separada.
+
+---
+
+#### 26. Selección de confirmación
+
+La clase del mensaje no determina por sí sola la confirmación. La experiencia resuelve la exigencia según la intención:
+
+| Intención                    | Confirmación UX esperada                                                      | Regla                                                          |
+| ---------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| informar                     | ninguna, lectura cuando la política la rastree, o evidencia de disponibilidad | no forzar acuse si no existe obligación                        |
+| asegurar conocimiento        | lectura autenticada o acuse explícito según contrato                          | leer no equivale a aceptar                                     |
+| solicitar acción             | `PROCESS_EFFECT` del proceso propietario                                      | un botón “entendido” no sustituye la acción                    |
+| solicitar decisión protegida | decisión autoritativa + evidencia; acuse solo como conocimiento               | la comunicación no produce la aprobación por sí misma          |
+| coordinar proveedor          | receipt/respuesta externa + aceptación interna cuando corresponda             | respuesta del tercero no valida Vento                          |
+| cumplir obligación formal    | evidencia de presentación/recepción y efecto formal aplicable                 | receipt técnico no sustituye aceptación jurídica o regulatoria |
+
+La pantalla explica qué evidencia falta y quién puede producirla.
+
+---
+
+#### 27. Seguimiento por destinatario
+
+Cuando una comunicación tenga múltiples destinatarios, la experiencia conserva por identidad o responsabilidad resoluble:
+
+```text
+destinatario o responsabilidad
+version recibida
+canal o proyeccion
+estado de entrega
+lectura, si aplica
+acuse, si aplica
+efecto de proceso, si aplica
+escalamiento relacionado
+ultimo cambio
+```
+
+Reglas:
+
+- la lectura de una persona no se propaga a otra;
+- un grupo no aparece “confirmado” porque una sola persona lo confirmó;
+- un cambio de responsable no transfiere el estado humano del responsable anterior;
+- la nueva identidad recibe la proyección vigente si la necesidad continúa y la política lo exige;
+- la versión sustituida permanece en historia sin seguir exigiendo acuse cuando ya no está vigente.
+
+---
+
+#### 28. Escalamiento
+
+La experiencia separa cuatro motivos de escalamiento:
+
+```text
+FALLA DE ENTREGA
+→ problema de canal, endpoint, configuración o destinatario
+
+FALTA DE LECTURA / ACUSE
+→ la regla exige conocimiento y no existe evidencia suficiente
+
+FALTA DE ACCION EMPRESARIAL
+→ el proceso propietario conserva una obligación abierta
+
+RIESGO DE OBJETIVO DE CONTINUIDAD
+→ la ausencia de respuesta o decisión amenaza el resultado empresarial
+```
+
+Tratamiento:
+
+1. se intenta un canal alterno solo cuando ya está acreditado y autorizado;
+2. un canal alterno no sustituye escalamiento de responsabilidad cuando el problema es falta de acción;
+3. escalamiento conserva el destinatario o responsabilidad original y agrega la nueva responsabilidad; no reescribe historia;
+4. el siguiente nivel se resuelve desde la cadena propietaria, no desde una lista genérica de gerentes;
+5. proveedor externo no se convierte en director del incidente por escalar un ticket;
+6. una comunicación a cliente no escala a “más clientes” por falta de lectura;
+7. una falta de respuesta externa se escala cuando amenaza el objetivo empresarial, sin inventar SLA;
+8. una decisión protegida pendiente escala hacia la autoridad aplicable, no hacia quien tenga disponible el canal;
+9. un escalamiento no concede acceso adicional a información sensible;
+10. la interfaz muestra motivo, condición, función destino, tiempo y evidencia que justificaron el escalamiento.
+
+---
+
+#### 29. Vista de seguimiento
+
+```text
+COMUNICACIONES — INCIDENTE
+
+Necesidades activas             [ cantidad ]
+Pendientes de autoridad         [ cantidad ]
+Entrega incierta                [ cantidad ]
+Lectura / acuse pendiente       [ cantidad ]
+Accion empresarial pendiente    [ cantidad ]
+Escaladas                       [ cantidad ]
+Correcciones vigentes           [ cantidad ]
+
+[Clase] [Audiencia] [Version] [Canal] [Entrega]
+[Confirmacion requerida] [Siguiente hito]
+[Propietario] [Bloqueo] [Ultima actualizacion]
+```
+
+Los conteos solo agregan elementos visibles y autorizados. Un total no permite inferir la existencia de comunicaciones fuera del alcance del actor.
+
+---
+
+#### 30. Consistencia multiaudiencia
+
+Una misma situación puede producir mensajes distintos para técnico, operación, dirección, trabajadores, clientes o terceros, pero todos parten de un núcleo común de hechos confirmados.
+
+La experiencia conserva:
+
+```text
+NUCLEO DE HECHOS CONFIRMADOS
+→ proyeccion tecnica
+→ proyeccion operativa
+→ proyeccion ejecutiva
+→ proyeccion laboral
+→ proyeccion cliente
+→ proyeccion proveedor
+→ proyeccion autoridad / tercero regulado
+```
+
+Reglas:
+
+1. minimizar contenido no permite cambiar el hecho;
+2. una audiencia puede recibir menos detalle, nunca un estado contradictorio;
+3. una causa puede omitirse por seguridad, pero no sustituirse por otra causa;
+4. una ETA no aprobada puede omitirse, pero no convertirse en plazo diferente;
+5. cuando cambia un hecho común, la experiencia identifica las proyecciones vigentes que pueden requerir actualización;
+6. no se edita silenciosamente el mensaje histórico ya emitido.
+
+---
+
+#### 31. Corrección y sustitución de mensajes
+
+Una corrección se representa como una nueva versión relacionada:
+
+```text
+MENSAJE VIGENTE
+→ se detecta hecho incorrecto, incompleto o desactualizado
+→ se prepara correccion
+→ se valida autoridad y audiencia
+→ se emite nueva version
+→ la anterior queda SUPERSEDED para nuevas proyecciones
+→ se conserva evidencia de ambas versiones
+```
+
+La corrección muestra:
+
+- qué afirmación cambió;
+- por qué cambió;
+- qué versión reemplaza;
+- quién preparó y aprobó cuando aplicó;
+- a qué audiencia debe llegar la corrección;
+- qué confirmación previa ya no es suficiente cuando el cambio es material;
+- próxima actualización o condición.
+
+Corregir un mensaje no borra receipts, lecturas o acuses históricos de la versión anterior.
+
+---
+
+#### 32. Actualizaciones y cadencia
+
+No existe una frecuencia universal de partes de continuidad.
+
+Cada mensaje de seguimiento debe declarar uno de estos dos resultados:
+
+```text
+PROXIMA ACTUALIZACION EN UN MOMENTO DETERMINADO POR LA FUENTE PROPIETARIA
+```
+
+o
+
+```text
+PROXIMA ACTUALIZACION CUANDO OCURRA UNA CONDICION EXPLICITA
+```
+
+La interfaz no inventa un reloj cuando el dato no existe. Una actualización vencida se muestra como pendiente o incumplida según el contrato propietario y puede escalar cuando la ausencia de información amenaza una decisión o una obligación.
+
+---
+
+#### 33. Privacidad y contenido sensible
+
+La experiencia aplica minimización antes de elegir canal.
+
+Por defecto, canales que muestran contenido fuera de una sesión autenticada no deben incluir, salvo necesidad y autorización explícitas:
+
+- secretos, tokens, códigos de acceso o llaves;
+- cuerpos o vistas previas de mensajes sensibles;
+- vulnerabilidades o diagnósticos internos detallados;
+- datos laborales o personales innecesarios;
+- geolocalización, horarios o contexto individual no necesario;
+- datos de pago, fidelización o compra no necesarios;
+- contactos internos completos;
+- evidencia completa cuando basta una referencia protegida.
+
+La previsualización diferencia claramente “contenido dentro de la aplicación” y “contenido visible en la notificación o canal externo”.
+
+---
+
+#### 34. Contactos y directorios
+
+La experiencia no mantiene un directorio paralelo de crisis.
+
+Puede proyectar, según necesidad y autorización:
+
+- función interna y estado de disponibilidad;
+- identidad mínima cuando sea necesario escalar nominalmente;
+- organización o servicio de proveedor y referencia de soporte;
+- destinatario cliente o externo definido por el proceso propietario;
+- contacto de autoridad o asesor estrictamente necesario.
+
+Nombre, teléfono, correo y otros datos personales se resuelven desde la fuente protegida vigente. La experiencia no los copia a una plantilla general para facilitar uso posterior.
+
+---
+
+#### 35. Comunicación externa y coordinación
+
+Para cualquier tercero externo se conserva un propietario interno.
+
+La ficha externa muestra:
+
+```text
+contraparte
+relacion o servicio
+propietario interno
+finalidad
+hechos compartibles
+restricciones
+canal autorizado
+referencia externa
+respuesta / receipt
+impacto sobre continuidad
+siguiente coordinacion
+```
+
+Reglas:
+
+- proveedor no dirige el incidente;
+- proveedor no valida recuperación empresarial;
+- proveedor no acepta riesgo en nombre de Vento;
+- estado de proveedor no equivale a estado del proceso;
+- falta de respuesta externa puede escalar cuando amenaza objetivos, sin inventar SLA;
+- coordinación externa no amplía acceso a secretos ni evidencia.
+
+---
+
+#### 36. Incidente real, ejercicio y simulación
+
+La experiencia distingue de forma inequívoca:
+
+- incidente real;
+- ejercicio;
+- simulación técnica;
+- demostración o entorno no productivo cuando aplique.
+
+En ejercicio, toda plantilla y pantalla presenta marca de contexto no productivo. La emisión externa real permanece bloqueada salvo que el ejercicio tenga una comunicación real expresamente autorizada por su propietario y alcance; esta tarea no concede esa autorización.
+
+---
+
+#### 37. Responsive y accesibilidad
+
+**Escritorio:** composición y previsualización pueden mostrarse lado a lado; seguimiento por audiencia y canal usa detalle progresivo.
+
+**Tablet:** mantiene contexto, audiencia, acción y aprobación visibles; los metadatos secundarios pasan a panel de detalle.
+
+**Móvil:** prioriza incidente, clase, audiencia, hechos, acción requerida, bloqueo, confirmación y siguiente hito; evita tablas comprimidas.
+
+Obligaciones comunes:
+
+- navegación completa por teclado;
+- foco visible;
+- etiquetas semánticas;
+- estado comunicado con texto además de color;
+- versión y fecha legibles;
+- no depender de animación para indicar entrega o escalamiento;
+- formularios con errores asociados al campo y acción segura;
+- previsualización accesible del contenido por canal;
+- zoom sin pérdida de la acción principal ni de advertencias de divulgación.
+
+---
+
+#### 38. Casos deterministas
+
+| Escenario                                                       | Presentación y acción segura                                                               |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| mensaje técnico preparado sin aprobación requerida              | puede avanzar a emisión si actor, audiencia, canal y contenido están autorizados           |
+| mensaje externo con compromiso material pendiente de validación | emisión bloqueada; muestra función que debe validar el compromiso                          |
+| proveedor acepta un ticket                                      | `DELIVERY_ACCEPTED` o receipt externo; no proceso recuperado                               |
+| push aceptado por transportista                                 | entrega técnica aceptada; lectura pendiente/no demostrada                                  |
+| correo con señal de apertura externa                            | no se eleva a lectura empresarial autoritativa                                             |
+| usuario autenticado abre la ocurrencia                          | `READ` para esa identidad y versión cuando el contrato lo permita                          |
+| usuario pulsa acuse explícito                                   | `ACKNOWLEDGED`; no ejecuta la acción empresarial pendiente                                 |
+| proceso registra la acción requerida                            | `PROCESS_EFFECT`; la atención puede quedar satisfecha según contrato                       |
+| timeout después de iniciar envío                                | `DELIVERY_UNKNOWN`; reconciliar antes de reintento ciego                                   |
+| canal primario bloqueado, alterno acreditado                    | permite usar alterno con misma audiencia/autoridad y conserva intento previo               |
+| canal primario bloqueado, alterno no demostrado                 | bloquea envío alternativo inventado y escala la brecha                                     |
+| destinatario no resoluble                                       | no envía ni amplía audiencia; muestra propietario de resolución                            |
+| trabajador cambia de responsabilidad                            | no transfiere lectura/acuses del responsable anterior                                      |
+| una proyección tiene información sensible incompatible con push | push se minimiza o queda no elegible; contenido completo permanece en superficie protegida |
+| ETA técnica cambia                                              | nueva versión conserva fuente y supuestos; no reescribe el mensaje anterior                |
+| causa preliminar cambia                                         | corrección explícita; nunca se presenta la hipótesis anterior como confirmada              |
+| mensaje cliente sin plazo confirmado                            | comunica incertidumbre y condición de siguiente actualización; no inventa fecha            |
+| proveedor informa servicio restablecido                         | actualización externa favorable; Vento mantiene validación propia pendiente                |
+| mensaje de cierre comunicacional enviado                        | finaliza la necesidad de ese mensaje; no cierra incidente                                  |
+| dos audiencias requieren distinto detalle                       | proyecciones distintas sobre el mismo núcleo factual sin contradicción material            |
+| confirmación pendiente alcanza condición de escalamiento        | crea seguimiento hacia responsabilidad autorizada; no hace broadcast                       |
+| `DELIVERY_EXHAUSTED`                                            | muestra agotamiento técnico y siguiente coordinación; no afirma fracaso empresarial        |
+| versión corregida sustituye a la anterior                       | anterior permanece histórica; nueva versión se vuelve la vigente para futuras proyecciones |
+| simulación                                                      | marca no productiva persistente y prohibición de inferir autoridad real                    |
+
+---
+
+#### 39. Handoffs y brechas de implementación
+
+| Materia                                          | Estado documental                      | Propietario / tarea                                            | Condición de salida                                               |
+| ------------------------------------------------ | -------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| implementación real de canales                   | `PENDIENTE_DE_EVIDENCIA`               | servicio transversal de notificaciones y paquetes propietarios | canal materializado, probado y autorizado por audiencia/finalidad |
+| directorio y contactos vigentes                  | `PENDIENTE_DE_EVIDENCIA` por instancia | `CONT-AUTH-003` y fuentes organizacionales propietarias        | contacto resoluble, vigente y protegido en ejercicio autorizado   |
+| persistencia de comunicaciones de continuidad    | `PENDIENTE_DE_EVIDENCIA`               | paquete de implementación propietario de `VPROC-0062`          | mensaje, versión, audiencia, autoridad y evidencia persistidos    |
+| receipts y métricas de entrega                   | `PENDIENTE_DE_EVIDENCIA`               | `NOTIFY-ARC-010` y paquete técnico                             | telemetría de entrega correlacionable sin confundir lectura       |
+| lectura y acuse por destinatario                 | `PENDIENTE_DE_EVIDENCIA`               | `NOTIFY-ARC-007` y consumidores                                | estado por identidad/versión implementado y probado donde aplique |
+| reintentos y reconciliación de entrega           | `PENDIENTE_DE_EVIDENCIA`               | `NOTIFY-ARC-008` y adaptadores                                 | resultado incierto tratado sin duplicación y con evidencia        |
+| contenido sensible y previsualizaciones          | `PENDIENTE_DE_EVIDENCIA`               | `NOTIFY-ARC-009`, gobierno de información y consumidores       | minimización aplicada y validada por canal                        |
+| autoridad real de preparación/aprobación/emisión | `PENDIENTE_DE_EVIDENCIA`               | `CONT-AUTH-001` y paquete de autorización                      | decisiones efectivas verificadas en contexto y auditables         |
+| comunicación externa formal                      | `PENDIENTE_DE_EVIDENCIA`               | dominio propietario de la relación externa                     | obligación, destinatario, canal y evidencia formal demostrados    |
+| pruebas de crisis y canales degradados           | `PENDIENTE_DE_EVIDENCIA`               | `CONT-UX-007`, `CONT-DOM-014` y BLOQUE U                       | ejercicio ejecutado con resultados, fallos y acciones registradas |
+
+No queda una brecha identificada por esta tarea sin propietario y condición de salida.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa en experiencia de usuario reglas ya protegidas sobre comunicación de incidentes, autoridad de preparación/aprobación/emisión, clasificación de audiencia, canales, entrega, lectura, acuse, escalamiento, privacidad, errores, contingencia y trazabilidad. Las siete clases y los quince campos ya existen en el contrato de continuidad; los estados de entrega, lectura, confirmación, reintento y privacidad ya existen en el servicio transversal de notificaciones. No se introduce una conducta ejecutable nueva ni se modifica el significado, estado o cobertura de un requisito vigente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 40. Criterios de aceptación
+
+1. `CONT-UX-005` permanece como tarea anterior aprobada.
+2. `CONT-UX-007` permanece como siguiente tarea reservada.
+3. La tarea permanece exclusivamente documental dentro de `CONDITIONAL_DESIGN_ARTIFACTS`.
+4. No se ejecutan comunicaciones reales.
+5. No se crea ni modifica código, DDL, DML, migraciones, RLS, RPC, Edge Functions, datos o configuración Supabase.
+6. No se crean contactos nominales, teléfonos, correos, tokens, cuentas o proveedores.
+7. No se modifica ninguna política de notificación existente.
+8. Se materializan exactamente siete clases de comunicación.
+9. Las siete clases conservan los nombres y propósitos canónicos heredados.
+10. Se materializan exactamente siete plantillas base, una por clase.
+11. Cada plantilla conserva contexto del incidente.
+12. Cada plantilla distingue hechos confirmados de incertidumbre.
+13. Cada plantilla permite expresar acción requerida o información necesaria.
+14. Cada plantilla permite declarar próxima actualización o condición.
+15. Cada plantilla conserva autoridad de preparación/emisión aplicable.
+16. La plantilla técnica no presenta health técnico como recuperación empresarial.
+17. La plantilla técnica no expone secretos ni credenciales.
+18. La plantilla operativa muestra qué continúa, qué se detiene y qué acción corresponde.
+19. La plantilla operativa no crea un workaround no autorizado.
+20. La plantilla ejecutiva separa información de decisión requerida.
+21. La plantilla ejecutiva no presenta recomendación como aprobación.
+22. La plantilla ejecutiva no presenta aprobación como ejecución.
+23. La plantilla laboral minimiza datos personales y laborales.
+24. La plantilla laboral no convierte acuse en aceptación laboral.
+25. La plantilla cliente no promete causa no confirmada.
+26. La plantilla cliente no promete alternativa no acreditada.
+27. La plantilla cliente no convierte ETA técnica en compromiso empresarial.
+28. La plantilla proveedor conserva propietario interno.
+29. La plantilla proveedor no permite que el tercero valide continuidad de Vento.
+30. La plantilla de autoridad/tercero regulado exige obligación y función competente resolubles.
+31. La plantilla formal no usa un canal informal como sustituto sin autoridad.
+32. Toda comunicación material puede resolver los quince campos mínimos heredados.
+33. La referencia al incidente se conserva en cada comunicación material.
+34. La clase de comunicación se conserva explícitamente.
+35. Severidad y alcance se muestran como contexto y no como permiso.
+36. La audiencia exacta debe ser resoluble antes de emitir cuando sea necesaria.
+37. El emisor funcional se distingue de la identidad técnica del canal.
+38. El aprobador/verificador se muestra cuando la regla lo exige.
+39. Los hechos confirmados conservan fuente suficiente.
+40. Las incertidumbres no se presentan como hechos.
+41. La acción requerida permanece separada del contenido informativo.
+42. Las restricciones de divulgación se muestran antes de emitir.
+43. Canal principal y alterno se resuelven por referencia autorizada.
+44. La confirmación requerida se define por intención y contrato propietario.
+45. Cada seguimiento declara próxima actualización o condición.
+46. Toda corrección conserva referencia a la versión anterior.
+47. Versión, timestamp y evidencia de emisión/entrega permanecen trazables.
+48. Clase de comunicación y canal permanecen conceptos distintos.
+49. Canal y audiencia permanecen conceptos distintos.
+50. Audiencia y autoridad permanecen conceptos distintos.
+51. Preparar y aprobar permanecen actos distintos.
+52. Aprobar y emitir permanecen actos distintos.
+53. Emitir y entregar técnicamente permanecen actos distintos.
+54. Entrega técnica y lectura permanecen actos distintos.
+55. Lectura y acuse permanecen actos distintos.
+56. Acuse y efecto empresarial permanecen actos distintos.
+57. Escalamiento no se presenta como broadcast.
+58. Corrección no borra historia.
+59. ETA técnica no se presenta automáticamente como compromiso empresarial.
+60. Estado de proveedor no se presenta como estado del proceso Vento.
+61. Mensaje de cierre no se presenta como cierre del incidente.
+62. La necesidad de comunicación se resuelve antes de seleccionar plantilla.
+63. La clase se resuelve antes del canal.
+64. La audiencia se resuelve antes del endpoint.
+65. La sensibilidad se evalúa antes de previsualizar canales externos.
+66. Un canal observado en AS-IS no se promueve automáticamente a canal oficial de continuidad.
+67. La existencia de correo no autoriza correo para toda comunicación.
+68. La existencia de push no autoriza push para todo contenido.
+69. La existencia de mensajería externa no autoriza compartir datos sensibles.
+70. La existencia de teléfono o llamada no crea un contacto oficial.
+71. Un canal alterno solo se ofrece cuando está acreditado y autorizado.
+72. Si no existe canal alterno, la interfaz registra el bloqueo y escala sin inventarlo.
+73. El fallo de un canal no amplía audiencia.
+74. Cambiar de canal no modifica el contenido autorizado.
+75. AURA no se presenta como canal operativo oficial mientras esté diferida.
+76. Los endpoints reales se resuelven desde fuentes protegidas.
+77. `DELIVERY_PENDING` no se presenta como envío iniciado.
+78. `DELIVERY_ATTEMPTING` no se presenta como entrega aceptada.
+79. `DELIVERY_ACCEPTED` no se presenta como lectura.
+80. `DELIVERY_CONFIRMED` no se presenta como lectura.
+81. `DELIVERY_UNKNOWN` no se convierte en éxito por ausencia de error.
+82. `DELIVERY_RETRY_WAIT` muestra la recuperación técnica sin reiniciar vigencia empresarial.
+83. `DELIVERY_BLOCKED` no habilita broadcast.
+84. `DELIVERY_EXHAUSTED` no se presenta como fracaso del proceso empresarial.
+85. `DELIVERY_CANCELLED` detiene nuevos intentos de la proyección afectada.
+86. `DELIVERY_SUPERSEDED` conserva la versión sustituida en historia.
+87. Un timeout posterior al inicio del envío puede conservar resultado incierto.
+88. Un resultado incierto se reconcilia antes de duplicar un envío cuando sea necesario.
+89. Un endpoint permanentemente inválido no se reintenta de forma indefinida.
+90. Un destinatario no resoluble no se reemplaza por una audiencia más amplia.
+91. Un error de configuración no se atribuye al destinatario.
+92. Un canal no disponible conserva la necesidad mientras siga vigente.
+93. Una necesidad expirada no sigue reintentándose.
+94. `TRANSPORT_ACCEPTED` no afirma lectura.
+95. `PRESENTED` no afirma lectura por sí solo.
+96. `READ` se registra únicamente para la identidad y versión aplicables.
+97. `ACKNOWLEDGED` implica conocimiento, no permiso ni efecto empresarial.
+98. `PROCESS_EFFECT` proviene del proceso propietario.
+99. `ESCALATED` no cierra por sí solo la obligación.
+100. Un `2xx` no demuestra lectura humana.
+101. Un receipt de push no demuestra lectura humana.
+102. Una respuesta de correo aceptado no demuestra lectura humana.
+103. Un badge visible no demuestra lectura humana.
+104. Un permiso de notificaciones concedido no demuestra lectura humana.
+105. Un tap solo puede producir lectura después de autenticar y cargar el contexto autorizado cuando aplique.
+106. Una señal de apertura externa no se usa como lectura empresarial autoritativa.
+107. Una comunicación leída puede permanecer pendiente.
+108. Una acción empresarial válida puede cerrar la necesidad sin lectura separada cuando el contrato así lo define.
+109. La lectura de una identidad no se propaga a otra.
+110. El acuse de una identidad no se propaga a otra.
+111. Cambiar de responsable no transfiere estados humanos previos.
+112. Una versión sustituida deja de exigir nuevas confirmaciones salvo regla propietaria expresa.
+113. La intención informativa no exige acuse artificial.
+114. El conocimiento obligatorio puede usar lectura o acuse según contrato.
+115. Una acción requerida exige el efecto propietario y no un botón cosmético.
+116. Una decisión protegida exige autoridad efectiva y no la comunicación misma.
+117. Un receipt de proveedor se mantiene separado de la aceptación interna.
+118. Una comunicación formal conserva evidencia de presentación/recepción sin inventar aceptación.
+119. El escalamiento por falla de entrega se distingue del escalamiento por falta de atención.
+120. La falta de lectura se escala solo cuando la regla exige conocimiento y se cumple la condición de escalamiento.
+121. La falta de acuse se escala solo cuando el acuse era obligatorio.
+122. La falta de acción empresarial se escala por la cadena propietaria del proceso.
+123. Un riesgo a objetivos de continuidad escala hacia la autoridad aplicable sin ampliar datos innecesarios.
+124. El canal alterno no sustituye una escalada de responsabilidad.
+125. El escalamiento conserva al destinatario/responsabilidad original en historia.
+126. El proveedor externo no se convierte en director del incidente.
+127. Una falta de respuesta del proveedor puede escalar sin inventar un SLA.
+128. Una decisión protegida pendiente no se redirige a quien tenga un canal disponible.
+129. El escalamiento no amplía permisos de información.
+130. Cada escalamiento conserva motivo, condición, función destino, tiempo y evidencia.
+131. Las proyecciones para audiencias diferentes parten de un núcleo común de hechos.
+132. Minimizar detalle no permite modificar el hecho confirmado.
+133. Una causa omitida por seguridad no se reemplaza por una causa inventada.
+134. Una ETA omitida por falta de aprobación no se reemplaza por un plazo diferente.
+135. Un cambio de hecho común identifica proyecciones que pueden requerir actualización.
+136. Un mensaje emitido no se edita silenciosamente.
+137. Una corrección crea nueva versión relacionada.
+138. La versión anterior conserva receipts, lecturas y acuses históricos.
+139. La corrección explica qué cambió y por qué.
+140. Una corrección material puede exigir nueva confirmación según la regla propietaria.
+141. No existe una frecuencia universal de actualización de crisis.
+142. Cada seguimiento declara próximo momento o condición.
+143. Un próximo momento no se inventa cuando la fuente propietaria no lo define.
+144. Una actualización vencida permanece visible y puede escalar cuando afecta decisión u obligación.
+145. Las previsualizaciones externas minimizan contenido sensible.
+146. Los secretos nunca se incluyen en plantillas o vistas previas ordinarias.
+147. Los contactos completos no se duplican en plantillas generales.
+148. Las listas de destinatarios se resuelven desde fuentes propietarias vigentes.
+149. Los conteos de comunicaciones respetan el alcance autorizado.
+150. Un contador no revela comunicaciones fuera del alcance.
+151. La vista móvil conserva contexto, clase, audiencia, bloqueo, confirmación y siguiente hito.
+152. Los estados no dependen únicamente de color.
+153. La composición es navegable por teclado.
+154. La previsualización por canal es accesible.
+155. El foco permanece visible durante composición, revisión y escalamiento.
+156. La pantalla distingue incidente real, ejercicio y simulación.
+157. Una simulación no concede autoridad productiva.
+158. Una simulación no envía comunicaciones externas reales por defecto.
+159. Toda brecha identificada conserva propietario y condición de salida.
+160. La tarea no genera ni modifica requisitos de prueba.
+161. La ausencia de cambios de requisitos evita generar una copia innecesaria del registro canónico.
+162. La tarea no declara canales actuales como probados para crisis por existir implementados en otro contexto.
+163. La tarea no declara contactos actuales como vigentes sin fuente protegida.
+164. La tarea no declara lectura, acuse o efecto empresarial sin evidencia suficiente.
+165. La tarea no declara coordinación externa implementada por definir su experiencia.
+166. La tarea no declara readiness operativo.
+167. La tarea no inicia `CONT-UX-007`.
+
+---
+
+#### 41. Balance de cierre
+
+| Control                              |   Resultado |
+| ------------------------------------ | ----------: |
+| clases de comunicación               |   **7 / 7** |
+| plantillas base                      |   **7 / 7** |
+| campos comunes                       | **15 / 15** |
+| estados `DELIVERY_*` reutilizados    | **10 / 10** |
+| evidencias de atención diferenciadas |   **6 / 6** |
+| contextos UX                         |   **3 / 3** |
+| escenarios deterministas             | **24 / 24** |
+| criterios de aceptación              |     **167** |
+| comunicaciones reales emitidas       |       **0** |
+| contactos inventados                 |       **0** |
+| canales físicos creados              |       **0** |
+| cambios Supabase                     |       **0** |
+| cambios TREQ                         |       **0** |
+
+---
+
+#### 42. Límites de la tarea
+
+Esta tarea no:
+
+- envía mensajes, push, correos, llamadas o comunicaciones externas;
+- crea un proveedor de mensajería;
+- crea cuentas, tokens, API keys, números telefónicos, dominios o buzones;
+- crea o modifica canales físicos;
+- configura Expo, correo, navegador, WhatsApp, ManyChat u otro tercero;
+- crea un directorio de contactos;
+- publica datos de clientes, trabajadores, proveedores o autoridades;
+- crea una tabla, bucket, cola, job, trigger o Edge Function;
+- modifica RLS, grants, RPC o permisos;
+- modifica código, DDL, DML, migraciones, datos o Supabase;
+- aprueba una decisión ejecutiva por emitir una comunicación;
+- declara leído un mensaje por receipt técnico;
+- declara atendida una obligación por un acuse cuando el proceso exige un efecto;
+- declara recuperado un proceso porque un proveedor confirme su servicio;
+- declara canal alterno si no existe evidencia de acreditación;
+- convierte AURA en canal de continuidad;
+- cambia severidad, BIA, MBCO, RTO, RPO, MTPD o prioridad;
+- crea o modifica requisitos de prueba;
+- inicia `CONT-UX-007`.
+
+---
+
+#### 43. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`CONT-UX-005 — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes`
+
+TAREA ACTUAL APROBADA
+`CONT-UX-006 — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento`
+
+SIGUIENTE TAREA RESERVADA
+`CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness`
+
+
 ### [ ] CONT-UX-007 — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness
