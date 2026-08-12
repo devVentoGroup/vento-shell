@@ -68,7 +68,7 @@ export function validateE3TransitionClosureSources({
     && /^PRIORITY-NEXO-REMISSIONS-001-STAGE-\d{3}$/u.test(active.sequence_id ?? '')
     && (
       active.previous_task_id === 'SHELL-PKG-008'
-      || /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?:::[A-Z0-9-]+)?$/u.test(
+      || /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?:::[A-Z0-9_-]+)?$/u.test(
         active.previous_task_id ?? '',
       )
     );

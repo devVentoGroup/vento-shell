@@ -92,6 +92,19 @@ test('acepta activar el carril NEXO después de completar sus prerrequisitos E3/
   assert.equal(result.handoffTask, 'SHELL-AUD-001');
 });
 
+test('acepta avanzar el carril después de aprobar un control virtual con guiones bajos', () => {
+  const sources = validSources();
+  sources.activeSequence = JSON.stringify({
+    generated_from: 'execution-route.json',
+    route_id: 'NEXO-REMISSIONS-001',
+    sequence_id: 'PRIORITY-NEXO-REMISSIONS-001-STAGE-017',
+    previous_task_id: 'NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE',
+    handoff_task_id: 'READY-GATE-001::NEXO-REMISSIONS-001',
+  });
+  const result = validateE3TransitionClosureSources(sources);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
 test('rechaza una secuencia ajena que no demuestre avance desde E3 hacia H', () => {
   const sources = validSources();
   sources.activeSequence = JSON.stringify({

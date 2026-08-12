@@ -19,9 +19,14 @@
       ]
     },
     "CONDITIONAL_IMPLEMENTATION_SCOPE": {
-      "decision_state": "NO INICIADA",
-      "applicable_groups": [],
-      "not_applicable_groups": []
+      "decision_state": "APROBADA",
+      "applicable_groups": [
+        "PRODUCTION_LINK_IMPLEMENTATION",
+        "PHYSICAL_NORMALIZATION_CONDITIONAL"
+      ],
+      "not_applicable_groups": [
+        "EXTERNAL_INTEGRATION_CONDITIONAL"
+      ]
     }
   },
   "stage_controls": {

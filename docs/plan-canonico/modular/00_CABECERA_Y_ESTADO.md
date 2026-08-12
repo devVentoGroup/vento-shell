@@ -28,21 +28,21 @@
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal** |
-| Tarea actual | **NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE** |
+| Última tarea aprobada | **NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE** |
+| Tarea actual | **DELIV-PKG-001::NEXO-REMISSIONS-001 — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-001::NEXO-REMISSIONS-001 — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 16: CONDITIONAL_IMPLEMENTATION_SCOPE** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 1 aprobadas; NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE pendiente** |
+| Siguiente tarea | **DELIV-PKG-002::NEXO-REMISSIONS-001 — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001]** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 17: PACKAGE_DEFINITION** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 25 aprobadas; DELIV-PKG-001::NEXO-REMISSIONS-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `CONT-INT-004` — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal |
-| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] |
+| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE |
+| Tarea actual | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-002::NEXO-REMISSIONS-001` — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001] |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 1 APROBADAS — ACTUAL NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 25 APROBADAS — ACTUAL DELIV-PKG-001::NEXO-REMISSIONS-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CONT-INT-004 — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
-        ↓
-TAREA ACTUAL
 NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-001::NEXO-REMISSIONS-001 — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001]
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-002::NEXO-REMISSIONS-001 — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001]
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 1 tareas aprobadas
+CARRIL NEXO — 0 de 25 tareas aprobadas
 ```

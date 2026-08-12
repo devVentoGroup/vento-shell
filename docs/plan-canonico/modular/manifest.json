@@ -5,7 +5,8 @@
   "original_source": "docs/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO.md",
   "backup_source": "docs/plan-canonico/modular/respaldo/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_ORIGINAL.md",
   "auxiliary_files": [
-    "bloques/E1_DESCUBRIMIENTO_OPERATIVO/CODE-AUD-016_PROPUESTA_PARA_REEMPLAZAR.md"
+    "bloques/E1_DESCUBRIMIENTO_OPERATIVO/CODE-AUD-016_PROPUESTA_PARA_REEMPLAZAR.md",
+    "bloques/K_NEXO/NEXO-REMISSIONS-001_CONDITIONAL_IMPLEMENTATION_SCOPE_APROBADO.md"
   ],
   "original_sha256": "fd7c12626887d7a3bdff11e2d03dfba9061cbaaebcff72ac182824fdb4b24316",
   "compiled_output": "docs/plan-canonico/modular/.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md",

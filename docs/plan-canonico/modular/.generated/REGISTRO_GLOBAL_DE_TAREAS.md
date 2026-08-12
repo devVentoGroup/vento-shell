@@ -20,9 +20,9 @@
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CONT-INT-004` — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal | ✅ APROBADA |
-| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-001::NEXO-REMISSIONS-001` — Crear identificador estable para cada paquete de implementación [NEXO-REMISSIONS-001] | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-002::NEXO-REMISSIONS-001` — Vincular el paquete con capability_id, process_id y gap_id [NEXO-REMISSIONS-001] | ⬜ NO INICIADA |
 
 ## Registro completo
 
