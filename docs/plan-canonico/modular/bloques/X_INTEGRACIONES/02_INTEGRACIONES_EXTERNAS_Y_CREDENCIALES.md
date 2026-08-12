@@ -7191,7 +7191,874 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-013 — Definir mapeo de identificadores externos y canónicos`
 
 
-### [ ] INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
+### ✅ INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo` — APROBADA
+**Tarea siguiente:** `INT-EXT-014 — Definir conservación controlada del payload original` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del mapeo entre identificadores externos, identificadores canónicos VENTO, referencias técnicas, claves de correlación e identificadores propagados para las integraciones `EXT-SYS-001` a `EXT-SYS-021`, preservando identidad, contrato I/O, autenticidad e idempotencia ya aprobados, sin modificar código, Supabase, proveedores, datos, endpoints ni configuración remota
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, Edge Functions, contratos ejecutables, secretos, credenciales, cuentas externas, endpoints, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VENTO relaciona identificadores emitidos, administrados o utilizados por sistemas externos con los recursos canónicos internos sin asumir equivalencia por coincidencia de texto, UUID, correo, teléfono, nombre, coordenadas, alias, referencia, token o posición dentro de un payload.
+
+La tarea separa obligatoriamente:
+
+```text
+IDENTIFICADOR EXTERNO
+≠
+IDENTIFICADOR CANÓNICO VENTO
+≠
+IDENTIFICADOR CANÓNICO PROPAGADO AL TERCERO
+≠
+REFERENCIA TÉCNICA DE ENRUTAMIENTO
+≠
+CLAVE IDEMPOTENTE
+≠
+ATRIBUTO DE BÚSQUEDA O PRESENTACIÓN
+≠
+CREDENCIAL
+```
+
+El mapeo permite determinar qué recurso VENTO corresponde a una referencia externa cuando esa relación existe y está acreditada. No concede autorización empresarial, no sustituye autenticidad, no deduplica por sí solo una operación y no convierte al proveedor en fuente de verdad interna.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-ID-MAPPING-CONTRACT-001`, contrato común de identidad externa, identidad canónica y estado de resolución.
+2. `VENTO-EXTERNAL-ID-MAPPING-MATRIX-001`, decisión materializada para las veintiuna identidades externas heredadas.
+
+Balance:
+
+| Control                                                       |    Resultado |
+| ------------------------------------------------------------- | -----------: |
+| Identidades esperadas                                         |       **21** |
+| Identidades materializadas                                    | **21 de 21** |
+| Identificadores `EXT-SYS-*` únicos                            |       **21** |
+| Identidades faltantes                                         |        **0** |
+| Identidades duplicadas                                        |        **0** |
+| `MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`                      |        **4** |
+| `MAPEO_CANONICO_REQUERIDO_SIN_VINCULO_PERSISTENTE_ACREDITADO` |        **1** |
+| `REFERENCIA_EXTERNA_TRANSITORIA_SIN_MAPEO_CANONICO`           |        **1** |
+| `SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO`             |        **2** |
+| `REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL`              |        **3** |
+| `MODELO_DE_IDENTIFICADOR_SIN_BINDING_REMOTO`                  |        **1** |
+| `NO_APLICA_SIN_BINDING`                                       |        **7** |
+| `BLOQUEADA_SIN_BINDING`                                       |        **2** |
+| Cambios físicos                                               |        **0** |
+| Requisitos de prueba creados o modificados                    |        **0** |
+
+Reconciliación:
+
+```text
+4 + 1 + 1 + 2 + 3 + 1 + 7 + 2 = 21
+```
+
+La clasificación describe el estado de resolución documental y la evidencia técnica actual. No declara conformidad física completa de ningún registro compartido de mapeo.
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `VENTO-EXTERNAL-SYSTEM-INVENTORY-001` y sus veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- la separación entre actor humano, `IntegrationPrincipal`, cuenta externa, credencial, endpoint y autoridad empresarial aprobada en `INT-EXT-002` a `INT-EXT-008`;
+- `VENTO-EXTERNAL-IO-CONTRACT-001` y su regla de que un campo externo permanece externo hasta que exista correspondencia acreditada;
+- las estrategias de transporte aprobadas en `INT-EXT-010`;
+- los perfiles de autenticidad, origen, timestamp y replay de `INT-EXT-011`;
+- `VENTO-EXTERNAL-IDEMPOTENCY-CONTRACT-001` de `INT-EXT-012`, incluida la prohibición de usar una clave idempotente como sustituto del mapeo del recurso;
+- la cobertura vigente que exige coherencia de ambiente y contrato, separación de identidades, correlación, equivalencia demostrable antes de mapear material legacy y conservación del identificador externo antes de producir un hecho interno;
+- `SHELL-CON-022` como destino del contrato compartido consumible de mapeo de identificadores externos;
+- `SHELL-CON-019` como destino del contrato compartido de evento externo recibido;
+- `SHELL-CON-023` como contrato separado de idempotencia y conciliación;
+- la propiedad de cada dominio VENTO sobre sus identificadores canónicos.
+
+Ninguna relación definida aquí altera el dueño del hecho, la autoridad empresarial ni los contratos de origen.
+
+---
+
+#### 4. Vocabulario canónico de identificadores
+
+`VENTO-EXTERNAL-ID-MAPPING-CONTRACT-001` distingue las siguientes clases:
+
+| Clase                      | Significado                                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXTERNAL_OBJECT_ID`       | identificador emitido o administrado por el sistema externo para un objeto, evento, transacción, dispositivo o recurso de su namespace                  |
+| `CANONICAL_VENTO_ID`       | identificador propietario de VENTO para el recurso interno canónico                                                                                     |
+| `PROPAGATED_CANONICAL_ID`  | identificador canónico VENTO que se envía deliberadamente al tercero y puede regresar posteriormente dentro de un contrato aprobado                     |
+| `EXTERNAL_ROUTING_REF`     | referencia externa usada para alcanzar un destino o recurso técnico, sin equivaler por ello a la identidad empresarial del destino                      |
+| `IDEMPOTENCY_REF`          | referencia estable que identifica una operación o generación; protege repetición pero no constituye por sí sola identidad del recurso                   |
+| `CORRELATION_REF`          | referencia que vincula intercambios o artefactos sin declarar identidad entre los objetos enlazados                                                     |
+| `DISPLAY_SEARCH_ATTRIBUTE` | correo, teléfono, nombre, dirección, coordenadas, etiqueta, descripción u otro atributo utilizable para búsqueda o presentación, nunca equivalencia     |
+| `TECHNICAL_NAMESPACE_ID`   | identificador técnico de proyecto, clase, pass type, aplicación, tenant, bridge o namespace que delimita una frontera pero no es un recurso empresarial |
+| `EXTERNAL_ALIAS`           | alias externo que puede relacionarse con una identidad externa principal, pero no autoriza fusión automática de identidades VENTO                       |
+| `MAPPING_RECORD`           | relación versionada y trazable entre una referencia externa tipada y un recurso canónico VENTO cuando la equivalencia o asociación ha sido acreditada   |
+
+La misma cadena de caracteres puede aparecer en más de una clase sin que las clases se fusionen. El significado se determina por contrato, namespace, ambiente, emisor y relación, no por formato.
+
+---
+
+#### 5. `VENTO-EXTERNAL-ID-MAPPING-CONTRACT-001`
+
+Toda correspondencia material entre un identificador externo y un recurso canónico deberá poder representar, como mínimo:
+
+```text
+EXTERNAL_SYSTEM_ID
++
+AMBIENTE
++
+SUPERFICIE / CONTRATO
++
+NAMESPACE EXTERNO
++
+TIPO DE IDENTIFICADOR EXTERNO
++
+VALOR EXTERNO NORMALIZADO
++
+TIPO DE RELACIÓN
++
+TIPO DE RECURSO CANÓNICO
++
+CANONICAL_VENTO_ID
++
+ESTADO DE MAPEO
++
+VERSIÓN DE CONTRATO
++
+EVIDENCIA / PROCEDENCIA
+→ RELACIÓN TRAZABLE
+```
+
+Campos conceptuales mínimos:
+
+- `external_system_id`;
+- `environment`;
+- `surface` o contrato que produjo/consume el identificador;
+- `external_namespace`;
+- `external_id_kind`;
+- `external_id_value` normalizado sin reinterpretar su significado;
+- `canonical_resource_type`;
+- `canonical_id`;
+- `relation_kind`;
+- `mapping_state`;
+- `contract_version`;
+- referencia de evidencia o procedencia;
+- `valid_from` cuando la vigencia sea material;
+- `retired_at` cuando una relación haya sido sustituida o retirada;
+- referencia de predecesor/sucesor cuando una relación cambie de forma controlada;
+- correlación con el evento, operación o intercambio que acreditó la relación cuando corresponda.
+
+La definición no prescribe tabla, índice, RPC, base de datos o tecnología física.
+
+---
+
+#### 6. Tipos de relación permitidos
+
+La relación entre una referencia externa y VENTO deberá declarar explícitamente uno de estos significados o un sucesor versionado igualmente inequívoco:
+
+| Tipo de relación                | Semántica                                                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `EXTERNAL_TO_CANONICAL`         | un identificador de objeto del proveedor se asocia con un recurso canónico VENTO                                               |
+| `CANONICAL_PROPAGATED_EXTERNAL` | VENTO entregó su ID canónico al tercero y el tercero lo devolvió como correlación; el ID sigue siendo de VENTO                 |
+| `EXTERNAL_ROUTE_TO_OWNER`       | una referencia de destino externa se vincula con el registro técnico y propietario canónico que la administra                  |
+| `EXTERNAL_EVENT_TO_RECEIPT`     | un identificador de evento externo se vincula con el registro interno de recepción, no con el hecho empresarial como identidad |
+| `EXTERNAL_NAMESPACE_BINDING`    | un namespace, class, pass type, project o identificador técnico se vincula con una frontera VENTO sin equivalencia empresarial |
+| `CORRELATION_ONLY`              | dos referencias se relacionan para reconstrucción o búsqueda, pero no representan el mismo objeto                              |
+| `NO_EQUIVALENCE`                | la referencia se conserva deliberadamente sin declarar identidad canónica                                                      |
+
+Una relación `CORRELATION_ONLY` no puede reutilizarse como `EXTERNAL_TO_CANONICAL` sin una nueva decisión acreditada.
+
+---
+
+#### 7. Estados de resolución
+
+Toda relación o intento de resolución queda en uno de estos estados conceptuales:
+
+| Estado               | Significado                                                                                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RESOLVED`           | existe una relación única y acreditada para el namespace, ambiente y contrato aplicables                                                     |
+| `PARTIALLY_RESOLVED` | existen relaciones acreditadas para una parte de los identificadores de la superficie, pero otras permanecen no resueltas o sin persistencia |
+| `UNRESOLVED`         | existe referencia externa, pero no hay evidencia suficiente para vincularla a un recurso canónico                                            |
+| `AMBIGUOUS`          | más de un candidato canónico cumple parcialmente los criterios y no existe evidencia para elegir uno                                         |
+| `CONFLICT`           | la referencia ya está vinculada de forma incompatible o la nueva evidencia contradice una relación vigente                                   |
+| `RETIRED`            | una relación histórica dejó de estar activa, conservando trazabilidad                                                                        |
+| `NOT_APPLICABLE`     | el intercambio no requiere relación entre un identificador externo y un recurso canónico VENTO en el corte actual                            |
+| `BLOCKED`            | no existe proveedor, binding, namespace o contrato suficiente para materializar una decisión concreta                                        |
+
+`UNRESOLVED`, `AMBIGUOUS` y `CONFLICT` no pueden degradarse silenciosamente a `RESOLVED` mediante coincidencia de nombre o valor.
+
+---
+
+#### 8. Reglas de namespace, cardinalidad y unicidad
+
+1. El namespace mínimo de resolución incluye `external_system_id + environment + surface + external_namespace + external_id_kind`.
+2. Un identificador externo no se considera globalmente único fuera de su namespace acreditado.
+3. La misma cadena puede existir en dos proveedores, ambientes o tipos sin crear colisión canónica.
+4. Para una relación de identidad exacta, una referencia externa activa resuelve como máximo a un recurso canónico dentro de su namespace.
+5. Varias referencias externas pueden apuntar al mismo recurso canónico cuando el contrato lo permita y cada relación esté tipada, por ejemplo varios destinos técnicos de una persona o recurso.
+6. Una referencia técnica con cardinalidad naturalmente múltiple no se convierte en identidad exacta del propietario; un push token puede pertenecer a un registro de destino administrado por un trabajador sin ser el trabajador.
+7. Una relación many-to-many solo puede existir cuando el contrato propietario la defina expresamente; nunca se infiere por datos repetidos.
+8. La resolución inversa desde ID canónico hacia proveedor no se presume única si existen varios bindings o instancias.
+9. La misma referencia no cruza `DEVELOPMENT`, `STAGING` y `PRODUCTION` por conveniencia.
+10. La baja o sustitución de un identificador externo conserva historia; no se sobrescribe una relación pasada para hacer parecer que siempre apuntó al recurso nuevo.
+
+---
+
+#### 9. Prohibición de equivalencia por coincidencia
+
+No constituyen prueba suficiente de identidad o mapeo:
+
+- mismo UUID textual sin prueba de que VENTO lo propagó al tercero;
+- mismo correo;
+- mismo teléfono;
+- mismo nombre o razón social;
+- mismo `display_name`;
+- misma dirección;
+- mismas coordenadas;
+- mismo alias;
+- mismo `status`;
+- mismo monto o moneda;
+- mismo timestamp;
+- misma IP;
+- mismo nombre de producto;
+- mismo UID visible sin namespace;
+- misma referencia encontrada en otra integración;
+- parecido estructural del payload.
+
+Cuando alguno de esos atributos participe como evidencia auxiliar, la relación deberá seguir soportada por un identificador o vínculo contractual suficientemente fuerte y por el propietario del recurso.
+
+---
+
+#### 10. Identificador canónico propagado
+
+VENTO puede enviar un `CANONICAL_VENTO_ID` a un tercero para facilitar correlación. Cuando ese valor regresa, se clasifica `PROPAGATED_CANONICAL_ID`, no `EXTERNAL_OBJECT_ID`.
+
+Reglas:
+
+1. el valor debe validarse contra el tipo de recurso esperado;
+2. debe pertenecer al ambiente correcto;
+3. debe pertenecer al contrato y propietario esperados;
+4. su mera forma UUID no demuestra que haya sido emitido por VENTO;
+5. el proveedor no adquiere propiedad del ID por devolverlo;
+6. si el valor contradice otro identificador externo autenticado del mismo intercambio, la relación queda `CONFLICT` y no se elige silenciosamente uno;
+7. el ID propagado no sustituye autenticidad de la entrada;
+8. el ID propagado no sustituye autorización sobre el recurso resuelto.
+
+---
+
+#### 11. Wompi — `EXT-SYS-002`
+
+Se fijan cuatro planos distintos:
+
+##### 11.1. Transacción externa
+
+```text
+Wompi data.transaction.id
+→ EXTERNAL_OBJECT_ID
+→ payments.transactions.provider_reference
+→ payments.transactions.id como CANONICAL_VENTO_ID
+```
+
+La relación es `EXTERNAL_TO_CANONICAL` y queda scoped por proveedor y ambiente.
+
+Reglas:
+
+- un `provider_reference` no se acepta como `order_id`;
+- la unicidad de `provider_reference` se interpreta dentro del proveedor acreditado;
+- si dos transacciones canónicas reclaman el mismo identificador externo, el estado es `CONFLICT`;
+- la relación debe conservar el identificador externo aunque el estado de pago cambie.
+
+##### 11.2. Referencia de checkout
+
+```text
+Wompi reference
+↔ payments.transactions.idempotency_key
+→ CORRELATION_REF + IDEMPOTENCY_REF
+→ resolución hacia payments.transactions.id
+```
+
+La `reference` permite localizar la transacción actual, pero no se redefine como identificador canónico de orden o pago. Su función principal sigue siendo operación/correlación.
+
+##### 11.3. ID canónico propagado
+
+Cuando `data.transaction_id` o `data.transaction.metadata.transaction_id` contienen el UUID VENTO que fue propagado por el contrato:
+
+```text
+valor recibido
+→ PROPAGATED_CANONICAL_ID
+→ validar como payments.transactions.id
+```
+
+No se clasifica como ID emitido por Wompi.
+
+##### 11.4. Evento externo
+
+```text
+payload.id o data.id acreditado como evento
+→ EXTERNAL_OBJECT_ID de evento
+→ payments.webhook_events.provider_event_id
+→ payments.webhook_events.id como receipt interno
+```
+
+La relación es `EXTERNAL_EVENT_TO_RECEIPT`. El evento puede correlacionarse con una transacción, pero el event ID no se convierte en transaction ID.
+
+Estado del corte:
+
+`WOMPI_ID_MAPPING_STATE = MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`
+
+Existen relaciones estructuradas, pero la tarea no certifica un registro compartido de mapeo ni corrige las brechas de claim documentadas por `INT-EXT-012`.
+
+---
+
+#### 12. RevenueCat — `EXT-SYS-003`
+
+Se fijan cuatro familias:
+
+##### 12.1. `app_user_id`
+
+PASS configura el SDK enviando el ID del usuario VENTO como `appUserID`. Por tanto:
+
+```text
+VENTO auth user id
+→ CANONICAL_VENTO_ID
+→ se propaga a RevenueCat
+→ regresa como app_user_id
+→ PROPAGATED_CANONICAL_ID
+```
+
+La resolución válida exige verificar que el ID corresponde al usuario esperado dentro del contrato Club/PASS; no se interpreta como ID originalmente emitido por RevenueCat.
+
+##### 12.2. `product_id`
+
+`product_id` es un identificador externo de producto/store. VENTO dispone de la relación estructural, scoped por plataforma/store para evitar equivalencias por coincidencia de código:
+
+```text
+platform + store_product_id
+→ club.store_products.id
+→ club.store_products.plan_id
+→ club.plans.id
+```
+
+El contrato objetivo exige resolver por ese mapping acreditado cuando el producto determine el plan. Si la plataforma/store necesaria para desambiguar no está disponible en el contexto, el resultado permanece `UNRESOLVED`. La implementación de webhook observada no realiza esta resolución y usa un plan fijo por código.
+
+Estado:
+
+`REVENUECAT_PRODUCT_MAPPING_STATE = UNRESOLVED_EN_WEBHOOK_ACTUAL`
+
+##### 12.3. `original_transaction_id`
+
+Se conserva como `EXTERNAL_OBJECT_ID` de la transacción/suscripción del ecosistema externo. Las fuentes actuales no acreditan una columna estructurada que lo vincule de forma durable con `club.subscriptions.id`.
+
+Estado:
+
+`REVENUECAT_ORIGINAL_TRANSACTION_MAPPING_STATE = UNRESOLVED`
+
+##### 12.4. `aliases`
+
+Los aliases permanecen `EXTERNAL_ALIAS`. No autorizan fusionar dos usuarios VENTO, mover suscripción entre usuarios ni tomar correo/nombre como equivalencia.
+
+Estado consolidado:
+
+`REVENUECAT_ID_MAPPING_STATE = MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`
+
+---
+
+#### 13. Expo Push Service — `EXT-SYS-006`
+
+El push token se clasifica como `EXTERNAL_ROUTING_REF`, no como persona, empleado, sesión o credencial de proveedor.
+
+La relación observada es:
+
+```text
+Expo push token
+→ employee_push_tokens.token
+→ employee_push_tokens.id como registro técnico VENTO
+→ employee_push_tokens.employee_id como propietario canónico
+```
+
+Tipo de relación:
+
+`EXTERNAL_ROUTE_TO_OWNER`.
+
+Reglas:
+
+1. varios push tokens pueden estar asociados a un mismo trabajador;
+2. un token no sustituye `employee_id`;
+3. un token inválido puede desactivarse sin eliminar la identidad del trabajador;
+4. `announcementId` enviado en el payload es una referencia canónica/correlacional de VENTO cuando existe, no un ID emitido por Expo;
+5. la respuesta actualmente consumida no acredita persistencia de un ticket ID de proveedor para mapearlo.
+
+Estado:
+
+`EXPO_PUSH_ID_MAPPING_STATE = MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`
+
+---
+
+#### 14. Google Maps / Google Reviews — `EXT-SYS-008`
+
+`place_id` se clasifica como `EXTERNAL_OBJECT_ID` del namespace Google Places.
+
+La implementación observada lo usa para consulta de detalle y lo devuelve junto con atributos como dirección y coordenadas, pero no persiste una equivalencia con `site_id` ni con otro recurso canónico.
+
+Reglas:
+
+1. `place_id ≠ site_id`;
+2. dirección, nombre, latitud y longitud son atributos, no prueba de identidad;
+3. el campo `site_id` aceptado por el tipo de entrada actual no se utiliza para resolver ni persistir el `place_id`;
+4. una selección de lugar puede permanecer como referencia externa transitoria si el flujo no necesita una identidad canónica persistente;
+5. si un proceso propietario decide asociar durablemente un `place_id` con una sede, dirección u otro recurso VENTO, deberá existir un `MAPPING_RECORD` explícito antes de usar esa relación como identidad.
+
+Estado:
+
+`GOOGLE_PLACES_ID_MAPPING_STATE = REFERENCIA_EXTERNA_TRANSITORIA_SIN_MAPEO_CANONICO`
+
+---
+
+#### 15. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+La familia contiene identificadores con naturalezas distintas:
+
+| Identificador                   | Clase                                                                                | Relación canónica                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `serialNumber`                  | identificador del recurso de pase administrado por VENTO y expuesto mediante PassKit | resuelve el registro `wallet_passes` y su `user_id`            |
+| `passTypeIdentifier`            | `TECHNICAL_NAMESPACE_ID`                                                             | delimita el tipo de pase; no identifica al usuario             |
+| `deviceLibraryIdentifier`       | `EXTERNAL_OBJECT_ID` de dispositivo Wallet                                           | resuelve registros de dispositivo/pase; no equivale al usuario |
+| `pushToken`                     | `EXTERNAL_ROUTING_REF`                                                               | destino APNs asociado al registro técnico de dispositivo/pase  |
+| `user_id` del registro del pase | `CANONICAL_VENTO_ID`                                                                 | propietario canónico del pase                                  |
+
+Reglas:
+
+1. `serialNumber` no se sustituye por `user_id` aunque el pase pertenezca a un usuario;
+2. `deviceLibraryIdentifier` no se utiliza como ID de persona;
+3. `pushToken` no se utiliza como ID de dispositivo canónico ni como identidad de cliente;
+4. el namespace incluye `passTypeIdentifier` cuando sea necesario para evitar colisiones de serial;
+5. un cambio de push token actualiza el destino técnico, no la identidad del usuario ni del pase;
+6. las lecturas por `serialNumber` deben resolver el pase exacto antes de exponer información protegida.
+
+Estado:
+
+`PASSKIT_ID_MAPPING_STATE = MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`
+
+---
+
+#### 16. Zebra BrowserPrint — `EXT-SYS-011`
+
+BrowserPrint expone atributos de dispositivo como `uid`, nombre y tipo. El `uid` se clasifica como identificador técnico local de la superficie BrowserPrint.
+
+Contrato objetivo:
+
+```text
+BrowserPrint device.uid
++
+namespace / estación / ambiente aplicables
+→ MAPPING_RECORD
+→ identidad canónica de impresora del servicio transversal de impresión
+```
+
+Reglas:
+
+1. el nombre visible de impresora no es suficiente para resolver identidad;
+2. el modelo o tipo no es suficiente para resolver identidad;
+3. el orden de enumeración de BrowserPrint no es identidad;
+4. una impresora detectada localmente no se asigna a una sede o área por proximidad o nombre;
+5. antes de que el UID se use como binding durable de enrutamiento, debe vincularse a exactamente una identidad canónica de impresora acreditada por el inventario propietario;
+6. cambio de estación, bridge o dispositivo no puede reescribir silenciosamente la identidad canónica anterior.
+
+La evidencia actual acredita selección local por UID, pero no acredita qué identidad concreta del inventario canónico de impresoras corresponde al dispositivo detectado.
+
+Estado:
+
+`ZEBRA_ID_MAPPING_STATE = MAPEO_CANONICO_REQUERIDO_SIN_VINCULO_PERSISTENTE_ACREDITADO`
+
+El inventario y la caracterización física permanecen bajo el servicio transversal de impresión; `SHELL-CON-022` materializará el contrato compartido de relación cuando corresponda.
+
+---
+
+#### 17. Resend — `EXT-SYS-004`
+
+El flujo actual conserva IDs canónicos VENTO de invitación, usuario y empleado, y utiliza el correo como dirección de entrega.
+
+La respuesta del proveedor no se conserva actualmente como un identificador estructurado de mensaje que permita materializar una relación externa→canónica.
+
+Reglas:
+
+1. correo del destinatario = `DISPLAY_SEARCH_ATTRIBUTE` / dirección de entrega, no identidad canónica;
+2. `invitation_id` permanece ID canónico VENTO;
+3. `user_id` o `employee_id` permanecen IDs canónicos VENTO;
+4. no se inventa un provider message ID a partir de timestamp, destinatario o estado de envío;
+5. si una versión posterior del contrato captura un identificador de mensaje del proveedor, ese valor deberá vincularse a la generación de entrega correspondiente sin reemplazar la identidad de invitación.
+
+Estado:
+
+`RESEND_ID_MAPPING_STATE = SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO`
+
+---
+
+#### 18. Sentry — `EXT-SYS-007`
+
+La superficie observada es telemetría de salida y no constituye una fuente de objetos empresariales VENTO.
+
+Reglas:
+
+1. IDs de evento, issue, release, trace o proyecto que el proveedor pueda producir permanecen referencias técnicas de observabilidad mientras no exista contrato canónico que exija otra relación;
+2. usuario, correo, mensaje, stack, pantalla o tag no se utilizan como mapeo de identidad empresarial;
+3. grouping del proveedor no fusiona incidentes, personas, procesos ni recursos VENTO;
+4. una futura relación con caso tecnológico o evidencia deberá ser correlacional y explícita, no deducida por semejanza.
+
+Las fuentes actuales no acreditan persistencia de un identificador externo Sentry dentro de un registro canónico de VENTO.
+
+Estado:
+
+`SENTRY_ID_MAPPING_STATE = SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO`
+
+---
+
+#### 19. Plataformas técnicas sin mapeo empresarial — `EXT-SYS-001`, `EXT-SYS-005`, `EXT-SYS-010`
+
+##### 19.1. Supabase
+
+IDs de proyecto, Auth, tablas, Storage, funciones y objetos de infraestructura pertenecen a contratos técnicos o a los propios dominios VENTO. Compartir Supabase no crea un mapping global externo↔canónico.
+
+Los IDs de entidades empresariales almacenados en Supabase siguen siendo canónicos de sus dominios; no se reclasifican como IDs externos solo porque la plataforma los persista.
+
+##### 19.2. Expo / EAS Update
+
+`projectId`, channel, profile, runtime/version y referencias de release son identificadores técnicos de plataforma. No equivalen a aplicación empresarial, usuario, empleado ni recurso de proceso por coincidencia.
+
+##### 19.3. Vercel
+
+Project, deployment, domain y referencias de hosting son identificadores técnicos. La tarea no acredita una correspondencia empresarial que deba materializarse como identidad externa de recurso.
+
+Decisión primaria para las tres identidades:
+
+`REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL`
+
+Si un contrato tecnológico posterior necesita correlacionar esos identificadores con una aplicación o despliegue canónico, deberá usar una relación técnica explícita y versionada sin convertir infraestructura en autoridad empresarial.
+
+---
+
+#### 20. Google Wallet — `EXT-SYS-012`
+
+Existe un modelo contractual de objeto genérico con referencias como `id` y `classId`, pero no existe binding remoto operativo acreditado.
+
+Reglas:
+
+1. `classId` es `TECHNICAL_NAMESPACE_ID` del modelo de Wallet y no un ID de trabajador;
+2. el `id` del objeto genérico no se declara actualmente como una relación remota validada;
+3. barcode, issuer, class, claims JWT y texto de presentación no sustituyen identidad canónica;
+4. no se afirma que Google haya aceptado, creado o devuelto un objeto cuyo ID pueda reconciliarse con VENTO;
+5. antes de promover el modelo a mapping activo deberá acreditarse el binding, la regla de construcción del ID, su namespace, el recurso canónico relacionado y la respuesta/estado del proveedor.
+
+Estado:
+
+`GOOGLE_WALLET_ID_MAPPING_STATE = MODELO_DE_IDENTIFICADOR_SIN_BINDING_REMOTO`
+
+---
+
+#### 21. `VENTO-EXTERNAL-ID-MAPPING-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Identificadores o referencias materiales                                    | Clasificación primaria                                        | Estado de resolución | Decisión materializada                                                                                                                                                                             |
+| ------------- | ---------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | IDs de proyecto/plataforma y IDs canónicos almacenados por dominios VENTO   | `REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL`              | `NOT_APPLICABLE`     | no existe mapping externo universal; los IDs empresariales conservan propiedad de su dominio y la infraestructura no los convierte en externos                                                     |
+| `EXT-SYS-002` | Wompi                                    | `transaction.id`, `reference`, event ID, transaction UUID propagado         | `MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`                      | `PARTIALLY_RESOLVED` | transaction ID externo→`provider_reference`→transacción canónica; reference es correlación/idempotencia; UUID propagado se valida como canónico; event ID→receipt interno                          |
+| `EXT-SYS-003` | RevenueCat                               | `app_user_id`, `product_id`, `original_transaction_id`, `aliases`           | `MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`                      | `PARTIALLY_RESOLVED` | `app_user_id` es ID canónico propagado; store product tiene estructura de mapping; webhook actual no resuelve producto por ella; original transaction y aliases no se fusionan con identidad VENTO |
+| `EXT-SYS-004` | Resend                                   | destinatario externo; respuesta de envío no persistida como ID estructurado | `SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO`             | `UNRESOLVED`         | correo es dirección de entrega; IDs de invitación/usuario/empleado siguen siendo canónicos; no se inventa message ID del proveedor                                                                 |
+| `EXT-SYS-005` | Expo / EAS Update                        | project ID, profile, channel, runtime/release refs                          | `REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL`              | `NOT_APPLICABLE`     | identificadores de plataforma delimitan configuración técnica; no equivalen a recursos empresariales por nombre o valor                                                                            |
+| `EXT-SYS-006` | Expo Push Service                        | push token; `announcementId` propagado cuando existe                        | `MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`                      | `PARTIALLY_RESOLVED` | token→registro técnico de destino→employee owner; token no es employee ID; announcementId sigue siendo correlación canónica VENTO                                                                  |
+| `EXT-SYS-007` | Sentry                                   | referencias de telemetría no persistidas en mapping canónico observado      | `SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO`             | `NOT_APPLICABLE`     | telemetría no crea identidad empresarial; usuario, mensaje, stack o grouping no producen mapeo automático                                                                                          |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `place_id`, dirección, coordenadas                                          | `REFERENCIA_EXTERNA_TRANSITORIA_SIN_MAPEO_CANONICO`           | `UNRESOLVED`         | `place_id` permanece referencia Google; no equivale a `site_id`; cualquier asociación durable futura exige relación explícita                                                                      |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `serialNumber`, `passTypeIdentifier`, `deviceLibraryIdentifier`, push token | `MAPEO_CANONICO_PARCIALMENTE_ACREDITADO`                      | `PARTIALLY_RESOLVED` | serial resuelve pase/user owner; device ID resuelve registros de dispositivo/pase; push token es destino; namespaces y recursos permanecen separados                                               |
+| `EXT-SYS-010` | Vercel                                   | project/deployment/domain refs                                              | `REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL`              | `NOT_APPLICABLE`     | hosting y despliegue son referencias técnicas; no existe equivalencia empresarial acreditada en esta tarea                                                                                         |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `device.uid`, nombre, tipo de impresora                                     | `MAPEO_CANONICO_REQUERIDO_SIN_VINCULO_PERSISTENTE_ACREDITADO` | `UNRESOLVED`         | UID local deberá vincularse a una identidad canónica de impresora antes de usarse como binding durable; nombre/tipo no bastan                                                                      |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | object `id`, `classId`, issuer/model refs                                   | `MODELO_DE_IDENTIFICADOR_SIN_BINDING_REMOTO`                  | `UNRESOLVED`         | existe modelo de IDs, no relación remota validada; no se declara objeto creado ni vínculo activo con trabajador/recurso VENTO                                                                      |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, namespaces e IDs no acreditados                                  | `BLOQUEADA_SIN_BINDING`                                       | `BLOCKED`            | `INT-POS-001` debe acreditar proveedor, objetos, IDs, namespaces y contratos antes de crear mapping                                                                                                |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | binding no acreditado                                                       | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | no se inventan shop/order/customer/product IDs ni equivalencias mientras no exista binding autorizado                                                                                              |
+| `EXT-SYS-015` | Rappi / marketplace                      | binding no acreditado                                                       | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | no se inventan order/store/courier IDs ni relaciones canónicas sin contrato real                                                                                                                   |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | binding no acreditado                                                       | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | no se inventan subscriber/contact/flow IDs ni equivalencias sin bot/API acreditados                                                                                                                |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API/binding no acreditados                                        | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | número, contacto o conversación no se convierten en persona/caso canónico sin proveedor, namespace y contrato acreditados                                                                          |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                                                  | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | handle, profile o message ID no se convierten en identidad empresarial sin binding y relación aprobados                                                                                            |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                                      | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | correo, mailbox o alias no equivalen a persona, expediente o proveedor canónico por coincidencia                                                                                                   |
+| `EXT-SYS-020` | Telefonía / voz                          | operador, interfaz y namespaces no acreditados                              | `BLOQUEADA_SIN_BINDING`                                       | `BLOCKED`            | `TI-INT-003` debe acreditar operador, cuenta, interfaz, IDs y semántica antes de instanciar mapping; caller ID no basta                                                                            |
+| `EXT-SYS-021` | Transporte externo                       | proveedor, tracking e interfaz no acreditados                               | `NO_APLICA_SIN_BINDING`                                       | `NOT_APPLICABLE`     | tracking, guía, conductor o referencia de envío no se convierten en salida/entrega canónica sin binding y contrato acreditados                                                                     |
+
+Reconciliación:
+
+```text
+MAPEO_CANONICO_PARCIALMENTE_ACREDITADO = 002,003,006,009 = 4
+MAPEO_CANONICO_REQUERIDO_SIN_VINCULO_PERSISTENTE_ACREDITADO = 011 = 1
+REFERENCIA_EXTERNA_TRANSITORIA_SIN_MAPEO_CANONICO = 008 = 1
+SIN_IDENTIFICADOR_EXTERNO_PERSISTIDO_ACREDITADO = 004,007 = 2
+REFERENCIA_DE_PLATAFORMA_SIN_MAPEO_EMPRESARIAL = 001,005,010 = 3
+MODELO_DE_IDENTIFICADOR_SIN_BINDING_REMOTO = 012 = 1
+NO_APLICA_SIN_BINDING = 014,015,016,017,018,019,021 = 7
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+---
+
+#### 22. Resolución antes del efecto empresarial
+
+Cuando una entrada externa referencia un recurso VENTO, el orden conceptual es:
+
+```text
+AUTENTICAR / VALIDAR ORIGEN
+→ CLASIFICAR EL IDENTIFICADOR RECIBIDO
+→ RESOLVER NAMESPACE Y AMBIENTE
+→ CONSULTAR RELACIÓN ACREDITADA
+→ CLASIFICAR RESOLVED / UNRESOLVED / AMBIGUOUS / CONFLICT
+→ VALIDAR RECURSO EN DOMINIO PROPIETARIO
+→ REVALIDAR AUTORIZACIÓN Y ESTADO
+→ APLICAR O RECHAZAR EL EFECTO
+```
+
+Reglas:
+
+1. un mapping `RESOLVED` no concede autorización;
+2. `UNRESOLVED`, `AMBIGUOUS` o `CONFLICT` bloquean cualquier efecto que dependa de conocer el recurso exacto;
+3. la ausencia de mapping no se corrige copiando el external ID dentro de una columna canónica;
+4. no se crea automáticamente un recurso empresarial para acomodar una referencia externa salvo que el contrato propietario autorice explícitamente ese alta;
+5. una afirmación externa puede conservarse como evidencia aun cuando el mapping no esté resuelto;
+6. la disposición posterior de entradas no resolubles pertenece a `INT-EXT-016`;
+7. auditoría, métricas y reconciliación de relaciones pertenecen a `INT-EXT-017`.
+
+---
+
+#### 23. Cambios, reasignación y fusión
+
+Una relación no puede reinterpretarse silenciosamente cuando cambia la realidad externa.
+
+Reglas:
+
+1. si el proveedor reutiliza o reasigna un ID, la relación histórica se retira y se crea una nueva relación con evidencia suficiente;
+2. el registro anterior conserva vigencia histórica y no se sobrescribe;
+3. una fusión de identidades VENTO no se ejecuta únicamente porque dos referencias externas converjan;
+4. aliases de proveedor no autorizan fusión interna automática;
+5. una división de recurso canónico exige nuevas relaciones explícitas y no reparte referencias por heurística;
+6. cambios incompatibles de namespace o semántica de ID exigen una nueva versión contractual;
+7. la pérdida de evidencia deja el mapping en estado no resoluble o conflictivo hasta reconciliación; no se conserva `RESOLVED` por costumbre.
+
+---
+
+#### 24. Frontera con idempotencia, payload y conciliación
+
+Se preservan estas separaciones:
+
+```text
+MAPPING
+→ QUÉ RECURSO REPRESENTA O A QUÉ RECURSO SE ASOCIA UNA REFERENCIA
+```
+
+```text
+IDEMPOTENCIA
+→ SI ESTA OPERACIÓN YA FUE RECLAMADA Y QUÉ RESULTADO DEBE RECUPERARSE
+```
+
+```text
+PAYLOAD ORIGINAL
+→ QUÉ AFIRMACIÓN EXACTA ENTREGÓ EL PROVEEDOR
+```
+
+```text
+CONCILIACIÓN
+→ CÓMO SE RESUELVEN DIVERGENCIAS, AUSENCIAS O RESULTADOS INCIERTOS
+```
+
+Reglas:
+
+1. un `provider_event_id` puede deduplicar una entrega sin identificar el recurso empresarial;
+2. una `reference` puede correlacionar un pago sin ser el ID canónico del pago;
+3. el payload completo no se usa como clave primaria de mapping;
+4. el mapping conserva suficiente referencia para enlazar posteriormente la evidencia original sin definir en esta tarea su retención;
+5. `SHELL-CON-022` y `SHELL-CON-023` permanecen contratos separados;
+6. `INT-EXT-014` conserva la responsabilidad exclusiva sobre almacenamiento y protección del payload original;
+7. `INT-EXT-017` conserva reconciliación operativa y observabilidad de mappings.
+
+---
+
+#### 25. Handoffs y condiciones de salida
+
+| Trabajo derivado                                              | Estado                    | Propietario / tarea responsable   | Condición de salida                                                                                                                              |
+| ------------------------------------------------------------- | ------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Contrato compartido consumible de mapping externo             | `FUERA_DE_ALCANCE`        | `SHELL-CON-022`                   | existe representación compartida de sistema, namespace, external ID, recurso canónico, relación, estado y versión sin heurísticas de identidad   |
+| Contrato de evento externo recibido con referencias mapeables | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                   | el evento adaptado puede conservar identificadores externos y referencias de mapping sin convertir al tercero en productor empresarial           |
+| Idempotencia y resultado recuperable                          | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                   | la identidad de operación permanece separada de la identidad del recurso                                                                         |
+| Conservación controlada del payload original                  | `FUERA_DE_ALCANCE`        | `INT-EXT-014`                     | payload original y mapping pueden correlacionarse sin usar contenido sensible como identidad canónica                                            |
+| Disposición de mapping no resoluble, ambiguo o conflictivo    | `FUERA_DE_ALCANCE`        | `INT-EXT-016`                     | entradas que dependen de una relación inválida tienen rechazo o disposición explícita sin efecto silencioso                                      |
+| Auditoría, métricas y reconciliación de mappings              | `FUERA_DE_ALCANCE`        | `INT-EXT-017`                     | cambios, conflictos, relaciones retiradas y resolución manual autorizada son reconstruibles                                                      |
+| Proveedor, objetos e identificadores del POS vigente          | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                     | proveedor, interfaz, namespaces, payload y IDs quedan acreditados antes de materializar relaciones                                               |
+| Operador, interfaz e identificadores de telefonía/voz         | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                      | proveedor/operador, cuenta, interfaz, IDs y semántica quedan acreditados antes de materializar relaciones                                        |
+| Binding técnico Zebra UID ↔ impresora canónica                | `PENDIENTE_DE_EVIDENCIA`  | `PRINT-ARC-001` / `PRINT-ARC-002` | la impresora física y su interfaz acreditan un UID técnico que se vincula inequívocamente con una identidad canónica del inventario de impresión |
+
+No queda pendiente sustantivo sin propietario y condición de salida.
+
+---
+
+#### 26. Prohibiciones
+
+Queda prohibido:
+
+1. copiar un external ID a un campo canónico y asumir que quedó mapeado;
+2. inferir identidad por coincidencia de UUID;
+3. inferir identidad por correo, teléfono, nombre, dirección, coordenadas, alias o texto visible;
+4. tratar `reference`, idempotency key o event ID como ID del recurso sin contrato que lo establezca;
+5. tratar un push token como ID de usuario o empleado;
+6. tratar `deviceLibraryIdentifier` como ID de usuario;
+7. tratar `passTypeIdentifier` como ID de pase o persona;
+8. tratar BrowserPrint UID como identidad canónica de impresora sin vínculo acreditado;
+9. tratar `place_id` como `site_id`;
+10. tratar RevenueCat `app_user_id` como ID nativo del proveedor cuando el contrato VENTO lo propagó;
+11. fusionar usuarios por aliases de RevenueCat;
+12. usar `original_transaction_id` como subscription ID canónico sin relación explícita;
+13. tratar correo de Resend como ID canónico de invitación o usuario;
+14. convertir IDs de Sentry, Vercel, Expo/EAS o Supabase en IDs empresariales por pertenecer a la infraestructura;
+15. declarar un objeto Google Wallet remoto creado únicamente porque existe un modelo de `id` y `classId`;
+16. usar el mismo mapping entre ambientes;
+17. reutilizar un mapping de otro proveedor por coincidencia de valor;
+18. sobrescribir historia de una relación retirada;
+19. resolver un estado `AMBIGUOUS` eligiendo el primer candidato;
+20. resolver un estado `CONFLICT` sobrescribiendo el mapping vigente;
+21. permitir que un mapping otorgue permiso empresarial;
+22. permitir que un mapping sustituya autenticidad de origen;
+23. permitir que un mapping sustituya idempotencia;
+24. definir retención del payload original dentro de esta tarea;
+25. modificar código o Supabase;
+26. crear tablas, índices, RPC, triggers, colas o registros físicos de mapping;
+27. inventar IDs externos para sistemas sin binding;
+28. cambiar las veintiuna identidades heredadas;
+29. iniciar o desarrollar `INT-EXT-014`.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa por identidad externa reglas de correspondencia, correlación y no inferencia ya protegidas por el registro vigente. La cobertura existente ya exige conservar el identificador externo antes de producir un hecho interno, separar identidades y contratos, mantener correlación, demostrar equivalencia antes de convertir una referencia legacy o externa en representación canónica y validar la afirmación externa dentro del adaptador y del dominio propietario. La tarea no crea una operación ejecutable nueva, una nueva autoridad, un nuevo endpoint, un nuevo proveedor, un nuevo recurso empresarial ni una política de seguridad adicional.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 28. Criterios de aceptación
+
+`INT-EXT-013` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución es exactamente `4 + 1 + 1 + 2 + 3 + 1 + 7 + 2 = 21`;
+7. identificador externo e identificador canónico permanecen conceptos distintos;
+8. un ID canónico propagado al tercero se clasifica como `PROPAGATED_CANONICAL_ID` cuando regresa;
+9. referencias de routing, correlación e idempotencia no se convierten en IDs de recurso;
+10. atributos de búsqueda o presentación no producen equivalencia automática;
+11. namespace y ambiente forman parte de la resolución;
+12. una relación de identidad exacta resuelve como máximo a un recurso canónico activo dentro de su namespace;
+13. relaciones históricas retiradas no se sobrescriben;
+14. `UNRESOLVED`, `AMBIGUOUS` y `CONFLICT` bloquean efectos dependientes de una identidad exacta;
+15. Wompi separa transaction ID externo, reference, event ID y transaction UUID propagado;
+16. Wompi `provider_reference` no se convierte en order ID;
+17. RevenueCat `app_user_id` conserva semántica de ID canónico VENTO propagado;
+18. RevenueCat `product_id` se relaciona conceptualmente mediante `store_product_id` y plan, sin presentar el webhook actual como resolución ya implementada;
+19. RevenueCat `original_transaction_id` permanece externo hasta disponer de relación durable acreditada;
+20. aliases RevenueCat no fusionan usuarios;
+21. Expo push token se conserva como destino vinculado a su registro técnico y propietario, no como employee ID;
+22. Google `place_id` no se convierte en `site_id`;
+23. Apple separa serial, pass type, device library ID, push token y user ID;
+24. Zebra UID requiere vínculo explícito con la identidad canónica de impresora;
+25. correo Resend permanece dirección, no ID canónico;
+26. telemetría Sentry no crea identidad empresarial por grouping o semejanza;
+27. Supabase, Expo/EAS y Vercel conservan referencias de infraestructura sin mapping empresarial universal;
+28. Google Wallet conserva modelo de IDs sin afirmar binding remoto;
+29. POS externo permanece bloqueado hasta `INT-POS-001`;
+30. telefonía/voz permanece bloqueada hasta acreditar proveedor e interfaz mediante `TI-INT-003`;
+31. los siete sistemas sin binding no reciben IDs o mappings ficticios;
+32. `SHELL-CON-022` conserva la materialización compartida posterior;
+33. `SHELL-CON-023` permanece separado del mapping de recursos;
+34. no se define conservación física del payload original;
+35. no se modifica código;
+36. no se modifica Supabase;
+37. no se crean tablas, RPC ni registros físicos;
+38. no se crean ni modifican requisitos de prueba;
+39. `INT-EXT-014` permanece reservada.
+
+---
+
+#### 29. Resultado de la tarea
+
+`INT-EXT-013` queda **APROBADA** como definición documental completa del mapeo de identificadores externos y canónicos para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- mappings parcialmente acreditados: **4**;
+- mapping canónico requerido sin vínculo persistente acreditado: **1**;
+- referencia externa transitoria sin mapping canónico: **1**;
+- sistemas sin identificador externo persistido acreditado: **2**;
+- referencias de plataforma sin mapping empresarial: **3**;
+- modelo de identificador sin binding remoto: **1**;
+- identidades sin binding a las que no aplica mapping actual: **7**;
+- identidades bloqueadas sin binding: **2**;
+- faltantes: **0**;
+- duplicados: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+REFERENCIA EXTERNA
++
+NAMESPACE Y AMBIENTE
++
+RELACIÓN ACREDITADA
++
+RECURSO CANÓNICO EXACTO
+=
+MAPEO RESOLUBLE Y TRAZABLE
+```
+
+sin equiparar coincidencia de valor con identidad, sin convertir correlación o idempotencia en mapping y sin transferir autoridad empresarial al proveedor.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-013 — Definir mapeo de identificadores externos y canónicos`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-014 — Definir conservación controlada del payload original`
+
+
 ### [ ] INT-EXT-014 — Definir conservación controlada del payload original
 ### [ ] INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker
 ### [ ] INT-EXT-016 — Definir cuarentena o dead-letter
