@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **733** |
+| Tareas aprobadas | **734** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **861** |
+| Tareas no iniciadas | **860** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **45.98% (733/1594)** |
+| Porcentaje de completamiento | **46.05% (734/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-006 — Separar credenciales de desarrollo, staging y producción** |
-| Tarea actual | **INT-EXT-007 — Definir almacenamiento seguro de secretos** |
+| Última tarea aprobada | **INT-EXT-007 — Definir almacenamiento seguro de secretos** |
+| Tarea actual | **INT-EXT-008 — Definir rotación, expiración y revocación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-008 — Definir rotación, expiración y revocación** |
+| Siguiente tarea | **INT-EXT-009 — Definir contratos de entrada y salida versionados** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 0 de 66 aprobadas; INT-EXT-007 pendiente** |
+| Progreso del bloque | **BLOQUE X: 0 de 65 aprobadas; INT-EXT-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-006` — Separar credenciales de desarrollo, staging y producción |
-| Tarea actual | `INT-EXT-007` — Definir almacenamiento seguro de secretos — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-008` — Definir rotación, expiración y revocación |
+| Última aprobada | `INT-EXT-007` — Definir almacenamiento seguro de secretos |
+| Tarea actual | `INT-EXT-008` — Definir rotación, expiración y revocación — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-009` — Definir contratos de entrada y salida versionados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 66 APROBADAS — ACTUAL INT-EXT-007** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 65 APROBADAS — ACTUAL INT-EXT-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-006 — Separar credenciales de desarrollo, staging y producción
-        ↓
-TAREA ACTUAL
 INT-EXT-007 — Definir almacenamiento seguro de secretos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-008 — Definir rotación, expiración y revocación
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-009 — Definir contratos de entrada y salida versionados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 0 de 66 tareas aprobadas
+BLOQUE X — 0 de 65 tareas aprobadas
 ```

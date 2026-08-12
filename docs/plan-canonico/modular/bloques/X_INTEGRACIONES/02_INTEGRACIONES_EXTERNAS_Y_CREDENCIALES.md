@@ -3080,7 +3080,505 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-007 — Definir almacenamiento seguro de secretos`
 
 
-### [ ] INT-EXT-007 — Definir almacenamiento seguro de secretos
+### ✅ INT-EXT-007 — Definir almacenamiento seguro de secretos
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-006 — Separar credenciales de desarrollo, staging y producción` — APROBADA
+**Tarea siguiente:** `INT-EXT-008 — Definir rotación, expiración y revocación de credenciales` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de la custodia segura de secretos para cada identidad `EXT-SYS-001` a `EXT-SYS-021`, distinguiendo material secreto, credenciales públicas, configuración no secreta, referencias de credencial y tokens operativos, sin crear, mover, rotar, revocar ni desplegar secretos o modificar código, datos, proveedores o configuración remota
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+
+---
+
+#### 1. Objetivo
+
+Definir la frontera canónica de custodia para todo material sensible usado por las veintiuna identidades externas ya inventariadas, preservando procedencia, mecanismo, alcance y ambiente aprobados en `INT-EXT-003` a `INT-EXT-006`.
+
+La tarea debe impedir estas ambigüedades:
+
+```text
+REFERENCIA DE CREDENCIAL
+≠ VALOR SECRETO
+```
+
+```text
+CREDENCIAL PUBLICABLE / CONFIGURACIÓN PÚBLICA
+≠ SECRETO CONFIDENCIAL
+```
+
+```text
+VARIABLE DE ENTORNO
+≠ EVIDENCIA AUTOMÁTICA DE CUSTODIA SEGURA
+```
+
+```text
+TABLA EMPRESARIAL PRIVADA
+≠ SECRET STORE
+```
+
+```text
+SECRETO DISPONIBLE EN RUNTIME
+≠ SECRETO DISPONIBLE PARA USUARIO, CLIENTE O LOG
+```
+
+El objetivo es que cada secreto tenga una única custodia aprobada por ambiente, sea alcanzado únicamente por el principal técnico que lo necesita y nunca se materialice en clientes, código versionado, tablas empresariales, comandos persistidos, artefactos, logs o respuestas.
+
+La tarea no define todavía rotación, expiración o revocación; esos elementos pertenecen a `INT-EXT-008`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos de esta tarea:
+
+- `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001`, que define clasificación, ubicaciones admisibles, accesos, referencias y prohibiciones de custodia;
+- `VENTO-EXTERNAL-SECRET-CUSTODY-MATRIX-001`, que materializa una decisión para cada `EXT-SYS-001` a `EXT-SYS-021`.
+
+Balance materializado:
+
+| Control                                                            | Resultado |
+| ------------------------------------------------------------------ | --------: |
+| Identidades heredadas esperadas                                    |    **21** |
+| Identidades materializadas                                         | **21/21** |
+| Identificadores únicos                                             |    **21** |
+| Identidades faltantes                                              |     **0** |
+| Identidades duplicadas                                             |     **0** |
+| Custodias server-side especificadas pendientes de evidencia física |     **4** |
+| Configuraciones públicas que no deben tratarse como secretos       |     **2** |
+| Configuraciones de plataforma sin secreto externo acreditado       |     **2** |
+| Bindings observados sin secreto externo de cliente                 |     **2** |
+| Identidad con brecha de custodia observada                         |     **1** |
+| Modelo de secret store documentado sin binding acreditado          |     **1** |
+| Identidades sin binding actual a las que no aplica custodia física |     **9** |
+| Valores secretos creados, copiados, movidos o expuestos            |     **0** |
+| Requisitos de prueba creados o modificados                         |     **0** |
+
+Distribución de `INT-EXT-007`:
+
+```text
+4 CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA
++
+2 CONFIGURACION_PUBLICA_NO_SECRETA
++
+2 CONFIGURACION_DE_PLATAFORMA_SIN_SECRETO_ACREDITADO
++
+2 SIN_SECRETO_EXTERNO_OBSERVADO
++
+1 CUSTODIA_CON_BRECHA_OBSERVADA
++
+1 MODELO_DOCUMENTADO_SIN_BINDING
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+La distribución de evidencia heredada de `INT-EXT-001` permanece sin cambios:
+
+```text
+3 BINDING_TECNICO_OBSERVADO
++
+6 BINDING_CONDICIONAL_OBSERVADO
++
+2 CONFIGURACION_OBSERVADA
++
+6 DOCUMENTADO_SIN_BINDING_ACREDITADO
++
+4 PROVEEDOR_NO_ACREDITADO
+=
+21
+```
+
+---
+
+#### 3. Fuentes y contratos preservados
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades externas, sus proveedores, propietarios, custodios técnicos, finalidades y clases de evidencia;
+- `INT-EXT-002`, incluida la separación entre actor humano, `IntegrationPrincipal`, cuenta externa, referencia de credencial, valor secreto y autoridad empresarial;
+- `INT-EXT-003`, incluida la procedencia por superficie de credencial;
+- `INT-EXT-004`, incluidos los mecanismos de autenticación acreditados y la separación entre autenticación técnica y autorización empresarial;
+- `INT-EXT-005`, incluido el alcance técnico mínimo por credencial;
+- `INT-EXT-006`, incluida la obligación de referencias y materiales independientes por ambiente;
+- `SHELL-CON-018`, como handoff de la referencia física de credencial sin inclusión del valor secreto;
+- el registro canónico vigente de requisitos de prueba, que ya exige inventario no sensible, custodia cifrada y separada, prohibición de secretos en código, tablas legibles por cliente, comandos persistidos, migraciones, logs y artefactos, y mínimo privilegio para credenciales externas.
+
+La evidencia técnica actual acredita, sin revelar valores:
+
+- secretos server-side consumidos desde el runtime de funciones para Supabase, Wompi, RevenueCat y Resend;
+- credenciales o configuraciones publicables incorporadas a clientes para RevenueCat, Sentry y Google Maps;
+- material de certificado y clave privada de Apple consumido en servidor;
+- un token opaco VENTO por pase almacenado actualmente en el registro de Wallet;
+- un modelo documental de cuenta de servicio de Google Wallet destinado a secretos de servidor;
+- bindings de Expo Push y Zebra BrowserPrint sin secreto externo de cliente observado;
+- plataformas o sistemas sin binding suficiente para inventar un secreto inexistente.
+
+La presencia de `Deno.env`, `process.env`, un nombre de variable o una instrucción documental de configuración demuestra consumo o intención, pero no acredita por sí sola cifrado, control de lectura, auditoría, separación ambiental o conformidad física del secret store.
+
+---
+
+#### 4. Clasificación canónica del material
+
+`VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001` distingue estas clases:
+
+| Clase                             | Definición                                                                                                      | Tratamiento de custodia                                                        |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `SECRET_STATIC_SERVER_SIDE`       | API secret, private key, password, webhook secret, service-role key o material equivalente que debe recuperarse | secret store cifrado y acceso solo server-side                                 |
+| `SECRET_DYNAMIC_VERIFIER`         | token opaco o secreto generado cuya comprobación no requiere necesariamente recuperar el valor original         | hash/verificador unidireccional cuando sea técnicamente suficiente             |
+| `SECRET_DYNAMIC_RECOVERABLE`      | secreto dinámico que debe volver a presentarse o reconstruirse con el mismo valor                               | custodia cifrada separada y referencia no sensible                             |
+| `PUBLIC_CREDENTIAL_RESTRICTED`    | API key o identificador diseñado para distribuirse en cliente, pero sujeto a alcance y restricciones            | configuración pública; nunca se reetiqueta como secreto ocultable              |
+| `PUBLIC_CONFIGURATION`            | URL, DSN publicable, issuer, class, project ID, place ID u otro dato no secreto                                 | configuración versionable o pública según contrato                             |
+| `CREDENTIAL_REFERENCE`            | identificador no sensible que permite resolver una credencial sin contener su valor                             | puede persistirse o versionarse conforme al contrato                           |
+| `DESTINATION_TOKEN_OR_IDENTIFIER` | token de push, UID o identificador de destino que no autentica al cliente frente al proveedor                   | tratar según sensibilidad/privacidad, no como secreto de autenticación externo |
+| `NO_SECRET_APPLICABLE`            | binding que no presenta material secreto externo actual                                                         | no se inventa un secret store                                                  |
+
+Una misma identidad puede contener varias superficies y, por tanto, varias clases simultáneas.
+
+---
+
+#### 5. `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001`
+
+Toda superficie con material secreto deberá representar al menos:
+
+```text
+AMBIENTE VENTO
++
+SISTEMA EXTERNO
++
+INTEGRATION PRINCIPAL
++
+SUPERFICIE DE CREDENCIAL
++
+REFERENCIA NO SENSIBLE
++
+CLASE DE SECRETO
++
+CUSTODIO TÉCNICO
++
+SECRET STORE APROBADO
++
+POLÍTICA DE ACCESO MÍNIMO
+→ MATERIAL SECRETO RESUELTO SOLO EN RUNTIME AUTORIZADO
+```
+
+Reglas obligatorias:
+
+1. el valor secreto no forma parte de `ExternalCredentialId`, `IntegrationPrincipal`, `PermissionKey`, `external_system_id`, `provider_account_ref` ni metadata empresarial;
+2. el repositorio puede contener nombres de variables, contratos, referencias, schemas de configuración y ejemplos inequívocamente no sensibles, pero nunca valores funcionales;
+3. un secreto server-side está prohibido en bundles web o móviles, variables `EXPO_PUBLIC_*`, JavaScript entregado a navegador, respuestas API o artefactos descargables;
+4. el valor secreto no se persiste en tablas empresariales, configuración legible por cliente, comandos de cron, migraciones, comentarios, fixtures o logs;
+5. una tabla con RLS, un schema privado o una fila no expuesta no se convierte automáticamente en secret store;
+6. el secret store debe cifrar material en reposo mediante la capacidad administrada o técnica aprobada de la plataforma;
+7. el acceso al valor se concede al principal técnico mínimo que lo consume, no a una aplicación completa por conveniencia;
+8. un runtime solo puede resolver secretos de su propio ambiente conforme a `INT-EXT-006`;
+9. una referencia de credencial puede ser compartida documentalmente cuando sea no sensible, pero debe resolver a un material distinto por ambiente cuando el contrato lo exija;
+10. los secretos no se copian entre proveedores, aplicaciones o funciones para evitar configurar un binding independiente;
+11. si dos consumidores requieren el mismo material por contrato externo, el acceso se declara explícitamente y no se presume por estar en el mismo repositorio o proyecto;
+12. la lectura humana ordinaria del valor secreto no es requisito operativo; la administración humana excepcional debe limitarse a funciones autorizadas y dejar evidencia de acceso cuando la plataforma lo permita;
+13. CI/CD puede inyectar un secreto únicamente desde un store aprobado y debe impedir su impresión, persistencia en artefactos o paso a jobs no autorizados;
+14. desarrollo local puede usar material no productivo mediante mecanismos locales no versionados; ningún mecanismo local acredita custodia de staging o producción;
+15. si el proveedor diseña una clave como publicable o una credencial debe incorporarse al cliente, el control se traslada a alcance, restricción por aplicación/API/dominio/cuota y separación ambiental; ocultarla dentro del bundle no constituye seguridad;
+16. tokens dinámicos destinados únicamente a comparación deben preferir un verificador criptográfico no reversible cuando el flujo no requiera recuperar el original;
+17. secretos dinámicos que deban recuperarse conservan el material cifrado en una custodia separada de la entidad empresarial y la entidad guarda únicamente una referencia no sensible;
+18. ningún valor secreto debe aparecer en auditoría; la evidencia usa identificador de credencial, versión o fingerprint no reversible apropiado;
+19. la indisponibilidad del secret store, ausencia del material o falta de autorización para leerlo debe bloquear la operación que lo requiere;
+20. lifecycle de alta, rotación, expiración, revocación y destrucción del valor queda reservado a `INT-EXT-008`.
+
+---
+
+#### 6. Secret stores admisibles por superficie
+
+La custodia se selecciona por runtime y no por preferencia de lenguaje o repositorio.
+
+| Superficie de ejecución                              | Custodia objetivo admisible                                                                                              | Material prohibido                                               |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Supabase Edge Functions                              | secretos administrados del proyecto o mecanismo cifrado privado aprobado, separados por ambiente                         | tablas empresariales, configuración cliente, migraciones, código |
+| Backend/serverless desplegado en Vercel              | variables/secretos server-side administrados por el proyecto y ambiente de Vercel u otro secret store integrado aprobado | variables publicables, bundle cliente, repositorio               |
+| GitHub Actions / CI autorizado                       | secretos o ambientes protegidos del sistema CI, limitados al workflow y ambiente autorizados                             | YAML con valor literal, output de job, artefactos                |
+| Expo/EAS cuando una credencial privada sea necesaria | secret/environment store administrado por Expo/EAS y restringido al perfil/ambiente correspondiente                      | `EXPO_PUBLIC_*` o bundle de aplicación                           |
+| Runtime local                                        | mecanismo local no versionado con credenciales exclusivamente no productivas                                             | archivo versionado, ejemplo funcional, secreto productivo        |
+| Token dinámico verificable sin recuperación          | hash/verificador fuerte asociado a la relación autorizada                                                                | valor original persistido en tabla empresarial                   |
+| Token dinámico que deba recuperarse                  | secret store cifrado separado, con referencia desde la entidad empresarial                                               | valor original directamente en la fila empresarial               |
+
+Esta lista define clases de custodia. No afirma que la configuración remota actual de cada plataforma haya sido inspeccionada o certificada.
+
+---
+
+#### 7. Acceso mínimo y separación de responsabilidades
+
+La custodia segura exige separar:
+
+```text
+PROPIETARIO FUNCIONAL
+≠ CUSTODIO TÉCNICO
+≠ ADMINISTRADOR DEL SECRET STORE
+≠ PRINCIPAL TÉCNICO CONSUMIDOR
+≠ ACTOR HUMANO
+```
+
+Reglas:
+
+1. el propietario funcional aprueba finalidad y necesidad, no recibe el secreto por defecto;
+2. el custodio técnico administra la integración, pero no obtiene autoridad empresarial por custodiar la credencial;
+3. el principal técnico consumidor recibe únicamente capacidad de resolver los secretos de sus superficies;
+4. el administrador del secret store puede gestionar la custodia sin convertirse en consumidor funcional;
+5. soporte, analítica, operaciones y usuarios finales no reciben lectura del valor por conveniencia;
+6. un secreto privilegiado de Supabase no se comparte con un proveedor externo ni con aplicaciones cliente;
+7. la cuenta personal de un desarrollador no sustituye una identidad técnica del runtime;
+8. la auditoría registra acceso o cambio de la referencia cuando sea posible, nunca el valor.
+
+---
+
+#### 8. Tratamiento de credenciales publicables
+
+No todo material llamado `key`, `token`, `dsn` o `id` es un secreto ocultable.
+
+Para credenciales diseñadas para cliente:
+
+- se declara explícitamente su clase `PUBLIC_CREDENTIAL_RESTRICTED` o `PUBLIC_CONFIGURATION`;
+- se acepta que el valor pueda inspeccionarse en el bundle o tráfico del cliente;
+- la seguridad depende de alcance mínimo, restricciones del proveedor, identidad de aplicación, dominios, APIs permitidas, cuotas y controles server-side posteriores;
+- una credencial publicable nunca se usa como prueba suficiente de actor, permiso empresarial o acceso privilegiado interno;
+- moverla a un archivo aparentemente oculto dentro del cliente no cambia su naturaleza;
+- una contraparte privada asociada, si existe, se custodia separadamente como secreto server-side.
+
+Aplicaciones actuales de esta regla incluyen las claves SDK publicables de RevenueCat, el DSN de Sentry y la API key de Google Maps usada desde cliente.
+
+---
+
+#### 9. `VENTO-EXTERNAL-SECRET-CUSTODY-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Material o superficie relevante                                                                                    | Decisión `INT-EXT-007`                                     | Estado físico            | Custodia objetivo / condición de salida                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | clave publicable/anon para cliente; clave privilegiada `service_role` o secret key para backend                    | `CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | la clave publicable permanece como configuración cliente; toda clave privilegiada se resuelve únicamente desde secret store server-side del ambiente y nunca desde bundle, tabla empresarial o proveedor externo; acreditar custodia remota y consumidores                                                                                                                                                       |
+| `EXT-SYS-002` | Wompi                                    | public key; secreto de integridad; secreto de eventos/webhook                                                      | `CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | public key se conserva como credencial publicable; secretos de integridad y webhook se resuelven server-side desde secret store independiente por ambiente; acreditar valores/referencias remotas sin exponerlos                                                                                                                                                                                                 |
+| `EXT-SYS-003` | RevenueCat                               | API keys SDK Apple/Google publicables; secreto de webhook                                                          | `CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | API keys SDK permanecen como credenciales publicables; secreto de webhook solo en secret store server-side del ambiente; acreditar custodia física del webhook secret                                                                                                                                                                                                                                            |
+| `EXT-SYS-004` | Resend                                   | `RESEND_API_KEY` server-side                                                                                       | `CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA` | API key exclusivamente en secret store del runtime server-side correspondiente; acreditar custodia y acceso mínimo sin valor en repositorio, respuesta o log                                                                                                                                                                                                                                                     |
+| `EXT-SYS-005` | Expo / EAS Update                        | perfiles, canales, project ID y configuración observados; credencial administrativa no acreditada                  | `CONFIGURACION_DE_PLATAFORMA_SIN_SECRETO_ACREDITADO`       | `PENDIENTE_DE_EVIDENCIA` | no se inventa secreto; si una operación futura requiere token privado de Expo/EAS deberá residir en secret store de CI/EAS del ambiente y no en `EXPO_PUBLIC_*`                                                                                                                                                                                                                                                  |
+| `EXT-SYS-006` | Expo Push Service                        | push tokens como destinos; llamada externa inspeccionada sin credencial de cliente Expo                            | `SIN_SECRETO_EXTERNO_OBSERVADO`                            | `NO_APLICA`              | no se crea secret store ficticio para Expo; secretos internos VENTO que protejan la función permanecen bajo gobierno de secretos internos y no se reetiquetan como credenciales de Expo                                                                                                                                                                                                                          |
+| `EXT-SYS-007` | Sentry                                   | `EXPO_PUBLIC_SENTRY_DSN`                                                                                           | `CONFIGURACION_PUBLICA_NO_SECRETA`                         | `ESPECIFICADO`           | DSN se trata como configuración de ingestión publicable y restringida; no se usa como secreto ni autoridad empresarial; cualquier token administrativo futuro deberá tener custodia server-side independiente                                                                                                                                                                                                    |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `EXPO_PUBLIC_GOOGLE_MAPS_API_KEY`; URLs públicas; coordenadas; place ID                                            | `CONFIGURACION_PUBLICA_NO_SECRETA`                         | `ESPECIFICADO`           | API key cliente se protege mediante restricciones del proveedor y alcance mínimo, no mediante ocultación en bundle; cualquier credencial server-side futura requerirá secret store independiente                                                                                                                                                                                                                 |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | certificado/clave privada P12, password P12, clave APNs P8, identificadores de clave/equipo y token opaco por pase | `CUSTODIA_CON_BRECHA_OBSERVADA`                            | `NO_CONFORME_OBSERVADO`  | P12/password/P8 únicamente en secret store server-side por ambiente; certificados públicos e identificadores se distinguen del secreto; el token opaco por pase no debe persistirse como valor original en la entidad empresarial: usar verificador no reversible cuando baste para comparar o custodia cifrada separada cuando deba recuperarse; retirar la persistencia directa del valor antes de conformidad |
+| `EXT-SYS-010` | Vercel                                   | configuración de hosting observada; credencial administrativa/deploy no acreditada                                 | `CONFIGURACION_DE_PLATAFORMA_SIN_SECRETO_ACREDITADO`       | `PENDIENTE_DE_EVIDENCIA` | no se inventa token de Vercel; cualquier token de despliegue o secreto server-side futuro deberá residir en secret store de CI/Vercel limitado al ambiente y proyecto exactos                                                                                                                                                                                                                                    |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | UID/nombre/tipo de dispositivo; sin secreto externo de cliente observado                                           | `SIN_SECRETO_EXTERNO_OBSERVADO`                            | `NO_APLICA`              | UID o nombre de impresora no se convierten en secreto; cualquier autenticación futura del bridge deberá acreditarse antes de seleccionar custodia                                                                                                                                                                                                                                                                |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | modelo documental con JSON de cuenta de servicio, issuer y class                                                   | `MODELO_DOCUMENTADO_SIN_BINDING`                           | `PENDIENTE_DE_EVIDENCIA` | JSON de cuenta de servicio se define como secreto server-side en secret store de la función/ambiente; issuer y class son configuración no secreta; acreditar binding runtime antes de declarar implementación                                                                                                                                                                                                    |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, interfaz y credenciales no acreditados                                                                  | `NO_APLICA_ACTUAL`                                         | `BLOQUEADO`              | `INT-POS-001` debe acreditar proveedor, cuenta, binding y material antes de asignar custodia                                                                                                                                                                                                                                                                                                                     |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | integración no acreditada                                                                                          | `NO_APLICA_ACTUAL`                                         | `NO_APLICA`              | acreditar binding y clase real de credencial antes de definir secret store                                                                                                                                                                                                                                                                                                                                       |
+| `EXT-SYS-015` | Rappi / marketplace                      | integración no acreditada                                                                                          | `NO_APLICA_ACTUAL`                                         | `NO_APLICA`              | acreditar binding y clase real de credencial antes de definir secret store                                                                                                                                                                                                                                                                                                                                       |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | integración no acreditada                                                                                          | `NO_APLICA_ACTUAL`                                         | `NO_APLICA`              | acreditar binding y clase real de credencial antes de definir secret store                                                                                                                                                                                                                                                                                                                                       |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API no acreditados                                                                                       | `NO_APLICA_ACTUAL`                                         | `NO_APLICA`              | acreditar proveedor, cuenta y binding antes de definir secret store                                                                                                                                                                                                                                                                                                                                              |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                                                                                         | `NO_APLICA_ACTUAL`                                         | `NO_APLICA`              | acreditar proveedor, aplicación y binding antes de definir secret store                                                                                                                                                                                                                                                                                                                                          |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                                                                             | `NO_APLICA_ACTUAL`                                         | `BLOQUEADO`              | acreditar proveedor, cuenta técnica e interfaz antes de definir secret store                                                                                                                                                                                                                                                                                                                                     |
+| `EXT-SYS-020` | Telefonía / voz                          | operador e integración no acreditados                                                                              | `NO_APLICA_ACTUAL`                                         | `BLOQUEADO`              | acreditar operador, cuenta e interfaz antes de definir secret store                                                                                                                                                                                                                                                                                                                                              |
+| `EXT-SYS-021` | Transporte externo                       | proveedor e interfaz no acreditados                                                                                | `NO_APLICA_ACTUAL`                                         | `BLOQUEADO`              | acreditar proveedor, cuenta e interfaz antes de definir secret store                                                                                                                                                                                                                                                                                                                                             |
+
+---
+
+#### 10. Reconciliación de cobertura
+
+La matriz conserva exactamente las veintiuna identidades heredadas y produce una única decisión primaria por identidad.
+
+```text
+4 CUSTODIA_SERVER_SIDE_ESPECIFICADA_PENDIENTE_DE_EVIDENCIA
++
+2 CONFIGURACION_PUBLICA_NO_SECRETA
++
+2 CONFIGURACION_DE_PLATAFORMA_SIN_SECRETO_ACREDITADO
++
+2 SIN_SECRETO_EXTERNO_OBSERVADO
++
+1 CUSTODIA_CON_BRECHA_OBSERVADA
++
+1 MODELO_DOCUMENTADO_SIN_BINDING
++
+9 NO_APLICA_ACTUAL
+=
+21
+```
+
+La clasificación primaria no elimina superficies secundarias. Wompi y RevenueCat, por ejemplo, combinan material publicable y material secreto; Apple combina secretos estáticos, identificadores no secretos y un secreto dinámico por pase.
+
+Faltantes = `0`.
+
+Duplicados = `0`.
+
+Identificadores únicos = `21`.
+
+---
+
+#### 11. Estado especial de secretos server-side consumidos por runtime
+
+El uso actual de `Deno.env` o `process.env` permite afirmar que el código espera obtener ciertos valores desde el entorno del runtime, pero no permite afirmar por sí solo:
+
+- qué producto o mecanismo físico custodia el valor;
+- si el valor está cifrado en reposo;
+- qué humanos pueden verlo;
+- qué principals técnicos pueden resolverlo;
+- si el mismo valor se reutiliza en otro ambiente;
+- si existen copias fuera del runtime;
+- si CI/CD imprime o conserva el valor;
+- si el remoto actual coincide con el contrato documental.
+
+Por tanto, Supabase, Wompi, RevenueCat y Resend permanecen `PENDIENTE_DE_EVIDENCIA` en custodia física aunque el consumo server-side esté observado.
+
+La conformidad futura requiere demostrar referencia, plataforma de custodia, ambiente y consumidor sin revelar el valor.
+
+---
+
+#### 12. Estado especial de Apple Wallet
+
+`EXT-SYS-009` contiene varias clases y no puede resolverse con una sola política genérica.
+
+| Material                                             | Clase                                                                         | Decisión de custodia                                                                            |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| certificado de Pass Type cuando sea material público | `PUBLIC_CONFIGURATION`                                                        | puede conservarse como certificado cuando no incluya clave privada                              |
+| clave privada asociada al P12                        | `SECRET_STATIC_SERVER_SIDE`                                                   | secret store server-side por ambiente                                                           |
+| password del P12                                     | `SECRET_STATIC_SERVER_SIDE`                                                   | secret store server-side por ambiente                                                           |
+| clave privada P8 para APNs                           | `SECRET_STATIC_SERVER_SIDE`                                                   | secret store server-side por ambiente                                                           |
+| key ID / team ID / pass type ID                      | `PUBLIC_CONFIGURATION`                                                        | referencia/configuración no secreta                                                             |
+| token opaco VENTO por pase                           | `SECRET_DYNAMIC_VERIFIER` o `SECRET_DYNAMIC_RECOVERABLE` según necesidad real | nunca como valor original directamente en la entidad empresarial                                |
+| push token de dispositivo                            | `DESTINATION_TOKEN_OR_IDENTIFIER`                                             | dato técnico sensible de destino; no se reetiqueta como secreto que autentica a VENTO ante APNs |
+
+La implementación observada genera un token aleatorio por pase y lo persiste directamente como `auth_token` en el registro del pase. Esa persistencia no satisface el contrato objetivo de `INT-EXT-007`.
+
+Condición de conformidad:
+
+```text
+SI SOLO SE NECESITA VERIFICAR
+→ GUARDAR VERIFICADOR / HASH NO REVERSIBLE
+```
+
+```text
+SI EL MISMO VALOR DEBE RECUPERARSE
+→ GUARDAR VALOR EN SECRET STORE CIFRADO
+→ ENTIDAD EMPRESARIAL CONSERVA REFERENCIA NO SENSIBLE
+```
+
+La decisión entre ambos patrones depende del consumo técnico real y deberá implementarse sin debilitar el contrato de autenticación de `INT-EXT-004`.
+
+---
+
+#### 13. Trazabilidad de handoff
+
+| Pendiente                                                                                     | Estado                        | Propietario / tarea responsable                                                             | Condición de salida                                                                                                                                                          |
+| --------------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Referencia física de credencial sin valor secreto                                             | `FUERA_DE_ALCANCE`            | `SHELL-CON-018`                                                                             | contrato consumible enlaza sistema, principal, superficie, ambiente y referencia sin contener material secreto                                                               |
+| Evidencia física del secret store y permisos de lectura de cada superficie server-side        | `PENDIENTE_DE_EVIDENCIA`      | `INT-EXT-007` como contrato; implementación en la tarea técnica propietaria que corresponda | evidencia identifica plataforma de custodia, ambiente y principal consumidor sin revelar valor, y prueba denegación a consumidor no autorizado                               |
+| Retiro de persistencia directa del token opaco Apple desde la entidad empresarial             | `PENDIENTE_DE_IMPLEMENTACION` | `SUPA-TRANS-010` y paquete propietario de PASS según el registro canónico de seguridad      | el valor original deja de residir directamente en la fila empresarial y el flujo funciona mediante verificador o referencia a custodia cifrada                               |
+| Remediación de secretos ya identificados fuera de custodia aprobada en la línea base Supabase | `PENDIENTE_DE_IMPLEMENTACION` | `SUPA-TRANS-010` / `SUPA-ARC-024` conforme al registro canónico vigente                     | secretos identificados dejan tablas/configuración/comandos persistidos, pasan a custodia aprobada y la exposición anterior queda cerrada por la tarea de lifecycle aplicable |
+| Lifecycle de alta, rotación, expiración, revocación y destrucción de credenciales             | `FUERA_DE_ALCANCE`            | `INT-EXT-008`                                                                               | cada familia de credencial dispone de reglas de lifecycle y evidencia de invalidez del material retirado                                                                     |
+| Proveedor, binding y credenciales exactas del POS                                             | `BLOQUEADO_POR_EVIDENCIA`     | `INT-POS-001`                                                                               | proveedor, cuenta, interfaz y credenciales quedan acreditados antes de seleccionar custodia                                                                                  |
+| Secretos futuros de identidades actualmente sin binding                                       | `BLOQUEADO_POR_EVIDENCIA`     | tarea que materialice el binding de cada integración                                        | binding real acredita clase de credencial, runtime, ambiente y consumidor antes de crear la referencia de secret store                                                       |
+
+No queda pendiente narrativo sin propietario, tarea responsable o condición de salida.
+
+---
+
+#### 14. Prohibiciones
+
+Queda prohibido:
+
+1. almacenar valores secretos en tablas empresariales aunque tengan RLS;
+2. almacenar secretos en configuración legible por cliente;
+3. incluir secretos en código, migraciones, comentarios, ejemplos funcionales, fixtures o artefactos;
+4. incluir secretos en comandos persistidos de cron o automatización;
+5. incluir valores secretos en logs, métricas, trazas, errores, respuestas o auditoría;
+6. usar `EXPO_PUBLIC_*` para una credencial que deba permanecer confidencial;
+7. tratar una API key cliente, DSN o identificador publicable como secreto y asumir que ocultarlo en el bundle lo protege;
+8. tratar una variable de entorno como prueba suficiente de cifrado o mínimo privilegio;
+9. tratar una tabla privada, schema privado o registro restringido como secret store sin un contrato específico de custodia;
+10. compartir un secreto de `PRODUCTION` con `DEVELOPMENT` o `STAGING`;
+11. compartir secretos entre integraciones para simplificar configuración salvo que el contrato externo exija exactamente el mismo material y el acceso compartido quede acreditado;
+12. entregar `service_role`, private keys o secretos de webhook a aplicaciones cliente o proveedores externos;
+13. guardar el valor secreto dentro de una referencia, identificador, metadata empresarial o nombre de archivo;
+14. conservar un token verificable en forma recuperable si el flujo solo necesita comprobar posesión y un verificador seguro satisface el contrato;
+15. afirmar custodia remota conforme únicamente porque el código llama `Deno.env` o `process.env`;
+16. inventar secretos, cuentas, stores, proyectos, bindings o consumidores para identidades no acreditadas;
+17. ejecutar durante esta fase documental movimientos, rotaciones, revocaciones, cambios de secretos o modificaciones físicas de configuración;
+18. adelantar las decisiones de lifecycle reservadas a `INT-EXT-008`.
+
+---
+
+#### 15. Criterios de aceptación
+
+`INT-EXT-007` queda documentalmente completa cuando se cumplen simultáneamente estos criterios:
+
+1. existen exactamente veintiuna decisiones, una por `EXT-SYS-001` a `EXT-SYS-021`;
+2. faltantes = `0`;
+3. duplicados = `0`;
+4. se distingue valor secreto de referencia no sensible;
+5. se distingue credencial publicable de secreto confidencial;
+6. se especifica custodia server-side para toda superficie secreta acreditada;
+7. la custodia se separa por ambiente conforme a `INT-EXT-006`;
+8. el valor no puede residir en código, tabla empresarial, configuración cliente, comando persistido, log o artefacto;
+9. los principals técnicos reciben acceso mínimo por superficie;
+10. los sistemas sin secreto observado no reciben uno ficticio;
+11. los sistemas sin binding no reciben una ubicación de custodia inventada;
+12. Apple Wallet conserva clasificación separada para claves privadas, configuraciones públicas, token por pase y token de dispositivo;
+13. la persistencia directa del token opaco Apple queda registrada como brecha y con condición de salida explícita;
+14. la evidencia actual de variables de runtime no se eleva indebidamente a conformidad física;
+15. no se modifica código, Supabase, datos, secretos, proveedores ni configuración remota;
+16. no se adelanta rotación, expiración o revocación;
+17. la tarea produce cero cambios de requisitos porque materializa sobre las veintiuna identidades controles de custodia ya protegidos por el registro canónico vigente.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación:
+
+- el registro vigente ya exige inventario de secretos sin almacenar valores, custodia cifrada y separada, mínimo privilegio, secret scanning, prohibición de persistencia en tablas/configuración/comandos/código/logs y gobierno de credenciales externas;
+- `INT-EXT-007` aplica y materializa esas obligaciones sobre las veintiuna identidades externas y sus superficies ya acreditadas;
+- la tarea no crea una nueva credencial, endpoint, autoridad, mecanismo de autenticación, almacenamiento físico, dato, transporte u operación empresarial;
+- la brecha observada del token Apple y las exposiciones ya registradas en la línea base de seguridad son no conformidades frente a controles existentes, no reglas protegidas nuevas;
+- lifecycle permanece reservado a la tarea siguiente.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 17. Resultado de la tarea
+
+`INT-EXT-007` queda **APROBADA** como definición documental completa de almacenamiento y custodia segura de secretos para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- `VENTO-EXTERNAL-SECRET-CUSTODY-CONTRACT-001` aprobado;
+- `VENTO-EXTERNAL-SECRET-CUSTODY-MATRIX-001` materializada `21/21`;
+- faltantes `0`;
+- duplicados `0`;
+- cuatro identidades con custodia server-side especificada y evidencia física pendiente;
+- dos configuraciones públicas clasificadas expresamente como no secretas;
+- dos plataformas sin secreto externo acreditado en su configuración observada;
+- dos bindings observados sin secreto externo de cliente;
+- una identidad con brecha de custodia observada: Apple Wallet / PassKit + APNs;
+- un modelo documental de secret store sin binding acreditado: Google Wallet;
+- nueve identidades sin binding actual mantienen `NO_APLICA_ACTUAL`;
+- cero valores secretos creados, copiados, movidos, rotados, revocados o expuestos;
+- cero cambios de requisitos de prueba;
+- `INT-EXT-008` permanece reservada exclusivamente para rotación, expiración y revocación.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-006 — Separar credenciales de desarrollo, staging y producción`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-007 — Definir almacenamiento seguro de secretos`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-008 — Definir rotación, expiración y revocación de credenciales`
+
+
 ### [ ] INT-EXT-008 — Definir rotación, expiración y revocación
 ### [ ] INT-EXT-009 — Definir contratos de entrada y salida versionados
 ### [ ] INT-EXT-010 — Definir estrategia webhook, polling o híbrida
