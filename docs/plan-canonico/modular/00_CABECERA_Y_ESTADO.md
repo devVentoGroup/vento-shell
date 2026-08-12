@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **747** |
+| Tareas aprobadas | **748** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **847** |
+| Tareas no iniciadas | **846** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.86% (747/1594)** |
+| Porcentaje de completamiento | **46.93% (748/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-020 — Prohibir credenciales compartidas entre integraciones** |
-| Tarea actual | **INT-WORK-001 — Definir contrato para que VISO publique el turno** |
+| Última tarea aprobada | **INT-WORK-001 — Definir contrato para que VISO publique el turno** |
+| Tarea actual | **INT-WORK-002 — Definir contrato para que ANIMA presente el turno** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-WORK-002 — Definir contrato para que ANIMA presente el turno** |
+| Siguiente tarea | **INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 31 de 83 aprobadas; INT-WORK-001 pendiente** |
+| Progreso del bloque | **BLOQUE X: 32 de 83 aprobadas; INT-WORK-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-020` — Prohibir credenciales compartidas entre integraciones |
-| Tarea actual | `INT-WORK-001` — Definir contrato para que VISO publique el turno — **NO INICIADA** |
-| Siguiente tarea | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno |
+| Última aprobada | `INT-WORK-001` — Definir contrato para que VISO publique el turno |
+| Tarea actual | `INT-WORK-002` — Definir contrato para que ANIMA presente el turno — **NO INICIADA** |
+| Siguiente tarea | `INT-WORK-003` — Definir contrato para que ANIMA registre la asistencia |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 31 DE 83 APROBADAS — ACTUAL INT-WORK-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 32 DE 83 APROBADAS — ACTUAL INT-WORK-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-020 — Prohibir credenciales compartidas entre integraciones
-        ↓
-TAREA ACTUAL
 INT-WORK-001 — Definir contrato para que VISO publique el turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-WORK-002 — Definir contrato para que ANIMA presente el turno
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 31 de 83 tareas aprobadas
+BLOQUE X — 32 de 83 tareas aprobadas
 ```
