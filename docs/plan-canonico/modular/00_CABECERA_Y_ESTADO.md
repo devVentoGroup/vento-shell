@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **736** |
+| Tareas aprobadas | **737** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **858** |
+| Tareas no iniciadas | **857** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.17% (736/1594)** |
+| Porcentaje de completamiento | **46.24% (737/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-009 — Definir contratos de entrada y salida versionados** |
-| Tarea actual | **INT-EXT-010 — Definir estrategia webhook, polling o híbrida** |
+| Última tarea aprobada | **INT-EXT-010 — Definir estrategia webhook, polling o híbrida** |
+| Tarea actual | **INT-EXT-011 — Definir validación de firma, origen, timestamp y replay** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-011 — Definir validación de firma, origen, timestamp y replay** |
+| Siguiente tarea | **INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 20 de 83 aprobadas; INT-EXT-010 pendiente** |
+| Progreso del bloque | **BLOQUE X: 21 de 83 aprobadas; INT-EXT-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-009` — Definir contratos de entrada y salida versionados |
-| Tarea actual | `INT-EXT-010` — Definir estrategia webhook, polling o híbrida — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-011` — Definir validación de firma, origen, timestamp y replay |
+| Última aprobada | `INT-EXT-010` — Definir estrategia webhook, polling o híbrida |
+| Tarea actual | `INT-EXT-011` — Definir validación de firma, origen, timestamp y replay — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-012` — Definir idempotencia y deduplicación por sistema externo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 20 DE 83 APROBADAS — ACTUAL INT-EXT-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 21 DE 83 APROBADAS — ACTUAL INT-EXT-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-009 — Definir contratos de entrada y salida versionados
-        ↓
-TAREA ACTUAL
 INT-EXT-010 — Definir estrategia webhook, polling o híbrida
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 20 de 83 tareas aprobadas
+BLOQUE X — 21 de 83 tareas aprobadas
 ```

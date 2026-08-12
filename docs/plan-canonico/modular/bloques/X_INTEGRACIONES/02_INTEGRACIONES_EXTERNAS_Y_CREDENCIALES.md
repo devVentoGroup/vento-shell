@@ -5172,7 +5172,534 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-010 — Definir estrategia webhook, polling o híbrida`
 
 
-### [ ] INT-EXT-010 — Definir estrategia webhook, polling o híbrida
+### ✅ INT-EXT-010 — Definir estrategia webhook, polling o híbrida
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-009 — Definir contratos de entrada y salida versionados` — APROBADA
+**Tarea siguiente:** `INT-EXT-011 — Definir validación de firma, origen, timestamp y replay` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada de la estrategia de intercambio asíncrono para las integraciones externas `EXT-SYS-001` a `EXT-SYS-021`, preservando identidades, proveedores, contratos de entrada/salida, ambiente, credenciales y fronteras de propiedad ya aprobados, sin modificar endpoints, jobs, SDKs, webhooks, proveedores, código, Supabase, configuración ni datos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, credenciales, cuentas externas, configuración productiva, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Materializar una decisión explícita de estrategia de intercambio asíncrono para cada una de las veintiuna identidades externas heredadas y contratadas documentalmente por `INT-EXT-001` a `INT-EXT-009`.
+
+La tarea distingue expresamente:
+
+```text
+WEBHOOK
+≠
+POLLING
+≠
+PUSH
+≠
+REQUEST / RESPONSE
+≠
+REDIRECCIÓN
+≠
+SDK BAJO DEMANDA
+≠
+DESCUBRIMIENTO LOCAL
+```
+
+La selección documental responde únicamente a la forma en la que VENTO obtiene o propaga cambios externos cuando existe una superficie acreditada. No convierte en polling una consulta request/response, no convierte una URL de retorno en webhook y no convierte un servicio de push saliente en una fuente externa de hechos.
+
+Esta tarea tampoco decide firma, origen confiable, ventana temporal, protección contra replay, idempotencia, conservación del payload, cadence numérica, rate limits, retry, backoff, circuit breaker, cuarentena, auditoría, conciliación, contingencia o retiro. Esas materias permanecen en `INT-EXT-011` a `INT-EXT-019`.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales internos:
+
+- `VENTO-EXTERNAL-DELIVERY-STRATEGY-001`;
+- `VENTO-EXTERNAL-DELIVERY-STRATEGY-MATRIX-001`.
+
+Balance materializado:
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades heredadas esperadas            |    **21** |
+| Identidades materializadas                 | **21/21** |
+| Identificadores `EXT-SYS-*` únicos         |    **21** |
+| Identidades faltantes                      |     **0** |
+| Identidades duplicadas                     |     **0** |
+| Estrategias `WEBHOOK`                      |     **2** |
+| Estrategias `POLLING`                      |     **0** |
+| Estrategias `HIBRIDA_PUSH_PULL`            |     **1** |
+| Casos `NO_APLICA_RECEPCION_ASINCRONA`      |    **16** |
+| Casos `BLOQUEADA_SIN_BINDING`              |     **2** |
+| Endpoints alterados                        |     **0** |
+| Jobs o schedulers creados                  |     **0** |
+| Webhooks creados                           |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+
+Distribución primaria:
+
+```text
+2 WEBHOOK
++
+0 POLLING
++
+1 HIBRIDA_PUSH_PULL
++
+16 NO_APLICA_RECEPCION_ASINCRONA
++
+2 BLOQUEADA_SIN_BINDING
+=
+21
+```
+
+La inexistencia de una estrategia `POLLING` pura en el corte actual es una decisión material: no existe evidencia suficiente para inventar un sondeo periódico hacia un proveedor solo para completar la taxonomía.
+
+---
+
+#### 3. Fuentes y decisiones preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `INT-EXT-001`, incluidas las veintiuna identidades externas y sus niveles de evidencia;
+- `INT-EXT-002`, incluida la separación entre actor humano, principal técnico y cuenta externa;
+- `INT-EXT-003`, incluida la procedencia de credenciales;
+- `INT-EXT-004`, incluidos los mecanismos reales observados y la obligación fail-closed;
+- `INT-EXT-005`, incluido el alcance mínimo de cada credencial;
+- `INT-EXT-006`, incluida la separación de ambientes;
+- `INT-EXT-007`, incluida la custodia de secretos y configuración publicable;
+- `INT-EXT-008`, incluido el lifecycle independiente de credenciales;
+- `INT-EXT-009`, incluidos `VENTO-EXTERNAL-IO-CONTRACT-001`, `VENTO-EXTERNAL-IO-CONTRACT-MATRIX-001`, sus veintiuna decisiones y su versión documental `1.0.0`;
+- `TREQ-INTEGRATION-003`, que protege operaciones asíncronas, webhooks, reintentos, resultado recuperable e idempotencia;
+- `TREQ-INTEGRATION-004`, que exige identificar, versionar, probar y hacer trazable el disparador efectivo de una cadena trigger, función, job, webhook o notificación;
+- `TREQ-INTEGRATION-049`, que gobierna la adaptación de eventos originados en proveedores o sistemas externos antes de producir un hecho interno;
+- `TREQ-INTEGRATION-050`, que mantiene separados el contrato empresarial y la selección física de topics, colas, triggers, webhooks, endpoints, jobs y transporte;
+- las fronteras de propiedad que impiden que el mecanismo de entrega convierta a un tercero o adaptador en propietario de un proceso VENTO.
+
+Ninguna decisión de esta tarea cambia el schema versionado de `INT-EXT-009`, la cuenta externa, el ambiente, el principal técnico, el scope, la credencial ni la fuente de verdad.
+
+---
+
+#### 4. Vocabulario cerrado de estrategia
+
+`VENTO-EXTERNAL-DELIVERY-STRATEGY-001` usa exactamente estas decisiones primarias para el corte documental:
+
+| Estrategia                      | Definición                                                                                                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `WEBHOOK`                       | el proveedor o sistema externo inicia una entrega asíncrona hacia una frontera VENTO acreditada; la recepción no requiere sondeo periódico para enterarse del cambio                                           |
+| `POLLING`                       | VENTO consulta de forma periódica una superficie externa acreditada para descubrir cambios o estado nuevo; requiere una lectura autoritativa consultable y no se infiere desde una llamada bajo demanda        |
+| `HIBRIDA_PUSH_PULL`             | una señal push o mecanismo equivalente despierta o acelera la actualización y una lectura pull obtiene o confirma el contenido; ambas partes pertenecen a una sola estrategia y no crean dos fuentes de verdad |
+| `NO_APLICA_RECEPCION_ASINCRONA` | la superficie actual es exclusivamente request/response, salida, configuración, navegación, adaptador local o carece de recepción asíncrona acreditada; no se inventa webhook o polling                        |
+| `BLOQUEADA_SIN_BINDING`         | existe una identidad que requiere integración futura, pero proveedor, interfaz o binding aún no permiten seleccionar de forma verificable webhook, polling o híbrida                                           |
+
+No se autoriza ningún valor alternativo, alias ambiguo ni estrategia implícita.
+
+---
+
+#### 5. Reglas de selección
+
+##### 5.1. `WEBHOOK`
+
+Solo se selecciona cuando existe evidencia actual de una frontera de recepción asíncrona iniciada por el proveedor o sistema externo.
+
+La existencia de una URL de redirección, un callback de interfaz de usuario, un deep link o un endpoint que VENTO invoca no basta para clasificar una superficie como webhook.
+
+##### 5.2. `POLLING`
+
+Solo puede seleccionarse cuando están acreditados:
+
+- una superficie de lectura del proveedor;
+- un estado o conjunto de cambios consultable;
+- una identidad o criterio que permita distinguir el avance sin fabricar hechos;
+- una semántica que no convierta la consulta en mutación repetida.
+
+La cadence, intervalos, jitter, límites, `Retry-After`, backoff y circuit breaker no se fijan aquí; pertenecen a `INT-EXT-015`.
+
+##### 5.3. `HIBRIDA_PUSH_PULL`
+
+Solo se usa cuando ambos mecanismos están acreditados y tienen roles distintos:
+
+```text
+SEÑAL / AVISO
++
+LECTURA / RECUPERACIÓN DE CONTENIDO
+→
+UNA SOLA ESTRATEGIA
+```
+
+La señal no se convierte en fuente de verdad por sí sola y la lectura no se ejecuta como polling ciego si el protocolo no lo requiere.
+
+##### 5.4. `NO_APLICA_RECEPCION_ASINCRONA`
+
+Es una decisión explícita y no un pendiente. Se usa cuando el contrato actual no necesita una estrategia de recepción asíncrona.
+
+Si una tarea posterior incorpora un binding asíncrono real, esa tarea deberá versionar la matriz y resolver nuevamente esta decisión antes de habilitar el nuevo flujo.
+
+##### 5.5. `BLOQUEADA_SIN_BINDING`
+
+No permite seleccionar por preferencia tecnológica. La salida del bloqueo exige evidencia del proveedor, interfaz y contrato suficiente para decidir el mecanismo sin suposición.
+
+---
+
+#### 6. Reglas transversales
+
+1. una misma identidad externa puede tener varias superficies, pero cada superficie asíncrona debe heredar una estrategia explícita;
+2. una estrategia de entrega no modifica la propiedad del hecho empresarial;
+3. `WEBHOOK` no significa automáticamente confirmación empresarial;
+4. `POLLING` no significa automáticamente reconciliación;
+5. `HIBRIDA_PUSH_PULL` no permite tratar la señal y la lectura como dos fuentes competidoras;
+6. request/response sin repetición programada no es polling;
+7. una consulta iniciada por el usuario no es polling por el solo hecho de usar HTTP GET;
+8. un SDK que compra, restaura o consulta bajo demanda no es polling;
+9. una redirección del navegador no es webhook;
+10. un servicio que VENTO usa para enviar push no es por ello un webhook de entrada;
+11. un temporizador local que espera disponibilidad de una librería o periférico no es polling de estado empresarial externo;
+12. un webhook no habilita automáticamente fallback a polling;
+13. un polling no habilita automáticamente un webhook paralelo;
+14. una modalidad híbrida requiere que ambos mecanismos estén acreditados;
+15. ningún mecanismo crea autoridad para escribir varias fuentes internas;
+16. un ACK técnico no reemplaza el resultado empresarial;
+17. todo cambio de estrategia sobre una superficie activa debe conservar compatibilidad con `INT-EXT-009` y producir una nueva revisión de esta matriz;
+18. activar una identidad actualmente sin binding exige primero materializar su contrato de `INT-EXT-009` o su sucesor versionado;
+19. seguridad de firma, autenticidad, timestamp y replay queda reservada a `INT-EXT-011`;
+20. idempotencia y deduplicación por proveedor queda reservada a `INT-EXT-012`.
+
+---
+
+#### 7. Estrategia de Wompi — `EXT-SYS-002`
+
+Decisión:
+
+```text
+WEBHOOK
+```
+
+La superficie observada de recepción de cambios de pago es el webhook de pagos. El retorno del checkout hacia VENTO permanece como redirección de experiencia y no se convierte en confirmación autoritativa del pago.
+
+Reglas específicas:
+
+- el evento iniciado por Wompi es la entrada asíncrona acreditada del corte;
+- la URL de retorno no constituye un segundo canal de confirmación;
+- no existe polling puro acreditado en el código inspeccionado para descubrir el estado de pago;
+- no se crea un fallback de polling por inferencia;
+- firma y checksum se documentarán en `INT-EXT-011` sin cambiar la elección de transporte;
+- deduplicación del evento se especializará en `INT-EXT-012`.
+
+---
+
+#### 8. Estrategia de RevenueCat — `EXT-SYS-003`
+
+Decisión:
+
+```text
+WEBHOOK
+```
+
+La recepción server-side observada de cambios de entitlement se realiza mediante webhook.
+
+Las operaciones del SDK de compra y restauración permanecen llamadas bajo demanda del cliente y no se clasifican como polling.
+
+Reglas específicas:
+
+- el webhook constituye la recepción asíncrona acreditada;
+- compra y restore mediante SDK no crean un segundo mecanismo asíncrono;
+- no se inventa polling periódico de RevenueCat;
+- autenticación del webhook queda en `INT-EXT-011`;
+- identidad externa, deduplicación y correlación quedan en `INT-EXT-012` y `INT-EXT-013` según corresponda.
+
+---
+
+#### 9. Estrategia de Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Decisión:
+
+```text
+HIBRIDA_PUSH_PULL
+```
+
+La familia observada separa dos roles:
+
+```text
+APNs
+→ señal de actualización
+
+Apple Wallet / PassKit Web Service v1
+→ registro y lectura pull del pase actualizado
+```
+
+La estrategia es híbrida porque la señal push acelera el ciclo y el contenido actualizado se obtiene mediante la superficie de lectura del web service.
+
+Reglas específicas:
+
+- APNs no constituye el contenido autoritativo del pase;
+- el GET del pase no se interpreta como polling periódico de VENTO contra Apple;
+- registro, baja, consulta de cambios y descarga del pase permanecen subconjuntos del contrato versionado de `INT-EXT-009`;
+- `If-Modified-Since` y `passesUpdatedSince` se preservan como semántica de lectura observada, sin fijar aquí ventanas operativas adicionales;
+- no se crea una segunda fuente de datos para el pase;
+- lifecycle de certificados y credenciales sigue separado de la estrategia de entrega.
+
+---
+
+#### 10. `VENTO-EXTERNAL-DELIVERY-STRATEGY-MATRIX-001`
+
+| ID            | Sistema / proveedor preservado           | Superficie acreditada de `INT-EXT-009`                                  | Estrategia primaria             | Estado documental         | Decisión materializada                                                                                                                                    |
+| ------------- | ---------------------------------------- | ----------------------------------------------------------------------- | ------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | Auth, consultas autorizadas, RPC, Edge Functions y fronteras observadas | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | las superficies heredadas son request/response o plataforma VENTO; no se acredita aquí un proveedor externo que origine hechos mediante webhook o polling |
+| `EXT-SYS-002` | Wompi                                    | checkout, retorno y evento de pago                                      | `WEBHOOK`                       | `ESPECIFICADO`            | el evento de pago recibido por webhook es la entrada asíncrona; el retorno del checkout no confirma el hecho y no existe polling acreditado               |
+| `EXT-SYS-003` | RevenueCat                               | SDK Apple/Google, compra/restauración y webhook de entitlement          | `WEBHOOK`                       | `ESPECIFICADO`            | entitlement server-side se recibe por webhook; compra y restore del SDK permanecen operaciones bajo demanda, no polling                                   |
+| `EXT-SYS-004` | Resend                                   | envío server-side de correo                                             | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | contrato actual de salida; no existe ingestión asíncrona acreditada desde Resend                                                                          |
+| `EXT-SYS-005` | Expo / EAS Update                        | configuración, perfiles, canales y plataforma                           | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | `INT-EXT-009` no acredita contrato I/O de administración sobre el cual seleccionar webhook o polling                                                      |
+| `EXT-SYS-006` | Expo Push Service                        | mensaje push y respuesta técnica                                        | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | es una superficie de salida; la entrega push no se transforma en webhook de entrada por analogía                                                          |
+| `EXT-SYS-007` | Sentry                                   | telemetría SDK hacia ingestión                                          | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | la superficie observada es salida de telemetría; no se acredita recepción asíncrona de estado empresarial                                                 |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | autocomplete, detalle de lugar y navegación pública                     | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | autocomplete y detalle son consultas bajo demanda; no se convierten en polling periódico                                                                  |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `.pkpass`, web service `v1`, registro, actualización y APNs             | `HIBRIDA_PUSH_PULL`             | `ESPECIFICADO`            | APNs actúa como señal y el dispositivo usa la lectura del web service para obtener cambios; no hay dos fuentes de verdad                                  |
+| `EXT-SYS-010` | Vercel                                   | plataforma y despliegue                                                 | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | no existe contrato I/O acreditado por `INT-EXT-009` para seleccionar modalidad                                                                            |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | descubrimiento local, dispositivo y ZPL                                 | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | adaptador local; detección de librería o impresora no constituye polling de proveedor empresarial                                                         |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | objeto genérico y JWT de guardado                                       | `NO_APLICA_RECEPCION_ASINCRONA` | `ESPECIFICADO`            | existe modelo de payload, pero no binding remoto acreditado; no se inventa una estrategia asíncrona                                                       |
+| `EXT-SYS-013` | POS externo vigente                      | proveedor, interfaz y payload no acreditados                            | `BLOQUEADA_SIN_BINDING`         | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001` debe acreditar proveedor, endpoints, webhooks y límites antes de seleccionar modalidad                                                      |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | binding no acreditado                                                   | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe intercambio actual acreditado; cualquier binding futuro deberá versionar esta decisión antes de activarse                                       |
+| `EXT-SYS-015` | Rappi / marketplace                      | binding no acreditado                                                   | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe intercambio actual acreditado; no se presume webhook ni polling                                                                                 |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | binding no acreditado                                                   | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe intercambio actual acreditado; no se presume webhook ni polling                                                                                 |
+| `EXT-SYS-017` | WhatsApp                                 | proveedor/API no acreditados                                            | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe proveedor/API acreditado sobre el cual decidir modalidad                                                                                        |
+| `EXT-SYS-018` | Instagram / social                       | API/binding no acreditados                                              | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe API/binding acreditado; no se presume webhook de Meta u otra tecnología                                                                         |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | proveedor e integración no acreditados                                  | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe proveedor de correo integrado acreditado; no se inventa IMAP, webhook o polling                                                                 |
+| `EXT-SYS-020` | Telefonía / voz                          | operador e integración no acreditados                                   | `BLOQUEADA_SIN_BINDING`         | `BLOQUEADO_POR_EVIDENCIA` | operador, interfaz y payload deben acreditarse antes de elegir estrategia; la decisión no habilita trabajo técnico                                        |
+| `EXT-SYS-021` | Transporte externo                       | proveedor e interfaz no acreditados                                     | `NO_APLICA_RECEPCION_ASINCRONA` | `NO_APLICA_EN_CORTE`      | no existe proveedor o interfaz acreditados; una futura integración deberá versionar esta matriz antes de activarse                                        |
+
+Comprobación de distribución:
+
+```text
+WEBHOOK                    = 2
+POLLING                    = 0
+HIBRIDA_PUSH_PULL          = 1
+NO_APLICA_RECEPCION_ASINCRONA = 16
+BLOQUEADA_SIN_BINDING      = 2
+--------------------------------
+TOTAL                      = 21
+```
+
+---
+
+#### 11. Criterios para futuros bindings
+
+Cuando una identidad actualmente `NO_APLICA_RECEPCION_ASINCRONA` o `BLOQUEADA_SIN_BINDING` obtenga un binding real, la tarea que materialice ese binding deberá comprobar, antes de activar tráfico:
+
+1. proveedor exacto;
+2. superficie o endpoint acreditado;
+3. dirección del intercambio;
+4. contrato VENTO de `INT-EXT-009` o sucesor compatible;
+5. si el proveedor inicia entrega o VENTO debe consultar;
+6. si existe una lectura autoritativa utilizable después de una señal;
+7. si la estrategia resultante es `WEBHOOK`, `POLLING` o `HIBRIDA_PUSH_PULL`;
+8. que la nueva decisión no introduzca una segunda fuente empresarial;
+9. que la matriz de estrategia quede versionada antes de producción;
+10. que las tareas de seguridad, idempotencia, retry y observabilidad se apliquen según sus propietarios.
+
+No se permite activar primero y documentar después.
+
+---
+
+#### 12. Cambio de estrategia
+
+Cambiar una superficie activa de:
+
+- `WEBHOOK` a `POLLING`;
+- `POLLING` a `WEBHOOK`;
+- cualquiera de las anteriores a `HIBRIDA_PUSH_PULL`;
+- `HIBRIDA_PUSH_PULL` a una sola vía;
+- `NO_APLICA_RECEPCION_ASINCRONA` a una modalidad activa;
+- `BLOQUEADA_SIN_BINDING` a una modalidad activa;
+
+requiere una nueva revisión del artefacto `VENTO-EXTERNAL-DELIVERY-STRATEGY-MATRIX-001` y verificación de compatibilidad con el contrato I/O vigente.
+
+El cambio no se ejecuta silenciosamente mediante variable de entorno, feature flag, endpoint adicional, job, cron o fallback local no documentado.
+
+La materialización física posterior deberá preservar rollback del mecanismo anterior cuando el paquete de implementación lo exija, pero esta tarea no define ni ejecuta dicho rollback.
+
+---
+
+#### 13. Fronteras reservadas a `INT-EXT-011` a `INT-EXT-020`
+
+| Materia                                            | Tarea propietaria |
+| -------------------------------------------------- | ----------------- |
+| firma, origen, timestamp y replay                  | `INT-EXT-011`     |
+| idempotencia y deduplicación                       | `INT-EXT-012`     |
+| mapeo de identificadores externos y canónicos      | `INT-EXT-013`     |
+| conservación controlada del payload original       | `INT-EXT-014`     |
+| rate limits, reintentos, backoff y circuit breaker | `INT-EXT-015`     |
+| cuarentena o dead-letter                           | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación        | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor   | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales | `INT-EXT-019`     |
+| credenciales compartidas entre integraciones       | `INT-EXT-020`     |
+
+`INT-EXT-010` no adelanta ninguna de esas políticas por el hecho de identificar el mecanismo de transporte.
+
+---
+
+#### 14. Trazabilidad de handoff
+
+| Trabajo derivado                                                  | Estado                    | Propietario / tarea responsable | Condición de salida                                                                                         |
+| ----------------------------------------------------------------- | ------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Validar autenticidad de webhooks Wompi y RevenueCat               | `FUERA_DE_ALCANCE`        | `INT-EXT-011`                   | firma, origen, timestamp y protección contra replay quedan definidos sin cambiar la modalidad seleccionada  |
+| Deduplicar entregas repetidas                                     | `FUERA_DE_ALCANCE`        | `INT-EXT-012`                   | cada sistema externo dispone de identidad y alcance idempotente verificables                                |
+| Fijar intervalos, backoff y límites de cualquier consulta o retry | `FUERA_DE_ALCANCE`        | `INT-EXT-015`                   | cadence y presupuestos quedan definidos sin convertir request/response en polling                           |
+| Acreditar proveedor e interfaz del POS vigente                    | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | documentación, endpoints, webhooks y límites del POS quedan inspeccionados y permiten seleccionar modalidad |
+| Materializar contratos compartidos de evento externo              | `FUERA_DE_ALCANCE`        | `SHELL-CON-019`                 | la integración consume un contrato compartido sin transferir propiedad empresarial                          |
+| Materializar idempotencia y conciliación compartidas              | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                 | operaciones repetidas y resultados recuperables utilizan el contrato compartido aprobado                    |
+| Materializar cuarentena y rechazo                                 | `FUERA_DE_ALCANCE`        | `SHELL-CON-024`                 | entradas inválidas o incompatibles tienen disposición explícita                                             |
+
+Las identidades sin binding no se convierten en pendientes ejecutables por esta tarea. Permanecen `NO_APLICA_EN_CORTE` hasta que una tarea canónica futura introduzca de forma explícita el binding correspondiente.
+
+---
+
+#### 15. Prohibiciones
+
+Queda prohibido:
+
+1. declarar polling solo porque una integración usa HTTP GET;
+2. declarar webhook solo porque existe una URL de retorno;
+3. declarar webhook solo porque existe un endpoint HTTP;
+4. declarar híbrida sin dos mecanismos acreditados y roles distintos;
+5. usar polling como fallback silencioso de un webhook;
+6. usar webhook como fallback silencioso de polling;
+7. sondear un endpoint mutante como mecanismo de descubrimiento;
+8. ejecutar polling periódico sin superficie de lectura autoritativa acreditada;
+9. tratar ACK técnico como confirmación empresarial;
+10. tratar la redirección de Wompi como confirmación del pago;
+11. tratar `purchase` o `restore` de RevenueCat como polling;
+12. tratar Expo Push como webhook de entrada;
+13. tratar consultas de Google Maps como polling empresarial;
+14. tratar detección local de BrowserPrint como polling de proveedor;
+15. tratar APNs como contenido autoritativo del pase;
+16. presentar Google Wallet como integración asíncrona operativa sin binding remoto acreditado;
+17. inventar estrategia para POS, telefonía u otra identidad sin interfaz acreditada;
+18. fijar firma, checksum, timestamp o replay de `INT-EXT-011`;
+19. fijar claves idempotentes o deduplicación de `INT-EXT-012`;
+20. fijar cadence, retries o circuit breaker de `INT-EXT-015`;
+21. modificar código, Supabase, endpoints, cron, jobs, proveedores, cuentas, credenciales o datos durante esta fase documental;
+22. cambiar las veintiuna identidades heredadas;
+23. modificar los contratos I/O de `INT-EXT-009` por conveniencia de transporte;
+24. iniciar `INT-EXT-011`.
+
+---
+
+#### 16. Criterios de aceptación
+
+`INT-EXT-010` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución es exactamente `2 WEBHOOK + 0 POLLING + 1 HIBRIDA_PUSH_PULL + 16 NO_APLICA_RECEPCION_ASINCRONA + 2 BLOQUEADA_SIN_BINDING = 21`;
+7. Wompi queda `WEBHOOK`;
+8. el retorno de Wompi no se presenta como confirmación autoritativa;
+9. RevenueCat queda `WEBHOOK`;
+10. compra y restore de RevenueCat no se presentan como polling;
+11. Apple Wallet queda `HIBRIDA_PUSH_PULL`;
+12. APNs se conserva como señal y la lectura del pase como pull de contenido;
+13. no existe una estrategia `POLLING` inventada;
+14. request/response queda separado de polling;
+15. redirección queda separada de webhook;
+16. push saliente queda separado de webhook de entrada;
+17. adaptador local queda separado de polling de proveedor;
+18. `EXT-SYS-013` permanece bloqueada hasta `INT-POS-001`;
+19. `EXT-SYS-020` permanece bloqueada por falta de operador, interfaz y payload acreditados;
+20. las identidades sin binding no reciben una modalidad ficticia;
+21. una futura activación exige versionar la matriz;
+22. cambio de modalidad no puede ejecutarse silenciosamente;
+23. propiedad empresarial no cambia por la estrategia de transporte;
+24. firma, origen, timestamp y replay no se adelantan;
+25. idempotencia y deduplicación no se adelantan;
+26. cadence, rate limits, retry y circuit breaker no se adelantan;
+27. no se modifica código;
+28. no se modifica Supabase;
+29. no se crean webhooks, jobs, cron ni schedulers;
+30. no se modifican endpoints ni proveedores;
+31. se crean cero requisitos de prueba;
+32. se modifican cero requisitos de prueba;
+33. `INT-EXT-011` permanece reservada.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea no introduce un nuevo comportamiento ejecutable. Materializa, para las veintiuna identidades ya gobernadas, qué mecanismo asíncrono observado corresponde al corte actual y cuáles superficies no tienen recepción asíncrona o permanecen bloqueadas. Los comportamientos verificables asociados ya están cubiertos por requisitos vigentes de integración que protegen operaciones asíncronas y webhooks, trazabilidad del disparador efectivo, adaptación de eventos externos y separación entre contrato empresarial y mecanismo físico. Las especializaciones de seguridad, idempotencia, retry y observabilidad permanecen en sus tareas posteriores y requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 18. Resultado de la tarea
+
+`INT-EXT-010` queda **APROBADA** como definición documental completa de estrategia webhook, polling o híbrida para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- `WEBHOOK`: **2**;
+- `POLLING`: **0**;
+- `HIBRIDA_PUSH_PULL`: **1**;
+- `NO_APLICA_RECEPCION_ASINCRONA`: **16**;
+- `BLOQUEADA_SIN_BINDING`: **2**;
+- faltantes: **0**;
+- duplicados: **0**;
+- webhooks creados: **0**;
+- jobs o schedulers creados: **0**;
+- cambios de runtime: **0**;
+- TREQ creados o modificados: **0**.
+
+La tarea deja como invariante:
+
+```text
+ESTRATEGIA ASINCRONA VÁLIDA
+=
+IDENTIDAD EXTERNA ACREDITADA
++
+CONTRATO I/O VIGENTE
++
+SUPERFICIE REAL
++
+MECANISMO OBSERVADO
++
+UNA SOLA AUTORIDAD EMPRESARIAL
+```
+
+sin usar mecanismos inexistentes para completar una taxonomía y sin adelantar las políticas de seguridad, idempotencia, resiliencia u operación de las tareas siguientes.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-009 — Definir contratos de entrada y salida versionados`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-010 — Definir estrategia webhook, polling o híbrida`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-011 — Definir validación de firma, origen, timestamp y replay`
+
+
 ### [ ] INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
 ### [ ] INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
 ### [ ] INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
