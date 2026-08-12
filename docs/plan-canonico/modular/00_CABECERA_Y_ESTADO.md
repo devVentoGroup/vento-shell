@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **738** |
+| Tareas aprobadas | **739** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **856** |
+| Tareas no iniciadas | **855** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.30% (738/1594)** |
+| Porcentaje de completamiento | **46.36% (739/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-011 — Definir validación de firma, origen, timestamp y replay** |
-| Tarea actual | **INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo** |
+| Última tarea aprobada | **INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo** |
+| Tarea actual | **INT-EXT-013 — Definir mapeo de identificadores externos y canónicos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-013 — Definir mapeo de identificadores externos y canónicos** |
+| Siguiente tarea | **INT-EXT-014 — Definir conservación controlada del payload original** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 22 de 83 aprobadas; INT-EXT-012 pendiente** |
+| Progreso del bloque | **BLOQUE X: 23 de 83 aprobadas; INT-EXT-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-011` — Definir validación de firma, origen, timestamp y replay |
-| Tarea actual | `INT-EXT-012` — Definir idempotencia y deduplicación por sistema externo — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-013` — Definir mapeo de identificadores externos y canónicos |
+| Última aprobada | `INT-EXT-012` — Definir idempotencia y deduplicación por sistema externo |
+| Tarea actual | `INT-EXT-013` — Definir mapeo de identificadores externos y canónicos — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-014` — Definir conservación controlada del payload original |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 22 DE 83 APROBADAS — ACTUAL INT-EXT-012** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 23 DE 83 APROBADAS — ACTUAL INT-EXT-013** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-011 — Definir validación de firma, origen, timestamp y replay
-        ↓
-TAREA ACTUAL
 INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-014 — Definir conservación controlada del payload original
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 22 de 83 tareas aprobadas
+BLOQUE X — 23 de 83 tareas aprobadas
 ```

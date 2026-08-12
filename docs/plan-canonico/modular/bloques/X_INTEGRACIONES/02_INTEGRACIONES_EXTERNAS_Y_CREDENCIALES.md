@@ -6399,7 +6399,798 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo`
 
 
-### [ ] INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
+### ✅ INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-011 — Definir validación de firma, origen, timestamp y replay` — APROBADA
+**Tarea siguiente:** `INT-EXT-013 — Definir mapeo de identificadores externos y canónicos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materialización por las veintiuna identidades externas de la clave idempotente, el alcance de deduplicación, el hash lógico, la reclamación durable, el resultado recuperable y la separación entre retry técnico y repetición intencional, sin implementar cambios físicos
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Fase:** exclusivamente documental
+**Implementación física autorizada:** ninguna
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, configuración remota, despliegues o datos:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir, para cada identidad `EXT-SYS-001` a `EXT-SYS-021`, cómo VENTO distingue una operación nueva de una repetición de la misma operación y cómo impide que reintentos, redeliveries, concurrencia o incertidumbre de red produzcan más de un efecto lógico o físico.
+
+La tarea separa obligatoriamente:
+
+```text
+AUTENTICIDAD DE LA ENTREGA
+≠
+IDENTIDAD IDEMPOTENTE
+≠
+DEDUPLICACIÓN
+≠
+RETRY
+≠
+REPETICIÓN INTENCIONAL
+≠
+CONCILIACIÓN
+```
+
+`INT-EXT-011` decide si una entrada puede aceptarse como auténtica o como redelivery válida. `INT-EXT-012` decide si esa entrega representa una operación ya reclamada y qué resultado debe recuperar. No redefine firma, autenticación, mapeo externo, retención de payload, backoff, cuarentena ni conciliación.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se aprueban dos artefactos documentales:
+
+1. `VENTO-EXTERNAL-IDEMPOTENCY-CONTRACT-001`, contrato común de identidad idempotente y deduplicación.
+2. `VENTO-EXTERNAL-IDEMPOTENCY-MATRIX-001`, decisión materializada para las veintiuna identidades externas heredadas.
+
+Balance:
+
+| Control                                             |    Resultado |
+| --------------------------------------------------- | -----------: |
+| Identidades esperadas                               |       **21** |
+| Identidades materializadas                          | **21 de 21** |
+| Identificadores únicos                              |       **21** |
+| Faltantes                                           |        **0** |
+| Duplicados                                          |        **0** |
+| `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  |        **6** |
+| `SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL` |        **2** |
+| `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`              |        **1** |
+| `NO_APLICA_EN_CORTE`                                |       **10** |
+| `BLOQUEADA_SIN_BINDING`                             |        **2** |
+| Cambios físicos                                     |        **0** |
+| Requisitos de prueba creados o modificados          |        **0** |
+
+La distribución es exactamente:
+
+```text
+6 + 2 + 1 + 10 + 2 = 21
+```
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `VENTO-EXTERNAL-SYSTEM-INVENTORY-001` y sus veintiuna identidades;
+- las decisiones de principal técnico, procedencia, mecanismos de autenticación, mínimo privilegio, separación de ambientes, secretos y lifecycle aprobadas en `INT-EXT-002` a `INT-EXT-008`;
+- los contratos I/O versionados de `INT-EXT-009`;
+- las estrategias `WEBHOOK`, `HIBRIDA_PUSH_PULL`, `NO_APLICA_RECEPCION_ASINCRONA` y `BLOQUEADA_SIN_BINDING` de `INT-EXT-010`;
+- la clasificación de autenticidad, origen, timestamp y replay de `INT-EXT-011`;
+- el contrato transversal ya protegido por `TREQ-INTEGRATION-003`, que exige clave estable, hash de contenido lógico, estado durable, resultado recuperable, conflicto ante reutilización incompatible y claim/lock equivalente;
+- la reconstrucción de intentos y efectos protegida por `TREQ-INTEGRATION-004`;
+- el invariante de deduplicación de entregas repetidas protegido por `TREQ-INTEGRATION-042`;
+- el tratamiento seguro de replay/backfill protegido por `TREQ-INTEGRATION-045`;
+- la conservación de identidad externa y correlación protegida por `TREQ-INTEGRATION-049` y `TREQ-INTEGRATION-061`;
+- el requisito específico de pagos `TREQ-PASS-009`, que exige convergencia de intentos concurrentes, claim atómico de eventos de proveedor y ausencia de doble efecto;
+- `SHELL-CON-023` como contrato compartido posterior de idempotencia y conciliación;
+- `PRINT-ARC-010` como autoridad ya aprobada sobre prevención de impresiones duplicadas.
+
+Esta tarea especializa esos invariantes por sistema externo; no crea una semántica paralela.
+
+---
+
+#### 4. `VENTO-EXTERNAL-IDEMPOTENCY-CONTRACT-001`
+
+Toda operación con efecto externo, efecto interno derivado de una entrada externa o efecto físico deberá poder representar como mínimo:
+
+| Campo conceptual       | Regla                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `external_system_id`   | identidad `EXT-SYS-*` exacta                                                       |
+| `environment`          | ambiente exacto; una clave nunca cruza ambientes                                   |
+| `surface`              | webhook, envío, registro, impresión u otra superficie materializada                |
+| `operation_kind`       | clase estable del efecto solicitado                                                |
+| `operation_key`        | identidad estable asignada antes del primer efecto                                 |
+| `logical_content_hash` | huella determinista del contenido lógico que la clave protege                      |
+| `resource_ref`         | recurso interno o externo aplicable sin sustituir el mapping de `INT-EXT-013`      |
+| `generation`           | versión intencional del envío/efecto cuando una repetición voluntaria sea legítima |
+| `claim_state`          | estado durable de reclamación de la operación                                      |
+| `result_ref`           | resultado recuperable o referencia durable al resultado original                   |
+| `provider_ref`         | identificador de proveedor cuando exista y esté acreditado                         |
+| `first_received_at`    | primera recepción o creación de la operación                                       |
+| `last_seen_at`         | última repetición observada sin convertirla en nuevo efecto                        |
+
+La denominación física final pertenece a la implementación posterior. La obligación es semántica y no prescribe todavía tabla, índice, RPC, cola o proveedor de almacenamiento.
+
+---
+
+#### 5. Regla universal de identidad y contenido
+
+La clave idempotente se evalúa dentro de este namespace:
+
+```text
+external_system_id
++ environment
++ surface
++ operation_kind
++ operation_key
+```
+
+Reglas:
+
+1. la clave se determina antes del primer efecto;
+2. la clave no se genera de nuevo en cada retry de la misma operación;
+3. `logical_content_hash` se calcula sobre contenido lógico normalizado, no sobre metadatos variables como hora local de retry, contador de intento o latencia;
+4. mismo namespace + misma clave + mismo hash devuelve el resultado durable original y no produce un segundo efecto;
+5. mismo namespace + misma clave + hash distinto produce `IDEMPOTENCY_KEY_REUSE_CONFLICT`;
+6. una clave aleatoria creada después de recibir un evento sin identidad no convierte ese evento en deduplicable;
+7. una clave de staging jamás deduplica producción ni a la inversa;
+8. un identificador de usuario, correo, teléfono, token de dispositivo o `site_id` aislado no es por sí solo una clave idempotente válida;
+9. el hash lógico no sustituye la autenticidad de `INT-EXT-011` ni el mapping de `INT-EXT-013`;
+10. una colisión o inconsistencia de identidad falla cerrado antes de repetir el efecto.
+
+---
+
+#### 6. Reclamación durable y estados
+
+Antes de producir un efecto cubierto se requiere una reclamación durable o mecanismo equivalente capaz de excluir carreras concurrentes.
+
+Estados conceptuales cerrados:
+
+| Estado                           | Significado                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| `CLAIMED`                        | la clave y su hash fueron aceptados como primera operación                     |
+| `IN_PROGRESS`                    | el efecto comenzó y todavía no existe resultado definitivo                     |
+| `SUCCEEDED`                      | existe resultado durable recuperable                                           |
+| `FAILED_FINAL`                   | el intento terminó sin efecto recuperable y no debe reinterpretarse como éxito |
+| `OUTCOME_UNKNOWN`                | el canal no permite saber todavía si el efecto ocurrió                         |
+| `DUPLICATE_SAME_CONTENT`         | la misma operación vuelve a presentarse y debe recuperar el resultado conocido |
+| `IDEMPOTENCY_KEY_REUSE_CONFLICT` | la misma clave intenta proteger contenido lógico distinto                      |
+
+Reglas:
+
+1. consultar si existe una fila y después ejecutar el efecto sin claim exclusivo no satisface el contrato;
+2. un `UNIQUE` evita duplicar registros, pero no basta si el efecto puede ocurrir antes de adquirir esa unicidad;
+3. cuando el efecto interno pueda quedar dentro de la misma frontera transaccional que el claim, ambos deberán converger atómicamente;
+4. cuando el efecto ocurre en un proveedor o periférico externo y no puede ser atómico con VENTO, el estado durable se crea antes de la llamada y el resultado se persiste después;
+5. `OUTCOME_UNKNOWN` nunca autoriza un segundo efecto ciego;
+6. la política temporal de retry pertenece a `INT-EXT-015`;
+7. la resolución operativa de resultados desconocidos pertenece a `INT-EXT-017`;
+8. la disposición de conflictos o entradas no procesables pertenece a `INT-EXT-016`.
+
+---
+
+#### 7. Retry técnico frente a repetición intencional
+
+Se distinguen dos casos:
+
+```text
+RETRY DE LA MISMA OPERACIÓN
+→ misma operation_key
+→ mismo logical_content_hash
+→ mismo efecto máximo
+→ resultado original recuperable
+```
+
+```text
+NUEVA REPETICIÓN INTENCIONAL
+→ nueva generation o nueva operación explícita
+→ nueva operation_key derivada de esa intención
+→ actor/razón cuando el efecto lo requiera
+```
+
+Ejemplos:
+
+- reintentar automáticamente el mismo correo después de timeout conserva la misma generación;
+- pulsar una acción explícita de reenviar invitación crea una nueva generación;
+- reintentar un push por un fallo de transporte conserva la misma operación;
+- solicitar deliberadamente reenviar una comunicación crea una nueva operación;
+- reintentar una impresión cuyo resultado físico es desconocido no es equivalente a solicitar una reimpresión autorizada.
+
+---
+
+#### 8. Wompi — `EXT-SYS-002`
+
+##### 8.1. Checkout saliente
+
+Se fija `WOMPI-CHECKOUT-IDEMPOTENCY-001`:
+
+```text
+operation_kind        = CREATE_CHECKOUT
+authoritative_key     = payments.transactions.idempotency_key
+provider_reference    = misma referencia Wompi derivada de la operación
+environment_scope     = REQUIRED
+logical_content       = transaction_id + order_id + amount_minor + currency + reference
+result_rule           = misma clave y mismo contenido recuperan el checkout ya creado
+```
+
+Reglas:
+
+1. la expiración y firma generadas para el primer checkout forman parte del resultado durable, no una razón para regenerar silenciosamente una URL en cada retry;
+2. si se requiere un checkout nuevo tras expirar el anterior, deberá existir una nueva operación o generación autorizada;
+3. monto, moneda, orden o referencia distintos bajo la misma clave producen conflicto;
+4. `provider_reference` no reemplaza la clave interna si todavía no existe al iniciar la operación.
+
+Estado técnico observado:
+
+- `payments.transactions` contiene `idempotency_key` y unicidad por `(provider, idempotency_key)`;
+- el checkout usa esa clave como `reference` estable;
+- `payments-create-intent` vuelve a calcular expiración, firma y URL en cada invocación y luego actualiza `raw_request`;
+- no se acredita un resultado de checkout durable que sea recuperado sin reconstrucción en una repetición concurrente.
+
+Resultado:
+
+`WOMPI_CHECKOUT_IDEMPOTENCY_STATE = IMPLEMENTADO_PARCIAL`
+
+##### 8.2. Webhook entrante
+
+Se fija `WOMPI-WEBHOOK-DEDUP-001`:
+
+```text
+operation_kind        = APPLY_PROVIDER_EVENT
+event_key             = provider + environment + provider_event_id
+provider_event_id     = payload.id OR data.id, únicamente cuando exista identidad acreditada
+logical_content_hash  = hash de la afirmación externa autenticada y normalizada
+claim_rule             = claim durable antes de aplicar el estado de pago
+result_rule            = redelivery válida devuelve el resultado del procesamiento original
+```
+
+Reglas:
+
+1. no se permite `crypto.randomUUID()` como fallback para un evento que necesita deduplicación;
+2. ausencia de identidad de evento suficiente produce `UNRESOLVED_EVENT_IDENTITY` y no habilita un efecto nuevo;
+3. la unicidad por proveedor e identificador de evento debe adquirirse antes del efecto;
+4. dos entregas concurrentes del mismo evento no pueden atravesar simultáneamente el gate de primera ejecución;
+5. la redelivery auténtica admitida por `INT-EXT-011` se convierte aquí en `DUPLICATE_SAME_CONTENT` cuando ya existe resultado estable.
+
+Estado técnico observado:
+
+- existe unicidad `(provider, provider_event_id)` en `payments.webhook_events`;
+- el runtime consulta primero si el evento está procesado;
+- si ya está procesado devuelve `duplicate: true`;
+- sin embargo, el runtime aplica `mark_payment_transaction_status` antes de registrar el evento como procesado;
+- el lookup, el efecto y el registro final no constituyen una única reclamación atómica;
+- si no existe `payload.id` ni `data.id`, genera un UUID nuevo, impidiendo reconocer una redelivery idéntica.
+
+Resultado:
+
+`WOMPI_WEBHOOK_IDEMPOTENCY_STATE = IMPLEMENTADO_PARCIAL_NO_ATOMICO`
+
+---
+
+#### 9. RevenueCat — `EXT-SYS-003`
+
+Se fija `REVENUECAT-WEBHOOK-DEDUP-001`.
+
+El contrato de payload observado no acredita todavía un identificador estable nativo de evento. Por ello, VENTO no inventa un `event_id` del proveedor.
+
+Mientras no exista un identificador nativo acreditado y versionado, la identidad documental de deduplicación será un fingerprint determinista `RC-FP-v1` calculado sobre la afirmación normalizada disponible:
+
+```text
+type
+app_user_id
+original_transaction_id
+product_id
+event_timestamp_ms
+purchased_at_ms
+expiration_at_ms
+entitlement_ids ordenados
+aliases ordenados
+```
+
+incluyendo de forma explícita valores ausentes/nulos para impedir ambigüedad de canonicalización.
+
+Reglas:
+
+1. el namespace incluye `revenuecat + environment + inbound_webhook`;
+2. dos redeliveries con la misma afirmación normalizada generan el mismo `RC-FP-v1`;
+3. si un contrato posterior acredita un identificador de evento estable del proveedor, ese identificador tendrá precedencia en una nueva versión del contrato y el hash de contenido permanecerá separado;
+4. el claim se adquiere antes de insertar suscripción, actualizar entitlement o registrar auditoría;
+5. una repetición no inserta una segunda suscripción ni un segundo registro de procesamiento;
+6. la proyección `entitlements` convergente por usuario no se usa como prueba de deduplicación del evento;
+7. la firma/frescura de `INT-EXT-011` se verifica antes de esta etapa.
+
+Estado técnico observado:
+
+- el webhook actual no conserva identidad de evento;
+- inserta una fila nueva en `club.subscriptions` por cada invocación;
+- hace `upsert` de `club.entitlements` por usuario;
+- inserta una fila nueva en `club.audit_events` por cada invocación;
+- la tabla de suscripciones observada no tiene restricción de unicidad por evento de proveedor;
+- no existe claim durable antes de los efectos.
+
+Resultado:
+
+`REVENUECAT_WEBHOOK_IDEMPOTENCY_STATE = NO_IMPLEMENTADO`
+
+---
+
+#### 10. Resend — `EXT-SYS-004`
+
+Se fija `RESEND-DELIVERY-IDEMPOTENCY-001`:
+
+```text
+operation_kind        = SEND_STAFF_INVITATION
+operation_key         = invitation_id + delivery_generation + channel=email
+logical_content_hash  = recipient + template/version + asunto + contenido lógico de invitación
+retry_rule             = mismo intento conserva key y generación
+explicit_resend        = incrementa generation y crea una nueva operación
+```
+
+Reglas:
+
+1. la identidad de invitación no basta para distinguir un retry de un reenvío voluntario;
+2. el contador de reenvío puede expresar la generación, pero debe participar en una reclamación durable antes de llamar al proveedor;
+3. si el proveedor devuelve una referencia de mensaje, se conserva como resultado de la operación, no como clave inicial;
+4. una respuesta desconocida no se resuelve enviando otro correo ciegamente;
+5. reenviar explícitamente requiere una nueva generación y no reutiliza la clave de la entrega anterior con contenido distinto.
+
+Estado técnico observado:
+
+- existe persistencia de invitación, estado, `resend_count` y `last_sent_at`;
+- el flujo distingue invitaciones ya existentes y reenvíos;
+- la llamada a la API de Resend es un POST externo;
+- no se acredita un claim durable de entrega alrededor de la llamada externa ni recuperación del mismo resultado ante retry.
+
+Resultado:
+
+`RESEND_DELIVERY_IDEMPOTENCY_STATE = IMPLEMENTADO_PARCIAL_WORKFLOW_SIN_CLAIM_DE_ENVIO`
+
+---
+
+#### 11. Expo Push Service — `EXT-SYS-006`
+
+Se fija `EXPO-PUSH-DELIVERY-IDEMPOTENCY-001`:
+
+```text
+operation_kind        = DELIVER_ANNOUNCEMENT_PUSH
+operation_key         = announcement_id + destination_ref + delivery_generation
+logical_content_hash  = announcement_id + title/body logical version + tag + destination_ref
+retry_rule             = mismo destino y misma generación no producen un segundo push lógico
+explicit_resend        = nueva generation
+```
+
+`destination_ref` es una referencia segura al destino; el contrato no obliga a persistir el push token en claro dentro de la clave.
+
+Estado técnico observado:
+
+- `announcement-notify` construye mensajes por token y los envía directamente a Expo en lotes;
+- desactiva tokens que responden `DeviceNotRegistered`;
+- no persiste una reclamación por anuncio/destino antes del envío;
+- no conserva un resultado durable que permita responder a un retry sin volver a llamar al proveedor.
+
+Resultado:
+
+`EXPO_PUSH_IDEMPOTENCY_STATE = NO_IMPLEMENTADO`
+
+---
+
+#### 12. Apple Wallet / PassKit y APNs — `EXT-SYS-009`
+
+Se fija `PASSKIT-RESOURCE-IDEMPOTENCY-001`.
+
+Operaciones con mutación:
+
+| Operación                     | Alcance idempotente                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------- |
+| registrar dispositivo/pase    | `deviceLibraryIdentifier + passTypeIdentifier + serialNumber + desired_registration_digest` |
+| desregistrar dispositivo/pase | `deviceLibraryIdentifier + passTypeIdentifier + serialNumber + desired_state=ABSENT`        |
+| señal APNs de actualización   | `passTypeIdentifier + serialNumber + pass_version_or_data_hash + destination_ref`           |
+
+Operaciones de lectura como obtener un pase o consultar seriales actualizados no requieren un ledger de deduplicación para evitar un efecto empresarial; conservan semántica de lectura y cache.
+
+Reglas:
+
+1. registrar dos veces exactamente el mismo estado converge en una sola relación de dispositivo/pase;
+2. cambiar el push token representa una nueva versión del estado deseado, no reutilización incompatible de una clave anterior;
+3. desregistrar repetidamente converge en ausencia sin producir un efecto adicional;
+4. una señal APNs repetida para la misma versión no crea una nueva versión del pase;
+5. una actualización real del pase usa una nueva versión/hash y puede generar una nueva señal;
+6. `If-Modified-Since` y `passesUpdatedSince` no son claves idempotentes de mutación.
+
+Estado técnico observado:
+
+- el web service valida el recurso y usa `upsertDeviceRegistration` para registrar;
+- elimina la relación exacta al desregistrar;
+- `updatePassRecordIfChanged` evita actualizar la versión del pase cuando el hash de datos no cambió;
+- se observa convergencia parcial de recurso, pero no se acredita un ledger común de operación/resultados ni un claim durable de cada señal APNs.
+
+Resultado:
+
+`PASSKIT_IDEMPOTENCY_STATE = IMPLEMENTADO_PARCIAL_POR_CONVERGENCIA_DE_RECURSO`
+
+---
+
+#### 13. Zebra BrowserPrint — `EXT-SYS-011`
+
+Se fija `ZEBRA-PRINT-IDEMPOTENCY-001`:
+
+```text
+operation_kind        = PRINT_LABEL
+operation_key         = print_job_id + printer_uid + normalized_zpl_hash + print_generation
+logical_content_hash  = normalized_zpl_hash + documento/plantilla/version + datos lógicos
+retry_rule             = una incertidumbre de envío no habilita una segunda impresión ciega
+explicit_reprint       = nueva print_generation con razón y actor aplicables
+```
+
+Reglas:
+
+1. un callback de “enviado” no demuestra por sí solo impresión física;
+2. `OUTCOME_UNKNOWN` se conserva hasta evidencia o decisión de reimpresión;
+3. un retry técnico del mismo job no crea una segunda etiqueta;
+4. una reimpresión voluntaria es una operación nueva y trazable;
+5. la implementación física posterior debe conservar el contrato aprobado por `PRINT-ARC-010`.
+
+Estado técnico observado:
+
+- NEXO mantiene una cola local de datos y genera ZPL;
+- la impresión usa directamente `device.send(zpl, success, error)` de BrowserPrint;
+- no se observa `print_job_id` durable, claim previo, resultado recuperable ni gate contra doble clic/concurrencia;
+- el estado visible “Impresión enviada” acredita envío al adaptador, no impresión física.
+
+Resultado:
+
+`ZEBRA_PRINT_IDEMPOTENCY_STATE = NO_IMPLEMENTADO`
+
+---
+
+#### 14. Superficies sin deduplicación durable de efecto
+
+##### 14.1. Sentry — `EXT-SYS-007`
+
+La telemetría puede contener observaciones repetidas legítimas y no es fuente del hecho empresarial. Esta tarea no deduplica errores por usuario, mensaje, stack o ventana temporal porque esa aproximación podría borrar evidencia distinta.
+
+Decisión:
+
+`SENTRY_IDEMPOTENCY_DECISION = SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL`
+
+La política de agrupación, sampling o cardinalidad del proveedor no se convierte en idempotencia empresarial VENTO.
+
+##### 14.2. Google Maps / Google Reviews — `EXT-SYS-008`
+
+El binding observado de búsqueda/detalle es request/response de lectura. Repetir una consulta no produce una mutación empresarial ni un efecto físico que necesite ledger idempotente.
+
+Decisión:
+
+`GOOGLE_MAPS_IDEMPOTENCY_DECISION = SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL`
+
+Cache, cuota y rate limiting pueden existir, pero no se presentan como deduplicación de efecto y pertenecen a sus contratos técnicos correspondientes.
+
+---
+
+#### 15. Supabase — `EXT-SYS-001`
+
+Supabase permanece inventariado como plataforma externa utilizada por VENTO, pero las operaciones observadas pertenecen a contratos internos de Auth, RPC, base de datos, Storage, Realtime y Edge Functions y no forman una única frontera externa homogénea.
+
+Decisión:
+
+`SUPABASE_IDEMPOTENCY_DECISION = GOBERNADA_POR_CONTRATO_INTERNO_VENTO`
+
+Reglas:
+
+1. no se crea una “clave Supabase” universal;
+2. cada operación interna conserva el contrato idempotente de su dominio, recurso y RPC;
+3. el uso físico de Supabase no convierte a la plataforma en propietaria del efecto empresarial;
+4. las futuras materializaciones compartidas deberán converger con `SHELL-CON-023` y las arquitecturas E3/E4 aplicables.
+
+---
+
+#### 16. `VENTO-EXTERNAL-IDEMPOTENCY-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Clasificación primaria                              | Alcance idempotente materializado                                                                    | Estado técnico actual                              | Decisión / bloqueo                                                                                                                                                      |
+| ------------- | ---------------------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_CONTRATO_INTERNO_VENTO`              | por operación propietaria, RPC o frontera interna; no existe clave global de plataforma              | `SEGUN_CONTRATO_PROPIETARIO`                       | no se inventa una política única para Auth, DB, Storage, Realtime y Edge                                                                                                |
+| `EXT-SYS-002` | Wompi                                    | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | checkout por `idempotency_key`; webhook por proveedor+ambiente+`provider_event_id` y hash            | `IMPLEMENTADO_PARCIAL_NO_ATOMICO`                  | unicidades existen, pero el claim del webhook no precede atómicamente al efecto y hay fallback aleatorio de event ID                                                    |
+| `EXT-SYS-003` | RevenueCat                               | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | `RC-FP-v1` mientras no exista ID nativo acreditado; claim previo a suscripción/entitlement/auditoría | `NO_IMPLEMENTADO`                                  | invocaciones repetidas pueden insertar suscripciones y auditorías duplicadas                                                                                            |
+| `EXT-SYS-004` | Resend                                   | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | invitación + generación de entrega + canal                                                           | `IMPLEMENTADO_PARCIAL_WORKFLOW_SIN_CLAIM_DE_ENVIO` | estado/reenvío existen, pero no se acredita claim durable alrededor del POST externo                                                                                    |
+| `EXT-SYS-005` | Expo / EAS Update                        | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_CONTRATO_IO_ACREDITADO_ACTUAL`                | no existe binding de API administrativa que permita instanciar una operación idempotente                                                                                |
+| `EXT-SYS-006` | Expo Push Service                        | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | anuncio + destino + generación                                                                       | `NO_IMPLEMENTADO`                                  | envío por lotes directo, sin claim por destino ni resultado durable recuperable                                                                                         |
+| `EXT-SYS-007` | Sentry                                   | `SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL` | no aplica ledger de efecto empresarial                                                               | `NO_APLICA_EFECTO_EMPRESARIAL`                     | observaciones repetidas pueden ser evidencia distinta; grouping del proveedor no sustituye este contrato                                                                |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL` | consultas read-only observadas                                                                       | `LECTURA_REPETIBLE`                                | repetir autocomplete/details no muta un hecho VENTO; cache no se confunde con idempotencia                                                                              |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | registro/desregistro por recurso y estado deseado; señal por versión de pase+destino                 | `IMPLEMENTADO_PARCIAL_POR_CONVERGENCIA_DE_RECURSO` | upsert/delete/hash evitan parte de la repetición, pero no se acredita ledger común de operaciones y resultados                                                          |
+| `EXT-SYS-010` | Vercel                                   | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_CONTRATO_IO_ACREDITADO_ACTUAL`                | hosting/configuración no acreditan una API administrativa de efecto para esta tarea                                                                                     |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `IDEMPOTENCIA_DE_EFECTO_REQUERIDA`                  | trabajo de impresión + impresora + hash ZPL + generación                                             | `NO_IMPLEMENTADO`                                  | `device.send` puede ejecutarse otra vez sin claim durable; `PRINT-ARC-010` conserva la prevención canónica de duplicados                                                |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `MODELO_DOCUMENTADO_SIN_BINDING_REMOTO`            | existe modelo de payload, no binding remoto acreditado que permita afirmar un efecto idempotente actual                                                                 |
+| `EXT-SYS-013` | POS externo vigente                      | `BLOQUEADA_SIN_BINDING`                             | no instanciable                                                                                      | `BLOQUEADO`                                        | `INT-POS-001` debe acreditar proveedor, endpoints, IDs, callbacks y semántica antes de definir la clave concreta                                                        |
+| `EXT-SYS-014` | Shopify / comercio electrónico           | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa idempotencia para una integración no materializada                                                                                                        |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa idempotencia para una integración no materializada                                                                                                        |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa idempotencia para una integración no materializada                                                                                                        |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa idempotencia para una integración no materializada                                                                                                        |
+| `EXT-SYS-018` | Instagram / social                       | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa idempotencia para una integración no materializada                                                                                                        |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | la existencia de correo/alias no acredita API o efecto automatizado gobernado por esta frontera                                                                         |
+| `EXT-SYS-020` | Telefonía / voz                          | `BLOQUEADA_SIN_BINDING`                             | no instanciable                                                                                      | `BLOQUEADO`                                        | `TI-INT-003` conserva la frontera para proveedor tecnológico/operador; se requiere operador, interfaz, identidad y payload acreditados antes de instanciar idempotencia |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_EN_CORTE`                                | ninguno                                                                                              | `SIN_BINDING_ACREDITADO_ACTUAL`                    | no se inventa proveedor, endpoint, orden externa ni clave                                                                                                               |
+
+Reconciliación de cobertura:
+
+```text
+IDEMPOTENCIA_DE_EFECTO_REQUERIDA = 002,003,004,006,009,011 = 6
+SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL = 007,008 = 2
+GOBERNADA_POR_CONTRATO_INTERNO_VENTO = 001 = 1
+NO_APLICA_EN_CORTE = 005,010,012,014,015,016,017,018,019,021 = 10
+BLOQUEADA_SIN_BINDING = 013,020 = 2
+TOTAL = 21
+```
+
+---
+
+#### 17. Reglas por tipo de efecto
+
+##### 17.1. Entrada externa que muta estado interno
+
+Orden obligatorio:
+
+```text
+AUTENTICAR ENTRADA
+→ RESOLVER IDENTIDAD IDEMPOTENTE
+→ CALCULAR HASH LÓGICO
+→ RECLAMAR DURABLEMENTE
+→ DETERMINAR NUEVA / DUPLICADA / CONFLICTIVA
+→ APLICAR EFECTO SOLO SI ES NUEVA
+→ PERSISTIR RESULTADO
+```
+
+La deduplicación no se ejecuta antes de autenticidad para permitir que una entrada falsa aprenda o bloquee claves válidas.
+
+##### 17.2. Salida a proveedor
+
+Orden conceptual:
+
+```text
+RESOLVER OPERACIÓN
+→ CREAR/RECUPERAR CLAIM
+→ VALIDAR HASH
+→ SI SUCCEEDED: DEVOLVER RESULTADO
+→ SI OUTCOME_UNKNOWN: NO DUPLICAR CIEGAMENTE
+→ SI NUEVA: LLAMAR PROVEEDOR
+→ PERSISTIR REFERENCIA Y RESULTADO
+```
+
+##### 17.3. Efecto físico
+
+Una impresión, apertura, activación o efecto físico no se considera seguro para retry solo porque la llamada técnica falló o perdió el callback. La evidencia de ejecución y la reimpresión autorizada conservan operación distinta.
+
+##### 17.4. Lecturas
+
+Una consulta read-only no necesita por defecto un ledger idempotente. Puede tener cache, rate limit o memoización sin cambiar su clasificación.
+
+---
+
+#### 18. Cambios de contenido bajo la misma clave
+
+`IDEMPOTENCY_KEY_REUSE_CONFLICT` se aplica cuando una clave previamente reclamada reaparece con significado lógico distinto.
+
+Ejemplos que deben fallar:
+
+- misma clave de pago con monto distinto;
+- misma clave de pago con moneda distinta;
+- misma generación de correo con destinatario o plantilla lógica distinta;
+- mismo job de impresión con ZPL lógico distinto;
+- mismo identificador nativo de evento con payload lógico incompatible;
+- misma clave de push con destinatario distinto.
+
+No se corrige el conflicto sobrescribiendo silenciosamente el hash anterior.
+
+---
+
+#### 19. Identidad derivada y prohibición de claves débiles
+
+Cuando el proveedor no entregue una identidad estable acreditada, una clave derivada solo podrá usarse cuando:
+
+1. el conjunto de campos esté versionado;
+2. la canonicalización sea determinista;
+3. arrays y conjuntos se normalicen de manera explícita;
+4. `null`, ausencia y string vacío no se intercambien silenciosamente;
+5. timezone y unidades temporales estén definidos;
+6. el hash use un algoritmo criptográfico aprobado por la implementación;
+7. el riesgo residual de no disponer de un ID nativo quede visible.
+
+No son claves suficientes por sí solas:
+
+- `Date.now()`;
+- UUID generado al recibir un evento no identificado;
+- email;
+- teléfono;
+- `app_user_id`;
+- `site_id`;
+- status;
+- nombre de producto;
+- IP;
+- índice del elemento dentro de un lote.
+
+---
+
+#### 20. Handoffs y fronteras exactas
+
+| Trabajo derivado                                                              | Estado                    | Propietario / tarea responsable | Condición de salida                                                                                      |
+| ----------------------------------------------------------------------------- | ------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Materializar contrato compartido de idempotencia y conciliación               | `FUERA_DE_ALCANCE`        | `SHELL-CON-023`                 | existe tipo/contrato consumible para clave, hash, estado, resultado y conflicto sin exponer secretos     |
+| Resolver mapeo de IDs externos y canónicos                                    | `FUERA_DE_ALCANCE`        | `INT-EXT-013`                   | una clave idempotente no se usa como sustituto del mapping de recursos                                   |
+| Conservar payload original protegido                                          | `FUERA_DE_ALCANCE`        | `INT-EXT-014`                   | evidencia original puede correlacionarse con la operación sin convertir payload completo en clave        |
+| Definir política de retry/backoff y límites                                   | `FUERA_DE_ALCANCE`        | `INT-EXT-015`                   | retry conserva la misma operación y no crea un efecto nuevo                                              |
+| Definir cuarentena o dead-letter                                              | `FUERA_DE_ALCANCE`        | `INT-EXT-016`                   | conflictos, identidad insuficiente y entradas no procesables tienen disposición explícita                |
+| Definir auditoría, métricas, alertas y conciliación                           | `FUERA_DE_ALCANCE`        | `INT-EXT-017`                   | `OUTCOME_UNKNOWN`, duplicados y resultados finales quedan reconstruibles y conciliables                  |
+| Materializar prevención de impresión duplicada en la arquitectura transversal | `FUERA_DE_ALCANCE`        | `PRINT-ARC-010`                 | trabajo de impresión usa identidad estable y evita reimpresión accidental                                |
+| Acreditar binding del POS vigente                                             | `BLOQUEADO_POR_EVIDENCIA` | `INT-POS-001`                   | proveedor, endpoints, eventos, IDs y operaciones permiten instanciar el contrato                         |
+| Acreditar proveedor tecnológico/operador para telefonía o voz                 | `BLOQUEADO_POR_EVIDENCIA` | `TI-INT-003`                    | operador/proveedor, interfaz, credencial, dirección, payload y semántica de operación quedan acreditados |
+
+Ningún handoff autoriza implementación física durante `INT-EXT-012`.
+
+---
+
+#### 21. Fronteras reservadas a `INT-EXT-013` a `INT-EXT-020`
+
+| Materia                                                     | Tarea propietaria |
+| ----------------------------------------------------------- | ----------------- |
+| mapeo de identificadores externos/canónicos                 | `INT-EXT-013`     |
+| conservación controlada del payload original                | `INT-EXT-014`     |
+| rate limits, retry, backoff y circuit breaker               | `INT-EXT-015`     |
+| cuarentena o dead-letter                                    | `INT-EXT-016`     |
+| auditoría, métricas, alertas y conciliación                 | `INT-EXT-017`     |
+| contingencia ante indisponibilidad del proveedor            | `INT-EXT-018`     |
+| retiro de integración y revocación de credenciales          | `INT-EXT-019`     |
+| prohibición de credenciales compartidas entre integraciones | `INT-EXT-020`     |
+
+Esta tarea define identidad y deduplicación; no absorbe las responsabilidades posteriores.
+
+---
+
+#### 22. Prohibiciones
+
+Queda prohibido:
+
+1. llamar idempotencia a un simple `SELECT` previo sin reclamación exclusiva;
+2. considerar que una restricción `UNIQUE` basta cuando el efecto puede ocurrir antes del insert/claim;
+3. generar un UUID nuevo para cada redelivery y presentarlo como deduplicación;
+4. usar timestamp de recepción como identidad de evento;
+5. usar email, teléfono, usuario o sede aislados como clave idempotente;
+6. reutilizar una clave con contenido lógico diferente;
+7. mezclar claves entre development, staging y producción;
+8. tratar firma válida como prueba de que la operación es nueva;
+9. tratar una redelivery legítima como autorización para repetir el efecto;
+10. tratar retry técnico y reenvío/reimpresión voluntarios como la misma intención;
+11. reintentar ciegamente un efecto en estado `OUTCOME_UNKNOWN`;
+12. considerar un `upsert` de proyección como deduplicación del evento que lo originó;
+13. considerar un callback de envío a impresora como evidencia de impresión física;
+14. deduplicar telemetría Sentry por semejanza semántica y perder observaciones distintas;
+15. convertir cache de Google Maps en ledger idempotente empresarial;
+16. inventar IDs nativos de RevenueCat no acreditados por el contrato observado;
+17. inventar idempotencia para Expo/EAS, Vercel, Google Wallet remoto o sistemas sin binding;
+18. modificar código o Supabase durante esta tarea;
+19. crear tablas, índices, RPC, colas o locks durante esta tarea;
+20. adelantar mapping de `INT-EXT-013`;
+21. adelantar retención de `INT-EXT-014`;
+22. adelantar retry/backoff de `INT-EXT-015`;
+23. adelantar cuarentena de `INT-EXT-016`;
+24. adelantar conciliación operativa de `INT-EXT-017`;
+25. cambiar las veintiuna identidades heredadas;
+26. iniciar `INT-EXT-013`.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa por identidad externa comportamientos ya protegidos por el registro vigente: clave estable antes del primer efecto, hash de contenido lógico, resultado recuperable, rechazo de reutilización incompatible, claim o locking equivalente, deduplicación de redeliveries, ausencia de doble efecto y convergencia específica del flujo de pagos. No introduce una familia verificable nueva, no cambia la severidad ni el alcance de las pruebas existentes y no declara ningún control ya satisfecho. Las diferencias encontradas se conservan como estados técnicos y handoffs de implementación bajo tareas ya existentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 24. Criterios de aceptación
+
+`INT-EXT-012` queda documentalmente completa cuando se cumplen simultáneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores únicos = 21;
+6. la distribución es exactamente `6 IDEMPOTENCIA_DE_EFECTO_REQUERIDA + 2 SIN_DEDUP_DURABLE_POR_NO_HABER_EFECTO_EMPRESARIAL + 1 GOBERNADA_POR_CONTRATO_INTERNO_VENTO + 10 NO_APLICA_EN_CORTE + 2 BLOQUEADA_SIN_BINDING = 21`;
+7. toda operación con efecto tiene clave estable antes del primer efecto;
+8. toda clave protegida tiene hash lógico determinista;
+9. misma clave y mismo hash no producen más de un efecto;
+10. misma clave y hash diferente producen conflicto;
+11. los namespaces incluyen sistema, ambiente, superficie y operación;
+12. retry de la misma operación conserva la misma clave;
+13. repetición intencional usa nueva generación/operación;
+14. `OUTCOME_UNKNOWN` no habilita efecto ciego;
+15. Wompi conserva `payments.transactions.idempotency_key` como identidad del checkout;
+16. Wompi no regenera silenciosamente un resultado distinto para un retry del mismo checkout;
+17. Wompi webhook exige identidad estable de evento y elimina el fallback aleatorio del contrato objetivo;
+18. Wompi reclama el evento antes del efecto en el contrato objetivo;
+19. RevenueCat usa fingerprint derivado versionado solo mientras no exista ID nativo acreditado;
+20. RevenueCat adquiere claim antes de suscripción, entitlement y auditoría en el contrato objetivo;
+21. Resend distingue retry de reenvío explícito mediante generación;
+22. Expo Push deduplica por anuncio, destino y generación;
+23. PassKit distingue mutación de recurso de lecturas/cache;
+24. Zebra distingue retry de reimpresión explícita y conserva resultado desconocido;
+25. Sentry no pierde evidencia por una deduplicación empresarial inventada;
+26. Google Maps no recibe ledger idempotente innecesario para lectura;
+27. Supabase no recibe una clave global de plataforma;
+28. POS externo conserva bloqueo hasta `INT-POS-001`;
+29. telefonía/voz conserva bloqueo hasta la acreditación de proveedor/interfaz vinculada a `TI-INT-003`;
+30. la implementación Zebra conserva `PRINT-ARC-010`;
+31. `SHELL-CON-023` conserva la materialización compartida posterior;
+32. no se modifica código;
+33. no se modifica Supabase;
+34. no se crean ni modifican requisitos de prueba;
+35. `INT-EXT-013` permanece reservada.
+
+---
+
+#### 25. Resultado de la tarea
+
+`INT-EXT-012` queda **APROBADA** como definición documental completa de idempotencia y deduplicación por sistema externo.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- idempotencia de efecto requerida: **6**;
+- superficies sin ledger durable por ausencia de efecto empresarial: **2**;
+- plataforma gobernada por contrato interno: **1**;
+- no aplica en el corte: **10**;
+- bloqueadas sin binding: **2**;
+- faltantes: **0**;
+- duplicados: **0**;
+- runtimes declarados totalmente conformes por esta tarea: **0**;
+- cambios físicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+UNA OPERACIÓN LÓGICA
++
+UNA IDENTIDAD IDEMPOTENTE ESTABLE
++
+UN HASH LÓGICO COMPATIBLE
++
+UN CLAIM DURABLE
+=
+COMO MÁXIMO UN EFECTO
++
+UN RESULTADO RECUPERABLE
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-011 — Definir validación de firma, origen, timestamp y replay`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-012 — Definir idempotencia y deduplicación por sistema externo`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-013 — Definir mapeo de identificadores externos y canónicos`
+
+
 ### [ ] INT-EXT-013 — Definir mapeo de identificadores externos y canónicos
 ### [ ] INT-EXT-014 — Definir conservación controlada del payload original
 ### [ ] INT-EXT-015 — Definir rate limits, reintentos, backoff y circuit breaker

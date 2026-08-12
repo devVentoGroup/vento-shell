@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **738** |
+| Aprobadas | **739** |
 | En propuesta | **0** |
-| No iniciadas | **856** |
+| No iniciadas | **855** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **46.30% (738/1594)** |
+| Porcentaje de completamiento | **46.36% (739/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-EXT-011` — Definir validación de firma, origen, timestamp y replay | ✅ APROBADA |
-| Tarea actual | `INT-EXT-012` — Definir idempotencia y deduplicación por sistema externo | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-EXT-013` — Definir mapeo de identificadores externos y canónicos | ⬜ NO INICIADA |
+| Última aprobada | `INT-EXT-012` — Definir idempotencia y deduplicación por sistema externo | ✅ APROBADA |
+| Tarea actual | `INT-EXT-013` — Definir mapeo de identificadores externos y canónicos | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-EXT-014` — Definir conservación controlada del payload original | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1445,7 +1445,7 @@
 | ✅ APROBADA | `INT-EXT-009` | Definir contratos de entrada y salida versionados | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-010` | Definir estrategia webhook, polling o híbrida | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ✅ APROBADA | `INT-EXT-011` | Definir validación de firma, origen, timestamp y replay | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
-| ⬜ NO INICIADA | `INT-EXT-012` | Definir idempotencia y deduplicación por sistema externo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
+| ✅ APROBADA | `INT-EXT-012` | Definir idempotencia y deduplicación por sistema externo | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-013` | Definir mapeo de identificadores externos y canónicos | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-014` | Definir conservación controlada del payload original | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-015` | Definir rate limits, reintentos, backoff y circuit breaker | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
