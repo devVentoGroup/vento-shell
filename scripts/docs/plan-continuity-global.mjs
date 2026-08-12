@@ -314,12 +314,24 @@ function progressStatus(task) {
   return 'pendiente';
 }
 
-function buildProgressSummary(continuity, activeConfig) {
-  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
-  if (continuity.isComplete) {
-    return `${activeConfig.block_code}: ${approved} de ${continuity.sequence.length - 1} aprobadas; secuencia documental completa`;
+function readBlockProgress(activeConfig) {
+  const progress = activeConfig.block_progress;
+  const values = [progress?.total_tasks, progress?.approved_tasks, progress?.pending_tasks];
+  if (values.some((value) => !Number.isInteger(value) || value < 0)) {
+    fail('active-sequence.json no contiene un block_progress válido.');
   }
-  return `${activeConfig.block_code}: ${approved} de ${continuity.sequence.length - 1} aprobadas; ${continuity.current.id} ${progressStatus(continuity.current)}`;
+  if (progress.approved_tasks + progress.pending_tasks !== progress.total_tasks) {
+    fail('active-sequence.json contiene un block_progress incoherente.');
+  }
+  return progress;
+}
+
+export function buildProgressSummary(continuity, activeConfig) {
+  const progress = readBlockProgress(activeConfig);
+  if (continuity.isComplete) {
+    return `${activeConfig.block_code}: ${progress.approved_tasks} de ${progress.total_tasks} aprobadas; secuencia documental completa`;
+  }
+  return `${activeConfig.block_code}: ${progress.approved_tasks} de ${progress.total_tasks} aprobadas; ${continuity.current.id} ${progressStatus(continuity.current)}`;
 }
 
 function pluralState(state, count) {
@@ -376,10 +388,10 @@ function updateProgressSection(section, taskMap, continuity, activeConfig) {
   const activePattern = /^\|\s*(?:CONTINUIDAD ACTIVA|BLOQUE E3|BLOQUE H2?|CARRIL [^|]+)\s*\|[^\n]*\|\n?/gmu;
   updated = updated.replace(activePattern, '');
 
-  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
+  const progress = readBlockProgress(activeConfig);
   const activeStatus = continuity.isComplete
-    ? `${approved} DE ${continuity.sequence.length - 1} APROBADAS — SECUENCIA DOCUMENTAL COMPLETA`
-    : `${approved} DE ${continuity.sequence.length - 1} APROBADAS — ACTUAL ${continuity.current.id}`;
+    ? `${progress.approved_tasks} DE ${progress.total_tasks} APROBADAS — SECUENCIA DOCUMENTAL COMPLETA`
+    : `${progress.approved_tasks} DE ${progress.total_tasks} APROBADAS — ACTUAL ${continuity.current.id}`;
   const activeRow = `| CONTINUIDAD ACTIVA | **${activeConfig.block_code}: ${activeStatus}** |`;
   const implementationPattern = /^\|\s*Implementación física\s*\|[^\n]*\|$/m;
   if (!implementationPattern.test(updated)) fail('no se encontró la fila Implementación física.');
@@ -387,7 +399,7 @@ function updateProgressSection(section, taskMap, continuity, activeConfig) {
 }
 
 function buildControlBlock(continuity, activeConfig) {
-  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
+  const progress = readBlockProgress(activeConfig);
   const lines = [
     '## Control de continuidad',
     '',
@@ -411,7 +423,7 @@ function buildControlBlock(continuity, activeConfig) {
   lines.push(
     '        ↓',
     'CONTINUIDAD DEL BLOQUE',
-    `${activeConfig.block_code} — ${approved} de ${continuity.sequence.length - 1} tareas aprobadas`,
+    `${activeConfig.block_code} — ${progress.approved_tasks} de ${progress.total_tasks} tareas aprobadas`,
     '```'
   );
   return lines.join('\n');

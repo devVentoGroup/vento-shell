@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  buildProgressSummary,
   calculateCompletionPercentage,
   expandSequenceSegments,
   resolveHandoff,
@@ -222,6 +223,20 @@ test('proyecta solo pendientes y conserva el orden después de adelantos aprobad
     total_stages: 1,
     active_stage: 1,
   });
+  assert.deepEqual(active.block_progress, {
+    total_tasks: 5,
+    approved_tasks: 3,
+    pending_tasks: 2,
+  });
+
+  const continuity = resolveContinuity(taskMap, [
+    active.previous_task_id,
+    ...expandSequenceSegments(active.segments),
+  ]);
+  assert.equal(
+    buildProgressSummary(continuity, active),
+    'BLOQUE A: 3 de 5 aprobadas; TEST-A-002 pendiente',
+  );
 });
 
 test('conserva etapas condicionales diferidas sin bloquear el handoff normal', () => {

@@ -148,6 +148,7 @@ export function resolveContinuityRoute(route, taskMap) {
     .find((stage) => isActionable(stage)
       && stage.tasks.some((task) => task.state !== 'APROBADA')) ?? null;
   const handoffTask = handoff?.tasks.find((task) => task.state !== 'APROBADA') ?? null;
+  const activeApprovedTasks = active.tasks.filter((task) => task.state === 'APROBADA').length;
 
   return {
     schema_version: 1,
@@ -161,6 +162,11 @@ export function resolveContinuityRoute(route, taskMap) {
     handoff_task_id: handoffTask?.id ?? null,
     handoff_sequence_id: handoff?.sequence_id ?? null,
     segments: tasksToSegments(projectedTasks),
+    block_progress: {
+      total_tasks: active.tasks.length,
+      approved_tasks: activeApprovedTasks,
+      pending_tasks: active.tasks.length - activeApprovedTasks,
+    },
     route_progress: {
       covered_tasks: routedTaskIds.length,
       pending_tasks: routedTaskIds.filter((id) => taskMap.get(id).state !== 'APROBADA').length,

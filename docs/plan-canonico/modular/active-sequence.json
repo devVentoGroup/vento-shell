@@ -46,6 +46,11 @@
       "to": 3
     }
   ],
+  "block_progress": {
+    "total_tasks": 83,
+    "approved_tasks": 18,
+    "pending_tasks": 65
+  },
   "route_progress": {
     "covered_tasks": 1594,
     "pending_tasks": 860,

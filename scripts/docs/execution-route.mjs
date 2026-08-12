@@ -294,6 +294,7 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
   const virtualTasks = stages
     .flatMap((stage) => stage.tasks)
     .filter((task) => task.virtual && relevantVirtualIds.has(task.id));
+  const activeApprovedTasks = active.tasks.filter((task) => task.state === 'APROBADA').length;
 
   return {
     schema_version: 2,
@@ -310,6 +311,11 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
       : null,
     task_ids: active.tasks.map((task) => task.id),
     virtual_tasks: virtualTasks,
+    block_progress: {
+      total_tasks: active.tasks.length,
+      approved_tasks: activeApprovedTasks,
+      pending_tasks: active.tasks.length - activeApprovedTasks,
+    },
     priority_stage: {
       order: active.order,
       stage_id: active.stage_id,

@@ -33,7 +33,7 @@
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **INT-EXT-009 — Definir contratos de entrada y salida versionados** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 0 de 65 aprobadas; INT-EXT-008 pendiente** |
+| Progreso del bloque | **BLOQUE X: 18 de 83 aprobadas; INT-EXT-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 0 DE 65 APROBADAS — ACTUAL INT-EXT-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 18 DE 83 APROBADAS — ACTUAL INT-EXT-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -97,5 +97,5 @@ SIGUIENTE TAREA RESERVADA
 INT-EXT-009 — Definir contratos de entrada y salida versionados
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 0 de 65 tareas aprobadas
+BLOQUE X — 18 de 83 tareas aprobadas
 ```

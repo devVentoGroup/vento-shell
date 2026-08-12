@@ -74,6 +74,11 @@ test('proyecta como activa la primera etapa pendiente del carril', () => {
   assert.equal(active.priority_stage.order, 2);
   assert.deepEqual(active.task_ids, ['NEXT-TEST-001']);
   assert.equal(active.previous_task_id, 'BASE-TEST-001');
+  assert.deepEqual(active.block_progress, {
+    total_tasks: 1,
+    approved_tasks: 0,
+    pending_tasks: 1,
+  });
 });
 
 test('detiene el carril en una decisión condicional explícita', () => {
