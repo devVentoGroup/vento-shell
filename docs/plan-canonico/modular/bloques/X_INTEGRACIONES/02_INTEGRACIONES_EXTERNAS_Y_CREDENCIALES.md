@@ -11096,7 +11096,1097 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación`
 
 
-### [ ] INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación
+### ✅ INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-EXT-016 — Definir cuarentena o dead-letter` — APROBADA
+**Tarea siguiente:** `INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor` — RESERVADA
+**Tipo de tarea:** documental; definicion normativa y materializada de auditoria, metricas, alertas y conciliacion para las veintiuna identidades externas `EXT-SYS-001` a `EXT-SYS-021`, especializando los contratos transversales vigentes sin crear infraestructura fisica, dashboards, reglas desplegadas, SLO de proveedor, jobs, colas, tablas, migraciones ni cambios de configuracion
+**Bloque:** X — Integraciones
+**Mini-bloque:** Integraciones externas y credenciales
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`
+**Implementacion fisica autorizada:** ninguna
+**Cambios de codigo, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, configuracion productiva o despliegues:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Proposito
+
+Definir como VENTO reconstruye, observa, alerta y concilia cada intercambio con sistemas externos sin convertir logs, metricas, ACK tecnicos, dashboards o estados de proveedor en fuente de verdad empresarial.
+
+La tarea especializa para `EXT-SYS-001` a `EXT-SYS-021` cuatro planos que deben permanecer separados y correlacionados:
+
+```text
+AUDITORIA
+!=
+METRICAS
+!=
+ALERTAS
+!=
+CONCILIACION
+```
+
+Y conserva tambien:
+
+```text
+ESTADO TECNICO DEL PROVEEDOR
+!=
+RESULTADO EMPRESARIAL VENTO
+
+ACK / HTTP 2XX / RECEIPT TECNICO
+!=
+EFECTO EMPRESARIAL CONFIRMADO
+
+ALERTA
+!=
+INCIDENTE
+!=
+CONTINGENCIA
+```
+
+La auditoria reconstruye hechos y decisiones; las metricas agregan observaciones; las alertas senalan condiciones que requieren atencion; la conciliacion resuelve discrepancias o incertidumbre mediante fuentes autoritativas. Ninguno de esos planos adquiere propiedad del proceso empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan materializados dos artefactos documentales internos:
+
+1. `VENTO-EXTERNAL-AUDIT-OBSERVABILITY-RECONCILIATION-CONTRACT-001`, especializacion externa de auditoria, observabilidad, alertas y conciliacion sobre los contratos transversales vigentes.
+2. `VENTO-EXTERNAL-AUDIT-OBSERVABILITY-RECONCILIATION-MATRIX-001`, decision explicita para las veintiuna identidades `EXT-SYS-*`.
+
+Balance:
+
+| Control                                              | Resultado |
+| ---------------------------------------------------- | --------: |
+| Identidades esperadas                                |    **21** |
+| Identidades materializadas                           | **21/21** |
+| Identificadores unicos                               |    **21** |
+| Faltantes                                            |     **0** |
+| Duplicados                                           |     **0** |
+| `GOBERNADA_POR_OBSERVABILIDAD_INTERNA_VENTO`         |     **1** |
+| `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION`    |     **2** |
+| `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION` |     **2** |
+| `BEST_EFFORT_OBSERVABILITY_PROVIDER`                 |     **1** |
+| `INTERACTIVE_READ_TECHNICAL_OBSERVABILITY`           |     **1** |
+| `HYBRID_RESOURCE_AND_PUSH_OBSERVABILITY`             |     **1** |
+| `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE`    |     **2** |
+| `PHYSICAL_EFFECT_AUDIT_AND_MANUAL_RECONCILIATION`    |     **1** |
+| `MODEL_NO_REMOTE_BINDING`                            |     **1** |
+| `NO_APLICA_SIN_BINDING`                              |     **7** |
+| `BLOQUEADA_SIN_BINDING`                              |     **2** |
+| SLO o umbrales numericos de proveedor inventados     |     **0** |
+| Cambios fisicos                                      |     **0** |
+| Requisitos de prueba creados o modificados           |     **0** |
+
+Reconciliacion del universo:
+
+```text
+1 + 2 + 2 + 1 + 1 + 1 + 2 + 1 + 1 + 7 + 2 = 21
+```
+
+---
+
+#### 3. Entradas canonicas preservadas
+
+La tarea consume y conserva sin redefinir:
+
+- `VENTO-EXTERNAL-SYSTEM-INVENTORY-001` y las veintiuna identidades `EXT-SYS-001` a `EXT-SYS-021`;
+- principal tecnico, credenciales, mecanismos, alcance, ambientes, custodia y lifecycle aprobados para las integraciones externas;
+- el contrato de entrada/salida y la estrategia de entrega externa;
+- autenticidad, origen, timestamp y replay;
+- idempotencia, identidad externa, mapping y custodia controlada del payload original;
+- rate limiting, retry, backoff, circuit breaker y bulkheads de `INT-EXT-015`;
+- cuarentena, dead-letter, intervencion y cierre de `INT-EXT-016`;
+- `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001@1.0.0` como autoridad transversal de auditoria;
+- `ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001@1.0.0` como autoridad de parcialidad, cuarentena, dead-letter, intervencion y cierre;
+- `OBSERVABILITY-SLI-SLO-CONTRACT-001` y `TI-DOM-010` como autoridad transversal de senales, health, metricas, SLI/SLO, alertas y frescura;
+- `TI-INT-001` como contrato de adaptacion de telemetria para servicios externos;
+- `SHELL-CON-019`, `SHELL-CON-022`, `SHELL-CON-023` y `SHELL-CON-024` como contratos compartidos posteriores;
+- `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` como destinos de materializacion de fallos, concurrencia, metricas y autorizacion de trabajos;
+- `CONT-INT-003` y `CONT-INT-004` para dependencias externas, reincorporacion, replay controlado, conciliacion y retorno al servicio normal.
+
+Ninguna metrica o alerta definida aqui sustituye una fila propietaria, un ledger, un estado de proceso, un receipt durable o una decision de autorizacion.
+
+---
+
+#### 4. Principios normativos
+
+1. La auditoria externa se ancla en una frontera confiable y nunca queda a decision del frontend.
+2. Cada ocurrencia auditada conserva identidad propia; request, evento, receipt, intento, mapping y efecto no se reutilizan como una identidad universal.
+3. La auditoria registra referencias y hashes cuando el contenido completo no es necesario.
+4. Una metrica es una proyeccion agregada; no prueba por si sola un efecto individual.
+5. Una alerta es una senal operativa; no declara automaticamente incidente, contingencia, rechazo, compensacion ni cierre.
+6. Una conciliacion compara fuentes; no elige una fuente por conveniencia ni reescribe historia.
+7. La fuente VENTO propietaria conserva autoridad sobre el hecho interno.
+8. El proveedor conserva autoridad solamente sobre los hechos que su contrato puede acreditar.
+9. Un ACK tecnico no confirma pago, entrega, impresion, entitlement, correo recibido ni otro efecto empresarial salvo contrato explicito que lo demuestre.
+10. `UNKNOWN_OUTCOME` bloquea repeticion ciega y exige consulta o conciliacion.
+11. Un elemento en cuarentena o dead-letter conserva su estado empresarial independiente.
+12. El cierre de una alerta no cierra automaticamente el caso de conciliacion.
+13. La recuperacion tecnica del proveedor no confirma que el backlog haya sido drenado ni que los estados hayan convergido.
+14. La ausencia de telemetria no se interpreta como salud.
+15. Las metricas, logs, traces, auditoria y evidencia permanecen planos separados y enlazables.
+16. No se inventan cuotas, SLO, umbrales, ventanas, severidades numericas o tiempos de escalamiento especificos de proveedor sin evidencia vigente.
+17. Los parametros fisicos se versionan en sus tareas propietarias de implementacion.
+18. Esta tarea no crea dashboards, monitores, reglas desplegadas, canales de notificacion ni casos productivos.
+
+---
+
+#### 5. Contrato de auditoria externa
+
+`VENTO-EXTERNAL-AUDIT-OBSERVABILITY-RECONCILIATION-CONTRACT-001` exige que una ocurrencia externa pueda enlazar, cuando aplique y sin forzar campos no pertinentes:
+
+```text
+audit_entry_id
+external_system_id
+environment
+surface
+direction
+provider_or_instance_ref
+integration_principal_ref
+external_credential_ref
+operation_id
+request_id
+source_command_id
+external_event_id
+receipt_id
+idempotency_ref
+attempt_id
+attempt_number
+retry_profile
+error_class
+rate_policy_ref
+retry_after_observed_at
+breaker_state_ref
+mapping_refs
+contract_version
+transformation_version
+authenticity_result_ref
+payload_digest_ref
+protected_evidence_ref
+response_reference
+result_reference
+quarantine_reference
+dead_letter_reference
+correlation_id
+causation_id
+trace_id
+span_id
+occurred_at
+received_at
+recorded_at
+completed_at
+partiality_class
+disposition
+business_outcome_ref
+reconciliation_reference
+responsible_owner
+next_action
+sensitivity_class
+access_scope
+retention_policy_ref
+legal_hold_reference
+```
+
+Reglas:
+
+1. los campos se materializan por tipo de intercambio; no se copian valores nulos para simular completitud;
+2. `external_credential_ref` referencia una credencial, nunca contiene su valor;
+3. `payload_digest_ref` o `protected_evidence_ref` se prefieren a copiar payloads en auditoria;
+4. `external_event_id` y `receipt_id` se preservan cuando el proveedor los acredita;
+5. una identidad externa faltante no se sustituye silenciosamente por un identificador aleatorio como identidad canonica del proveedor;
+6. `attempt_id` cambia por intento, pero la identidad de operacion permanece;
+7. `received_at`, `recorded_at` y `completed_at` no se fusionan;
+8. timestamps no establecen causalidad por si solos;
+9. una correccion de auditoria crea otra entrada enlazada y no edita la historia original;
+10. una brecha de auditoria produce caso de conciliacion; nunca se rellenan entradas retroactivas inventadas.
+
+---
+
+#### 6. Acciones auditables reutilizadas
+
+La especializacion externa no crea una taxonomia paralela. Reutiliza los tipos transversales que corresponden al intercambio, entre ellos:
+
+- `REQUEST_RECEIVED`;
+- `AUTHORIZATION_EVALUATED`;
+- `COMMAND_REJECTED`;
+- `COMMAND_ACCEPTED`;
+- `OWNER_TRANSACTION_COMMITTED`;
+- `EVENT_RECORDED`;
+- `EMISSION_ATTEMPTED`;
+- `EMISSION_CONFIRMED`;
+- `DELIVERY_ATTEMPTED`;
+- `DELIVERY_ACKNOWLEDGED`;
+- `CONSUMER_CLAIMED`;
+- `DUPLICATE_RESULT_RETURNED`;
+- `EFFECT_STARTED`;
+- `EFFECT_CONFIRMED`;
+- `EFFECT_FAILED`;
+- `RETRY_SCHEDULED`;
+- `RETRY_EXHAUSTED`;
+- `RECONCILIATION_DECIDED`;
+- `COMPENSATION_STEP_RECORDED`;
+- `EXTERNAL_EXCHANGE_RECORDED`;
+- `REPLAY_BACKFILL_RECORDED`;
+- `AUDIT_ACCESS_OR_CORRECTION_RECORDED`.
+
+Una integracion externa selecciona solo las acciones realmente ocurridas. No se genera una entrada ficticia para completar una secuencia ideal.
+
+---
+
+#### 7. Resultado auditado y certeza
+
+Los outcomes transversales de auditoria permanecen separados del resultado empresarial.
+
+Reglas:
+
+1. `RECEIVED` confirma recepcion auditada, no aplicacion del efecto;
+2. `PUBLISHED` o `DELIVERED` pueden confirmar transporte conforme al contrato, no necesariamente consumo o efecto;
+3. `FAILED` requiere clasificacion y no permite inferir ausencia de efecto si existe incertidumbre;
+4. `EXHAUSTED` expresa cierre del presupuesto de automatizacion, no rechazo empresarial;
+5. `RECONCILIATION_REQUIRED` mantiene el caso abierto hasta decision autorizada;
+6. un resultado anterior recuperado por deduplicacion queda distinguido de un efecto nuevo;
+7. las ocho salidas de cierre de error parcial se reutilizan para cerrar conciliaciones cuando corresponda y exista evidencia suficiente.
+
+---
+
+#### 8. Observabilidad heredada de tecnologia
+
+La tarea adopta sin renombrar las seis clases de senal de `TI-DOM-010`:
+
+```text
+INFO
+WARNING
+FAILURE
+RECOVERY
+SATURATION
+SECURITY_SIGNAL
+```
+
+Adopta tambien las siete formas de observacion:
+
+```text
+METRICA
+EVENTO_O_TRANSICION
+LOG
+HEARTBEAT
+PRUEBA_SINTETICA
+RESULTADO_DE_OPERACION
+OBSERVACION_MANUAL_CONTROLADA
+```
+
+Y conserva los cinco estados de health:
+
+```text
+HEALTHY
+DEGRADED
+OFFLINE
+MISCONFIGURED
+UNKNOWN
+```
+
+Una integracion no crea estados `UP`, `DOWN`, `OK`, `BROKEN` u otros como vocabulario empresarial paralelo. Si una fuente externa usa esos valores, el adaptador los conserva como dato fuente y los transforma segun el contrato propietario cuando exista evidencia suficiente.
+
+---
+
+#### 9. Familias metricas aplicables
+
+La especializacion externa consume las doce familias metricas minimas ya aprobadas y selecciona solo las aplicables por superficie:
+
+1. latencia `p50`, `p95` y `p99` cuando exista poblacion suficiente;
+2. razon de exito empresarial, solo cuando el denominador y el outcome empresarial sean demostrables;
+3. razon de error por codigo o clase;
+4. throughput;
+5. tamano y edad de backlog;
+6. cantidad de reintentos o reprocesos;
+7. cumplimiento de SLI/SLO y burn rate cuando exista un SLO aprobado;
+8. salud de dispositivo local cuando exista componente local;
+9. disponibilidad de integracion o workflow;
+10. razon de captura exitosa de evidencia;
+11. frescura de sincronizacion o lag cuando aplique;
+12. cantidad de excepciones observacionales o manuales cuando no exista metrica automatica.
+
+No toda identidad produce las doce familias. `NO_APLICA` es valido cuando la superficie no genera el fenomeno medido.
+
+---
+
+#### 10. Dimensiones seguras de metricas
+
+Las metricas de integracion pueden segmentarse por dimensiones de baja cardinalidad y finalidad operativa, cuando existan:
+
+- `external_system_id`;
+- ambiente;
+- superficie;
+- direccion;
+- operacion o familia de operacion;
+- clase de error;
+- perfil de retry;
+- outcome tecnico;
+- disposicion;
+- clase de parcialidad;
+- razon de cuarentena;
+- estado de breaker;
+- proveedor o instancia acreditada;
+- referencia de credencial o principal solo como identificador interno no secreto;
+- aplicacion o dominio propietario;
+- clase de sensibilidad agregada cuando sea necesario para gobierno.
+
+Queda prohibido usar como etiquetas de alta cardinalidad o contenido de metricas:
+
+- payload completo;
+- token, API key, secreto o firma completa;
+- email, telefono u otro dato personal salvo necesidad aprobada y forma protegida;
+- `external_event_id`, `request_id`, `receipt_id` o `trace_id` como dimension masiva ordinaria;
+- cuerpo de error libre sin normalizacion;
+- URL firmada o parametro que contenga credencial.
+
+Los identificadores de caso pertenecen a auditoria/tracing y no a labels metricos de alta cardinalidad.
+
+---
+
+#### 11. Indicadores externos derivados sin nueva fuente de verdad
+
+Dentro de las familias aprobadas, una vista de integraciones puede derivar:
+
+- volumen de intercambios por sistema, ambiente y superficie;
+- proporcion de resultados tecnicos confirmados y fallidos;
+- distribucion de errores por clase canonica;
+- latencia del proveedor y latencia total cuando puedan medirse separadamente;
+- retries, agotamientos y tiempo en espera;
+- ocurrencias de `RATE_LIMITED` y espera impuesta por proveedor;
+- profundidad y edad de trabajo pendiente;
+- cantidad y edad de cuarentena;
+- cantidad y edad de candidatos a dead-letter;
+- resultados desconocidos abiertos y su edad;
+- conciliaciones abiertas, resueltas y con residual;
+- redeliveries y duplicados detectados;
+- conflictos de identidad, mapping o reutilizacion;
+- denegaciones de seguridad, autenticidad o integridad;
+- brechas de auditoria;
+- recuperaciones y recurrencias por proveedor/superficie.
+
+Estas vistas no cambian las doce familias metricas base: son proyecciones externas de ellas y de estados ya definidos.
+
+---
+
+#### 12. Contrato de alerta externa
+
+Toda regla de alerta externa consume la estructura de `TI-DOM-010` y debe declarar como minimo:
+
+1. identidad unica de la regla;
+2. condicion de activacion;
+3. fuente o SLI;
+4. severidad aprobada;
+5. propietario;
+6. destinatario;
+7. canal;
+8. intervalo de deduplicacion;
+9. regla de inhibicion o silencio;
+10. ruta de escalamiento;
+11. runbook;
+12. relacion esperada con incidente;
+13. fecha o condicion de revision;
+14. comportamiento cuando falle el canal de notificacion.
+
+Una regla documental sin destinatario, canal o ruta de escalamiento acreditados puede quedar definida como requisito de configuracion, pero no se presenta como alerta productiva operativa.
+
+Esta tarea no inventa destinatarios, canales, severidades numericas, tiempos o umbrales por proveedor.
+
+---
+
+#### 13. Condiciones que deben poder alimentar alertas
+
+Sin fijar numeros nuevos, una implementacion posterior debera poder evaluar reglas sobre:
+
+- fallo de autenticidad o integridad en una entrada externa;
+- perdida de ancla de auditoria requerida para un intercambio critico;
+- incremento anomalo o sostenido de errores contra baseline o SLO aprobado;
+- `RETRY_EXHAUSTED`;
+- `UNKNOWN_OUTCOME` material;
+- `EXTERNAL_STATE_DIVERGENCE`;
+- `RATE_LIMITED` persistente segun politica del binding;
+- breaker `OPEN` o recurrencia de apertura segun configuracion aprobada;
+- backlog o edad por encima de baseline/SLO aplicable;
+- cuarentena o dead-letter con edad, recurrencia o volumen fuera de politica;
+- conflicto de mapping o identidad;
+- ausencia o degradacion de evidencia requerida;
+- brecha de auditoria;
+- resultado fisico desconocido en periferico;
+- recuperacion del proveedor que requiere verificar drenaje y convergencia.
+
+La alerta se deduplica e inhibe segun el contrato transversal; las senales originales no se eliminan.
+
+---
+
+#### 14. Separacion entre alerta, incidente y continuidad
+
+```text
+SENAL
+-> EVALUACION DE REGLA
+-> ALERTA
+-> CORRELACION / ACK / ESCALAMIENTO
+-> INCIDENTE CUANDO EL CONTRATO LO JUSTIFIQUE
+-> CONTINUIDAD SOLO POR AUTORIDAD Y CRITERIO PROPIOS
+```
+
+Reglas:
+
+1. un timeout aislado no declara incidente por si solo;
+2. una alerta cerrada por recovery no confirma convergencia empresarial;
+3. la severidad del proveedor no sustituye la prioridad del incidente VENTO;
+4. un mantenimiento o cambio puede inhibir notificacion, pero no convierte el fallo en exito;
+5. la contingencia empresarial permanece reservada a `INT-EXT-018` y a continuidad;
+6. esta tarea solo deja disponible la evidencia para que las autoridades posteriores decidan.
+
+---
+
+#### 15. Disparadores de conciliacion
+
+Se abre o continua conciliacion cuando exista al menos una de estas condiciones y el contrato no pueda resolverla automaticamente:
+
+- `UNKNOWN_OUTCOME`;
+- `EXTERNAL_STATE_DIVERGENCE`;
+- mismo identificador externo con huella incompatible;
+- receipt o evento externo sin mapping suficiente;
+- mapping canónico que entra en conflicto con evidencia posterior;
+- respuesta tecnica sin certeza sobre el efecto material;
+- efecto interno confirmado sin evidencia externa esperada;
+- evidencia externa confirmada sin efecto interno esperado;
+- agotamiento de retry con resultado no terminal;
+- brecha de auditoria;
+- efecto fisico incierto;
+- parcialidad entre unidades dependientes;
+- discrepancia entre fuente propietaria VENTO y fuente autoritativa del proveedor.
+
+La conciliacion no se abre para todo error transitorio: retry seguro, espera de dependencia y degradacion controlada conservan sus propias disposiciones.
+
+---
+
+#### 16. Envelope conceptual de conciliacion externa
+
+Todo caso de conciliacion debera poder enlazar, cuando aplique:
+
+```text
+reconciliation_reference
+external_system_id
+environment
+surface
+operation_id
+external_event_id
+receipt_id
+idempotency_ref
+mapping_refs
+internal_owner_ref
+internal_result_ref
+external_result_ref
+protected_evidence_refs
+audit_references
+attempt_references
+quarantine_reference
+dead_letter_reference
+partiality_class
+trigger_reason
+sources_compared
+observed_differences
+inquiry_actions
+query_results
+authorization_reference
+decision
+closure_outcome
+residual_obligations
+responsible_owner
+next_action
+due_at_or_reactivation_condition
+```
+
+La conciliacion conserva referencias a fuentes; no copia indiscriminadamente datos privados o secretos.
+
+---
+
+#### 17. Orden obligatorio de conciliacion
+
+```text
+1. CONGELAR IDENTIDAD Y EVIDENCIA DISPONIBLE
+2. BLOQUEAR REPETICIONES INCOMPATIBLES
+3. RECUPERAR RESULTADO IDEMPOTENTE INTERNO
+4. RECUPERAR RECEIPT / EVENTO / ESTADO EXTERNO CUANDO EXISTA INTERFAZ AUTORIZADA
+5. RESOLVER MAPPINGS Y VERSIONES
+6. COMPARAR FUENTES SIN REESCRIBIR HISTORIA
+7. CLASIFICAR CERTEZA Y EFECTOS
+8. DECIDIR RETRY SEGURO, CORRECCION, COMPENSACION, RECHAZO O RESIDUAL SEGUN CONTRATOS PROPIETARIOS
+9. REGISTRAR DECISION, AUTORIDAD Y EVIDENCIA
+10. CERRAR SOLO CON OUTCOME PERMITIDO O MANTENER RESPONSABLE Y SIGUIENTE ACCION
+```
+
+Nunca se crea una segunda operacion para averiguar si la primera ocurrio.
+
+---
+
+#### 18. Outcomes de cierre reutilizados
+
+La conciliacion externa reutiliza exactamente los outcomes de cierre del contrato transversal de errores parciales:
+
+```text
+RESOLVED_CONFIRMED
+RESOLVED_NO_EFFECT
+RESOLVED_DUPLICATE_PRIOR_RESULT
+RESOLVED_CORRECTED
+RESOLVED_COMPENSATED
+RESOLVED_WITH_ACCEPTED_RESIDUAL
+PERMANENTLY_REJECTED
+SUPERSEDED_BY_SUCCESSOR
+```
+
+No existen `CLOSED_UNKNOWN`, `AUTO_RESOLVED_BY_AGE` ni cierres equivalentes sin evidencia.
+
+`RESOLVED_WITH_ACCEPTED_RESIDUAL` exige residual, propietario, responsable, riesgo, control aplicable, autoridad y condicion de seguimiento.
+
+---
+
+#### 19. Resultado desconocido
+
+Para un intercambio donde el efecto pudo ocurrir pero la respuesta se perdio:
+
+```text
+UNKNOWN_OUTCOME
+-> CONSULTAR RESULTADO AUTORITATIVO
+   -> CONFIRMADO: RECUPERAR RESULTADO; NO REPETIR
+   -> NO APLICADO DEMOSTRADO: EVALUAR MISMO RETRY SI AUN ES VALIDO Y AUTORIZADO
+   -> INDETERMINADO: RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. timeout no significa fallo seguro;
+2. correo, push, pago, update Wallet e impresion no se repiten a ciegas;
+3. una reejecucion voluntaria que cambia la intencion usa una nueva generacion cuando el proceso lo autorice;
+4. una conciliacion abierta puede coexistir con dead-letter candidato si sus puertas se cumplen, pero dead-letter no resuelve la incertidumbre;
+5. compensacion solo aplica a efectos confirmados.
+
+---
+
+#### 20. Wompi — `EXT-SYS-002`
+
+Clasificacion: `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION`.
+
+Decisiones:
+
+1. cada recepcion autenticada debe conservar receipt, identidad externa acreditada, huella, referencia de evidencia, transaction/reference, mapping, estado recibido y resultado de procesamiento;
+2. redelivery se mide y audita separada de un efecto de pago nuevo;
+3. un duplicado legitimo recupera el resultado previo;
+4. mismo ID externo con huella distinta abre conflicto/conciliacion y no reescribe evidencia;
+5. un evento sin ID de proveedor acreditado no convierte un UUID local aleatorio en identidad externa canonica;
+6. error de lookup, mapping, recording o aplicacion de estado conserva disposicion y audit reference;
+7. estado del pago interno y estado Wompi se comparan mediante conciliacion cuando divergen;
+8. resultado incierto de pago bloquea nuevo cobro;
+9. metricas aplicables incluyen volumen, redelivery/duplicado, error por clase, latencia cuando sea medible, backlog/edad de procesamiento, retry interno, resultado desconocido y conciliacion;
+10. alertas pueden consumir autenticidad fallida, audit gap, resultado desconocido, divergencia, agotamiento y backlog fuera de baseline aprobado.
+
+Estado tecnico del corte:
+
+`WOMPI_OBSERVABILITY_STATE = AUDITORIA_PARCIAL_SIN_CONTRATO_TRANSVERSAL_COMPLETO_NI_CONCILIACION_AUTOMATIZADA_ACREDITADA`
+
+La implementacion observada registra eventos y algunos errores, pero no acredita el contrato completo de auditoria/metricas/alertas/conciliacion definido aqui.
+
+---
+
+#### 21. RevenueCat — `EXT-SYS-003`
+
+Clasificacion: `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION`.
+
+Decisiones:
+
+1. la recepcion debe conservar identidad externa/receipt acreditable antes de interpretar entitlement;
+2. auditoria enlaza autenticidad, usuario, producto, entitlement, version de contrato, mapping, resultado interno y evidencia protegida;
+3. payload completo no se duplica en auditoria ordinaria;
+4. redelivery y duplicado deben ser medibles y deduplicables por identidad estable;
+5. divergencia entre entitlement interno y estado autoritativo del proveedor abre conciliacion;
+6. compra/restore bajo SDK no se interpreta como evento webhook adicional;
+7. metricas aplicables incluyen volumen de eventos, errores, latencia de procesamiento, duplicados, backlog, excepciones, divergencias y conciliaciones;
+8. alertas pueden consumir fallo de autenticidad, contrato/schema incompatible, backlog, audit gap, divergencia y resultado desconocido material.
+
+Estado tecnico del corte:
+
+`REVENUECAT_OBSERVABILITY_STATE = AUDIT_EVENT_LOCAL_CON_PAYLOAD_COMPLETO_SIN_IDENTIDAD_DURABLE_DE_EVENTO_NI_CONCILIACION_ACREDITADA`
+
+La implementacion observada escribe `raw_payload` y un `audit_event` con el payload; esto no se presenta como cumplimiento del contrato minimizado y correlacionado.
+
+---
+
+#### 22. Resend — `EXT-SYS-004`
+
+Clasificacion: `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION`.
+
+Decisiones:
+
+1. cada generacion de envio conserva operacion, destinatario protegido, finalidad, intento, resultado HTTP, provider receipt cuando exista y resultado interno;
+2. el receipt del proveedor se preserva como referencia tecnica, no como prueba de lectura por el destinatario;
+3. timeout o perdida de respuesta usa `UNKNOWN_OUTCOME` y no reenvia ciegamente;
+4. un reenvio voluntario es nueva generacion y queda enlazado a la invitacion sin mezclarse con retry tecnico;
+5. metricas aplicables incluyen volumen, razon de error, latencia, throughput, retries, rate-limited, backlog/edad, agotamiento y unknown outcome;
+6. alertas consumen agotamiento, rate limit fuera de politica, audit gap, backlog fuera de baseline y resultado incierto material;
+7. conciliacion recupera receipt/estado cuando el contrato del proveedor y la implementacion lo permitan; en ausencia de interfaz autoritativa, conserva incertidumbre e intervencion.
+
+Estado tecnico del corte:
+
+`RESEND_OBSERVABILITY_STATE = REGISTRO_LOCAL_DE_INVITACION_Y_ERROR_SIN_RECEIPT_DE_EXITO_DURABLE_NI_ALERTA_CONCILIACION_ACREDITADAS`
+
+---
+
+#### 23. Expo Push Service — `EXT-SYS-006`
+
+Clasificacion: `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION`.
+
+Decisiones:
+
+1. la unidad observable es anuncio + destino + generacion;
+2. el resultado agregado del lote no reemplaza el resultado individual por destino;
+3. ticket/receipt, cuando se materialicen, quedan correlacionados con esa unidad;
+4. `DeviceNotRegistered` es resultado permanente del destino y se mide separado de fallos transitorios;
+5. unknown outcome de un destino no autoriza reenvio ciego;
+6. metricas aplicables incluyen volumen por destino agregado de forma segura, throughput, error por clase, invalid-token, retries, backlog, rate-limited, receipt coverage y unknown outcome;
+7. alertas consumen agotamiento, rate-limit, crecimiento/edad de backlog, audit gap y perdida de receipt requerido;
+8. conciliacion se ejecuta por destino, no por el conteo global del batch.
+
+Estado tecnico del corte:
+
+`EXPO_PUSH_OBSERVABILITY_STATE = CONTEO_AGREGADO_Y_TOKEN_INVALIDO_SIN_RECEIPT_DURABLE_POR_DESTINO_NI_CONCILIACION_ACREDITADA`
+
+---
+
+#### 24. Sentry — `EXT-SYS-007`
+
+Clasificacion: `BEST_EFFORT_OBSERVABILITY_PROVIDER`.
+
+Decisiones:
+
+1. Sentry es un consumidor/proveedor de observabilidad y no una fuente de verdad empresarial;
+2. una captura Sentry no sustituye la entrada de auditoria requerida por el proceso;
+3. una caida de Sentry no revierte ni bloquea por defecto un efecto empresarial ya confirmado;
+4. contexto enviado a Sentry aplica minimizacion y no contiene secretos ni payloads de negocio completos por conveniencia;
+5. tags de ambiente/version/update ayudan a correlacion tecnica, no prueban resultado empresarial;
+6. metricas/alertas propias del proveedor pueden complementar diagnostico, pero las decisiones VENTO conservan referencias propias;
+7. no se crea dead-letter empresarial de telemetria Sentry;
+8. conciliacion empresarial `NO_APLICA` para la entrega de telemetria ordinaria; una brecha de auditoria VENTO se resuelve en el plano de auditoria, no consultando Sentry como autoridad.
+
+Estado tecnico observado:
+
+`SENTRY_OBSERVABILITY_STATE = SDK_ACTIVO_CON_DSN_CONFIGURABLE_Y_CONTEXTO_TECNICO_SIN_AUTORIDAD_EMPRESARIAL`
+
+---
+
+#### 25. Google Maps / Google Reviews — `EXT-SYS-008`
+
+Clasificacion: `INTERACTIVE_READ_TECHNICAL_OBSERVABILITY`.
+
+Decisiones:
+
+1. autocomplete y detalle de lugar son lecturas interactivas; no generan backlog persistente por defecto;
+2. metricas aplicables: volumen, latencia, error por status/clase, throughput, disponibilidad de integracion y excepciones;
+3. `ZERO_RESULTS` valido no es un error tecnico;
+4. una falla del proveedor puede generar senal/alerta segun baseline o SLO aplicable, pero no crea automaticamente caso de conciliacion empresarial;
+5. mapping canonico solo se concilia cuando una operacion posterior realmente haya creado una relacion que deba conservarse;
+6. no se guarda query, direccion o dato personal completo en labels metricos;
+7. no existe dead-letter persistente para la consulta interactiva ordinaria.
+
+Estado tecnico observado:
+
+`GOOGLE_PLACES_OBSERVABILITY_STATE = RESPUESTA_INTERACTIVA_SIN_AUDITORIA_METRICA_O_ALERTA_ESPECIALIZADA_ACREDITADA`
+
+---
+
+#### 26. Apple Wallet / PassKit + APNs — `EXT-SYS-009`
+
+Clasificacion: `HYBRID_RESOURCE_AND_PUSH_OBSERVABILITY`.
+
+##### 26.1. PassKit Web Service
+
+- registrar/desregistrar dispositivo, consultar cambios y obtener pase actualizado se auditan por operacion/recurso cuando tengan efecto material;
+- repeticion inbound idempotente no se cuenta como nuevo hecho empresarial;
+- estado del recurso del pase permanece separado de la entrega de una senal push.
+
+##### 26.2. APNs
+
+- cada senal de update conserva pass, dispositivo, generacion, intento y resultado tecnico;
+- response/status/receipt disponible debe quedar correlacionado antes de decidir retry o retiro de token;
+- metricas aplicables incluyen volumen, error, latencia, retry, rate-limit, backlog, token invalido, unknown outcome y recuperacion;
+- alertas consumen agotamiento, rate-limit, breaker/degradacion, backlog y audit gap segun reglas aprobadas;
+- la recuperacion de APNs no prueba que todos los dispositivos hayan actualizado su pase;
+- conciliacion distingue senal push, disponibilidad del recurso y estado canónico del pase.
+
+Estado tecnico observado:
+
+`PASSKIT_APNS_OBSERVABILITY_STATE = RECURSOS_PERSISTIDOS_Y_PUSH_HTTP2_SIN_AUDITORIA_DE_INTENTO_STATUS_RECEIPT_Y_CONCILIACION_COMPLETA_ACREDITADA`
+
+---
+
+#### 27. Zebra BrowserPrint — `EXT-SYS-011`
+
+Clasificacion: `PHYSICAL_EFFECT_AUDIT_AND_MANUAL_RECONCILIATION`.
+
+Decisiones:
+
+1. discovery, conexion, generacion ZPL, envio tecnico y resultado fisico se observan como pasos distintos;
+2. callback de `send` confirma como maximo resultado tecnico del bridge segun su contrato, no impresion fisica;
+3. cada job/generacion requiere identidad estable antes de retry o conciliacion;
+4. timeout, callback perdido o desconexion posterior al envio produce resultado fisico desconocido;
+5. la conciliacion puede requerir observacion manual controlada del dispositivo/documento;
+6. una reimpresion voluntaria crea nueva generacion y queda enlazada al job anterior;
+7. metricas aplicables incluyen volumen, error, latencia tecnica cuando sea medible, backlog/edad, retries, health local, unknown outcome y excepciones manuales;
+8. alertas consumen bridge/printer degradado, backlog, resultado desconocido, recurrencia y audit gap segun contratos aprobados.
+
+Estado tecnico observado:
+
+`ZEBRA_OBSERVABILITY_STATE = ESTADO_UI_Y_CALLBACK_DE_ENVIO_SIN_JOB_AUDITABLE_DURABLE_NI_CONFIRMACION_FISICA_ACREDITADA`
+
+---
+
+#### 28. Supabase, plataformas de configuracion y modelo sin binding
+
+##### 28.1. Supabase — `EXT-SYS-001`
+
+Clasificacion: `GOBERNADA_POR_OBSERVABILIDAD_INTERNA_VENTO`.
+
+La plataforma se observa por sus superficies propietarias: Auth, RPC, Edge Functions, Storage, Realtime, datos y adaptadores. No existe una unica metrica o conciliacion externa que represente todo Supabase. Cuando Supabase aloja un adaptador hacia otro proveedor, la decision de auditoria/metricas/alertas/conciliacion se atribuye al `EXT-SYS-*` de ese proveedor.
+
+##### 28.2. Expo / EAS Update — `EXT-SYS-005`
+
+Clasificacion: `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE`.
+
+Se pueden correlacionar version/update y senales tecnicas mediante contratos de tecnologia, pero no se crea conciliacion de intercambio runtime ni metricas de proveedor ficticias sin binding operativo acreditado.
+
+##### 28.3. Vercel — `EXT-SYS-010`
+
+Clasificacion: `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE`.
+
+Hosting/configuracion puede alimentar observabilidad tecnologica cuando exista fuente autorizada, pero esta identidad no recibe un contrato de receipt, retry o conciliacion de negocio inexistente.
+
+##### 28.4. Google Wallet / Google Pay & Wallet — `EXT-SYS-012`
+
+Clasificacion: `MODEL_NO_REMOTE_BINDING`.
+
+Existe modelo documental/JWT, pero no binding remoto acreditado sobre el cual declarar recibos, metricas, alertas o conciliacion runtime. Cualquier binding futuro debe versionar la matriz antes de activarse.
+
+---
+
+#### 29. Identidades sin binding y bloqueadas
+
+`EXT-SYS-014`, `015`, `016`, `017`, `018`, `019` y `021` permanecen `NO_APLICA_SIN_BINDING`.
+
+Reglas:
+
+1. no se inventan endpoints, webhooks, polling, receipts, metricas ni alertas por el nombre comercial del canal;
+2. no se inventan SLO o disponibilidad del proveedor;
+3. no se crea conciliacion runtime sin intercambio acreditado;
+4. una futura activacion debe acreditar proveedor/instancia, superficie, autenticacion, contrato, identidad, mapping, resultado y fuente de observabilidad antes de versionar la decision.
+
+`EXT-SYS-013` y `EXT-SYS-020` permanecen `BLOQUEADA_SIN_BINDING`.
+
+- `INT-POS-001` es la puerta documental del POS externo vigente.
+- `TI-INT-003` es la puerta documental para operador/interfaz tecnologica de telefonia o voz.
+
+Hasta superar esas puertas no se seleccionan metricas, alertas, receipts ni conciliacion especifica de proveedor.
+
+---
+
+#### 30. `VENTO-EXTERNAL-AUDIT-OBSERVABILITY-RECONCILIATION-MATRIX-001`
+
+| ID            | Sistema / plataforma                     | Clasificacion primaria                               | Auditoria                                             | Metricas / alertas                                                    | Conciliacion                                         | Estado del corte                                   |
+| ------------- | ---------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `GOBERNADA_POR_OBSERVABILIDAD_INTERNA_VENTO`         | por superficie propietaria                            | health, error, latencia, backlog y senales segun contrato propietario | por objeto/adaptador propietario                     | `SEGUN_CONTRATO_PROPIETARIO`                       |
+| `EXT-SYS-002` | Wompi                                    | `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION`    | receipt/evento, autenticidad, mapping, pago, intentos | volumen, redelivery, error, backlog, unknown, divergencia             | pago interno vs fuente/receipt Wompi                 | `AUDITORIA_PARCIAL_SIN_CONCILIACION_COMPLETA`      |
+| `EXT-SYS-003` | RevenueCat                               | `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION`    | receipt/evento, entitlement, mapping, resultado       | volumen, error, duplicado, backlog, divergencia                       | entitlement interno vs fuente autoritativa           | `AUDIT_LOCAL_SIN_IDENTIDAD_DURABLE_DE_EVENTO`      |
+| `EXT-SYS-004` | Resend                                   | `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION` | generacion, intento, respuesta, receipt               | volumen, error, latency, retry, rate-limit, backlog, unknown          | receipt/estado cuando exista interfaz autorizada     | `SIN_RECEIPT_DE_EXITO_DURABLE`                     |
+| `EXT-SYS-005` | Expo / EAS Update                        | `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE`    | configuracion/version por contrato TI                 | senales de version/update cuando exista fuente                        | `NO_APLICA_RUNTIME`                                  | `CONFIGURACION_SIN_INTERCAMBIO_RUNTIME_ACREDITADO` |
+| `EXT-SYS-006` | Expo Push Service                        | `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION` | anuncio-destino-generacion, ticket/receipt            | volumen, error, invalid-token, retry, rate-limit, backlog, unknown    | por destino/receipt                                  | `CONTEO_AGREGADO_SIN_RECEIPT_DURABLE_POR_DESTINO`  |
+| `EXT-SYS-007` | Sentry                                   | `BEST_EFFORT_OBSERVABILITY_PROVIDER`                 | telemetria no sustituye auditoria                     | diagnostico tecnico best-effort                                       | `NO_APLICA_NEGOCIO`                                  | `SDK_ACTIVO_SIN_AUTORIDAD_EMPRESARIAL`             |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `INTERACTIVE_READ_TECHNICAL_OBSERVABILITY`           | request/result tecnico minimizado cuando aplique      | volumen, latencia, error, throughput, disponibilidad                  | solo mapping material posterior                      | `SIN_OBSERVABILIDAD_ESPECIALIZADA_ACREDITADA`      |
+| `EXT-SYS-009` | Apple Wallet / PassKit + APNs            | `HYBRID_RESOURCE_AND_PUSH_OBSERVABILITY`             | recurso PassKit y push APNs separados                 | volumen, error, retry, backlog, rate-limit, token/unknown             | recurso, push y estado canónico separados            | `PUSH_SIN_RECEIPT_AUDITABLE_COMPLETO`              |
+| `EXT-SYS-010` | Vercel                                   | `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE`    | por contrato de plataforma/tecnologia                 | health/version cuando exista fuente autorizada                        | `NO_APLICA_RUNTIME`                                  | `CONFIGURACION_SIN_INTERCAMBIO_RUNTIME_ACREDITADO` |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `PHYSICAL_EFFECT_AUDIT_AND_MANUAL_RECONCILIATION`    | discovery, conexion, job, send, resultado             | health local, error, backlog, retry, unknown, excepcion manual        | receipt tecnico + verificacion fisica cuando aplique | `CALLBACK_UI_SIN_JOB_DURABLE_AUDITABLE`            |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `MODEL_NO_REMOTE_BINDING`                            | `NO_APLICA_REMOTE`                                    | `NO_APLICA_REMOTE`                                                    | `NO_APLICA_REMOTE`                                   | `MODELO_SIN_BINDING_REMOTO`                        |
+| `EXT-SYS-013` | POS externo vigente                      | `BLOQUEADA_SIN_BINDING`                              | bloqueada                                             | bloqueadas                                                            | bloqueada                                            | `PENDIENTE_INT_POS_001`                            |
+| `EXT-SYS-014` | Shopify / canal de comercio electronico  | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-016` | ManyChat / automatizacion conversacional | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+| `EXT-SYS-020` | Telefonia / canal de voz                 | `BLOQUEADA_SIN_BINDING`                              | bloqueada                                             | bloqueadas                                                            | bloqueada                                            | `PENDIENTE_TI_INT_003`                             |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_SIN_BINDING`                              | no aplica actual                                      | no aplica actual                                                      | no aplica actual                                     | `SIN_BINDING_ACREDITADO`                           |
+
+La matriz no declara cumplimiento fisico. Declara el contrato objetivo y el estado de evidencia disponible para cada identidad.
+
+---
+
+#### 31. Gobierno de backlog, cuarentena y dead-letter
+
+Las metricas y alertas sobre fallos externos deben conservar, cuando aplique:
+
+- cantidad y edad por disposicion;
+- oldest age;
+- propietario y responsable;
+- siguiente accion;
+- due_at o condicion de reactivacion;
+- razon de cuarentena;
+- resultado de las puertas de dead-letter;
+- retry profile y presupuesto;
+- unknown outcome y conciliacion abierta;
+- residual y vencimiento cuando exista.
+
+Reglas:
+
+1. edad no cierra el caso;
+2. archivar o mover a dead-letter no reduce obligaciones;
+3. una alerta de backlog puede cerrarse cuando la condicion operacional desaparezca, pero cada caso residual conserva su cierre propio;
+4. un dashboard no habilita retry, reprocess, correction, compensation o permanent reject;
+5. las acciones humanas consumen la autorizacion aprobada y quedan auditadas.
+
+---
+
+#### 32. Privacidad, sensibilidad y cardinalidad
+
+Auditoria, metricas, alertas, logs y conciliacion aplican minimizacion por finalidad.
+
+Queda prohibido incluir por defecto:
+
+- secretos de webhook;
+- API keys;
+- bearer tokens;
+- service role;
+- private keys;
+- passwords;
+- firmas completas reutilizables;
+- datos bancarios completos;
+- payloads personales completos;
+- expedientes o documentos no necesarios;
+- emails o telefonos como labels metricos ordinarios.
+
+La evidencia fuente protegida permanece referenciada y bajo su lifecycle propio. Soporte u observabilidad no adquieren acceso al payload completo por existir una alerta.
+
+---
+
+#### 33. Propiedad y autorizacion
+
+1. el adaptador externo puede registrar receipt, mapping y metadata tecnica propia;
+2. la aplicacion propietaria decide el efecto empresarial;
+3. observabilidad tecnologica puede diagnosticar, no modificar la fuente empresarial;
+4. quien recibe una alerta no adquiere permiso automatico para reintentar, conciliar, corregir o compensar;
+5. consulta sensible de auditoria requiere finalidad y autorizacion;
+6. retry/reprocess manual conserva actor, motivo, evidencia y alcance;
+7. conciliacion que requiera correccion o compensacion emite la solicitud hacia la propietaria correspondiente;
+8. un proveedor nunca recibe acceso transversal a dominios VENTO por participar en conciliacion.
+
+---
+
+#### 34. Handoffs y condiciones de salida
+
+| Materia                                                   | Estado en esta tarea                           | Propietario documental | Condicion de salida                                                          |
+| --------------------------------------------------------- | ---------------------------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| schema compartido de evento externo recibido              | especificado por semantica, sin implementacion | `SHELL-CON-019`        | contrato compartido materializado y versionado                               |
+| mapping externo compartido                                | consumido, sin implementacion                  | `SHELL-CON-022`        | mapping compartido materializado                                             |
+| idempotencia y conciliacion compartidas                   | consumidas, sin implementacion                 | `SHELL-CON-023`        | contrato compartido materializado                                            |
+| cuarentena, rechazo y compensacion compartidas            | consumidas, sin implementacion                 | `SHELL-CON-024`        | contrato compartido materializado                                            |
+| metricas fisicas de espera, ejecucion y error de jobs     | fuera de implementacion                        | `QUEUE-ARC-011`        | infraestructura de metricas versionada y probada                             |
+| fallos y recuperacion manual de jobs                      | fuera de implementacion                        | `QUEUE-ARC-008`        | cola de fallos y recuperacion materializadas                                 |
+| autorizacion de retry/reprocess de jobs                   | fuera de implementacion                        | `QUEUE-ARC-012`        | enforcement de autorizacion materializado                                    |
+| adaptacion de telemetria tecnica                          | contrato ya definido; consumo posterior        | `TI-INT-001`           | adaptador concreto implementado con fuente acreditada                        |
+| SLI/SLO, senales, health y reglas transversales de alerta | autoridad preservada                           | `TI-DOM-010`           | configuracion de observabilidad usa reglas aprobadas y evidencia del binding |
+| contratos de proveedores criticos                         | autoridad preservada                           | `CONT-INT-003`         | dependencia externa y evidencia de proveedor versionadas                     |
+| reincorporacion y retorno al servicio normal              | autoridad preservada                           | `CONT-INT-004`         | backlog, replay, conciliacion y convergencia verificados                     |
+| contingencia empresarial por proveedor                    | fuera del alcance actual                       | `INT-EXT-018`          | modo alterno definido y aprobado para indisponibilidad prolongada            |
+| binding del POS externo                                   | bloqueado                                      | `INT-POS-001`          | proveedor, operaciones, endpoints, autenticacion y resultado acreditados     |
+| binding de telefonia / voz                                | bloqueado                                      | `TI-INT-003`           | operador, interfaz, autenticacion, operaciones y resultado acreditados       |
+
+No queda una brecha sustantiva de esta tarea sin propietario y condicion de salida.
+
+---
+
+#### 35. Frontera con `INT-EXT-018`
+
+`INT-EXT-017` puede detectar, medir, alertar, diagnosticar y conciliar una dependencia degradada. No define como debe continuar el negocio cuando la dependencia no esta disponible durante un periodo material.
+
+Permanecen reservados a `INT-EXT-018`:
+
+- modo empresarial alterno;
+- operacion minima durante indisponibilidad;
+- sustitucion temporal del proveedor cuando exista y este autorizada;
+- captura manual o diferida por contingencia;
+- limites de operacion degradada;
+- criterio de activacion/desactivacion de contingencia;
+- retorno de la operacion empresarial al canal normal.
+
+La recuperacion tecnica puede ser entrada para esa tarea, pero no la sustituye.
+
+---
+
+#### 36. Prohibiciones
+
+Queda prohibido:
+
+1. tratar log, trace, metrica, dashboard o alerta como fuente de verdad empresarial;
+2. tratar `200`, ACK, publish, send callback o receipt tecnico como efecto material sin contrato que lo pruebe;
+3. inventar SLO, umbrales o severidades numericas por proveedor;
+4. inventar destinatarios o canales de alerta;
+5. declarar una alerta productiva sin fuente, propietario y ruta de accion acreditados;
+6. deducir `HEALTHY` por ausencia de errores o falta de telemetria;
+7. convertir severidad del proveedor en prioridad VENTO;
+8. cerrar conciliacion por edad, silencio o desaparicion de una alerta;
+9. repetir una operacion para descubrir si la anterior ocurrio;
+10. borrar o alterar evidencia original durante conciliacion;
+11. usar timestamp como unica prueba de causalidad;
+12. copiar payloads completos a logs, metricas o auditoria ordinaria;
+13. usar secretos o datos personales como labels metricos;
+14. usar Sentry como auditoria empresarial obligatoria;
+15. usar una metrica agregada de lote para confirmar todos sus elementos;
+16. usar recovery de proveedor como prueba de backlog drenado;
+17. abrir contingencia empresarial automaticamente desde una alerta;
+18. crear dashboards, collectors, rules, monitors, channels, tickets o casos reales durante esta tarea;
+19. crear tablas, views, indices, functions, triggers, RPC, RLS, Storage, cron, queues, workers o migraciones;
+20. cambiar codigo, proveedor, credenciales, endpoints o datos;
+21. modificar las veintiuna identidades heredadas;
+22. desarrollar `INT-EXT-018`.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificacion:** la tarea especializa para las veintiuna identidades externas comportamientos que ya estan protegidos por el registro vigente: auditoria transversal e inmutable; identidad y causalidad; intercambio externo; retries y agotamiento; separacion entre auditoria, logs, metricas y traces; minimizacion; resultado desconocido; conciliacion; divergencia con proveedor; cuarentena/dead-letter; ownership de backlog; telemetria, health y alertas. No se introduce una nueva taxonomia ejecutable, no se modifica un limite numerico aprobado y no se declara infraestructura fisica implementada.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canonico de requisitos permanece sin cambios.
+
+---
+
+#### 38. Criterios de aceptacion
+
+`INT-EXT-017` queda documentalmente completa cuando se cumplen simultaneamente:
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones primarias;
+3. faltantes = 0;
+4. duplicados = 0;
+5. identificadores unicos = 21;
+6. la distribucion primaria es exactamente `1 + 2 + 2 + 1 + 1 + 1 + 2 + 1 + 1 + 7 + 2 = 21`;
+7. se reutiliza `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001@1.0.0` sin crear auditoria paralela;
+8. se reutiliza `OBSERVABILITY-SLI-SLO-CONTRACT-001` y la autoridad de `TI-DOM-010`;
+9. se conservan seis clases de senal, siete formas de observacion y cinco estados de health;
+10. se consumen las doce familias metricas minimas sin convertirlas en obligatorias para superficies no aplicables;
+11. audit, log, metric, trace, evidence y business record permanecen separados;
+12. auditoria externa usa referencias protegidas y no secretos;
+13. identidad de operacion permanece estable entre intentos;
+14. ACK tecnico no se convierte en resultado empresarial;
+15. unknown outcome exige consulta o conciliacion;
+16. conciliacion compara fuentes y no reescribe historia;
+17. se reutilizan exactamente ocho outcomes de cierre de error parcial;
+18. no existe cierre desconocido ni cierre automatico por edad;
+19. alertas se deduplican y pueden inhibirse sin eliminar senales fuente;
+20. alerta no equivale a incidente ni contingencia;
+21. ausencia de telemetria no produce health positivo;
+22. no se inventan SLO o umbrales numericos de proveedor;
+23. no se inventan destinatarios, canales o tiempos de escalamiento;
+24. Wompi conserva redelivery, duplicado, mapping, pago y conciliacion separados;
+25. evento Wompi sin ID acreditado no promueve UUID aleatorio a identidad externa canonica;
+26. RevenueCat no usa payload completo de audit local como modelo objetivo de auditoria;
+27. Resend conserva generacion, intento y receipt separados;
+28. Expo Push conserva resultado por destino y no solo conteo de batch;
+29. Sentry permanece best-effort y no sustituye auditoria;
+30. Google Places permanece lectura interactiva sin dead-letter de negocio;
+31. Apple separa recurso PassKit, push APNs y estado canónico del pase;
+32. Zebra separa envio tecnico y resultado fisico;
+33. Supabase permanece gobernado por superficies propietarias;
+34. Expo/EAS y Vercel no reciben conciliacion runtime ficticia;
+35. Google Wallet no recibe observabilidad remota sin binding;
+36. POS permanece bloqueado hasta `INT-POS-001`;
+37. telefonia/voz permanece bloqueada hasta `TI-INT-003`;
+38. los siete sistemas sin binding no reciben metricas, alertas ni conciliaciones inventadas;
+39. `SHELL-CON-019`, `022`, `023` y `024` conservan la materializacion de contratos compartidos;
+40. `QUEUE-ARC-008`, `011` y `012` conservan infraestructura de fallos, metricas y autorizacion;
+41. `TI-DOM-010` y `TI-INT-001` conservan observabilidad y adaptacion de telemetria;
+42. `CONT-INT-003` y `CONT-INT-004` conservan contratos de proveedor y reincorporacion;
+43. `INT-EXT-018` conserva contingencia empresarial;
+44. no se modifica codigo;
+45. no se modifica Supabase;
+46. no se crean dashboards, alert rules, collectors, workers o infraestructura fisica;
+47. no se crean ni modifican requisitos de prueba;
+48. `INT-EXT-018` permanece reservada.
+
+---
+
+#### 39. Resultado de la tarea
+
+`INT-EXT-017` queda **APROBADA** como definicion documental completa de auditoria, metricas, alertas y conciliacion para las veintiuna identidades externas.
+
+Resultado consolidado:
+
+- identidades materializadas: **21/21**;
+- contrato transversal de auditoria reutilizado: **1**;
+- contrato transversal de observabilidad reutilizado: **1**;
+- clases de senal preservadas: **6**;
+- formas de observacion preservadas: **7**;
+- estados de health preservados: **5**;
+- familias metricas base preservadas: **12**;
+- outcomes de cierre de conciliacion reutilizados: **8**;
+- webhooks inbound con auditoria/conciliacion externa: **2**;
+- operaciones outbound con receipt/conciliacion: **2**;
+- proveedor best-effort de observabilidad: **1**;
+- lectura interactiva: **1**;
+- familia hibrida PassKit/APNs: **1**;
+- plataformas de configuracion: **2**;
+- efecto fisico con conciliacion: **1**;
+- modelo sin binding remoto: **1**;
+- identidades sin binding: **7**;
+- identidades bloqueadas: **2**;
+- SLO/umbrales numericos de proveedor inventados: **0**;
+- cambios fisicos: **0**;
+- requisitos creados o modificados: **0**.
+
+Invariante final:
+
+```text
+INTERCAMBIO EXTERNO IDENTIFICADO
++
+AUDITORIA CORRELACIONADA Y MINIMIZADA
++
+METRICAS COMO PROYECCION, NO COMO VERDAD
++
+ALERTAS CON REGLA, OWNER Y DEDUPLICACION
++
+CONCILIACION BASADA EN FUENTES AUTORITATIVAS
++
+RESULTADO DESCONOCIDO SIN REPETICION CIEGA
+=
+TRAZABILIDAD EXTERNA RECONSTRUIBLE SIN DUPLICAR EFECTOS NI INVENTAR ESTADOS
+```
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-016 — Definir cuarentena o dead-letter`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor`
+
+
 ### [ ] INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor
 ### [ ] INT-EXT-019 — Definir retiro de integración y revocación de credenciales
 ### [ ] INT-EXT-020 — Prohibir credenciales compartidas entre integraciones

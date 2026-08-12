@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **743** |
+| Tareas aprobadas | **744** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **851** |
+| Tareas no iniciadas | **850** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **46.61% (743/1594)** |
+| Porcentaje de completamiento | **46.68% (744/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-EXT-016 — Definir cuarentena o dead-letter** |
-| Tarea actual | **INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación** |
+| Última tarea aprobada | **INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación** |
+| Tarea actual | **INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor** |
+| Siguiente tarea | **INT-EXT-019 — Definir retiro de integración y revocación de credenciales** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 27 de 83 aprobadas; INT-EXT-017 pendiente** |
+| Progreso del bloque | **BLOQUE X: 28 de 83 aprobadas; INT-EXT-018 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-EXT-016` — Definir cuarentena o dead-letter |
-| Tarea actual | `INT-EXT-017` — Definir auditoría, métricas, alertas y conciliación — **NO INICIADA** |
-| Siguiente tarea | `INT-EXT-018` — Definir contingencia ante indisponibilidad del proveedor |
+| Última aprobada | `INT-EXT-017` — Definir auditoría, métricas, alertas y conciliación |
+| Tarea actual | `INT-EXT-018` — Definir contingencia ante indisponibilidad del proveedor — **NO INICIADA** |
+| Siguiente tarea | `INT-EXT-019` — Definir retiro de integración y revocación de credenciales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 27 DE 83 APROBADAS — ACTUAL INT-EXT-017** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 28 DE 83 APROBADAS — ACTUAL INT-EXT-018** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-EXT-016 — Definir cuarentena o dead-letter
-        ↓
-TAREA ACTUAL
 INT-EXT-017 — Definir auditoría, métricas, alertas y conciliación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-EXT-018 — Definir contingencia ante indisponibilidad del proveedor
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-EXT-019 — Definir retiro de integración y revocación de credenciales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 27 de 83 tareas aprobadas
+BLOQUE X — 28 de 83 tareas aprobadas
 ```
