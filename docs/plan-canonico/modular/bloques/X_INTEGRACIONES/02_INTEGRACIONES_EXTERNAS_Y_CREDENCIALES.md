@@ -571,7 +571,571 @@ SIGUIENTE TAREA RESERVADA
 `INT-EXT-002 — Definir principal técnico independiente por integración`
 
 
-### [ ] INT-EXT-002 — Definir principal técnico independiente por integración
+### ✅ INT-EXT-002 — Definir principal técnico independiente por integración
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad` — APROBADA  
+**Tarea siguiente:** `INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento` — RESERVADA  
+**Tipo de tarea:** documental; definición normativa y materializada del principal técnico no humano por frontera de integración externa, con decisión explícita para `EXT-SYS-001` a `EXT-SYS-021`, sin emitir credenciales, seleccionar mecanismos de autenticación, crear secretos, cuentas, endpoints, ejecutar cambios físicos ni modificar Supabase  
+**Bloque:** X — Integraciones  
+**Mini-bloque:** Integraciones externas y credenciales  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md`  
+**Implementación física autorizada:** ninguna  
+**Cambios de código, DDL, DML, migraciones, RLS, RPC, secretos, cuentas externas, configuración productiva o despliegues:** ninguno  
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir qué significa y cómo se asigna el `IntegrationPrincipal` para las integraciones externas inventariadas por `INT-EXT-001`, de forma que cada binding técnico material pueda atribuirse a una identidad técnica no humana propia de su frontera de ejecución sin reutilizar usuarios humanos, autoridad empresarial, cuentas genéricas ni credenciales privilegiadas como identidad funcional.
+
+La tarea resuelve documentalmente la separación entre:
+
+```text
+QUIÉN EJECUTA TÉCNICAMENTE
+≠ QUIÉN ACTÚA COMO HUMANO
+≠ QUIÉN AUTORIZA EL EFECTO EMPRESARIAL
+≠ QUÉ CREDENCIAL AUTENTICA
+≠ QUÉ PROVEEDOR PRESTA LA CAPACIDAD
+```
+
+El resultado no emite una identidad física, no crea una cuenta en terceros y no decide todavía si una credencial concreta es emitida por el proveedor o por Vento.
+
+---
+
+#### 2. Resultado sustantivo
+
+Queda materializado el contrato documental de principal técnico para las **21 identidades** `EXT-SYS-001` a `EXT-SYS-021` heredadas de `VENTO-EXTERNAL-SYSTEM-INVENTORY-001`.
+
+Para cada identidad se determina:
+
+- la frontera semántica del principal técnico;
+- la identidad humana que debe permanecer separada cuando exista;
+- la autoridad empresarial que no puede derivarse del principal;
+- el estado documental de la decisión;
+- el estado de materialización física que sí puede afirmarse con la evidencia actual;
+- el propietario del siguiente paso físico;
+- la condición objetiva para salir del estado pendiente o no aplicable.
+
+Balance:
+
+| Control                                                                          |    Resultado |
+| -------------------------------------------------------------------------------- | -----------: |
+| Identidades heredadas esperadas                                                  |       **21** |
+| Decisiones documentales materializadas                                           | **21 de 21** |
+| Identidades faltantes                                                            |        **0** |
+| Identidades duplicadas                                                           |        **0** |
+| Decisiones documentales `ESPECIFICADO`                                           |       **21** |
+| Materializaciones físicas `PENDIENTE_DE_EVIDENCIA`                               |       **11** |
+| Materializaciones físicas `NO_APLICA` en el estado actual sin binding acreditado |       **10** |
+| Usuarios humanos reutilizados como principal técnico                             |        **0** |
+| `service_role` declarado como principal técnico                                  |        **0** |
+| Credenciales emitidas o modificadas                                              |        **0** |
+| Mecanismos de autenticación seleccionados                                        |        **0** |
+| Cambios físicos                                                                  |        **0** |
+| Requisitos `TREQ-*` creados o modificados                                        |        **0** |
+
+---
+
+#### 3. Entradas canónicas preservadas
+
+La tarea consume y preserva, sin redefinir:
+
+- `INT-EXT-001` y `VENTO-EXTERNAL-SYSTEM-INVENTORY-001`, incluidas las 21 identidades `EXT-SYS-*`, sus proveedores acreditados o no acreditados, evidencia, propietarios, custodios técnicos, finalidad y decisión vigente;
+- la separación ya aprobada entre `external_system_id`, `external_instance_id`, `provider_account_ref`, `integration_principal_id`, `external_credential_id`, `contract_version`, `endpoint_ref`, `business_owner_ref` y `technical_owner_ref`;
+- `SHELL-CON-017` como destino de materialización futura del contrato compartido de principal técnico de integración;
+- `SHELL-CON-018` como destino separado de la referencia de credencial externa sin secreto;
+- el modelo de BLOQUE Z que distingue servicio del sistema, cuenta técnica, `service_role`, credencial de integración, soporte remoto y actor humano;
+- el modelo de auditoría transversal que separa principal autenticado, actor humano efectivo y principal técnico;
+- la regla de que compartir infraestructura, conexión o credencial no transfiere propiedad funcional;
+- la propiedad de `vento-shell` sobre cualquier modificación Supabase perteneciente a VENTO;
+- la secuencia documental `INT-EXT-001 → INT-EXT-002 → INT-EXT-003`.
+
+No se modifica ninguna clasificación de evidencia aprobada por `INT-EXT-001`.
+
+---
+
+#### 4. Definición canónica de `IntegrationPrincipal`
+
+`IntegrationPrincipal` es la **identidad lógica técnica, no humana y atribuible** bajo la cual una integración VENTO ejecuta una interacción con una frontera externa o procesa una interacción proveniente de ella.
+
+Su función es responder de forma estable:
+
+```text
+QUÉ INTEGRACIÓN TÉCNICA EJECUTÓ O RECIBIÓ ESTA INTERACCIÓN
+```
+
+No responde por sí sola:
+
+```text
+QUÉ HUMANO ORIGINÓ LA INTENCIÓN
+QUÉ PERMISO EMPRESARIAL EXISTÍA
+QUÉ SECRETO SE UTILIZÓ
+QUÉ CUENTA COMERCIAL POSEE VENTO EN EL PROVEEDOR
+QUÉ ENDPOINT FUE INVOCADO
+QUÉ RESULTADO EMPRESARIAL QUEDÓ CONFIRMADO
+```
+
+Un principal técnico puede permanecer lógicamente estable aunque una credencial sea rotada, siempre que la implementación posterior conserve la misma frontera, propósito y autoridad técnica aprobados.
+
+---
+
+#### 5. Separaciones obligatorias
+
+Se fija la siguiente separación:
+
+```text
+ACTOR HUMANO
+≠
+INTEGRATION PRINCIPAL
+≠
+PERMISSION KEY
+≠
+PROVIDER ACCOUNT REF
+≠
+EXTERNAL CREDENTIAL ID
+≠
+API KEY / TOKEN / SECRET / CERTIFICADO
+≠
+ENDPOINT REF
+≠
+SERVICE ROLE
+```
+
+Reglas:
+
+1. un usuario humano no se reutiliza como principal técnico de una integración;
+2. el principal técnico no recibe autoridad empresarial por existir;
+3. una `PermissionKey` expresa capacidad empresarial y no identidad técnica;
+4. `provider_account_ref` identifica la cuenta o relación externa cuando exista, no al ejecutor VENTO;
+5. `external_credential_id` referencia una credencial y permanece separado del principal;
+6. una API key, token, secreto, certificado o clave privada es material de autenticación, no identidad empresarial;
+7. `endpoint_ref` identifica destino o superficie técnica, no al principal;
+8. `service_role` es una credencial privilegiada y no una sesión humana, principal empresarial ni permiso universal;
+9. un callback o webhook autenticado identifica una fuente externa, pero no sustituye al principal técnico interno que procesa la interacción;
+10. el actor humano causal, cuando exista, permanece explícito y separado del principal técnico.
+
+---
+
+#### 6. Independencia y cardinalidad
+
+La independencia se define por **frontera material de integración**, no por el nombre del proveedor.
+
+Reglas:
+
+1. cada binding material tendrá una decisión explícita de `integration_principal_id` antes de entrar en operación;
+2. dos integraciones independientes no reutilizarán un principal técnico genérico para evitar su atribución individual;
+3. una misma plataforma externa puede requerir varios principales cuando existan bindings materialmente distintos por aplicación, finalidad, dirección, cuenta, componente o frontera de ejecución;
+4. dos capacidades del mismo proveedor no se fusionan únicamente por compartir marca o contrato comercial;
+5. la existencia de un solo `EXT-SYS-*` no obliga a una relación física uno-a-uno con un único principal;
+6. un cambio de credencial no crea automáticamente un principal nuevo;
+7. un cambio de finalidad, frontera de confianza o integración independiente exige reevaluar el vínculo del principal;
+8. el contexto de ambiente debe quedar distinguible en la ejecución técnica; la separación física de credenciales por ambiente pertenece a `INT-EXT-006`;
+9. un principal no podrá usarse para ampliar el alcance técnico de otro binding por conveniencia;
+10. si no existe binding acreditado, no se fabrica un principal físico: la decisión documental queda especificada y la materialización permanece `NO_APLICA` hasta que exista una integración autorizada.
+
+---
+
+#### 7. Contrato documental mínimo
+
+Toda materialización posterior del principal técnico deberá poder resolver, sin exponer secretos:
+
+| Dimensión                  | Regla                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `external_system_id`       | identidad `EXT-SYS-*` propietaria de la familia externa                                              |
+| `external_instance_id`     | instancia concreta cuando exista y esté acreditada                                                   |
+| `integration_principal_id` | identidad técnica estable de la frontera de integración                                              |
+| `provider_account_ref`     | cuenta externa relacionada cuando corresponda, separada del principal                                |
+| `external_credential_id`   | referencia opaca a la credencial utilizada, nunca el valor secreto                                   |
+| `contract_version`         | contrato técnico aplicable a la interacción                                                          |
+| `endpoint_ref`             | destino o superficie técnica cuando exista                                                           |
+| `business_owner_ref`       | propietaria del hecho o decisión empresarial                                                         |
+| `technical_owner_ref`      | responsable técnico de la integración                                                                |
+| actor humano causal        | se conserva aparte cuando una persona originó, aprobó o supervisó la acción                          |
+| ambiente                   | debe ser identificable sin convertirlo en autoridad empresarial                                      |
+| finalidad técnica          | capacidad exacta que el principal puede ejecutar                                                     |
+| vigencia                   | condición temporal o de ciclo de vida aplicable                                                      |
+| estado                     | activo, suspendido, revocado o equivalente solamente cuando el contrato físico futuro lo materialice |
+| correlación                | vínculo con request, command, event, intento o evidencia según el contrato consumidor                |
+
+La tarea no crea valores físicos para esas dimensiones cuando las fuentes actuales no los acreditan.
+
+---
+
+#### 8. Dirección de confianza
+
+El principal técnico se interpreta según la dirección de la interacción sin mezclar identidades.
+
+##### 8.1 Salida VENTO → tercero
+
+```text
+ACTOR / PROCESO VENTO
+→ autorización empresarial
+→ principal técnico de integración
+→ credencial técnica referenciada
+→ proveedor externo
+```
+
+El proveedor recibe una interacción técnica, pero la autorización empresarial permanece en VENTO.
+
+##### 8.2 Entrada tercero → VENTO
+
+```text
+FUENTE EXTERNA
+→ prueba de autenticidad del proveedor
+→ receptor/adaptador VENTO
+→ principal técnico interno del procesamiento
+→ contrato propietario
+→ efecto empresarial solo después de validación
+```
+
+La identidad del proveedor y el principal interno no se fusionan.
+
+##### 8.3 Bridge local o dispositivo
+
+```text
+ACTOR HUMANO
+→ aplicación VENTO
+→ principal técnico / binding local
+→ bridge, agente o dispositivo
+```
+
+El equipo físico, navegador, impresora o token de dispositivo no sustituye al actor humano ni al principal lógico.
+
+---
+
+#### 9. Matriz materializada de principal técnico por identidad externa
+
+| `external_system_id` | Sistema / plataforma                     | Evidencia heredada                   | Frontera del principal técnico definida por INT-EXT-002                                                                                                                                                             | Separación humana obligatoria                                                          | Autoridad empresarial preservada                                                          | Estado documental | Estado físico actual     | Propietario y condición de salida                                                                                                                                 |
+| -------------------- | ---------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-SYS-001`        | Supabase                                 | `BINDING_TECNICO_OBSERVADO`          | cada servicio o adaptador VENTO que use una frontera Supabase deberá ejecutar bajo principal técnico atribuible a ese binding; `service_role` o una key no sustituyen esa identidad                                 | administrador, desarrollador, trabajador o usuario final permanecen separados          | cada aplicación o dominio conserva sus hechos y decisiones                                | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | `vento-shell` + BLOQUES X/Z; sale cuando el principal canónico y su vínculo físico quedan materializados sin convertir credencial compartida en autoridad         |
+| `EXT-SYS-002`        | Wompi                                    | `BINDING_CONDICIONAL_OBSERVADO`      | el adaptador de pagos VENTO tendrá principal técnico propio; la identidad del emisor del webhook y la credencial usada para autenticarlo permanecen separadas                                                       | cliente, cajero, operador o aprobador del pago no son el principal del adaptador       | dominio propietario del pago                                                              | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | BLOQUE X + `vento-shell`; sale con principal de adaptador registrado y correlacionado con la credencial y contrato aprobados                                      |
+| `EXT-SYS-003`        | RevenueCat                               | `BINDING_CONDICIONAL_OBSERVADO`      | el binding de suscripción y webhook tendrá principal técnico VENTO independiente; usuario de Club y emisor externo permanecen identidades distintas                                                                 | cliente o administrador de Club no se reutiliza como identidad técnica                 | PASS / dominio Club                                                                       | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | BLOQUE X + `vento-shell` + PASS; sale al existir vínculo canónico entre principal, binding y credencial sin confundir entitlement con autoridad técnica           |
+| `EXT-SYS-004`        | Resend                                   | `BINDING_CONDICIONAL_OBSERVADO`      | el servicio de envío de invitaciones tendrá principal técnico no humano propio de la integración de correo; API key y remitente visible no son el principal                                                         | invitador, trabajador invitado y propietario del alias permanecen separados            | ANIMA conserva invitación, vínculo y onboarding                                           | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | BLOQUE X + `vento-shell` + ANIMA; sale cuando el sender técnico queda registrado y auditable con credencial referenciada                                          |
+| `EXT-SYS-005`        | Expo / EAS Update                        | `CONFIGURACION_OBSERVADA`            | cada automatización material de build, actualización o publicación deberá tener principal técnico atribuible al binding de la aplicación, sin usar la identidad personal del desarrollador como identidad operativa | desarrollador, revisor o publicador humano permanece causalmente separado              | ANIMA y PASS conservan comportamiento y estado de sus aplicaciones                        | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | responsables técnicos ANIMA/PASS + BLOQUES T/Z; sale cuando la ejecución automatizada posee identidad canónica y el humano queda registrado aparte cuando aplique |
+| `EXT-SYS-006`        | Expo Push Service                        | `BINDING_TECNICO_OBSERVADO`          | el emisor VENTO de push tendrá principal técnico propio; token del dispositivo y destinatario no representan al emisor                                                                                              | autor del mensaje, cliente y operador permanecen separados                             | PASS conserva mensaje, pedido, audiencia y resultado empresarial                          | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | BLOQUES X/E4 + `vento-shell`; sale con principal del sender registrado, correlación auditable y credencial separada                                               |
+| `EXT-SYS-007`        | Sentry                                   | `BINDING_CONDICIONAL_OBSERVADO`      | la emisión o carga de telemetría tendrá principal técnico atribuible por aplicación y binding; el usuario observado nunca se convierte en identidad del sistema emisor                                              | usuario monitoreado, desarrollador y operador permanecen separados                     | ANIMA conserva el contexto funcional; telemetría no decide hechos empresariales           | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | ANIMA + BLOQUE Z/X; sale cuando la integración activa acredita principal, finalidad y vínculo de credencial sin reutilizar identidad humana                       |
+| `EXT-SYS-008`        | Google Maps / Google Reviews             | `BINDING_CONDICIONAL_OBSERVADO`      | cualquier consumo autenticado de API tendrá principal técnico del binding VENTO; una navegación pública o enlace de reseña sin binding autenticado no crea por sí sola un principal                                 | cliente, revisor y operador permanecen separados                                       | PASS conserva sede, cobertura, experiencia y resultado                                    | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | PASS + BLOQUE X; sale al acreditar qué binding autenticado existe y registrar su principal sin convertir una API key en identidad                                 |
+| `EXT-SYS-009`        | Apple Wallet / PassKit y APNs            | `BINDING_CONDICIONAL_OBSERVADO`      | la emisión/actualización de pases y el sender APNs deberán estar asociados a principal técnico VENTO de su frontera; certificado, clave, push token y pass identity permanecen separados                            | cliente, trabajador y operador permanecen separados                                    | PASS conserva loyalty; ANIMA conserva identidad laboral bajo su contrato propio           | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | PASS/ANIMA + BLOQUE X; sale cuando cada binding aplicable posee principal canónico y credencial referenciada sin mezclar dominios                                 |
+| `EXT-SYS-010`        | Vercel                                   | `CONFIGURACION_OBSERVADA`            | toda automatización material de despliegue o runtime externo que actúe por VENTO deberá tener principal técnico atribuible a la aplicación o servicio, separado de la cuenta personal del operador                  | desarrollador, aprobador o administrador humano permanece separado                     | cada aplicación conserva funcionalidad y datos                                            | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | responsables técnicos + BLOQUES Z/T/X; sale cuando la identidad operativa de cada binding relevante queda registrada y auditable                                  |
+| `EXT-SYS-011`        | Zebra BrowserPrint                       | `BINDING_TECNICO_OBSERVADO`          | el bridge de impresión NEXO deberá distinguir principal técnico del binding, endpoint/dispositivo y actor humano; la impresora detectada no es el principal                                                         | bodeguero, operador o administrador de impresión permanece separado                    | NEXO conserva trabajo, etiqueta/documento y resultado logístico                           | `ESPECIFICADO`    | `PENDIENTE_DE_EVIDENCIA` | NEXO + PRINT/E4/Z/X; sale cuando el bridge y dispositivo quedan vinculados a identidad técnica canónica sin perder actor real                                     |
+| `EXT-SYS-012`        | Google Wallet / Google Pay & Wallet      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | si se materializa el carnet laboral en Google Wallet, el issuer/service binding deberá tener principal técnico no humano propio; cuenta de servicio futura no se confunde con actor laboral                         | trabajador y administrador permanecen separados                                        | ANIMA conserva identidad laboral y elegibilidad                                           | `ESPECIFICADO`    | `NO_APLICA`              | ANIMA + BLOQUE X + `vento-shell` para Supabase; pasa a materialización obligatoria antes de activar un binding autenticado                                        |
+| `EXT-SYS-013`        | POS externo vigente                      | `PROVEEDOR_NO_ACREDITADO`            | cualquier adaptador futuro del POS externo deberá tener principal técnico propio de esa integración; la identidad concreta no se define antes de auditar proveedor, interfaz y binding                              | cajero, operador, administrador y proveedor humano permanecen separados                | contrato temporal del hecho de venta; propietarias internas conservan sus efectos         | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + `INT-POS-001`; pasa a materialización obligatoria cuando exista binding exacto acreditado                                                              |
+| `EXT-SYS-014`        | Shopify / canal de comercio electrónico  | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | una integración Shopify material tendrá principal técnico VENTO propio del adaptador o canal, separado de cuenta comercial y operador                                                                               | cliente, operador de tienda y administrador permanecen separados                       | PULSO/PASS/NEXO/NUMERA según el hecho propietario                                         | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + propietario del canal; pasa a materialización obligatoria cuando exista instancia y binding verificados                                                |
+| `EXT-SYS-015`        | Rappi / marketplace                      | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | una integración material con marketplace tendrá principal técnico VENTO propio del adaptador, separado de cuenta del comercio, repartidor y operador                                                                | cliente, operador, repartidor y administrador permanecen separados                     | PULSO conserva pedido, NEXO entrega y NUMERA hecho económico                              | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + propietario del canal; pasa a materialización obligatoria cuando exista binding autenticado acreditado                                                 |
+| `EXT-SYS-016`        | ManyChat / automatización conversacional | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | un bot o adaptador futuro tendrá principal técnico propio y no podrá operar bajo la identidad humana del agente ni usar la cuenta del canal como autoridad empresarial                                              | agente, cliente, creador de campaña y administrador permanecen separados               | proceso receptor y Marketing conservan sus decisiones                                     | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + propietario del canal; pasa a materialización obligatoria cuando exista bot, cuenta o API autorizados                                                  |
+| `EXT-SYS-017`        | WhatsApp                                 | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | un binding API futuro tendrá principal técnico propio del adaptador VENTO; número, cuenta, contacto, agente o usuario no sustituyen esa identidad                                                                   | cliente, agente y administrador permanecen separados                                   | proceso receptor conserva caso, pedido, soporte o reclamo                                 | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + propietario del canal; pasa a materialización obligatoria cuando se acredite proveedor/API y binding                                                   |
+| `EXT-SYS-018`        | Instagram / perfiles sociales            | `DOCUMENTADO_SIN_BINDING_ACREDITADO` | cualquier automatización o API futura tendrá principal técnico propio del binding; perfil social y cuenta humana de administración permanecen separados                                                             | community manager, cliente, creador y administrador permanecen separados               | Marketing conserva publicación y el proceso receptor conserva casos derivados             | `ESPECIFICADO`    | `NO_APLICA`              | propietario de Marketing/canal + BLOQUE X; pasa a materialización obligatoria cuando exista integración API autorizada                                            |
+| `EXT-SYS-019`        | Correo corporativo y alias funcionales   | `PROVEEDOR_NO_ACREDITADO`            | solo una automatización o API material de correo requerirá principal técnico; un buzón o alias usado por humanos no se redefine como principal de integración                                                       | remitente humano, receptor, propietario del alias y administrador permanecen separados | cada proceso receptor conserva su expediente o caso                                       | `ESPECIFICADO`    | `NO_APLICA`              | propietario del alias + custodio técnico + BLOQUE X si existe integración; pasa a materialización al acreditarse API o automatización                             |
+| `EXT-SYS-020`        | Telefonía / canal de voz                 | `PROVEEDOR_NO_ACREDITADO`            | cualquier CTI, API, bot o automatización futura tendrá principal técnico propio; número telefónico y agente no son identidad técnica de integración                                                                 | agente, cliente, operador y administrador permanecen separados                         | proceso receptor conserva reserva, catering, cobranza, reclamo o coordinación             | `ESPECIFICADO`    | `NO_APLICA`              | propietario operativo + custodio técnico + BLOQUE X si existe integración; pasa a materialización al acreditarse binding técnico                                  |
+| `EXT-SYS-021`        | Transporte externo                       | `PROVEEDOR_NO_ACREDITADO`            | cualquier API, tracking o adaptador futuro tendrá principal técnico VENTO propio; conductor, transportista, proveedor y referencia de envío no son el principal del adaptador                                       | conductor, despachador, receptor y operador permanecen separados                       | NEXO o el proceso logístico propietario conserva salida, custodia, entrega y conciliación | `ESPECIFICADO`    | `NO_APLICA`              | BLOQUE X + propietario logístico; pasa a materialización obligatoria cuando proveedor y binding exactos queden acreditados                                        |
+
+---
+
+#### 10. Reconciliación de las 21 decisiones
+
+La matriz preserva exactamente el inventario heredado:
+
+```text
+21 IDENTIDADES
+= 3 BINDING_TECNICO_OBSERVADO
++ 6 BINDING_CONDICIONAL_OBSERVADO
++ 2 CONFIGURACION_OBSERVADA
++ 6 DOCUMENTADO_SIN_BINDING_ACREDITADO
++ 4 PROVEEDOR_NO_ACREDITADO
+```
+
+La decisión de principal queda:
+
+```text
+21 ESPECIFICADO DOCUMENTALMENTE
+= 11 PENDIENTE_DE_EVIDENCIA PARA MATERIALIZACIÓN FÍSICA
++ 10 NO_APLICA EN EL ESTADO ACTUAL SIN BINDING ACREDITADO
+```
+
+`NO_APLICA` no significa que una futura integración pueda omitir principal. Significa que no existe evidencia suficiente para declarar actualmente un binding técnico VENTO que requiera una identidad física. Antes de activar cualquiera de esas integraciones, la decisión deberá pasar a materialización y cumplir este contrato.
+
+---
+
+#### 11. Actor humano y causalidad
+
+Cuando una integración derive de una acción humana, la auditoría deberá preservar ambos planos:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+PRINCIPAL TÉCNICO DE INTEGRACIÓN
+```
+
+Ejemplos conceptuales:
+
+- un cliente inicia un pago; el adaptador de pago ejecuta técnicamente;
+- un administrador invita a un trabajador; el servicio de correo envía técnicamente;
+- un trabajador solicita una impresión; el bridge de impresión ejecuta técnicamente;
+- un operador aprueba una acción; el adaptador externo la transmite técnicamente.
+
+No se permitirá registrar al servicio como si fuera el humano ni al humano como si fuera el servicio.
+
+En procesos totalmente automáticos, el principal técnico permanece identificable y debe conservarse el proceso, evento o causa que originó la ejecución.
+
+---
+
+#### 12. Principal técnico y autorización empresarial
+
+La existencia de un `IntegrationPrincipal` no concede una `PermissionKey` ni autoriza un efecto.
+
+Secuencia obligatoria cuando exista efecto protegido:
+
+```text
+INTENCIÓN O EVENTO
+→ principal y fuente autenticables
+→ contrato vigente
+→ aplicación propietaria
+→ autorización empresarial independiente
+→ validación de recurso, estado y contexto
+→ efecto o rechazo
+→ auditoría
+```
+
+Reglas:
+
+1. un principal válido puede recibir un rechazo empresarial;
+2. una credencial válida puede corresponder a un principal sin permiso para la operación solicitada;
+3. un proveedor autenticado no puede ordenar por sí solo una mutación interna;
+4. una llamada con `service_role` no sustituye la autorización del dominio propietario;
+5. una integración de solo lectura no puede ampliar su función mediante un principal compartido con otra integración;
+6. una automatización conserva la misma frontera de propiedad que una acción interactiva.
+
+---
+
+#### 13. Principal técnico y credenciales
+
+La tarea fija únicamente la relación lógica:
+
+```text
+INTEGRATION PRINCIPAL
+→ puede estar autenticado mediante una credencial referenciada
+```
+
+Pero mantiene prohibido:
+
+```text
+INTEGRATION PRINCIPAL = SECRET VALUE
+INTEGRATION PRINCIPAL = SERVICE ROLE
+INTEGRATION PRINCIPAL = CUENTA HUMANA
+INTEGRATION PRINCIPAL = PROVIDER ACCOUNT
+```
+
+La procedencia de las credenciales queda reservada a `INT-EXT-003`.
+
+El mecanismo de almacenamiento, cifrado, acceso y secreto queda reservado a las tareas posteriores del mismo mini-bloque y a la arquitectura propietaria correspondiente.
+
+---
+
+#### 14. Ciclo de vida requerido para la materialización futura
+
+La implementación física posterior deberá permitir, conforme a su contrato propietario:
+
+- alta explícita del principal;
+- vínculo con la integración exacta;
+- vínculo con propietario técnico y propietario empresarial;
+- referencia a credencial sin secreto;
+- activación solo después de autorización aplicable;
+- rotación de credenciales sin perder trazabilidad;
+- suspensión y revocación;
+- retiro sin reutilizar la identidad para otra integración;
+- historial de cambios;
+- correlación de ejecuciones;
+- reconciliación cuando exista ambigüedad sobre identidad o efecto.
+
+La presente tarea no materializa ese ciclo en base de datos ni proveedor externo.
+
+---
+
+#### 15. Estados de evidencia
+
+La tarea usa únicamente estados documentales que no simulan implementación:
+
+| Estado                   | Uso en INT-EXT-002                                                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | la frontera y regla del principal están definidas documentalmente                                                                                   |
+| `PENDIENTE_DE_EVIDENCIA` | existe evidencia de binding o configuración material, pero no se acreditó un registro canónico completo del `integration_principal_id` y su vínculo |
+| `NO_APLICA`              | no existe binding técnico acreditado en el estado actual; no se crea identidad física por anticipación                                              |
+
+No se utiliza `IMPLEMENTADO` ni `VALIDADO` para ninguna de las 21 identidades.
+
+---
+
+#### 16. Handoffs físicos y documentales
+
+| Pendiente                                                  | Estado en INT-EXT-002   | Propietario                                    | Condición de salida                                                                                     |
+| ---------------------------------------------------------- | ----------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| contrato compartido físico de principal técnico            | `FUERA_DE_ALCANCE`      | `SHELL-CON-017`                                | contrato consumible materializado y probado sin copia divergente                                        |
+| referencia física de credencial sin secreto                | `FUERA_DE_ALCANCE`      | `SHELL-CON-018`                                | referencia consumible vinculada al principal sin exponer secreto                                        |
+| procedencia proveedor/Vento de la credencial               | `FUERA_DE_ALCANCE`      | `INT-EXT-003`                                  | cada binding aplicable clasificado sin ambigüedad                                                       |
+| mecanismo concreto de autenticación                        | `FUERA_DE_ALCANCE`      | `INT-EXT-004`                                  | mecanismo aprobado por integración sin ampliar autoridad                                                |
+| scopes y least privilege                                   | `FUERA_DE_ALCANCE`      | `INT-EXT-005`                                  | alcance técnico mínimo materializado                                                                    |
+| separación física por ambiente                             | `FUERA_DE_ALCANCE`      | `INT-EXT-006`                                  | credenciales independientes por ambiente según contrato aprobado                                        |
+| cuentas compartidas o credenciales humanas existentes      | `FUERA_DE_ALCANCE`      | `INT-EXT-007`                                  | hallazgos inventariados y tratados sin pérdida de operación autorizada                                  |
+| ciclo de rotación, revocación y expiración de credenciales | `FUERA_DE_ALCANCE`      | `INT-EXT-008`                                  | ciclo documentado y posteriormente materializado                                                        |
+| persistencia física del registro de integración            | `FUERA_DE_ALCANCE`      | `INT-DB-001` a `INT-DB-008` cuando corresponda | infraestructura externa autorizada materializa identidad, credencial y auditoría sin secretos expuestos |
+| proveedor y binding exactos del POS externo                | `FUERA_DE_ALCANCE`      | `INT-POS-001`                                  | proveedor, interfaces y límites auditados con evidencia                                                 |
+| bindings futuros de canales sin integración acreditada     | `NO_APLICA` actualmente | BLOQUE X + propietario de cada canal           | integración autorizada existe y adopta un principal técnico antes de activarse                          |
+
+No queda pendiente material sin propietario y condición de salida.
+
+---
+
+#### 17. Prohibiciones
+
+Queda prohibido:
+
+1. usar una cuenta personal como `integration_principal_id`;
+2. usar correo de una persona como identidad técnica estable del servicio;
+3. declarar `service_role` como principal técnico;
+4. usar el mismo principal genérico para integraciones independientes;
+5. inferir principal desde API key, token, secreto, certificado o nombre de variable;
+6. inferir autoridad empresarial desde el principal técnico;
+7. inferir permiso desde una cuenta del proveedor;
+8. convertir un `external_system_id` en credencial;
+9. convertir un endpoint en identidad;
+10. convertir un dispositivo o push token en principal del servicio;
+11. convertir la identidad externa del proveedor en actor humano VENTO;
+12. mezclar actor humano y principal técnico en un solo campo de auditoría;
+13. crear una identidad física para un canal que todavía no tiene binding acreditado;
+14. declarar una identidad física como implementada por observar solamente código o configuración;
+15. compartir un principal para obtener privilegios de otro binding;
+16. crear secretos o credenciales dentro de esta tarea;
+17. elegir OAuth, API key, HMAC, certificado u otro mecanismo dentro de esta tarea;
+18. definir scopes de proveedor dentro de esta tarea;
+19. cambiar credenciales por ambiente dentro de esta tarea;
+20. modificar Supabase dentro de esta tarea;
+21. modificar código dentro de esta tarea;
+22. desplegar servicios dentro de esta tarea;
+23. cambiar las 21 identidades o clasificaciones heredadas de `INT-EXT-001`;
+24. iniciar o desarrollar `INT-EXT-003` dentro de esta tarea.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: `INT-EXT-002` materializa para `EXT-SYS-001` a `EXT-SYS-021` una especialización documental de comportamientos ya protegidos por el registro canónico vigente. La cobertura existente ya exige correlación tecnológica y autenticación mínima de integraciones, separación entre principal autenticado, actor humano efectivo y principal técnico, vínculo técnico explícito y no ambiguo, contexto nominal de ejecución de servicios, tratamiento de `service_role` como credencial y no como autoridad empresarial, y prohibición de derivar propiedad o autoridad desde infraestructura o acceso compartidos.
+
+Entre las coberturas vigentes se encuentran `TREQ-INTEGRATION-020`, `TREQ-AUTH-015`, `TREQ-AUTH-021`, `TREQ-SUPABASE-866`, `TREQ-SUPABASE-867`, `TREQ-INTEGRATION-201`, `TREQ-INTEGRATION-290`, `TREQ-INTEGRATION-293`, `TREQ-INTEGRATION-294` y `TREQ-INTEGRATION-315`.
+
+La tarea no crea un permiso, mecanismo ejecutable de autenticación, credencial, secreto, endpoint, estado empresarial, transporte ni efecto nuevo; únicamente instancia la frontera documental del principal técnico para las 21 identidades ya inventariadas.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 19. Criterios de aceptación
+
+1. se preservan exactamente `EXT-SYS-001` a `EXT-SYS-021`;
+2. existen exactamente 21 decisiones documentales;
+3. no existen identidades faltantes;
+4. no existen identidades duplicadas;
+5. las clasificaciones heredadas de `INT-EXT-001` permanecen 3 + 6 + 2 + 6 + 4;
+6. las 21 decisiones quedan `ESPECIFICADO` documentalmente;
+7. 11 identidades con binding o configuración observados permanecen `PENDIENTE_DE_EVIDENCIA` para principal físico canónico;
+8. 10 identidades sin binding acreditado permanecen `NO_APLICA` para materialización física actual;
+9. `NO_APLICA` obliga a adoptar principal antes de activar un binding futuro;
+10. `IntegrationPrincipal` queda definido como identidad lógica técnica no humana y atribuible;
+11. principal técnico y actor humano permanecen separados;
+12. principal técnico y `PermissionKey` permanecen separados;
+13. principal técnico y `provider_account_ref` permanecen separados;
+14. principal técnico y `external_credential_id` permanecen separados;
+15. principal técnico y secreto permanecen separados;
+16. principal técnico y endpoint permanecen separados;
+17. `service_role` permanece clasificado como credencial privilegiada y no como principal o autoridad empresarial;
+18. un proveedor autenticado no recibe autoridad empresarial por autenticidad técnica;
+19. un binding de entrada conserva identidad externa y principal interno separados;
+20. un binding de salida conserva actor, principal, credencial y proveedor separados;
+21. un bridge local conserva actor, principal y dispositivo separados;
+22. una plataforma externa puede tener varios principales cuando existan bindings independientes;
+23. dos integraciones independientes no reutilizan un principal genérico;
+24. una rotación de credencial no cambia por sí sola el principal lógico;
+25. no se crean valores físicos de `integration_principal_id` sin evidencia;
+26. no se crean cuentas externas;
+27. no se crean credenciales;
+28. no se crean secretos;
+29. no se seleccionan mecanismos de autenticación;
+30. no se definen scopes de proveedor;
+31. no se modifica Supabase;
+32. no se modifica código;
+33. no se ejecuta despliegue;
+34. cada pendiente físico tiene propietario y condición de salida;
+35. se crean cero requisitos `TREQ-*`;
+36. se modifican cero requisitos `TREQ-*`;
+37. `INT-EXT-003` permanece reservada.
+
+---
+
+#### 20. Resultado de la tarea
+
+`INT-EXT-002` deja definida y materializada documentalmente la frontera de identidad técnica para las 21 familias externas inventariadas.
+
+El modelo resultante exige que toda integración material pueda distinguir:
+
+```text
+SISTEMA EXTERNO
++
+INSTANCIA EXTERNA CUANDO EXISTA
++
+PRINCIPAL TÉCNICO VENTO
++
+CREDENCIAL REFERENCIADA
++
+ACTOR HUMANO CUANDO EXISTA
++
+PROPIETARIO EMPRESARIAL
++
+PROPIETARIO TÉCNICO
++
+CONTRATO Y CORRELACIÓN
+```
+
+sin convertir esa relación en:
+
+```text
+CUENTA HUMANA COMPARTIDA
+SERVICE ROLE COMO IDENTIDAD EMPRESARIAL
+SECRETO COMO PRINCIPAL
+PROVEEDOR COMO AUTORIDAD VENTO
+ENDPOINT COMO IDENTIDAD
+BINDING NO ACREDITADO COMO IMPLEMENTACIÓN
+```
+
+La emisión, procedencia y materialización física de credenciales permanece fuera del alcance de esta tarea.
+
+---
+
+ÚLTIMA TAREA APROBADA
+
+`INT-EXT-001 — Inventariar sistemas externos, proveedores, propietarios y finalidad`
+
+TAREA ACTUAL APROBADA
+
+`INT-EXT-002 — Definir principal técnico independiente por integración`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento`
+
+
 ### [ ] INT-EXT-003 — Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento
 ### [ ] INT-EXT-004 — Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo
 ### [ ] INT-EXT-005 — Definir alcance mínimo de cada credencial
