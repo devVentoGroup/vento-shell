@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **788** |
+| Tareas aprobadas | **789** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **806** |
+| Tareas no iniciadas | **805** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.44% (788/1594)** |
+| Porcentaje de completamiento | **49.50% (789/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-SALES-003 — Definir registro de salida de inventario en NEXO** |
-| Tarea actual | **INT-SALES-004 — Definir recepción del evento de venta en NUMERA** |
+| Última tarea aprobada | **INT-SALES-004 — Definir recepción del evento de venta en NUMERA** |
+| Tarea actual | **INT-SALES-005 — Definir acumulación de puntos en PASS** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-SALES-005 — Definir acumulación de puntos en PASS** |
+| Siguiente tarea | **INT-SALES-006 — Definir procesamiento de redención en PASS** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 72 de 83 aprobadas; INT-SALES-004 pendiente** |
+| Progreso del bloque | **BLOQUE X: 73 de 83 aprobadas; INT-SALES-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-SALES-003` — Definir registro de salida de inventario en NEXO |
-| Tarea actual | `INT-SALES-004` — Definir recepción del evento de venta en NUMERA — **NO INICIADA** |
-| Siguiente tarea | `INT-SALES-005` — Definir acumulación de puntos en PASS |
+| Última aprobada | `INT-SALES-004` — Definir recepción del evento de venta en NUMERA |
+| Tarea actual | `INT-SALES-005` — Definir acumulación de puntos en PASS — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-006` — Definir procesamiento de redención en PASS |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 72 DE 83 APROBADAS — ACTUAL INT-SALES-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 73 DE 83 APROBADAS — ACTUAL INT-SALES-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-SALES-003 — Definir registro de salida de inventario en NEXO
-        ↓
-TAREA ACTUAL
 INT-SALES-004 — Definir recepción del evento de venta en NUMERA
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-SALES-005 — Definir acumulación de puntos en PASS
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-006 — Definir procesamiento de redención en PASS
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 72 de 83 tareas aprobadas
+BLOQUE X — 73 de 83 tareas aprobadas
 ```
