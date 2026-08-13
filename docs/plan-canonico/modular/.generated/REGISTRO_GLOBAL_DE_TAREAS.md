@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **765** |
+| Aprobadas | **766** |
 | En propuesta | **0** |
-| No iniciadas | **829** |
+| No iniciadas | **828** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **47.99% (765/1594)** |
+| Porcentaje de completamiento | **48.06% (766/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-004` — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura | ✅ APROBADA |
-| Tarea actual | `INT-POS-005` — Definir contrato canónico de venta y línea de venta | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-006` — Definir importación de encabezados, líneas, estados y timestamps | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-005` — Definir contrato canónico de venta y línea de venta | ✅ APROBADA |
+| Tarea actual | `INT-POS-006` — Definir importación de encabezados, líneas, estados y timestamps | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-007` — Definir importación de descuentos, impuestos, propinas y medios de pago | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1473,7 +1473,7 @@
 | ✅ APROBADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-003` | Definir al POS vigente como fuente temporal del hecho de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-004` | Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-006` | Definir importación de encabezados, líneas, estados y timestamps | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-007` | Definir importación de descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-008` | Definir importación de anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |

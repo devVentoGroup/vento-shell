@@ -1435,7 +1435,483 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-005 — Definir contrato canónico de venta y línea de venta`
 
 
-### [ ] INT-POS-005 — Definir contrato canónico de venta y línea de venta
+### ✅ INT-POS-005 — Definir contrato canónico de venta y línea de venta
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`  
+**Tarea siguiente:** `INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`  
+**Tipo de tarea:** documental; definición semántica y normativa del contrato canónico de venta y línea de venta que deberá ser producido por el adaptador del POS externo durante la transición y por PULSO después del corte, preservando identidad, procedencia, versionado, separación de hechos, mapeo y elegibilidad para efectos posteriores, sin definir endpoints, payloads físicos, tablas, tipos de código, idempotencia completa, mappings físicos, migraciones, Supabase ni efectos internos  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**POS externo vigente:** `Makos`  
+**POS integral objetivo:** `PULSO`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir una representación canónica única de **venta** y **línea de venta** que desacople a los consumidores internos del formato particular de Makos y permanezca vigente cuando PULSO sustituya al POS externo como fuente de nuevas ventas.
+
+La tarea materializa la decisión aprobada en `CAP-SCOPE-009`: el POS externo temporal y PULSO deberán converger en el mismo contrato canónico, sin doble emisión ni reinterpretación por consumidor.
+
+Regla raíz:
+
+```text
+MAKOS DURANTE LA TRANSICIÓN
+        ↓
+ADAPTADOR + VALIDACIÓN + MAPEO
+        ↓
+CONTRATO CANÓNICO DE VENTA Y LÍNEA
+        ↓
+CONSUMIDORES INTERNOS
+
+PULSO DESPUÉS DEL CORTE
+        ↓
+MISMO CONTRATO CANÓNICO DE VENTA Y LÍNEA
+        ↓
+MISMOS CONSUMIDORES INTERNOS
+```
+
+El contrato normaliza el hecho comercial. No convierte el transporte, el staging, el documento fiscal, el pago, el pedido, el inventario, la fidelización ni el hecho económico en sinónimos de venta.
+
+---
+
+#### 2. Decisión principal
+
+Quedan definidos dos objetos semánticos inseparables pero distintos:
+
+1. **Venta canónica:** representa el hecho comercial de una venta originada en una única fuente y conserva su identidad, procedencia, alcance de origen, estado comercial propio, temporalidad, referencias y colección de líneas.
+2. **Línea de venta canónica:** representa una unidad comercial identificable dentro de una venta, con identidad estable, cantidad, referencia de producto de origen, resultado de mapeo y componentes comerciales propios.
+
+Una venta canónica deberá contener o referenciar al menos una línea válida para ser elegible como venta individual con efectos posteriores. Un agregado diario, subtotal por producto, archivo consolidado o métrica de ventas no se eleva por sí solo a venta canónica individual.
+
+La representación física, tipos compartidos y contratos consumibles posteriores deberán materializar esta semántica mediante `SHELL-CON-020` y `SHELL-CON-021` sin cambiarla silenciosamente.
+
+---
+
+#### 3. Separaciones semánticas obligatorias
+
+El contrato preserva las siguientes desigualdades:
+
+```text
+VENTA ≠ PEDIDO
+VENTA ≠ PAGO
+VENTA ≠ SESIÓN DE CAJA
+VENTA ≠ DOCUMENTO FISCAL
+VENTA ≠ MOVIMIENTO DE INVENTARIO
+VENTA ≠ MOVIMIENTO DE FIDELIZACIÓN
+VENTA ≠ HECHO ECONÓMICO
+VENTA ≠ ENTREGA
+```
+
+```text
+LÍNEA DE VENTA ≠ PRODUCTO CANÓNICO
+LÍNEA DE VENTA ≠ MOVIMIENTO DE INVENTARIO
+LÍNEA DE VENTA ≠ RECETA
+LÍNEA DE VENTA ≠ LÍNEA DE PEDIDO POR INFERENCIA
+```
+
+Una referencia puede relacionar estos hechos, pero ninguna relación permite fusionarlos ni asumir que compartir identificador, importe, timestamp o estado los vuelve equivalentes.
+
+---
+
+#### 4. Contrato semántico de venta
+
+La venta canónica deberá poder representar como mínimo las siguientes dimensiones lógicas. Los nombres físicos finales de campos, tipos y estructuras pertenecen a la materialización técnica posterior; las semánticas aquí definidas son obligatorias.
+
+| Dimensión lógica                | Obligación canónica                                                                              | Regla                                                                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identidad canónica de venta     | requerida                                                                                        | identidad Vento estable y opaca para referenciar la misma venta a través de revisiones, reintentos y consumidores                           |
+| Sistema de origen               | requerido                                                                                        | identifica inequívocamente a Makos durante su alcance temporal o a PULSO después del corte                                                  |
+| Instancia o contexto de origen  | requerido cuando el sistema pueda reutilizar identificadores entre tenants, empresas o ambientes | evita colisión de identidades de fuente                                                                                                     |
+| Identidad de venta en la fuente | requerida para una venta individual                                                              | se conserva sin reinterpretar ni reemplazar por un ID interno                                                                               |
+| Revisión o versión de fuente    | condicional                                                                                      | se conserva cuando la fuente la entregue; su ausencia no autoriza inventar una versión del proveedor                                        |
+| Versión del contrato canónico   | requerida                                                                                        | permite evolucionar el contrato sin reinterpretar historia                                                                                  |
+| Alcance de origen               | requerido antes de producir efectos                                                              | referencia empresa, sede, terminal y demás contexto que corresponda después del mapeo de `INT-POS-010`                                      |
+| Momento del hecho comercial     | requerido antes de producir efectos                                                              | conserva el timestamp canónico cuya fuente y semántica se resolverán en `INT-POS-006`                                                       |
+| Estado comercial de la venta    | requerido                                                                                        | pertenece únicamente a la venta; el vocabulario y mapeo se materializan en `INT-POS-006`                                                    |
+| Cliente                         | opcional                                                                                         | una venta a consumidor final puede existir sin crear cliente artificial; cuando exista identificación se conserva una referencia autorizada |
+| Referencia a pedido             | opcional                                                                                         | vincula un pedido cuando exista, sin convertir pedido y venta en el mismo objeto                                                            |
+| Referencia fiscal               | condicional                                                                                      | vincula el documento fiscal o soporte cuando exista, sin trasladar a Vento la autoridad del proveedor fiscal                                |
+| Componentes monetarios          | requeridos según aplicabilidad                                                                   | la estructura deberá admitir precio, subtotal, descuentos, impuestos, propina y total conforme a `INT-POS-007` sin mezclar pagos con venta  |
+| Referencias de pago             | condicionales                                                                                    | relacionan pagos confirmados o intentos cuando correspondan; los pagos permanecen hechos independientes                                     |
+| Líneas de venta                 | requeridas para una venta individual elegible                                                    | cada línea se vincula exactamente a esta venta y conserva identidad propia                                                                  |
+| Procedencia del payload         | requerida como referencia                                                                        | enlaza el material original conservado por `INT-POS-009` sin copiarlo dentro del contrato normalizado                                       |
+| Correlación de integración      | requerida para trazabilidad                                                                      | permite seguir recepción, validación, mapeo, evento y efectos sin sustituir la identidad de venta                                           |
+
+La ausencia de un campo que dependa de una capacidad todavía no acreditada de Makos deberá producir un estado explícito de no disponibilidad, cuarentena o bloqueo en la tarea propietaria correspondiente; no se completará con valores inventados.
+
+---
+
+#### 5. Contrato semántico de línea de venta
+
+Toda línea canónica deberá poder representar como mínimo:
+
+| Dimensión lógica                | Obligación canónica                                    | Regla                                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Identidad canónica de línea     | requerida                                              | estable dentro del ciclo de vida de la venta y distinta de la identidad del producto                                                                   |
+| Identidad canónica de venta     | requerida                                              | toda línea pertenece a exactamente una venta canónica                                                                                                  |
+| Identidad de línea en la fuente | requerida cuando la fuente la provea                   | se conserva sin reinterpretación; si la fuente no la entrega, `INT-POS-013` deberá resolver identidad estable sin inventar una capacidad del proveedor |
+| Secuencia de origen             | condicional                                            | puede conservar orden o posición, pero no sustituye una identidad estable cuando el proveedor dispone de una                                           |
+| Revisión o versión de línea     | condicional                                            | conserva revisión de fuente cuando exista y no reescribe historia                                                                                      |
+| Producto de origen              | requerido                                              | referencia el identificador o descripción con que la fuente expresó el ítem vendido                                                                    |
+| Producto Vento                  | requerido antes de efectos dependientes de producto    | se resuelve mediante `INT-POS-011`; la identidad externa nunca sustituye al producto canónico                                                          |
+| Presentación                    | condicional según mapeo                                | se resuelve mediante `INT-POS-011` y conserva la presentación realmente vendida                                                                        |
+| Receta                          | condicional según producto y efecto                    | puede quedar referenciada cuando corresponda; la línea no se convierte en receta                                                                       |
+| Cantidad                        | requerida                                              | expresa la cantidad comercial de la línea con unidad o convención inequívoca                                                                           |
+| Unidad                          | requerida cuando la cantidad no sea autosuficiente     | evita interpretar cantidades con unidades incompatibles                                                                                                |
+| Snapshot comercial de precio    | requerido según aplicabilidad                          | conserva el valor aplicado a la línea; las reglas monetarias detalladas se materializan en `INT-POS-007`                                               |
+| Descuento e impuesto de línea   | condicionales                                          | permanecen componentes diferenciados, materializados en `INT-POS-007`                                                                                  |
+| Estado de línea                 | condicional cuando la fuente o el proceso lo requieran | su vocabulario y mapeo pertenecen a `INT-POS-006`                                                                                                      |
+| Resultado de mapeo              | requerido antes de efectos dependientes de producto    | distingue línea resuelta de línea pendiente o no resoluble; `INT-POS-012` gobierna la cuarentena                                                       |
+| Procedencia de payload          | requerida como referencia                              | permite reconstruir qué fragmento o evidencia externa originó la línea sin duplicar el payload original                                                |
+
+Una línea sin mapeo de producto/presentación requerido podrá existir como evidencia externa recibida, pero **no será elegible para producir descuento de inventario, costo o fidelización** hasta resolver la condición aplicable.
+
+---
+
+#### 6. Identidad y estabilidad
+
+La identidad canónica deberá cumplir estas invariantes:
+
+1. una venta originada en Makos conserva Makos como sistema de origen aun cuando sea recibida, corregida o conciliada después del corte;
+2. una venta originada en PULSO después del corte no se recrea como venta Makos;
+3. la identidad canónica de una venta no se deriva de totales, nombre de producto, fecha redondeada, posición de archivo ni otro atributo empresarial mutable;
+4. la identidad canónica de una línea no se deriva únicamente de su importe, producto o posición cuando exista una identidad de fuente más fuerte;
+5. cambiar un mapping de producto no cambia la identidad de la línea de venta;
+6. cambiar un estado, timestamp recibido tardíamente o componente monetario no crea una venta nueva;
+7. un reintento o segunda recepción de la misma venta no crea otra identidad canónica;
+8. una revisión posterior se vincula a la misma venta y conserva la historia de versiones;
+9. la regla técnica exacta para detectar duplicados y resolver claves de fuente pertenece a `INT-POS-013`;
+10. el contrato no permite que un consumidor genere una identidad alternativa para aplicar su propio efecto.
+
+---
+
+#### 7. Procedencia y fuente única
+
+Toda venta canónica deberá conservar una procedencia suficiente para demostrar:
+
+```text
+QUIÉN ORIGINÓ LA VENTA
++
+EN QUÉ INSTANCIA O ALCANCE
++
+QUÉ IDENTIDAD TUVO EN LA FUENTE
++
+QUÉ REVISIÓN O EVIDENCIA SE RECIBIÓ
++
+QUÉ CONTRATO CANÓNICO RESULTÓ
+```
+
+Durante la transición:
+
+- Makos es el sistema de origen de las ventas correspondientes a sedes, terminales y periodos todavía no cortados;
+- PULSO es el sistema de origen de las nuevas ventas posteriores al corte aprobado;
+- el adaptador, staging, archivo, API, webhook, polling o proceso de importación son mecanismos de transporte y procesamiento, no sistemas de origen empresarial;
+- una misma venta no puede declarar simultáneamente Makos y PULSO como fuentes activas.
+
+La frontera temporal exacta continúa gobernada por `INT-POS-003` y el procedimiento de corte por `INT-POS-023`.
+
+---
+
+#### 8. Versionado y correcciones
+
+El contrato será versionable y no permitirá corrección destructiva.
+
+Reglas:
+
+1. la versión del contrato canónico y la versión/revisión del dato de origen son conceptos distintos;
+2. una revisión del proveedor no cambia retroactivamente el payload original ya conservado;
+3. una revisión válida de la venta conserva la misma identidad canónica y crea una nueva representación o estado auditable según el diseño físico posterior;
+4. una corrección no borra la versión anterior;
+5. una anulación, devolución o reembolso no se representa sobrescribiendo la venta original como si nunca hubiera existido;
+6. cantidades o importes negativos no se utilizarán como sustituto silencioso de la semántica de devolución o compensación cuando el hecho pueda clasificarse explícitamente;
+7. `INT-POS-008` definirá cómo se importan anulaciones, devoluciones y reembolsos;
+8. `INT-POS-019` definirá sus compensaciones internas sin borrar historia.
+
+---
+
+#### 9. Regla de granularidad y tratamiento del Excel actual
+
+La integración actual demostrada mediante `makos_excel` trabaja con lotes y filas agregadas por producto y no demuestra por sí sola identidad individual completa de venta y línea.
+
+Por tanto:
+
+```text
+FILA AGREGADA DE EXCEL MAKOS
+≠
+VENTA CANÓNICA INDIVIDUAL
+```
+
+```text
+HASH DEL ARCHIVO
+≠
+IDENTIDAD DE VENTA
+```
+
+```text
+POSICIÓN DE FILA
+≠
+IDENTIDAD DE LÍNEA POR DEFECTO
+```
+
+El flujo Excel puede mantenerse como evidencia, contingencia o fuente auxiliar bajo las tareas que correspondan, pero no podrá producir una venta canónica individual ficticia ni efectos automáticos basados en una granularidad que la fuente no demuestre.
+
+Si una futura exportación o API aporta identidad y granularidad suficientes, el adaptador deberá mapearlas al mismo contrato definido aquí.
+
+---
+
+#### 10. Integridad estructural
+
+Una instancia de venta canónica será estructuralmente válida únicamente cuando:
+
+1. tenga identidad canónica resuelta;
+2. tenga sistema de origen inequívoco;
+3. tenga identidad de venta en la fuente o una regla de identidad formalmente materializada por `INT-POS-013`;
+4. tenga versión de contrato;
+5. tenga el contexto mínimo requerido para resolver su alcance de origen;
+6. tenga un momento comercial canónico resoluble;
+7. tenga estado comercial resoluble;
+8. contenga o referencie líneas con identidad canónica propia;
+9. cada línea pertenezca a una sola venta;
+10. las cantidades y unidades requeridas sean interpretables;
+11. la procedencia del payload sea recuperable por referencia;
+12. no mezcle como estado de venta los estados de pago, fiscalidad, inventario, fidelización o economía.
+
+La validez estructural no implica todavía elegibilidad para efectos internos.
+
+---
+
+#### 11. Elegibilidad para efectos posteriores
+
+Una venta canónica solo podrá avanzar hacia `INT-POS-015` y los efectos posteriores cuando, además de ser estructuralmente válida:
+
+- la fuente corresponda al alcance temporal autorizado;
+- la recepción haya pasado las validaciones aplicables;
+- la identidad e idempotencia hayan sido resueltas;
+- empresa, sede, terminal y caja requeridas estén mapeadas;
+- cada línea que produzca un efecto dependiente de producto tenga el mapping exigido;
+- estados y timestamps necesarios estén normalizados;
+- los componentes comerciales necesarios para el efecto estén disponibles;
+- no exista una cuarentena o inconsistencia que bloquee el efecto;
+- la venta no sea una segunda emisión de una venta ya reconocida;
+- la versión recibida no intente retroceder silenciosamente una versión posterior.
+
+Que una venta sea canónica no autoriza por sí solo un movimiento de inventario, un asiento, un movimiento de puntos, un reembolso ni un documento fiscal.
+
+---
+
+#### 12. Separación de estados
+
+El contrato deberá transportar referencias o estados suficientes para mantener ortogonales, cuando apliquen:
+
+- estado comercial de venta;
+- estado de pago;
+- estado fiscal;
+- estado de inventario;
+- estado de fidelización;
+- estado económico.
+
+`INT-POS-005` solo define la obligación de separación. Los vocabularios, mappings y reglas de importación de estados y timestamps pertenecen a `INT-POS-006`, `INT-POS-007`, `INT-POS-008` y a las tareas propietarias de cada efecto.
+
+Un cambio en uno de estos ejes no podrá cambiar implícitamente los demás.
+
+---
+
+#### 13. Reconciliación monetaria sin corrección silenciosa
+
+El contrato deberá admitir los componentes necesarios para que `INT-POS-007` y `INT-POS-020` puedan demostrar la relación entre encabezado, líneas, descuentos, impuestos, propinas y total.
+
+Reglas:
+
+1. los valores de origen se conservan con su procedencia;
+2. una normalización no podrá alterar importes para forzar una igualdad;
+3. una diferencia entre total de encabezado y componentes de línea se conserva como diferencia a investigar;
+4. pago y total de venta no se asumen equivalentes;
+5. el documento fiscal no se usa como copia maestra para sobrescribir la venta;
+6. la fórmula y precisión física aplicables se definirán con los contratos monetarios y de importación correspondientes, sin inventar una precisión del proveedor en esta tarea.
+
+---
+
+#### 14. Relación con cliente y venta a consumidor final
+
+Se conserva `DEC-POS-001`: una venta a consumidor final puede existir sin registrar cliente.
+
+Por tanto:
+
+- la identidad de cliente no es requisito universal para crear una venta canónica;
+- no se creará un cliente ficticio para satisfacer el contrato;
+- cuando exista cliente identificado, la venta conservará una referencia autorizada y no una copia innecesaria de datos personales;
+- PASS no adquiere propiedad de la venta por existir una relación de cliente o fidelización;
+- ausencia de cliente no elimina requisitos de trazabilidad comercial, fiscal o económica aplicables.
+
+---
+
+#### 15. Fronteras con mapeo de productos
+
+La línea conserva separadas:
+
+```text
+IDENTIDAD DEL ÍTEM EN LA FUENTE
+≠
+PRODUCTO VENTO
+≠
+PRESENTACIÓN VENTO
+≠
+RECETA
+```
+
+`INT-POS-011` resolverá los mappings aplicables y `INT-POS-012` gobernará las líneas no resueltas.
+
+Cambiar el mapping no reescribe la identidad ni el payload histórico de la línea. La nueva decisión de mapping deberá ser auditable y aplicarse conforme a las reglas de reproceso que posteriormente se definan.
+
+---
+
+#### 16. Frontera con pagos y documento fiscal
+
+El contrato de venta puede referenciar pagos y documento fiscal, pero no los absorbe.
+
+- `INT-POS-007` definirá importación de medios de pago y componentes monetarios;
+- el documento fiscal continúa bajo responsabilidad del POS o proveedor fiscal autorizado;
+- una factura emitida no demuestra por sí sola que el pago esté conciliado;
+- un pago aprobado no demuestra por sí solo que la venta esté fiscalmente emitida;
+- una venta válida no autoriza recrear una factura desde Vento cuando esa autoridad permanezca en el proveedor externo.
+
+---
+
+#### 17. Fronteras con efectos internos
+
+El contrato canónico es la entrada empresarial normalizada de los efectos posteriores, no el ejecutor de esos efectos.
+
+| Consumidor o efecto            | Autoridad preservada                 | Condición                                                                       |
+| ------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------- |
+| NEXO                           | movimiento físico e inventario       | `INT-POS-016` aplica exactamente una vez sobre líneas elegibles                 |
+| NUMERA                         | hecho económico y conciliación       | `INT-POS-017` consume el hecho de venta sin reinterpretar su origen             |
+| PASS                           | fidelización                         | `INT-POS-018` aplica únicamente cuando corresponda y sin apropiarse de la venta |
+| PULSO                          | operación comercial interna objetivo | produce el mismo contrato después del corte, sin duplicar ventas Makos          |
+| Proveedor fiscal / POS vigente | documento fiscal                     | conserva autoridad externa mientras corresponda                                 |
+
+Ningún consumidor podrá modificar el contrato recibido para convertir su efecto local en una nueva versión de la venta fuente.
+
+---
+
+#### 18. Handoffs obligatorios
+
+| Tarea                         | Resultado que recibe de `INT-POS-005`                        | Límite                                                                     |
+| ----------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `INT-POS-006`                 | slots semánticos de encabezado, línea, estado y temporalidad | define mappings y vocabularios sin cambiar identidad ni propiedad          |
+| `INT-POS-007`                 | slots monetarios y referencias de pago                       | define descuentos, impuestos, propinas y pagos sin fusionarlos con venta   |
+| `INT-POS-008`                 | identidad estable de venta/línea e historia versionada       | define reversos externos sin borrar el hecho original                      |
+| `INT-POS-009`                 | referencia obligatoria de procedencia                        | conserva payload, versión, hash y recepción fuera del contrato normalizado |
+| `INT-POS-010`                 | alcance de origen requerido                                  | materializa mappings de empresa, sede, terminal y caja                     |
+| `INT-POS-011`                 | producto de origen y referencias canónicas separadas         | materializa mapping de producto, presentación y receta                     |
+| `INT-POS-012`                 | línea canónica que puede permanecer sin mapping              | define cuarentena y bloqueo de efectos                                     |
+| `INT-POS-013`                 | identidades y estabilidad exigidas                           | define idempotencia por sistema, venta y línea de fuente                   |
+| `INT-POS-014`                 | contrato agnóstico al transporte                             | define webhook/polling sin alterar la semántica de venta                   |
+| `INT-POS-015`                 | venta canónica elegible                                      | define el evento interno de venta validada                                 |
+| `INT-POS-016` a `INT-POS-018` | venta/líneas validadas y referencias estables                | cada propietaria aplica únicamente su efecto                               |
+| `INT-POS-019`                 | historia y referencias al hecho original                     | define compensación sin borrar historia                                    |
+| `INT-POS-020`                 | componentes y procedencia reconciliables                     | define conciliación diaria y diferencias                                   |
+| `INT-POS-023`                 | contrato independiente de Makos                              | cambia la fuente hacia PULSO sin cambiar consumidores                      |
+| `SHELL-CON-020`               | semántica completa de venta                                  | materializa el contrato técnico compartido de venta                        |
+| `SHELL-CON-021`               | semántica completa de línea                                  | materializa el contrato técnico compartido de línea                        |
+
+Ningún handoff autoriza adelantar la tarea receptora.
+
+---
+
+#### 19. Decisiones congeladas
+
+1. Makos y PULSO deberán producir el mismo contrato canónico de venta y línea durante sus respectivos periodos de autoridad.
+2. Una venta tiene una sola fuente empresarial de origen.
+3. Venta, pedido, pago, caja, documento fiscal, inventario, fidelización y hecho económico permanecen separados.
+4. Una línea pertenece exactamente a una venta canónica.
+5. La identidad de venta y línea es estable y no depende de valores empresariales mutables.
+6. La identidad de fuente se conserva junto a la identidad canónica; una no sustituye a la otra.
+7. Una revisión no crea otra venta ni borra versiones anteriores.
+8. El contrato conserva procedencia mediante referencia al payload original.
+9. El Excel agregado actual no se considera contrato individual completo de venta y línea.
+10. Una línea sin mapping requerido puede conservarse como evidencia, pero no produce efectos dependientes de producto.
+11. Cliente identificado es opcional cuando la operación lo permita.
+12. Componentes monetarios y pagos se relacionan con la venta sin fusionarse con ella.
+13. Una diferencia monetaria no se corrige silenciosamente.
+14. Los estados de venta, pago, fiscalidad, inventario, fidelización y economía son ortogonales.
+15. La validez estructural del contrato no equivale a autorización para efectos internos.
+16. El contrato es independiente de Excel, API, webhook, polling o cualquier otro transporte autorizado.
+17. La materialización física compartida corresponde posteriormente a `SHELL-CON-020` y `SHELL-CON-021`.
+18. Esta tarea no modifica código, Supabase, datos, endpoints, credenciales, payloads físicos ni consumidores.
+19. `INT-POS-006` permanece exclusivamente reservada.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: `INT-POS-005` materializa para la transición Makos → PULSO el comportamiento ya protegido de forma explícita por la cobertura canónica vigente: convergencia en contratos canónicos de pedido, venta y línea sin doble emisión; fuente única durante el corte; adaptación, staging, mapeo, cuarentena e idempotencia; efectos exactamente una vez en dominios propietarios; separación de venta, pago, documento fiscal e inventario; y preservación de historia frente a anulaciones o correcciones. La tarea no añade una capacidad ejecutable ni una excepción nueva fuera de esas reglas protegidas y, por tanto, no modifica el registro 04A.
+
+#### 21. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-INTEGRATION-014`, cobertura primaria de contratos canónicos de pedido, venta y línea entre POS externo y PULSO, doble emisión, corte, mapeo, cuarentena, idempotencia y efectos posteriores;
+- `TREQ-PULSO-005`, cobertura de separación del ciclo comercial, identidad estable, líneas, snapshots y estados independientes;
+- `TREQ-PULSO-006`, cobertura de venta, pago, caja, documento fiscal, descuento, propina, anulación, devolución, reembolso y conciliación como hechos separados y auditables;
+- `TREQ-INTEGRATION-006`, cobertura de fuente empresarial única y propagación mediante contratos aprobados;
+- `TREQ-INTEGRATION-011`, cobertura de efectos de inventario correlacionados y exactamente una vez.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 22. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. define una venta canónica y una línea de venta canónica como objetos semánticos distintos;
+2. conserva el mismo contrato para Makos durante la transición y PULSO después del corte;
+3. separa venta de pedido, pago, caja, documento fiscal, inventario, fidelización, economía y entrega;
+4. exige identidad canónica estable para venta y línea;
+5. conserva identidad y procedencia de la fuente sin sustituirlas por IDs internos;
+6. admite revisión/versionado sin corrección destructiva;
+7. define que una línea pertenece exactamente a una venta;
+8. conserva producto de origen separado de producto, presentación y receta Vento;
+9. impide efectos dependientes de producto cuando el mapping requerido no está resuelto;
+10. conserva cliente como referencia opcional cuando la operación permite consumidor final no identificado;
+11. define slots semánticos suficientes para estados, timestamps, componentes monetarios, pagos y fiscalidad sin adelantar sus mappings físicos;
+12. preserva payload original mediante referencia y no lo duplica como contrato normalizado;
+13. prohíbe elevar agregados diarios o filas consolidadas a ventas individuales ficticias;
+14. establece que el hash de archivo no sustituye identidad de venta ni línea;
+15. establece validez estructural diferenciada de elegibilidad para efectos;
+16. exige fuente autorizada, mappings e idempotencia antes de efectos posteriores;
+17. prohíbe corrección monetaria silenciosa;
+18. mantiene estados de venta, pago, fiscalidad, inventario, fidelización y economía separados;
+19. conserva a NEXO, NUMERA, PASS y proveedor fiscal como propietarios de sus propios efectos;
+20. deja handoffs exactos a `INT-POS-006` a `INT-POS-020`, `INT-POS-023`, `SHELL-CON-020` y `SHELL-CON-021` sin iniciarlos;
+21. genera cero cambios `TREQ-*` por existir cobertura canónica exacta;
+22. no crea ni modifica una copia del registro 04A;
+23. no modifica código, Supabase, migraciones, credenciales, endpoints, webhooks, datos ni configuración remota;
+24. no declara operacional una integración Makos ni PULSO por aprobar este contrato;
+25. mantiene reservada exclusivamente `INT-POS-006` como continuidad inmediata.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-005 — Definir contrato canónico de venta y línea de venta`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`
+
+
 ### [ ] INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
 ### [ ] INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
 ### [ ] INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
