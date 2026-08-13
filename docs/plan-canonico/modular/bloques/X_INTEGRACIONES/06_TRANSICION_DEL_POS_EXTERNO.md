@@ -8773,7 +8773,1151 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-017 — Definir evento económico para NUMERA exactamente una vez`
 
 
-### [ ] INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
+### ✅ INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez`
+**Tarea siguiente:** `INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda`
+**Tipo de tarea:** documental; definición normativa del efecto económico que NUMERA debe materializar exactamente una vez a partir de una venta canónica emitida por PULSO durante la transición desde el POS externo, separando evento empresarial, hecho económico, venta, pago, caja, documento fiscal, cartera, costo y contabilidad, con identidad idempotente, huella lógica, dimensiones económicas obligatorias, componentes monetarios, cuarentena, periodos, retry, reversos y conciliación; sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**Aplicación propietaria de la venta:** `PULSO`
+**Aplicación propietaria del hecho económico:** `NUMERA`
+**Autoridad fiscal durante la transición:** proveedor o sistema fiscal autorizado vigente
+**Autoridad contable oficial durante la transición:** sistema contable o proveedor autorizado mientras no se apruebe contabilidad formal interna
+**Línea base documental:** `vento-shell@c78b29b288564fa8b428cd0537b102611aeea74b`
+**Línea base NUMERA observada:** `vento-numera@1b48a5da425d92e19ed89cf175b1dccc4cd960e1`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma inequívoca cómo una venta canónica económicamente elegible, emitida por PULSO conforme a `INT-POS-015`, produce en NUMERA un único hecho económico durable y recuperable, sin convertir el evento de PULSO en un asiento contable, sin tratar el pago como sinónimo de ingreso y sin permitir que Makos, el adaptador, PULSO u otra aplicación escriban directamente la verdad económico-operativa de NUMERA.
+
+La regla raíz es:
+
+```text
+HECHO COMERCIAL CONFIRMADO EN PULSO
+        ↓
+EVENTO EMPRESARIAL EXISTENTE + EVENT_ID ESTABLE
+        ↓
+ENTREGA A NUMERA
+        ↓
+CONSUMER_INBOX DE NUMERA
+        ↓
+PUERTA DE MATERIALIDAD ECONÓMICA
+        ↓
+CONSUMER_EFFECT DE NUMERA
+        ↓
+HECHO ECONÓMICO DE VENTA DURABLE
+        ↓
+RESULTADO RECUPERABLE
+        ↓
+CONCILIACIÓN CON PAGO, CAJA, FISCALIDAD, INVENTARIO Y COSTO
+```
+
+No:
+
+```text
+VENTA = PAGO = RECAUDO = DEPÓSITO = INGRESO CONTABLE
+```
+
+No:
+
+```text
+EVENTO PULSO
+        ↓
+INSERT DIRECTO EN LIBROS CONTABLES
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-017` deja definidas las siguientes decisiones:
+
+1. PULSO conserva la venta; NUMERA conserva el hecho económico derivado.
+2. El hecho económico de venta es un efecto de consumidora y no una nueva definición normal del catálogo empresarial.
+3. No se crea un `event_definition_id` denominado `SALE_ECONOMIC_EVENT`, `ECONOMIC_SALE` ni equivalente.
+4. NUMERA recibe los eventos PULSO que le correspondan según `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001`.
+5. La entrega de un evento a NUMERA no demuestra por sí sola que exista un hecho económico.
+6. Solo un hito cuyo `confirmed_fact` demuestre materialidad económica suficiente puede activar el efecto de venta.
+7. Para el reconocimiento económico de una venta cerrada se fija el `effect_code` lógico estable `SALE_ECONOMIC_FACT`.
+8. `SALE_ECONOMIC_FACT` no es un asiento, una factura, un pago, una aplicación de pago, una cuenta por cobrar ni un movimiento de caja.
+9. El alcance idempotente es `CONSUMER_EFFECT`.
+10. La clave lógica transversal es `consumer_application + event_id + effect_code`.
+11. Para esta tarea `consumer_application = numera`.
+12. La misma clave y la misma huella recuperan el resultado anterior sin repetir el hecho económico.
+13. La misma clave con una huella material incompatible produce conflicto sin crear un segundo hecho.
+14. Dos ejecuciones concurrentes producen un único ganador empresarial.
+15. Una respuesta perdida después del commit se resuelve recuperando el resultado original.
+16. El hecho económico conserva dimensiones obligatorias de entidad, sede, centro, contraparte, moneda, fechas, fuente, documento, monto, impuestos, estado y evidencia.
+17. No se infiere entidad legal desde marca, sede, caja, terminal, nombre comercial o proveedor.
+18. No se infiere centro de costo desde una sede si no existe una resolución canónica aplicable.
+19. No se inventa moneda a partir de la interfaz o de una configuración técnica por defecto.
+20. Una venta a consumidor final puede existir sin crear un cliente artificial.
+21. Cliente, tercero económico, deudor y cuenta PASS permanecen separados.
+22. Subtotal, impuestos, descuentos, propinas, devoluciones, pagos y referencias se preservan según su semántica de fuente; no se fusionan.
+23. Las fórmulas agregadas del Excel actual no se convierten en fórmulas canónicas de una venta individual.
+24. Una línea en cuarentena no impide automáticamente un hecho económico de venta a nivel de venta cuando sus importes y dimensiones obligatorias son demostrables sin utilizar el producto pendiente.
+25. La cuarentena sí bloquea cualquier atribución económica que dependa del producto, presentación, receta, costo o clasificación no resuelta.
+26. Una línea en cuarentena nunca se elimina del hecho económico para hacer cuadrar el total.
+27. NEXO, PASS y NUMERA aplican efectos independientes; el fallo de una consumidora no revierte el hecho confirmado de otra.
+28. El éxito de NEXO no acredita NUMERA y el éxito de NUMERA no acredita NEXO ni PASS.
+29. El costo de inventario o producción no se fabrica desde el importe de venta; se correlaciona posteriormente con fuentes propietarias.
+30. Pago recibido, aplicación, caja, banco, depósito y liquidación permanecen efectos u objetos separados.
+31. El documento fiscal permanece bajo la autoridad del proveedor autorizado; NUMERA conserva referencias y componentes sin emitirlo por inferencia.
+32. El hecho económico no escribe libros oficiales ni produce por sí solo débito o crédito contable.
+33. Un periodo cerrado no permite descartar, sobrescribir ni backdatear silenciosamente un hecho tardío.
+34. Anulaciones, devoluciones y reembolsos no mutan destructivamente el hecho original.
+35. Las compensaciones se coordinan en `INT-POS-019`.
+36. Las diferencias entre venta, hecho económico y demás efectos se resuelven en `INT-POS-020`.
+37. La granularidad individual real de Makos continúa condicionada a `INT-POS-021`.
+38. El contrato permanente posterior corresponde a `INT-SALES-004 — Definir recepción del evento de venta en NUMERA`.
+39. Se crean cero requisitos `TREQ-*`.
+40. Se modifican cero requisitos `TREQ-*`.
+41. Se crean cero objetos físicos.
+42. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Base canónica preservada
+
+La tarea consume sin reinterpretación:
+
+- `INT-POS-003`, para la autoridad temporal de Makos como fuente externa dentro de su ventana;
+- `INT-POS-005`, para identidad de venta y línea;
+- `INT-POS-006`, para estados, revisiones y tiempos;
+- `INT-POS-007`, para descuentos, impuestos, propinas y hechos de pago;
+- `INT-POS-008`, para anulaciones, devoluciones y reembolsos no destructivos;
+- `INT-POS-009`, para payload, hash, recepción, procedencia y versiones;
+- `INT-POS-010`, para empresa, sede, terminal y caja externas;
+- `INT-POS-011`, para mapping de producto, presentación y receta;
+- `INT-POS-012`, para cuarentena por línea;
+- `INT-POS-013`, para identidad e idempotencia de sistema, venta y línea;
+- `INT-POS-014`, para convergencia de webhook, polling, archivo y replay;
+- `INT-POS-015`, para selección de un evento empresarial ya existente y `event_id` estable;
+- `INT-POS-016`, para el efecto físico independiente de NEXO;
+- `INT-APP-001` a `INT-APP-010`, para catálogo de eventos, productoras, consumidoras, idempotencia, retry, auditoría, parcialidad y prohibición de escrituras cruzadas;
+- `CAP-SCOPE-009`, para separación entre venta, pago, caja, documento fiscal, inventario, fidelización y hecho económico;
+- `CAP-SCOPE-012`, para NUMERA como capa económico-operativa y para la separación entre hecho económico y contabilidad formal;
+- `TREQ-NUMERA-001` a `TREQ-NUMERA-004`;
+- `TREQ-INTEGRATION-003`, `006`, `014`, `017` y la cobertura transversal de idempotencia y retry ya aprobada.
+
+Ninguna de esas decisiones se reabre.
+
+---
+
+#### 4. Propiedad y autoridad
+
+| Elemento                         | Propietaria o autoridad                              | Regla                                                          |
+| -------------------------------- | ---------------------------------------------------- | -------------------------------------------------------------- |
+| venta, líneas y estado comercial | `PULSO`                                              | PULSO conserva el hecho comercial interno                      |
+| procedencia externa              | `Makos` durante la transición                        | se conserva como fuente externa sin adquirir propiedad interna |
+| evento empresarial PULSO         | `PULSO`                                              | utiliza una definición ya existente                            |
+| hecho económico derivado         | `NUMERA`                                             | NUMERA decide y persiste su efecto económico                   |
+| pago operativo y caja            | `PULSO`                                              | no se sustituyen con el hecho económico                        |
+| inventario físico                | `NEXO`                                               | no se reconstruye desde NUMERA                                 |
+| receta y ejecución productiva    | `FOGO`                                               | NUMERA no reinterpreta receta para fabricar costo              |
+| fidelización                     | `PASS`                                               | efecto separado                                                |
+| documento fiscal oficial         | proveedor o sistema autorizado                       | NUMERA conserva referencia y estado                            |
+| contabilidad oficial             | sistema o proveedor autorizado mientras siga externa | NUMERA no declara libros internos por este contrato            |
+| cartera y tesorería              | `NUMERA` según su dominio                            | no se fusionan con la venta                                    |
+| conciliación transversal         | tareas propietarias aprobadas                        | compara hechos sin reescribir fuentes                          |
+
+Invariante:
+
+```text
+PULSO AFIRMA LA VENTA
+NUMERA AFIRMA EL HECHO ECONÓMICO
+NEXO AFIRMA EL EFECTO FÍSICO
+PASS AFIRMA LA FIDELIZACIÓN
+EL PROVEEDOR FISCAL AFIRMA EL DOCUMENTO OFICIAL
+```
+
+---
+
+#### 5. Qué significa “evento económico” en esta tarea
+
+La expresión del título no crea otro evento empresarial global.
+
+La secuencia correcta es:
+
+```text
+EVENTO EMPRESARIAL DE PULSO
+        ↓
+EFECTO PROPIO DE NUMERA
+        ↓
+HECHO ECONÓMICO DE VENTA
+```
+
+El hecho económico:
+
+- puede ser referenciado por eventos posteriores de NUMERA;
+- puede alimentar cartera, conciliación, costos, rentabilidad y reporting;
+- podrá mapearse en el futuro a un asiento candidato o contable;
+- no es por sí mismo un asiento;
+- no vuelve a emitir el evento PULSO cambiando la productora;
+- no crea un catálogo de eventos específico de Makos.
+
+---
+
+#### 6. Puerta de materialidad económica
+
+NUMERA no crea `SALE_ECONOMIC_FACT` por cada evento PULSO recibido.
+
+Debe comprobar que el evento fuente:
+
+1. pertenece a un proceso PULSO cuya relación con NUMERA está aprobada;
+2. conserva `event_id` estable;
+3. describe un hecho comercial durable;
+4. demuestra una venta económicamente reconocible y no solo apertura, selección, preparación, handoff o validación intermedia;
+5. permite correlacionar la venta canónica;
+6. conserva las dimensiones obligatorias para el hecho económico o referencias autoritativas para resolverlas;
+7. conserva importes y moneda con semántica suficiente;
+8. no representa una anulación, devolución, reembolso o corrección que requiera una semántica compensatoria diferente;
+9. no presenta una versión obsoleta, reutilización conflictiva o resultado incierto no resuelto;
+10. no depende de una inferencia prohibida para completar entidad, centro, moneda, tercero, documento o importe.
+
+Un evento válido para consumo puede producir cero efectos `SALE_ECONOMIC_FACT` si todavía no demuestra una venta económicamente reconocible.
+
+---
+
+#### 7. Hitos comerciales especialmente relevantes
+
+El catálogo vigente demuestra, entre otros:
+
+| Definición           | Hecho confirmado                                                                                     | Tratamiento para `SALE_ECONOMIC_FACT`                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `VPROC-0038.EVT-001` | servicio de mesa abierto                                                                             | no demuestra venta cerrada                                                                |
+| `VPROC-0038.EVT-004` | cierre de mesa pendiente; se verifican pedido, entrega, pago, descuentos, devoluciones y diferencias | no demuestra todavía cierre económico                                                     |
+| `VPROC-0038.EVT-005` | servicio de mesa cerrado                                                                             | puede activar la puerta si el contrato económico obligatorio está completo                |
+| `VPROC-0039.EVT-001` | venta de mostrador abierta                                                                           | no demuestra venta cerrada                                                                |
+| `VPROC-0039.EVT-004` | conciliación de venta pendiente                                                                      | no demuestra todavía el efecto económico final de venta                                   |
+| `VPROC-0039.EVT-005` | venta de mostrador cerrada                                                                           | puede activar la puerta si el contrato económico obligatorio está completo                |
+| `VPROC-0040.EVT-006` | pedido externo conciliado                                                                            | no demuestra por sí solo que exista una venta económica distinta; no se usa como fallback |
+
+Otra definición solo podrá activar el efecto cuando su `confirmed_fact` aprobado demuestre materialidad equivalente y la relación consumidora vigente permita a NUMERA procesarla.
+
+No se crea una tabla paralela de procesos económicamente válidos en esta tarea.
+
+---
+
+#### 8. Inbox de NUMERA
+
+Antes de evaluar el efecto:
+
+```text
+CONSUMER_INBOX
+=
+numera + event_id
+```
+
+Reglas:
+
+1. cada redelivery del mismo evento conserva `event_id`;
+2. NUMERA deduplica su recepción independientemente de NEXO y PASS;
+3. el inbox no acredita que el hecho económico haya sido aplicado;
+4. una entrega repetida recupera la recepción previa;
+5. una entrega con `event_id` reutilizado y contenido incompatible se trata como conflicto;
+6. un `delivery_id`, `attempt_id`, batch, fila, webhook, ciclo de polling o archivo no sustituye `event_id`.
+
+---
+
+#### 9. Identidad del efecto económico
+
+Para el efecto definido por esta tarea:
+
+```text
+effect_code = SALE_ECONOMIC_FACT
+```
+
+y:
+
+```text
+CONSUMER_EFFECT
+=
+numera + event_id + SALE_ECONOMIC_FACT
+```
+
+El `effect_code`:
+
+- identifica el efecto de reconocimiento económico de la venta;
+- no identifica la venta;
+- no identifica el evento;
+- no identifica el pago;
+- no identifica el documento fiscal;
+- no identifica un asiento contable;
+- no identifica una cuenta por cobrar;
+- no sustituye el identificador durable que NUMERA asigne al hecho económico.
+
+Si el mismo evento produce en NUMERA otros efectos legítimos en el futuro, deberán usar códigos distintos y no reutilizar `SALE_ECONOMIC_FACT`.
+
+---
+
+#### 10. Resultados idempotentes
+
+Se reutilizan los resultados transversales vigentes:
+
+| Resultado                   | Interpretación en esta tarea                                                  |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `APPLIED`                   | el hecho económico de venta se materializó una vez y existe resultado durable |
+| `DUPLICATE_RESULT_RETURNED` | ya existía el mismo efecto y se recuperó sin repetirlo                        |
+| `CONFLICTING_REUSE`         | la misma clave pretende un contenido económico materialmente incompatible     |
+| `IN_PROGRESS_RECOVERABLE`   | otra ejecución conserva el claim y el resultado deberá recuperarse            |
+| `STALE_VERSION`             | el evento o agregado parte de una versión anterior incompatible               |
+| `OUT_OF_ORDER_DEFERRED`     | falta una versión o dependencia previa que impide aplicar con seguridad       |
+| `RECONCILIATION_REQUIRED`   | no puede determinarse el resultado correcto mediante retry automático         |
+| `REJECTED`                  | la entrada no satisface el contrato o la autoridad aplicable                  |
+
+No se crea un vocabulario local de resultados Makos–NUMERA.
+
+---
+
+#### 11. Huella lógica económica
+
+La huella de `SALE_ECONOMIC_FACT` debe cubrir los campos materiales que cambiarían el hecho pretendido.
+
+Debe considerar, cuando corresponda:
+
+- `event_id` y definición fuente;
+- venta canónica y revisión aplicable;
+- sistema e instancia de origen;
+- entidad legal;
+- marca o unidad;
+- sede;
+- centro de costo;
+- tercero económico o disposición autorizada aplicable;
+- moneda;
+- fecha de ocurrencia;
+- fecha de reconocimiento;
+- documento y referencia fiscal cuando existan;
+- monto y componentes monetarios;
+- impuestos;
+- líneas económicas y sus referencias;
+- estado económico pretendido;
+- contrato y versión;
+- referencias de evidencia material.
+
+No debe variar únicamente por:
+
+- retry;
+- redelivery;
+- intento técnico;
+- `delivery_id`;
+- `trace_id`;
+- worker;
+- tiempo técnico de reenvío;
+- webhook frente a polling;
+- nombre del archivo;
+- posición física de una fila;
+- lectura repetida del mismo payload.
+
+Una diferencia material en la huella no se resuelve sobrescribiendo el hecho anterior.
+
+---
+
+#### 12. Contrato económico mínimo
+
+Antes de `APPLIED`, NUMERA deberá poder conservar o resolver autoritativamente, como mínimo:
+
+| Dimensión       | Regla                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| identidad       | referencia estable al hecho económico resultante                                         |
+| tipo            | naturaleza económica de venta, sin convertirla en asiento                                |
+| venta           | referencia a venta canónica y revisión                                                   |
+| evento          | `event_id`, definición, versión y productora                                             |
+| origen          | `source_system` y referencias de procedencia                                             |
+| entidad legal   | identidad jurídica aplicable, no inferida desde marca                                    |
+| marca o unidad  | identidad comercial cuando aplique                                                       |
+| sede            | sede canónica aplicable                                                                  |
+| centro de costo | centro canónico resuelto por regla vigente                                               |
+| tercero         | contraparte económica conforme al contrato NUMERA, sin exigir una cuenta PASS            |
+| moneda          | moneda explícita o resuelta desde fuente autoritativa versionada                         |
+| ocurrencia      | momento del hecho comercial                                                              |
+| reconocimiento  | fecha económica aplicable, separada de recepción técnica                                 |
+| correlación     | referencias que unen venta, evento, documentos y efectos                                 |
+| documento       | referencia fiscal o soporte cuando exista; ausencia tratada explícitamente               |
+| monto           | importe económico con precisión y semántica demostrables                                 |
+| impuestos       | componentes tributarios observados o resueltos sin afirmar cálculo oficial no demostrado |
+| estado          | resultado económico propio de NUMERA                                                     |
+| evidencia       | referencias protegidas a venta, origen y soportes                                        |
+| líneas          | referencias a líneas comerciales necesarias para reconstrucción y conciliación           |
+
+Los nombres físicos de tablas, columnas, tipos, RPC, schemas y contratos quedan reservados a la fase de diseño e implementación NUMERA.
+
+---
+
+#### 13. Entidad legal, marca, sede y centro de costo
+
+Se preservan las desigualdades:
+
+```text
+ENTIDAD LEGAL
+≠
+MARCA
+≠
+SEDE
+≠
+CENTRO DE COSTO
+≠
+EMISOR FISCAL
+```
+
+Reglas:
+
+1. `INT-POS-010` aporta el contexto externo e interno que ya haya sido resuelto.
+2. Una sede no autoriza a inventar entidad legal.
+3. Una marca no autoriza a inventar entidad legal.
+4. Una terminal o caja no define centro de costo.
+5. Un producto no define automáticamente centro de costo.
+6. Un mapping organizacional debe tener fuente, versión y vigencia.
+7. Si la dimensión obligatoria no puede resolverse sin inferencia, `SALE_ECONOMIC_FACT` no se marca `APPLIED`.
+8. La definición detallada de las resoluciones financieras pertenece a `NUMERA-DOM-002`.
+9. La ausencia de una resolución actual queda como `RECONCILIATION_REQUIRED`, no como valor predeterminado.
+
+---
+
+#### 14. Tercero económico y consumidor final no identificado
+
+Se conserva `DEC-POS-001`: una venta a consumidor final puede realizarse sin registrar cliente.
+
+Por tanto:
+
+```text
+CLIENTE IDENTIFICADO
+≠
+TERCERO ECONÓMICO
+≠
+DEUDOR
+≠
+CUENTA PASS
+```
+
+Reglas:
+
+1. NUMERA no obliga a crear un cliente artificial para registrar una venta permitida a consumidor final.
+2. Cuando exista cliente identificado, su referencia se conserva sin convertirla automáticamente en deudor.
+3. Cuando no exista cliente identificado, el tratamiento del tercero económico debe provenir del contrato financiero aprobado y no de un UUID ficticio.
+4. La representación física exacta del tercero para consumidor final pertenece a `NUMERA-DOM-002`.
+5. Una cuenta por cobrar solo nace cuando la regla de cartera aplicable lo determine; no por ausencia de pago en el payload.
+6. La tarea no crea cuentas PASS, clientes, deudores ni terceros productivos.
+
+---
+
+#### 15. Moneda
+
+La moneda es obligatoria para el hecho económico.
+
+No se permite:
+
+```text
+MONEDA AUSENTE
+→ COP POR DEFAULT DE INTERFAZ
+```
+
+Una moneda podrá resolverse sin venir como campo explícito del evento únicamente cuando exista una fuente autoritativa y versionada que demuestre de forma inequívoca la moneda aplicable al hecho.
+
+Si no puede demostrarse:
+
+```text
+SALE_ECONOMIC_FACT
+→ RECONCILIATION_REQUIRED
+```
+
+El formato visual de una aplicación, un `Intl.NumberFormat`, un default de una tabla legacy o la sede no constituyen por sí solos prueba de moneda.
+
+---
+
+#### 16. Componentes monetarios
+
+Se preservan como conceptos separados:
+
+- subtotal o base comercial cuando su semántica esté demostrada;
+- descuentos;
+- impuestos;
+- propinas;
+- venta bruta cuando exista una definición fuente suficiente;
+- venta neta cuando exista una definición fuente suficiente;
+- devoluciones;
+- reembolsos;
+- medios de pago;
+- importes pagados;
+- comisiones o cargos de canal cuando el proceso aplicable los produzca.
+
+Reglas:
+
+1. NUMERA no recalcula una semántica tributaria que la fuente no haya demostrado.
+2. Un impuesto observado no equivale a impuesto oficialmente liquidado o declarado.
+3. Un descuento no se convierte automáticamente en gasto.
+4. Una propina no se convierte automáticamente en ingreso de Vento.
+5. Una devolución no se resta destructivamente del hecho original.
+6. Un reembolso no sustituye una devolución.
+7. Un medio de pago no modifica el monto de la venta por sí solo.
+8. Un importe pagado no demuestra depósito ni conciliación bancaria.
+9. Los valores se conservan con moneda, precisión, signo, fuente y alcance cuando apliquen.
+10. Si un componente es desconocido, no se inventa cero.
+
+---
+
+#### 17. Fórmulas legacy de Makos
+
+La implementación agregada actual contiene fórmulas locales equivalentes a:
+
+```text
+net_sales_amount = subtotal - discounts - returns
+gross_sales_amount = subtotal + tax
+```
+
+Estas fórmulas:
+
+- son cálculos del importador agregado actual;
+- no demuestran si el impuesto está incluido o excluido en una venta individual;
+- no prueban la semántica individual de devoluciones;
+- no prueban propina;
+- no prueban medios de pago;
+- no prueban moneda;
+- no constituyen el contrato económico de NUMERA.
+
+`INT-POS-017` prohíbe elevarlas automáticamente a fórmula financiera canónica.
+
+---
+
+#### 18. Granularidad del hecho económico
+
+La unidad de esta tarea es **una venta canónica económicamente reconocible**, no el archivo, lote de importación ni fila agregada por producto.
+
+Un `SALE_ECONOMIC_FACT` puede conservar detalle de líneas para reconstrucción, distribución y conciliación, pero sus componentes no crean ventas adicionales.
+
+Por tanto:
+
+```text
+UNA VENTA ECONÓMICA
+→ UN SALE_ECONOMIC_FACT POR EVENT_ID Y EFFECT_CODE
+→ CERO O MÁS COMPONENTES / LÍNEAS ECONÓMICAS
+```
+
+No:
+
+```text
+UNA FILA XLSX POR PRODUCTO
+→ UNA VENTA ECONÓMICA INVENTADA
+```
+
+---
+
+#### 19. Cuarentena y elegibilidad económica
+
+La cuarentena de `INT-POS-012` protege los efectos que dependan del mapping del producto.
+
+Para NUMERA se decide:
+
+1. una línea `ACTIVE` permanece visible y correlacionada;
+2. no se elimina de la venta;
+3. no se inventa producto, presentación, receta, costo, familia, categoría económica ni centro dependiente de producto;
+4. la línea `ACTIVE` no bloquea automáticamente el reconocimiento del importe global de una venta si ese importe, entidad, sede, centro, moneda, impuesto y demás dimensiones obligatorias pueden demostrarse sin usar el mapping pendiente;
+5. una línea hermana elegible no hereda el bloqueo físico de otra línea;
+6. cualquier atribución económica dependiente de producto permanece pendiente;
+7. cualquier cálculo de costo o rentabilidad dependiente de producto permanece pendiente;
+8. si la cuarentena impide reconciliar el monto, impuestos o una dimensión económica obligatoria, el efecto completo pasa a `RECONCILIATION_REQUIRED`;
+9. liberar una línea no crea otra venta ni otro evento PULSO;
+10. liberar una línea después de `SALE_ECONOMIC_FACT.APPLIED` no vuelve a reconocer el ingreso;
+11. cualquier enriquecimiento, reclasificación o distribución posterior debe preservar el hecho original y usar el contrato NUMERA correspondiente;
+12. la definición detallada de esa reclasificación pertenece a `NUMERA-DOM-002` y `NUMERA-DOM-014`.
+
+La independencia de puertas se expresa así:
+
+```text
+MAPPING DE PRODUCTO PENDIENTE
+NO IMPLICA
+VENTA ECONÓMICA INEXISTENTE
+```
+
+pero:
+
+```text
+MAPPING DE PRODUCTO PENDIENTE
+IMPLICA
+CERO ATRIBUCIÓN PRODUCTO/COSTO INVENTADA
+```
+
+---
+
+#### 20. Independencia frente a NEXO y PASS
+
+Los efectos derivados de una misma venta son independientes.
+
+```text
+PULSO EVENT
+        ├── NEXO CONSUMER_EFFECT
+        ├── NUMERA CONSUMER_EFFECT
+        └── PASS CONSUMER_EFFECT
+```
+
+Reglas:
+
+1. `INT-POS-016.APPLIED` no es precondición universal para `SALE_ECONOMIC_FACT.APPLIED`.
+2. Un fallo NEXO no borra el ingreso comercial demostrado.
+3. Un hecho económico aplicado no prueba que el inventario haya salido.
+4. Un hecho económico aplicado no prueba fidelización.
+5. Un fallo NUMERA no revierte la venta PULSO.
+6. Un fallo PASS no revierte NUMERA.
+7. Las diferencias permanecen detectables en `INT-POS-020`.
+8. La rentabilidad puede permanecer incompleta aunque el ingreso realizado ya exista si todavía falta costo trazable.
+
+---
+
+#### 21. Pago, aplicación, caja y bancos
+
+Se preserva:
+
+```text
+VENTA
+≠
+PAGO
+≠
+APLICACIÓN DE PAGO
+≠
+MOVIMIENTO DE CAJA
+≠
+DEPÓSITO
+≠
+MOVIMIENTO BANCARIO
+≠
+LIQUIDACIÓN DE PROVEEDOR
+```
+
+`SALE_ECONOMIC_FACT`:
+
+- puede referenciar hechos de pago ya conocidos;
+- no los recrea;
+- no afirma que el dinero esté conciliado;
+- no aplica un recaudo a una cuenta por cobrar;
+- no cierra cartera por inferencia;
+- no crea un depósito;
+- no crea un movimiento bancario;
+- no transforma un timeout de pago en éxito o fallo económico.
+
+Los objetos de cartera y aplicación pertenecen al dominio NUMERA aprobado y a sus tareas detalladas.
+
+---
+
+#### 22. Documento fiscal e impuestos
+
+El documento fiscal continúa separado del hecho económico.
+
+```text
+VENTA
+≠
+HECHO ECONÓMICO
+≠
+DOCUMENTO FISCAL
+≠
+ASIENTO CONTABLE
+```
+
+NUMERA podrá conservar, cuando exista evidencia:
+
+- proveedor o emisor;
+- tipo de documento;
+- número o referencia;
+- estado;
+- fecha;
+- moneda;
+- componentes de impuestos;
+- hash o evidencia;
+- vínculo con venta;
+- errores o pendientes.
+
+No podrá:
+
+- fabricar una numeración fiscal;
+- declarar emitido un documento no confirmado;
+- sustituir el proveedor autorizado;
+- recalcular como oficial una obligación tributaria no demostrada;
+- interpretar una impresión como factura válida;
+- usar la ausencia de documento como prueba de que la venta no ocurrió.
+
+Una diferencia fiscal queda para conciliación.
+
+---
+
+#### 23. Ingreso realizado y costo
+
+`SALE_ECONOMIC_FACT` aporta el lado económico de la venta que NUMERA necesita para ingreso realizado.
+
+No determina automáticamente:
+
+- costo de adquisición;
+- costo promedio;
+- costo último;
+- costo estándar;
+- costo real;
+- costo de producción;
+- landed cost;
+- merma;
+- costo logístico;
+- costo interno;
+- margen definitivo.
+
+Los costos se obtienen de sus fuentes propietarias y métodos versionados.
+
+Por tanto:
+
+```text
+INGRESO REALIZADO DISPONIBLE
++
+COSTO TODAVÍA PENDIENTE
+=
+HECHO ECONÓMICO DE VENTA VÁLIDO
++
+RENTABILIDAD TODAVÍA INCOMPLETA
+```
+
+No se fabricará costo desde precio, descuento, receta no resuelta o una proyección legacy.
+
+---
+
+#### 24. Fecha de ocurrencia y reconocimiento
+
+Se distinguen obligatoriamente:
+
+```text
+occurred_at
+≠
+received_at
+≠
+recorded_at
+≠
+recognized_at
+```
+
+- `occurred_at`: momento empresarial del hecho descrito por PULSO;
+- `received_at`: momento de recepción técnica de la fuente o integración;
+- `recorded_at`: momento técnico de persistencia;
+- `recognized_at`: fecha económica definida por la política NUMERA aplicable.
+
+Reglas:
+
+1. `received_at` no decide el periodo económico.
+2. un archivo cargado tarde no cambia la fecha real de la venta.
+3. una redelivery no cambia `recognized_at`.
+4. una corrección no edita silenciosamente la fecha original.
+5. si la política de reconocimiento necesaria todavía no permite resolver una fecha sin inferencia, el efecto se difiere o concilia.
+6. el detalle de política y periodos pertenece a `NUMERA-DOM-002` y `NUMERA-DOM-011`.
+
+---
+
+#### 25. Periodos cerrados y hechos tardíos
+
+Un evento válido puede llegar después del cierre de un periodo NUMERA.
+
+Queda prohibido:
+
+- descartarlo;
+- insertarlo como si hubiera llegado a tiempo sin política;
+- cambiar su `occurred_at`;
+- reabrir el periodo por una acción técnica implícita;
+- reconocerlo en otro periodo solo para evitar el bloqueo;
+- sobrescribir un cierre existente.
+
+El tratamiento deberá conservar:
+
+- evento original;
+- fecha empresarial;
+- fecha de recepción;
+- estado del periodo;
+- decisión de ajuste o reapertura;
+- autoridad;
+- periodo de reconocimiento resultante;
+- correlación y evidencia.
+
+Las políticas de cierre y reapertura pertenecen a `NUMERA-DOM-011`; las diferencias a `NUMERA-DOM-014`.
+
+---
+
+#### 26. Atomicidad del efecto NUMERA
+
+La implementación posterior deberá vincular dentro de una frontera lógica NUMERA:
+
+- recepción de inbox;
+- claim del efecto;
+- clave idempotente;
+- huella;
+- versiones esperadas;
+- creación o recuperación del hecho económico;
+- resultado durable;
+- referencia de auditoría;
+- outbox o mecanismo equivalente cuando NUMERA deba emitir un hecho posterior.
+
+No deberá existir un estado válido en el que:
+
+```text
+HECHO ECONÓMICO CREADO
+SIN RESULTADO IDEMPOTENTE RECUPERABLE
+```
+
+ni:
+
+```text
+RESULTADO APPLIED
+SIN HECHO ECONÓMICO CORRELACIONADO
+```
+
+ni:
+
+```text
+HECHO ECONÓMICO DUPLICADO
+POR RESPUESTA PERDIDA
+```
+
+---
+
+#### 27. Retry y resultado desconocido
+
+El efecto financiero es sensible y reutiliza la política transversal de retry aplicable a efectos críticos.
+
+Reglas:
+
+1. retry conserva `event_id`, `effect_code`, clave, huella, operación, audiencia, finalidad y sensibilidad;
+2. solo cambian datos técnicos del intento;
+3. un timeout no prueba que el hecho económico no se creó;
+4. antes de repetir se consulta el resultado original;
+5. un claim o lease vencido no prueba ausencia de commit anterior;
+6. reiniciar cliente, worker o proceso no reinicia la identidad;
+7. una redelivery no crea otro hecho;
+8. un replay conserva `event_id`;
+9. un backfill no activa efectos financieros sensibles sin autorización explícita;
+10. al agotar el presupuesto se pasa a conciliación y no se fabrica éxito.
+
+---
+
+#### 28. Versiones y eventos tardíos
+
+NUMERA deberá impedir:
+
+- que una revisión vieja reemplace un hecho nuevo;
+- que dos eventos incompatibles reclamen el mismo efecto;
+- que una corrección de mapping reescriba un monto ya reconocido;
+- que `received_at` se use como last-write-wins;
+- que una segunda versión del evento se trate como duplicado si representa un hecho económico distinto autorizado;
+- que una corrección legítima reutilice la clave del original con otro contenido.
+
+Una corrección material requiere su propia identidad causal y tratamiento no destructivo.
+
+---
+
+#### 29. Anulaciones, devoluciones y reembolsos
+
+El hecho original permanece inmutable.
+
+No se permite:
+
+```text
+VENTA ORIGINAL
+→ UPDATE monto = monto - devolución
+```
+
+ni:
+
+```text
+VENTA ORIGINAL
+→ DELETE por anulación
+```
+
+Una anulación, devolución o reembolso que deba alterar el efecto económico:
+
+1. conserva referencia a la venta original;
+2. conserva referencia al `SALE_ECONOMIC_FACT` original;
+3. usa el hecho inverso o compensatorio aprobado;
+4. conserva su propia identidad;
+5. conserva monto, moneda, impuestos, documento y motivo aplicables;
+6. se ejecuta exactamente una vez;
+7. no supone que el efecto NEXO o PASS ya haya sido compensado;
+8. se coordina bajo `INT-POS-019`.
+
+Si no puede determinarse si el efecto original fue aplicado, primero se resuelve mediante conciliación.
+
+---
+
+#### 30. Conciliación de venta y efecto económico
+
+`INT-POS-020` deberá poder detectar al menos:
+
+- evento económicamente elegible sin `SALE_ECONOMIC_FACT`;
+- `SALE_ECONOMIC_FACT` sin evento PULSO correlacionado;
+- dos hechos económicos incompatibles para la misma clave;
+- monto divergente;
+- moneda divergente;
+- entidad legal divergente;
+- sede o centro de costo divergentes;
+- impuesto divergente;
+- documento fiscal faltante, duplicado o incompatible;
+- venta aplicada sin líneas de soporte cuando el contrato las requiere;
+- línea en cuarentena omitida del expediente;
+- atribución de producto o costo fabricada desde línea `ACTIVE`;
+- pago sin aplicación;
+- aplicación sin pago;
+- venta sin pago cuando el estado comercial exige investigarlo;
+- pago sin venta;
+- caja o depósito sin correlación;
+- ingreso realizado sin costo trazable cuando se calcule rentabilidad;
+- hecho tardío contra periodo cerrado;
+- reverso sin original;
+- original que requiere compensación y no la tiene;
+- resultado desconocido agotado.
+
+La conciliación no modifica automáticamente el hecho fuente. Cada propietaria ejecuta su corrección autorizada.
+
+---
+
+#### 31. Línea base física observada de NUMERA
+
+La migración fundacional vigente declara expresamente que la capa actual:
+
+```text
+NO ES CONTABILIDAD FORMAL
+```
+
+y materializa principalmente:
+
+- `numera_periods`;
+- categorías de gasto;
+- `numera_expenses`;
+- presupuestos por centro de costo;
+- ingreso esperado;
+- margen objetivo;
+- vista mensual por centro;
+- punto de equilibrio;
+- resumen del periodo.
+
+La superficie actual de rentabilidad consume:
+
+- `expected_revenue`;
+- `actual_expenses`;
+- `budget_amount`;
+- `budget_variance`.
+
+No se observó en esa fundación un ledger de hechos económicos de venta que implemente `SALE_ECONOMIC_FACT`.
+
+La interfaz actual describe una lectura inicial de **ingreso esperado**, no ingreso realizado derivado de ventas canónicas.
+
+Por tanto, la línea base física es una fundación válida pero insuficiente para declarar implementado este contrato.
+
+---
+
+#### 32. Línea base física observada de PULSO y Makos
+
+La ruta legacy de importación Makos:
+
+- procesa XLSX agregado por artículo;
+- conserva `sales_date`;
+- conserva filas de producto y cantidades;
+- conserva subtotal, impuestos, descuentos y devoluciones agregados;
+- calcula totales legacy;
+- no demuestra venta individual;
+- no demuestra línea individual de venta;
+- no demuestra timestamp autoritativo individual;
+- no demuestra propina;
+- no demuestra identidad individual de pago;
+- no demuestra medio o estado de pago individual;
+- no demuestra documento fiscal individual completo;
+- no demuestra moneda individual desde el contrato observado;
+- no demuestra un `event_id` por venta individual.
+
+Además, en el código PULSO revisado no se demostró una integración propietaria con NUMERA para materializar hechos económicos de venta.
+
+Consecuencia:
+
+```text
+LOTE MAKOS AGREGADO
+≠
+SALE_ECONOMIC_FACT INDIVIDUAL
+```
+
+La ausencia de granularidad suficiente no se corrige generando ventas artificiales a partir de filas por producto.
+
+---
+
+#### 33. Condición para el binding real
+
+`INT-POS-021` deberá demostrar, sin efectos financieros reales, que la fuente y el binding permiten resolver como mínimo:
+
+- identidad individual de venta;
+- evento PULSO aplicable;
+- `event_id`;
+- monto individual;
+- componentes monetarios necesarios;
+- moneda;
+- entidad y contexto organizacional;
+- fecha empresarial;
+- documento o estado fiscal cuando corresponda;
+- revisiones;
+- anulaciones y devoluciones;
+- evidencia de procedencia.
+
+Si un dato obligatorio no existe en Makos, la prueba deberá demostrar qué fuente canónica Vento lo resuelve o conservar el bloqueo.
+
+No se fabricará el campo faltante para aprobar el piloto.
+
+---
+
+#### 34. Transición futura hacia PULSO
+
+Durante la transición:
+
+```text
+MAKOS
+→ ADAPTADOR
+→ PULSO
+→ EVENTO EMPRESARIAL
+→ NUMERA
+→ SALE_ECONOMIC_FACT
+```
+
+Después del corte:
+
+```text
+PULSO
+→ MISMO CONTRATO DE EVENTO
+→ NUMERA
+→ MISMO SALE_ECONOMIC_FACT
+```
+
+NUMERA no debe distinguir la semántica del efecto según si la venta se originó históricamente en Makos o nació directamente en PULSO.
+
+La procedencia externa sigue disponible para auditoría, pero no cambia la propiedad económica.
+
+`INT-SALES-004 — Definir recepción del evento de venta en NUMERA` es la tarea permanente que deberá conservar esta frontera después de la transición.
+
+---
+
+#### 35. Carryover obligatorio
+
+| Pendiente material                                   | Tarea propietaria | Condición de salida                                                                       |
+| ---------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------- |
+| fidelización derivada de venta                       | `INT-POS-018`     | PASS aplica su efecto únicamente cuando corresponda y con identidad propia                |
+| compensaciones por anulación, devolución o reembolso | `INT-POS-019`     | cada propietaria compensa su efecto con referencia al original                            |
+| conciliación de venta y efectos internos             | `INT-POS-020`     | venta, evento, NUMERA, NEXO, PASS y pendientes quedan reconciliados                       |
+| demostración del binding Makos individual            | `INT-POS-021`     | identidad, monto, moneda, documentos y granularidad se prueban sin efectos                |
+| piloto controlado con efectos                        | `INT-POS-022`     | se demuestra una sola aplicación, retry, resultado desconocido y conciliación             |
+| corte de fuente                                      | `INT-POS-023`     | una sola fuente emite por sede, terminal y fecha efectiva                                 |
+| recepción permanente PULSO → NUMERA                  | `INT-SALES-004`   | NUMERA consume el mismo contrato sin conocer el adaptador retirado                        |
+| modelo detallado de hechos de venta                  | `NUMERA-DOM-002`  | se materializan tipos, campos, contraparte, resoluciones y contratos internos             |
+| política de periodos y reapertura                    | `NUMERA-DOM-011`  | eventos tardíos tienen tratamiento financiero versionado                                  |
+| conciliación financiera detallada                    | `NUMERA-DOM-014`  | diferencias económicas tienen expediente, decisión y resolución                           |
+| contabilidad formal extensible                       | `NUMERA-DOM-017`  | el hecho económico puede mapearse a contabilidad sin convertir apps operativas en writers |
+
+Ningún pendiente material queda sin propietario documental.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la tarea especializa para la transición POS → PULSO → NUMERA obligaciones ya protegidas por requisitos vigentes: propiedad única del hecho económico, separación entre venta, pago, caja y contabilidad, dimensiones obligatorias del hecho, idempotencia por efecto consumidor, recuperación tras respuesta perdida, no duplicación financiera, fiscalidad externa, trazabilidad, correcciones compensatorias, periodos, conciliación y rentabilidad basada en ingreso realizado y costo trazable. No se introduce una obligación material nueva ni se altera una fila histórica del registro canónico.
+
+---
+
+#### 37. Cobertura de prueba existente preservada
+
+Se preservan, en especial:
+
+- `TREQ-NUMERA-001`, sobre conciliación de indicadores y resultados con hechos económicos y fuentes operativas sin doble registro;
+- `TREQ-NUMERA-002`, sobre identidad, entidad legal, marca o unidad, sede, centro, tercero, moneda, fechas, fuente, correlación, documento, monto, impuestos, estado, evidencia y extensión futura a contabilidad;
+- `TREQ-NUMERA-003`, sobre separación entre cuenta, cuota, vencimiento, saldo, pago recibido y aplicación;
+- `TREQ-NUMERA-004`, sobre ingreso realizado, costo trazable, métodos y rentabilidad;
+- `TREQ-INTEGRATION-003`, sobre idempotencia, resultado recuperable, retry y resultado desconocido;
+- `TREQ-INTEGRATION-006`, sobre fuente única y ausencia de doble digitación;
+- `TREQ-INTEGRATION-014`, sobre efectos en NUMERA, NEXO y PASS exactamente una vez durante la transición;
+- `TREQ-INTEGRATION-017`, sobre llegada de ventas, pagos, caja y demás hechos a NUMERA mediante contratos versionados, correlacionados e idempotentes, sin escritura cruzada ni doble registro;
+- la cobertura vigente de `INT-APP-004` para `CONSUMER_INBOX`, `CONSUMER_EFFECT`, huella, concurrencia, respuesta perdida y atomicidad;
+- la cobertura vigente de `INT-APP-005` para retry de efectos críticos.
+
+No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba.
+
+---
+
+#### 38. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-POS-016` como tarea anterior;
+2. mantiene `INT-POS-018` como única tarea siguiente;
+3. confirma PULSO como propietaria de venta y evento;
+4. confirma NUMERA como propietaria del hecho económico;
+5. mantiene al proveedor fiscal como autoridad oficial durante la transición;
+6. mantiene la contabilidad oficial externa mientras no exista decisión distinta;
+7. prohíbe escrituras financieras directas desde Makos o el adaptador;
+8. prohíbe que PULSO escriba libros o el hecho NUMERA por autoridad cruzada;
+9. declara que “evento económico” no crea una nueva definición normal de evento;
+10. utiliza el evento PULSO ya existente;
+11. exige una puerta de materialidad económica;
+12. impide crear ingreso realizado desde eventos de apertura o preparación;
+13. reconoce que `VPROC-0038.EVT-005` puede habilitar el efecto cuando el contrato esté completo;
+14. reconoce que `VPROC-0039.EVT-005` puede habilitar el efecto cuando el contrato esté completo;
+15. impide usar `VPROC-0040.EVT-006` como fallback de venta económica;
+16. define `CONSUMER_INBOX = numera + event_id`;
+17. define `effect_code = SALE_ECONOMIC_FACT`;
+18. define `CONSUMER_EFFECT = numera + event_id + SALE_ECONOMIC_FACT`;
+19. exige huella lógica versionada;
+20. reutiliza los ocho resultados idempotentes transversales;
+21. garantiza un único ganador concurrente;
+22. recupera resultado ante retry o respuesta perdida;
+23. trata contenido incompatible como conflicto;
+24. conserva entidad legal sin inferirla desde marca o sede;
+25. conserva marca o unidad separada;
+26. conserva sede separada;
+27. conserva centro de costo mediante resolución canónica;
+28. conserva tercero sin convertirlo automáticamente en cliente o cuenta PASS;
+29. preserva consumidor final no identificado sin crear cliente artificial;
+30. exige moneda demostrable y prohíbe defaults silenciosos;
+31. separa ocurrencia, recepción, registro y reconocimiento;
+32. conserva documento y fiscalidad como objetos separados;
+33. conserva subtotal, descuento, impuesto y propina sin clasificaciones contables inventadas;
+34. impide promover las fórmulas del importador Makos a fórmula financiera canónica;
+35. impide usar filas agregadas como ventas individuales;
+36. mantiene cuarentena visible;
+37. permite ingreso a nivel de venta cuando el mapping de producto no sea necesario para demostrar sus dimensiones obligatorias;
+38. bloquea producto, costo y atribuciones dependientes de mapping mientras la línea esté `ACTIVE`;
+39. evita un segundo ingreso al liberar una línea;
+40. mantiene NEXO, NUMERA y PASS como efectos independientes;
+41. separa venta de pago, aplicación, caja, depósito, banco y liquidación;
+42. separa ingreso realizado de costo;
+43. admite ingreso realizado con costo todavía pendiente sin declarar rentabilidad completa;
+44. impide usar `received_at` como fecha económica;
+45. trata periodos cerrados sin descartar ni sobrescribir hechos;
+46. conserva el hecho original ante anulaciones, devoluciones y reembolsos;
+47. asigna compensaciones a `INT-POS-019`;
+48. asigna conciliación a `INT-POS-020`;
+49. asigna prueba de granularidad real a `INT-POS-021`;
+50. asigna el contrato permanente a `INT-SALES-004`;
+51. asigna el modelo detallado de ventas a `NUMERA-DOM-002`;
+52. reconoce la fundación NUMERA actual como no contabilidad formal;
+53. reconoce que la rentabilidad actual usa ingreso esperado y no demuestra ingreso realizado;
+54. genera cero cambios `TREQ-*`;
+55. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 39. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-017 — Definir evento económico para NUMERA exactamente una vez`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda`
+
+
 ### [ ] INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda
 ### [ ] INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia
 ### [ ] INT-POS-020 — Definir conciliación diaria entre POS y efectos internos

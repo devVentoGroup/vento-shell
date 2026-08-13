@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **777** |
+| Aprobadas | **778** |
 | En propuesta | **0** |
-| No iniciadas | **817** |
+| No iniciadas | **816** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **48.75% (777/1594)** |
+| Porcentaje de completamiento | **48.81% (778/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-016` — Definir salida de inventario en NEXO exactamente una vez | ✅ APROBADA |
-| Tarea actual | `INT-POS-017` — Definir evento económico para NUMERA exactamente una vez | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-018` — Definir evento de fidelización para PASS cuando corresponda | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-017` — Definir evento económico para NUMERA exactamente una vez | ✅ APROBADA |
+| Tarea actual | `INT-POS-018` — Definir evento de fidelización para PASS cuando corresponda | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-019` — Definir compensación de anulaciones y devoluciones sin borrar historia | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1485,7 +1485,7 @@
 | ✅ APROBADA | `INT-POS-014` | Definir webhook cuando exista y polling de conciliación como respaldo | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-015` | Definir emisión del evento canónico de venta validada | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-016` | Definir salida de inventario en NEXO exactamente una vez | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-017` | Definir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-017` | Definir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-018` | Definir evento de fidelización para PASS cuando corresponda | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-019` | Definir compensación de anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-020` | Definir conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
