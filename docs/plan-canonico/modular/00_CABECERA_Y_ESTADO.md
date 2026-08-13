@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **785** |
+| Tareas aprobadas | **786** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **809** |
+| Tareas no iniciadas | **808** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.25% (785/1594)** |
+| Porcentaje de completamiento | **49.31% (786/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente** |
-| Tarea actual | **INT-SALES-001 — Definir contrato para que PULSO registre la venta** |
+| Última tarea aprobada | **INT-SALES-001 — Definir contrato para que PULSO registre la venta** |
+| Tarea actual | **INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición** |
+| Siguiente tarea | **INT-SALES-003 — Definir registro de salida de inventario en NEXO** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 69 de 83 aprobadas; INT-SALES-001 pendiente** |
+| Progreso del bloque | **BLOQUE X: 70 de 83 aprobadas; INT-SALES-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente |
-| Tarea actual | `INT-SALES-001` — Definir contrato para que PULSO registre la venta — **NO INICIADA** |
-| Siguiente tarea | `INT-SALES-002` — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición |
+| Última aprobada | `INT-SALES-001` — Definir contrato para que PULSO registre la venta |
+| Tarea actual | `INT-SALES-002` — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-003` — Definir registro de salida de inventario en NEXO |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 69 DE 83 APROBADAS — ACTUAL INT-SALES-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 70 DE 83 APROBADAS — ACTUAL INT-SALES-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
-        ↓
-TAREA ACTUAL
 INT-SALES-001 — Definir contrato para que PULSO registre la venta
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-003 — Definir registro de salida de inventario en NEXO
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 69 de 83 tareas aprobadas
+BLOQUE X — 70 de 83 tareas aprobadas
 ```
