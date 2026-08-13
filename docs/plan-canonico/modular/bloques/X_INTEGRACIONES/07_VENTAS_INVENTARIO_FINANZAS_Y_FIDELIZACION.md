@@ -7655,7 +7655,1711 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-007 — Definir control contra efectos duplicados por reintento`
 
 
-### [ ] INT-SALES-007 — Definir control contra efectos duplicados por reintento
+### ✅ INT-SALES-007 — Definir control contra efectos duplicados por reintento
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-006 — Definir procesamiento de redención en PASS`
+**Tarea siguiente:** `INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
+**Tipo de tarea:** documental; especialización normativa permanente del control contra efectos duplicados cuando una venta, emisión, entrega, consumo o comando asociado a ventas se reintenta, preservando las identidades idempotentes ya aprobadas por alcance, las guardas de dominio de NEXO, NUMERA y PASS, los resultados recuperables, la concurrencia de un solo ganador, el tratamiento de resultado desconocido, replay, backfill, compensación y recuperación selectiva, sin crear una clave global, una transacción distribuida, una nueva política de retry, tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta y de su emisión empresarial:** `PULSO`
+**Aplicación propietaria del efecto físico:** `NEXO`
+**Aplicación propietaria del hecho económico:** `NUMERA`
+**Aplicación propietaria de fidelización:** `PASS`
+**Registro transversal de idempotencia reutilizado:** `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001`
+**Política transversal de retry reutilizada:** `ENTERPRISE-EVENT-RETRY-POLICY-001`
+**Máquina transversal de pendientes reutilizada:** `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001`
+**Política transversal de compensación reutilizada:** `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`
+**Línea base documental:** `vento-shell@f1dc871fa990c5d7f4c15d07bca3807a6b58a948`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base NEXO observada:** `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`
+**Línea base NUMERA observada:** `vento-numera@1b48a5da425d92e19ed89cf175b1dccc4cd960e1`
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el control permanente que impide que un reintento, redelivery, replay, recuperación después de timeout, reinicio de worker, reescaneo, reenvío manual o repetición de una entrega produzca por segunda vez un efecto empresarial ya confirmado dentro de la cadena de ventas.
+
+La regla raíz es:
+
+```text
+MISMA INTENCIÓN O HECHO EMPRESARIAL
++
+MISMA IDENTIDAD DEL ALCANCE
++
+MISMA HUELLA LÓGICA
++
+RESULTADO DURABLE
+        ↓
+RETRY / REDELIVERY / REPLAY / RECUPERACIÓN
+        ↓
+CONSULTAR O RECLAMAR EL MISMO ALCANCE
+        ├── YA CONFIRMADO → RECUPERAR RESULTADO
+        ├── EN CURSO → CONSERVAR OPERACIÓN
+        ├── NO APLICADO DEMOSTRADO → REINTENTAR MISMA IDENTIDAD
+        ├── CONTENIDO INCOMPATIBLE → CONFLICTO
+        └── RESULTADO INCIERTO → CONCILIACIÓN
+```
+
+Nunca:
+
+```text
+RETRY
+→ IDENTIDAD NUEVA
+→ EFECTO NUEVO
+```
+
+Nunca:
+
+```text
+FALLÓ UNA CONSUMIDORA
+→ VOLVER A APLICAR TODAS LAS CONSUMIDORAS
+```
+
+Nunca:
+
+```text
+UNA CLAVE GLOBAL DE VENTA
+→ DEDUPLICA TODOS LOS DOMINIOS
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-007` congela las siguientes decisiones permanentes:
+
+1. La cadena de venta opera con **transporte al menos una vez** y **efecto lógico como máximo una vez por alcance idempotente**.
+2. No se declara transporte exactamente una vez.
+3. No se crea una idempotency key global para toda la venta.
+4. Solicitud, comando, emisión, inbox y efecto consumidor conservan identidades separadas.
+5. Un retry conserva la identidad del alcance que realmente está reintentando.
+6. `attempt_id`, `delivery_id`, worker, batch, retry count, timestamp técnico y traza no crean una nueva operación empresarial.
+7. Una misma venta no se vuelve a registrar porque falle una publicación posterior.
+8. Un evento de venta ya emitido no obtiene otro `event_id` por fallo de entrega o pérdida de respuesta.
+9. Cada consumidora deduplica su propio inbox con independencia de las demás.
+10. Cada efecto consumidor deduplica su propia mutación con independencia del inbox.
+11. Deduplicar un inbox no equivale a confirmar todos sus efectos.
+12. Deduplicar un evento completo no puede suprimir varios efectos legítimos dentro de una misma consumidora.
+13. NEXO conserva su identidad de efecto físico y sus receipts propietarios.
+14. NUMERA conserva la identidad de `SALE_ECONOMIC_FACT` y su resultado económico.
+15. PASS acumulación conserva su identidad de efecto y la guarda adicional cuenta + venta.
+16. PASS redención conserva `redemption_id` y el `source_command_id` del comando propietario.
+17. Dos comandos distintos dirigidos a la misma redención no habilitan dos consumos.
+18. Una respuesta perdida nunca se interpreta por sí sola como ausencia de commit.
+19. Antes de reejecutar un resultado incierto se consulta la identidad original.
+20. Dos ejecuciones concurrentes del mismo alcance producen un único ganador empresarial.
+21. Una misma clave con huella compatible recupera el resultado previo.
+22. Una misma clave con huella material incompatible produce conflicto.
+23. Un claim o lease vencido no demuestra que el efecto anterior no ocurrió.
+24. Reiniciar aplicación, dispositivo, servicio, worker o scheduler no reinicia identidades ni presupuestos.
+25. El agotamiento del presupuesto de retry no autoriza otro identificador.
+26. Una operación agotada pasa a la política de conciliación o intervención aplicable.
+27. Los efectos ya confirmados no se vuelven a ejecutar para “acompañar” a un efecto faltante.
+28. La recuperación es selectiva por alcance pendiente o incierto.
+29. El éxito NEXO no acredita éxito NUMERA o PASS.
+30. El éxito NUMERA no acredita éxito NEXO o PASS.
+31. El éxito PASS no acredita éxito NEXO o NUMERA.
+32. Un fallo de una consumidora no revierte automáticamente las demás.
+33. No existe una transacción distribuida global entre PULSO, NEXO, NUMERA y PASS.
+34. La consistencia entre propietarias se obtiene mediante idempotencia local, resultados durables, compensación cuando proceda y conciliación.
+35. Replay conserva las identidades empresariales originales.
+36. Backfill no activa efectos sensibles por inferencia.
+37. Una compensación no es un retry del efecto original.
+38. Una corrección o compensación confirmada usa su propia identidad estable y referencia el original.
+39. `INT-SALES-008` conserva la conciliación específica durante convivencia de POS externo y PULSO.
+40. `INT-SALES-009` conserva el corte por sede, terminal y fecha efectiva.
+41. `INT-SALES-010` conserva el control contra doble fuente de venta.
+42. `INT-SALES-011` conserva el retiro del adaptador externo.
+43. No se crea una nueva definición normal de evento.
+44. No se crea un nuevo perfil de retry.
+45. Se crean cero requisitos de prueba.
+46. Se modifican cero requisitos de prueba.
+47. Se crean cero objetos físicos.
+48. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Base canónica consumida y preservada
+
+La tarea consume sin reabrir:
+
+- `INT-APP-004`, para identidades, alcances, huella, replay de resultado, conflicto, concurrencia y atomicidad idempotente;
+- `INT-APP-005`, para clasificación de fallos, elegibilidad, perfiles, presupuestos, backoff y resultado desconocido;
+- `INT-APP-006`, para compensaciones idempotentes y no destructivas;
+- `INT-APP-007`, para auditoría de captura, intento, resultado, receipt y efecto;
+- `INT-APP-008`, para estados pendientes, `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED` y recuperación;
+- `INT-APP-009`, para partialidad y residuales;
+- `INT-APP-010`, para propiedad de dominio, `OWNER_COMMAND` y prohibición de escrituras cruzadas;
+- `INT-SALES-001`, para identidad y registro durable de venta y línea;
+- `INT-SALES-002`, para emisión empresarial PULSO y conservación del `event_id`;
+- `INT-SALES-003`, para inbox y efecto físico NEXO;
+- `INT-SALES-004`, para inbox y efecto económico NUMERA;
+- `INT-SALES-005`, para acumulación PASS y guarda cuenta + venta;
+- `INT-SALES-006`, para redención PASS y comando propietario;
+- `INT-POS-013`, para idempotencia de venta y línea durante la transición;
+- `INT-POS-015`, para emisión canónica durante la transición;
+- `INT-POS-016`, `INT-POS-017` e `INT-POS-018`, para efectos NEXO, NUMERA y PASS exactamente una vez;
+- `INT-POS-019`, para compensaciones;
+- `INT-POS-020`, para conciliación;
+- el registro canónico vigente de requisitos de prueba.
+
+Esta tarea no cambia ninguna identidad aprobada previamente.
+
+---
+
+#### 4. Principio de capas idempotentes
+
+La cadena usa varias identidades porque protege equivalencias diferentes:
+
+```text
+SOLICITUD
+≠
+COMANDO PROPIETARIO
+≠
+EMISIÓN DE EVENTO
+≠
+RECEPCIÓN DE CONSUMIDORA
+≠
+EFECTO DE CONSUMIDORA
+≠
+GUARDA DE DOMINIO
+≠
+INTENTO TÉCNICO
+```
+
+Una sola clave no puede reemplazar estas capas sin producir una de dos fallas:
+
+1. una clave demasiado amplia suprime efectos legítimos;
+2. una clave demasiado estrecha permite duplicar el efecto empresarial.
+
+---
+
+#### 5. Alcances transversales reutilizados
+
+Se conservan los alcances ya aprobados:
+
+| Alcance              | Identidad mínima reutilizada                    | Qué protege                                   |
+| -------------------- | ----------------------------------------------- | --------------------------------------------- |
+| `REQUEST_ACCEPTANCE` | `request_id` o `client_event_id`                | la misma solicitud lógica                     |
+| `OWNER_COMMAND`      | `source_command_id`                             | la misma mutación solicitada a la propietaria |
+| `EVENT_EMISSION`     | `event_id`                                      | la misma emisión empresarial                  |
+| `CONSUMER_INBOX`     | `consumer_application + event_id`               | la misma recepción por consumidora            |
+| `CONSUMER_EFFECT`    | `consumer_application + event_id + effect_code` | el mismo efecto derivado                      |
+| `EXTERNAL_RECEIPT`   | `source_system + external_event_id`             | la misma afirmación externa autenticada       |
+| `REPLAY_BATCH`       | `replay_request_id`                             | la misma instrucción controlada de replay     |
+
+Reglas:
+
+1. ninguna identidad sustituye otra;
+2. el alcance de un retry debe conocerse antes de ejecutarlo;
+3. la clave se fija antes del primer intento de ese alcance;
+4. el retry conserva la clave;
+5. el contenido material conserva la huella compatible;
+6. cambiar materialmente la intención crea otra operación, no otro intento.
+
+---
+
+#### 6. Modelo end-to-end
+
+La garantía permanente es:
+
+```text
+TRANSPORTE
+=
+AT_LEAST_ONCE
+
+EFECTO EMPRESARIAL POR ALCANCE
+=
+AT_MOST_ONCE
+
+RECUPERACIÓN DE DUPLICADO
+=
+RESULTADO ORIGINAL O ESTADO RECUPERABLE
+```
+
+Por tanto, un mensaje puede entregarse más de una vez sin autorizar más de un efecto.
+
+---
+
+#### 7. No existe una clave global de venta
+
+Queda prohibido utilizar una forma equivalente a:
+
+```text
+canonical_sale_id
+→ CLAVE UNIVERSAL DE TODO
+```
+
+porque una misma venta puede producir legítimamente:
+
+- más de un evento empresarial;
+- efectos separados en NEXO, NUMERA y PASS;
+- más de un efecto dentro de una consumidora;
+- comandos posteriores como redención;
+- compensaciones;
+- revisiones;
+- hechos posteriores válidos.
+
+`canonical_sale_id` conserva correlación y guardas de dominio cuando hayan sido aprobadas, pero no reemplaza las identidades idempotentes de cada alcance.
+
+---
+
+#### 8. Registro de venta PULSO
+
+Cuando se reintenta el registro de la misma venta:
+
+1. se conserva la identidad canónica de venta;
+2. se conserva la identidad de las líneas;
+3. se conserva la revisión aplicable;
+4. se conserva la fuente empresarial real;
+5. la misma intención no crea otra venta;
+6. una huella incompatible produce conflicto;
+7. no se crea otra venta porque haya fallado la emisión del evento;
+8. una corrección material crea la revisión, sucesión o acción correspondiente y no se presenta como retry.
+
+La venta durable es prerequisito del evento; el fallo del evento no invalida ni duplica la venta.
+
+---
+
+#### 9. Emisión PULSO
+
+Para una emisión ya creada:
+
+```text
+event_id ORIGINAL
+        ↓
+PUBLICACIÓN / ENTREGA
+        ↓
+TIMEOUT / PÉRDIDA DE ACK / REDelivery
+        ↓
+MISMO event_id
+```
+
+Reglas:
+
+1. `event_id` no cambia por retry;
+2. `event_id` no cambia por otro worker;
+3. `event_id` no cambia por otro canal de entrega;
+4. `event_id` no cambia por replay;
+5. un `delivery_id` nuevo no significa un evento nuevo;
+6. si no puede demostrarse si la emisión durable existió, se consulta la identidad o resultado propietario antes de fabricar otra emisión;
+7. una emisión durable recuperada se vuelve a entregar conservando el mismo evento.
+
+---
+
+#### 10. Audiencia y redelivery
+
+Una redelivery conserva:
+
+- `event_id`;
+- `event_definition_id`;
+- versión;
+- productora;
+- audiencia canónica;
+- finalidad;
+- sensibilidad;
+- correlación;
+- causación;
+- agregado y versión aplicables.
+
+Retry no puede añadir silenciosamente otra consumidora ni cambiar la finalidad para intentar obtener éxito.
+
+---
+
+#### 11. Inbox por consumidora
+
+Cada consumidora deduplica de manera independiente:
+
+```text
+NEXO:
+nexo + event_id
+
+NUMERA:
+numera + event_id
+
+PASS:
+pass + event_id
+```
+
+Reglas:
+
+1. NEXO procesado no marca NUMERA como procesado;
+2. NUMERA procesado no marca PASS como procesado;
+3. PASS procesado no marca NEXO como procesado;
+4. un fallo de una consumidora no borra el inbox de otra;
+5. una entrega duplicada recupera el mismo inbox;
+6. el inbox no sustituye la identidad del efecto;
+7. un inbox confirmado puede contener un efecto todavía pendiente o no aplicable conforme a su contrato;
+8. no se usa una fila global “evento procesado” para bloquear a todas las consumidoras.
+
+---
+
+#### 12. Efecto por consumidora
+
+El efecto derivado usa:
+
+```text
+consumer_application
++
+event_id
++
+effect_code
+```
+
+La identidad se fija antes de la mutación.
+
+Reglas:
+
+1. varios efectos legítimos del mismo evento requieren `effect_code` distintos;
+2. deduplicar solo por `event_id` no puede ocultar un segundo efecto legítimo;
+3. reintentar el mismo efecto conserva su `effect_code`;
+4. cambiar la finalidad física, económica o de fidelización no se presenta como retry del efecto anterior;
+5. el resultado del efecto pertenece a la aplicación consumidora.
+
+---
+
+#### 13. NEXO
+
+Para NEXO se preserva el contrato de `INT-SALES-003`.
+
+El control exige:
+
+1. mismo inbox para la misma entrega;
+2. misma identidad de efecto para el mismo propósito físico;
+3. máximo un efecto físico lógico por unidad elegible conforme al contrato aprobado;
+4. grupo, componentes, legs, movimientos y receipt no se recrean por retry;
+5. un fragmento confirmado dentro de una operación parcial no se vuelve a mover;
+6. respuesta perdida exige consultar la identidad, grupo, legs, ledger o receipt propietario aplicable;
+7. un stock agregado o una pantalla actualizada no prueban por sí solos que el efecto original no ocurrió;
+8. una corrección física confirmada se realiza por la acción propietaria de corrección o compensación, no repitiendo el evento original.
+
+---
+
+#### 14. NUMERA
+
+Para NUMERA se preserva:
+
+```text
+effect_code = SALE_ECONOMIC_FACT
+
+CONSUMER_EFFECT
+=
+numera + event_id + SALE_ECONOMIC_FACT
+```
+
+El control exige:
+
+1. mismo evento y misma huella económica recuperan el resultado previo;
+2. la misma identidad con contenido económico incompatible produce conflicto;
+3. dos ejecuciones concurrentes tienen un único ganador;
+4. una respuesta perdida consulta la identidad original;
+5. liberar posteriormente un mapping no vuelve a reconocer un ingreso ya aplicado;
+6. un evento que no supera la puerta de materialidad no crea un hecho por simple retry;
+7. el retry no transforma un pago, caja o documento fiscal en otro `SALE_ECONOMIC_FACT`;
+8. un resultado económico confirmado no se repite porque NEXO o PASS estén pendientes.
+
+---
+
+#### 15. PASS — acumulación
+
+Se preserva:
+
+```text
+CONSUMER_EFFECT
+=
+pass + event_id + LOYALTY_POINTS_ACCRUAL
+```
+
+y la guarda de dominio:
+
+```text
+loyalty_account_id
++
+canonical_sale_id
++
+ACCUMULATION
+```
+
+Las dos protecciones resuelven riesgos diferentes:
+
+1. la identidad de efecto detiene duplicados del mismo evento;
+2. la guarda cuenta + venta detiene una segunda acumulación causada por otro evento legítimo del mismo ciclo comercial;
+3. retry conserva evento, cuenta, venta, regla, huella y resultado;
+4. redelivery no crea otra acumulación;
+5. replay no crea otra acumulación;
+6. un evento posterior de pago o conciliación consulta primero la guarda;
+7. cambiar la versión de la regla no habilita otra acumulación;
+8. una venta ya acreditada a otra cuenta produce conflicto o conciliación, no otra acreditación.
+
+---
+
+#### 16. PASS — redención
+
+La redención no se trata como un `CONSUMER_EFFECT` de acumulación.
+
+Se preservan:
+
+```text
+redemption_id
+```
+
+y:
+
+```text
+OWNER_COMMAND
+→ source_command_id
+```
+
+Reglas:
+
+1. retry del mismo comando conserva `source_command_id`;
+2. retry conserva `redemption_id`;
+3. otro escaneo no crea una redención;
+4. otro pedido no vuelve a consumir la misma redención;
+5. dos comandos distintos contra la misma `redemption_id` compiten bajo la guarda de dominio de consumo;
+6. solo un consumo puede confirmarse;
+7. una respuesta perdida se consulta antes de otro envío;
+8. un gasto de puntos ya confirmado no se repite al validar otra vez el instrumento de presentación.
+
+---
+
+#### 17. Matriz de identidad permanente
+
+| Operación                    | Identidad que permanece                    | Duplicado debe producir        |
+| ---------------------------- | ------------------------------------------ | ------------------------------ |
+| misma solicitud de usuario   | `request_id` o `client_event_id`           | resultado de aceptación previo |
+| mismo comando propietario    | `source_command_id`                        | resultado propietario previo   |
+| misma emisión                | `event_id`                                 | misma emisión                  |
+| misma recepción NEXO         | `nexo + event_id`                          | inbox previo                   |
+| mismo efecto NEXO            | `nexo + event_id + effect_code`            | resultado físico previo        |
+| misma recepción NUMERA       | `numera + event_id`                        | inbox previo                   |
+| mismo hecho económico        | `numera + event_id + SALE_ECONOMIC_FACT`   | resultado económico previo     |
+| misma recepción PASS         | `pass + event_id`                          | inbox previo                   |
+| misma acumulación por evento | `pass + event_id + LOYALTY_POINTS_ACCRUAL` | movimiento/resultados previos  |
+| misma acumulación por compra | cuenta + venta + `ACCUMULATION`            | acumulación previa o conflicto |
+| mismo consumo de redención   | `redemption_id`                            | consumo previo o conflicto     |
+| mismo comando de redención   | `source_command_id`                        | resultado previo               |
+| mismo paso compensatorio     | identidad idempotente del paso aprobado    | resultado compensatorio previo |
+
+---
+
+#### 18. Huella lógica
+
+La huella distingue repetición de reutilización incompatible.
+
+Debe construirse con los campos materiales del alcance correspondiente y excluir metadatos volátiles.
+
+No deben participar como causa suficiente de una nueva huella empresarial:
+
+- `attempt_id`;
+- `delivery_id`;
+- retry count;
+- worker;
+- scheduler;
+- batch técnico;
+- timestamp de reenvío;
+- trace;
+- hostname;
+- conexión;
+- canal de transporte;
+- número de polling;
+- nombre de archivo;
+- posición de fila;
+- reinicio del proceso.
+
+La misma identidad con huella diferente no se “corrige” adoptando el último payload.
+
+---
+
+#### 19. Resultado compatible
+
+Cuando la identidad y la huella coinciden:
+
+```text
+DUPLICADO
+→ RECUPERAR RESULTADO
+→ CERO NUEVA MUTACIÓN
+```
+
+El resultado recuperado puede requerir revalidación actual de autorización y sensibilidad antes de mostrarse completo, pero esa revalidación nunca vuelve a ejecutar el efecto.
+
+---
+
+#### 20. Reutilización incompatible
+
+Cuando la identidad coincide y la huella cambia materialmente:
+
+```text
+MISMA CLAVE
++
+CONTENIDO DISTINTO
+→ CONFLICTO
+```
+
+Queda prohibido:
+
+- sobrescribir el primer contenido;
+- tratar el segundo como retry;
+- ejecutar parcialmente el segundo;
+- usar `last write wins`;
+- generar otra clave automáticamente para evitar el conflicto.
+
+Un cambio legítimo se representa como nueva operación, revisión, corrección o compensación según el dominio.
+
+---
+
+#### 21. Concurrencia
+
+Dos ejecuciones simultáneas de la misma identidad deben producir:
+
+```text
+UN SOLO GANADOR EMPRESARIAL
+```
+
+Las demás:
+
+- recuperan el resultado confirmado;
+- reciben un estado en curso recuperable;
+- o reciben conflicto/rechazo cuando el contenido no coincide.
+
+No satisfacen esta regla:
+
+- comprobar y después insertar sin protección atómica;
+- deshabilitar un botón;
+- ocultar una fila;
+- asumir que un único worker elimina las carreras;
+- confiar en que las solicitudes “normalmente” no coinciden.
+
+La primitiva física se definirá en los paquetes de implementación correspondientes.
+
+---
+
+#### 22. Claim y lease
+
+Un claim o lease puede coordinar trabajo, pero:
+
+1. no sustituye la identidad idempotente;
+2. su expiración no prueba ausencia de commit;
+3. adquirir un nuevo lease no permite reaplicar un efecto incierto;
+4. después de una expiración se consulta el resultado durable;
+5. únicamente la evidencia propietaria permite decidir retry seguro;
+6. un claim abandonado con resultado incierto conduce a recuperación o conciliación.
+
+---
+
+#### 23. Perfiles de retry reutilizados
+
+Esta tarea no crea perfiles.
+
+Para la cadena de venta se reutilizan los perfiles aprobados:
+
+##### 23.1. Comandos propietarios
+
+`RETRY_OWNER_COMMAND`
+
+- intentos totales: **6**;
+- base: **2 s**;
+- tope de demora: **2 min**;
+- edad máxima: **30 min**;
+- resultado posiblemente confirmado: consulta antes de reejecución.
+
+##### 23.2. Eventos y efectos críticos
+
+`RETRY_EVENT_CRITICAL`
+
+- intentos totales: **20**;
+- base: **2 s**;
+- tope de demora: **10 min**;
+- edad máxima: **72 h**;
+- agotamiento: conciliación obligatoria.
+
+La venta y sus efectos de inventario, economía y fidelización se consideran materiales y no pueden rebajar localmente estas protecciones mediante un perfil inventado.
+
+##### 23.3. Inbox
+
+El inbox utiliza el perfil transversal asignado por criticidad; en la cadena de ventas la implementación deberá mantener la criticidad de los efectos que habilita y nunca degradarla para eludir recuperación o conciliación.
+
+---
+
+#### 24. Presupuesto no reiniciable
+
+El presupuesto pertenece a la operación, no al proceso técnico.
+
+Por tanto no se reinicia por:
+
+- reinicio de navegador;
+- reinicio de aplicación;
+- reinicio del dispositivo;
+- restart de worker;
+- redeploy;
+- cambio de pod;
+- cambio de función;
+- cambio de terminal;
+- reencolado;
+- mover a otra cola;
+- cambio de transportista;
+- nuevo `attempt_id`.
+
+Agotar el presupuesto no habilita “empezar de cero”.
+
+---
+
+#### 25. Clasificación antes de retry
+
+El sistema no reintenta por intuición.
+
+Se conserva la taxonomía transversal.
+
+Los fallos elegibles para retry automático directo mantienen la política vigente.
+
+Los casos que exigen tratamiento previo, como resultado desconocido, falta de autorización vigente, orden pendiente o conflicto, no se convierten en transitorios mediante fallback local.
+
+---
+
+#### 26. Resultado desconocido
+
+Ante timeout, desconexión o caída después de un posible commit:
+
+```text
+UNKNOWN OUTCOME
+        ↓
+CONSULTAR IDENTIDAD DEL ALCANCE
+        ├── RESULTADO CONFIRMADO
+        │      → RECUPERAR
+        ├── AUSENCIA DE EFECTO DEMOSTRADA
+        │      → RETRY MISMA IDENTIDAD
+        └── NO DETERMINABLE
+               → RECONCILIATION_REQUIRED
+```
+
+La ausencia de respuesta no demuestra ausencia de efecto.
+
+---
+
+#### 27. Recuperación selectiva
+
+La recuperación end-to-end trabaja sobre el vector de alcances, no sobre un botón de “reprocesar venta completa”.
+
+Ejemplo conceptual:
+
+```text
+VENTA PULSO        → CONFIRMADA
+EVENTO PULSO       → CONFIRMADO
+NEXO               → CONFIRMADO
+NUMERA             → RESULTADO DESCONOCIDO
+PASS ACUMULACIÓN   → CONFIRMADA
+PASS REDENCIÓN     → NO APLICA
+```
+
+La acción correcta es investigar o recuperar **NUMERA**.
+
+No:
+
+```text
+REPETIR VENTA
++
+REEMITIR EVENTO NUEVO
++
+VOLVER A EJECUTAR NEXO
++
+VOLVER A ACREDITAR PASS
+```
+
+---
+
+#### 28. Vector de resultados sin máquina global nueva
+
+La cadena podrá exponer una vista de conciliación compuesta por los resultados nativos de cada alcance.
+
+Esta vista:
+
+- no crea un estado empresarial global nuevo;
+- no sustituye los outcomes propietarios;
+- no transfiere autoridad;
+- no convierte éxito parcial en éxito total;
+- no obliga a reabrir resultados confirmados.
+
+Cada componente conserva su propio outcome y referencia durable.
+
+---
+
+#### 29. Independencia de consumidoras
+
+Se preserva:
+
+```text
+PULSO EVENT
+        ├── NEXO
+        ├── NUMERA
+        └── PASS
+```
+
+Reglas:
+
+1. cada rama posee inbox;
+2. cada rama posee efecto;
+3. cada rama posee resultado;
+4. cada rama puede fallar de forma independiente;
+5. cada rama puede recuperarse de forma independiente;
+6. la latencia de una rama no reabre otra;
+7. la compensación de una rama no se presume aplicada en otra;
+8. el cierre de una rama no prueba el cierre de la venta completa.
+
+---
+
+#### 30. No existe commit distribuido global
+
+Queda expresamente fuera del contrato:
+
+```text
+PULSO + NEXO + NUMERA + PASS
+→ UNA ÚNICA TRANSACCIÓN ACID GLOBAL
+```
+
+La cadena mantiene fronteras propietarias.
+
+La consistencia se obtiene mediante:
+
+1. commit durable en cada propietaria;
+2. identidad idempotente;
+3. resultado recuperable;
+4. retry seguro;
+5. compensación no destructiva;
+6. conciliación.
+
+Un fallo intermedio puede dejar resultados mixtos pero siempre explícitos y recuperables.
+
+---
+
+#### 31. Redelivery completo frente a recuperación dirigida
+
+Cuando el transporte solo permita redelivery del evento a toda la audiencia:
+
+- las consumidoras ya confirmadas recuperan su resultado sin reaplicar;
+- la consumidora pendiente continúa su procesamiento seguro;
+- la consumidora conflictiva no se fuerza;
+- el redelivery no cambia `event_id`.
+
+Cuando exista capacidad de recuperación dirigida:
+
+- se prefiere actuar solo sobre el alcance pendiente o incierto;
+- no se crea otra emisión empresarial;
+- se conserva la misma identidad causal.
+
+---
+
+#### 32. Efecto confirmado y proyección fallida
+
+Puede ocurrir:
+
+```text
+EFECTO AUTORITATIVO CONFIRMADO
++
+PROYECCIÓN / CACHE / RESPUESTA DERIVADA FALLÓ
+```
+
+La recuperación:
+
+1. no repite el efecto autoritativo;
+2. reconstruye o sincroniza la proyección desde la fuente propietaria;
+3. conserva la referencia al resultado original;
+4. no utiliza la proyección faltante como prueba de que el efecto no ocurrió.
+
+---
+
+#### 33. Evento confirmado y publicación incierta
+
+Puede ocurrir:
+
+```text
+EVENTO DURABLE
++
+PUBLICACIÓN INCIERTA
+```
+
+La recuperación:
+
+1. localiza el evento durable;
+2. conserva `event_id`;
+3. vuelve a intentar la entrega permitida;
+4. no fabrica otro evento;
+5. permite que cada inbox deduplique la redelivery.
+
+---
+
+#### 34. Inbox confirmado y efecto incierto
+
+Puede ocurrir:
+
+```text
+INBOX CONFIRMADO
++
+EFECTO RESULT_UNKNOWN
+```
+
+La recuperación:
+
+1. no crea otro inbox;
+2. consulta la identidad del efecto;
+3. consulta receipt, ledger, grupo, movimiento o hecho propietario que corresponda;
+4. solo reintenta si la ausencia de efecto queda demostrada;
+5. conserva la misma identidad de efecto.
+
+---
+
+#### 35. Diferentes eventos de la misma venta
+
+No todo evento distinto es duplicado.
+
+Por tanto:
+
+1. `event_id` diferente puede representar un hecho empresarial legítimamente distinto;
+2. no se deduplica por `canonical_sale_id` de forma transversal;
+3. la consumidora evalúa si el nuevo evento habilita un efecto distinto;
+4. cuando el dominio requiere una sola aplicación por venta, utiliza la guarda de dominio previamente aprobada;
+5. PASS acumulación usa la guarda cuenta + venta;
+6. PASS redención usa `redemption_id` y su guarda de consumo;
+7. NUMERA conserva su puerta de materialidad y la identidad del hecho económico;
+8. NEXO conserva la semántica física por línea, propósito y efecto.
+
+---
+
+#### 36. Retry no es revisión
+
+Un cambio de:
+
+- venta;
+- línea;
+- cantidad;
+- importe;
+- cuenta;
+- recompensa;
+- regla;
+- producto;
+- fuente;
+- versión;
+- propósito;
+- acción;
+
+puede ser una revisión o nueva operación material.
+
+No se convierte automáticamente en retry.
+
+Un retry conserva el significado empresarial del intento original.
+
+---
+
+#### 37. Retry no es compensación
+
+Cuando un efecto confirmado fue válido técnicamente pero debe ser revertido o corregido:
+
+```text
+EFECTO ORIGINAL
+        ↓
+NUEVO HECHO CORRECTIVO
+        ↓
+COMPENSACIÓN PROPIETARIA
+```
+
+No:
+
+```text
+EFECTO ORIGINAL
+        ↓
+RETRY CON CANTIDAD NEGATIVA
+```
+
+La compensación:
+
+- tiene identidad propia;
+- referencia el original;
+- usa su propia huella;
+- es idempotente;
+- conserva ambos hechos.
+
+---
+
+#### 38. Retry no es conciliación
+
+La conciliación determina qué ocurrió realmente y qué falta resolver.
+
+No se usa como alias de:
+
+- “intentar otra vez”;
+- “resetear estado”;
+- “volver a correr toda la venta”;
+- “marcar aplicado manualmente”.
+
+`INT-SALES-008` especializará la conciliación durante coexistencia de fuentes sin cambiar la idempotencia aquí definida.
+
+---
+
+#### 39. Replay
+
+Un replay del mismo evento:
+
+1. conserva `event_id`;
+2. conserva occurred_at;
+3. conserva productora histórica;
+4. conserva audiencia histórica;
+5. crea intentos técnicos nuevos únicamente donde sea necesario;
+6. cada consumidora deduplica contra el evento original;
+7. los efectos confirmados se recuperan;
+8. los efectos pendientes se recuperan o continúan;
+9. no vuelve a acreditar puntos;
+10. no vuelve a mover stock;
+11. no vuelve a reconocer ingreso;
+12. no vuelve a consumir una redención.
+
+---
+
+#### 40. Backfill
+
+Un backfill autorizado:
+
+- utiliza identidad determinista;
+- conserva procedencia;
+- conserva lote o ventana;
+- concilia contra identidades existentes antes de producir hechos;
+- no genera un `event_id` distinto para representar un evento histórico ya existente;
+- no activa pagos, stock, puntos, redenciones, documentos o acciones físicas sensibles por defecto;
+- exige autorización explícita para efectos sensibles;
+- no utiliza la ausencia de una proyección como prueba de ausencia del efecto propietario.
+
+---
+
+#### 41. Batches
+
+Un `replay_request_id`, lote o batch:
+
+1. identifica la instrucción de procesamiento;
+2. no sustituye las identidades de los elementos;
+3. no convierte todos los elementos en una operación única;
+4. conserva outcome por elemento;
+5. conserva presupuesto por elemento;
+6. no oculta partialidad;
+7. no permite declarar éxito del lote si existen elementos inciertos sin tratamiento.
+
+---
+
+#### 42. Orden y versiones
+
+Retry no puede retroceder una versión válida.
+
+Se preserva:
+
+- orden por agregado cuando aplique;
+- versión del agregado;
+- `STALE_VERSION`;
+- `OUT_OF_ORDER_DEFERRED`;
+- conflicto de versiones incompatibles.
+
+Un evento tardío:
+
+- no se trata como duplicado solo por llegar tarde;
+- no sobrescribe una versión posterior;
+- puede diferirse o conciliarse;
+- conserva su identidad histórica.
+
+---
+
+#### 43. Estados y outcomes reutilizados
+
+Esta tarea no crea un vocabulario global nuevo.
+
+Para efectos consumidores se preservan, según el contrato propietario:
+
+- `APPLIED`;
+- `DUPLICATE_RESULT_RETURNED`;
+- `CONFLICTING_REUSE`;
+- `IN_PROGRESS_RECOVERABLE`;
+- `STALE_VERSION`;
+- `OUT_OF_ORDER_DEFERRED`;
+- `RECONCILIATION_REQUIRED`;
+- `REJECTED`.
+
+Para comandos propietarios se preservan los outcomes transversales vigentes, entre ellos:
+
+- `EFFECT_CONFIRMED`;
+- `PRIOR_RESULT_REPLAYED`;
+- `CONFLICT`;
+- `RESULT_UNKNOWN`;
+- `PARTIALLY_APPLIED`;
+- `RECONCILIATION_REQUIRED`.
+
+Para sincronización se preservan los estados vigentes, entre ellos:
+
+- `SYNCING`;
+- `PENDING_CONFIRMATION`;
+- `ACKNOWLEDGED`;
+- `REJECTED_RETRYABLE`;
+- `CONFLICT`;
+- `RESULT_UNKNOWN`;
+- `RECONCILIATION_REQUIRED`.
+
+Ninguna de estas listas se redefine por esta tarea.
+
+---
+
+#### 44. Semántica de resultado duplicado
+
+`DUPLICATE_RESULT_RETURNED` o `PRIOR_RESULT_REPLAYED`, según el alcance, significa:
+
+```text
+MISMA OPERACIÓN YA CONFIRMADA
++
+CERO NUEVA MUTACIÓN
++
+RESULTADO ORIGINAL RECUPERADO
+```
+
+No significa:
+
+- segunda ejecución que casualmente produjo el mismo valor;
+- comparación posterior de saldos;
+- coincidencia visual;
+- reinsert y rollback;
+- recreación de receipt.
+
+---
+
+#### 45. Partialidad
+
+Cuando un efecto admite componentes:
+
+```text
+TOTAL SOLICITADO
+=
+CONFIRMADO
++
+CANCELADO
++
+BLOQUEADO
++
+RESIDUAL
+```
+
+Un retry:
+
+1. no repite componentes confirmados;
+2. actúa sobre el residual permitido;
+3. conserva identidad causal;
+4. conserva referencias de componentes;
+5. no declara el total confirmado hasta resolver o aceptar explícitamente los residuales;
+6. no usa una segunda operación equivalente para ocultar partialidad.
+
+---
+
+#### 46. Venta con resultados mixtos
+
+Una venta puede quedar, de forma legítimamente transitoria, con:
+
+- venta confirmada;
+- evento confirmado;
+- NEXO confirmado;
+- NUMERA pendiente;
+- PASS confirmado;
+- otra relación no aplicable.
+
+Esta condición:
+
+- no duplica la venta;
+- no obliga a rollback global;
+- no autoriza nueva emisión;
+- conserva los resultados confirmados;
+- asigna el pendiente a su propietaria;
+- queda disponible para conciliación.
+
+---
+
+#### 47. Reintento manual
+
+Una persona autorizada puede iniciar una recuperación controlada cuando la política lo permita.
+
+El reintento manual:
+
+1. no inventa una nueva clave;
+2. no ignora el presupuesto previo;
+3. no altera la huella;
+4. no cambia de propietaria;
+5. no cambia el contrato;
+6. no convierte un rechazo permanente en transitorio;
+7. no evita una conciliación requerida;
+8. deja auditoría del actor y motivo.
+
+---
+
+#### 48. Cambio de tecnología
+
+Cambiar:
+
+- webhook por polling;
+- cola;
+- worker;
+- RPC;
+- función;
+- scheduler;
+- proveedor de transporte;
+- proceso batch;
+
+no cambia la identidad empresarial.
+
+Una migración técnica debe preservar el registro idempotente y los resultados suficientemente para no reactivar efectos históricos.
+
+---
+
+#### 49. Retención de idempotencia
+
+La información necesaria para deduplicar y recuperar resultados no puede expirar antes de la ventana relevante de:
+
+- retry;
+- offline;
+- replay;
+- disputa;
+- compensación;
+- auditoría.
+
+Expirar una clave no puede volver ejecutable un efecto irreversible ya confirmado.
+
+La política física de retención se cerrará en la arquitectura e implementación correspondientes.
+
+---
+
+#### 50. Procedencia Makos y venta nativa PULSO
+
+Durante historia de transición:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+```
+
+Después del corte:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+```
+
+En ambos casos, una vez existe el contrato canónico:
+
+- `event_id` conserva su identidad;
+- los inbox conservan su identidad;
+- los efectos conservan su identidad;
+- los comandos PASS conservan su identidad;
+- retry conserva el resultado previo;
+- la procedencia se mantiene para auditoría.
+
+Esta tarea no decide cuándo una fuente puede originar una venta nueva. Esa guardia permanece en `INT-SALES-009` y `INT-SALES-010`.
+
+---
+
+#### 51. Doble fuente queda separada
+
+Un duplicado causado porque Makos y PULSO originaron independientemente la misma venta no es necesariamente un retry técnico.
+
+La detección y prohibición de esa doble fuente corresponde a `INT-SALES-010`.
+
+`INT-SALES-007` impide que **una operación ya identificada** cree efectos repetidos durante retry, redelivery o recuperación.
+
+No se usa idempotencia técnica para ocultar una violación de autoridad de fuente.
+
+---
+
+#### 52. Conciliación de convivencia queda separada
+
+`INT-SALES-008` conservará:
+
+- comparación de fuentes durante coexistencia;
+- venta sin efecto;
+- efecto sin venta;
+- divergencias Makos/PULSO;
+- resultados pendientes;
+- acciones de conciliación.
+
+Esta tarea solo fija las reglas que debe respetar cualquier recuperación nacida de esa conciliación:
+
+- misma identidad si es el mismo efecto;
+- consulta antes de retry incierto;
+- cero reaplicación de efectos confirmados;
+- nueva identidad solo para una operación empresarial materialmente nueva.
+
+---
+
+#### 53. Corte queda separado
+
+`INT-SALES-009` decidirá el contrato permanente de corte por:
+
+- sede;
+- terminal;
+- fecha efectiva.
+
+Retry no puede modificar la autoridad temporal de la venta.
+
+Una venta histórica conserva la fuente que tenía en su hecho original.
+
+---
+
+#### 54. Retiro del adaptador queda separado
+
+`INT-SALES-011` cerrará el retiro del adaptador externo.
+
+El retiro no puede:
+
+- borrar registros idempotentes todavía necesarios;
+- regenerar `event_id`;
+- cambiar procedencia histórica;
+- obligar a reejecutar efectos;
+- hacer que NEXO, NUMERA o PASS dependan de Makos para recuperar resultados.
+
+---
+
+#### 55. Auditoría mínima
+
+Cada intento deberá permitir reconstruir, según el alcance:
+
+- venta y revisión;
+- línea cuando aplique;
+- request o client event;
+- `source_command_id`;
+- `event_id`;
+- definición y versión;
+- consumidora;
+- inbox;
+- `effect_code`;
+- identidad de efecto;
+- guarda de dominio;
+- huella y versión;
+- intento;
+- `attempt_id`;
+- `delivery_id` cuando exista;
+- actor o principal;
+- sede;
+- contexto;
+- inicio y fin;
+- error clasificado;
+- perfil de retry;
+- presupuesto consumido;
+- receipt;
+- resultado propietario;
+- duplicate replay;
+- conflicto;
+- resultado desconocido;
+- conciliación;
+- compensación relacionada cuando exista.
+
+La auditoría registra intentos nuevos sin fabricar operaciones nuevas.
+
+---
+
+#### 56. Observabilidad
+
+La observabilidad deberá distinguir al menos:
+
+```text
+OPERACIONES LÓGICAS
+≠
+INTENTOS
+≠
+ENTREGAS
+≠
+DUPLICADOS
+≠
+CONFLICTOS
+≠
+RESULTADOS DESCONOCIDOS
+≠
+EFECTOS CONFIRMADOS
+```
+
+Una métrica alta de delivery count no implica múltiples efectos.
+
+Una métrica de éxito técnico tampoco prueba por sí sola un resultado empresarial.
+
+---
+
+#### 57. Diagnóstico técnico permitido
+
+Las líneas base de PULSO, NEXO, NUMERA y PASS se conservan como evidencia de estado técnico de referencia.
+
+Esta tarea no declara que los repositorios actuales materialicen íntegramente el contrato transversal aquí definido.
+
+La aprobación documental significa:
+
+- identidades y reglas fijadas;
+- fronteras entre propietarias fijadas;
+- controles de retry definidos;
+- handoffs asignados.
+
+No significa:
+
+- constraints implementados;
+- inbox físicos implementados;
+- effect registry desplegado;
+- claims transaccionales desplegados;
+- reconciliación operativa habilitada;
+- pruebas E2E ejecutadas.
+
+---
+
+#### 58. Frontera de implementación posterior
+
+Cada paquete propietario deberá demostrar físicamente, según le corresponda:
+
+1. persistencia de identidad;
+2. huella;
+3. claim o mecanismo concurrente equivalente;
+4. resultado durable;
+5. replay del resultado;
+6. conflicto de reutilización;
+7. recuperación ante respuesta perdida;
+8. presupuesto de retry;
+9. orden y versión;
+10. inbox;
+11. efecto;
+12. guardas de dominio;
+13. ledger o receipt propietario;
+14. partialidad;
+15. compensación;
+16. auditoría;
+17. conciliación.
+
+Esta tarea no elige nombres de tablas, índices, constraints, RPC, funciones, workers ni topics.
+
+Toda futura modificación Supabase que materialice estas reglas pertenece a `vento-shell`.
+
+---
+
+#### 59. Handoffs posteriores obligatorios
+
+| Pendiente material                          | Tarea o propietario            | Condición de salida                                                                         |
+| ------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------- |
+| conciliación durante convivencia de fuentes | `INT-SALES-008`                | venta, fuente y efectos pendientes pueden compararse y resolverse sin reaplicar confirmados |
+| corte por sede, terminal y fecha            | `INT-SALES-009`                | toda venta nueva tiene autoridad de fuente temporal inequívoca                              |
+| prohibición permanente de doble fuente      | `INT-SALES-010`                | Makos y PULSO no pueden originar la misma venta como dos ventas nuevas                      |
+| retiro del adaptador externo                | `INT-SALES-011`                | consumidores internos continúan sin depender del adaptador y sin reactivar historia         |
+| materialización de venta y emisión          | paquete PULSO correspondiente  | registro, outbox, evento y resultado demuestran idempotencia                                |
+| materialización de efecto físico            | paquete NEXO correspondiente   | inbox, efecto, movimiento, receipt y recovery impiden doble stock                           |
+| materialización de efecto económico         | paquete NUMERA correspondiente | inbox, efecto y hecho económico impiden doble reconocimiento                                |
+| materialización de acumulación              | `PASS-INT-001`                 | inbox, efecto, guarda cuenta + venta y ledger impiden doble acreditación                    |
+| materialización de redención                | `PASS-INT-002`                 | comando, `redemption_id`, ledger y guarda de consumo impiden doble gasto                    |
+| pruebas de acumulación                      | `PASS-QA-001`                  | retry, replay y concurrencia no duplican puntos                                             |
+| pruebas de redención                        | `PASS-QA-002`                  | retry, concurrencia y respuesta perdida no duplican consumo                                 |
+
+Ningún pendiente material queda sin propietario y condición de salida.
+
+---
+
+#### 60. Prohibiciones
+
+Queda prohibido:
+
+1. crear una idempotency key global de venta para todos los dominios;
+2. reutilizar `canonical_sale_id` como clave universal;
+3. reutilizar `event_id` como identidad de comando propietario;
+4. reutilizar `source_command_id` como identidad de evento;
+5. reutilizar `delivery_id` como identidad empresarial;
+6. reutilizar `attempt_id` como identidad empresarial;
+7. generar otra clave por retry;
+8. generar otro `event_id` por redelivery;
+9. generar otra venta porque falle la publicación;
+10. reejecutar todos los efectos porque una consumidora falló;
+11. considerar éxito NEXO como éxito NUMERA;
+12. considerar éxito NUMERA como éxito PASS;
+13. considerar éxito PASS como éxito NEXO;
+14. considerar inbox aplicado como efecto aplicado;
+15. deduplicar únicamente por evento cuando existen varios efectos legítimos;
+16. deduplicar globalmente una consumidora y bloquear otra;
+17. tratar claim vencido como prueba de no commit;
+18. tratar timeout como fallo confirmado;
+19. reintentar ciegamente `RESULT_UNKNOWN`;
+20. reiniciar presupuesto al reiniciar worker;
+21. cambiar de RPC, tabla o aplicación para conseguir éxito con otra identidad;
+22. usar `last write wins` ante huella incompatible;
+23. modificar la huella con metadatos técnicos volátiles;
+24. reabrir un efecto confirmado para completar otro dominio;
+25. repetir un fragmento ya confirmado de una operación parcial;
+26. corregir un efecto confirmado mediante retry con payload distinto;
+27. usar compensación como retry del original;
+28. usar retry como compensación;
+29. usar conciliación como botón de reproceso total;
+30. usar replay para crear audiencias nuevas;
+31. usar backfill para activar efectos sensibles sin autorización;
+32. considerar batch exitoso ocultando elementos inciertos;
+33. expirar dedup de forma que reactive efectos irreversibles;
+34. convertir una violación de doble fuente en “duplicado técnico” para ocultarla;
+35. crear una transacción distribuida global por esta tarea;
+36. crear un nuevo perfil de retry;
+37. crear un nuevo catálogo de outcomes;
+38. crear una nueva definición normal de evento;
+39. modificar código, SQL, migraciones, RLS, RPC, datos, Supabase, credenciales o configuración remota;
+40. iniciar o desarrollar `INT-SALES-008`.
+
+---
+
+#### 61. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para la cadena permanente de ventas obligaciones ya protegidas por el registro vigente: identidad estable antes del primer intento; separación entre solicitud, comando, evento, inbox y efecto; transporte al menos una vez con efecto como máximo una vez; recuperación del resultado original; conflicto ante reutilización incompatible; un solo ganador concurrente; conservación de identidad y huella entre retries; consulta obligatoria ante resultado desconocido; presupuestos cerrados de retry; replay con identidad original; compensación idempotente; efectos de venta aplicables exactamente una vez en inventario, finanzas y fidelización; y ausencia de duplicación de puntos, stock o hechos económicos. No aparece una obligación verificable material nueva fuera de ese conjunto.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 62. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado durable, retry, resultado desconocido, claim y conciliación;
+- `TREQ-INTEGRATION-004`, para reconstrucción de intentos, resultados y efectos sin duplicación;
+- `TREQ-INTEGRATION-011`, para efecto físico NEXO exactamente una vez;
+- `TREQ-INTEGRATION-014`, para venta y efectos aplicables exactamente una vez en NEXO, PASS y NUMERA sin duplicación por retries, respuestas perdidas o fallos intermedios;
+- `TREQ-INTEGRATION-017`, para hechos NUMERA correlacionados e idempotentes sin doble efecto;
+- `TREQ-INTEGRATION-108`, para cobertura transversal del registro de idempotencia;
+- `TREQ-INTEGRATION-109`, para transporte al menos una vez y efecto como máximo una vez;
+- `TREQ-INTEGRATION-110`, para separación de identidades entre solicitud, comando, evento y efecto;
+- `TREQ-INTEGRATION-112`, para replay del resultado original sin repetir mutación;
+- `TREQ-INTEGRATION-113`, para conflicto ante huella incompatible;
+- `TREQ-INTEGRATION-115`, para comando propietario sin segundo hecho ni emisión;
+- `TREQ-INTEGRATION-116`, para conservación de `event_id` en redelivery, retry y replay;
+- `TREQ-INTEGRATION-118`, para inbox independiente por consumidora;
+- `TREQ-INTEGRATION-119`, para identidad por `effect_code`;
+- `TREQ-INTEGRATION-120`, para único ganador concurrente;
+- `TREQ-INTEGRATION-121`, para recuperación tras respuesta perdida;
+- `TREQ-INTEGRATION-122`, para atomicidad entre mutación, identidad, resultado y outbox;
+- `TREQ-INTEGRATION-123` y `TREQ-INTEGRATION-124`, para orden, versión, stale y conflicto;
+- `TREQ-INTEGRATION-131` y `TREQ-INTEGRATION-132`, para replay y backfill;
+- `TREQ-INTEGRATION-134`, para retención de deduplicación;
+- `TREQ-INTEGRATION-138` a `TREQ-INTEGRATION-156`, para política, identidad, clasificación, resultado desconocido, presupuestos, perfiles y claims de retry;
+- `TREQ-INTEGRATION-177` y `TREQ-INTEGRATION-178`, para idempotencia de compensaciones;
+- `TREQ-INTEGRATION-235` a `TREQ-INTEGRATION-244`, para intento durable, confirmación, duplicado, resultado desconocido, conflicto y sucesión;
+- `TREQ-INTEGRATION-295` a `TREQ-INTEGRATION-305`, para comando propietario, retry, resultado incierto, corrección, replay y propiedad de dominio;
+- `TREQ-PASS-008`, para mutaciones de puntos autorizadas, atómicas e idempotentes;
+- `TREQ-PASS-010`, para ledger, saldo derivado y retries sin duplicar puntos o beneficios;
+- `TREQ-PULSO-001`, para flujo de venta completo con efectos integrados;
+- `TREQ-PULSO-005`, para independencia de estados comerciales, inventario y fidelización;
+- `TREQ-PULSO-006`, para acciones autorizadas, timeout no asumido fallido y conciliación;
+- la cobertura NUMERA y NEXO ya vinculada por los requisitos transversales de integración.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 63. Decisiones congeladas
+
+1. Transporte de eventos permanece `AT_LEAST_ONCE`.
+2. Efecto lógico permanece `AT_MOST_ONCE` por alcance idempotente.
+3. No existe una clave global de la venta.
+4. Solicitud, comando, emisión, inbox y efecto conservan identidades separadas.
+5. Retry conserva la identidad del alcance.
+6. Metadatos técnicos pueden cambiar sin crear otra operación.
+7. PULSO no crea otra venta porque falle la emisión.
+8. PULSO no crea otro `event_id` porque falle la entrega.
+9. Cada consumidora deduplica su inbox por separado.
+10. Cada efecto deduplica su mutación por separado.
+11. `effect_code` distingue efectos legítimos de la misma consumidora.
+12. NEXO conserva su efecto y receipt físico.
+13. NUMERA conserva `SALE_ECONOMIC_FACT`.
+14. PASS acumulación conserva efecto + guarda cuenta/venta.
+15. PASS redención conserva `redemption_id` + `source_command_id`.
+16. Diferentes eventos de una venta no son duplicados por defecto.
+17. Las guardas de dominio detienen duplicados semánticos cuando corresponda.
+18. Misma identidad + misma huella recupera resultado.
+19. Misma identidad + huella incompatible produce conflicto.
+20. Concurrencia tiene un único ganador.
+21. Claim vencido no demuestra ausencia de commit.
+22. Timeout no demuestra fallo.
+23. `RESULT_UNKNOWN` exige consulta.
+24. Retry seguro solo ocurre cuando la ausencia de efecto queda demostrada o la política lo permite.
+25. Presupuesto no se reinicia por restart.
+26. `RETRY_OWNER_COMMAND` se conserva para comandos.
+27. `RETRY_EVENT_CRITICAL` se conserva para efectos críticos de la cadena.
+28. No se crea un perfil local.
+29. Recuperación es selectiva por alcance.
+30. Un efecto confirmado no se repite para acompañar un pendiente.
+31. No existe commit distribuido global.
+32. Los resultados mixtos son explícitos y conciliables.
+33. Redelivery a toda la audiencia depende de la deduplicación local.
+34. Recuperación dirigida no crea nuevo evento.
+35. Efecto confirmado + proyección fallida recupera proyección, no efecto.
+36. Evento confirmado + publicación incierta conserva `event_id`.
+37. Inbox confirmado + efecto incierto consulta el efecto original.
+38. Retry no equivale a revisión.
+39. Retry no equivale a compensación.
+40. Retry no equivale a conciliación.
+41. Replay conserva identidades empresariales.
+42. Backfill no activa efectos sensibles por defecto.
+43. Batch no sustituye identidades por elemento.
+44. Eventos tardíos no retroceden versión.
+45. Se reutilizan outcomes y estados existentes.
+46. Resultado duplicado significa cero nueva mutación.
+47. Partialidad no repite componentes confirmados.
+48. Retry manual conserva clave, huella y presupuesto.
+49. Migración tecnológica no reinicia identidad.
+50. Retención no puede permitir reactivar un efecto irreversible.
+51. Procedencia Makos/PULSO no cambia las reglas de retry.
+52. Doble fuente queda en `INT-SALES-010`.
+53. Conciliación de convivencia queda en `INT-SALES-008`.
+54. Corte queda en `INT-SALES-009`.
+55. Retiro del adaptador queda en `INT-SALES-011`.
+56. No se crea una nueva definición de evento.
+57. No se crea una nueva máquina global.
+58. Se crean cero cambios `TREQ-*`.
+59. No se genera una copia del registro canónico de requisitos.
+60. Se crean cero objetos físicos.
+61. Se modifican cero objetos físicos.
+62. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 64. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-006` como tarea anterior aprobada;
+2. mantiene `INT-SALES-008` como única tarea siguiente reservada;
+3. reutiliza `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001`;
+4. reutiliza `ENTERPRISE-EVENT-RETRY-POLICY-001`;
+5. reutiliza `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001`;
+6. reutiliza la política de compensación vigente;
+7. declara transporte al menos una vez;
+8. declara efecto como máximo una vez por alcance;
+9. prohíbe una clave global de venta;
+10. separa `REQUEST_ACCEPTANCE`, `OWNER_COMMAND`, `EVENT_EMISSION`, `CONSUMER_INBOX` y `CONSUMER_EFFECT`;
+11. conserva `request_id` o `client_event_id` donde aplique;
+12. conserva `source_command_id`;
+13. conserva `event_id`;
+14. conserva inbox por consumidora;
+15. conserva efecto por `effect_code`;
+16. impide nueva venta por fallo de publicación;
+17. impide nuevo evento por redelivery;
+18. mantiene audiencia en retry;
+19. mantiene finalidad y sensibilidad;
+20. mantiene dedupe NEXO independiente;
+21. mantiene dedupe NUMERA independiente;
+22. mantiene dedupe PASS independiente;
+23. conserva la guarda de acumulación cuenta + venta;
+24. conserva `redemption_id`;
+25. impide segundo consumo de redención;
+26. exige huella lógica;
+27. excluye metadata volátil de la huella empresarial;
+28. recupera resultado con misma identidad y huella;
+29. produce conflicto con huella incompatible;
+30. garantiza un solo ganador concurrente;
+31. impide check-then-act inseguro como garantía suficiente;
+32. impide usar lease vencido como prueba de no commit;
+33. conserva perfiles transversales;
+34. conserva presupuestos;
+35. impide reinicio de presupuesto por restart;
+36. exige clasificación de fallo;
+37. bloquea retry ciego de resultado desconocido;
+38. define recuperación selectiva;
+39. mantiene resultados nativos por alcance;
+40. impide transacción distribuida global;
+41. permite redelivery completa sin reaplicar confirmados;
+42. permite recuperación dirigida sin nueva emisión;
+43. recupera proyección sin repetir efecto;
+44. conserva evento durable cuando publicación queda incierta;
+45. conserva inbox cuando efecto queda incierto;
+46. distingue eventos legítimos distintos de duplicados;
+47. distingue retry de revisión;
+48. distingue retry de compensación;
+49. distingue retry de conciliación;
+50. conserva replay con identidades originales;
+51. restringe backfill sensible;
+52. conserva identidad por elemento en batches;
+53. preserva orden y versiones;
+54. reutiliza outcomes vigentes;
+55. define semántica inequívoca de resultado duplicado;
+56. evita repetir componentes confirmados en partialidad;
+57. admite resultados mixtos sin cierre global falso;
+58. gobierna reintento manual;
+59. conserva identidad ante cambio tecnológico;
+60. conserva retención suficiente;
+61. conserva procedencia histórica;
+62. no absorbe el control contra doble fuente;
+63. no absorbe la conciliación de convivencia;
+64. no absorbe el contrato de corte;
+65. no absorbe el retiro del adaptador;
+66. hace reconstruible la auditoría;
+67. separa intentos de operaciones en observabilidad;
+68. asigna materialización a paquetes propietarios;
+69. mantiene toda modificación futura de Supabase dentro de `vento-shell`;
+70. genera cero requisitos de prueba nuevos;
+71. modifica cero requisitos de prueba;
+72. no genera una copia del registro canónico de requisitos;
+73. crea cero objetos físicos;
+74. modifica cero objetos físicos;
+75. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota;
+76. no inicia ni desarrolla `INT-SALES-008`.
+
+---
+
+#### 65. Resultado de la tarea
+
+`INT-SALES-007` queda definida como la especialización permanente que impide que retries, redeliveries, replay, concurrencia o respuestas perdidas conviertan una misma intención o hecho de venta en un segundo efecto físico, económico o de fidelización.
+
+Resultado consolidado:
+
+```text
+VENTA PULSO DURABLE
++
+EVENTO PULSO DURABLE
++
+IDENTIDADES SEPARADAS POR ALCANCE
++
+HUELLA LÓGICA
++
+INBOX POR CONSUMIDORA
++
+EFECTO POR CONSUMIDORA
++
+GUARDAS DE DOMINIO
++
+UN SOLO GANADOR CONCURRENTE
++
+RESULTADO DURABLE
++
+CONSULTA ANTES DE RETRY INCIERTO
++
+RECUPERACIÓN SELECTIVA
+→
+CERO EFECTOS DUPLICADOS POR REINTENTO
+```
+
+Sin clave universal, sin nueva emisión por retry, sin reabrir efectos confirmados y sin transacción distribuida global entre propietarias.
+
+---
+
+#### 66. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-006 — Definir procesamiento de redención en PASS`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-007 — Definir control contra efectos duplicados por reintento`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
+
+
 ### [ ] INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
 ### [ ] INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
 ### [ ] INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
