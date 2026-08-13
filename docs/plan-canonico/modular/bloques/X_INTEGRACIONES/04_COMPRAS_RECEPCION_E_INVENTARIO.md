@@ -6861,6 +6861,1388 @@ INT-PROC-005 — Definir control que evite una recepción duplicada
 ```
 
 
-### [ ] INT-PROC-005 — Definir control que evite una recepción duplicada
+### ✅ INT-PROC-005 — Definir control que evite una recepción duplicada
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico` — APROBADA  
+**Tarea siguiente:** `INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos` — RESERVADA  
+**Tipo de tarea:** definición documental integral del control end-to-end de identidad, idempotencia, deduplicación, concurrencia, recuperación, conciliación y trazabilidad de una recepción entre ORIGO, NEXO y NUMERA; sin implementación física, migraciones, cambios Supabase, despliegues ni modificación de datos
+
+**Repositorio propietario:** `vento-shell`  
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas  
+**Mini-bloque:** Compras, recepción e inventario  
+**Línea base remota revisada:** `devVentoGroup/vento-shell@5a408986dc07739b1a570717d8907a3c800608e5`  
+**Aplicaciones involucradas:** `ORIGO`, `NEXO`, `NUMERA`; `SHELL` únicamente como fundación transversal cuando corresponda  
+**Procesos principales protegidos:** `VPROC-0022`, `VPROC-0024`, `VPROC-0051`  
+**Proceso posterior protegido por frontera:** `VPROC-0052`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir un único control empresarial para impedir que la misma recepción real produzca más de una vez cualquiera de sus efectos comerciales, físicos o económicos.
+
+El control debe impedir, como mínimo:
+
+- una segunda instancia ordinaria de la misma recepción en ORIGO por doble envío, refresh, timeout, reintento, operación concurrente o respuesta perdida;
+- una segunda entrada o movimiento físico en NEXO por reentrega del mismo handoff o evento;
+- una segunda suma de cantidades recibidas de una orden por replay de la misma recepción;
+- una segunda actualización de stock, ubicación, lote, LPN, costo o proyección por repetición del mismo efecto físico;
+- un segundo hecho económico en NUMERA por repetición, reordenamiento o reemisión del mismo hecho fuente;
+- una segunda obligación posterior por reutilizar como nueva una fuente económica que ya produjo su efecto;
+- una corrección, reversa o reexpresión tratada como si fuera una recepción ordinaria independiente sin vínculo con el original.
+
+El control no debe bloquear operaciones distintas que legítimamente comparten orden, proveedor, factura, producto, sede o fecha.
+
+---
+
+#### 2. Resultado material
+
+Queda definido el contrato completo de deduplicación de recepción para la cadena:
+
+```text
+ORIGO / VPROC-0022
+RECEPCIÓN COMERCIAL Y DOCUMENTAL
+        ↓
+HANDOFF FÍSICO CORRELACIONADO
+        ↓
+NEXO / VPROC-0024
+INGRESO, UBICACIÓN Y CUSTODIA FÍSICA
+        ↓
+EVIDENCIA FÍSICA CORRELACIONADA
+        ↓
+NUMERA / VPROC-0051
+HECHO ECONÓMICO CORRELACIONADO
+        ↓
+VPROC-0052 CUANDO NAZCA UNA OBLIGACIÓN
+```
+
+La garantía empresarial objetivo es:
+
+```text
+UNA RECEPCIÓN REAL
+→ UNA IDENTIDAD CANÓNICA DE RECEPCIÓN EN ORIGO
+→ CERO O MÁS EFECTOS FÍSICOS LEGÍTIMOS, CADA UNO IDENTIFICADO UNA SOLA VEZ EN NEXO
+→ CERO O MÁS EFECTOS ECONÓMICOS LEGÍTIMOS, CADA UNO IDENTIFICADO UNA SOLA VEZ EN NUMERA
+→ NINGÚN REPLAY CREA UN EFECTO ADICIONAL
+```
+
+No se promete transporte exactamente una vez. La garantía se obtiene mediante persistencia durable, idempotencia por operación, deduplicación en cada propietaria, recuperación del resultado previo y conciliación.
+
+---
+
+#### 3. Decisiones canónicas preservadas
+
+Se preservan sin reinterpretación estas fronteras:
+
+1. `VPROC-0022` pertenece a ORIGO y gobierna la aceptación o rechazo comercial y documental de la recepción.
+2. `VPROC-0024` pertenece a NEXO y gobierna el ingreso, ubicación, movimiento, custodia y proyecciones físicas posteriores a la aceptación aplicable.
+3. `VPROC-0051` pertenece a NUMERA y gobierna el reconocimiento, clasificación, registro y conciliación del hecho económico proveniente de fuentes verificables.
+4. `VPROC-0052` es un proceso posterior y separado para obligación, aprobación y pago a proveedor.
+5. Las aplicaciones no comparten un único estado de recepción y ninguna reinterpreta como propia la verdad de otra.
+6. Una orden puede tener más de una recepción legítima.
+7. Una recepción puede tener más de un documento soporte.
+8. Una recepción puede producir varios efectos físicos legítimos por línea, ubicación, lote, LPN o ejecución controlada.
+9. Una recepción puede requerir correcciones o efectos compensatorios posteriores sin que el original sea borrado.
+10. La duplicidad se evita por identidad y efecto, no por semejanza visual o por una clave comercial aislada.
+
+---
+
+#### 4. Fuentes funcionales consumidas
+
+El control especializa y combina decisiones ya aprobadas de:
+
+- `INT-PROC-002` para la separación ORIGO ↔ NEXO;
+- `INT-PROC-003` para el contrato de ingreso físico de NEXO;
+- `INT-PROC-004` para el contrato de recepción del hecho económico en NUMERA;
+- `INT-APP-001` a `INT-APP-010` para identidad de evento, productora, consumidoras, idempotencia, reintentos, compensación, auditoría, sincronización, error parcial y prohibición de escrituras cruzadas;
+- `PROC-CAT-005`, `PROC-CAT-006`, `PROC-CAT-009` a `PROC-CAT-020` para propiedad, consumidoras, estados, transiciones, excepciones, reversas, información, eventos, auditoría, métricas y duplicidades;
+- los contratos vigentes de autorización, auditoría, integración, inventario, recepción y hechos económicos.
+
+---
+
+#### 5. Regla raíz de identidad
+
+La identidad empresarial de una recepción nace en ORIGO como la instancia de proceso de `VPROC-0022`.
+
+Una vez creada válidamente:
+
+- `process_instance_id` identifica esa recepción empresarial y no se reutiliza para otra recepción real;
+- `request_id` identifica la solicitud de creación o acción que puede ser reintentada;
+- `idempotency_key` identifica la operación lógica reintentable;
+- `source_command_id` vincula la acción autorizada con la mutación y los eventos que produce;
+- `correlation_id` vincula ORIGO, NEXO, NUMERA, documentos y efectos derivados;
+- `event_id` identifica una emisión concreta y nunca se reutiliza;
+- `event_definition_id` y `event_type` describen el hecho canónico, pero no sustituyen la identidad de la emisión;
+- `aggregate_version` o la versión equivalente permiten distinguir un hecho nuevo del replay de una versión ya aplicada.
+
+NEXO y NUMERA consumen referencias a la identidad propietaria; no fabrican una segunda identidad de recepción mediante proveedor, factura, fecha, orden o texto libre.
+
+---
+
+#### 6. Regla raíz de idempotencia
+
+Toda acción reintentable que pueda crear o modificar un efecto de recepción debe obtener antes del primer intento:
+
+```text
+idempotency_key
++ request_id
++ process_instance_id cuando ya exista
++ recurso o agregado afectado
++ versión relevante
++ huella lógica versionada del contenido
++ estado durable de la operación
++ referencia recuperable del resultado
+```
+
+La decisión es cerrada:
+
+```text
+MISMA CLAVE + MISMA HUELLA LÓGICA
+→ devolver el resultado durable existente
+→ cero efecto adicional
+
+MISMA CLAVE + HUELLA LÓGICA INCOMPATIBLE
+→ conflicto
+→ cero efecto parcial nuevo
+
+CLAVE NUEVA + RECEPCIÓN REAL NUEVA
+→ puede crear una nueva instancia
+
+CLAVE NUEVA + POSIBLE MISMA RECEPCIÓN YA EXISTENTE
+→ no aplicar automáticamente
+→ verificar identidad empresarial y conciliar
+```
+
+---
+
+#### 7. Qué constituye un replay
+
+Existe replay cuando la misma operación lógica vuelve a llegar con la identidad y contenido compatibles, aunque cambie cualquiera de estos elementos técnicos:
+
+- conexión;
+- pestaña;
+- sesión HTTP;
+- worker;
+- intento de cola;
+- timestamp de entrega;
+- ACK de transporte;
+- nodo de ejecución;
+- retry count;
+- orden de llegada de mensajes compatibles.
+
+El replay debe recuperar el resultado original y no volver a ejecutar el efecto.
+
+---
+
+#### 8. Qué constituye reutilización conflictiva
+
+Existe reutilización conflictiva cuando una identidad idempotente ya persistida se presenta con un contenido empresarial incompatible, por ejemplo:
+
+- distinta sede;
+- distinto proveedor;
+- distinta recepción de origen;
+- distinta orden o compromiso cuando este forma parte del alcance;
+- líneas, cantidades o unidades materialmente distintas;
+- distinta modalidad de operación sin transición autorizada;
+- distinto evento fuente;
+- distinta versión contractual incompatible.
+
+La respuesta debe ser `CONFLICTING_REUSE` y no se permite elegir silenciosamente una de las dos versiones.
+
+---
+
+#### 9. Qué constituye duplicación empresarial confirmada
+
+Hay duplicación empresarial confirmada cuando un mismo hecho fuente ya produjo un efecto válido y se intenta producir de nuevo el mismo tipo de efecto dentro del mismo alcance propietario.
+
+Ejemplos:
+
+- dos cabeceras ordinarias representan la misma instancia real de recepción;
+- el mismo comando confirmado vuelve a sumar `quantity_received`;
+- la misma entrada física vuelve a crear movimiento de inventario;
+- el mismo efecto físico vuelve a incrementar una proyección;
+- el mismo evento fuente vuelve a crear un hecho económico;
+- el mismo hecho económico vuelve a crear la misma obligación.
+
+La comparación se realiza contra identidades y resultados durables, no contra textos parecidos.
+
+---
+
+#### 10. Qué no constituye duplicación por sí solo
+
+Ninguno de estos valores aislados demuestra una recepción duplicada:
+
+- `purchase_commitment_ref` o identificador de orden;
+- proveedor;
+- número de factura;
+- fecha de recepción;
+- sede;
+- producto;
+- línea de orden;
+- cantidad;
+- lote;
+- costo;
+- usuario receptor;
+- combinación heurística de campos sin identidad canónica.
+
+Pueden usarse como señales de conflicto o conciliación, pero no como sustituto de la identidad de proceso y de operación.
+
+---
+
+#### 11. Recepciones parciales legítimas
+
+Una orden o compromiso de compra puede producir varias recepciones reales.
+
+Cada llegada real separada que deba ser aceptada como recepción distinta:
+
+- obtiene una instancia distinta de `VPROC-0022`;
+- obtiene su propia operación de creación;
+- conserva su propio `request_id` e `idempotency_key`;
+- queda correlacionada con el mismo `purchase_commitment_ref` cuando corresponda;
+- solo suma las cantidades de esa recepción;
+- produce sus efectos NEXO y NUMERA de forma independiente e idempotente.
+
+Por tanto:
+
+```text
+MISMA ORDEN + DOS ENTREGAS REALES
+≠ DUPLICADO
+
+MISMA ENTREGA REAL + DOS INTENTOS DE REGISTRO
+= REPLAY O CONFLICTO, SEGÚN IDENTIDAD Y CONTENIDO
+```
+
+---
+
+#### 12. Recepción completa posterior a parciales
+
+Una recepción que completa el saldo pendiente de una orden no reemplaza las parciales anteriores.
+
+El cierre de la orden debe derivarse de la suma reconciliada de efectos válidos, no de volver a procesar recepciones anteriores.
+
+Si el último intento se repite:
+
+- no vuelve a incrementar cantidades recibidas;
+- no vuelve a cerrar una orden ya cerrada como si fuera un hecho nuevo;
+- no vuelve a producir movimiento, costo ni hecho financiero.
+
+---
+
+#### 13. Regla sobre documentos del proveedor
+
+`VPROC-0022` recibe `supplier_document_refs` como soporte obligatorio.
+
+Los documentos:
+
+- prueban o soportan afirmaciones;
+- pueden participar en la detección de conflicto;
+- deben conservarse correlacionados;
+- no son por sí solos la identidad idempotente de la recepción.
+
+Una recepción con varios documentos no se divide automáticamente en varias recepciones. Dos recepciones no se fusionan automáticamente porque compartan un documento.
+
+---
+
+#### 14. Regla sobre número de factura
+
+`invoice_number` o su equivalente:
+
+- no es una clave universal de idempotencia;
+- no puede ser el único criterio para impedir o permitir una recepción;
+- puede faltar, cambiar por corrección documental o no corresponder uno a uno con una llegada física;
+- debe tratarse como dato del soporte comercial dentro de la recepción propietaria.
+
+Una coincidencia de factura genera revisión cuando corresponda, no una mutación automática.
+
+---
+
+#### 15. Regla sobre orden de compra
+
+El identificador de orden:
+
+- relaciona la recepción con el compromiso comercial;
+- permite validar proveedor, sede, líneas y saldo;
+- no puede ser único por recepción;
+- no puede usarse para rechazar una segunda entrega real legítima;
+- no puede permitir que un replay vuelva a sumar el saldo recibido.
+
+El control debe actuar al nivel de recepción y de efecto, no al nivel de orden completa.
+
+---
+
+#### 16. Recepciones de emergencia o sin orden
+
+Cuando el contrato vigente admita una recepción sin orden mediante un carril excepcional:
+
+- sigue siendo obligatorio crear identidad estable de recepción y operación antes del efecto;
+- la ausencia de orden no elimina idempotencia;
+- la causa excepcional forma parte del contenido lógico relevante;
+- los reintentos conservan la misma clave;
+- una recepción posterior regularizada debe vincularse a la operación original y no duplicarla por crear después una orden o soporte faltante.
+
+---
+
+#### 17. Modalidad que mueve inventario frente a solo registro
+
+La modalidad de la recepción debe permanecer visible y auditable.
+
+Si una operación se registra inicialmente sin mover inventario y luego una acción autorizada habilita el efecto físico:
+
+- no se crea una segunda recepción empresarial por el simple cambio de modalidad;
+- se conserva la identidad de origen;
+- el nuevo efecto físico obtiene identidad propia dentro de esa recepción;
+- NEXO aplica el efecto una sola vez;
+- NUMERA no duplica el hecho económico por el cambio de modalidad;
+- la transición conserva antes, después, actor, causa y evidencia.
+
+La modalidad nunca se deduce de que ya exista o no una fila física aislada.
+
+---
+
+#### 18. Identidad de la creación en ORIGO
+
+La creación ordinaria de `VPROC-0022` debe efectuar lógicamente una sola decisión:
+
+1. validar actor, permiso, sede, contrato y referencias;
+2. reclamar la `idempotency_key`;
+3. comparar la huella lógica;
+4. crear o recuperar `process_instance_id`;
+5. persistir el resultado durable;
+6. asociar `source_command_id`;
+7. permitir continuar el proceso sin crear una segunda instancia por retry.
+
+Si otra ejecución concurrente ya posee el claim, la segunda no crea otra recepción.
+
+---
+
+#### 19. Alcance mínimo de la huella lógica de creación
+
+La canonicalización futura debe representar el contenido empresarial de la solicitud, no detalles accidentales de transporte.
+
+Como mínimo debe incorporar, cuando aplique:
+
+- tipo de operación o comando;
+- contrato y versión;
+- `purchase_commitment_ref`;
+- `supplier_document_refs` normalizadas como referencias, no como texto de presentación;
+- `received_lines` con identidad de línea, producto, cantidad y unidad canónicas;
+- `received_at` empresarial con tratamiento temporal definido;
+- `receiving_site_ref`;
+- modalidad declarada;
+- referencias de corrección o reversa cuando existan;
+- cualquier dimensión cuya diferencia cambie el efecto empresarial.
+
+No deben formar parte de la huella lógica:
+
+- orden de campos JSON sin significado;
+- timestamps de red;
+- retry count;
+- ID del intento técnico;
+- cabeceras de transporte irrelevantes;
+- texto visual equivalente cuando exista identidad canónica.
+
+---
+
+#### 20. Canonicalización y versión
+
+La huella debe calcularse sobre una representación canónica y versionada.
+
+Reglas:
+
+1. la misma operación semántica produce la misma huella aunque el transporte serialice campos en otro orden;
+2. cantidades y unidades se normalizan con reglas canónicas antes de comparar;
+3. referencias se comparan por identidad estable;
+4. una nueva versión incompatible del contrato no reutiliza silenciosamente una huella antigua;
+5. el algoritmo físico y almacenamiento se definirán en la fase técnica correspondiente;
+6. la versión de canonicalización debe quedar auditable junto con la huella.
+
+---
+
+#### 21. Resultado de un doble envío en ORIGO
+
+Cuando dos envíos concurrentes presenten la misma clave y huella:
+
+```text
+PRIMER GANADOR
+→ crea o confirma la operación empresarial
+
+SEGUNDO INTENTO
+→ recupera el mismo resultado
+→ DUPLICATE_RESULT_RETURNED
+→ cero cabeceras nuevas
+→ cero líneas nuevas
+→ cero sumas adicionales
+→ cero eventos empresariales duplicados
+```
+
+No se permite resolver la carrera mediante dos inserciones y una conciliación posterior evitable.
+
+---
+
+#### 22. Respuesta perdida después del commit
+
+Si ORIGO confirma el efecto durable pero el cliente no recibe respuesta:
+
+- el cliente o adaptador reintenta con la misma clave;
+- el servidor consulta la operación existente;
+- devuelve el mismo `process_instance_id` y referencia de resultado;
+- no repite las mutaciones ya confirmadas;
+- no crea otro evento de éxito por el retry.
+
+Una respuesta HTTP desconocida no autoriza generar una clave nueva para “probar otra vez”.
+
+---
+
+#### 23. Estado desconocido antes de determinar el resultado
+
+Si no puede demostrarse si una operación quedó aplicada:
+
+- la operación no se declara fallida automáticamente;
+- no se crea una segunda operación con otra identidad;
+- se utiliza `IN_PROGRESS_RECOVERABLE` mientras exista claim válido y resultado recuperable;
+- se utiliza `RECONCILIATION_REQUIRED` cuando el efecto no pueda determinarse de forma segura;
+- la intervención conserva evidencia, causa y resultado final.
+
+---
+
+#### 24. Resultados lógicos del control
+
+Se reutiliza el vocabulario transversal aprobado:
+
+| Resultado                   | Regla en una recepción                                                        |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `APPLIED`                   | El efecto se materializó por primera vez y existe referencia durable.         |
+| `DUPLICATE_RESULT_RETURNED` | La operación ya existía y se devuelve el resultado previo sin repetir efecto. |
+| `CONFLICTING_REUSE`         | La clave conocida presenta contenido incompatible.                            |
+| `IN_PROGRESS_RECOVERABLE`   | Existe una ejecución con claim vigente y el resultado debe recuperarse.       |
+| `STALE_VERSION`             | La solicitud parte de una versión obsoleta y no se aplica silenciosamente.    |
+| `OUT_OF_ORDER_DEFERRED`     | Falta un hecho o versión previa requerida antes de aplicar.                   |
+| `RECONCILIATION_REQUIRED`   | No es seguro aplicar ni asumir éxito mediante retry automático.               |
+
+Ninguno de estos estados sustituye los estados empresariales de `VPROC-0022`, `VPROC-0024` o `VPROC-0051`.
+
+---
+
+#### 25. Handoff ORIGO → NEXO
+
+El handoff físico conserva como mínimo:
+
+- `event_id`;
+- `event_definition_id`;
+- `event_type` y versión;
+- `process_id = VPROC-0022`;
+- `process_instance_id` de la recepción;
+- `correlation_id`;
+- `causation_id`;
+- `source_command_id` cuando aplique;
+- `request_id` e identidad idempotente aplicable;
+- referencias de salida y evidencia mínimas;
+- sede y contexto autorizados;
+- versión del agregado o recurso;
+- sensibilidad y alcance.
+
+El hecho de handoff previsto es `VPROC-0022.EVT-004 — vento.process.vproc-0022.putaway-pending.v1`.
+
+Una reentrega del mismo evento no crea otra entrada física.
+
+---
+
+#### 26. Deduplificación de entrega en NEXO
+
+NEXO debe deduplicar en su propia frontera aunque ORIGO ya haya deduplicado la emisión.
+
+Reglas:
+
+1. `event_id` ya consumido devuelve el resultado previo o no-op autorizado;
+2. la misma recepción y el mismo efecto físico no se aplican dos veces aunque el mensaje sea reentregado;
+3. NEXO revalida contrato, autoridad, sede, recurso y estado antes del primer efecto;
+4. una clave conocida no concede permiso;
+5. un evento incompatible con el registro previo produce conflicto o conciliación;
+6. el resultado NEXO queda recuperable para reintentos posteriores.
+
+---
+
+#### 27. Una recepción puede producir varios efectos físicos
+
+La deduplicación NEXO no puede imponer una restricción “una recepción = un movimiento”.
+
+Una recepción puede requerir movimientos distintos por:
+
+- línea de producto;
+- presentación o unidad normalizada;
+- ubicación;
+- posición;
+- lote o serial;
+- LPN;
+- condición;
+- cuarentena;
+- ejecución parcial controlada.
+
+Cada efecto físico material debe tener una identidad hija estable y correlacionada con la recepción propietaria.
+
+El control exige unicidad del mismo efecto, no unicidad artificial de toda la recepción dentro del ledger físico.
+
+---
+
+#### 28. Regla de movimiento físico único
+
+Para una identidad de efecto físico determinada:
+
+```text
+MISMA FUENTE + MISMO EFECTO + MISMA VERSIÓN
+→ un solo movimiento canónico
+→ una sola actualización de proyecciones
+
+MISMA FUENTE + EFECTO MATERIALMENTE DISTINTO Y AUTORIZADO
+→ nuevo efecto correlacionado
+
+MISMA IDENTIDAD DE EFECTO + CONTENIDO DISTINTO
+→ conflicto
+```
+
+No se permite que un replay incremente por segunda vez stock por sede, ubicación, posición, lote o LPN.
+
+---
+
+#### 29. Regla de proyección física
+
+Una proyección NEXO nunca sirve como prueba autónoma de que un movimiento aún no fue aplicado.
+
+La secuencia lógica es:
+
+```text
+IDENTIDAD DEL EFECTO
+→ CLAIM / DEDUPLICACIÓN
+→ MOVIMIENTO CANÓNICO
+→ PROYECCIONES CORRELACIONADAS
+→ RESULTADO DURABLE
+```
+
+Si una proyección se actualizó y el resultado técnico se perdió, la recuperación debe reconstruirse desde la identidad del movimiento y no sumar otra vez.
+
+---
+
+#### 30. Evento NEXO de reconciliación física
+
+`VPROC-0024.EVT-006 — vento.process.vproc-0024.inbound-movement-reconciled.v1` confirma que el ingreso físico quedó contabilizado una sola vez dentro del alcance de NEXO.
+
+Su reentrega:
+
+- no crea otro movimiento;
+- no crea otra recepción ORIGO;
+- no crea automáticamente otro hecho económico;
+- sirve como evidencia correlacionable para los consumidores autorizados.
+
+---
+
+#### 31. Handoff económico ORIGO → NUMERA
+
+El hecho principal definido para iniciar o continuar el reconocimiento económico de esta recepción es:
+
+`VPROC-0022.EVT-005 — vento.process.vproc-0022.economic-reconciliation-pending.v1`.
+
+El contrato transporta la identidad fuente y conserva la correlación con:
+
+- recepción ORIGO;
+- documento o documentos soporte;
+- proveedor;
+- entidad y sede aplicables;
+- importes y moneda cuando correspondan;
+- efecto físico NEXO cuando sea necesario;
+- diferencias, reversas o reexpresiones posteriores.
+
+---
+
+#### 32. Deduplificación de NUMERA
+
+NUMERA deduplica el hecho económico en su propia frontera.
+
+Reglas:
+
+1. `source_event_ref` ya procesado no crea un segundo hecho;
+2. el mismo evento con la misma identidad recupera el resultado existente;
+3. la misma identidad con contenido incompatible produce conflicto;
+4. un evento tardío no vuelve a reconocer un importe ya reconocido;
+5. un cambio de periodo no convierte el mismo hecho fuente en un hecho nuevo;
+6. una reentrega de evidencia NEXO no duplica el reconocimiento económico;
+7. la corrección se modela como acción vinculada, no como sobreescritura ni segundo original.
+
+---
+
+#### 33. Relación entre `VPROC-0022.EVT-005` y `VPROC-0022.EVT-006`
+
+`VPROC-0022.EVT-006 — receipt-reconciled` confirma el final normal de la recepción ORIGO.
+
+Si el efecto económico correspondiente ya nació desde `VPROC-0022.EVT-005`:
+
+- `EVT-006` no crea un segundo hecho económico equivalente;
+- actualiza o aporta evidencia a la misma correlación cuando el contrato consumidor lo requiera;
+- puede permitir conciliación o cierre, pero no duplicación del origen.
+
+La regla evita que dos hitos del mismo proceso se contabilicen como dos compras.
+
+---
+
+#### 34. Evidencia NEXO dentro del hecho económico
+
+Cuando exista inventario físico asociado, `VPROC-0024.EVT-006` puede corroborar que el efecto de inventario fue reconciliado.
+
+Esa evidencia:
+
+- no sustituye el evento comercial de ORIGO;
+- no crea por sí sola una segunda compra;
+- no autoriza a NUMERA a inventar importes ausentes;
+- se vincula a la misma `correlation_id` o relación canónica equivalente;
+- permite detectar recepción económica sin ingreso físico esperado o ingreso físico sin correlación comercial.
+
+---
+
+#### 35. Frontera con `VPROC-0052`
+
+El hecho económico de `VPROC-0051` y la obligación de proveedor de `VPROC-0052` son objetos distintos.
+
+Si una recepción genera una obligación:
+
+- la obligación conserva referencia al hecho económico fuente;
+- la misma fuente económica no crea dos obligaciones equivalentes;
+- una obligación parcial o adicional legítima requiere una causa y alcance distintos;
+- nota crédito, reversa, retención, diferencia o pago no se modelan como una segunda recepción;
+- el pago posterior nunca altera la identidad de la recepción original.
+
+---
+
+#### 36. Doble emisión con `event_id` diferente
+
+Si por un defecto del emisor el mismo hecho empresarial se publica dos veces con `event_id` distintos, el consumidor no debe aplicar ciegamente ambos.
+
+La detección secundaria utiliza la identidad del proceso fuente, agregado, versión, estado o hecho confirmado y correlación disponible.
+
+Si se demuestra equivalencia:
+
+- se conserva el primer efecto válido;
+- el segundo queda como duplicado o no-op auditable;
+- no se borra la evidencia de la doble emisión.
+
+Si no puede demostrarse equivalencia sin asumir datos, el caso queda en conciliación.
+
+---
+
+#### 37. Eventos fuera de orden
+
+Un evento posterior puede llegar antes que uno requerido.
+
+Reglas:
+
+- no se fabrica el estado faltante;
+- no se aplica un efecto irreversible sobre una versión anterior no reconciliada;
+- se utiliza `OUT_OF_ORDER_DEFERRED` cuando el contrato exige esperar;
+- la llegada posterior de la dependencia reevalúa la misma operación;
+- el reintento conserva identidad;
+- ningún reordenamiento crea un segundo efecto.
+
+---
+
+#### 38. Eventos tardíos
+
+Un evento tardío conserva su `occurred_at`, `recorded_at`, versión y fuente.
+
+La recepción tardía en NUMERA o NEXO:
+
+- no se trata como una recepción nueva solo por llegar después;
+- no cambia silenciosamente el periodo o fecha empresarial;
+- se valida contra el estado actual y reglas de cierre;
+- puede quedar diferida o requerir reexpresión, sin duplicar el original.
+
+---
+
+#### 39. Versión obsoleta
+
+Cuando la acción se basa en una versión anterior del recurso:
+
+- se responde `STALE_VERSION` si el efecto no puede aplicarse con seguridad;
+- no se aplica sobre el estado más reciente de forma silenciosa;
+- el usuario o sistema debe reconstruir la intención contra la versión vigente;
+- una nueva solicitud corregida obtiene identidad acorde con la nueva intención y mantiene referencia al intento anterior cuando corresponda.
+
+---
+
+#### 40. Concurrencia
+
+El control debe ser resistente a:
+
+- doble click;
+- dos pestañas;
+- dos dispositivos;
+- dos trabajadores actuando sobre la misma recepción;
+- frontend y job simultáneos;
+- reintento automático mientras el primer intento sigue ejecutándose;
+- dos consumidores compitiendo por el mismo mensaje;
+- dos actualizaciones simultáneas de cantidades recibidas.
+
+La garantía lógica es un solo ganador empresarial por identidad de operación y efecto.
+
+---
+
+#### 41. Claim y resultado durable
+
+La futura implementación física debe soportar un mecanismo equivalente a:
+
+```text
+CLAIM ÚNICO
++ HUELLA LÓGICA
++ ESTADO DE PROCESAMIENTO
++ RESULTADO RECUPERABLE
++ REFERENCIA AL EFECTO
++ VERSIÓN
++ AUDITORÍA
+```
+
+El contrato no obliga en esta fase a una tabla, RPC o tecnología específica.
+
+La persistencia física, constraints, transacciones, outbox, inbox y leases pertenecen a las tareas técnicas ya reservadas por el plan.
+
+---
+
+#### 42. Emisor y consumidor deben deduplicar
+
+No es suficiente deduplicar solo en ORIGO.
+
+| Frontera                  | Responsabilidad mínima                                                                  |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| Cliente/adaptador → ORIGO | Reutilizar la misma clave ante retry de la misma intención.                             |
+| ORIGO                     | Reclamar clave, validar huella, persistir resultado y emitir una vez por hecho durable. |
+| Transporte                | Puede reintentar; no define verdad empresarial.                                         |
+| NEXO                      | Deduplicar entrega y efecto físico local.                                               |
+| NUMERA                    | Deduplicar evento fuente y efecto económico local.                                      |
+| Proceso posterior         | Deduplicar su propio efecto por la fuente que lo origina.                               |
+
+Una falla de una capa no autoriza a otra a abandonar su propio control.
+
+---
+
+#### 43. Semántica de exactamente una vez
+
+La expresión “una sola vez” en esta tarea significa:
+
+```text
+UNA SOLA VEZ EL EFECTO EMPRESARIAL POR IDENTIDAD LÓGICA
+```
+
+No significa que:
+
+- el mensaje viaje una sola vez;
+- el HTTP request ocurra una sola vez;
+- el worker procese un intento una sola vez;
+- no existan reintentos;
+- no existan registros técnicos de intentos repetidos.
+
+Los intentos pueden repetirse; el efecto empresarial no.
+
+---
+
+#### 44. Corrección de una recepción
+
+Una corrección autorizada no se clasifica como duplicado cuando modifica legítimamente el hecho original mediante el mecanismo canónico correspondiente.
+
+Reglas:
+
+- conserva referencia al original;
+- conserva la evidencia y el valor previo;
+- posee su propia operación idempotente;
+- no reutiliza la creación ordinaria como si la recepción original nunca hubiera existido;
+- los efectos físicos y económicos derivados se corrigen mediante acciones vinculadas;
+- un retry de la corrección devuelve el mismo resultado de corrección.
+
+---
+
+#### 45. `VOID` para duplicado sin efecto legítimo
+
+`VPROC-0022.CCR-002` permite anular una instancia duplicada o inválida cuando no produjo un efecto legítimo.
+
+El control debe distinguir:
+
+```text
+DUPLICADO DETECTADO ANTES DE EFECTO VÁLIDO
+→ VOID / NO-OP SEGÚN EL CASO
+
+EFECTO VÁLIDO YA CONFIRMADO QUE DEBE DESHACERSE
+→ NO USAR VOID COMO BORRADO
+→ APLICAR REVERSA, REEXPRESIÓN O ACCIÓN COMPENSATORIA APROBADA
+```
+
+El registro original y la causa permanecen auditables.
+
+---
+
+#### 46. Reversa
+
+Una reversa:
+
+- no borra la recepción original;
+- referencia el efecto que compensa;
+- tiene identidad idempotente propia;
+- puede producir movimientos inversos o asientos inversos cuando el dominio propietario lo permita;
+- no puede ejecutarse dos veces por replay;
+- no convierte el original en un registro “nunca ocurrido”.
+
+---
+
+#### 47. Reexpresión o corrección económica
+
+Una corrección de cuenta, periodo, centro, tercero, impuesto o clasificación:
+
+- no cambia el evento operativo fuente;
+- crea un ajuste o reexpresión vinculada;
+- conserva valor previo, nuevo valor, regla, versión, actor y causa;
+- es idempotente por su propia identidad;
+- no duplica el hecho económico original.
+
+---
+
+#### 48. Señales de posible duplicado
+
+El sistema puede elevar una advertencia o caso de conciliación cuando detecte combinaciones sospechosas, por ejemplo:
+
+- mismo proveedor y documento;
+- misma orden, sede y ventana temporal;
+- líneas y cantidades equivalentes;
+- misma evidencia externa;
+- mismo payload externo con diferente identificador técnico;
+- misma recepción fuente vinculada a dos efectos del mismo tipo.
+
+Estas señales son auxiliares.
+
+No se autoriza borrar, fusionar, aplicar o rechazar efectos únicamente por similitud heurística.
+
+---
+
+#### 49. Diferencia entre duplicado y conflicto
+
+| Caso                                                                 | Decisión                                        |
+| -------------------------------------------------------------------- | ----------------------------------------------- |
+| Misma clave, misma huella, resultado existente                       | `DUPLICATE_RESULT_RETURNED`                     |
+| Misma clave, distinta huella                                         | `CONFLICTING_REUSE`                             |
+| Misma fuente y mismo efecto ya aplicado                              | duplicado empresarial; devolver resultado/no-op |
+| Identidades distintas con alta semejanza, equivalencia no demostrada | `RECONCILIATION_REQUIRED`                       |
+| Nueva entrega real de la misma orden                                 | nueva recepción legítima                        |
+| Corrección vinculada                                                 | acción correctiva, no nueva recepción ordinaria |
+| Reversa vinculada                                                    | acción compensatoria, no duplicado              |
+
+---
+
+#### 50. Conciliación obligatoria
+
+La conciliación debe poder detectar al menos:
+
+- recepción ORIGO sin efecto físico esperado;
+- efecto físico NEXO sin recepción ORIGO correlacionable;
+- recepción ORIGO sin hecho económico esperado;
+- hecho económico NUMERA sin fuente ORIGO válida;
+- dos efectos físicos equivalentes para la misma identidad de efecto;
+- dos hechos económicos equivalentes para la misma fuente;
+- cantidades recibidas de orden que no reconcilian con recepciones válidas;
+- movimiento o proyección sin referencia de recepción;
+- evento emitido sin efecto consumidor requerido;
+- efecto consumidor sin evento fuente conocido;
+- operación en estado incierto después de agotar recuperación automática.
+
+---
+
+#### 51. Resultado de conciliación
+
+La conciliación no corrige datos silenciosamente.
+
+Debe producir una decisión estructurada:
+
+- no existe diferencia;
+- falta efecto y puede reintentarse con la misma identidad;
+- existe duplicado sin efecto adicional;
+- existe efecto duplicado y requiere acción correctiva;
+- existe conflicto de contenido;
+- existe evento fuera de orden;
+- existe fuente no resoluble;
+- se requiere intervención autorizada.
+
+Toda intervención conserva responsable, motivo, evidencia y resultado.
+
+---
+
+#### 52. Auditoría mínima
+
+Cada intento relevante debe permitir reconstruir:
+
+- principal técnico;
+- actor efectivo;
+- aplicación;
+- sede y área cuando correspondan;
+- `request_id`;
+- `idempotency_key`;
+- versión de canonicalización;
+- huella lógica;
+- `process_instance_id`;
+- `source_command_id`;
+- `event_id`;
+- `correlation_id` y `causation_id`;
+- recurso y versión;
+- resultado lógico;
+- referencia al efecto aplicado o recuperado;
+- timestamps de ocurrencia, registro, primer intento y último intento;
+- clasificación de error o conflicto;
+- acción correctiva o de conciliación cuando exista.
+
+La auditoría no almacena secretos como parte de la huella visible.
+
+---
+
+#### 53. Autorización
+
+La idempotencia nunca sustituye la autorización.
+
+Cada primer efecto y cada acción posterior debe revalidar según corresponda:
+
+- identidad real;
+- permiso exacto;
+- actor efectivo;
+- sede y área;
+- estado actual del recurso;
+- alcance de la acción;
+- versión;
+- columnas o dimensiones protegidas;
+- segregación de funciones.
+
+Una clave válida presentada por un actor no autorizado produce denegación segura, no ejecución ni recuperación de datos que el actor no puede consultar.
+
+---
+
+#### 54. Sensibilidad
+
+Los eventos y hechos de `VPROC-0022`, `VPROC-0024` y `VPROC-0051` utilizan información operacional y financiera restringida.
+
+El control de duplicidad debe minimizar:
+
+- importes innecesarios en logs;
+- documentos completos en trazas;
+- datos bancarios;
+- información tributaria excesiva;
+- nombres o datos personales cuando una referencia estable sea suficiente.
+
+La huella lógica puede incluir material sensible de forma segura, pero no debe convertirse en un mecanismo para exponer el payload original.
+
+---
+
+#### 55. Métricas y guardrails
+
+El control se alinea con los guardrails ya aprobados:
+
+- `VPROC-0022.MET-004`: recepción duplicada, aceptación sin evidencia suficiente o diferencia crítica no resuelta;
+- `VPROC-0024.MET-004`: stock sin ubicación, movimiento duplicado o ubicación incompatible con condición;
+- `VPROC-0051.MET-004`: asiento duplicado, registro manual sin fuente o manipulación de periodo.
+
+La medición futura debe distinguir:
+
+- intents repetidos detectados antes de efecto;
+- duplicados devueltos con resultado previo;
+- conflictos de reutilización;
+- operaciones en conciliación;
+- duplicados empresariales reales encontrados por reconciliación;
+- tiempo de recuperación de resultado desconocido.
+
+La métrica no autoriza cambios físicos en esta tarea.
+
+---
+
+#### 56. Diagnóstico de la implementación ORIGO vigente
+
+En el snapshot revisado de `vento-origo`, la acción actual de recepción:
+
+- valida usuario, permiso, sede, proveedor y orden;
+- crea una fila en `inventory_entries`;
+- inserta líneas en `inventory_entry_items`;
+- cuando corresponde, inserta movimientos `receipt_in`;
+- actualiza proyecciones de stock;
+- calcula y actualiza costos aplicables;
+- inserta eventos de costo;
+- incrementa `purchase_order_items.quantity_received`;
+- puede marcar la orden como `received`;
+- posee un flujo de reversa/corrección vinculado a RPC existentes;
+- realiza esas responsabilidades mediante múltiples operaciones sucesivas.
+
+El código revisado no materializa en la acción de creación el contrato transversal completo de `idempotency_key` + huella lógica + resultado recuperable definido para esta tarea.
+
+Esta constatación describe el estado físico actual; no autoriza modificarlo aquí.
+
+---
+
+#### 57. Diagnóstico de la implementación NEXO vigente
+
+En el snapshot revisado de `vento-nexo`, `createEntry`:
+
+- crea entradas propias;
+- acepta una procedencia declarada;
+- inserta líneas y movimientos;
+- actualiza proyecciones de inventario y costos;
+- puede afectar cantidades recibidas de orden según el flujo legacy;
+- utiliza varias operaciones sucesivas.
+
+Ese flujo físico existente no demuestra por sí solo:
+
+- consumo idempotente del `VPROC-0022.EVT-004`;
+- inbox durable por evento fuente;
+- identidad hija de efecto físico correlacionada con la recepción ORIGO;
+- recuperación del mismo resultado ante replay;
+- separación completa del write ownership objetivo.
+
+La implementación futura debe converger al contrato aprobado sin declarar como canónica la semántica legacy.
+
+---
+
+#### 58. Diagnóstico de NUMERA preservado
+
+La fundación física vigente de NUMERA no sustituye el contrato de `VPROC-0051` definido por `INT-PROC-004`.
+
+Para esta tarea se conserva la decisión:
+
+- NUMERA debe consumir el hecho económico por identidad de fuente;
+- un replay no crea otro hecho;
+- los gastos o registros manuales no pueden convertirse en fuente competidora de la misma recepción;
+- la materialización física del consumidor queda en sus tareas de dominio, integración, base de datos y paquete correspondientes.
+
+---
+
+#### 59. Brechas físicas con propietario documental existente
+
+No se crea una tarea de brecha nueva.
+
+Las necesidades de implementación ya poseen propietarios canónicos:
+
+| Necesidad futura                                                 | Propietario existente                          |
+| ---------------------------------------------------------------- | ---------------------------------------------- |
+| Idempotencia transversal de comando y evento                     | `INT-APP-004`, `TREQ-INTEGRATION-003`          |
+| Reintento y resultado desconocido                                | `INT-APP-005`, `INT-APP-008`, `INT-APP-009`    |
+| Auditoría de intentos y efectos                                  | `INT-APP-007` y tareas de auditoría aplicables |
+| Prohibición de escritura cruzada                                 | `INT-APP-010`                                  |
+| Constraints, claims, outbox, inbox, transacciones y persistencia | `INT-DB-*`, BLOQUES E3 y R                     |
+| Colas, workers y observabilidad física                           | BLOQUE E4                                      |
+| Implementación ORIGO de recepción                                | tareas ORIGO y paquete E5 aplicable            |
+| Implementación NEXO de ledger e ingreso                          | tareas NEXO y paquete E5 aplicable             |
+| Hechos económicos de compras y recepción                         | `NUMERA-DOM-003` y paquete E5 aplicable        |
+| Auditoría de duplicidades y fuentes competidoras                 | `SUPA-AUD-019`, `SUPA-AUD-023`                 |
+
+---
+
+#### 60. Prohibición de escrituras cruzadas como mecanismo de deduplicación
+
+No se permite resolver duplicidad haciendo que una aplicación edite directamente el estado propietario de otra.
+
+En el objetivo:
+
+- ORIGO no “marca consumido” un movimiento NEXO mediante escritura directa;
+- NEXO no corrige la recepción comercial ORIGO mediante escritura directa;
+- NUMERA no reescribe la recepción ni el movimiento físico;
+- las confirmaciones regresan mediante contrato, evento, comando autorizado o proyección acordada;
+- cada propietaria conserva su ledger o estado y su propio registro de deduplicación.
+
+---
+
+#### 61. Flujo nominal de primera aplicación
+
+```text
+1. INTENCIÓN DE RECEPCIÓN
+2. CLIENTE CREA CLAVE ESTABLE
+3. ORIGO AUTORIZA Y RECLAMA CLAVE
+4. ORIGO CREA VPROC-0022 UNA SOLA VEZ
+5. ORIGO PERSISTE RESULTADO
+6. ORIGO EMITE HITOS DURABLES
+7. NEXO DEDUPLICA HANDOFF
+8. NEXO APLICA CADA EFECTO FÍSICO UNA SOLA VEZ
+9. NUMERA DEDUPLICA EVENTO FUENTE
+10. NUMERA APLICA CADA EFECTO ECONÓMICO UNA SOLA VEZ
+11. CONCILIACIÓN VERIFICA ORÍGENES Y EFECTOS
+12. CIERRE CONSERVA TRAZABILIDAD COMPLETA
+```
+
+---
+
+#### 62. Flujo nominal de replay
+
+```text
+MISMA INTENCIÓN
++ MISMA CLAVE
++ MISMA HUELLA
+        ↓
+CLAIM YA EXISTENTE
+        ↓
+RESULTADO DURABLE LOCALIZADO
+        ↓
+DUPLICATE_RESULT_RETURNED
+        ↓
+MISMO IDENTIFICADOR EMPRESARIAL
+        ↓
+CERO EFECTOS ADICIONALES
+```
+
+---
+
+#### 63. Flujo nominal de conflicto
+
+```text
+MISMA CLAVE
++ CONTENIDO INCOMPATIBLE
+        ↓
+CONFLICTING_REUSE
+        ↓
+CERO MUTACIÓN NUEVA
+        ↓
+USUARIO O SISTEMA CORRIGE LA INTENCIÓN
+        ↓
+NUEVA OPERACIÓN SOLO SI EL HECHO REAL ES DISTINTO
+```
+
+---
+
+#### 64. Flujo nominal de resultado incierto
+
+```text
+TIMEOUT / RESPUESTA PERDIDA / FALLO INTERMEDIO
+        ↓
+NO CREAR OTRA CLAVE
+        ↓
+CONSULTAR RESULTADO DE LA MISMA OPERACIÓN
+        ↓
+APPLIED / DUPLICATE_RESULT_RETURNED
+O
+IN_PROGRESS_RECOVERABLE
+O
+RECONCILIATION_REQUIRED
+```
+
+---
+
+#### 65. Flujo nominal de segunda entrega real de la misma orden
+
+```text
+MISMA ORDEN
++ NUEVA ENTREGA REAL
+        ↓
+NUEVA INTENCIÓN EMPRESARIAL
+        ↓
+NUEVA CLAVE
+        ↓
+NUEVA INSTANCIA VPROC-0022
+        ↓
+EFECTOS FÍSICOS Y ECONÓMICOS PROPIOS
+        ↓
+MISMA CORRELACIÓN SUPERIOR DE ABASTECIMIENTO CUANDO APLIQUE
+```
+
+---
+
+#### 66. Flujo de corrección
+
+```text
+RECEPCIÓN ORIGINAL CONFIRMADA
+        ↓
+ERROR DEMOSTRADO
+        ↓
+ACCIÓN CCR AUTORIZADA
+        ↓
+OPERACIÓN CORRECTIVA CON IDENTIDAD PROPIA
+        ↓
+EFECTOS INVERSOS / REEXPRESADOS VINCULADOS
+        ↓
+ORIGINAL INMUTABLE Y AUDITABLE
+```
+
+---
+
+#### 67. Invariantes end-to-end
+
+1. Una misma `idempotency_key` no produce dos resultados empresariales incompatibles.
+2. Un replay no crea una nueva instancia de recepción.
+3. Una nueva entrega real no se bloquea por compartir orden o proveedor.
+4. Un documento no sustituye la identidad de recepción.
+5. Un movimiento NEXO tiene una identidad de efecto correlacionada y no se aplica dos veces.
+6. Una proyección no se incrementa sin movimiento correlacionado.
+7. Un evento fuente NUMERA no produce dos hechos económicos equivalentes.
+8. `EVT-006` de ORIGO no duplica el efecto económico ya iniciado por `EVT-005`.
+9. Una corrección no borra el original.
+10. Un timeout no se interpreta como fracaso empresarial.
+11. Un ACK técnico no se interpreta como efecto aplicado.
+12. Una clave conocida no sustituye autorización.
+13. Una similitud heurística no autoriza deduplicación destructiva.
+14. Cada discrepancia conserva dueño, evidencia y resolución.
+15. Ninguna aplicación obtiene propiedad de datos ajenos por participar en la conciliación.
+
+---
+
+#### 68. Casos de aceptación obligatorios
+
+La implementación futura deberá demostrar, al menos:
+
+1. doble submit simultáneo con misma clave y payload;
+2. retry después de respuesta perdida con commit confirmado;
+3. misma clave con cantidad distinta;
+4. misma orden con dos recepciones parciales reales;
+5. mismo proveedor y factura con identidades empresariales distintas que requieren revisión, sin fusión automática;
+6. reentrega de `VPROC-0022.EVT-004` a NEXO;
+7. reentrega de `VPROC-0022.EVT-005` a NUMERA;
+8. `VPROC-0022.EVT-006` después del efecto económico ya creado;
+9. reentrega de `VPROC-0024.EVT-006` como evidencia;
+10. dos consumers concurrentes para el mismo evento;
+11. timeout con resultado desconocido;
+12. evento fuera de orden;
+13. evento tardío con periodo cerrado o cambiado;
+14. corrección reintentada dos veces;
+15. reversa reintentada dos veces;
+16. recepción sin orden bajo carril permitido;
+17. conversión de modalidad sin duplicar recepción ni efectos;
+18. recuperación después de efecto físico aplicado y respuesta perdida;
+19. recuperación después de hecho económico aplicado y respuesta perdida;
+20. conciliación de efecto huérfano sin fabricar fuente.
+
+---
+
+#### 69. Criterios de aceptación documental
+
+La tarea queda documentalmente completa cuando:
+
+- existe una identidad propietaria única para cada recepción `VPROC-0022`;
+- queda separada la identidad de recepción de la orden, factura y proveedor;
+- queda definida la idempotencia de creación;
+- quedan definidos replay, conflicto, concurrencia y resultado desconocido;
+- quedan preservadas recepciones parciales legítimas;
+- queda definida la deduplicación ORIGO → NEXO;
+- queda definida la identidad de efecto físico;
+- queda definida la deduplicación ORIGO → NUMERA;
+- queda definida la relación entre los hitos `EVT-005` y `EVT-006` de ORIGO;
+- queda preservada la frontera con `VPROC-0052`;
+- quedan definidas corrección, `VOID`, reversa y reexpresión;
+- queda definida la conciliación de huérfanos, dobles efectos y resultados inciertos;
+- las brechas físicas quedan vinculadas a propietarios existentes;
+- no se realizan cambios físicos;
+- no se crea un requisito de prueba redundante.
+
+---
+
+#### 70. Diseños explícitamente rechazados
+
+Quedan rechazados como solución canónica:
+
+- `UNIQUE(invoice_number)` como único control de recepción;
+- `UNIQUE(purchase_order_id)` para impedir duplicados;
+- deduplicar únicamente en frontend;
+- deshabilitar el botón después del primer click como garantía empresarial;
+- generar una clave nueva en cada retry;
+- confiar solo en `source_app` enviado por formulario;
+- confiar solo en ACK de HTTP, cola o webhook;
+- detectar duplicado consultando únicamente la proyección de stock;
+- borrar una fila duplicada después de que produjo efectos sin compensación;
+- permitir que ORIGO y NEXO creen ambos el mismo movimiento físico;
+- permitir que ORIGO y NUMERA creen ambos el mismo hecho económico;
+- convertir una corrección en una segunda recepción ordinaria sin vínculo;
+- fusionar automáticamente dos recepciones por semejanza de campos;
+- tratar una recepción parcial legítima como replay de otra parcial;
+- considerar “exactly once transport” como sustituto de idempotencia de negocio.
+
+---
+
+#### 71. Estado objetivo por aplicación
+
+| Aplicación        | Propiedad                                   | Control objetivo                                                                          |
+| ----------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| ORIGO             | recepción comercial/documental `VPROC-0022` | una instancia por recepción real; creación y acciones idempotentes; resultado recuperable |
+| NEXO              | ingreso, ubicación y custodia `VPROC-0024`  | deduplicación por evento y efecto físico; un movimiento por identidad de efecto           |
+| NUMERA            | hecho económico `VPROC-0051`                | una aplicación por fuente económica; replay recupera el mismo resultado                   |
+| SHELL / fundación | contratos y servicios compartidos           | identidad, tipos, auditoría, autorización y herramientas comunes sin apropiarse del hecho |
+
+---
+
+#### 72. Estado de implementación tras esta tarea
+
+El resultado de `INT-PROC-005` es `ESPECIFICADO` documentalmente.
+
+No se declara:
+
+- `IMPLEMENTADO` para el control end-to-end;
+- `VALIDADO` operativamente;
+- `VERIFICADO` mediante fallos inyectados;
+- desplegado en ambientes remotos;
+- materializado en Supabase;
+- activo en ORIGO, NEXO o NUMERA como contrato físico completo.
+
+La implementación requiere las tareas técnicas y paquetes ya asignados por el plan.
+
+---
+
+#### 73. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: el comportamiento sustantivo de esta tarea ya está exigido por requisitos vigentes que cubren recepción única e idempotente, replay sin segunda suma, movimientos de inventario no duplicados, hechos económicos con identidad estable, operación asíncrona con clave y huella, captura única en la propietaria, integración financiera idempotente, autorización de mutaciones y auditoría correlacionable. Crear otra fila repetiría conductas ya protegidas sin añadir un riesgo o criterio de aceptación materialmente distinto.
+
+---
+
+#### 74. Cobertura de prueba existente preservada
+
+La implementación y certificación futuras conservan, entre otros, estos requisitos ya vigentes:
+
+- `TREQ-ORIGO-001`;
+- `TREQ-ORIGO-003`;
+- `TREQ-NEXO-011`;
+- `TREQ-NUMERA-001`;
+- `TREQ-NUMERA-002`;
+- `TREQ-NUMERA-003`;
+- `TREQ-INTEGRATION-003`;
+- `TREQ-INTEGRATION-004`;
+- `TREQ-INTEGRATION-005`;
+- `TREQ-INTEGRATION-006`;
+- `TREQ-INTEGRATION-016`;
+- `TREQ-INTEGRATION-017`;
+- `TREQ-AUTH-013`;
+- `TREQ-AUTH-015`.
+
+Esta tarea no modifica estado, texto, relación ni propietario de esas filas.
+
+---
+
+#### 75. Cambios físicos
+
+No se crean ni modifican:
+
+- código de `vento-origo`, `vento-nexo` o `vento-numera`;
+- tablas;
+- constraints;
+- índices;
+- RPC;
+- funciones;
+- triggers;
+- RLS;
+- grants;
+- Realtime;
+- Storage;
+- Edge Functions;
+- migraciones;
+- datos;
+- tipos generados;
+- colas;
+- workers;
+- secretos;
+- despliegues.
+
+---
+
+#### 76. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico`
+
+**TAREA ACTUAL APROBADA**  
+`INT-PROC-005 — Definir control que evite una recepción duplicada`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos`
+
 
 FOGO ↔ NEXO

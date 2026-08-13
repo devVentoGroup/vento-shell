@@ -5,16 +5,11 @@
   "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
   "block_code": "BLOQUE X",
   "block_title": "Contratos de integración y transiciones",
-  "previous_task_id": "INT-PROC-004",
+  "previous_task_id": "INT-PROC-005",
   "latest_treq_task_id": "SUPA-TRANS-006",
   "handoff_task_id": "QUEUE-ARC-001",
   "handoff_sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
   "segments": [
-    {
-      "prefix": "INT-PROC",
-      "from": 5,
-      "to": 5
-    },
     {
       "prefix": "INT-PROD",
       "from": 1,
@@ -38,12 +33,12 @@
   ],
   "block_progress": {
     "total_tasks": 83,
-    "approved_tasks": 40,
-    "pending_tasks": 43
+    "approved_tasks": 41,
+    "pending_tasks": 42
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 838,
+    "pending_tasks": 837,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 5
