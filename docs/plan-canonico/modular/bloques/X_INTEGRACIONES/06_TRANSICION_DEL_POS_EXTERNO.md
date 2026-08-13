@@ -961,7 +961,480 @@ La tarea queda documentalmente completa porque:
 `INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`
 
 
-### [ ] INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
+### ✅ INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`  
+**Tarea siguiente:** `INT-POS-005 — Definir contrato canónico de venta y línea de venta`  
+**Tipo de tarea:** documental; definición normativa de requisitos, límites, evidencia y procedimiento de provisionamiento, custodia, uso y revocación de la credencial técnica destinada a la integración temporal con Makos, sin solicitar ni crear credenciales, seleccionar por inferencia un mecanismo de autenticación, contactar al proveedor, implementar el adaptador, modificar Supabase, ejecutar pilotos ni producir efectos internos  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Sistema externo:** `Makos`, preservando la identidad externa `EXT-SYS-013`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir el contrato que deberá cumplir cualquier credencial técnica utilizada para consultar Makos durante la transición hacia PULSO.
+
+La credencial deberá ser simultáneamente:
+
+- independiente de personas, cuentas operativas y otras integraciones;
+- revocable sin depender de eliminar una copia local;
+- limitada inicialmente a lectura efectiva;
+- aislada por ambiente;
+- custodiada fuera de clientes, repositorios, tablas empresariales, logs y documentación;
+- incapaz de conceder por sí sola autoridad empresarial o acceso a Supabase;
+- trazable mediante referencias no sensibles y lifecycle verificable.
+
+La tarea no determina todavía si Makos utilizará API key, bearer token, OAuth, certificado, secreto compartido u otro mecanismo. Esa clasificación solo podrá realizarse cuando exista evidencia técnica del binding provisionado para Vento.
+
+Regla raíz:
+
+```text
+MAKOS
++
+CREDENCIAL TÉCNICA DEDICADA
++
+PRINCIPAL TÉCNICO INDEPENDIENTE
++
+AMBIENTE VENTO
++
+ALCANCE EFECTIVO DE SOLO LECTURA
++
+CUSTODIA SEGURA
++
+REVOCACIÓN VERIFICABLE
+        ↓
+ADAPTADOR VENTO
+        ↓
+DATOS EXTERNOS RECIBIDOS
+        ↓
+VALIDACIÓN POSTERIOR SEGÚN EL CONTRATO INT-POS
+```
+
+La credencial autentica o identifica una relación técnica. No constituye permiso empresarial, actor humano, fuente interna de verdad ni autorización para mutar dominios Vento.
+
+---
+
+#### 2. Base canónica preservada
+
+Esta tarea consume y conserva las decisiones ya aprobadas de `INT-POS-001`, `INT-POS-002` e `INT-POS-003`:
+
+1. Makos es el POS externo vigente identificado para esta transición.
+2. Makos confirmó a Vento una vía de API habilitable bajo solicitud al desarrollador del proveedor.
+3. Vento no dispone actualmente de una credencial provisionada ni de una especificación técnica entregada para esa API.
+4. El mecanismo real de autenticación, los scopes físicos, la separación de ambientes, la expiración y el procedimiento nativo de revocación permanecen sin evidencia técnica del proveedor.
+5. Makos es fuente temporal del hecho de venta mientras corresponda, pero no adquiere autoridad sobre NEXO, PASS, NUMERA, PULSO, SHELL ni Supabase.
+6. La existencia de una API habilitable no autoriza iniciar su integración durante esta fase documental.
+
+También se preservan los contratos transversales aprobados en `INT-EXT-002` a `INT-EXT-008`:
+
+- principal técnico independiente;
+- procedencia de credencial separada de actor y permiso;
+- mecanismo real determinado por evidencia;
+- mínimo privilegio;
+- separación `DEVELOPMENT` / `STAGING` / `PRODUCTION`;
+- custodia segura;
+- rotación, expiración, revocación y retiro.
+
+`EXT-SYS-013` conserva su identidad. La identificación posterior de Makos y de una API habilitable refina la evidencia del binding específico sin renombrar la identidad externa ni inventar una familia de credencial.
+
+---
+
+#### 3. Definición de independencia
+
+La credencial de Makos será independiente cuando cumpla simultáneamente:
+
+1. esté destinada exclusivamente a la integración Makos ↔ Vento;
+2. esté vinculada a un principal técnico no humano propio de esa integración;
+3. no sea la contraseña, sesión, token o cuenta personal del titular de Vento, de un cajero, administrador, trabajador, desarrollador de Makos o desarrollador de Vento;
+4. no se reutilice para otra identidad `EXT-SYS-*`, otro proveedor o otra finalidad;
+5. no se comparta entre `DEVELOPMENT`, `STAGING` y `PRODUCTION`;
+6. pueda sustituirse o revocarse sin invalidar credenciales ajenas a la integración;
+7. no se convierta en una `PermissionKey` ni en una identidad empresarial de Vento;
+8. no permita que Makos, su desarrollador o un tercero accedan directamente a Supabase.
+
+Una cuenta comercial de Vento en Makos puede ser propietaria administrativa del binding si el proveedor lo exige, pero la credencial técnica consumida por el adaptador deberá permanecer separada de la sesión humana usada para administrar esa cuenta.
+
+---
+
+#### 4. Definición de revocabilidad
+
+La credencial será revocable únicamente si existe un procedimiento real para invalidarla en la autoridad que la acepta.
+
+Por tanto:
+
+```text
+BORRAR VARIABLE LOCAL
+≠ REVOCAR
+```
+
+```text
+DESHABILITAR ADAPTADOR
+≠ REVOCAR
+```
+
+```text
+CREAR CREDENCIAL NUEVA
+≠ COMPLETAR ROTACIÓN
+```
+
+La evidencia que Makos deberá entregar antes de una activación incluirá, cuando aplique:
+
+- quién emite o administra la credencial;
+- dónde o mediante quién se solicita la invalidación;
+- si la revocación es inmediata o tiene propagación conocida;
+- si pueden coexistir credencial predecesora y sucesora;
+- si existe expiración nativa;
+- si el proveedor permite consultar estado, última utilización o evidencia equivalente;
+- qué elemento debe conservar Vento como referencia no sensible para identificar la credencial revocada.
+
+No se inventa una cadencia universal de rotación ni una fecha de expiración. Se conservarán únicamente las reglas y fechas acreditadas por el proveedor o por una política posterior aprobada.
+
+---
+
+#### 5. Definición de solo lectura inicial
+
+El `scope_ceiling` inicial de la integración Makos será de **lectura efectiva**.
+
+Esto implica:
+
+1. la credencial no podrá utilizarse para crear, editar, anular, borrar o corregir ventas en Makos;
+2. no podrá modificar productos, precios, impuestos, descuentos, clientes, usuarios, sedes, terminales, cajas, documentos fiscales ni configuración del POS;
+3. no podrá administrar cuentas, roles, permisos, otras credenciales o configuración de integración del proveedor mediante el runtime del adaptador;
+4. no podrá iniciar cobros, devoluciones, reembolsos, cierres u otras operaciones mutantes;
+5. no podrá escribir en Supabase ni en dominios Vento;
+6. una lectura válida solo habilitará al adaptador a recibir y validar información; no aplicará automáticamente efectos internos.
+
+Cuando Makos permita expresar el alcance mediante scopes, roles, permisos, APIs habilitadas o restricciones equivalentes, se solicitará la variante mínima compatible con lectura.
+
+Cuando Makos no pueda expresar físicamente el mínimo privilegio, el adaptador Vento deberá imponer una allowlist cerrada de operaciones consultivas. La amplitud física de la credencial no ampliará el contrato documental.
+
+Cualquier futura necesidad de escribir en Makos requeriría una decisión canónica distinta. No podrá habilitarse silenciosamente reutilizando esta credencial.
+
+---
+
+#### 6. Matriz de requisitos de la credencial Makos
+
+| Dimensión                   | Decisión obligatoria                                                                       | Estado actual            | Condición antes de activación                                |
+| --------------------------- | ------------------------------------------------------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
+| Sistema externo             | Makos bajo `EXT-SYS-013`                                                                   | `CONFIRMADO`             | conservar la misma identidad de integración                  |
+| Finalidad                   | consulta temporal de información necesaria para la transición del hecho de venta           | `ESPECIFICADO`           | no ampliar finalidad por conveniencia                        |
+| Principal técnico           | principal no humano exclusivo del adaptador Makos                                          | `ESPECIFICADO`           | disponer de referencia técnica independiente                 |
+| Credencial física           | una credencial dedicada a la integración                                                   | `NO_PROVISIONADO`        | evidencia de emisión o provisionamiento por Makos            |
+| Mecanismo de autenticación  | el mecanismo real que Makos entregue; no se selecciona por inferencia                      | `PENDIENTE_DE_EVIDENCIA` | documentación o evidencia técnica del binding                |
+| Procedencia                 | material emitido o provisionado mediante el mecanismo autorizado por Makos para Vento      | `PENDIENTE_DE_EVIDENCIA` | identificar emisor y autoridad de revocación                 |
+| Alcance                     | lectura efectiva y mínimo privilegio                                                       | `ESPECIFICADO`           | scopes o enforcement Vento acreditan ausencia de mutación    |
+| Escritura en Makos          | prohibida bajo esta credencial                                                             | `ESPECIFICADO`           | prueba o evidencia de enforcement antes del uso operativo    |
+| Escritura en Vento          | prohibida como facultad de la credencial externa                                           | `ESPECIFICADO`           | todo efecto posterior usa contratos propietarios Vento       |
+| Supabase                    | sin acceso directo; sin `service_role`; sin credenciales Vento entregadas al proveedor     | `ESPECIFICADO`           | ninguna excepción                                            |
+| Ambientes                   | material independiente por ambiente; producción nunca actúa como fallback de no producción | `ESPECIFICADO`           | evidencia ambiental antes de habilitar cada ambiente         |
+| Custodia                    | si el material es secreto, resolución exclusiva server-side desde custodia aprobada        | `ESPECIFICADO`           | referencia no sensible + secret store del ambiente           |
+| Cliente / frontend          | valor secreto prohibido en navegador, aplicación cliente o variable publicable             | `ESPECIFICADO`           | ausencia demostrable del material en superficies cliente     |
+| Repositorio y documentación | solo referencias y metadata no sensibles                                                   | `ESPECIFICADO`           | ningún valor funcional versionado                            |
+| Logs y auditoría            | registrar referencia, actor técnico, ambiente, operación y resultado sin copiar el secreto | `ESPECIFICADO`           | trazabilidad no sensible                                     |
+| Expiración                  | se conserva la del proveedor cuando exista; no se inventa                                  | `PENDIENTE_DE_EVIDENCIA` | metadato real o declaración de ausencia de expiración nativa |
+| Rotación                    | sucesor independiente, migración, validación, revocación y rechazo del predecesor          | `ESPECIFICADO`           | mecanismo soportado por el emisor acreditado                 |
+| Revocación                  | invalidación en la autoridad que acepta la credencial                                      | `ESPECIFICADO`           | procedimiento real y propietario identificados               |
+| Retiro final                | revocación o expiración acreditadas y consumidores eliminados                              | `ESPECIFICADO`           | cierre específico bajo `INT-POS-024`                         |
+
+---
+
+#### 7. Información mínima que deberá obtenerse de Makos
+
+Antes de que una fase de implementación solicite o acepte una credencial, Vento deberá obtener del desarrollador de Makos evidencia suficiente para responder:
+
+1. qué mecanismo técnico autentica la integración;
+2. qué clase de credencial o material entrega el proveedor;
+3. si la credencial pertenece a una empresa, tenant, aplicación, integración o cuenta concreta;
+4. si pueden emitirse credenciales independientes para una misma empresa;
+5. qué scopes, roles, permisos o restricciones admite;
+6. cómo se limita la credencial a lectura;
+7. cómo separa el proveedor ambientes o instancias cuando corresponda;
+8. cómo se emite o entrega el material sin convertir documentación del proyecto en custodia del secreto;
+9. si existe expiración y cómo se conoce;
+10. cómo se rota una credencial;
+11. cómo se revoca;
+12. cómo se demuestra que una credencial anterior dejó de ser aceptada;
+13. si el proveedor permite solapamiento controlado durante una rotación;
+14. qué referencia no sensible permite identificar la credencial sin exponer su valor;
+15. qué evidencia de uso, estado o auditoría ofrece el proveedor para la integración.
+
+Esta lista no supone que Makos implemente una tecnología concreta.
+
+---
+
+#### 8. Procedimiento documental de provisionamiento y activación
+
+##### 8.1. Preparar la solicitud
+
+Antes del provisionamiento se deberán haber materializado las necesidades de datos y contratos que determinan el alcance real de consulta:
+
+- `INT-POS-005` para venta y línea;
+- `INT-POS-006` para encabezados, líneas, estados y timestamps;
+- `INT-POS-007` para descuentos, impuestos, propinas y medios de pago;
+- `INT-POS-008` para anulaciones, devoluciones y reembolsos;
+- `INT-POS-010` para empresa, sede, terminal y caja externa;
+- `INT-POS-011` para producto externo, producto Vento, presentación y receta;
+- `INT-POS-014` para la modalidad de recepción, webhook cuando exista y polling de conciliación.
+
+Estas tareas definen qué información necesita Vento. No podrán ampliar la credencial hacia mutaciones en Makos.
+
+##### 8.2. Solicitar una credencial dedicada
+
+La solicitud al desarrollador de Makos deberá exigir expresamente:
+
+- identidad exclusiva para la integración Vento;
+- alcance de lectura mínimo;
+- separación de ambientes cuando el proveedor la soporte;
+- mecanismo y procedimiento de revocación;
+- metadata de expiración o ausencia acreditada de expiración;
+- procedimiento de rotación;
+- documentación técnica necesaria para configurar el binding sin compartir secretos internos de Vento.
+
+No se solicitará acceso administrativo general si la consulta de datos puede resolverse con una credencial de alcance menor.
+
+##### 8.3. Recibir y clasificar
+
+Al recibir el material se deberá:
+
+1. confirmar sistema, tenant o cuenta a la que pertenece;
+2. confirmar ambiente;
+3. confirmar mecanismo real;
+4. clasificar si el valor es secreto, credencial publicable restringida u otra clase prevista por `INT-EXT-007`;
+5. confirmar el `minimum_scope` y el `scope_ceiling`;
+6. registrar emisor o autoridad de revocación;
+7. registrar expiración únicamente cuando exista evidencia;
+8. crear o resolver una referencia no sensible sin copiar el valor al registro empresarial.
+
+##### 8.4. Custodiar
+
+Si el material debe permanecer confidencial:
+
+- se cargará únicamente en la custodia server-side aprobada para el ambiente;
+- el runtime autorizado resolverá el valor en ejecución;
+- ningún proveedor recibirá credenciales internas de Vento como contraparte;
+- ninguna copia funcional quedará en repositorio, documentación, tabla empresarial, log, respuesta o cliente.
+
+##### 8.5. Verificar independencia
+
+Antes de habilitar consumo se comprobará que:
+
+- no depende de una cuenta personal para ejecutar cada llamada;
+- no comparte valor con otra integración;
+- no comparte material entre ambientes;
+- puede revocarse sin revocar otra integración;
+- el principal técnico queda distinguible del actor humano que administró la configuración.
+
+##### 8.6. Verificar lectura efectiva
+
+Antes de cualquier piloto se deberá demostrar uno de estos dos controles:
+
+```text
+RESTRICCIÓN DE SOLO LECTURA IMPUESTA POR MAKOS
+```
+
+o, cuando el proveedor no pueda expresarla físicamente:
+
+```text
+CREDENCIAL TÉCNICAMENTE MÁS AMPLIA
++
+ALLOWLIST VENTO DE OPERACIONES CONSULTIVAS
++
+AUSENCIA DE RUTA MUTANTE EN EL ADAPTADOR
+```
+
+En ambos casos, cualquier operación fuera del alcance deberá fallar cerrada.
+
+La verificación operativa sin efectos internos solo podrá ejecutarse bajo el diseño aprobado en `INT-POS-021`. La habilitación posterior de efectos internos bajo `INT-POS-022` no ampliará la credencial de Makos: los efectos ocurrirán dentro de los dominios propietarios de Vento después de validar el hecho externo.
+
+##### 8.7. Activar
+
+La integración solo podrá considerarse habilitable cuando estén acreditados simultáneamente:
+
+```text
+CREDENCIAL REAL
++
+PRINCIPAL TÉCNICO INDEPENDIENTE
++
+AMBIENTE CORRECTO
++
+CUSTODIA CORRECTA
++
+MECANISMO REAL
++
+LECTURA EFECTIVA
++
+REVOCACIÓN DISPONIBLE
++
+CONTRATO DE DATOS VIGENTE
++
+VALIDACIÓN DEL PILOTO APLICABLE
+```
+
+La definición documental de esta tarea no ejecuta esa activación.
+
+---
+
+#### 9. Procedimiento de rotación y revocación
+
+La rotación planificada deberá seguir:
+
+```text
+PREDECESOR ACTIVO
+→ SUCESOR EMITIDO Y ACREDITADO
+→ SUCESOR EN CUSTODIA CORRECTA
+→ CONSUMIDOR MIGRADO
+→ SUCESOR VERIFICADO
+→ PREDECESOR REVOCADO
+→ RECHAZO DEL PREDECESOR ACREDITADO
+→ RETIRO DE COPIAS Y REFERENCIAS OBSOLETAS
+```
+
+La revocación deberá iniciarse cuando ocurra cualquiera de estas condiciones aplicables:
+
+- exposición confirmada o sospecha razonable de compromiso;
+- material copiado fuera de la custodia aprobada;
+- acceso no autorizado;
+- principal técnico, ambiente, binding o consumidor retirado;
+- cambio de alcance que requiera reemisión;
+- credencial sin propietario o consumidor válido;
+- incidente que rompa la confianza en el material;
+- instrucción del proveedor de retirar la credencial;
+- retiro de Makos como fuente conforme al cutover definido por `INT-POS-024`.
+
+Una credencial comprometida no permanecerá activa para preservar continuidad. Una credencial de otro ambiente tampoco se utilizará como sustituto temporal.
+
+---
+
+#### 10. Bloqueos de activación
+
+La integración API de Makos permanecerá bloqueada para activación cuando exista cualquiera de estas condiciones:
+
+| Bloqueo                                                                                      | Resultado obligatorio                | Propietario de resolución                                           |
+| -------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------- |
+| Makos no ha provisionado una credencial real                                                 | no activar API                       | puerta de evidencia de `INT-POS-021` antes del piloto sin efectos   |
+| mecanismo de autenticación no acreditado                                                     | no inferir; no activar               | `INT-POS-021`, consumiendo la evidencia obtenida bajo este contrato |
+| no existe identidad técnica independiente                                                    | no usar cuenta personal o compartida | `INT-POS-021`                                                       |
+| no puede acreditarse lectura efectiva                                                        | no activar la integración            | `INT-POS-021`                                                       |
+| una credencial productiva sería usada en desarrollo o staging                                | bloquear ese ambiente                | `INT-POS-021`                                                       |
+| el secreto solo puede almacenarse en cliente, repositorio, documentación o tabla empresarial | no aceptar esa custodia              | `INT-POS-021`                                                       |
+| la integración exige entregar `service_role` o acceso directo a Supabase a Makos             | rechazar esa arquitectura            | `INT-POS-021`                                                       |
+| no existe procedimiento real de revocación                                                   | no activar credencial persistente    | `INT-POS-021`                                                       |
+| el alcance solicitado excede las necesidades documentadas                                    | reducir alcance antes de activar     | tarea `INT-POS-005` a `INT-POS-014` que origine la necesidad        |
+| PULSO asume la fuente para el alcance correspondiente                                        | iniciar reducción o revocación       | `INT-POS-024`                                                       |
+
+`INT-POS-021` no cambia los contratos de esta tarea: utiliza estas puertas para diseñar el piloto sin efectos y exigir evidencia antes de cualquier ejecución posterior autorizada.
+
+---
+
+#### 11. Fronteras con las tareas posteriores
+
+- `INT-POS-005` definirá la semántica de venta y línea; no redefine la credencial.
+- `INT-POS-006`, `INT-POS-007` e `INT-POS-008` determinarán información importable; no conceden escritura en Makos.
+- `INT-POS-009` gobernará conservación del payload recibido; no almacena la credencial dentro del payload.
+- `INT-POS-010` e `INT-POS-011` gobernarán mappings; no convierten identificadores externos en credenciales.
+- `INT-POS-012` gobernará cuarentena; una línea en cuarentena no amplía el scope de lectura.
+- `INT-POS-013` gobernará idempotencia; una clave idempotente no es una credencial de Makos.
+- `INT-POS-014` gobernará webhook y polling; cada dirección conservará autenticación independiente cuando corresponda.
+- `INT-POS-015` a `INT-POS-020` gobernarán efectos y conciliación internos; la credencial Makos no adquiere capacidad de mutarlos.
+- `INT-POS-021` diseñará el piloto sin efectos y deberá incluir las puertas de credencial aquí definidas.
+- `INT-POS-022` diseñará el piloto con efectos internos habilitados sin ampliar el alcance externo de Makos.
+- `INT-POS-023` gobernará la transición hacia PULSO sin reutilizar la credencial Makos como credencial de PULSO.
+- `INT-POS-024` gobernará la reducción o revocación cuando PULSO asuma la fuente.
+
+---
+
+#### 12. Decisiones congeladas
+
+1. La integración temporal con Makos utilizará una credencial técnica dedicada cuando la API sea provisionada.
+2. Esa credencial no será una cuenta personal, una sesión humana ni una credencial compartida con otra integración.
+3. El mecanismo exacto no se inventa y permanece sujeto a evidencia técnica de Makos.
+4. El alcance inicial será de lectura efectiva y mínimo privilegio.
+5. Una capacidad física adicional de la credencial no autoriza utilizarla.
+6. Si Makos no puede imponer el límite de lectura, Vento deberá imponer una allowlist cerrada en el adaptador antes de activar.
+7. Ninguna credencial Makos concede acceso a Supabase, `service_role`, NEXO, PASS, NUMERA, PULSO o SHELL.
+8. Producción no compartirá material con desarrollo o staging.
+9. Todo material secreto se resolverá únicamente server-side desde custodia aprobada.
+10. El registro documental conservará referencias no sensibles, nunca el valor secreto.
+11. Revocar significa invalidar el material en la autoridad que lo acepta; eliminar una copia local no basta.
+12. La expiración se registra únicamente si existe evidencia real.
+13. La rotación conserva ambiente, principal y scope; no autoriza ampliaciones.
+14. La integración no se activa durante esta tarea.
+15. El retiro final de la credencial Makos queda vinculado a `INT-POS-024`.
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-004` instancia para Makos controles de credenciales ya materializados y protegidos por los contratos transversales `INT-EXT-002` a `INT-EXT-008` y por requisitos canónicos vigentes de integración y seguridad. No crea una nueva clase de autenticación, una nueva autoridad, una nueva capacidad ejecutable ni una excepción a los controles existentes. El mecanismo físico de Makos todavía no está provisionado y generar un requisito nuevo sobre una tecnología no acreditada duplicaría cobertura o fabricaría especificación.
+
+#### 14. Cobertura de prueba existente preservada
+
+Se conserva sin modificación la cobertura vigente aplicable a:
+
+- separación del POS externo y PULSO durante la transición;
+- autenticidad y procedencia de intercambios externos;
+- prohibición de exposición de secretos;
+- auditoría de adaptadores externos sin copiar credenciales;
+- prohibición de escrituras directas y autoridad cruzada entre dominios;
+- obligación de que el adaptador externo solicite los efectos a las aplicaciones propietarias.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 15. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. Makos permanece identificado como sistema externo de la transición bajo `EXT-SYS-013`.
+2. La API continúa clasificada como habilitable pero no provisionada.
+3. No se inventa el mecanismo de autenticación.
+4. Se define una credencial exclusiva de la integración y separada de actores humanos.
+5. Se prohíbe compartir la credencial con otras integraciones.
+6. Se define lectura efectiva como techo inicial de alcance.
+7. Se prohíben mutaciones en Makos bajo esta credencial.
+8. Se prohíbe acceso directo de Makos a Supabase.
+9. Se prohíbe entregar `service_role` o secretos internos de Vento.
+10. Se define separación de ambientes sin asumir que Makos ya la soporta.
+11. Se define custodia server-side para material confidencial.
+12. Se prohíben secretos en repositorio, documentación, tablas empresariales, logs y superficies cliente.
+13. Se define registro mediante referencia no sensible.
+14. Se define evidencia mínima que debe obtenerse del desarrollador de Makos.
+15. Se define procedimiento de solicitud, clasificación, custodia y verificación.
+16. Se define revocación como invalidación en la autoridad aceptante.
+17. Se define rotación completa sin validez dual indefinida.
+18. Se prohíben fechas de expiración inventadas.
+19. Se definen bloqueos de activación con propietario y condición de salida.
+20. `INT-POS-021` recibe las puertas para el piloto sin efectos.
+21. `INT-POS-024` recibe el retiro final al asumir PULSO la fuente.
+22. Se generan cero cambios `TREQ-*`.
+23. No se crea, solicita, rota, revoca ni almacena físicamente ninguna credencial.
+24. No se modifica código, Supabase, configuración remota ni datos.
+25. `INT-POS-005` permanece exclusivamente reservada.
+
+---
+
+#### 16. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-005 — Definir contrato canónico de venta y línea de venta`
+
+
 ### [ ] INT-POS-005 — Definir contrato canónico de venta y línea de venta
 ### [ ] INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
 ### [ ] INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
