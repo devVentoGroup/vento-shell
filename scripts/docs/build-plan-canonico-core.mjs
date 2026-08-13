@@ -258,9 +258,13 @@ for (const token of ['a partirde', 'middlewares,caché', 'responderinequívocame
 }
 
 if (checkOnly) {
-  if (!fs.existsSync(outputPath)) fail('todavía no existe el documento compilado. Ejecuta primero sin --check.');
-  if (fs.readFileSync(outputPath, 'utf8') !== compiled) fail('el compilado está desactualizado frente a los fragmentos.');
-  console.log(`OK: compilado vigente; ${manifest.files.length} fragmentos; ${taskIds.length} tareas canónicas reales; ${authIds.length} tareas AUTH únicas.`);
+  if (fs.existsSync(outputPath) && fs.readFileSync(outputPath, 'utf8') !== compiled) {
+    fail('el compilado local está desactualizado frente a los fragmentos. Ejecuta docs:plan:build.');
+  }
+  const compiledStatus = fs.existsSync(outputPath)
+    ? 'compilado local vigente'
+    : 'fuentes válidas; compilado local regenerable ausente';
+  console.log(`OK: ${compiledStatus}; ${manifest.files.length} fragmentos; ${taskIds.length} tareas canónicas reales; ${authIds.length} tareas AUTH únicas.`);
   console.log(`SHA-256: ${hash}`);
   process.exit(0);
 }

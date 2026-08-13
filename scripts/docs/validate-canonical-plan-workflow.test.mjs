@@ -12,17 +12,17 @@ const posTransitionPath = path.resolve(
   'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md',
 );
 
-test('verifica derivados commiteados antes de que el build pueda regenerarlos', () => {
+test('verifica fuentes antes del build y publica el compilado regenerado', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
   const prebuildCheck = workflow.indexOf(
-    'Verificar artefactos derivados commiteados antes de compilar',
+    'Verificar fuentes y derivados versionados antes de compilar',
   );
   const build = workflow.indexOf('Compilar plan canónico');
   const reproducibleBuild = workflow.indexOf(
     'Verificar que la compilación sea reproducible sin cambios',
   );
 
-  assert.ok(prebuildCheck >= 0, 'falta el check pre-build de artefactos commiteados');
+  assert.ok(prebuildCheck >= 0, 'falta el check pre-build de fuentes y derivados versionados');
   assert.ok(build > prebuildCheck, 'el build debe ejecutarse después del check pre-build');
   assert.ok(
     reproducibleBuild > build,
@@ -36,6 +36,9 @@ test('verifica derivados commiteados antes de que el build pueda regenerarlos', 
     workflow.slice(reproducibleBuild),
     /run: git diff --exit-code -- docs\/plan-canonico\/modular/u,
   );
+  assert.match(workflow, /uses: actions\/upload-artifact@v4/u);
+  assert.match(workflow, /PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO\.md/u);
+  assert.match(workflow, /retention-days: 7/u);
 });
 
 test('el watcher regenera y valida también la guía de tareas pendientes', () => {

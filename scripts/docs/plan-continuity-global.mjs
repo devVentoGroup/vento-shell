@@ -298,9 +298,9 @@ function ensureRegistryNavigationLink(header) {
   const link = '- [Registro global de tareas](./.generated/REGISTRO_GLOBAL_DE_TAREAS.md)';
   if (header.includes(link)) return header;
 
-  const compiledLink = '- [Documento compilado](./.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md)';
-  if (!header.includes(compiledLink)) fail('no se encontró el enlace al documento compilado.');
-  return header.replace(compiledLink, `${compiledLink}\n${link}`);
+  const navigationHeading = '## Navegación principal';
+  if (!header.includes(navigationHeading)) fail('no se encontró la sección de navegación principal.');
+  return header.replace(navigationHeading, `${navigationHeading}\n\n${link}`);
 }
 
 function formatTask(task, code = false) {

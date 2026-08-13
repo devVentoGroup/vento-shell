@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **796** |
+| Aprobadas | **797** |
 | En propuesta | **0** |
-| No iniciadas | **798** |
+| No iniciadas | **797** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.94% (796/1594)** |
+| Porcentaje de completamiento | **50.00% (797/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos | ✅ APROBADA |
-| Tarea actual | `INT-MKT-001` — Definir campañas solo después de aprobar AURA | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-MKT-002` — Definir beneficios publicados en PASS | ⬜ NO INICIADA |
+| Última aprobada | `INT-MKT-001` — Definir campañas solo después de aprobar AURA | ✅ APROBADA |
+| Tarea actual | `INT-MKT-002` — Definir beneficios publicados en PASS | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-MKT-003` — Definir validación comercial desde PULSO | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1504,7 +1504,7 @@
 | ✅ APROBADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-010` | Definir control que impida que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-011` | Definir retiro del adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
-| ⬜ NO INICIADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
+| ✅ APROBADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ✅ APROBADA | `TI-DOM-001` | Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |

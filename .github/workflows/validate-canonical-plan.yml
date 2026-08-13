@@ -43,7 +43,7 @@ jobs:
       - name: Instalar dependencias bloqueadas
         run: npm ci
 
-      - name: Verificar artefactos derivados commiteados antes de compilar
+      - name: Verificar fuentes y derivados versionados antes de compilar
         run: npm run docs:plan:check
 
       - name: Compilar plan canónico
@@ -63,3 +63,13 @@ jobs:
 
       - name: Verificar invariantes y compilado
         run: npm run docs:plan:check
+
+      - name: Publicar compilado integral temporal
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: plan-canonico-compilado-${{ github.sha }}
+          path: docs/plan-canonico/modular/.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md
+          retention-days: 7
+          compression-level: 9
+          if-no-files-found: error

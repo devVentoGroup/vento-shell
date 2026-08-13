@@ -41,6 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # Plan canónico: snapshots locales y copias de recuperación
+/docs/plan-canonico/modular/.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md
 /docs/plan-canonico/modular/.generated/.state/
 /docs/plan-canonico/modular/.generated/.recovery/
 

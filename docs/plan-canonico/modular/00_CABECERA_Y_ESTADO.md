@@ -6,7 +6,7 @@
 >
 > Las fuentes documentales canónicas son los fragmentos enumerados, ordenados y controlados mediante `manifest.json`.
 >
-> El archivo ubicado en `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` es un artefacto derivado para lectura integral, validación y transferencia de contexto. No debe editarse manualmente.
+> El archivo ubicado en `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` es un artefacto local regenerable para lectura integral, validación y transferencia de contexto. No se versiona en Git, no debe editarse manualmente y CI lo publica temporalmente después de reconstruirlo desde las fuentes canónicas.
 
 ## Estado canónico
 
@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **796** |
+| Tareas aprobadas | **797** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **798** |
+| Tareas no iniciadas | **797** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.94% (796/1594)** |
-| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
-| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
+| Porcentaje de completamiento | **50.00% (797/1594)** |
+| Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
+| Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos** |
-| Tarea actual | **INT-MKT-001 — Definir campañas solo después de aprobar AURA** |
+| Última tarea aprobada | **INT-MKT-001 — Definir campañas solo después de aprobar AURA** |
+| Tarea actual | **INT-MKT-002 — Definir beneficios publicados en PASS** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-MKT-002 — Definir beneficios publicados en PASS** |
+| Siguiente tarea | **INT-MKT-003 — Definir validación comercial desde PULSO** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 80 de 83 aprobadas; INT-MKT-001 pendiente** |
+| Progreso del bloque | **BLOQUE X: 81 de 83 aprobadas; INT-MKT-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos |
-| Tarea actual | `INT-MKT-001` — Definir campañas solo después de aprobar AURA — **NO INICIADA** |
-| Siguiente tarea | `INT-MKT-002` — Definir beneficios publicados en PASS |
+| Última aprobada | `INT-MKT-001` — Definir campañas solo después de aprobar AURA |
+| Tarea actual | `INT-MKT-002` — Definir beneficios publicados en PASS — **NO INICIADA** |
+| Siguiente tarea | `INT-MKT-003` — Definir validación comercial desde PULSO |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 80 DE 83 APROBADAS — ACTUAL INT-MKT-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 81 DE 83 APROBADAS — ACTUAL INT-MKT-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -81,21 +81,21 @@
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
-- [Documento compilado](./.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md)
+- Documento compilado local: ejecutar `npm run docs:plan:build` y abrir `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`
 - [Registro global de tareas](./.generated/REGISTRO_GLOBAL_DE_TAREAS.md)
 
 ## Control de continuidad
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
-        ↓
-TAREA ACTUAL
 INT-MKT-001 — Definir campañas solo después de aprobar AURA
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-MKT-002 — Definir beneficios publicados en PASS
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-MKT-003 — Definir validación comercial desde PULSO
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 80 de 83 tareas aprobadas
+BLOQUE X — 81 de 83 tareas aprobadas
 ```
