@@ -4622,7 +4622,459 @@ La tarea queda documentalmente satisfecha cuando:
 **SIGUIENTE TAREA RESERVADA:** `INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta`
 
 
-### [ ] INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
+### ✅ INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
+
+**Estado:** APROBADA
+**Bloque:** X — Integraciones y contratos
+**Tarea anterior:** `INT-POS-010`
+**Tarea siguiente:** `INT-POS-012`
+**Tipo de tarea:** documental — contrato de mapeo y resolución de identidades de producto
+**Sistema externo temporal:** Makos / `EXT-SYS-013`
+**Fuente demostrada actualmente:** `makos_excel`
+**Implementación técnica:** no autorizada en esta tarea
+**Cambios de datos o esquema:** no autorizados en esta tarea
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico mediante el cual cada ítem vendido por el POS externo podrá resolverse de forma explícita, verificable y versionada hacia las identidades internas que correspondan en Vento:
+
+- producto maestro Vento;
+- presentación operativa del producto cuando la unidad o equivalencia vendida lo requiera;
+- receta cuando el tratamiento canónico de la venta dependa de una preparación por receta.
+
+El objetivo es impedir que semejanzas de nombre, categoría, código, posición en un archivo o conveniencia técnica conviertan una línea externa en un producto interno equivocado o produzcan efectos automáticos sin un mapping suficiente.
+
+---
+
+#### 2. Base canónica heredada
+
+Esta tarea conserva sin reinterpretar las siguientes decisiones ya aprobadas:
+
+1. Makos es la fuente temporal de las ventas originadas dentro de su alcance hasta el corte controlado hacia PULSO.
+2. El adaptador y el staging no adquieren autoridad sobre catálogo, inventario, fidelización ni finanzas.
+3. La venta y la línea canónicas mantienen separadas la identidad del ítem en la fuente y las referencias internas de Vento.
+4. Una línea puede conservarse como evidencia aunque todavía no sea elegible para producir efectos internos.
+5. La empresa, sede, terminal y caja externas se resuelven mediante el contrato de contexto de `INT-POS-010`; ese mapping no sustituye el mapping de producto.
+6. La procedencia, payload original, versión, hash y recepción permanecen gobernados por `INT-POS-009`.
+7. Una línea sin mapping suficiente no puede producir automáticamente inventario, costo ni fidelización.
+8. La implementación futura debe permitir que el POS externo y PULSO converjan en el mismo contrato canónico sin crear un catálogo paralelo.
+
+---
+
+#### 3. Resultado material
+
+Queda definido el contrato lógico `EXTERNAL-SALE-ITEM-MAPPING-001`.
+
+Cada instancia de este contrato resuelve una identidad externa dentro de un alcance de origen hacia tres decisiones internas independientes:
+
+| Plano        | Pregunta canónica                                                                      | Resultado posible                                       |
+| ------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Producto     | ¿Qué producto maestro Vento representa el ítem externo?                                | producto resuelto o bloqueo explícito                   |
+| Presentación | ¿La cantidad vendida corresponde a una presentación operativa específica del producto? | presentación resuelta, no aplicable o bloqueo explícito |
+| Receta       | ¿La venta requiere una receta concreta para interpretar el efecto posterior?           | receta resuelta, no aplicable o bloqueo explícito       |
+
+Una instancia no se considera completamente resuelta mientras cualquier plano obligatorio para esa línea permanezca ambiguo, conflictivo o pendiente de evidencia.
+
+---
+
+#### 4. Identidades que permanecen separadas
+
+Quedan prohibidas las siguientes equivalencias:
+
+```text
+external_item_id = catalog_item_id
+```
+
+```text
+catalog_item_id = product_id
+```
+
+```text
+product_id = presentation_id
+```
+
+```text
+product_id = recipe_card_id
+```
+
+```text
+presentation_id = configuración visual de PASS
+```
+
+Las identidades se interpretan así:
+
+- `external_item_id`: identidad declarada por el sistema externo cuando exista;
+- `catalog_item_id`: ítem comercial de Vento que puede enlazar una oferta vendible con un producto maestro;
+- `product_id`: identidad del producto maestro en Vento;
+- `presentation_id`: identidad de la presentación operativa basada en el perfil de unidad del producto;
+- `recipe_card_id`: identidad de la ficha de receta cuando una receta concreta sea aplicable a la línea.
+
+La tabla visual `pass.catalog_item_presentation` no representa una presentación física ni una equivalencia de unidades; por tanto, queda fuera del significado de `presentation_id` utilizado por este contrato.
+
+---
+
+#### 5. Alcance de la identidad externa
+
+El mapping se evaluará dentro de un alcance suficientemente específico para impedir colisiones entre empresas, sedes, tenants o contextos de origen.
+
+El alcance lógico mínimo conserva:
+
+| Campo lógico          | Obligación  | Regla                                                                                                                     |
+| --------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `source_system`       | requerido   | identifica el sistema externo; Makos durante el alcance actual                                                            |
+| `source_instance_ref` | condicional | requerido cuando el proveedor pueda reutilizar identificadores entre cuentas, empresas, tenants o ambientes               |
+| `source_context_ref`  | condicional | referencia el contexto resuelto por `INT-POS-010` cuando la identidad del ítem dependa de sede u otro alcance territorial |
+| `external_item_id`    | preferido   | identificador estable de ítem entregado por la fuente                                                                     |
+| `external_item_name`  | evidencia   | descripción original; no es autoridad de mapping por sí sola                                                              |
+| `external_category`   | evidencia   | clasificación original; no es autoridad de mapping por sí sola                                                            |
+
+Un nombre normalizado, un código parecido o una categoría coincidente podrán servir para proponer un candidato, pero no para convertir automáticamente el candidato en mapping canónico. Si la fuente no entrega una identidad estable suficiente, el estado permanece `NOT_PROVIDED` o `PENDING_EVIDENCE`; esta tarea no fabrica una identidad sustitutiva.
+
+---
+
+#### 6. Contrato lógico de una instancia de mapping
+
+Cada mapping canónico deberá poder conservar como mínimo:
+
+| Grupo        | Campo lógico                  | Regla                                                       |
+| ------------ | ----------------------------- | ----------------------------------------------------------- |
+| Identidad    | `mapping_id`                  | identidad estable del mapping                               |
+| Origen       | `source_system`               | sistema que declara el ítem                                 |
+| Origen       | `source_instance_ref`         | instancia externa cuando aplique                            |
+| Contexto     | `source_context_ref`          | contexto externo resuelto cuando aplique                    |
+| Contexto     | `canonical_site_ref`          | sede Vento aplicable cuando el mapping sea territorial      |
+| Ítem externo | `external_item_id`            | identificador exacto cuando exista                          |
+| Ítem externo | `external_item_name`          | valor original preservado como evidencia                    |
+| Ítem externo | `external_category`           | valor original preservado como evidencia                    |
+| Producto     | `canonical_product_ref`       | referencia al producto maestro Vento cuando esté resuelto   |
+| Producto     | `product_mapping_status`      | estado independiente de resolución de producto              |
+| Presentación | `canonical_presentation_ref`  | perfil operativo de unidad cuando sea obligatorio           |
+| Presentación | `presentation_mapping_status` | estado independiente de resolución de presentación          |
+| Receta       | `canonical_recipe_ref`        | ficha de receta cuando sea obligatoria                      |
+| Receta       | `recipe_mapping_status`       | estado independiente de resolución de receta                |
+| Decisión     | `resolution_basis`            | evidencia o criterio explícito que justificó el mapping     |
+| Decisión     | `mapping_version`             | versión inmutable de la decisión                            |
+| Vigencia     | `effective_from`              | inicio de vigencia empresarial cuando se conozca            |
+| Vigencia     | `effective_to`                | fin de vigencia cuando el mapping sea sustituido o retirado |
+| Auditoría    | `resolved_by_ref`             | actor o principal autorizado que resolvió el mapping        |
+| Auditoría    | `resolved_at`                 | instante de resolución                                      |
+| Historia     | `supersedes_mapping_ref`      | mapping anterior cuando exista sucesión                     |
+
+Los nombres físicos finales de campos, tipos compartidos y almacenamiento pertenecen a su fase de implementación. Esta tarea fija semántica y obligaciones, no DDL.
+
+---
+
+#### 7. Estados de resolución
+
+Cada plano de producto, presentación y receta utilizará uno de los siguientes estados conceptuales:
+
+| Estado             | Significado                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| `RESOLVED`         | existe exactamente una identidad interna válida y la evidencia acredita el vínculo                   |
+| `NOT_APPLICABLE`   | el plano no es necesario para la semántica de esa línea y la decisión está explícitamente acreditada |
+| `PENDING_EVIDENCE` | falta evidencia suficiente para decidir                                                              |
+| `NOT_PROVIDED`     | la fuente no entregó la identidad o atributo necesario                                               |
+| `AMBIGUOUS`        | más de un destino plausible permanece sin criterio suficiente para escoger uno                       |
+| `CONFLICT`         | las fuentes o reglas vigentes producen destinos incompatibles                                        |
+| `INACTIVE`         | el mapping dejó de admitir nuevas líneas, conservando su historia                                    |
+
+`NULL`, cadena vacía, coincidencia aproximada o ausencia silenciosa no equivalen a `NOT_APPLICABLE` ni a `RESOLVED`.
+
+---
+
+#### 8. Mapping hacia producto Vento
+
+El producto es el primer destino obligatorio para cualquier línea que pueda producir efectos dependientes de producto.
+
+Un producto solo queda `RESOLVED` cuando:
+
+1. la identidad externa y su alcance están suficientemente acreditados;
+2. existe exactamente un `product_id` interno compatible;
+3. el producto pertenece al catálogo maestro vigente de Vento;
+4. cuando la venta sea territorial, el producto es compatible con la sede canónica aplicable;
+5. no existe otro mapping vigente para la misma identidad externa y el mismo alcance que apunte a un producto distinto;
+6. la resolución conserva evidencia y versión.
+
+La coincidencia con un `catalog_item_id` puede participar en la resolución, pero el ítem comercial no sustituye el `product_id`. El destino maestro continúa siendo el producto Vento.
+
+---
+
+#### 9. Relación con el catálogo comercial
+
+El catálogo comercial y el producto maestro cumplen responsabilidades diferentes:
+
+- `pass.catalog_items` representa un ítem comercial vendible por sede;
+- su `product_id` referencia el producto maestro cuando existe el vínculo;
+- un mapping externo puede utilizar un ítem comercial como evidencia o enlace intermedio;
+- la existencia de un ítem comercial no autoriza asumir una presentación operativa ni una receta;
+- un cambio de nombre, orden, imagen, categoría comercial o presentación visual no cambia por sí solo la identidad del producto maestro.
+
+Cuando un ítem comercial sea utilizado como parte del mapping, deberá pertenecer a la sede aplicable y resolver a un único producto maestro compatible.
+
+---
+
+#### 10. Mapping hacia presentación operativa
+
+Para este contrato, una presentación operativa corresponde a una identidad de `product_uom_profiles` o al contrato que canónicamente lo sustituya en el futuro. Conserva una forma concreta de expresar y convertir una cantidad del producto hacia su unidad de stock.
+
+La presentación es `REQUIRED` cuando la unidad vendida, empaque, porción o equivalencia del ítem externo modifica la cantidad física que representa una unidad de venta.
+
+Solo queda `RESOLVED` cuando:
+
+1. pertenece al mismo producto ya resuelto;
+2. existe una única presentación aplicable a la unidad vendida;
+3. su equivalencia entre unidad de entrada y unidad de stock está definida;
+4. la presentación es válida para el contexto de uso correspondiente;
+5. ninguna heurística de nombre o valor predeterminado sustituye la decisión explícita.
+
+Puede quedar `NOT_APPLICABLE` únicamente cuando la línea ya expresa de manera inequívoca la cantidad en la unidad canónica que necesita el efecto posterior y no existe una presentación diferenciada que deba preservarse.
+
+El indicador `is_default` de una presentación no autoriza por sí solo a escogerla para un ítem externo.
+
+---
+
+#### 11. Mapping hacia receta
+
+La receta es condicional. No todo producto vendido requiere descontar componentes de receta.
+
+Cuando una línea dependa de preparación por receta, el mapping deberá resolver una ficha de receta canónica compatible con:
+
+- el producto resuelto;
+- la sede canónica aplicable;
+- el uso de receta aprobado para esa sede;
+- la vigencia y estado de la receta;
+- la semántica de cantidad y rendimiento necesaria para el efecto posterior.
+
+La referencia canónica será la identidad estable de la ficha de receta, actualmente representada por `recipe_cards.id`; sus componentes permanecen en el conjunto de receta asociado al producto y su uso territorial se gobierna por `recipe_site_uses`.
+
+Un `product_id` con componentes de receta no basta por sí solo para declarar `RESOLVED` una receta si existen múltiples usos, contextos o decisiones posibles.
+
+Cuando la venta corresponda a producto terminado almacenado, ingrediente directo o una línea sin efecto de inventario, la receta podrá quedar `NOT_APPLICABLE` de manera explícita. La ejecución concreta de inventario permanece fuera de esta tarea.
+
+---
+
+#### 12. Matriz de suficiencia del mapping
+
+| Producto               | Presentación requerida  | Receta requerida        | Resultado de mapping | Elegibilidad para efectos dependientes de mapping |
+| ---------------------- | ----------------------- | ----------------------- | -------------------- | ------------------------------------------------- |
+| `RESOLVED`             | no                      | no                      | `COMPLETE`           | elegible para continuar a las puertas posteriores |
+| `RESOLVED`             | sí y `RESOLVED`         | no                      | `COMPLETE`           | elegible para continuar a las puertas posteriores |
+| `RESOLVED`             | no                      | sí y `RESOLVED`         | `COMPLETE`           | elegible para continuar a las puertas posteriores |
+| `RESOLVED`             | sí y `RESOLVED`         | sí y `RESOLVED`         | `COMPLETE`           | elegible para continuar a las puertas posteriores |
+| distinto de `RESOLVED` | cualquiera              | cualquiera              | `INCOMPLETE`         | bloqueada                                         |
+| `RESOLVED`             | requerida y no resuelta | cualquiera              | `INCOMPLETE`         | bloqueada                                         |
+| `RESOLVED`             | cualquiera              | requerida y no resuelta | `INCOMPLETE`         | bloqueada                                         |
+
+Una línea `INCOMPLETE` se conserva con su procedencia y pasa al tratamiento de `INT-POS-012`; no se corrige mediante sustitución silenciosa ni fallback a un producto parecido.
+
+---
+
+#### 13. Coincidencias automáticas y sugerencias
+
+La implementación existente distingue coincidencia por mapping explícito, código y nombre. Esta tarea fija el siguiente tratamiento canónico:
+
+| Evidencia encontrada                                      | Tratamiento canónico                                                             |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| mapping explícito vigente por identidad externa y alcance | candidato a `RESOLVED`, sujeto a consistencia de producto, presentación y receta |
+| coincidencia exacta de código con catálogo comercial      | `CANDIDATE_ONLY`; requiere resolución explícita antes de producir efectos        |
+| coincidencia de nombre normalizado                        | `CANDIDATE_ONLY`; requiere resolución explícita antes de producir efectos        |
+| coincidencia de categoría                                 | `CANDIDATE_ONLY`; nunca resuelve producto por sí sola                            |
+| ninguna coincidencia                                      | `PENDING_EVIDENCE`                                                               |
+| dos o más destinos plausibles                             | `AMBIGUOUS`                                                                      |
+| evidencia incompatible con un mapping vigente             | `CONFLICT`                                                                       |
+
+`matched_code` y `matched_name` de la implementación legacy no se interpretarán como prueba canónica suficiente de mapping solo por ese estado técnico.
+
+---
+
+#### 14. Línea base física vigente
+
+La implementación existente proporciona una base parcial:
+
+1. `pulso_external_sales_item_mappings` relaciona `site_id + source + external_item_id` con `catalog_item_id` y deriva `product_id` desde el ítem comercial de la misma sede.
+2. La unicidad actual evita dos mappings simultáneos para el mismo `site_id + source + external_item_id` y evita reutilizar el mismo ítem comercial dentro del mismo `site_id + source`.
+3. `pulso_daily_sales_import_rows` conserva `external_item_id`, nombre, categoría, cantidad, `catalog_item_id`, `product_id` y un estado técnico de coincidencia.
+4. La interfaz actual intenta primero un mapping explícito por identificador externo y después puede sugerir coincidencias por código o nombre.
+5. El mapping físico actual no conserva una referencia de presentación operativa.
+6. El mapping físico actual no conserva una referencia de ficha de receta.
+7. Las reglas actuales de consumo de ventas separan modos de producto terminado, preparación por receta, ingrediente directo y ausencia de inventario, pero esas reglas no sustituyen el contrato de mapping aquí definido.
+
+Esta base es reutilizable como evidencia de implementación existente, pero no se declara equivalente al contrato objetivo completo.
+
+---
+
+#### 15. Inventario real de mappings disponible para esta tarea
+
+La evidencia remota disponible al cierre documental contiene:
+
+| Conjunto                                | Instancias observables | Decisión de esta tarea                                                                                                    |
+| --------------------------------------- | ---------------------: | ------------------------------------------------------------------------------------------------------------------------- |
+| mappings externos almacenados           |                      0 | no existen identidades externas materializadas que puedan declararse `RESOLVED`                                           |
+| líneas de importación almacenadas       |                      0 | no existe un conjunto de ítems Makos persistidos que permita construir una matriz individual sin inventar datos           |
+| reglas de consumo de ventas almacenadas |                      0 | no existe una regla operativa remota que acredite receta, presentación o tratamiento físico para una línea Makos concreta |
+
+Por tanto:
+
+- total de identidades externas observables que exigen decisión individual en esta tarea: **0**;
+- total de mappings individuales declarados `RESOLVED`: **0**;
+- faltantes respecto del conjunto observable: **0**;
+- duplicados dentro del conjunto observable: **0**.
+
+No se crean mappings ficticios para completar una matriz vacía. Las primeras identidades reales deberán resolverse con este contrato durante `INT-POS-021`, antes de habilitar efectos internos.
+
+---
+
+#### 16. Vigencia, cambios y conservación histórica
+
+1. Un mapping nuevo no modifica el payload original de una venta ya recibida.
+2. Un cambio de destino crea una nueva versión o sucesión; no edita destructivamente la decisión histórica.
+3. La vigencia se evalúa contra el momento empresarial de la venta cuando ese momento esté acreditado, no contra la hora en que un operador revisó el mapping.
+4. Un mapping inactivo no acepta nuevas líneas, pero continúa disponible para reconstruir historia.
+5. Una reactivación no puede reutilizar silenciosamente una identidad para un destino semánticamente distinto.
+6. Una venta histórica recibida después podrá usar un mapping aplicable a su periodo únicamente si la vigencia y la evidencia lo permiten.
+7. Las diferencias detectadas entre mapping histórico, mapping actual y efectos ya aplicados se tratan mediante `INT-POS-020`; no se corrigen reescribiendo la línea original.
+
+---
+
+#### 17. Reglas de bloqueo
+
+Una línea permanece no elegible para efectos automáticos dependientes de mapping cuando ocurra al menos una de estas condiciones:
+
+- no existe identidad externa suficiente;
+- el contexto requerido por `INT-POS-010` no está resuelto;
+- el producto está `PENDING_EVIDENCE`, `NOT_PROVIDED`, `AMBIGUOUS`, `CONFLICT` o `INACTIVE` para nuevas líneas;
+- la presentación es obligatoria y no está `RESOLVED`;
+- la receta es obligatoria y no está `RESOLVED`;
+- el destino interno no pertenece al producto o sede aplicables;
+- la equivalencia de cantidad requerida por la presentación no está acreditada;
+- el uso territorial de una receta no está acreditado;
+- el mapping aplicable por vigencia no puede determinarse sin inferencia;
+- una coincidencia legacy por código o nombre no ha sido convertida en una decisión explícita.
+
+El bloqueo conserva la línea y su evidencia. `INT-POS-012` define su cuarentena y salida segura.
+
+---
+
+#### 18. Propiedad y fronteras
+
+- Makos declara sus identidades y datos; no crea productos, presentaciones ni recetas en Vento.
+- El adaptador transforma y relaciona; no adquiere propiedad del catálogo maestro.
+- PULSO consume el mapping para construir la venta canónica; no redefine unilateralmente productos maestros.
+- NEXO conserva autoridad sobre el efecto físico de inventario que corresponda.
+- FOGO conserva los contratos de receta y producción que correspondan.
+- PASS conserva su experiencia comercial y fidelización sin convertir un ítem comercial en producto maestro por inferencia.
+- NUMERA conserva sus efectos económicos propios.
+- Una credencial del POS externo no concede capacidad de modificar ninguno de esos dominios.
+
+---
+
+#### 19. Handoffs exactos
+
+| Materia restante                                                                | Tarea propietaria |
+| ------------------------------------------------------------------------------- | ----------------- |
+| cuarentena y liberación de líneas con mapping incompleto                        | `INT-POS-012`     |
+| idempotencia por sistema, venta y línea                                         | `INT-POS-013`     |
+| transporte por webhook o polling                                                | `INT-POS-014`     |
+| emisión de la venta validada                                                    | `INT-POS-015`     |
+| efecto físico exactamente una vez                                               | `INT-POS-016`     |
+| efecto económico                                                                | `INT-POS-017`     |
+| fidelización                                                                    | `INT-POS-018`     |
+| compensación                                                                    | `INT-POS-019`     |
+| conciliación de diferencias                                                     | `INT-POS-020`     |
+| primeras identidades reales, comprobación del mapping y suficiencia sin efectos | `INT-POS-021`     |
+| piloto con efectos habilitados                                                  | `INT-POS-022`     |
+| transición de fuente hacia PULSO                                                | `INT-POS-023`     |
+| retiro o reducción de credenciales externas                                     | `INT-POS-024`     |
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 20. Decisiones congeladas
+
+1. El mapping canónico separa ítem externo, ítem comercial, producto maestro, presentación operativa y receta.
+2. El producto maestro es obligatorio para cualquier efecto dependiente de producto.
+3. La presentación es condicional y usa la identidad operativa de unidad del producto, no la configuración visual de PASS.
+4. La receta es condicional y, cuando aplica, referencia una ficha de receta compatible con producto y sede.
+5. Producto, presentación y receta tienen estados de resolución independientes.
+6. `NOT_APPLICABLE` es una decisión explícita y no un valor ausente.
+7. Coincidencias por código, nombre o categoría son candidatos y no autoridad suficiente para efectos automáticos.
+8. Un mapping explícito conserva alcance, versión, evidencia, vigencia y sucesión.
+9. Los cambios de mapping no reescriben líneas históricas ni payload original.
+10. Un mapping incompleto conserva la línea pero bloquea efectos automáticos dependientes de mapping.
+11. El contexto territorial se hereda del mapping aprobado en `INT-POS-010` y no se reconstruye desde el producto.
+12. El mapping del POS externo no crea ni modifica productos, presentaciones o recetas maestras.
+13. La implementación legacy actual es una base parcial y no demuestra por sí sola el contrato objetivo completo.
+14. La evidencia remota actual contiene cero mappings externos y cero líneas importadas; por tanto no existe una matriz individual real que pueda completarse sin inventar datos.
+15. Las primeras identidades reales se validarán bajo este contrato en `INT-POS-021` antes de habilitar efectos.
+16. La cuarentena de mappings incompletos pertenece exclusivamente a `INT-POS-012`.
+17. Esta tarea no modifica código, datos, esquema, migraciones, configuración ni credenciales.
+18. La continuidad inmediata queda reservada exclusivamente para `INT-POS-012`.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento verificable de esta tarea ya está protegido por la cobertura canónica vigente que exige mapping explícito del identificador externo hacia producto, presentación y receta cuando corresponda, bloqueo de líneas sin mapping, trazabilidad de transformaciones externas y transición del POS mediante mapping y cuarentena. Esta tarea especializa ese comportamiento para Makos sin introducir una obligación de prueba nueva ni modificar una existente.
+
+---
+
+#### Cobertura de prueba existente preservada
+
+Se preserva la cobertura vigente para:
+
+- mapping explícito de identificadores externos hacia producto, presentación y receta cuando corresponda;
+- prohibición de efectos automáticos para líneas sin mapping suficiente;
+- correlación e idempotencia de efectos físicos posteriores;
+- transición del POS externo mediante staging, mapping, cuarentena e idempotencia;
+- auditoría de transformaciones y mappings en intercambios externos.
+
+---
+
+#### Criterios de aceptación
+
+1. Se define un contrato único de mapping de ítem externo.
+2. Se separan explícitamente ítem externo, ítem comercial, producto maestro, presentación operativa y receta.
+3. Se identifica `public.products.id` como destino maestro de producto de la implementación actual.
+4. Se identifica `product_uom_profiles` como identidad operativa actual de presentación física o unidad.
+5. Se excluye explícitamente `pass.catalog_item_presentation` del significado de presentación física.
+6. Se identifica la ficha de receta como identidad canónica de receta cuando corresponda.
+7. El mapping queda contextualizado por sistema, instancia y alcance territorial cuando sean necesarios.
+8. Nombre, código y categoría quedan limitados a evidencia o sugerencia, no a resolución automática suficiente.
+9. Producto, presentación y receta tienen estados de resolución independientes.
+10. `NOT_APPLICABLE` requiere decisión explícita.
+11. Se define cuándo la presentación es obligatoria.
+12. Se define cuándo la receta es obligatoria.
+13. Se prohíbe escoger una presentación únicamente por ser predeterminada.
+14. Se exige compatibilidad entre presentación y producto.
+15. Se exige compatibilidad entre receta, producto y sede cuando aplique.
+16. Se define la suficiencia completa del mapping antes de efectos dependientes.
+17. Se preserva una línea incompleta sin convertirla en producto por fallback.
+18. Se clasifica la coincidencia legacy por código o nombre como candidato no suficiente por sí solo.
+19. Se conserva historia y vigencia de cambios de mapping.
+20. Se prohíbe que una nueva versión reescriba una línea histórica o el payload original.
+21. Se reconcilia la implementación física actual con el contrato objetivo sin declararla completa.
+22. Se materializa el inventario real disponible: cero identidades externas observables y cero mappings individuales resolubles sin inventar datos.
+23. Todo bloqueo queda asignado a una tarea posterior exacta y a una condición de salida verificable.
+24. Se generan cero cambios de requisitos de prueba por existir cobertura canónica exacta.
+25. No se modifica código, datos, esquema, migraciones, configuración, credenciales ni estado remoto.
+26. La continuidad queda definida exclusivamente como `INT-POS-010 → INT-POS-011 → INT-POS-012`.
+
+---
+
+#### Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa`
+
+**TAREA ACTUAL APROBADA:** `INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta`
+
+**SIGUIENTE TAREA RESERVADA:** `INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario`
+
+
 ### [ ] INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
 ### [ ] INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
 ### [ ] INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
