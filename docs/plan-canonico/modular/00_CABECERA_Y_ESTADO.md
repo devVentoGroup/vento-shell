@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **760** |
+| Tareas aprobadas | **761** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **834** |
+| Tareas no iniciadas | **833** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.68% (760/1594)** |
+| Porcentaje de completamiento | **47.74% (761/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-PROD-003 — Definir contrato para que FOGO finalice el lote** |
-| Tarea actual | **INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado** |
+| Última tarea aprobada | **INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones** |
+| Tarea actual | **INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente** |
+| Siguiente tarea | **INT-POS-002 — Confirmar información disponible mediante API** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 44 de 83 aprobadas; INT-PROD-004 pendiente** |
+| Progreso del bloque | **BLOQUE X: 45 de 83 aprobadas; INT-POS-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-PROD-003` — Definir contrato para que FOGO finalice el lote |
-| Tarea actual | `INT-PROD-004` — Definir contrato para que NEXO registre el producto terminado — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-001` — Auditar documentación, endpoints, webhooks y límites del POS vigente |
+| Última aprobada | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones |
+| Tarea actual | `INT-POS-001` — Auditar documentación, endpoints, webhooks y límites del POS vigente — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-002` — Confirmar información disponible mediante API |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 44 DE 83 APROBADAS — ACTUAL INT-PROD-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 45 DE 83 APROBADAS — ACTUAL INT-POS-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-PROD-003 — Definir contrato para que FOGO finalice el lote
+INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
         ↓
 TAREA ACTUAL
-INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
-        ↓
-SIGUIENTE TAREA RESERVADA
 INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-002 — Confirmar información disponible mediante API
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 44 de 83 tareas aprobadas
+BLOQUE X — 45 de 83 tareas aprobadas
 ```
