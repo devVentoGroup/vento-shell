@@ -2450,7 +2450,655 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`
 
 
-### [ ] INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
+### ✅ INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`
+**Tarea siguiente:** `INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
+**Tipo de tarea:** documental; definición normativa de la importación de componentes monetarios de venta y línea, propinas y hechos de pago asociados a una venta canónica, preservando valor de fuente, alcance, moneda, precisión, estado y referencias sin fusionar venta, pago, caja, documento fiscal, devolución ni hecho económico, sin inventar campos de Makos, ejecutar cobros, definir reversos, implementar código, crear migraciones, modificar Supabase ni producir efectos internos
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**POS externo vigente:** `Makos`
+**POS integral objetivo:** `PULSO`
+**Línea base documental:** `vento-shell@32db942792eeeb16bd9c338f975740a49f1e023b`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo deberán importarse y normalizarse los componentes monetarios y los hechos de pago asociados a una venta canónica durante la transición desde Makos y, posteriormente, cuando PULSO produzca el mismo contrato.
+
+La tarea cubre cuatro familias de información:
+
+1. descuentos;
+2. impuestos;
+3. propinas;
+4. medios y hechos de pago.
+
+La importación deberá conservar la afirmación real de la fuente y distinguirla de cualquier representación normalizada de Vento.
+
+Regla raíz:
+
+```text
+VALOR MONETARIO O HECHO DE PAGO DE LA FUENTE
+        ↓
+PROCEDENCIA + ALCANCE + MONEDA + SEMÁNTICA ACREDITADA
+        ↓
+NORMALIZACIÓN SIN INVENTAR NI CORREGIR SILENCIOSAMENTE
+        ↓
+VENTA / LÍNEA + COMPONENTES MONETARIOS
+        +
+HECHOS DE PAGO RELACIONADOS, PERO INDEPENDIENTES
+        ↓
+CONCILIACIÓN Y EFECTOS POSTERIORES EN SUS TAREAS PROPIETARIAS
+```
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-007` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal de las ventas originadas dentro de su alcance mientras no ocurra el corte correspondiente.
+2. PULSO será la fuente de las nuevas ventas posteriores al corte aprobado.
+3. Makos y PULSO deberán converger en el mismo contrato canónico de venta y línea.
+4. Venta, pedido, pago, sesión de caja, documento fiscal, inventario, fidelización y hecho económico son hechos distintos.
+5. El contrato canónico conserva componentes monetarios y referencias de pago sin convertirlos en identidad de venta.
+6. Una línea pertenece exactamente a una venta y conserva su snapshot comercial.
+7. Una diferencia monetaria no se corrige para forzar coincidencia.
+8. El documento fiscal permanece bajo autoridad del POS o proveedor fiscal autorizado mientras corresponda.
+9. Los estados comerciales de venta definidos en `INT-POS-006` no se derivan de estados de pago.
+10. Una anulación, devolución o reembolso no se representa mediante un importe negativo ambiguo y pertenece a `INT-POS-008`.
+11. Los efectos económicos corresponden a NUMERA mediante `INT-POS-017`, no a la importación externa.
+12. La conciliación de diferencias corresponde a `INT-POS-020`.
+13. La API de Makos está confirmada como habilitable bajo solicitud, pero la especificación técnica, credenciales y campos reales del tenant Vento permanecen no provisionados.
+
+Esta tarea no presupone nombres de propiedades, códigos de medio de pago, tasas tributarias, fórmulas, escalas decimales ni catálogos específicos de Makos.
+
+---
+
+#### 3. Separaciones semánticas obligatorias
+
+La importación conservará como desigualdades:
+
+```text
+VENTA ≠ PAGO
+PAGO ≠ MEDIO DE PAGO
+PAGO ≠ SESIÓN DE CAJA
+PAGO ≠ DOCUMENTO FISCAL
+PAGO ≠ HECHO ECONÓMICO
+DESCUENTO ≠ DEVOLUCIÓN
+DESCUENTO ≠ REEMBOLSO
+IMPUESTO ≠ DOCUMENTO FISCAL
+PROPINA ≠ INGRESO DE PRODUCTO
+PROPINA ≠ PAGO
+TOTAL DE VENTA ≠ TOTAL PAGADO POR DEFINICIÓN
+```
+
+Una relación o coincidencia de importe no fusiona los objetos.
+
+---
+
+#### 4. Capas de información monetaria
+
+Toda importación monetaria distinguirá tres capas:
+
+| Capa                       | Contenido                                                                                                | Regla                                             |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| representación de fuente   | valor, código, etiqueta, moneda, tasa, base, alcance, referencia y estado tal como la fuente los exprese | se conserva sin alterar para aparentar coherencia |
+| representación normalizada | interpretación de alcance, componente, importe, moneda, estado y relación con venta o línea              | solo se materializa con semántica acreditada      |
+| contrato canónico          | componentes comerciales de venta/línea y referencias a hechos de pago                                    | desacopla consumidores del formato del proveedor  |
+
+Por tanto:
+
+```text
+CAMPO AUSENTE
+≠
+CERO CONFIRMADO
+```
+
+```text
+VALOR CERO POR DEFAULT TÉCNICO
+≠
+AFIRMACIÓN CERO DE LA FUENTE
+```
+
+```text
+ETIQUETA PARECIDA
+≠
+EQUIVALENCIA SEMÁNTICA
+```
+
+---
+
+#### 5. Contrato monetario mínimo
+
+Todo componente monetario importado deberá poder conservar, cuando aplique:
+
+| Dimensión                        | Obligación                                                                                              | Regla                                                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| tipo de componente               | requerida                                                                                               | identifica precio, subtotal, descuento, impuesto, propina, total u otro componente explícitamente soportado |
+| alcance                          | requerido cuando sea necesario para interpretar el valor                                                | distingue encabezado de venta, línea o hecho de pago sin repartir valores por inferencia                    |
+| importe                          | requerido cuando la fuente entregue el componente                                                       | conserva signo y magnitud de origen; no se modifica para cuadrar                                            |
+| moneda                           | requerida antes de conciliación o efecto económico cuando el binding no garantice una moneda inequívoca | no se asume desde la interfaz ni desde defaults de otra integración                                         |
+| precisión o escala de fuente     | condicional                                                                                             | se conserva cuando pueda demostrarse; no se fabrican decimales                                              |
+| código o identidad de fuente     | condicional                                                                                             | se conserva cuando exista                                                                                   |
+| etiqueta o descripción de fuente | condicional                                                                                             | sirve como evidencia, no como mapping suficiente                                                            |
+| base de cálculo                  | condicional                                                                                             | solo se importa si la fuente la entrega o documenta inequívocamente                                         |
+| tasa o porcentaje                | condicional                                                                                             | no se deduce como verdad oficial a partir de importe/base                                                   |
+| semántica de inclusión           | condicional                                                                                             | distingue, cuando esté documentado, valor incluido o adicional; ausencia queda no resuelta                  |
+| referencia de línea              | condicional                                                                                             | obligatoria cuando el componente pertenece específicamente a una línea                                      |
+| referencia de procedencia        | requerida                                                                                               | enlaza la afirmación original gobernada posteriormente por `INT-POS-009`                                    |
+
+La ausencia de una dimensión condicional se conserva como ausencia y no se completa con un valor artificial.
+
+---
+
+#### 6. Moneda, signo, precisión y cero
+
+Reglas obligatorias:
+
+1. cada importe conservará la moneda declarada por la fuente cuando exista;
+2. si el binding documenta una única moneda invariable para el recurso, esa garantía podrá utilizarse como evidencia;
+3. el default `COP` de una integración interna existente no demuestra la moneda de Makos;
+4. no se realizará conversión de moneda sin un contrato explícito de tipo de cambio y una tarea autorizada;
+5. importes de monedas distintas no se sumarán como si fueran homogéneos;
+6. el signo de origen se conserva;
+7. un signo inesperado no se convierte automáticamente a valor absoluto;
+8. una cantidad o importe negativo que pueda representar devolución, reverso o reembolso se deriva a `INT-POS-008` antes de producir efectos;
+9. un campo ausente no se transforma en cero por conveniencia;
+10. un cero explícito de fuente puede conservarse como cero;
+11. un cero producido por parser, default de base de datos o inicialización local no demuestra que la fuente haya informado cero;
+12. no se redondearán componentes para forzar igualdad;
+13. la representación física futura deberá permitir cálculos monetarios deterministas sin depender de aritmética binaria imprecisa; los tipos concretos deberán materializarse en `SHELL-CON-020` y `SHELL-CON-021` sin cambiar esta semántica.
+
+---
+
+#### 7. Importación de descuentos
+
+Un descuento importado representa una reducción comercial declarada por la fuente y deberá conservarse separado de devolución, reembolso, compensación o cambio de cantidad.
+
+Por cada descuento se conservará, cuando exista:
+
+- importe;
+- moneda;
+- alcance de venta o línea;
+- referencia a la línea cuando corresponda;
+- código, identificador o etiqueta del descuento en la fuente;
+- base y tasa cuando la fuente las entregue;
+- referencia de promoción, cupón o autorización únicamente cuando la fuente la provea;
+- referencia de procedencia.
+
+Reglas:
+
+1. un descuento de encabezado no se reparte entre líneas por prorrateo inventado;
+2. un descuento de línea no se eleva a descuento global sin conservar su línea;
+3. varios descuentos se conservan separados cuando la fuente los individualice;
+4. un agregado único permanece agregado cuando la fuente no entregue desglose;
+5. una etiqueta no crea por sí sola identidad de promoción o cupón;
+6. descuento cero solo significa cero cuando la fuente lo afirme o su contrato lo garantice;
+7. un descuento no modifica cantidad de producto;
+8. un descuento no implica devolución ni reembolso;
+9. una revisión posterior conserva historia y no reescribe destructivamente el valor anterior;
+10. cualquier discrepancia frente al total se conserva para `INT-POS-020`.
+
+---
+
+#### 8. Importación de impuestos
+
+El impuesto importado conserva la afirmación tributaria del POS o proveedor autorizado sin convertir a Vento en autoridad fiscal.
+
+Por cada componente tributario se conservará, cuando exista:
+
+- importe;
+- moneda;
+- alcance de venta o línea;
+- referencia a línea;
+- código, nombre o categoría tributaria de fuente;
+- base gravable informada;
+- tasa informada;
+- indicación de inclusión o adición al precio cuando esté documentada;
+- referencia fiscal relacionada cuando la fuente la entregue;
+- referencia de procedencia.
+
+Reglas:
+
+1. un importe tributario no se recalcula para sustituir el valor de fuente;
+2. una tasa no se infiere como verdad oficial únicamente dividiendo impuesto entre base;
+3. impuesto cero no demuestra exención, exclusión ni tarifa cero por sí solo;
+4. un impuesto agregado no se distribuye a líneas sin evidencia de asignación;
+5. una suma de impuestos de línea no sobrescribe el impuesto de encabezado cuando exista diferencia;
+6. una diferencia queda conciliable, no corregida;
+7. el documento fiscal no se convierte en copia maestra de la venta;
+8. la importación no emite, modifica ni anula documentos fiscales;
+9. la autoridad fiscal externa se preserva durante la transición;
+10. `INT-POS-017` recibirá posteriormente el hecho económico normalizado sin convertir la importación en contabilidad.
+
+---
+
+#### 9. Importación de propinas
+
+La propina se tratará como componente monetario separado.
+
+Cuando la fuente la exponga, se conservará:
+
+- importe;
+- moneda;
+- alcance o asociación con la venta;
+- asociación con un pago cuando la fuente la entregue explícitamente;
+- código o etiqueta de fuente cuando exista;
+- referencia de procedencia.
+
+Reglas:
+
+1. una propina no se incorpora al precio de producto por inferencia;
+2. una propina no se trata como impuesto;
+3. una propina no se trata como descuento;
+4. una propina no se asume incluida en el total de venta o en el importe pagado salvo que la fuente documente esa semántica;
+5. una propina no ejecuta distribución, liquidación laboral ni movimiento de caja por el solo hecho de importarse;
+6. una propina agregada no se reparte entre líneas, productos, trabajadores o pagos sin evidencia;
+7. ausencia de campo de propina no se transforma en cero confirmado;
+8. la conciliación de propina con venta, pagos y cierre corresponde a `INT-POS-020`;
+9. su efecto económico posterior corresponde a `INT-POS-017` cuando resulte aplicable.
+
+---
+
+#### 10. Hecho de pago importado
+
+Un pago importado será un hecho relacionado con una venta, no una propiedad que absorba la venta.
+
+La representación deberá admitir cero, uno o varios hechos de pago asociados a una misma venta.
+
+Cada hecho de pago deberá poder conservar:
+
+| Dimensión                             | Obligatoriedad                                                                   | Regla                                                  |
+| ------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| venta relacionada                     | requerida                                                                        | el pago se vincula a una venta sin convertirse en ella |
+| identidad externa de pago             | requerida cuando la fuente la entregue                                           | se conserva sin sustituirla por identidad de venta     |
+| proveedor, adquirente o procesador    | condicional                                                                      | se conserva cuando la fuente lo identifique            |
+| código de medio de pago de fuente     | condicional                                                                      | no se renombra por similitud                           |
+| etiqueta de medio de pago de fuente   | condicional                                                                      | se conserva como evidencia                             |
+| importe                               | requerido para un pago cuantificable                                             | no se deriva del total de venta por defecto            |
+| moneda                                | requerida antes de conciliación cuando no exista garantía inequívoca del binding | se conserva por pago                                   |
+| estado de pago de fuente              | requerido cuando la fuente lo entregue                                           | se conserva sin fusionarlo con estado de venta         |
+| estado de pago normalizado            | condicional                                                                      | solo se materializa con equivalencia demostrable       |
+| referencia o comprobante de proveedor | condicional                                                                      | se conserva cuando exista                              |
+| timestamp del pago o confirmación     | condicional                                                                      | solo se usa con semántica acreditada                   |
+| referencia de procedencia             | requerida                                                                        | enlaza la afirmación original                          |
+
+La existencia de un pago relacionado no cambia por sí sola el estado comercial `OPEN`, `FINALIZED` o `CANCELLED` de la venta.
+
+---
+
+#### 11. Tratamiento de medios de pago
+
+`INT-POS-007` no inventa un catálogo cerrado de marcas, adquirentes o medios de Makos.
+
+La importación deberá preservar:
+
+```text
+CÓDIGO / IDENTIDAD DE MEDIO EN LA FUENTE
++
+ETIQUETA DE FUENTE, CUANDO EXISTA
++
+PROVEEDOR O PROCESADOR, CUANDO EXISTA
++
+RESULTADO DE INTERPRETACIÓN
+```
+
+El resultado de interpretación utilizará:
+
+| Resultado      | Significado                                                                                  | Tratamiento                                                                            |
+| -------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `MAPPED`       | existe equivalencia aprobada con una referencia de medio aceptada por el contrato consumidor | se conserva fuente y referencia normalizada                                            |
+| `NOT_PROVIDED` | la fuente acreditada no entrega el medio o no lo entrega para ese hecho                      | se conserva ausencia                                                                   |
+| `UNRESOLVED`   | existe código, etiqueta o señal, pero no hay equivalencia segura                             | se conserva valor original y se bloquean decisiones que requieran el medio normalizado |
+
+Reglas:
+
+1. no se infiere `efectivo`, `tarjeta`, `transferencia`, billetera u otra categoría por nombre parcial sin regla acreditada;
+2. marca de tarjeta, procesador, adquirente, banco y medio de pago no se consideran sinónimos;
+3. el método informado por una integración interna de Wompi no define el catálogo de Makos;
+4. un cambio futuro de mapping no reescribe la afirmación histórica de fuente;
+5. un medio no resuelto puede conservarse para conciliación, pero no autoriza una clasificación financiera inventada.
+
+---
+
+#### 12. Vocabulario mínimo de estado de pago normalizado
+
+Cuando exista evidencia suficiente, la frontera de importación podrá normalizar el estado del hecho de pago a:
+
+| Estado       | Significado                                                                                             | No implica                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `PENDING`    | el pago o intento existe pero la fuente no acredita todavía confirmación definitiva                     | fallo, venta cancelada o deuda vencida                                  |
+| `AUTHORIZED` | la fuente acredita autorización del medio, sin afirmar necesariamente captura, recepción o conciliación | dinero conciliado, documento fiscal o venta finalizada                  |
+| `CONFIRMED`  | la fuente acredita recepción, captura o confirmación del pago según el contrato del proveedor           | conciliación bancaria, caja cerrada, factura emitida o venta finalizada |
+| `FAILED`     | la fuente acredita rechazo o fallo definitivo del intento                                               | cancelación de la venta                                                 |
+| `CANCELLED`  | la fuente acredita cancelación del intento de pago antes de su confirmación final                       | devolución, reembolso o compensación                                    |
+| `UNRESOLVED` | existe una señal o estado cuya semántica no permite mapping seguro                                      | ningún resultado financiero                                             |
+
+Reglas:
+
+1. un timeout o resultado desconocido no se convierte en `FAILED`;
+2. un estado de venta no se convierte en estado de pago;
+3. un estado fiscal no se convierte en estado de pago;
+4. un estado técnico del adaptador no se convierte en estado de pago;
+5. señales de `refund`, devolución, reversión u otra compensación quedan preservadas y se derivan a `INT-POS-008` para su semántica completa;
+6. `CONFIRMED` no equivale a conciliación bancaria o de caja;
+7. `CANCELLED` no equivale a reembolso;
+8. un valor externo nuevo o ambiguo queda `UNRESOLVED`.
+
+---
+
+#### 13. Pagos parciales y medios combinados
+
+La estructura deberá admitir:
+
+```text
+UNA VENTA
+        ↓
+0..N HECHOS DE PAGO
+        ↓
+CADA PAGO CONSERVA
+IMPORTE + MONEDA + MEDIO + PROVEEDOR + REFERENCIA + ESTADO
+```
+
+Reglas:
+
+1. una venta puede permanecer sin pagos mientras su ciclo lo permita;
+2. un pago parcial no se eleva artificialmente al total de la venta;
+3. varios pagos de una misma venta no se consolidan en un único pago ficticio;
+4. medios combinados conservan un hecho separado por componente cuando la fuente los individualice;
+5. si la fuente entrega únicamente un total pagado agregado, se conserva como agregado y no se inventan pagos individuales;
+6. un exceso o faltante entre pagos confirmados y total exigible se registra como diferencia;
+7. importes de monedas distintas no se suman sin conversión autorizada;
+8. propina incluida en un pago solo se separa cuando la fuente permita demostrarlo;
+9. pago confirmado no demuestra entrega, documento fiscal, inventario, puntos ni hecho económico aplicado;
+10. `INT-POS-020` conciliará diferencias persistentes y `INT-POS-017` recibirá los hechos económicos correspondientes.
+
+---
+
+#### 14. Reconciliación monetaria sin corrección silenciosa
+
+La importación conservará simultáneamente:
+
+- subtotal de encabezado cuando la fuente lo entregue;
+- componentes monetarios de línea;
+- descuentos de venta y línea;
+- impuestos de venta y línea;
+- propinas;
+- total de venta cuando la fuente lo entregue;
+- pagos relacionados;
+- valores agregados del flujo histórico cuando solo exista esa granularidad.
+
+Una fórmula de recomposición solo podrá evaluarse cuando la semántica del binding permita determinar qué componentes están incluidos o excluidos.
+
+Quedan prohibidas estas correcciones:
+
+```text
+DIFERENCIA
+→ REDONDEAR HASTA QUE CUADRE
+```
+
+```text
+DESCUENTO AGREGADO
+→ REPARTIR ENTRE LÍNEAS SIN EVIDENCIA
+```
+
+```text
+IMPUESTO DE ENCABEZADO
+→ SOBRESCRIBIR CON SUMA DE LÍNEAS
+```
+
+```text
+TOTAL DE VENTA
+→ CREAR UN PAGO FICTICIO POR EL MISMO IMPORTE
+```
+
+```text
+TOTAL PAGADO
+→ MODIFICAR LA VENTA PARA FORZAR COINCIDENCIA
+```
+
+Toda diferencia conservará origen, valores comparados y condición pendiente para `INT-POS-020`.
+
+---
+
+#### 15. Tratamiento del flujo `makos_excel` existente
+
+La implementación vigente demuestra únicamente información agregada por ítem y día.
+
+| Elemento actual                | Evidencia física                    | Clasificación para `INT-POS-007`       | Consecuencia                                                     |
+| ------------------------------ | ----------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| `subtotal_amount`              | disponible por fila agregada y lote | `AGREGADO_DISPONIBLE`                  | no demuestra subtotal de una venta individual                    |
+| `tax_amount`                   | disponible por fila agregada y lote | `AGREGADO_DISPONIBLE`                  | no demuestra código, tasa, base ni inclusión tributaria          |
+| `discount_amount`              | disponible por fila agregada y lote | `AGREGADO_DISPONIBLE`                  | no demuestra identidad, alcance ni causa de descuento individual |
+| `return_amount`                | disponible por fila agregada y lote | `FUERA_DE_ALCANCE_MONETARIO_ORDINARIO` | su semántica completa pertenece a `INT-POS-008`                  |
+| `net_sales_amount`             | calculado localmente                | `DERIVADO_LEGACY_AGREGADO`             | no se eleva a total canónico de venta individual                 |
+| `gross_sales_amount`           | calculado localmente por fila       | `DERIVADO_LEGACY_AGREGADO`             | no define semántica tributaria del proveedor                     |
+| propina                        | no observada                        | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`        | no se inventa cero                                               |
+| identidad individual de pago   | no observada                        | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`        | no permite hechos de pago individuales                           |
+| medio de pago                  | no observado                        | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`        | no se infiere desde total o archivo                              |
+| estado de pago                 | no observado                        | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`        | no se infiere desde estado del lote                              |
+| proveedor o referencia de pago | no observado                        | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`        | permanece sujeto al binding futuro                               |
+
+El parser vigente convierte campos tributarios o de descuento ausentes en `0` para su cálculo local. Ese comportamiento técnico no constituye evidencia de que Makos haya afirmado un valor cero.
+
+Las fórmulas actuales:
+
+```text
+net_sales_amount = subtotal - discounts - returns
+gross_sales_amount = subtotal + tax
+```
+
+se clasifican como cálculos de la importación agregada existente. No definen por sí solos la fórmula canónica de una venta individual ni prueban si el impuesto está incluido, excluido o calculado con otra semántica en Makos.
+
+---
+
+#### 16. Tratamiento de la fundación de pagos Wompi existente
+
+La línea base técnica contiene `payments.transactions` para checkout de pedidos con datos como proveedor, referencia, importe en unidad menor, moneda, estado y `payment_method`.
+
+Esa estructura demuestra que Vento ya distingue un pago como objeto técnico separado del pedido, pero no se eleva por sí sola al contrato definitivo de importación del POS externo.
+
+Reglas:
+
+1. `provider = wompi` es específico de esa integración y no se aplica a Makos;
+2. el default `COP` de esa tabla no demuestra la moneda de una venta Makos;
+3. los estados físicos `pending`, `requires_action`, `approved`, `rejected`, `cancelled`, `refunded` y `error` no se convierten en vocabulario Makos por existencia;
+4. el modelo actual no demuestra soporte integral de pagos parciales o medios combinados provenientes del POS externo;
+5. `refunded` continúa sujeto a la semántica de `INT-POS-008`;
+6. esta tarea no modifica esa estructura física.
+
+---
+
+#### 17. Evidencia requerida del binding futuro de Makos
+
+Antes de que un piloto transaccional use información monetaria o de pagos de Makos, deberá existir evidencia suficiente para completar esta matriz:
+
+| Área                       | Evidencia requerida                                                                | Resultado permitido                                      |
+| -------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| subtotal y total           | campos y semántica exacta                                                          | importación sin recomposición inventada                  |
+| descuentos                 | alcance, importe, moneda y desglose disponible                                     | venta/línea/agregado según evidencia                     |
+| impuestos                  | importe, alcance, código o etiqueta, base/tasa cuando existan, inclusión/exclusión | componente tributario reproducible                       |
+| propina                    | disponibilidad, importe, moneda y relación con total/pago                          | componente separado cuando exista                        |
+| pagos por venta            | existencia y cardinalidad                                                          | cero, uno, varios o agregado según evidencia             |
+| identidad de pago          | campo estable cuando exista                                                        | referencia externa conservada                            |
+| medio de pago              | código/etiqueta y semántica                                                        | mapping o clasificación explícita de no resolución       |
+| importe de pago            | valor y moneda                                                                     | hecho cuantificable                                      |
+| estado de pago             | catálogo y significado del proveedor                                               | mapping al vocabulario mínimo cuando exista equivalencia |
+| proveedor/referencia       | campos disponibles                                                                 | trazabilidad del hecho                                   |
+| timestamps de pago         | semántica de cada campo                                                            | tiempos importables sin inferencia                       |
+| pagos parciales/combinados | garantía del recurso o desglose por pago                                           | preservación de cada componente                          |
+| moneda                     | valor por registro o garantía contractual                                          | conciliación homogénea                                   |
+| precisión                  | formato y escala efectiva                                                          | conservación sin redondeo inventado                      |
+
+No se registran nombres de endpoints, propiedades JSON, códigos, tasas ni catálogos específicos porque la especificación técnica del tenant Vento no está provisionada.
+
+---
+
+#### 18. Puertas de elegibilidad derivadas
+
+Una venta importada no podrá avanzar con efectos que dependan de información monetaria o de pago cuando ocurra alguna de estas condiciones:
+
+| Condición                                            | Tratamiento                                                         | Tarea propietaria de salida                                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| moneda no resoluble                                  | conservar importes sin sumarlos ni convertirlos                     | `INT-POS-021` deberá demostrar suficiencia antes del piloto; conciliación en `INT-POS-020` |
+| descuento con alcance ambiguo                        | conservar componente sin reparto artificial                         | `INT-POS-021`; conciliación en `INT-POS-020`                                               |
+| impuesto sin semántica suficiente para recomposición | conservar valor de fuente y evitar cálculo fiscal inventado         | `INT-POS-021`; conciliación en `INT-POS-020`                                               |
+| propina sin relación demostrable con total o pago    | conservar componente separado                                       | `INT-POS-021`; conciliación en `INT-POS-020`                                               |
+| medio de pago desconocido                            | conservar valor de fuente como `UNRESOLVED`                         | `INT-POS-021` deberá demostrar tratamiento seguro                                          |
+| estado de pago desconocido                           | no inferir confirmación o fallo                                     | `INT-POS-021`                                                                              |
+| timeout o resultado incierto                         | mantener condición no resuelta                                      | `INT-POS-021`; conciliación en `INT-POS-020`                                               |
+| pagos parciales sin identidad o desglose suficiente  | no sintetizar componentes individuales                              | `INT-POS-021`; conciliación en `INT-POS-020`                                               |
+| señal de devolución, reversión o reembolso           | preservar y no aplicarla como descuento ordinario                   | `INT-POS-008`                                                                              |
+| falta de procedencia, payload, hash o recepción      | no presentar la transformación como reproducible                    | `INT-POS-009`                                                                              |
+| diferencia monetaria persistente                     | no corregir la venta ni el pago                                     | `INT-POS-020`                                                                              |
+| efecto económico requerido                           | no escribir contabilidad desde el adaptador                         | `INT-POS-017`                                                                              |
+| binding todavía no demostrado                        | operar únicamente en el alcance permitido por el piloto sin efectos | `INT-POS-021`                                                                              |
+
+`INT-POS-022` no podrá habilitar efectos sobre componentes críticos que continúen no resueltos.
+
+---
+
+#### 19. Fronteras con tareas posteriores
+
+- `INT-POS-008` define anulaciones, devoluciones y reembolsos; un importe negativo, estado `refunded` o señal equivalente no se ejecuta desde esta tarea.
+- `INT-POS-009` conserva físicamente payload original, versión, hash y recepción.
+- `INT-POS-010` resuelve empresa, sede, terminal y caja externas cuando sean necesarias para contextualizar venta o pago.
+- `INT-POS-011` resuelve producto, presentación y receta sin alterar snapshots monetarios de fuente.
+- `INT-POS-012` gobierna líneas no mapeadas sin permitir efectos automáticos de inventario.
+- `INT-POS-013` define idempotencia por sistema, venta y línea externa y no autoriza duplicar pagos por reintento.
+- `INT-POS-014` define transporte mediante webhook o polling sin cambiar componentes monetarios.
+- `INT-POS-015` emite el evento canónico de venta validada solo cuando las puertas aplicables estén satisfechas.
+- `INT-POS-017` define el evento económico para NUMERA exactamente una vez.
+- `INT-POS-018` define fidelización sin utilizar descuento o propina como sustituto de reglas de puntos.
+- `INT-POS-019` define compensaciones internas asociadas a anulaciones y devoluciones.
+- `INT-POS-020` reconcilia ventas, componentes monetarios, pagos y efectos sin reescribir historia.
+- `INT-POS-021` prueba el binding real sin efectos sobre inventario ni finanzas.
+- `INT-POS-022` solo habilita efectos después de demostrar suficiencia.
+- `INT-POS-023` cambia la fuente futura hacia PULSO sin cambiar el significado de los componentes ya normalizados.
+- `SHELL-CON-020` y `SHELL-CON-021` materializarán posteriormente los tipos y estructuras físicas compartidas de venta y línea.
+- `SHELL-CON-023` materializará el contrato técnico transversal de idempotencia y conciliación aplicable a reintentos y hechos correlacionados, sin convertir el intento técnico en un pago nuevo.
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 20. Decisiones congeladas
+
+1. descuentos, impuestos y propinas permanecen componentes diferenciados;
+2. venta y pago permanecen hechos distintos;
+3. una venta admite cero, uno o varios hechos de pago;
+4. pagos parciales y medios combinados se conservan sin consolidación ficticia;
+5. un pago conserva importe, moneda, medio, proveedor, referencia y estado cuando la fuente los entregue;
+6. el medio de pago conserva su código o etiqueta de fuente y solo se normaliza con equivalencia acreditada;
+7. el vocabulario mínimo de pago es `PENDING`, `AUTHORIZED`, `CONFIRMED`, `FAILED`, `CANCELLED` y `UNRESOLVED`;
+8. un timeout o resultado desconocido no se considera fallo;
+9. pago confirmado no equivale a venta finalizada, conciliación bancaria, caja cerrada ni documento fiscal;
+10. cancelación de intento de pago no equivale a devolución o reembolso;
+11. señales de devolución, reversión o reembolso pertenecen a `INT-POS-008`;
+12. una propina no se fusiona con precio, impuesto, descuento o pago;
+13. ausencia de campo no equivale a cero confirmado;
+14. un default técnico cero no se eleva a afirmación de la fuente;
+15. moneda no se asume desde Wompi, interfaz, sede o configuración no acreditada del binding;
+16. no se suman monedas distintas ni se aplica conversión inventada;
+17. signo y precisión de fuente se conservan;
+18. no se redondean importes para forzar igualdad;
+19. un descuento agregado no se reparte entre líneas sin evidencia;
+20. un impuesto agregado no se reparte entre líneas sin evidencia;
+21. impuesto cero no demuestra exención o tarifa cero;
+22. el documento fiscal mantiene autoridad externa mientras corresponda;
+23. el flujo `makos_excel` vigente es agregado y no demuestra propinas ni pagos individuales;
+24. los ceros generados por el parser actual para campos ausentes no son evidencia de cero informado por Makos;
+25. las fórmulas actuales de neto y bruto son cálculos legacy agregados, no fórmula canónica de venta individual;
+26. la fundación Wompi existente no define el contrato del POS externo;
+27. la especificación técnica de Makos sigue no provisionada y no se inventan sus campos;
+28. esta tarea no modifica código, migraciones, Supabase, datos, credenciales, endpoints, webhooks, pagos reales ni efectos financieros;
+29. `INT-POS-008` permanece exclusivamente reservada.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-007` materializa para la transición Makos → PULSO comportamientos ya protegidos por la cobertura canónica vigente: separación de venta, pago, caja y documento fiscal; pagos parciales y medios combinados con importe, moneda, proveedor, referencia y estado; conservación de propinas y descuentos; prohibición de asumir timeout como fallo; convergencia del POS externo y PULSO en el mismo contrato; conciliación de pagos incongruentes y montos o monedas divergentes; preservación de fuente y diferencias sin sobrescribir historia. No incorpora una capacidad ejecutable nueva ni una excepción fuera de esas reglas ya protegidas, por lo que el registro 04A permanece sin cambios.
+
+#### 22. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-PULSO-005`, cobertura de snapshots de precio, impuestos, descuentos y separación de estados del ciclo comercial;
+- `TREQ-PULSO-006`, cobertura primaria de venta, pago, caja, documento fiscal, propina, descuento, pagos parciales y medios combinados, importe, moneda, proveedor, referencia, estado, timeout y conciliación;
+- `TREQ-INTEGRATION-006`, cobertura de fuente empresarial única y conservación de diferencias sin sobrescribir historia;
+- `TREQ-INTEGRATION-014`, cobertura de convergencia POS externo/PULSO, parcialidad, pagos incongruentes, idempotencia y conciliación;
+- `TREQ-INTEGRATION-017`, cobertura de venta y pago hacia NUMERA mediante contratos correlacionados, montos y monedas divergentes, pagos sin aplicación y reversos;
+- `TREQ-NUMERA-001`, cobertura de reconciliación financiera contra hechos y documentos fuente;
+- `TREQ-NUMERA-002`, cobertura de monto, moneda, impuesto, fuente, correlación y correcciones compensatorias;
+- `TREQ-NUMERA-003`, cobertura de pagos parciales, aplicación de pagos, saldos y conciliación.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 23. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva el contrato de venta y línea de `INT-POS-005` sin fusionar venta y pago;
+2. conserva los estados y timestamps de `INT-POS-006` sin derivarlos de valores monetarios;
+3. define slots mínimos comunes para componentes monetarios;
+4. distingue valor ausente de cero explícito;
+5. conserva moneda, signo y precisión sin defaults no acreditados;
+6. define importación de descuentos de encabezado y línea sin reparto artificial;
+7. diferencia descuento de devolución, reembolso y compensación;
+8. define importación de impuestos sin asumir tasa, base, exención o inclusión cuando no exista evidencia;
+9. conserva autoridad fiscal externa;
+10. define propina como componente separado;
+11. impide usar propina como ingreso de producto, impuesto, descuento o pago;
+12. define un hecho de pago separado de la venta;
+13. admite cero, uno o varios pagos por venta;
+14. admite pagos parciales y medios combinados;
+15. conserva identidad, medio, proveedor, importe, moneda, estado y referencias de pago cuando existan;
+16. define `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` para interpretación de medios;
+17. define vocabulario mínimo de estado de pago sin importar los estados físicos de Wompi ni inventar los de Makos;
+18. impide tratar timeout o resultado desconocido como fallo;
+19. impide tratar `CANCELLED` como reembolso;
+20. conserva señales de reversión para `INT-POS-008`;
+21. prohíbe sumar monedas distintas sin conversión autorizada;
+22. prohíbe redondear o reasignar componentes para cuadrar;
+23. define diferencias monetarias como conciliables en `INT-POS-020`;
+24. clasifica uno por uno los componentes monetarios disponibles y ausentes del flujo `makos_excel`;
+25. documenta que el parser actual puede producir ceros técnicos para campos ausentes sin elevarlos a verdad de fuente;
+26. clasifica la fundación Wompi como implementación existente que no define el binding Makos;
+27. define evidencia mínima requerida del futuro binding de Makos;
+28. asigna cada bloqueo a una tarea exacta con condición de salida;
+29. genera cero cambios `TREQ-*` por existir cobertura canónica suficiente;
+30. no crea una copia del registro 04A;
+31. no modifica código, DDL, DML, migraciones, Supabase, datos, credenciales, pagos, endpoints o configuración remota;
+32. mantiene `INT-POS-008` como única siguiente tarea reservada.
+
+---
+
+#### 24. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
+
+
 ### [ ] INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
 ### [ ] INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
 ### [ ] INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
