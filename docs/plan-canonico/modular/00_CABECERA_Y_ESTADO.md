@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **784** |
+| Tareas aprobadas | **785** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **810** |
+| Tareas no iniciadas | **809** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.18% (784/1594)** |
+| Porcentaje de completamiento | **49.25% (785/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-023 — Definir transición futura desde POS externo hacia PULSO** |
-| Tarea actual | **INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente** |
+| Última tarea aprobada | **INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente** |
+| Tarea actual | **INT-SALES-001 — Definir contrato para que PULSO registre la venta** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-SALES-001 — Definir contrato para que PULSO registre la venta** |
+| Siguiente tarea | **INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 68 de 83 aprobadas; INT-POS-024 pendiente** |
+| Progreso del bloque | **BLOQUE X: 69 de 83 aprobadas; INT-SALES-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO |
-| Tarea actual | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente — **NO INICIADA** |
-| Siguiente tarea | `INT-SALES-001` — Definir contrato para que PULSO registre la venta |
+| Última aprobada | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente |
+| Tarea actual | `INT-SALES-001` — Definir contrato para que PULSO registre la venta — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-002` — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 68 DE 83 APROBADAS — ACTUAL INT-POS-024** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 69 DE 83 APROBADAS — ACTUAL INT-SALES-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
-        ↓
-TAREA ACTUAL
 INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-SALES-001 — Definir contrato para que PULSO registre la venta
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 68 de 83 tareas aprobadas
+BLOQUE X — 69 de 83 tareas aprobadas
 ```

@@ -16145,7 +16145,631 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente`
 
 
-### [ ] INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
+### ✅ INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-023 — Definir transición futura desde POS externo hacia PULSO`  
+**Tarea siguiente:** `INT-SALES-001 — Definir contrato para que PULSO registre la venta`  
+**Tipo de tarea:** documental; definición normativa y materializada del tratamiento de las credenciales y accesos del POS externo cuando PULSO asuma la autoridad de nuevas ventas para un alcance cortado, distinguiendo mantenimiento residual mínimo, reducción, revocación, retiro local, no aplicabilidad y bloqueo por evidencia, sin ejecutar revocaciones, crear credenciales, modificar cuentas externas, retirar físicamente el adaptador, modificar código, SQL, migraciones, Supabase, datos, endpoints, webhooks o configuración remota durante esta tarea  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente durante la transición:** `Makos`  
+**Fuente empresarial objetivo de nuevas ventas después del corte:** `PULSO`  
+**Identidad externa de inventario relacionada:** `EXT-SYS-013 — POS externo vigente`  
+**Cambios físicos autorizados:** ninguno  
+**Estado operativo actual del retiro de credencial:** `BLOQUEADO_POR_EVIDENCIA`  
+**Fundamento del bloqueo:** Makos está identificado como POS externo vigente, pero el binding técnico del tenant, la credencial real, su autoridad de revocación y sus capacidades de reducción siguen sin acreditación suficiente; además, el corte de fuente definido en `INT-POS-023` no ha sido ejecutado por esta fase documental
+
+---
+
+#### 1. Propósito
+
+Definir cómo debe reducirse o revocarse el acceso técnico del POS externo cuando PULSO haya asumido de forma efectiva la autoridad sobre las nuevas ventas de un alcance, sin borrar historia, perder evidencia necesaria, afectar superficies externas que no pertenezcan al corte de ventas ni conservar privilegios innecesarios por conveniencia.
+
+La tarea especializa para la transición Makos → PULSO los contratos ya aprobados de lifecycle y retiro de integraciones externas.
+
+Regla raíz:
+
+```text
+PULSO ASUME AUTORIDAD DE NUEVAS VENTAS
+        ↓
+CLASIFICAR NECESIDAD RESIDUAL REAL DE MAKOS
+        ├── EXISTE Y ESTÁ ACREDITADA
+        │       ↓
+        │   CONSERVAR O REDUCIR AL MÍNIMO NECESARIO
+        │       ↓
+        │   CERRAR RESIDUALES
+        │       ↓
+        │   REVOCAR CUANDO YA NO SEA NECESARIO
+        │
+        ├── NO EXISTE
+        │       ↓
+        │   REVOCAR CREDENCIAL APLICABLE
+        │       ↓
+        │   ACREDITAR INVALIDEZ
+        │       ↓
+        │   RETIRAR REFERENCIAS LOCALES OBSOLETAS
+        │
+        └── NO PUEDE ACREDITARSE EL BINDING O LA CREDENCIAL
+                ↓
+            BLOQUEADO_POR_EVIDENCIA
+```
+
+El objetivo no es “apagar Makos” de manera global. El objetivo es que ninguna capacidad técnica vinculada a la fuente anterior conserve más autoridad o alcance del estrictamente necesario después del corte.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-024` deja materializadas las siguientes decisiones obligatorias:
+
+1. La autoridad de fuente definida por `INT-POS-023` y el lifecycle de credenciales son controles distintos pero coordinados.
+2. PULSO puede ser autoridad de nuevas ventas de un alcance aunque todavía exista acceso Makos exclusivamente para historia, evidencia o conciliación acreditadas.
+3. Un acceso Makos residual no puede originar nuevas ventas dentro de un alcance ya transferido a PULSO.
+4. No se conserva una credencial externa por conveniencia, fallback implícito o posibilidad futura no aprobada.
+5. No se revoca una credencial a ciegas cuando todavía existan residuales históricos que requieran legítimamente esa superficie y no exista otra evidencia suficiente.
+6. La necesidad residual debe estar identificada por alcance, finalidad, propietario y condición de salida.
+7. Cuando el proveedor permita reducir privilegios, la credencial residual queda limitada al mínimo técnicamente suficiente para la necesidad acreditada.
+8. La reducción nunca amplía scope, ambiente, cuenta, tenant, principal técnico ni autoridad empresarial.
+9. Si el proveedor no soporta la granularidad necesaria, no se inventa una reducción inexistente.
+10. Si la credencial cubre un alcance mayor que el corte de una sede o terminal, la revocación parcial solo puede ejecutarse cuando el mecanismo real permita separar el material sin afectar alcances todavía legítimos.
+11. Cuando no exista dependencia residual legítima, la credencial aplicable debe revocarse en la autoridad que realmente puede aceptarla.
+12. Eliminar una variable, archivo, referencia local o configuración no demuestra revocación.
+13. Una credencial revocada no se reactiva; cualquier futura habilitación usa material válido bajo una nueva decisión autorizada.
+14. Si existe compromiso o sospecha razonable de compromiso, la seguridad prevalece: se bloquea nuevo uso y se revoca conforme al lifecycle aplicable sin mantener el material comprometido para completar un drenaje ordinario.
+15. El retiro de la credencial no borra ventas, receipts, mappings, payloads gobernados, auditoría, conciliaciones, compensaciones ni referencias históricas necesarias.
+16. Los eventos Makos históricos recibidos tarde conservan su fuente original aunque la credencial ya haya sido reducida o retirada.
+17. Replay y backfill históricos no reabren autoridad de fuente ni justifican una credencial más amplia.
+18. El retiro de la credencial de ventas no implica retirar credenciales o cuentas pertenecientes a pagos, fiscalidad, administración u otra superficie que conserve contrato propio.
+19. Una cuenta humana, una cuenta administrativa del proveedor y una credencial técnica de integración no se tratan como el mismo objeto.
+20. Si el acceso existente resulta ser humano, compartido o no segregado, no se lo revoca por inferencia como si fuera una credencial exclusiva de integración; se clasifica el hallazgo y se resuelve su ownership antes de una acción física.
+21. El secreto o valor material nunca forma parte de la evidencia documental de reducción o revocación.
+22. La evidencia conserva referencias no sensibles, alcance, ambiente, principal, consumidores, motivo, decisión, autoridad de revocación, momento efectivo y resultado verificable cuando exista.
+23. NEXO, NUMERA y PASS no cambian contratos ni credenciales por esta transición.
+24. La revocación de Makos no autoriza escrituras directas, compensaciones, correcciones ni cierres sobre dominios internos.
+25. El retiro físico definitivo del adaptador externo permanece en `INT-SALES-011`; esta tarea solo gobierna el acceso del POS externo dentro de la transición temporal.
+26. Se crean cero requisitos `TREQ-*` y se modifican cero requisitos `TREQ-*` porque la transición POS externo → PULSO, el lifecycle de credenciales y el retiro de integraciones ya disponen de cobertura canónica vigente.
+27. Se crean cero objetos físicos y se modifican cero objetos físicos.
+
+---
+
+#### 3. Dependencias consumidas y preservadas
+
+La tarea consume sin reabrir:
+
+- `INT-POS-001`, que identifica a Makos como POS externo vigente y mantiene sin demostrar el binding API/webhook y sus credenciales técnicas;
+- `INT-POS-002`, para cualquier capacidad real que deba acreditarse con evidencia del proveedor o tenant;
+- `INT-POS-003`, para la autoridad temporal del POS externo sobre el hecho de venta;
+- `INT-POS-004`, para credencial independiente, revocable, separada de actores humanos, con lectura efectiva como techo inicial y sin acceso directo a Supabase;
+- `INT-POS-009`, para conservación gobernada de payload, versión, hash, recepción y procedencia;
+- `INT-POS-013`, para identidad e idempotencia de la fuente externa;
+- `INT-POS-014`, para transports externos sin alterar la semántica del hecho;
+- `INT-POS-019`, para compensaciones sin borrar historia;
+- `INT-POS-020`, para conciliación diaria de ventas y efectos;
+- `INT-POS-021`, para binding real sin efectos;
+- `INT-POS-022`, para piloto controlado con efectos;
+- `INT-POS-023`, para el corte de autoridad por sede, terminal y fecha efectiva y para el handoff de residuales históricos;
+- `INT-EXT-005`, para mínimo privilegio;
+- `INT-EXT-006`, para separación por ambiente;
+- `INT-EXT-007`, para custodia segura y clasificación del material;
+- `INT-EXT-008`, para rotación, expiración, revocación y retiro local;
+- `INT-EXT-019`, para retiro controlado de una integración y preservación histórica;
+- `INT-EXT-020`, para la prohibición de credenciales compartidas entre integraciones, sin redefinirla aquí;
+- `INT-SALES-008` a `INT-SALES-011`, como responsabilidades permanentes de convivencia, corte, doble fuente y retiro del adaptador.
+
+Ninguna dependencia se interpreta como evidencia de que una credencial Makos concreta exista, esté activa, sea de un tipo específico o soporte un scope determinado.
+
+---
+
+#### 4. Unidad de decisión
+
+La decisión de credencial no se toma globalmente por nombre de proveedor.
+
+La unidad mínima deberá poder distinguir, cuando exista evidencia real:
+
+```text
+SISTEMA / PROVEEDOR
++
+CUENTA O INSTANCIA
++
+AMBIENTE
++
+INTEGRATION PRINCIPAL
++
+SUPERFICIE DE CREDENCIAL
++
+CREDENTIAL REF NO SENSIBLE
++
+CONSUMIDORES AUTORIZADOS
++
+ALCANCE TÉCNICO REAL
++
+ALCANCE DE CORTE RELACIONADO
++
+NECESIDAD RESIDUAL
+→ DECISIÓN DE ACCESO
+```
+
+La sede, terminal y fecha efectiva gobiernan la autoridad de ventas. No se presume que el proveedor permita expresar esos mismos límites como scopes de credencial.
+
+---
+
+#### 5. Vocabulario de decisión
+
+Para cada superficie aplicable se utiliza una de estas decisiones:
+
+| Decisión                   | Semántica                                                                                                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MANTENER_RESIDUAL_MINIMO` | todavía existe una necesidad histórica o de conciliación acreditada y el material vigente ya está limitado al mínimo disponible sin autoridad para nuevas ventas |
+| `REDUCIR`                  | existe necesidad residual, pero el mecanismo real permite disminuir scopes, superficies, consumidores o privilegios sin perder la evidencia necesaria            |
+| `REVOCAR`                  | ya no existe consumidor o residual legítimo que requiera el material, o la seguridad exige invalidarlo de inmediato                                              |
+| `NO_APLICA_CREDENCIAL`     | el mecanismo material no utiliza una credencial externa revocable para esa superficie o no existe material aplicable que retirar                                 |
+| `BLOQUEADO_POR_EVIDENCIA`  | no puede identificarse con seguridad la credencial, autoridad de revocación, consumidor, alcance, dependencia o capacidad real de reducción                      |
+
+Estas decisiones son documentales. No equivalen a una mutación remota ya ejecutada.
+
+---
+
+#### 6. Matriz de decisión por estado del corte
+
+| Estado del alcance | Necesidad Makos posterior                                      | Decisión documental                  | Regla                                                                                            |
+| ------------------ | -------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| corte no efectivo  | operación temporal todavía autorizada                          | `NO_EJECUTAR_RETIRO`                 | Makos conserva la autoridad definida para el intervalo anterior; esta tarea no adelanta el corte |
+| corte efectivo     | residuales históricos acreditados y acceso ya mínimo           | `MANTENER_RESIDUAL_MINIMO`           | solo lectura/evidencia/conciliación; cero autoridad para nuevas ventas                           |
+| corte efectivo     | residuales históricos acreditados y scope reducible            | `REDUCIR`                            | limitar al mínimo que el proveedor realmente soporte                                             |
+| corte efectivo     | cero residuales dependientes                                   | `REVOCAR`                            | invalidar en la autoridad aceptante y luego retirar referencias obsoletas                        |
+| cualquier estado   | material comprometido o confianza rota                         | `REVOCAR` con prioridad de seguridad | no conservar material comprometido para drenaje ordinario                                        |
+| cualquier estado   | no existe credencial externa aplicable                         | `NO_APLICA_CREDENCIAL`               | no fabricar una operación de revocación                                                          |
+| cualquier estado   | binding, consumidores o autoridad de revocación no acreditados | `BLOQUEADO_POR_EVIDENCIA`            | no ejecutar ni afirmar reducción o revocación                                                    |
+
+`NO_EJECUTAR_RETIRO` es una condición de la decisión de transición y no un estado nuevo del lifecycle de credenciales.
+
+---
+
+#### 7. Necesidad residual válida después del corte
+
+Una credencial Makos solo puede mantenerse temporalmente después del corte cuando exista una necesidad concreta y acreditada, por ejemplo:
+
+- consultar una venta Makos pre-corte todavía pendiente de binding;
+- resolver un resultado desconocido de una operación histórica;
+- obtener evidencia necesaria para una conciliación abierta;
+- verificar una revisión tardía del hecho original;
+- soportar una compensación histórica que requiera evidencia externa;
+- cerrar un residual expresamente entregado por `INT-POS-023`.
+
+Cada residual deberá conservar:
+
+- identidad o referencia del caso;
+- alcance de origen;
+- finalidad de la consulta;
+- propietario;
+- superficie de Makos necesaria;
+- acceso mínimo requerido;
+- evidencia faltante;
+- siguiente acción;
+- condición objetiva de cierre.
+
+No son necesidades residuales válidas:
+
+- “por si acaso”;
+- fallback automático de PULSO;
+- posibilidad de volver a Makos sin una nueva decisión de autoridad;
+- generar nuevas ventas en la terminal transferida;
+- mantener una segunda fuente activa;
+- ampliar el periodo histórico sin motivo;
+- conservar escritura porque el proveedor la incluya por defecto cuando exista una alternativa de menor privilegio acreditada.
+
+---
+
+#### 8. Regla de reducción de alcance
+
+`REDUCIR` solo puede materializarse cuando el mecanismo real del proveedor permita demostrar qué privilegio se retira y cuál permanece.
+
+La reducción puede afectar, según capacidades realmente acreditadas:
+
+- operaciones permitidas;
+- superficies o recursos consultables;
+- consumidores técnicos;
+- cuenta o instancia;
+- ambiente;
+- ventanas o permisos históricos si el proveedor los modela;
+- otros scopes nativos realmente documentados.
+
+Queda prohibido afirmar que existe scope por sede, terminal, fecha, endpoint o acción si el proveedor no lo acredita.
+
+Resultado esperado de una reducción válida:
+
+```text
+CAPACIDAD ANTERIOR
+-
+CAPACIDAD YA INNECESARIA
+=
+CAPACIDAD RESIDUAL MÍNIMA ACREDITADA
+```
+
+La capacidad residual nunca incluye autoridad empresarial para nuevas ventas post-corte.
+
+---
+
+#### 9. Credencial de granularidad más amplia que el corte
+
+Puede ocurrir que una sola credencial real cubra varias sedes, terminales o superficies mientras `INT-POS-023` corta la autoridad de ventas con mayor granularidad.
+
+Reglas:
+
+1. no se representa una revocación parcial si la autoridad externa no la soporta;
+2. no se revoca material que todavía sea indispensable para un alcance externo legítimo no transferido;
+3. no se usa el alcance amplio de la credencial como argumento para mantener a Makos como segunda fuente de un alcance ya cortado;
+4. el adaptador debe bloquear semánticamente nuevas ventas post-corte aunque la credencial técnica siga siendo capaz de leerlas;
+5. cuando el proveedor permita separar material, una implementación posterior podrá crear o adoptar referencias segregadas conforme al lifecycle aprobado;
+6. cualquier solapamiento técnico debe tener propietario y condición de cierre; no puede convertirse en validez dual indefinida.
+
+Si la separación es necesaria para revocar de forma segura y no existe mecanismo acreditado, el resultado permanece `BLOQUEADO_POR_EVIDENCIA` o `MANTENER_RESIDUAL_MINIMO` según exista una dependencia legítima demostrada.
+
+---
+
+#### 10. Revocación completa
+
+`REVOCAR` exige distinguir cuatro hechos:
+
+```text
+DEJAR DE USAR
+≠
+DESACTIVAR BINDING
+≠
+REVOCAR EN AUTORIDAD EXTERNA
+≠
+RETIRAR REFERENCIA LOCAL
+```
+
+Una revocación completa futura deberá demostrar, cuando aplique:
+
+1. alcance y credencial identificados por referencia no sensible;
+2. ausencia de nuevos consumidores legítimos;
+3. residuales cerrados o con ruta que no dependa del material;
+4. binding desactivado para nuevas operaciones del alcance;
+5. invalidación en la autoridad que acepta la credencial;
+6. rechazo del material anterior cuando exista una prueba segura soportada;
+7. ausencia de fallback hacia el material retirado;
+8. referencias activas retiradas de consumidores;
+9. copias obsoletas tratadas conforme a la custodia aprobada;
+10. historia y evidencia preservadas sin conservar el valor secreto.
+
+Si una de las puertas aplicables no puede demostrarse, no se declara revocación completa.
+
+---
+
+#### 11. Revocación de emergencia
+
+Ante exposición confirmada o sospecha razonable de compromiso:
+
+```text
+BLOQUEAR NUEVO USO
+→ REVOCAR EN LA AUTORIDAD
+→ ACREDITAR INVALIDEZ CUANDO SEA POSIBLE
+→ CLASIFICAR IMPACTO
+→ CONCILIAR RESULTADOS Y RESIDUALES
+```
+
+La credencial comprometida no se conserva activa para consultar pendientes por comodidad.
+
+La recuperación de evidencia deberá usar otra superficie autorizada, una credencial sucesora correctamente gobernada o una ruta manual/controlada que la tarea de implementación aplicable haya autorizado.
+
+---
+
+#### 12. Accesos humanos, administrativos y técnicos
+
+La transición distingue:
+
+```text
+USUARIO HUMANO MAKOS
+≠
+CUENTA ADMINISTRATIVA MAKOS
+≠
+INTEGRATION PRINCIPAL VENTO
+≠
+CREDENCIAL TÉCNICA DEL BINDING
+```
+
+Reglas:
+
+1. una credencial técnica no se reemplaza por la contraseña de un empleado;
+2. una cuenta humana no se elimina solo porque PULSO asuma las ventas si conserva otra finalidad empresarial autorizada;
+3. una cuenta humana que solo exista para sostener la integración deberá tratarse por su contrato de identidad y offboarding correspondiente, no como si fuera automáticamente una API key;
+4. una cuenta administrativa del proveedor no se revoca por inferencia si administra otras superficies válidas;
+5. una futura reducción debe operar sobre el material y la autoridad exactos que correspondan.
+
+---
+
+#### 13. Separación de superficies ajenas al corte de ventas
+
+El cambio de fuente de ventas no autoriza a retirar por inferencia:
+
+- facturación o documento fiscal;
+- pagos;
+- tesorería;
+- informes que sigan teniendo finalidad autorizada;
+- administración contractual de la cuenta;
+- soporte del proveedor;
+- evidencia histórica sujeta a retención;
+- cualquier otra superficie con propietario y contrato independientes.
+
+Si una misma credencial material cubre ventas y otra superficie todavía necesaria, la tarea futura de implementación debe resolver segregación o alcance antes de una revocación total.
+
+La ausencia de segregación no restaura autoridad de Makos sobre las nuevas ventas post-corte.
+
+---
+
+#### 14. Relación con eventos tardíos, replay y backfill
+
+Revocar la credencial no reescribe la historia.
+
+Reglas:
+
+1. una venta Makos pre-corte conserva `source_system = Makos` aunque se procese después;
+2. una revisión histórica conserva relación con la venta original;
+3. replay conserva identidad, audiencia y resultados previos;
+4. backfill no transforma datos Makos en ventas PULSO nativas;
+5. un evento pendiente no autoriza a volver a habilitar una credencial retirada sin nueva autorización;
+6. si la evidencia necesaria quedó preservada antes del retiro, se utiliza esa evidencia gobernada en lugar de mantener acceso externo indefinido;
+7. un resultado desconocido conserva conciliación y propietario; no se declara fracaso por perder el acceso externo.
+
+---
+
+#### 15. Relación con NEXO, NUMERA y PASS
+
+La reducción o revocación del acceso Makos no modifica:
+
+- el ledger físico de NEXO;
+- hechos económicos de NUMERA;
+- ledger o saldo de PASS;
+- receipts de consumidoras;
+- idempotencia de efectos ya confirmados;
+- compensaciones pendientes;
+- autoridad de cada aplicación propietaria.
+
+Ninguna credencial Makos se utiliza como medio para escribir directamente NEXO, NUMERA, PASS o Supabase.
+
+Un consumidor interno que ya recibió un evento conserva su tratamiento aunque el proveedor externo sea retirado posteriormente.
+
+---
+
+#### 16. Relación con el adaptador
+
+Credencial y adaptador tienen lifecycles distintos.
+
+```text
+CREDENCIAL REVOCADA
+NO IMPLICA
+CÓDIGO DEL ADAPTADOR BORRADO
+```
+
+```text
+ADAPTADOR CONSERVADO PARA HISTORIA / EVIDENCIA
+NO IMPLICA
+CREDENCIAL ACTIVA PARA NUEVAS VENTAS
+```
+
+`INT-SALES-011` mantiene la responsabilidad permanente de retirar el adaptador externo sin modificar consumidoras internas.
+
+Esta tarea no borra código, rutas, staging, contratos ni archivos históricos.
+
+---
+
+#### 17. Estados lógicos heredados de lifecycle
+
+Cuando exista una credencial real, se preservan los estados de `INT-EXT-008`:
+
+```text
+ACTIVA
+ROTACION_EN_CURSO
+SOLAPAMIENTO_CONTROLADO
+REVOCADA
+EXPIRADA
+RETIRADA
+```
+
+La decisión `MANTENER_RESIDUAL_MINIMO` o `REDUCIR` describe el tratamiento del alcance; no crea un estado alternativo que permita saltar el lifecycle.
+
+Una credencial `REVOCADA`, `EXPIRADA` o `RETIRADA` no vuelve a `ACTIVA`.
+
+---
+
+#### 18. Evidencia mínima de una futura reducción o revocación
+
+Sin copiar material secreto, la evidencia deberá poder relacionar:
+
+- referencia no sensible del sistema y binding;
+- cuenta o instancia cuando exista;
+- ambiente;
+- `IntegrationPrincipal`;
+- superficie de credencial;
+- credential ref no sensible;
+- clase del material;
+- alcance anterior conocido;
+- alcance residual permitido, si existe;
+- sede, terminal y fecha efectiva del corte relacionado cuando corresponda;
+- consumidores identificados;
+- residuales históricos;
+- decisión `MANTENER_RESIDUAL_MINIMO`, `REDUCIR`, `REVOCAR`, `NO_APLICA_CREDENCIAL` o `BLOQUEADO_POR_EVIDENCIA`;
+- motivo;
+- autoridad o mecanismo de revocación cuando esté acreditado;
+- actor o principal autorizado que ejecutó la acción futura;
+- instante efectivo;
+- resultado de la operación;
+- evidencia de invalidez o rechazo cuando sea verificable;
+- referencias locales retiradas;
+- pendientes y propietario cuando el cierre no sea terminal.
+
+El valor de la credencial, private key, password, token reutilizable o secreto equivalente queda fuera de esta evidencia.
+
+---
+
+#### 19. Estado técnico-documental actual de Makos
+
+La evidencia canónica vigente permite afirmar:
+
+- Makos está identificado como POS externo vigente;
+- el flujo físico demostrado en Vento utiliza importación `makos_excel`;
+- la existencia de una API o webhook utilizable por el tenant no está acreditada suficientemente para congelar un binding técnico;
+- no están acreditados el mecanismo real de autenticación, scopes, autoridad de revocación ni lifecycle físico de una credencial Makos;
+- `EXT-SYS-013` permanece sin una credencial externa instanciable dentro de la matriz transversal de retiro;
+- por tanto, esta tarea no puede afirmar que exista hoy una credencial técnica concreta que deba reducirse o revocarse.
+
+Resultado actual:
+
+```text
+DECISIÓN NORMATIVA = ESPECIFICADA
+EJECUCIÓN DE REDUCCIÓN / REVOCACIÓN = BLOQUEADA_POR_EVIDENCIA
+REVOCACIONES REALES EJECUTADAS = 0
+```
+
+Este bloqueo no invalida el contrato. Impide únicamente fingir una operación sobre material no acreditado.
+
+---
+
+#### 20. Matriz de pendientes y condiciones de salida
+
+| Materia                                           | Estado                                      | Propietaria                                                                  | Condición de salida                                                                                |
+| ------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| binding real Makos                                | `BLOQUEADO_POR_EVIDENCIA`                   | integración Makos / PULSO bajo contratos `INT-POS-001` a `INT-POS-004`       | proveedor/tenant acredita cuenta, mecanismo, material o ausencia de material y autoridad aplicable |
+| corte real de una sede/terminal                   | `FUERA_DE_ALCANCE` de esta fase             | implementación de `INT-POS-023` / responsabilidad permanente `INT-SALES-009` | alcance se transfiere con gates satisfechos y evidencia operativa                                  |
+| residuales históricos                             | `PENDIENTE_DE_EVIDENCIA` hasta ejecución    | `INT-POS-020` + alcance de corte                                             | cada residual queda resuelto o con ruta que no requiera acceso más amplio                          |
+| alcance mínimo residual                           | `ESPECIFICADO` como regla                   | `INT-POS-024` + lifecycle `INT-EXT-005` a `INT-EXT-008`                      | mecanismo real acredita el mínimo que puede mantenerse                                             |
+| reducción técnica                                 | `BLOQUEADO_POR_EVIDENCIA`                   | implementación futura del binding                                            | proveedor soporta y acredita una reducción concreta sin ampliar privilegios                        |
+| revocación técnica                                | `BLOQUEADO_POR_EVIDENCIA`                   | implementación futura del binding                                            | material identificable, consumidores resueltos y autoridad real de revocación acreditada           |
+| retiro local de referencias                       | `FUERA_DE_ALCANCE` físico                   | implementación propietaria del binding                                       | credencial inválida/no aplicable y cero consumidores autorizados dependientes                      |
+| credencial compartida o consumidores no resueltos | `BLOQUEADO` para revocación ciega           | `INT-EXT-020` y propietarias afectadas                                       | ownership y segregación quedan resueltos antes de retirar material                                 |
+| retiro definitivo del adaptador                   | `RESERVADO` para responsabilidad permanente | `INT-SALES-011`                                                              | no existen consumidoras dependientes ni residuales que requieran el adaptador                      |
+
+Ningún pendiente queda sin propietario y condición de salida.
+
+---
+
+#### 21. Prohibiciones
+
+Queda prohibido:
+
+1. revocar material antes de que exista evidencia suficiente de qué material es y qué consumidores dependen de él, salvo emergencia de seguridad acreditada;
+2. declarar revocación porque se eliminó una variable local;
+3. declarar reducción porque el adaptador dejó de usar una operación;
+4. inventar scopes nativos de Makos;
+5. inventar una fecha de expiración;
+6. inventar una API key, token, usuario técnico o cuenta de servicio;
+7. conservar credencial de escritura cuando solo se necesite lectura y exista un mecanismo menor acreditado;
+8. mantener credenciales válidas indefinidamente por fallback;
+9. usar una credencial Makos para PULSO;
+10. reutilizar una credencial revocada;
+11. usar material de otro ambiente;
+12. compartir material con otra integración para evitar su retiro;
+13. revocar una credencial compartida o de consumidores no resueltos como si fuera exclusiva;
+14. eliminar una cuenta completa del proveedor por inferencia desde el corte de ventas;
+15. retirar pagos, fiscalidad, tesorería u otra superficie ajena al corte sin contrato propietario;
+16. borrar historia, receipts, mappings o auditoría;
+17. borrar cuarentena, dead-letter, conciliaciones o residuales por retirar acceso;
+18. declarar que un resultado desconocido no ocurrió porque la credencial ya no existe;
+19. reactivar Makos como fuente de nuevas ventas para resolver un residual histórico;
+20. crear una venta PULSO nueva para sustituir un hecho Makos pre-corte;
+21. modificar NEXO, NUMERA o PASS durante la revocación de Makos;
+22. registrar secretos en evidencia, logs, métricas, tickets o documentación;
+23. ejecutar revocaciones reales durante esta tarea documental;
+24. crear credenciales sucesoras durante esta tarea documental;
+25. modificar código, SQL, migraciones, Supabase, datos, endpoints, webhooks, cuentas, secretos o configuración remota durante esta tarea;
+26. adelantar el retiro físico del adaptador de `INT-SALES-011`;
+27. iniciar o desarrollar `INT-SALES-001`.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para el cierre de la transición Makos → PULSO comportamientos ya protegidos por el registro vigente: fuente empresarial única y corte sin doble emisión; lifecycle de credenciales con mínimo privilegio, separación de ambientes, revocación y retiro; retiro de integraciones sin pérdida de historia; preservación de idempotencia, replay, resultados desconocidos, conciliación y residuales; y separación entre la fuente externa y los efectos propietarios. No introduce una capacidad ejecutable, permiso, credencial, endpoint, algoritmo o efecto empresarial nuevo.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 23. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, resultado recuperable, retry y conciliación;
+- `TREQ-INTEGRATION-006`, para fuente empresarial única, fuentes competidoras y resolución sin sobrescribir historia;
+- `TREQ-INTEGRATION-014`, que cubre expresamente `INT-POS-001` a `INT-POS-024`, el corte por sede, terminal y fecha efectiva y la prevención de doble emisión entre POS externo y PULSO;
+- `TREQ-INTEGRATION-155`, para replay y backfill preservando identidad, procedencia y audiencia;
+- `TREQ-AUTH-015`, para evidencia correlacionable de decisiones y acciones protegidas sin perder trazabilidad;
+- los requisitos vigentes consumidos por `INT-EXT-008` e `INT-EXT-019` para lifecycle, revocación, retiro, preservación histórica, resultado desconocido y conciliación.
+
+Ninguna fila cambia de identidad, texto, estado, relación, secuencia, propietaria ni evidencia por esta tarea.
+
+---
+
+#### 24. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-POS-023` como tarea anterior;
+2. mantiene `INT-SALES-001` como única tarea siguiente;
+3. preserva Makos como fuente histórica de sus ventas pre-corte;
+4. preserva PULSO como autoridad de nuevas ventas post-corte para alcances efectivamente transferidos;
+5. separa autoridad de fuente y lifecycle de credencial;
+6. define `MANTENER_RESIDUAL_MINIMO`, `REDUCIR`, `REVOCAR`, `NO_APLICA_CREDENCIAL` y `BLOQUEADO_POR_EVIDENCIA`;
+7. impide conservar acceso por conveniencia;
+8. permite acceso residual solo para necesidad acreditada;
+9. exige propietario y condición de salida para todo residual;
+10. define reducción solo sobre capacidades reales del proveedor;
+11. prohíbe inventar scopes por sede, terminal o fecha;
+12. trata credenciales más amplias que el corte sin fingir revocación parcial;
+13. impide revocar material necesario para un alcance legítimo no transferido;
+14. impide que una credencial amplia restaure doble autoridad de ventas;
+15. define revocación en la autoridad que acepta el material;
+16. separa dejar de usar, desactivar binding, revocar y retirar referencia local;
+17. exige evidencia de invalidez cuando sea verificable;
+18. impide fallback al material retirado;
+19. define revocación de emergencia por compromiso;
+20. impide conservar material comprometido para drenaje ordinario;
+21. separa usuario humano, cuenta administrativa, IntegrationPrincipal y credencial técnica;
+22. impide retirar por inferencia superficies de pagos, fiscalidad u otras ajenas al corte;
+23. preserva eventos tardíos, replay y backfill históricos;
+24. preserva NEXO, NUMERA y PASS sin cambios de contrato;
+25. separa lifecycle de credencial y lifecycle del adaptador;
+26. preserva `INT-SALES-011` como retiro permanente posterior del adaptador;
+27. define evidencia futura sin material secreto;
+28. mantiene el estado actual de ejecución `BLOQUEADO_POR_EVIDENCIA` mientras no exista binding y credencial Makos acreditados;
+29. no afirma una revocación física inexistente;
+30. asigna todos los bloqueos a propietario y condición de salida;
+31. genera cero requisitos nuevos de prueba;
+32. modifica cero requisitos de prueba;
+33. no genera una copia del registro canónico de requisitos;
+34. no modifica código, SQL, migraciones, Supabase, datos, credenciales, cuentas, endpoints, webhooks ni configuración remota;
+35. no ejecuta revocaciones, reducciones ni rotaciones reales;
+36. no retira físicamente el adaptador;
+37. no inicia ni desarrolla `INT-SALES-001`.
+
+---
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-023 — Definir transición futura desde POS externo hacia PULSO`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-001 — Definir contrato para que PULSO registre la venta`
+
 
 Flujo obligatorio:
 
