@@ -5607,7 +5607,637 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
 
 
-### [ ] INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
+### ✅ INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario`  
+**Tarea siguiente:** `INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`  
+**Tipo de tarea:** documental; definición normativa de identidad e idempotencia para hechos de venta y línea recibidos desde un POS externo, separando identidad de sistema, venta, línea, recepción, revisión, payload, transporte y efectos internos; sin implementar adaptadores, endpoints, webhooks, polling, tablas, índices, migraciones, Supabase, movimientos de inventario, efectos financieros, fidelización ni cambios remotos  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente:** `Makos`  
+**POS integral objetivo:** `PULSO`  
+**Línea base documental:** `vento-shell@96872fa200540fcae99a4b242696dcbdac82da0c`  
+**Contrato transversal consumido:** `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001@1.0.0`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento reconocerá que dos recepciones externas representan la misma venta o la misma línea lógica, cómo distinguirá un duplicado legítimo de una revisión o de un conflicto y cómo impedirá que reintentos, polling, webhooks, archivos repetidos, respuestas perdidas o reprocesamientos creen una segunda venta, una segunda línea o efectos internos adicionales.
+
+La tarea especializa para la transición POS externo → PULSO el contrato transversal `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001` sin crear una excepción local.
+
+Regla raíz:
+
+```text
+MISMO SISTEMA FUENTE
++ MISMA IDENTIDAD EXTERNA DE VENTA O LÍNEA
++ MISMA HUELLA LÓGICA MATERIAL
+        ↓
+MISMO HECHO LÓGICO
+        ↓
+RESULTADO RECUPERABLE
+        ↓
+CERO SEGUNDA VENTA
+CERO SEGUNDA LÍNEA
+CERO EFECTO ADICIONAL
+
+MISMA IDENTIDAD EXTERNA
++ HUELLA MATERIAL INCOMPATIBLE
+        ↓
+CONFLICTO EXPLÍCITO
+        ↓
+CERO SOBRESCRITURA
+CERO EFECTO NUEVO HASTA CONCILIACIÓN
+```
+
+La idempotencia se aplica a la identidad empresarial del hecho. No depende de que el transporte entregue exactamente una vez.
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-013` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. `INT-POS-005` define venta y línea como identidades estables que sobreviven a recepciones y revisiones posteriores.
+2. `INT-POS-006` separa identidad, estado, timestamps y revisión de la venta.
+3. `INT-POS-008` conserva anulaciones, devoluciones y reembolsos como hechos vinculados al original, no como borrado del original.
+4. `INT-POS-009` separa identidad de recepción, identidad externa, payload original, hash, versión de fuente, versión de adaptador, versión de mapping y correlación.
+5. El hash de payload es una guardia de integridad, equivalencia y conflicto; no es identidad empresarial por sí mismo.
+6. `source_row_number` es un localizador técnico y no una identidad de línea.
+7. `INT-POS-011` define mapping de producto sin convertir código, nombre, categoría, producto Vento, presentación o receta en identidad de venta o línea.
+8. `INT-POS-012` bloquea cualquier efecto físico dependiente de producto mientras una línea permanezca en cuarentena.
+9. La liberación de cuarentena no crea una nueva venta ni una nueva línea y no ejecuta inventario.
+10. `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001` establece transporte `AT_LEAST_ONCE` y efecto empresarial `AT_MOST_ONCE_PER_SCOPE_WITH_RESULT_REPLAY`.
+11. El registro transversal separa solicitud, comando propietario, evento, entrega, efecto consumidor, correlación y orden.
+12. Una clave idempotente solo es comparable dentro de su alcance y propietario.
+13. La misma clave y la misma huella lógica devuelven el resultado previo sin repetir el efecto.
+14. La misma clave con huella material distinta produce `CONFLICTING_REUSE`.
+15. Los efectos posteriores en NEXO, NUMERA y PASS tendrán sus propios alcances de idempotencia y no quedan sustituidos por esta tarea.
+
+---
+
+#### 3. Frontera exacta de idempotencia POS
+
+La idempotencia de la transición se separa en tres planos obligatorios:
+
+| Plano                      | Identidad protegida                     | Propósito                                                                           | No sustituye                                           |
+| -------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `SOURCE_SYSTEM_SCOPE`      | sistema e instancia lógica de origen    | evita colisiones entre proveedores, tenants o contextos externos distintos          | identidad de venta o línea                             |
+| `EXTERNAL_SALE_SCOPE`      | venta externa dentro del sistema fuente | reconoce la misma venta a través de reintentos, recepciones y transportes distintos | identidad de línea, revisión o efecto consumidor       |
+| `EXTERNAL_SALE_LINE_SCOPE` | línea externa subordinada a su venta    | reconoce la misma línea dentro de la misma venta                                    | identidad de producto, mapping, receta o efecto físico |
+
+No se autoriza una única clave global que mezcle todos los sistemas, ventas y líneas.
+
+---
+
+#### 4. Identidad del sistema fuente
+
+Toda clave de venta o línea deberá quedar contextualizada por el sistema fuente acreditado.
+
+El contexto lógico mínimo será:
+
+```text
+source_system
++
+source_instance_ref, cuando sea necesario para evitar colisiones entre tenants,
+empresas, cuentas, ambientes o espacios de numeración distintos
+```
+
+Reglas:
+
+1. `source_system` identifica la familia o sistema de origen, no una venta.
+2. Si el proveedor reutiliza numeración entre empresas, tenants, sedes, ambientes o cuentas, el contexto acreditado correspondiente deberá formar parte del alcance.
+3. `site_id` interno de Vento no sustituye una separación externa de namespaces que el proveedor realmente utilice.
+4. Un identificador de venta igual recibido desde dos sistemas fuente distintos no constituye automáticamente la misma venta.
+5. Un cambio de nombre comercial del proveedor no autoriza cambiar la identidad lógica del sistema sin una migración explícita.
+6. La identidad del adaptador, parser o canal de transporte no sustituye `source_system`.
+
+---
+
+#### 5. Clave canónica de venta externa
+
+Cuando la fuente provea un identificador estable de venta, la clave lógica de venta será conceptualmente:
+
+```text
+EXTERNAL_SALE_KEY
+=
+source_system
++ source_instance_ref cuando aplique
++ external_sale_id
+```
+
+`external_sale_id` deberá representar una venta individual estable en la semántica demostrada de la fuente.
+
+No podrán utilizarse por sí solos como `external_sale_id`:
+
+- hash del archivo;
+- hash del payload;
+- nombre del archivo;
+- fecha del archivo;
+- `sales_date`;
+- sede interna;
+- caja interna;
+- total de venta;
+- subtotal;
+- impuesto;
+- descuento;
+- cantidad total;
+- timestamp de recepción;
+- timestamp generado por Vento;
+- posición de fila;
+- nombre de producto;
+- código de producto;
+- categoría;
+- `catalog_item_id`;
+- `product_id`;
+- identificador interno de una fila importada;
+- identificador interno del lote de importación.
+
+---
+
+#### 6. Clave canónica de línea externa
+
+Cuando la fuente provea un identificador estable de línea, la clave lógica será conceptualmente:
+
+```text
+EXTERNAL_SALE_LINE_KEY
+=
+EXTERNAL_SALE_KEY
++ external_line_id
+```
+
+Reglas:
+
+1. la línea queda subordinada a la venta salvo evidencia explícita de que el proveedor garantiza identidad global de línea;
+2. el mismo `external_line_id` utilizado en dos ventas diferentes puede ser legítimo;
+3. `source_row_number` nunca se eleva a identidad empresarial de línea;
+4. el código, nombre, categoría o producto mapeado no identifican la línea;
+5. cambiar el mapping no cambia la identidad de la línea;
+6. cambiar la presentación o receta resuelta no cambia la identidad de la línea;
+7. una línea recibida nuevamente por otro transporte conserva su identidad cuando la fuente demuestra que representa el mismo hecho.
+
+---
+
+#### 7. Fuentes que no entregan identificador estable de venta o línea
+
+La ausencia de un identificador externo estable no autoriza a inventar una capacidad del proveedor.
+
+Cuando la fuente no demuestre `external_sale_id` o `external_line_id`:
+
+1. Vento conservará la identidad estable de recepción definida en `INT-POS-009` para poder reprocesar la misma evidencia de forma segura.
+2. Esa identidad de recepción no se presentará como identificador externo de venta ni de línea.
+3. Solo podrá definirse una identidad empresarial determinística alternativa si existe una composición de campos **definida por la fuente**, estable, no ambigua y demostrablemente única para el hecho correspondiente.
+4. Una composición heurística creada por Vento a partir de fecha, valor, sede, producto, posición, nombre o cantidades no podrá declararse identidad canónica.
+5. Si no existe evidencia suficiente para una venta individual, el flujo permanecerá como evidencia agregada o de conciliación y no se promoverá a venta individual canónica.
+6. Si no existe evidencia suficiente para una línea individual, no se fabricará una identidad de línea con base en orden de filas.
+7. La carencia de identidad necesaria deberá permanecer visible para conciliación y para el binding futuro del proveedor.
+
+---
+
+#### 8. Clasificación del flujo `makos_excel` vigente
+
+La implementación `makos_excel` observada conserva lote, sede, fecha, hash de archivo, filas y datos agregados por producto, pero no demuestra actualmente un identificador individual estable de venta ni un identificador individual estable de línea de venta.
+
+Por tanto:
+
+```text
+UNIQUE(source, site, date, file_hash)
+≠
+IDEMPOTENCIA POR VENTA
+
+source_row_number
+≠
+IDENTIDAD DE LÍNEA
+
+ID DE FILA INTERNA
+≠
+IDENTIDAD EXTERNA DE LÍNEA
+```
+
+Consecuencias:
+
+1. la unicidad actual del archivo es una guardia técnica de ingestión por lote;
+2. esa guardia puede impedir repetir exactamente un archivo, pero no demuestra deduplicación de ventas individuales;
+3. dos archivos distintos pueden contener el mismo hecho externo y no deberán considerarse ventas diferentes solo por tener hashes distintos;
+4. un mismo archivo recibido bajo otro nombre sigue siendo evaluado por su evidencia y no por el nombre;
+5. el flujo agregado actual no podrá declarar cumplimiento de la idempotencia canónica individual hasta que exista binding suficiente.
+
+---
+
+#### 9. Huella lógica de venta
+
+La identidad determina **qué hecho** se está comparando. La huella lógica determina **si el contenido material de ese hecho es compatible**.
+
+Para una venta individual, la huella versionada incluirá únicamente los campos materiales acreditados que puedan cambiar el significado empresarial, por ejemplo:
+
+- identidad del sistema fuente y contexto aplicable;
+- identidad de venta;
+- versión o secuencia de fuente cuando exista;
+- timestamp comercial autoritativo cuando exista;
+- estado comercial normalizado cuando sea material;
+- referencias de sede, terminal o caja externas cuando pertenezcan al hecho;
+- moneda;
+- importes materiales de encabezado;
+- referencias de documento fiscal cuando formen parte de la afirmación;
+- conjunto lógico de líneas o referencias verificables cuando corresponda al contrato de revisión.
+
+La huella excluirá metadatos volátiles de recepción o transporte.
+
+---
+
+#### 10. Huella lógica de línea
+
+Para una línea individual, la huella versionada incluirá los campos materiales acreditados, por ejemplo:
+
+- `EXTERNAL_SALE_KEY`;
+- `external_line_id` cuando exista;
+- versión o secuencia aplicable;
+- identidad externa del ítem cuando exista;
+- cantidad y unidad declaradas;
+- importes materiales de línea;
+- descuentos e impuestos declarados cuando correspondan;
+- estado de línea cuando sea material;
+- referencias externas que formen parte del hecho.
+
+Quedan fuera de la identidad y no deberán producir una nueva línea por sí solos:
+
+- `catalog_item_id` resuelto posteriormente;
+- `product_id` de Vento;
+- presentación resuelta;
+- receta resuelta;
+- versión de mapping;
+- estado de cuarentena;
+- actor que revisó el mapping;
+- timestamp técnico de recepción;
+- `attempt_id`, `delivery_id`, `trace_id` o equivalente;
+- orden físico de propiedades en el payload.
+
+---
+
+#### 11. Resultados idempotentes aplicables
+
+`INT-POS-013` reutiliza los resultados cerrados del contrato transversal y los aplica a venta y línea:
+
+| Resultado                   | Aplicación en POS                                                                                                 |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `APPLIED`                   | la venta o línea se reconoce por primera vez dentro de su alcance y queda disponible su resultado durable         |
+| `DUPLICATE_RESULT_RETURNED` | la misma identidad y la misma huella ya fueron reconocidas; se recupera el resultado sin crear otra venta o línea |
+| `CONFLICTING_REUSE`         | la misma identidad aparece con contenido incompatible que no puede explicarse como una revisión válida            |
+| `IN_PROGRESS_RECOVERABLE`   | otra ejecución posee el procesamiento del mismo alcance y el resultado deberá recuperarse                         |
+| `STALE_VERSION`             | una revisión anterior llega después de una versión más reciente y no puede hacer retroceder el estado             |
+| `OUT_OF_ORDER_DEFERRED`     | existe una secuencia o dependencia previa necesaria antes de aplicar la revisión                                  |
+| `RECONCILIATION_REQUIRED`   | la evidencia no permite determinar de forma segura si el hecho ya fue aplicado o si representa un conflicto       |
+| `REJECTED`                  | el contrato, autenticidad, contexto o contenido no permiten aceptar la afirmación                                 |
+
+No se crean estados idempotentes paralelos específicos de Makos.
+
+---
+
+#### 12. Duplicado verdadero
+
+Una recepción se clasifica como duplicado verdadero cuando concurren las siguientes condiciones:
+
+1. mismo alcance de sistema fuente;
+2. misma clave de venta o línea;
+3. misma versión lógica cuando exista o ausencia compatible de versión;
+4. misma huella material versionada;
+5. no existe evidencia de que la fuente esté expresando una nueva revisión, anulación, devolución, reembolso u otro hecho distinto.
+
+Resultado:
+
+```text
+DUPLICATE_RESULT_RETURNED
+```
+
+El sistema deberá recuperar el resultado previamente reconocido y no volverá a crear el hecho.
+
+---
+
+#### 13. Reutilización conflictiva de identidad
+
+La misma clave externa con contenido material incompatible no se tratará silenciosamente como duplicado ni se sobrescribirá.
+
+Ejemplos de conflicto:
+
+- misma venta externa con moneda incompatible sin semántica de revisión;
+- misma línea externa con producto externo incompatible sin versión que explique el cambio;
+- misma identidad con importes incompatibles que la fuente no identifica como revisión;
+- misma identidad utilizada bajo un contexto externo diferente que no estaba incluido correctamente en el alcance;
+- misma línea reutilizada para dos hechos que la fuente presenta como simultáneos.
+
+Resultado:
+
+```text
+CONFLICTING_REUSE
+```
+
+El contenido original y el nuevo deberán permanecer trazables y cualquier efecto dependiente quedará bloqueado hasta conciliación.
+
+---
+
+#### 14. Revisiones de una misma venta
+
+Una revisión legítima no crea una segunda identidad de venta.
+
+Cuando la fuente provea versión, secuencia, fecha efectiva o mecanismo equivalente suficientemente acreditado:
+
+1. la venta conserva `EXTERNAL_SALE_KEY`;
+2. la nueva recepción conserva su propia evidencia y payload;
+3. la revisión se ordena mediante la semántica de versión demostrada de la fuente;
+4. una versión más nueva puede actualizar la proyección vigente sin borrar historia;
+5. una versión anterior recibida tardíamente produce `STALE_VERSION` o `OUT_OF_ORDER_DEFERRED` según corresponda;
+6. una versión incompatible o imposible produce `CONFLICTING_REUSE` o `RECONCILIATION_REQUIRED`;
+7. una revisión no reinicia la identidad idempotente ni habilita automáticamente efectos consumidores ya realizados.
+
+No se derivará orden de revisión usando únicamente `received_at`.
+
+---
+
+#### 15. Revisiones de línea
+
+Una línea conserva su identidad a través de revisiones legítimas cuando la fuente demuestra que se trata del mismo hecho lógico.
+
+La revisión de línea:
+
+- no cambia por un remapeo interno;
+- no cambia porque una receta sea asignada posteriormente;
+- no cambia por liberarse la cuarentena;
+- no cambia porque el payload se reciba por polling en vez de webhook;
+- no cambia por un nuevo intento técnico;
+- sí debe preservar cualquier versión o secuencia externa acreditada;
+- no podrá transformar una reutilización conflictiva en una revisión por simple conveniencia operativa.
+
+---
+
+#### 16. Concurrencia
+
+Dos procesos que reciban simultáneamente la misma venta o línea deberán converger en un único resultado empresarial.
+
+Contrato obligatorio:
+
+```text
+MISMA CLAVE + MISMA HUELLA + CONCURRENCIA
+        ↓
+UN SOLO GANADOR EMPRESARIAL
+        ↓
+APPLIED
+        +
+DUPLICATE_RESULT_RETURNED / IN_PROGRESS_RECOVERABLE
+```
+
+No será suficiente una secuencia insegura de “buscar y luego insertar” sin protección transaccional o mecanismo equivalente.
+
+La implementación física de claims, unicidad, locks, leases, transacciones o índices queda reservada para los bloques de arquitectura e implementación correspondientes.
+
+---
+
+#### 17. Respuesta perdida y resultado desconocido
+
+Una pérdida de respuesta después de reconocer una venta o línea no autoriza crearla de nuevo.
+
+Ante resultado técnico desconocido:
+
+1. se consultará el resultado por la clave idempotente o identidad externa disponible;
+2. si el resultado confirmado existe, se devolverá el resultado previo;
+3. si existe procesamiento en curso, se conservará `IN_PROGRESS_RECOVERABLE`;
+4. si la evidencia no permite determinar si el hecho fue aplicado, se usará `RECONCILIATION_REQUIRED`;
+5. un timeout no equivale a ausencia de venta;
+6. un retry no obtiene una identidad nueva.
+
+---
+
+#### 18. Múltiples canales de recepción
+
+Webhook, polling, API, archivo, replay o reenvío son mecanismos de transporte y no crean identidades empresariales distintas.
+
+```text
+MISMA VENTA EXTERNA
+RECIBIDA POR WEBHOOK
++
+MISMA VENTA EXTERNA
+RECUPERADA POR POLLING
+        ↓
+UNA SOLA EXTERNAL_SALE_KEY
+```
+
+Reglas:
+
+1. `INT-POS-014` deberá preservar las claves definidas aquí.
+2. El cambio de canal no puede producir una nueva venta o línea.
+3. Un `delivery_id`, cursor, página, archivo o request técnico no sustituye la identidad externa.
+4. Polling de conciliación puede descubrir un hecho omitido por webhook sin cambiar su identidad.
+5. Una redelivery debe converger en el mismo resultado idempotente.
+
+---
+
+#### 19. Relación con mapping y cuarentena
+
+La idempotencia de venta y línea es independiente del mapping de producto.
+
+Consecuencias:
+
+1. una línea puede ser idempotentemente la misma aunque su mapping esté `INCOMPLETE`;
+2. una línea duplicada en cuarentena continúa siendo una sola línea lógica;
+3. una recepción duplicada no libera la cuarentena;
+4. una corrección de mapping no crea una nueva línea;
+5. una nueva versión de mapping no cambia `EXTERNAL_SALE_LINE_KEY`;
+6. liberar la cuarentena no genera una nueva identidad ni un nuevo derecho automático a producir efectos;
+7. una línea `ACTIVE` en cuarentena mantiene bloqueados los efectos físicos aunque sea un duplicado reconocido correctamente;
+8. un conflicto de identidad no podrá resolverse mediante mapping de producto.
+
+---
+
+#### 20. Relación con anulaciones, devoluciones y reembolsos
+
+Los reversos no se deduplicarán usando únicamente la identidad de la venta original.
+
+Reglas:
+
+1. la venta original conserva su identidad;
+2. una anulación, devolución o reembolso conserva identidad propia cuando la fuente la provea;
+3. dos devoluciones legítimas contra una misma venta no deberán colapsarse por compartir venta, importe o producto;
+4. repetir el mismo reverso sí deberá converger en un único hecho cuando su identidad y huella lo demuestren;
+5. si la fuente no provee identidad estable del reverso, se conservará evidencia y se aplicarán las reglas de recepción y conciliación sin inventar identificadores del proveedor;
+6. la compensación interna se define en `INT-POS-019` y utilizará su propio alcance idempotente;
+7. esta tarea no ejecuta compensaciones.
+
+---
+
+#### 21. Frontera con efectos internos
+
+Reconocer idempotentemente una venta o línea **no significa** haber aplicado sus efectos internos.
+
+Las siguientes garantías permanecen separadas:
+
+| Hecho o efecto                     | Tarea propietaria inmediata |
+| ---------------------------------- | --------------------------- |
+| identidad de venta y línea externa | `INT-POS-013`               |
+| recepción por webhook y polling    | `INT-POS-014`               |
+| emisión de venta validada          | `INT-POS-015`               |
+| salida física en NEXO              | `INT-POS-016`               |
+| efecto económico en NUMERA         | `INT-POS-017`               |
+| fidelización en PASS               | `INT-POS-018`               |
+| compensación de reversos           | `INT-POS-019`               |
+| conciliación diaria y conflictos   | `INT-POS-020`               |
+
+Una venta deduplicada no podrá usarse como evidencia de que NEXO, NUMERA o PASS ya aplicaron su efecto.
+
+---
+
+#### 22. Evidencia lógica mínima
+
+Toda decisión idempotente de venta o línea deberá poder reconstruirse lógicamente a partir de:
+
+- alcance idempotente;
+- `source_system`;
+- `source_instance_ref` cuando aplique;
+- identidad externa de venta cuando exista;
+- identidad externa de línea cuando exista;
+- identidad estable de recepción;
+- versión o secuencia de fuente cuando exista;
+- versión de la canonicalización de huella;
+- huella lógica;
+- resultado idempotente;
+- referencia al resultado durable previamente reconocido cuando aplique;
+- referencia al payload o fragmento original;
+- correlación de integración;
+- momento técnico de reconocimiento;
+- evidencia de conflicto o conciliación cuando corresponda.
+
+La persistencia física exacta se definirá en las tareas de arquitectura e implementación.
+
+---
+
+#### 23. Prohibiciones explícitas
+
+Queda prohibido:
+
+1. declarar exactly-once de transporte;
+2. deduplicar ventas únicamente por hash de payload o archivo;
+3. deduplicar ventas únicamente por fecha, sede, caja, total o timestamp;
+4. deduplicar líneas por `source_row_number`;
+5. deduplicar líneas por producto Vento, nombre, código, categoría, presentación o receta;
+6. usar el identificador interno del lote como identidad externa de venta;
+7. usar el identificador interno de la fila como identidad externa de línea;
+8. crear un nuevo identificador empresarial por cada retry;
+9. cambiar la identidad porque cambie el canal de transporte;
+10. tratar una revisión como nueva venta sin evidencia de que la fuente creó una nueva venta;
+11. tratar una reutilización conflictiva como revisión válida sin semántica acreditada;
+12. sobrescribir silenciosamente el contenido anterior de la misma identidad;
+13. permitir que un duplicado salte una cuarentena `ACTIVE`;
+14. asumir que una venta deduplicada ya produjo inventario, efecto económico o puntos;
+15. colapsar múltiples devoluciones o reembolsos legítimos por compartir la venta original;
+16. inventar identificadores que Makos no haya demostrado;
+17. elevar el flujo agregado `makos_excel` a idempotencia individual de venta o línea sin evidencia suficiente;
+18. modificar código, DDL, DML, Supabase, credenciales o configuración desde esta tarea.
+
+---
+
+#### 24. Carryover obligatorio
+
+| Brecha o decisión pendiente                            | Tarea propietaria | Condición de salida                                                           |
+| ------------------------------------------------------ | ----------------- | ----------------------------------------------------------------------------- |
+| transporte webhook/polling y recuperación de omisiones | `INT-POS-014`     | ambos canales preservan las mismas claves y convergen en el mismo resultado   |
+| emisión de evento canónico de venta validada           | `INT-POS-015`     | `event_id` estable y emisión separada del reconocimiento de venta             |
+| efecto de inventario exactamente una vez               | `INT-POS-016`     | clave de efecto NEXO independiente y reconciliable                            |
+| efecto económico exactamente una vez                   | `INT-POS-017`     | clave de efecto NUMERA independiente y reconciliable                          |
+| efecto de fidelización exactamente una vez             | `INT-POS-018`     | clave de efecto PASS independiente y condicionada a elegibilidad              |
+| reversos y compensaciones                              | `INT-POS-019`     | cada compensación conserva identidad propia y relación con el original        |
+| conflictos, `UNKNOWN_OUTCOME`, faltantes y diferencias | `INT-POS-020`     | conciliación identifica origen, resultado, conflicto y acción pendiente       |
+| primera prueba con datos reales sin efectos            | `INT-POS-021`     | claves y resultados idempotentes observables sin mutación física o financiera |
+| piloto con efectos                                     | `INT-POS-022`     | puertas de mapping, cuarentena, idempotencia y efectos downstream demostradas |
+| transición futura a PULSO                              | `INT-POS-023`     | el cambio de fuente impide doble emisión de la misma venta                    |
+
+Ninguna de estas brechas queda sin dueño documental.
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la conducta verificable definida aquí ya está cubierta por el registro canónico vigente. `TREQ-INTEGRATION-014` exige que la transición del POS externo opere mediante adaptador, staging, payload original, hash, mapping, cuarentena e idempotencia, impida doble emisión y produzca los efectos aplicables exactamente una vez. `TREQ-INTEGRATION-108` a `TREQ-INTEGRATION-123` ya definen el registro transversal, transporte al menos una vez, separación de identidades, resultado recuperable, conflicto por reutilización incompatible, huella lógica versionada, identidad estable de evento, inbox, efecto consumidor, concurrencia, recuperación posterior al commit y orden por agregado. Las reglas posteriores de idempotencia, recuperación, claim y auditoría mantienen la misma protección para reintentos y resultados inciertos. `INT-POS-013` especializa esas obligaciones para sistema, venta y línea externa sin introducir una capacidad verificable nueva fuera de la cobertura existente.
+
+---
+
+#### 26. Cobertura de prueba existente preservada
+
+Se preservan sin modificación, entre otros:
+
+- `TREQ-INTEGRATION-011` — hecho externo con efecto físico correlacionado e idempotente hacia NEXO;
+- `TREQ-INTEGRATION-014` — transición POS externo/PULSO sin doble emisión, con staging, mapping, cuarentena, idempotencia y conciliación;
+- `TREQ-INTEGRATION-108` — cobertura transversal del registro de idempotencia;
+- `TREQ-INTEGRATION-109` — transporte al menos una vez y efecto como máximo una vez por alcance;
+- `TREQ-INTEGRATION-110` — separación de identidades idempotentes;
+- `TREQ-INTEGRATION-112` — recuperación del resultado ante misma clave y huella;
+- `TREQ-INTEGRATION-113` — conflicto determinista ante reutilización incompatible;
+- `TREQ-INTEGRATION-114` — huella lógica versionada y sin metadatos volátiles;
+- `TREQ-INTEGRATION-116` — identidad estable de emisión a través de redelivery y replay;
+- `TREQ-INTEGRATION-117` — prohibición de claves demasiado amplias;
+- `TREQ-INTEGRATION-120` — un solo ganador empresarial bajo concurrencia;
+- `TREQ-INTEGRATION-121` — recuperación del resultado después de respuesta perdida;
+- `TREQ-INTEGRATION-213` — trazabilidad integral de intercambio externo, payload, huella, versión, transformación, mapping y correlación.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea. El registro canónico 04A permanece sin cambios.
+
+---
+
+#### 27. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. separa identidad de sistema, venta, línea, recepción, revisión, payload, transporte y efecto consumidor;
+2. define el alcance de sistema fuente y el uso condicional de `source_instance_ref`;
+3. define `EXTERNAL_SALE_KEY` sin depender de hash, fecha, sede, total o timestamp;
+4. define `EXTERNAL_SALE_LINE_KEY` subordinada a la venta salvo evidencia de identidad global de línea;
+5. prohíbe `source_row_number` como identidad de línea;
+6. prohíbe mapping de producto como identidad de línea;
+7. define el tratamiento cuando la fuente no provee identificadores estables;
+8. conserva la identidad estable de recepción sin presentarla como identidad externa;
+9. impide fabricar claves heurísticas a partir de fecha, valor, sede, producto o posición;
+10. clasifica `makos_excel` como guardia técnica agregada y no como idempotencia individual demostrada;
+11. separa identidad y huella lógica;
+12. define huella material de venta y línea sin campos volátiles de transporte;
+13. reutiliza los ocho resultados idempotentes del contrato transversal sin crear vocabulario local incompatible;
+14. define duplicado verdadero como misma clave y misma huella compatible;
+15. define `CONFLICTING_REUSE` para misma identidad con contenido incompatible;
+16. conserva revisiones legítimas bajo la misma identidad de venta;
+17. impide ordenar revisiones únicamente por `received_at`;
+18. conserva revisiones de línea sin cambiar identidad por mapping, receta, cuarentena o transporte;
+19. exige un solo ganador empresarial bajo concurrencia;
+20. define recuperación ante respuesta perdida y resultado incierto;
+21. establece que webhook, polling, API, archivo y replay no crean identidades empresariales nuevas;
+22. integra la idempotencia con la cuarentena sin permitir bypass;
+23. separa reversos legítimos y evita colapsarlos por compartir venta o importe;
+24. separa reconocimiento idempotente de venta de los efectos en NEXO, NUMERA y PASS;
+25. define evidencia lógica mínima reconstruible;
+26. asigna todas las brechas posteriores a tareas concretas;
+27. genera cero cambios `TREQ-*` por existir cobertura canónica suficiente;
+28. no requiere una nueva copia del registro 04A;
+29. no modifica código, datos, schema, migraciones, Supabase, credenciales ni estado operativo;
+30. mantiene `INT-POS-014` como única siguiente tarea reservada.
+
+---
+
+#### 28. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`
+
+
 ### [ ] INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
 ### [ ] INT-POS-015 — Definir emisión del evento canónico de venta validada
 ### [ ] INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez
