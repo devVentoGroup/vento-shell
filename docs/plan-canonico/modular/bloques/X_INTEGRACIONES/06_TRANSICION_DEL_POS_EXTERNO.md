@@ -14216,7 +14216,912 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-022 — Diseñar piloto controlado con efectos habilitados`
 
 
-### [ ] INT-POS-022 — Diseñar piloto controlado con efectos habilitados
+### ✅ INT-POS-022 — Diseñar piloto controlado con efectos habilitados
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas`  
+**Tarea siguiente:** `INT-POS-023 — Definir transición futura desde POS externo hacia PULSO`  
+**Tipo de tarea:** documental; diseño materializado del piloto controlado que, después de superar íntegramente el gate de sombra de `INT-POS-021`, permitirá publicar un conjunto acotado de eventos canónicos de venta y demostrar efectos reales, independientes, idempotentes y reconciliables en NEXO, NUMERA y PASS cuando correspondan, preservando receipts, resultados recuperables, partialidad, resultado desconocido y compensación sin habilitar el corte de fuente ni modificar código, migraciones, Supabase, credenciales, datos o configuración remota durante esta tarea  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente durante el piloto:** `Makos`  
+**Aplicación propietaria de la venta canónica:** `PULSO`  
+**Consumidoras potenciales del piloto:** `NEXO`, `NUMERA`, `PASS` cuando corresponda  
+**Línea base documental:** `vento-shell@86e03074af57229f3b99afaf5fa17b544091e762`  
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`  
+**Línea base NEXO observada:** `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`  
+**Línea base NUMERA observada:** `vento-numera@1b48a5da425d92e19ed89cf175b1dccc4cd960e1`  
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`  
+**Cambios físicos autorizados por esta tarea:** ninguno  
+**Estado actual de habilitación operativa del piloto:** `BLOQUEADO`  
+**Bloqueo vigente:** el gate de evidencia real de `INT-POS-021` no está superado; el staging remoto observado contiene cero lotes Makos y, por tanto, no existe todavía una muestra real preservada que demuestre binding individual, repetibilidad y cero efectos antes de activar este piloto
+
+---
+
+#### 1. Propósito
+
+Diseñar el primer piloto de la transición Makos → PULSO que pueda producir efectos empresariales reales, pero únicamente dentro de un alcance previamente congelado, autorizado, reproducible y conciliable.
+
+El piloto no prueba simplemente que una función puede ejecutarse. Debe demostrar que una venta externa ya validada puede atravesar la frontera canónica completa sin duplicar efectos ni permitir escrituras cruzadas:
+
+```text
+GATE DE SOMBRA INT-POS-021 SUPERADO
+        ↓
+ALCANCE PILOTO CONGELADO
+        ↓
+VENTA CANÓNICA PULSO
+        ↓
+EVENTO EMPRESARIAL PULSO
+        ├── NEXO  → EFECTO FÍSICO PROPIETARIO
+        ├── NUMERA → EFECTO ECONÓMICO PROPIETARIO
+        └── PASS   → EFECTO DE FIDELIZACIÓN, CUANDO CORRESPONDA
+        ↓
+RESULTADOS / RECEIPTS DURABLES
+        ↓
+RECONCILIACIÓN
+        ↓
+COMPENSACIÓN PROPIETARIA CUANDO SEA NECESARIA
+        ↓
+CIERRE DEL PILOTO SIN CAMBIO DE FUENTE
+```
+
+El éxito del piloto no autoriza por sí solo el corte de Makos ni convierte la integración temporal en la implementación definitiva de PULSO.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-022` deja definidas las siguientes decisiones:
+
+1. El piloto con efectos solo puede ejecutarse después de superar íntegramente el gate aplicable de `INT-POS-021`.
+2. La aprobación documental de esta tarea no equivale a gate operativo superado.
+3. El estado operativo inicial del piloto es `BLOQUEADO` mientras el gate de evidencia real permanezca abierto.
+4. El alcance se congela antes del primer dispatch real.
+5. Makos conserva autoridad temporal como fuente de las ventas incluidas mientras no ocurra el corte de `INT-POS-023`.
+6. PULSO conserva la venta canónica y es la única productora del evento empresarial normalizado que consume el piloto.
+7. NEXO, NUMERA y PASS no reciben comandos directos desde Makos.
+8. El adaptador no escribe ledgers ni proyecciones de las consumidoras.
+9. Cada consumidora decide su propia elegibilidad y conserva su propia identidad de efecto.
+10. La falla de una consumidora no revierte la venta PULSO ni completa, cancela o consume el presupuesto de otra consumidora.
+11. Un efecto real se considera demostrado únicamente mediante resultado durable y evidencia propietaria suficiente.
+12. Un ACK de transporte no equivale a efecto confirmado.
+13. Una respuesta perdida después de un posible commit se trata como resultado desconocido hasta consultar la identidad original.
+14. Un retry conserva identidad y huella; no crea una segunda venta ni un segundo efecto.
+15. Una huella incompatible bajo la misma identidad produce conflicto y no sobrescritura.
+16. La partialidad conserva remanente y no se presenta como éxito total.
+17. Un evento fuera de orden se difiere cuando falte una dependencia; no retrocede una versión posterior.
+18. Una línea en cuarentena no puede producir el efecto dependiente de su mapping.
+19. Una consumidora puede producir `NO_APLICA` legítimo sin que la venta se considere fallida.
+20. PASS no acredita puntos si no existe cuenta inequívoca, regla aplicable y base completa.
+21. NUMERA no materializa el hecho económico si faltan dimensiones obligatorias que no puedan resolverse autoritativamente.
+22. NEXO no materializa salida física si no puede resolver existencia, cantidad, UOM y contexto físico elegibles.
+23. Las anulaciones, devoluciones y reembolsos no se modelan mediante borrado ni cantidades negativas genéricas.
+24. Cualquier compensación real conserva el efecto original y crea un sucesor propietario correlacionado.
+25. Agotar retries no ejecuta compensación automática.
+26. El piloto debe demostrar al menos una redelivery deliberada de un evento ya procesado dentro del alcance controlado.
+27. El piloto debe demostrar recuperación de un resultado cuando la respuesta original sea desconocida o simuladamente perdida, sin repetir ciegamente la mutación.
+28. El piloto debe demostrar conciliación entre fuente, venta, evento y cada efecto aplicable.
+29. Ningún efecto fuera del alcance congelado puede aparecer como consecuencia del piloto.
+30. El piloto no cambia la autoridad de fuente, credenciales, fiscalidad, reglas de mapping ni configuración productiva para facilitar el resultado.
+31. El procedimiento legacy `pulso_post_daily_sales_import` no constituye la frontera canónica del piloto.
+32. Un posting legacy existente no se acepta como prueba de que NEXO, NUMERA y PASS hayan procesado el mismo evento canónico de forma independiente.
+33. No se fija un número decorativo de ventas, días o sedes; la muestra debe ser limitada y suficiente para demostrar las ramas obligatorias del alcance activado.
+34. El piloto puede cerrar una consumidora como `NO_APLICA` para una venta concreta, pero no puede declarar validada una clase de efecto que se pretenda habilitar después sin haber demostrado al menos un caso legítimamente aplicable de esa clase.
+35. Antes de pasar a `INT-POS-023`, todo bloqueo crítico del alcance que vaya a convivir con el corte debe estar resuelto o quedar expresamente fuera del alcance que se pretenda cortar.
+36. Se crean cero requisitos `TREQ-*`.
+37. Se modifican cero requisitos `TREQ-*`.
+38. Se crean cero objetos físicos por esta tarea.
+39. Se modifican cero objetos físicos por esta tarea.
+
+---
+
+#### 3. Dependencias consumidas y preservadas
+
+La tarea consume sin reabrir:
+
+- `INT-POS-003`, para autoridad temporal de Makos;
+- `INT-POS-004`, para acceso independiente, revocable y de lectura efectiva hacia el proveedor;
+- `INT-POS-005`, para identidad de venta y línea;
+- `INT-POS-006`, para estados, revisiones y timestamps;
+- `INT-POS-007`, para componentes monetarios y separación de pago;
+- `INT-POS-008`, para anulaciones, devoluciones y reembolsos;
+- `INT-POS-009`, para payload original, versión, hash, recepción y procedencia;
+- `INT-POS-010`, para sede, terminal y caja;
+- `INT-POS-011`, para mapping de producto;
+- `INT-POS-012`, para cuarentena;
+- `INT-POS-013`, para idempotencia de recepción;
+- `INT-POS-014`, para transporte, replay y convergencia;
+- `INT-POS-015`, para evento empresarial PULSO;
+- `INT-POS-016`, para efecto físico exactamente una vez en NEXO;
+- `INT-POS-017`, para efecto económico exactamente una vez en NUMERA;
+- `INT-POS-018`, para fidelización PASS cuando corresponda;
+- `INT-POS-019`, para compensación append-only;
+- `INT-POS-020`, para conciliación;
+- `INT-POS-021`, para el gate de evidencia real sin efectos;
+- `INT-APP-004`, para identidad de idempotencia y resultado recuperable;
+- `INT-APP-005`, para retry y resultado desconocido;
+- `INT-APP-006`, para compensación coordinada sin escritura cruzada;
+- `INT-APP-007`, para auditoría;
+- `INT-APP-008` y `INT-APP-009`, para pendientes, partialidad, recuperación y conciliación;
+- `INT-APP-010`, para propiedad estricta de las escrituras.
+
+Ninguna de esas decisiones se modifica.
+
+---
+
+#### 4. Gate de entrada obligatorio
+
+El piloto no puede pasar de diseño a ejecución mientras el alcance que se pretende activar no demuestre todos los controles de entrada aplicables heredados de `INT-POS-021`:
+
+1. fuente y ambiente acreditados;
+2. lectura no mutante de Makos;
+3. muestra real preservada con hash;
+4. cobertura de consulta explicable;
+5. granularidad explícita;
+6. binding determinista para cada unidad que vaya a producir efectos;
+7. cero identidades inventadas;
+8. repetición del mismo insumo sin duplicados;
+9. mapping determinista o cuarentena explícita;
+10. sede y contexto suficientes;
+11. evento PULSO en sombra reproducible;
+12. preview NEXO reproducible cuando aplique;
+13. preview NUMERA reproducible cuando aplique;
+14. preview PASS reproducible cuando aplique;
+15. compensaciones únicamente proyectadas durante el gate;
+16. conciliación completa de la muestra;
+17. cero efectos empresariales reales producidos por el gate de sombra;
+18. cero bloqueos críticos abiertos para el alcance que se pretende activar.
+
+Reglas:
+
+- un total diario coincidente no supera este gate;
+- una fila agregada por artículo no demuestra una venta individual;
+- un mapping por nombre no se promueve por conveniencia a mapping canónico;
+- la existencia de una función legacy que descuenta inventario no supera el gate;
+- no se amplía el alcance del piloto para compensar información faltante;
+- el gate se evalúa para el alcance exacto que se pretenda activar, no de forma genérica para todo Makos.
+
+Estado actual:
+
+```text
+GATE INT-POS-021 = BLOQUEADO
+PILOTO INT-POS-022 = NO HABILITABLE TODAVÍA
+```
+
+La causa material vigente es la ausencia de una muestra Makos real disponible en el staging remoto observado para demostrar binding repetible antes de efectos.
+
+---
+
+#### 5. Congelamiento del alcance del piloto
+
+Antes del primer dispatch real deberá existir una definición inmutable de alcance para esa ejecución del piloto.
+
+La definición conserva, como mínimo:
+
+- sistema fuente e instancia o ambiente acreditado;
+- sede o conjunto explícito de sedes;
+- terminal o caja cuando formen parte del binding real;
+- ventana temporal exacta;
+- conjunto identificable de ventas canónicas incluidas;
+- revisiones aplicables;
+- evidencia original y hashes relacionados;
+- versión de contrato de venta;
+- versión del evento empresarial;
+- mappings y versiones utilizados;
+- reglas y versiones relevantes por consumidora;
+- consumidoras habilitadas para cada evento;
+- efectos esperados por consumidora;
+- exclusiones explícitas;
+- criterio de cierre y criterio de abortar expansión.
+
+La definición no necesita fijar un número universal de ventas. Debe ser suficientemente pequeña para permitir trazabilidad individual y suficientemente completa para cubrir los escenarios obligatorios del alcance habilitado.
+
+Una venta o revisión no incluida no puede entrar al piloto por una ventana solapada, replay, reintento o descubrimiento tardío sin una nueva decisión explícita de alcance.
+
+---
+
+#### 6. Estados documentales del alcance
+
+Cada alcance de piloto se clasifica mediante:
+
+| Estado                   | Significado                                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `BLOQUEADO`              | falta una precondición crítica y no puede producir efectos                                         |
+| `PENDIENTE_DE_EVIDENCIA` | falta evidencia que puede completarse sin cambiar la decisión canónica                             |
+| `ESPECIFICADO`           | alcance, contratos y resultados esperados están definidos, pero todavía no se han aplicado efectos |
+| `IMPLEMENTADO`           | el paquete físico correspondiente materializó las fronteras necesarias para ejecutar el piloto     |
+| `VALIDADO`               | la ejecución controlada produjo evidencia reproducible y cerró la conciliación del alcance         |
+| `NO_APLICA`              | la consumidora o efecto no corresponde al hecho conforme a su contrato                             |
+
+`APROBADA` es el estado documental de esta tarea y no sustituye ninguno de estos estados operativos.
+
+---
+
+#### 7. Preflight previo al primer efecto real
+
+Una ejecución futura deberá producir un preflight reproducible antes de liberar cualquier evento al circuito real.
+
+El preflight verifica para cada venta incluida:
+
+1. identidad canónica de venta y líneas;
+2. revisión vigente para el hecho observado;
+3. `event_id` previsto y definición empresarial aplicable;
+4. audiencia de consumidoras congelada;
+5. huella lógica del evento;
+6. mapping y cuarentena por línea;
+7. contexto de sede y demás dimensiones requeridas;
+8. efecto NEXO esperado o `NO_APLICA`;
+9. efecto NUMERA esperado o estado bloqueado/`NO_APLICA` conforme al contrato;
+10. efecto PASS esperado, `NO_APLICA` o bloqueo conforme a identidad y regla;
+11. efectos originales que una reversa posterior tendría que referenciar;
+12. evidencia que deberá existir después de cada efecto;
+13. claves de conciliación entre fuente, venta, evento y consumidoras.
+
+Si el preflight y el resultado en sombra de `INT-POS-021` no coinciden materialmente, el piloto vuelve a `BLOQUEADO` y no aplica el evento real.
+
+---
+
+#### 8. Publicación del evento PULSO
+
+El único hecho que inicia el fan-out del piloto es el evento empresarial PULSO definido en `INT-POS-015`.
+
+Invariantes:
+
+```text
+UNA VENTA / REVISIÓN ELEGIBLE
+→ UN EVENTO EMPRESARIAL PULSO
+→ UNA AUDIENCIA CONGELADA
+→ EFECTOS PROPIETARIOS INDEPENDIENTES
+```
+
+Reglas:
+
+1. `event_id` se asigna una sola vez antes de la primera entrega;
+2. redelivery conserva `event_id`;
+3. replay conserva `event_id` y audiencia histórica;
+4. una nueva `delivery_id` o `attempt_id` no crea otro evento empresarial;
+5. PULSO no reemite el evento cambiando de productora para cada consumidora;
+6. una consumidora tardíamente habilitada no se agrega a un replay histórico sin autorización contractual explícita;
+7. el evento no afirma que un efecto consumidor ya ocurrió;
+8. un evento publicado no se borra porque una consumidora falle;
+9. una revisión materialmente distinta sigue el contrato de revisión y no se disfraza como retry de la versión previa.
+
+---
+
+#### 9. Activación por consumidora
+
+La audiencia del evento y la aplicabilidad del efecto son conceptos distintos.
+
+Para cada evento:
+
+```text
+EVENTO RECIBIDO
+        ↓
+INBOX DE LA CONSUMIDORA
+        ↓
+ELEGIBILIDAD PROPIETARIA
+        ├── NO_APLICA → CERO MUTACIÓN + RESULTADO DURABLE
+        ├── BLOQUEADO / DIFERIDO → CERO MUTACIÓN + PENDIENTE EXPLÍCITO
+        └── APLICA → CONSUMER_EFFECT
+```
+
+La consumidora no puede asumir que debe aplicar un efecto únicamente porque recibió el evento.
+
+---
+
+#### 10. Piloto NEXO
+
+Cuando una línea sea físicamente elegible, NEXO ejecutará su efecto bajo la frontera de `INT-POS-016`.
+
+El piloto debe demostrar:
+
+- recepción idempotente independiente;
+- identidad `CONSUMER_EFFECT` propia;
+- resolución autoritativa de existencia por NEXO;
+- producto, presentación, cantidad y UOM reproducibles;
+- versión aplicable del mapping o receta cuando corresponda;
+- ausencia de escritura de stock desde PULSO o el adaptador;
+- group y legs cuando el contrato físico los requiera;
+- posting o movimiento propietario;
+- receipt durable correlacionado;
+- proyección derivada coherente;
+- resultado recuperable por la misma identidad;
+- cero duplicación frente a redelivery;
+- partialidad y residual explícitos cuando ocurran;
+- conflicto ante reutilización materialmente incompatible;
+- compensación enlazada al original cuando deba revertirse un efecto confirmado.
+
+No se considera demostración suficiente:
+
+- que disminuya una cantidad visible sin receipt correlacionable;
+- que PULSO inserte directamente un movimiento;
+- que el importador legacy marque una fila como procesada;
+- que un agregado coincida con la diferencia total de stock.
+
+---
+
+#### 11. Piloto NUMERA
+
+NUMERA solo aplica `SALE_ECONOMIC_FACT` cuando la venta sea económicamente material y las dimensiones obligatorias puedan resolverse sin inferencias prohibidas.
+
+El piloto debe demostrar:
+
+- inbox independiente por evento;
+- identidad de efecto `SALE_ECONOMIC_FACT` estable;
+- hecho económico durable asociado a venta, revisión y evento;
+- entidad legal resuelta autoritativamente;
+- sede y centro de costo conforme a regla vigente;
+- moneda demostrable;
+- monto y componentes monetarios con semántica reproducible;
+- evidencia y referencias de origen;
+- resultado idempotente recuperable;
+- cero segundo hecho económico ante redelivery;
+- conflicto frente a huella material incompatible;
+- `RECONCILIATION_REQUIRED` cuando una dimensión obligatoria no pueda determinarse;
+- independencia frente al resultado NEXO o PASS;
+- corrección o compensación posterior sin editar destructivamente el hecho original.
+
+`SALE_ECONOMIC_FACT` no prueba por sí solo:
+
+- pago;
+- aplicación de pago;
+- cierre de caja;
+- depósito;
+- movimiento bancario;
+- documento fiscal final;
+- asiento contable.
+
+---
+
+#### 12. Piloto PASS
+
+PASS aplica fidelización únicamente cuando `INT-POS-018` determine que corresponde.
+
+Para una acumulación aplicable, el piloto debe demostrar:
+
+- cuenta PASS inequívoca;
+- regla y versión aplicables al hecho;
+- base completa conforme a la regla;
+- efecto `LOYALTY_POINTS_ACCRUAL` con identidad estable;
+- guarda de dominio por cuenta y venta para acumulación;
+- ledger inmutable;
+- saldo como proyección y no como fuente del movimiento;
+- evento origen y venta correlacionados;
+- delta y resultado durable;
+- cero segundo movimiento ante redelivery o retry;
+- recuperación del resultado previo;
+- conflicto ante reutilización incompatible;
+- reversa o ajuste mediante movimiento compensatorio cuando corresponda.
+
+También debe conservar como resultado válido:
+
+```text
+VENTA VÁLIDA
++
+SIN CUENTA PASS APLICABLE O SIN REGLA APLICABLE
+→ NO_APLICA
+→ CERO PUNTOS
+```
+
+Un caso `NO_APLICA` no demuestra la rama de acumulación. Si PASS va a formar parte del alcance operativo posterior, deberá existir al menos un caso legítimamente elegible que demuestre el efecto real antes de declarar validada esa capacidad.
+
+---
+
+#### 13. Redelivery e idempotencia obligatoria
+
+El piloto debe repetir deliberadamente al menos un evento ya procesado dentro del alcance congelado.
+
+Resultado exigido para cada consumidora aplicable:
+
+```text
+MISMO EVENT_ID
++
+MISMO EFFECT_CODE
++
+MISMA HUELLA
+→ RESULTADO ORIGINAL RECUPERADO
+→ CERO EFECTO ADICIONAL
+```
+
+Para PASS se conserva además la guarda de acumulación por cuenta y venta.
+
+La validación de redelivery no puede limitarse a comparar totales; debe demostrar identidad y resultado de cada efecto.
+
+---
+
+#### 14. Resultado desconocido y respuesta perdida
+
+El piloto debe demostrar la rama de resultado desconocido sin asumir que un timeout equivale a fallo.
+
+La prueba controlada debe reproducir una condición equivalente a:
+
+```text
+SOLICITUD DE EFECTO
+→ POSIBLE COMMIT PROPIETARIO
+→ RESPUESTA NO DISPONIBLE
+```
+
+La recuperación obligatoria es:
+
+1. conservar la misma identidad;
+2. consultar el resultado durable por esa identidad;
+3. si existe, recuperar ese resultado sin repetir la mutación;
+4. si está en progreso, mantener estado recuperable;
+5. si no puede resolverse de forma segura, pasar a conciliación;
+6. no crear una identidad nueva para “intentar de nuevo”.
+
+La forma física de inyección de fallo pertenece al paquete que implemente la frontera correspondiente. La regla de retry permanente se consolida en `INT-SALES-007`.
+
+---
+
+#### 15. Partialidad y residuales
+
+Un efecto parcial no se oculta detrás de un estado global de éxito.
+
+El piloto debe poder conservar, cuando aplique:
+
+- alcance solicitado;
+- fracción o componente confirmado;
+- fracción pendiente;
+- causa;
+- intentos;
+- receipt parcial o referencias equivalentes propietarias;
+- condición para continuar;
+- condición para compensar;
+- estado de conciliación.
+
+Reglas:
+
+1. una parte confirmada no se repite;
+2. una parte pendiente no se presenta como aplicada;
+3. la partialidad de NEXO no se convierte automáticamente en rollback NUMERA o PASS;
+4. la partialidad de otra consumidora no altera el hecho PULSO;
+5. el residual permanece abierto en `INT-POS-020` hasta resolución.
+
+---
+
+#### 16. Eventos fuera de orden
+
+Cuando una consumidora reciba una revisión o efecto cuya dependencia no esté disponible:
+
+- no inventa el estado previo;
+- no aplica una versión tardía sobre una posterior;
+- conserva evento y procedencia;
+- difiere de acuerdo con el contrato transversal;
+- permite que la llegada de la dependencia reactive el trabajo sin cambiar identidad;
+- mantiene el caso visible para conciliación si se agota la recuperación automática.
+
+No se utiliza orden de llegada como sustituto de la versión empresarial.
+
+---
+
+#### 17. Cuarentena durante el piloto con efectos
+
+La cuarentena de `INT-POS-012` permanece activa aun cuando otras líneas o consumidoras sí puedan producir efectos.
+
+Reglas:
+
+1. una línea `ACTIVE` nunca se elimina para cuadrar el piloto;
+2. un efecto dependiente de producto queda bloqueado para esa línea;
+3. una consumidora no dependiente del mapping puede continuar únicamente si su contrato demuestra todas sus dimensiones sin usar el dato desconocido;
+4. liberar una línea después no crea otra venta ni duplica el evento;
+5. cualquier efecto incremental posterior conserva causalidad y contrato propios;
+6. una línea bloqueada no se sustituye por un producto parecido para completar la muestra.
+
+---
+
+#### 18. Compensación controlada
+
+Si el piloto produce un efecto que deba revertirse por diseño, error controlado o cierre operativo, la limpieza no puede realizarse borrando o editando historia.
+
+Se aplica `INT-POS-019`:
+
+```text
+EFECTO ORIGINAL CONFIRMADO
+        ↓
+PLAN / PASO COMPENSATORIO AUTORIZADO
+        ↓
+EFECTO PROPIETARIO INVERSO O MITIGADOR
+        ↓
+RESULTADO DURABLE
+        ↓
+ORIGINAL + COMPENSACIÓN PRESERVADOS
+```
+
+Invariantes:
+
+1. solo se compensa un efecto original demostrado;
+2. resultado original desconocido exige conciliación antes de compensar;
+3. cada dominio ejecuta su propio paso;
+4. un refund no mueve inventario;
+5. una devolución física no acredita automáticamente refund;
+6. una reversión PASS no modifica el movimiento original;
+7. NUMERA no edita destructivamente el hecho económico;
+8. NEXO usa el contrato físico compensatorio correspondiente;
+9. el mismo paso compensatorio es idempotente;
+10. agotar retries no dispara compensación por sí solo.
+
+La compensación del piloto, cuando corresponda, forma parte de su evidencia y no se oculta como mantenimiento técnico.
+
+---
+
+#### 19. Independencia de consumidoras
+
+El piloto conserva explícitamente:
+
+```text
+PULSO EVENT
+        ├── NEXO  → estado / retry / resultado propios
+        ├── NUMERA → estado / retry / resultado propios
+        └── PASS  → estado / retry / resultado propios
+```
+
+Por tanto:
+
+- NEXO `APPLIED` no confirma NUMERA;
+- NUMERA `APPLIED` no confirma PASS;
+- PASS `NO_APLICA` no invalida la venta;
+- un fallo PASS no revierte NEXO;
+- un fallo NEXO no borra el hecho económico si NUMERA puede demostrarlo legítimamente;
+- un fallo NUMERA no devuelve stock;
+- ningún consumidor escribe directamente el ledger de otro.
+
+La conciliación reúne resultados; no los fusiona.
+
+---
+
+#### 20. Conciliación obligatoria del piloto
+
+La ejecución se cierra mediante la misma lógica de `INT-POS-020`.
+
+Para cada venta incluida debe poder reconstruirse:
+
+```text
+EVIDENCIA MAKOS
+↔ STAGING / NORMALIZACIÓN
+↔ VENTA Y LÍNEAS PULSO
+↔ EVENTO PULSO
+↔ NEXO ESPERADO / REAL / RECEIPT
+↔ NUMERA ESPERADO / REAL / RESULTADO
+↔ PASS ESPERADO / REAL / RESULTADO
+↔ COMPENSACIONES, SI EXISTEN
+```
+
+La conciliación identifica como mínimo:
+
+- venta sin evento;
+- evento sin venta correlacionada;
+- efecto aplicable faltante;
+- efecto no aplicable ejecutado;
+- efecto sin evento;
+- duplicado;
+- huella conflictiva;
+- mapping o versión divergente;
+- cantidad o UOM divergentes;
+- monto o moneda divergentes;
+- cuenta o regla PASS incorrectas;
+- respuesta desconocida;
+- partialidad;
+- residual;
+- compensación faltante;
+- efecto fuera del alcance congelado.
+
+La conciliación no repara escribiendo directamente en la consumidora. La acción correctiva retorna a la frontera propietaria.
+
+---
+
+#### 21. Escenarios obligatorios
+
+El diseño exige evidencia individual para las siguientes ramas cuando formen parte del alcance habilitado:
+
+| Escenario                                 | Resultado exigido                                           |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| venta con binding individual válido       | evento PULSO único y correlacionable                        |
+| efecto NEXO aplicable                     | un efecto físico propietario con receipt y cero duplicación |
+| efecto NUMERA aplicable                   | un `SALE_ECONOMIC_FACT` durable y único                     |
+| efecto PASS aplicable                     | una acumulación única con ledger y regla reproducibles      |
+| PASS legítimamente no aplicable           | `NO_APLICA` y cero puntos                                   |
+| línea en cuarentena                       | cero efecto dependiente de mapping                          |
+| redelivery del mismo evento               | resultado previo y cero efecto adicional                    |
+| misma identidad con huella incompatible   | conflicto visible y cero sobrescritura                      |
+| respuesta perdida o resultado desconocido | consulta de resultado antes de cualquier nuevo envío        |
+| partialidad                               | fracción confirmada y residual explícitos                   |
+| evento fuera de orden                     | diferido sin regresión de versión                           |
+| fallo de una consumidora                  | otras consumidoras conservan estados independientes         |
+| reversa posterior a efecto confirmado     | compensación propietaria enlazada, sin borrado              |
+| divergencia de conciliación               | pendiente explícito con propietaria y condición de salida   |
+| intento de efecto fuera del alcance       | rechazo o bloqueo sin mutación                              |
+
+Si una clase de efecto está prevista para el alcance posterior pero no existe un caso real elegible en el piloto, esa clase permanece `PENDIENTE_DE_EVIDENCIA` y no se declara validada por inferencia.
+
+---
+
+#### 22. Criterio de abortar expansión
+
+El piloto no es una progresión automática de “si una venta funcionó, habilitar más”.
+
+Se detiene cualquier ampliación del alcance cuando aparezca al menos una de estas condiciones:
+
+- identidad o binding ambiguos;
+- efecto duplicado;
+- efecto fuera del alcance;
+- respuesta desconocida que no pueda recuperarse;
+- conflicto de huella no resuelto;
+- partialidad sin residual explícito;
+- mapping o versión no reproducibles;
+- cantidad/UOM no reconciliables;
+- monto/moneda no reconciliables;
+- cuenta/regla PASS no reproducibles;
+- escritura cruzada;
+- compensación destructiva;
+- divergencia de fuente no explicada;
+- evento sin evidencia original suficiente;
+- incapacidad de demostrar qué versión produjo el efecto.
+
+El alcance permanece congelado hasta resolver la causa mediante su tarea propietaria.
+
+---
+
+#### 23. Evidencia mínima de ejecución futura
+
+La ejecución controlada deberá conservar, por alcance y por venta:
+
+- identificación de la fuente y ambiente;
+- ventana y alcance territorial;
+- evidencia original y hash;
+- venta y revisión canónicas;
+- líneas y mappings aplicables;
+- cuarentenas;
+- `event_id` y definición;
+- audiencia;
+- huella lógica;
+- entregas e intentos correlacionados;
+- inbox de cada consumidora;
+- identidad de cada `CONSUMER_EFFECT`;
+- resultado durable por consumidora;
+- receipt o referencia propietaria de efecto;
+- timestamps relevantes;
+- retries y resultado recuperado;
+- partialidad y residuales;
+- conflictos;
+- compensaciones;
+- comparación esperada versus real;
+- resultado de conciliación;
+- decisión final del gate del piloto.
+
+No se considera evidencia suficiente un total agregado, una captura aislada, un mensaje de éxito del frontend o la mera ausencia de error técnico.
+
+---
+
+#### 24. Frontera frente al flujo legacy actual
+
+La implementación PULSO observada conserva una ruta de importación agregada que puede guardar lotes y filas y luego invocar `pulso_post_daily_sales_import`.
+
+El estado remoto observado también demuestra que ese RPC y las estructuras legacy de posting de inventario existen.
+
+Para este piloto:
+
+```text
+PULSO_POST_DAILY_SALES_IMPORT LEGACY
+≠
+PILOTO CANÓNICO CON EFECTOS
+```
+
+Razones:
+
+1. la ruta legacy parte de filas agregadas por artículo;
+2. no demuestra por sí sola venta individual y línea canónicas;
+3. su posting de inventario no demuestra publicación del evento empresarial PULSO;
+4. no demuestra inbox y efectos independientes en NEXO, NUMERA y PASS;
+5. no demuestra receipts y resultados recuperables bajo las identidades de `INT-POS-016` a `INT-POS-018`;
+6. no puede utilizarse para saltar el gate de `INT-POS-021`.
+
+La tarea no retira ni modifica físicamente este flujo. Simplemente impide usarlo como evidencia de cumplimiento del piloto canónico.
+
+---
+
+#### 25. Readiness técnico antes de ejecutar
+
+La ejecución física del diseño requiere que el paquete autorizado correspondiente demuestre, sin inferencia, que existen y están protegidas las fronteras necesarias para:
+
+- producir el evento PULSO con identidad estable;
+- entregar el evento con audiencia congelada;
+- reclamar inbox por consumidora;
+- aplicar o recuperar `CONSUMER_EFFECT` en NEXO;
+- aplicar o recuperar `SALE_ECONOMIC_FACT` en NUMERA;
+- aplicar o recuperar `LOYALTY_POINTS_ACCRUAL` en PASS cuando corresponda;
+- obtener resultados durables y referencias de efecto;
+- reintentar con misma identidad;
+- diferir fuera de orden;
+- conciliar resultado desconocido;
+- ejecutar compensaciones propietarias cuando sean necesarias;
+- demostrar cero writes cruzados.
+
+La ausencia de nombres físicos congelados en estas tareas documentales no autoriza a inventarlos.
+
+La responsabilidad documental permanente se conserva en:
+
+- `INT-SALES-003`, para registro de salida de inventario en NEXO;
+- `INT-SALES-004`, para recepción del evento de venta en NUMERA;
+- `INT-SALES-005`, para acumulación de puntos en PASS;
+- `INT-SALES-006`, para redención PASS cuando exista una operación de redención real;
+- `INT-SALES-007`, para control de duplicados por reintento;
+- `INT-SALES-008`, para conciliación de convivencia;
+- `INT-SALES-009`, para corte por sede, terminal y fecha efectiva;
+- `INT-SALES-010`, para impedir doble fuente;
+- `INT-SALES-011`, para retiro posterior del adaptador.
+
+---
+
+#### 26. Puerta de salida del piloto
+
+Un alcance del piloto solo puede quedar `VALIDADO` cuando:
+
+1. el gate de entrada fue superado con evidencia real;
+2. el alcance ejecutado coincide exactamente con el alcance congelado;
+3. cada venta incluida conserva evidencia fuente y binding individual suficiente;
+4. cada venta elegible produjo un solo evento PULSO;
+5. cada consumidora aplicable conserva una recepción idempotente;
+6. cada efecto aplicable tiene identidad, huella y resultado durable;
+7. NEXO demuestra receipt físico cuando corresponde;
+8. NUMERA demuestra el resultado de `SALE_ECONOMIC_FACT` cuando corresponde;
+9. PASS demuestra movimiento de ledger cuando corresponde;
+10. cada `NO_APLICA` está justificado por contrato y no por ausencia silenciosa;
+11. la redelivery deliberada produjo cero efectos adicionales;
+12. la rama de resultado desconocido recuperó o llevó correctamente el caso a conciliación sin duplicar;
+13. toda partialidad conserva residual explícito;
+14. no existieron efectos fuera del alcance;
+15. no existieron escrituras cruzadas;
+16. toda compensación requerida quedó enlazada y reconciliada;
+17. no quedan `RESULT_UNKNOWN`, conflictos o residuales críticos sin resolución para el alcance cerrado;
+18. la conciliación puede reconstruir fuente → venta → evento → efecto por consumidora;
+19. Makos conserva la autoridad temporal de fuente;
+20. no se ejecutó ningún corte ni revocación de credenciales como consecuencia implícita del piloto.
+
+Una rama no demostrada no se marca validada por éxito de otra consumidora.
+
+---
+
+#### 27. Bloqueos y handoffs
+
+| Bloqueo o pendiente                                                      | Propietaria               | Tarea responsable | Condición de salida                                                                    |
+| ------------------------------------------------------------------------ | ------------------------- | ----------------- | -------------------------------------------------------------------------------------- |
+| muestra real Makos todavía ausente en staging remoto                     | integración Makos / PULSO | `INT-POS-021`     | muestra autorizada preservada, binding repetible y gate de sombra superado             |
+| binding individual insuficiente                                          | integración Makos / PULSO | `INT-POS-021`     | cada unidad que vaya a mutar dominios tiene identidad y granularidad demostrables      |
+| efecto NEXO permanente no materializado o no demostrado por paquete      | NEXO                      | `INT-SALES-003`   | frontera propietaria implementada y probada con receipt recuperable                    |
+| efecto NUMERA permanente no materializado o no demostrado por paquete    | NUMERA                    | `INT-SALES-004`   | recepción y efecto económico propietarios implementados y probados                     |
+| acumulación PASS permanente no materializada o no demostrada por paquete | PASS                      | `INT-SALES-005`   | acumulación propietaria implementada y probada bajo cuenta y regla reales              |
+| redención PASS cuando corresponda                                        | PASS                      | `INT-SALES-006`   | operación de redención explícita implementada y probada sin inferencia desde venta     |
+| duplicación o resultado desconocido por retry                            | integración transversal   | `INT-SALES-007`   | reintento conserva identidad, recupera resultado y no duplica efectos                  |
+| convivencia y diferencias entre fuentes                                  | PULSO / integración       | `INT-SALES-008`   | conciliación de convivencia demuestra convergencia sin doble emisión                   |
+| corte de fuente                                                          | PULSO / integración       | `INT-POS-023`     | se define la transición futura sin permitir doble fuente por sede, terminal y vigencia |
+| reducción o revocación del acceso Makos                                  | integración / seguridad   | `INT-POS-024`     | credencial externa queda ajustada solo después del corte aprobado                      |
+
+Ningún bloqueo de ejecución se presenta como resuelto por la sola aprobación documental de esta tarea.
+
+---
+
+#### 28. Relación con `INT-POS-023`
+
+`INT-POS-022` prueba una cadena controlada; `INT-POS-023` define el cambio futuro de autoridad de fuente.
+
+Se preserva:
+
+```text
+PILOTO VALIDADO
+≠
+CUTOVER EJECUTADO
+```
+
+El piloto no modifica:
+
+- sede fuente autorizada;
+- terminal fuente autorizada;
+- fecha efectiva de corte;
+- credencial Makos;
+- obligación fiscal del POS vigente;
+- consumidores permanentes.
+
+`INT-POS-023` permanece reservada hasta aprobación explícita de esta tarea y solicitud expresa de continuación.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el piloto controlado especializa comportamientos ya protegidos por el registro vigente para toda la transición del POS externo: evento y efectos exactamente una vez, independencia de consumidoras, idempotencia, retry, resultado desconocido, partialidad, fuera de orden, cuarentena, compensación, reconciliación y prevención de doble emisión. La tarea no introduce una obligación de comportamiento adicional fuera de esa cobertura ni modifica una obligación histórica existente.
+
+---
+
+#### 30. Cobertura de prueba existente preservada
+
+Se preservan sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado recuperable, retry y conciliación;
+- `TREQ-INTEGRATION-011`, para efecto físico exactamente una vez en NEXO;
+- `TREQ-INTEGRATION-014`, para la transición POS externo → PULSO, incluyendo `INT-POS-001` a `INT-POS-024`, staging, mapping, cuarentena, efectos exactamente una vez y conciliación;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones correlacionadas;
+- `TREQ-INTEGRATION-017`, para efectos económicos hacia NUMERA;
+- `TREQ-INTEGRATION-151`, para retry crítico con conciliación al agotarse;
+- `TREQ-INTEGRATION-154`, para eventos fuera de orden;
+- `TREQ-INTEGRATION-155`, para replay sin nueva audiencia ni reactivación no autorizada de efectos sensibles;
+- `TREQ-INTEGRATION-156`, para claim o lease sin asumir que el efecto anterior no ocurrió;
+- `TREQ-INTEGRATION-159`, para independencia de fallos y presupuestos entre consumidoras;
+- `TREQ-INTEGRATION-160`, para salida explícita al agotar retry;
+- `TREQ-INTEGRATION-161`, para prohibición de compensación automática por agotamiento;
+- `TREQ-PULSO-001`, para el ciclo POS end-to-end con inventario, fidelización, hecho económico y reversión;
+- `TREQ-PULSO-005`, para separación de estados comerciales y efectos;
+- `TREQ-PULSO-006`, para separación entre venta, pago, caja, documento fiscal y reversos;
+- `TREQ-NEXO-011`, para ledger físico, proyecciones, idempotencia y compensación reconciliables;
+- `TREQ-NUMERA-001` y `TREQ-NUMERA-002`, para reconciliación, identidad, procedencia y correcciones económicas no destructivas;
+- `TREQ-PASS-008`, `TREQ-PASS-010` y `TREQ-PASS-011`, para servidor autorizado, ledger inmutable, idempotencia, identidad y compensaciones PASS.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia.
+
+---
+
+#### 31. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-POS-021` como tarea anterior;
+2. mantiene `INT-POS-023` como única tarea siguiente;
+3. conserva el estado operativo actual del piloto como `BLOQUEADO`;
+4. exige superar el gate completo de `INT-POS-021` antes de cualquier efecto real;
+5. congela un alcance individualmente trazable antes del dispatch;
+6. preserva Makos como fuente temporal durante el piloto;
+7. mantiene PULSO como productora del evento canónico;
+8. prohíbe que Makos o el adaptador escriban dominios internos;
+9. define audiencia congelada y replay sin fan-out silencioso;
+10. mantiene inbox y efecto separados por consumidora;
+11. define la puerta de elegibilidad por consumidora;
+12. admite `NO_APLICA` legítimo;
+13. exige efecto NEXO propietario con receipt cuando corresponda;
+14. exige `SALE_ECONOMIC_FACT` durable cuando corresponda;
+15. exige acumulación PASS real únicamente bajo cuenta y regla válidas;
+16. exige al menos un caso aplicable antes de declarar validada una clase de efecto que se pretenda habilitar posteriormente;
+17. exige redelivery deliberada con cero efecto adicional;
+18. exige recuperación de resultado desconocido sin nueva identidad;
+19. conserva conflicto ante huella incompatible;
+20. conserva partialidad y residual;
+21. conserva fuera de orden sin regresión;
+22. mantiene cuarentena durante el piloto real;
+23. define compensación append-only y propietaria;
+24. prohíbe compensación automática por agotamiento de retry;
+25. preserva independencia entre NEXO, NUMERA y PASS;
+26. reutiliza `INT-POS-020` para conciliación;
+27. materializa escenarios obligatorios del piloto;
+28. define condiciones que detienen expansión;
+29. define evidencia mínima por venta, evento y efecto;
+30. excluye el RPC legacy `pulso_post_daily_sales_import` como prueba del piloto canónico;
+31. no afirma readiness físico de una frontera sin evidencia del paquete que la implemente;
+32. asigna los contratos permanentes a `INT-SALES-003` a `INT-SALES-011` según responsabilidad;
+33. define una puerta de salida verificable;
+34. impide que el piloto ejecute o implique el corte de fuente;
+35. genera cero cambios `TREQ-*`;
+36. no genera una copia del registro canónico de requisitos;
+37. no modifica código, SQL, migraciones, Supabase, datos, credenciales, configuración ni estado remoto;
+38. mantiene `INT-POS-023` exclusivamente reservada.
+
+---
+
+#### 32. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-022 — Diseñar piloto controlado con efectos habilitados`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-023 — Definir transición futura desde POS externo hacia PULSO`
+
+
 ### [ ] INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
 ### [ ] INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
 
