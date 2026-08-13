@@ -1971,7 +1971,880 @@ No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de 
 `INT-PROD-003 — Definir contrato para que FOGO finalice el lote`
 
 
-### [ ] INT-PROD-003 — Definir contrato para que FOGO finalice el lote
+### ✅ INT-PROD-003 — Definir contrato para que FOGO finalice el lote
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROD-002 — Definir contrato para que NEXO registre el consumo`  
+**Tarea siguiente:** `INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado`  
+**Tipo de tarea:** documental; definición contractual de finalización de ejecución y cierre productivo del lote en FOGO, con conciliación de materiales, salida, rendimiento, merma, reproceso, calidad, empaque y efectos de inventario, sin implementación física, migraciones, cambios de datos, despliegue ni modificación de Supabase  
+**Línea base documental:** `vento-shell@0712d7332b528b210ce0f53e3e3d2918e8df840d`  
+**Aplicaciones involucradas:** `FOGO`, `NEXO`, `NUMERA`, `VISO` y `SHELL`; otras aplicaciones únicamente cuando una dependencia canónica ya aprobada consuma un hecho del lote  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma inequívoca cuándo FOGO puede afirmar que la ejecución de un lote terminó y cuándo puede afirmar, además, que el cierre productivo del lote quedó conciliado, sin confundir ninguna de esas afirmaciones con liberación de calidad, empaque concluido, ingreso físico de producto terminado o disponibilidad comercial.
+
+La regla raíz es:
+
+```text
+EJECUCIÓN PRODUCTIVA REGISTRADA
++
+CONSUMOS Y DEVOLUCIONES RECONCILIADOS
++
+SALIDA, RENDIMIENTO, MERMA Y DESVIACIONES REGISTRADOS
+        ↓
+FOGO PUEDE COMPLETAR LA EJECUCIÓN PRODUCTIVA
+        ↓
+CALIDAD, EMPAQUE Y EFECTOS FÍSICOS SIGUEN SIENDO HECHOS INDEPENDIENTES
+        ↓
+FOGO ABRE Y EJECUTA EL CIERRE PRODUCTIVO
+        ↓
+SI HAY EFECTOS FÍSICOS PENDIENTES, ESPERA A NEXO
+        ↓
+CONCILIACIÓN DE PRODUCCIÓN + CALIDAD + INVENTARIO + PENDIENTES
+        ↓
+FOGO PUEDE APROBAR EL CIERRE PRODUCTIVO
+```
+
+Se eliminan las siguientes ambigüedades:
+
+1. `VPROC-0034.OUTPUT_REPORTED` no significa lote finalizado;
+2. `VPROC-0034.CONSUMPTION_RECONCILIATION_PENDING` no significa lote finalizado;
+3. `VPROC-0034.PRODUCTION_EXECUTION_COMPLETED` significa que la ejecución terminó operativamente y fue entregada a calidad, no que el producto quedó liberado o ingresado a inventario;
+4. `VPROC-0035.QUALITY_DISPOSITION_VERIFIED` es una decisión independiente y no sustituye el cierre productivo;
+5. `VPROC-0036.PACKAGING_CYCLE_RECONCILED` es un cierre de empaque independiente y no sustituye el cierre productivo;
+6. `VPROC-0037.PRODUCTION_CLOSEOUT_APPROVED` es el cierre productivo definitivo de FOGO y exige conciliación de consumos, salida, merma, reproceso, rendimiento, movimientos y pendientes;
+7. un movimiento NEXO no puede finalizar por sí solo el proceso propietario de FOGO;
+8. una bandera local, un estado legacy o una fila creada no puede simular el cierre de los procesos canónicos.
+
+---
+
+#### 2. Alcance funcional
+
+Esta tarea gobierna exclusivamente la semántica y el contrato documental mediante los cuales FOGO termina la ejecución productiva de un lote y posteriormente aprueba su cierre productivo conciliado.
+
+Incluye:
+
+- condiciones de entrada para declarar terminada una ejecución;
+- diferenciación entre finalización operativa y cierre productivo;
+- registro autoritativo de salida real, rendimiento, merma, subproductos, coproductos y desviaciones;
+- uso de la conciliación de consumos aprobada en `INT-PROD-002`;
+- tratamiento de producción parcial e interrupciones;
+- relación con inspección y disposición de calidad;
+- relación con empaque y etiquetado cuando correspondan;
+- apertura y avance de `VPROC-0037`;
+- tratamiento de variaciones, reproceso y genealogía;
+- espera explícita de efectos de inventario NEXO cuando sean requeridos;
+- revisión previa al cierre definitivo;
+- idempotencia, concurrencia, respuesta perdida y eventos fuera de orden;
+- corrección, reapertura, cancelación, anulación, retorno y ajuste sin sobrescritura destructiva;
+- auditoría, evidencia, conciliación y handoff hacia `INT-PROD-004`.
+
+No incluye:
+
+- definición del movimiento de ingreso de producto terminado en NEXO, que corresponde a `INT-PROD-004`;
+- ejecución de inspecciones o decisiones de calidad fuera de `VPROC-0035`;
+- ejecución de empaque fuera de `VPROC-0036`;
+- modificación de recetas o de sus versiones;
+- modificación de reservas o consumos ya reconciliados fuera de sus procesos propietarios;
+- creación de stock disponible, vendible o despachable desde FOGO;
+- contabilización económica definitiva en NUMERA;
+- implementación de tablas, funciones, RPC, triggers, políticas RLS, colas, jobs, adaptadores o cambios de código.
+
+---
+
+#### 3. Dependencias canónicas preservadas
+
+El contrato consume sin reinterpretación:
+
+- `VPROC-0034` como proceso propietario de preparación de materiales y ejecución productiva;
+- `VPROC-0035` como proceso independiente de inspección y disposición de calidad;
+- `VPROC-0036` como proceso independiente de empaque, etiquetado y almacenamiento;
+- `VPROC-0037` como proceso propietario del cierre productivo, rendimiento, merma, aprovechamiento y reproceso;
+- `VPROC-0025` como proceso NEXO de retiro, consumo o traslado de existencias;
+- `INT-PROD-001` como contrato de solicitud y reserva de materiales;
+- `INT-PROD-002` como contrato de consumo físico y conciliación de materiales;
+- los eventos empresariales ya definidos para `VPROC-0034` a `VPROC-0037`;
+- los contratos transversales aprobados de propiedad, consumidoras, idempotencia, reintentos, compensación, auditoría, operación pendiente y prohibición de escrituras cruzadas.
+
+Ninguna decisión previa se modifica y no se crea un proceso paralelo de cierre.
+
+---
+
+#### 4. Propiedad empresarial
+
+| Elemento                                             | Propietaria                  | Regla obligatoria                                                                     |
+| ---------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------- |
+| orden productiva y versión aplicada                  | `FOGO`                       | identifica qué ejecución se está cerrando                                             |
+| lote productivo y genealogía productiva              | `FOGO`                       | FOGO conserva identidad, versión, relación con receta y continuidad del lote          |
+| receta y versión usada                               | `FOGO`                       | el cierre conserva la versión exacta; no recalcula historia con una versión posterior |
+| salida real productiva                               | `FOGO`                       | FOGO declara qué produjo realmente la ejecución                                       |
+| rendimiento, merma y desviaciones productivas        | `FOGO`                       | no se deducen desde una proyección de inventario                                      |
+| disposición de calidad                               | `FOGO` mediante `VPROC-0035` | es independiente de la finalización operativa y debe conservar su propia autoridad    |
+| empaque y etiquetado                                 | `FOGO` mediante `VPROC-0036` | son independientes del cierre de ejecución y se concilian por su proceso propietario  |
+| consumo físico, retornos y movimientos de materiales | `NEXO`                       | FOGO consume referencias autoritativas; no reescribe el ledger físico                 |
+| ingreso y clasificación física de producto terminado | `NEXO`                       | se define en `INT-PROD-004`; FOGO no crea el movimiento físico                        |
+| cierre productivo                                    | `FOGO` mediante `VPROC-0037` | solo FOGO puede afirmar que la producción quedó productivamente conciliada            |
+| efecto económico derivado                            | `NUMERA`                     | consume hechos aprobados sin apropiarse del lote ni del movimiento físico             |
+| contratos compartidos                                | `SHELL`                      | no fabrica hechos de producción, calidad ni inventario                                |
+
+Regla de segregación:
+
+```text
+FOGO CIERRA LA VERDAD PRODUCTIVA
+NEXO CONFIRMA LA VERDAD FÍSICA DEL INVENTARIO
+CALIDAD CONSERVA SU DECISIÓN INDEPENDIENTE
+NUMERA CONSUME RESULTADOS ECONÓMICOS
+NINGÚN CONSUMIDOR FABRICA EL HECHO DEL PROPIETARIO
+```
+
+---
+
+#### 5. Dos hitos distintos de finalización
+
+El término “finalizar el lote” se materializa mediante dos hitos canónicos que no son equivalentes.
+
+| Hito                   | Estado canónico                             | Qué demuestra                                                                                                                                     | Qué no demuestra                                                                                                 |
+| ---------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| finalización operativa | `VPROC-0034.PRODUCTION_EXECUTION_COMPLETED` | materiales, pasos, cantidades, desviaciones, rendimiento y resultado de la ejecución quedaron registrados y el expediente fue entregado a calidad | liberación de calidad, empaque conciliado, ingreso NEXO, disponibilidad comercial o cierre productivo definitivo |
+| cierre productivo      | `VPROC-0037.PRODUCTION_CLOSEOUT_APPROVED`   | consumos, salida, merma, reproceso, rendimiento, movimientos y pendientes quedaron conciliados y el cierre fue aprobado                           | modificación retroactiva de calidad, recreación de movimientos o autorización para reescribir hechos previos     |
+
+Se prohíbe utilizar una única propiedad como `completed`, `posted`, `closed`, `ready`, `finished` o equivalente para representar simultáneamente ambos hitos y sus procesos intermedios.
+
+---
+
+#### 6. Condición de entrada para completar la ejecución
+
+FOGO solo podrá avanzar normalmente hacia `VPROC-0034.PRODUCTION_EXECUTION_COMPLETED` cuando pueda reconstruirse, como mínimo:
+
+- `production_order_ref`;
+- referencia estable al lote productivo;
+- `recipe_version_ref` exacta;
+- sede y área productiva;
+- actor responsable y contexto de ejecución;
+- materiales preparados y sus asignaciones aplicables;
+- cantidades realmente consumidas y sus resultados NEXO;
+- devoluciones y liberaciones de reserva aplicables;
+- salida real registrada;
+- cantidades, unidades y conversiones utilizadas;
+- rendimiento real;
+- merma, desperdicio, coproductos o subproductos declarados cuando existan;
+- pasos y controles de producción aplicables;
+- desviaciones, sustituciones y excepciones registradas;
+- evidencia necesaria para entregar el expediente a calidad.
+
+La presencia de una fila de lote o de una cantidad producida no satisface esta condición por sí sola.
+
+---
+
+#### 7. Precondición de conciliación de materiales
+
+La finalización operativa consume el resultado de `INT-PROD-002`.
+
+Antes del terminal normal de `VPROC-0034`, FOGO deberá conocer el estado material de cada línea relevante, distinguiendo al menos:
+
+- cantidad requerida;
+- cantidad reservada;
+- cantidad emitida o ejecutada físicamente;
+- cantidad consumida;
+- cantidad devuelta;
+- cantidad liberada sin consumo;
+- cantidad desperdiciada cuando corresponda;
+- cantidad todavía pendiente;
+- referencias de movimientos y resultados NEXO;
+- excepciones o ajustes que sigan abiertos.
+
+Una operación NEXO con resultado desconocido, un consumo pendiente de conciliación o una diferencia material sin tratamiento impide afirmar que la ejecución quedó conciliada normalmente.
+
+---
+
+#### 8. Registro de salida real
+
+`VPROC-0034.OUTPUT_REPORTED` deberá conservar la salida real observada y no una proyección calculada únicamente desde la receta.
+
+Por cada salida material deberá poder resolverse:
+
+- producto canónico;
+- rol de salida cuando existan salida principal, coproducto o subproducto;
+- cantidad real;
+- unidad real y unidad canónica compatible;
+- referencia al lote productivo;
+- receta y versión;
+- sede y área;
+- momento de captura;
+- actor o dispositivo responsable cuando aplique;
+- método o evidencia de medición cuando sea exigible;
+- desviación frente al valor esperado;
+- destino productivo previsto, sin convertirlo en un hecho NEXO ya confirmado.
+
+La salida real no se modifica para forzar coincidencia con la receta, la existencia posterior o el costo esperado.
+
+---
+
+#### 9. Rendimiento esperado y rendimiento real
+
+El cierre conserva por separado:
+
+```text
+RENDIMIENTO ESPERADO SEGÚN RECETA Y VERSIÓN
+≠
+SALIDA REAL OBSERVADA
+≠
+SALIDA LIBERADA POR CALIDAD
+≠
+SALIDA INGRESADA FÍSICAMENTE EN NEXO
+```
+
+El rendimiento deberá compararse utilizando identidades, unidades, conversiones, redondeos y tolerancias compatibles con la receta y la versión ejecutadas.
+
+Una diferencia fuera de tolerancia no se corrige alterando la cantidad esperada ni la cantidad real: genera una variación que debe conservar causa, evidencia, responsable y tratamiento.
+
+---
+
+#### 10. Merma, desperdicio, coproducto, subproducto y aprovechamiento
+
+FOGO deberá conservar categorías productivas distintas cuando apliquen:
+
+- salida principal;
+- coproducto;
+- subproducto;
+- merma o desperdicio;
+- material recuperable;
+- material enviado a reproceso;
+- resultado no conforme;
+- diferencia todavía no explicada.
+
+No se sumarán cantidades de familias o unidades incompatibles para fabricar una conciliación aparente.
+
+Toda equivalencia cuantitativa usada para conciliación deberá ser reproducible mediante unidades y reglas canónicas. Si una diferencia no puede explicarse mediante esas reglas, permanece como variación bajo revisión.
+
+---
+
+#### 11. Producción parcial
+
+Una ejecución podrá terminar con una salida inferior a la planificada cuando el proceso y la autoridad aplicable lo permitan, pero esa condición deberá conservarse explícitamente.
+
+La producción parcial:
+
+1. no modifica silenciosamente la cantidad planificada;
+2. no transforma la cantidad faltante en producto terminado;
+3. conserva rendimiento y diferencia reales;
+4. exige conciliación de materiales consumidos, devueltos y desperdiciados;
+5. conserva el motivo y la autoridad cuando el cierre sea aceptado con diferencia;
+6. no autoriza a NEXO a registrar la cantidad faltante;
+7. no permite cerrar una remisión o necesidad externa como satisfecha por inferencia.
+
+La relación con faltantes de remisiones permanece bajo el contrato ya aprobado de `INT-PROD-005`.
+
+---
+
+#### 12. Interrupción de la ejecución
+
+`VPROC-0037.PRODUCTION_CLOSEOUT_OPENED` puede abrirse para una ejecución terminada o interrumpida.
+
+Si la producción fue interrumpida antes del terminal normal de `VPROC-0034`:
+
+- no se emite `VPROC-0034.PRODUCTION_EXECUTION_COMPLETED` como si la ejecución hubiese finalizado normalmente;
+- se conserva el último estado real alcanzado;
+- se registran materiales, salida parcial, merma, evidencia y efectos ya ocurridos;
+- se cancelan únicamente trabajos futuros mediante la acción propietaria aplicable;
+- los movimientos físicos confirmados permanecen inmutables;
+- el cierre productivo debe explicar el resultado residual, las variaciones y los pendientes.
+
+Interrumpido no equivale a vacío, fallido sin historia ni cancelado sin efectos.
+
+---
+
+#### 13. Relación con calidad
+
+La finalización operativa entrega el expediente a `VPROC-0035`; no decide la disposición.
+
+`VPROC-0034.PRODUCTION_EXECUTION_COMPLETED` no autoriza:
+
+- liberar producto;
+- publicarlo como disponible;
+- venderlo;
+- consumirlo como producto terminado;
+- despacharlo;
+- declararlo conforme.
+
+Solo una disposición de calidad registrada y verificada mediante `VPROC-0035` puede demostrar qué existencia está expresamente liberada y qué existencia queda retenida, rechazada o destinada a reproceso.
+
+El cierre productivo deberá referenciar la disposición de calidad aplicable cuando exista y no podrá reinterpretarla.
+
+---
+
+#### 14. Relación con empaque y etiquetado
+
+`VPROC-0036` conserva una responsabilidad independiente.
+
+Cuando el producto, presentación o proceso exijan empaque antes del almacenamiento o disponibilidad posterior, el cierre deberá poder correlacionar:
+
+- lote productivo;
+- salida aprobada aplicable;
+- presentación;
+- cantidad empacada;
+- materiales de empaque;
+- etiquetas e identidades generadas;
+- diferencias de empaque;
+- resultado de conciliación del ciclo de empaque.
+
+`VPROC-0036.PACKAGED_OUTPUT_RECORDED` demuestra una salida empacada identificada, pero no demuestra por sí sola que haya sido transferida físicamente a almacenamiento.
+
+---
+
+#### 15. Apertura del cierre productivo
+
+Después de una ejecución terminada o interrumpida con hechos suficientes para reconciliar, FOGO abre `VPROC-0037.PRODUCTION_CLOSEOUT_OPENED`.
+
+La apertura debe conservar:
+
+- referencia al lote;
+- tipo de cierre o reproceso;
+- salida real;
+- consumos reales;
+- merma, desperdicio, coproductos o subproductos aplicables;
+- actor responsable;
+- genealogía cuando aplique;
+- disposición de calidad cuando ya exista;
+- referencias de evidencia;
+- contexto económico disponible sin convertirlo en contabilidad definitiva;
+- versión del cierre.
+
+Abrir el cierre no confirma rendimiento final, merma final, reproceso final, movimientos de inventario ni cierre definitivo.
+
+---
+
+#### 16. Recopilación de datos
+
+En `VPROC-0037.DATA_COLLECTING`, FOGO consolida referencias sin duplicar las fuentes propietarias.
+
+La recopilación deberá permitir reconstruir:
+
+- orden y lote;
+- receta y versión;
+- consumos NEXO;
+- devoluciones, liberaciones y ajustes asociados;
+- salida real por producto y rol;
+- rendimiento esperado y real;
+- desperdicio y aprovechamiento;
+- sustituciones y desviaciones;
+- resultados y disposición de calidad;
+- empaque cuando aplique;
+- reprocesos y genealogía;
+- movimientos de inventario ya confirmados;
+- efectos todavía pendientes;
+- evidencia y actores.
+
+FOGO almacena o referencia la evidencia necesaria para su expediente; no crea copias editables que compitan con los hechos propietarios de NEXO u otros dominios.
+
+---
+
+#### 17. Conciliación de rendimiento
+
+`VPROC-0037.YIELD_RECONCILIATION_IN_PROGRESS` compara el estándar de la receta y su versión con el resultado real.
+
+La conciliación deberá distinguir, sin ocultar diferencias:
+
+- producción esperada;
+- producción real;
+- producción conforme y no conforme cuando la calidad ya la haya clasificado;
+- merma o desperdicio;
+- coproductos y subproductos;
+- material recuperado o reaprovechado;
+- reproceso abierto;
+- diferencia explicada;
+- diferencia no explicada.
+
+Una comparación solo es válida cuando las unidades y factores utilizados son compatibles y auditables.
+
+---
+
+#### 18. Variación bajo revisión
+
+Toda diferencia material de consumo, rendimiento, merma o salida que requiera investigación pasa por `VPROC-0037.VARIANCE_UNDER_REVIEW`.
+
+La variación deberá conservar:
+
+- tipo;
+- cantidad y unidad cuando sea cuantificable;
+- referencia al dato esperado;
+- referencia al dato real;
+- causa conocida o evidencia de investigación;
+- responsable;
+- decisión;
+- impacto en calidad, inventario, reproceso o costo cuando aplique;
+- estado de resolución.
+
+Se prohíbe aprobar el cierre con una causa vacía para una variación que el proceso exige explicar.
+
+---
+
+#### 19. Reproceso y genealogía
+
+Cuando una variación requiera reproceso, `VPROC-0037` utiliza su ruta aprobada hacia `REWORK_PLAN_PENDING` y `REWORK_IN_PROGRESS`.
+
+Reglas:
+
+1. el reproceso conserva vínculo con el lote original;
+2. una separación de reproceso crea un caso vinculado y no reescribe el lote original;
+3. materiales adicionales se tramitan mediante los contratos propietarios aplicables, incluidos `INT-PROD-001` e `INT-PROD-002` cuando correspondan;
+4. consumos nuevos no se agregan retroactivamente al movimiento original;
+5. salida recuperada, pérdida adicional y resultado final conservan genealogía;
+6. una existencia retenida o rechazada no se convierte en liberada por iniciar reproceso;
+7. un reproceso abierto que afecte el resultado impide declarar el cierre definitivo como conciliado.
+
+---
+
+#### 20. Handoff hacia efectos de inventario
+
+Cuando los resultados productivos y las disposiciones aplicables estén suficientemente validados, `VPROC-0037` puede avanzar a `VPROC-0037.INVENTORY_EFFECTS_PENDING`.
+
+Este estado significa exactamente:
+
+```text
+FOGO YA TIENE UN RESULTADO PRODUCTIVO VALIDADO
++
+LOS EFECTOS FÍSICOS NECESARIOS TODAVÍA DEBEN SER CONFIRMADOS POR NEXO
+```
+
+No significa que el inventario ya fue actualizado.
+
+FOGO podrá entregar al contrato posterior la información empresarial necesaria para identificar el lote y la salida, pero no enviará como autoridad:
+
+- saldo físico resultante;
+- existencia disponible definitiva;
+- movimiento NEXO ya aplicado;
+- ubicación física confirmada si todavía depende de NEXO;
+- estado de posting de NEXO;
+- confirmación ficticia de producto terminado.
+
+La definición completa de la operación física pertenece a `INT-PROD-004`.
+
+---
+
+#### 21. Información mínima disponible para el handoff a NEXO
+
+Sin definir todavía el contrato físico de `INT-PROD-004`, FOGO deberá poder aportar como hechos propietarios o referencias verificables:
+
+- `production_order_ref`;
+- `production_lot_ref`;
+- instancia y estado de `VPROC-0034`;
+- instancia y estado de `VPROC-0037`;
+- `recipe_version_ref`;
+- producto o productos resultantes;
+- rol de cada salida;
+- cantidad real por salida;
+- unidad canónica compatible;
+- sede y área productiva;
+- disposición de calidad aplicable;
+- referencia de empaque o presentación cuando aplique;
+- genealogía relevante;
+- actor responsable;
+- correlación, causación, solicitud e identidad idempotente transversales;
+- referencias de evidencia necesarias.
+
+NEXO deberá producir sus propios hechos físicos y devolver referencias autoritativas de aplicación. Esta tarea no define su estructura interna, movimiento ni política de almacenamiento.
+
+---
+
+#### 22. Condición para abandonar `INVENTORY_EFFECTS_PENDING`
+
+FOGO no considerará resueltos los efectos de inventario porque:
+
+- haya enviado una solicitud;
+- una interfaz muestre éxito;
+- exista un destino previsto;
+- se haya calculado una cantidad;
+- el producto tenga disposición favorable de calidad;
+- exista un movimiento legacy no reconciliado con el contrato vigente.
+
+La transición requiere el resultado autoritativo que corresponda desde NEXO para cada efecto físico exigible, incluyendo sus referencias de movimiento o conciliación. El contenido exacto de ese resultado se especializa en `INT-PROD-004`.
+
+Un resultado NEXO pendiente, incierto, conflictivo o no correlacionable mantiene el cierre abierto.
+
+---
+
+#### 23. Revisión previa al cierre definitivo
+
+`VPROC-0037.CLOSURE_REVIEW_PENDING` deberá verificar, según aplicabilidad:
+
+- identidad única del lote;
+- orden, receta y versión correctas;
+- materiales y consumos conciliados;
+- devoluciones, liberaciones, mermas y ajustes resueltos;
+- salida real registrada;
+- rendimiento conciliado;
+- variaciones explicadas o tratadas;
+- reprocesos cerrados o explícitamente separados con genealogía;
+- disposición de calidad coherente;
+- empaque y etiquetado conciliados cuando correspondan;
+- efectos físicos NEXO confirmados y correlacionados;
+- pendientes sin ocultar;
+- evidencia suficiente;
+- autoridad vigente para aprobar el cierre.
+
+La revisión no modifica los hechos para lograr coherencia: identifica el pendiente y mantiene el cierre abierto hasta su resolución o tratamiento autorizado.
+
+---
+
+#### 24. Cierre productivo aprobado
+
+`VPROC-0037.PRODUCTION_CLOSEOUT_APPROVED` solo puede afirmarse cuando consumos, salida, merma, reproceso, rendimiento, movimientos y pendientes quedaron conciliados y el cierre fue aprobado por la autoridad aplicable.
+
+El resultado demuestra:
+
+- que la ejecución quedó cerrada sin ocultar variaciones;
+- que la historia del lote es reconstruible;
+- que las diferencias tuvieron tratamiento explícito;
+- que los efectos requeridos quedaron correlacionados;
+- que una corrección futura deberá producir registros compensatorios o una revisión vinculada.
+
+No demuestra ni autoriza por sí solo:
+
+- reescribir un movimiento NEXO;
+- cambiar una disposición de calidad histórica;
+- alterar una receta publicada;
+- borrar merma;
+- convertir un lote rechazado en liberado;
+- crear una segunda entrada física;
+- duplicar costos.
+
+---
+
+#### 25. Lote liberado, retenido, rechazado o enviado a reproceso
+
+El estado productivo y la disposición de calidad se conservan como ejes distintos.
+
+Un lote puede tener la ejecución terminada y encontrarse:
+
+- pendiente de calidad;
+- retenido;
+- liberado total o parcialmente;
+- rechazado;
+- enviado a reproceso.
+
+El cierre debe reflejar el resultado real de cada cantidad sin transformar todas las salidas en “producto terminado disponible”.
+
+Solo la existencia expresamente liberada puede ser candidata a avanzar al efecto físico correspondiente, sujeto al contrato NEXO de `INT-PROD-004`.
+
+---
+
+#### 26. Múltiples salidas
+
+Cuando una receta produzca salida principal, coproductos o subproductos, el cierre conservará una línea trazable por salida material.
+
+Cada línea deberá mantener:
+
+- identidad de producto;
+- rol;
+- cantidad y unidad reales;
+- calidad o clasificación aplicable;
+- presentación o empaque cuando corresponda;
+- destino previsto;
+- efecto NEXO requerido o no requerido según la clasificación aprobada;
+- referencia de movimiento cuando exista;
+- tratamiento de costo cuando sea consumido por NUMERA.
+
+Una salida no puede usar el movimiento, la calidad o el estado de otra para considerarse conciliada.
+
+---
+
+#### 27. Idempotencia de la finalización
+
+La solicitud o comando propietario que intente completar una ejecución o aprobar un cierre deberá usar una identidad estable y una huella del contenido lógico conforme a los contratos transversales vigentes.
+
+Reglas:
+
+1. misma identidad y mismo contenido lógico recuperan el resultado ya conocido;
+2. misma identidad con contenido incompatible produce conflicto sin segundo cierre;
+3. un refresh, doble click, timeout o reintento no genera otra finalización;
+4. ejecución, calidad, empaque, movimiento NEXO y cierre productivo conservan alcances idempotentes distintos;
+5. el identificador del lote no se usa como clave universal para todos los efectos;
+6. un resultado incierto se consulta o reconcilia antes de repetir un efecto que pudiera haberse confirmado.
+
+---
+
+#### 28. Concurrencia y versión
+
+Dos actores, sesiones o workers no podrán cerrar de forma incompatible la misma revisión del lote.
+
+La operación deberá comprobar la versión o mecanismo equivalente vigente antes de aplicar la transición.
+
+Si otra operación ya avanzó el lote:
+
+- una repetición equivalente recupera el resultado previo;
+- una versión obsoleta no sobrescribe la posterior;
+- una decisión incompatible produce conflicto;
+- la interfaz deberá reflejar el estado verdadero recuperado y no un éxito supuesto.
+
+---
+
+#### 29. Respuesta perdida y resultado desconocido
+
+Una respuesta perdida después de solicitar finalización no autoriza a repetir ciegamente el cierre.
+
+Se deberá:
+
+1. conservar la misma identidad empresarial;
+2. consultar estado o resultado recuperable;
+3. distinguir operación aplicada, duplicado, conflicto, pendiente o resultado desconocido;
+4. reintentar únicamente cuando el perfil aprobado lo permita;
+5. conciliar antes de emitir un segundo efecto que pudiera duplicar el primero.
+
+La misma regla aplica a los handoffs entre FOGO y NEXO.
+
+---
+
+#### 30. Eventos fuera de orden
+
+La llegada tardía de un evento no hará retroceder ni adelantar silenciosamente el lote.
+
+Ejemplos obligatorios:
+
+- una confirmación de consumo tardía puede resolver un pendiente, pero no revierte una versión posterior;
+- una disposición de calidad tardía no crea una segunda ejecución;
+- un efecto NEXO recibido antes de que FOGO pueda correlacionarlo se conserva o difiere según el contrato transversal, no se adjudica a otro lote;
+- un evento de cierre repetido no vuelve a ejecutar inventario ni costo;
+- una corrección posterior se vincula a la historia existente.
+
+---
+
+#### 31. Eventos empresariales reutilizados
+
+Esta tarea no crea nuevas definiciones de evento.
+
+Se reutilizan, entre otros, los hitos ya canónicos:
+
+- `VPROC-0034.EVT-004` — resultado productivo reportado;
+- `VPROC-0034.EVT-005` — conciliación de consumos pendiente;
+- `VPROC-0034.EVT-006` — ejecución productiva completada;
+- `VPROC-0035.EVT-006` — disposición de calidad verificada;
+- `VPROC-0036.EVT-006` — ciclo de empaque y almacenamiento conciliado;
+- `VPROC-0037.EVT-001` — cierre productivo abierto;
+- `VPROC-0037.EVT-002` — recopilando datos;
+- `VPROC-0037.EVT-003` — variación en revisión;
+- `VPROC-0037.EVT-004` — efectos de inventario pendientes;
+- `VPROC-0037.EVT-005` — revisión de cierre pendiente;
+- `VPROC-0037.EVT-006` — cierre productivo aprobado.
+
+Cada evento conserva su productora FOGO y sus consumidoras aprobadas. El evento informa un hecho durable; no concede a la consumidora autoridad para modificar el lote.
+
+---
+
+#### 32. Auditoría mínima del cierre
+
+El expediente deberá permitir reconstruir, sin inferencias destructivas:
+
+- orden;
+- lote;
+- receta y versión;
+- actores y contexto;
+- materiales y consumos;
+- pasos productivos;
+- cantidades esperadas y reales;
+- sustituciones;
+- desviaciones;
+- salida principal, coproductos y subproductos;
+- rendimiento;
+- merma y desperdicio;
+- reaprovechamiento y reproceso;
+- genealogía;
+- calidad y disposición;
+- empaque cuando aplique;
+- movimientos NEXO correlacionados;
+- resultado económico consumido posteriormente;
+- acciones de cancelación, anulación, retorno, ajuste o reapertura;
+- evidencia y motivos.
+
+Los logs técnicos no sustituyen este expediente empresarial.
+
+---
+
+#### 33. Correcciones y reapertura
+
+Un cierre aprobado es histórico e inmutable como hecho original.
+
+Si después se detecta una diferencia:
+
+- `VPROC-0037.EX-004` permite abrir una revisión vinculada;
+- el cierre original permanece consultable;
+- el nuevo expediente explica causa, evidencia y diferencia;
+- los efectos físicos se corrigen mediante acciones o movimientos vinculados del dominio propietario;
+- los costos se ajustan mediante el dominio económico correspondiente;
+- la revisión no borra merma, consumo, calidad o movimientos previos.
+
+Una reapertura no vuelve a ejecutar automáticamente la producción ni el ingreso físico.
+
+---
+
+#### 34. Cancelación, anulación, retorno y ajuste
+
+Se preservan las acciones canónicas de corrección:
+
+- `CANCEL`: detiene trabajo futuro o remanente que todavía pueda detenerse;
+- `VOID`: invalida una instrucción duplicada o inválida únicamente cuando no existe un efecto válido que preservar;
+- `RETURN`: registra un efecto físico inverso o retorno vinculado cuando corresponda;
+- `ADJUST`: registra una corrección vinculada cuando la conciliación demuestra una diferencia.
+
+Ninguna de estas acciones elimina el movimiento, salida, calidad o cierre original para aparentar que nunca ocurrió.
+
+---
+
+#### 35. Métricas y guardrails preservados
+
+El cierre conserva las métricas canónicas de rendimiento y merma sin redefinirlas.
+
+Como mínimo deberán poder analizarse:
+
+- rendimiento productivo conciliado contra estándar;
+- tasa de reproceso;
+- tiempo de cierre de variaciones y merma;
+- diferencias de consumo;
+- pendientes de inventario;
+- lotes con variaciones sin explicación.
+
+Guardrails obligatorios:
+
+- ninguna merma inexplicada se oculta;
+- el rendimiento no excluye pérdidas para verse artificialmente mejor;
+- ningún reaprovechamiento queda sin trazabilidad;
+- ningún consumo sin conciliar se presenta como cierre normal;
+- ningún lote se presenta como terminado disponible por ausencia de una confirmación propietaria.
+
+---
+
+#### 36. Estado actual de implementación observado
+
+La implementación vigente materializa actualmente una operación más acoplada que el diseño canónico:
+
+- la creación de un lote real recibe cantidades producidas, ingredientes, empaques y salidas en una misma interacción;
+- el RPC vigente crea el lote con estado legacy `posted` y `recipe_consumed = true`;
+- durante esa misma operación consume existencias de ingredientes y registra movimientos `production_consume`;
+- la operación también registra movimiento `production_output` y actualiza existencias para salidas que siguen la ruta física implementada;
+- la interfaz presenta estados legacy como `posted`, `draft`, `cancelled` y `completed` y modos de salida asociados a inventario, venta o cumplimiento directo.
+
+Ese comportamiento actual demuestra capacidad operativa parcial, pero no materializa por sí mismo la separación canónica entre:
+
+```text
+EJECUCIÓN COMPLETADA
+→ CALIDAD
+→ EMPAQUE CUANDO APLIQUE
+→ EFECTO FÍSICO NEXO
+→ CIERRE PRODUCTIVO CONCILIADO
+```
+
+La implementación vigente no redefine el contrato documental aprobado por esta tarea.
+
+---
+
+#### 37. Propiedad de la implementación pendiente
+
+Las brechas físicas permanecen asignadas a tareas ya existentes; no se crea un pendiente narrativo nuevo.
+
+La implementación FOGO del ciclo de lote, ejecución, calidad, empaque, reproceso y cierre está cubierta por las tareas ya registradas, entre ellas:
+
+- `FOGO-UX-005` a `FOGO-UX-015`;
+- `FOGO-AUTH-009` a `FOGO-AUTH-016`;
+- `OPS-REC-001`;
+- `OPS-PRD-001`;
+- `OPS-TRZ-001`;
+- `UX-QA-025`.
+
+Los movimientos y proyecciones NEXO permanecen cubiertos por las tareas de inventario ya registradas, incluidas:
+
+- `NEXO-UX-014` a `NEXO-UX-022`;
+- `NEXO-AUTH-011` a `NEXO-AUTH-013`;
+- `NEXO-AUTH-021` a `NEXO-AUTH-030`;
+- `NEXO-DOM-002` a `NEXO-DOM-007`;
+- `NEXO-DOM-019` a `NEXO-DOM-024`.
+
+La infraestructura transversal de idempotencia, eventos, persistencia, conciliación y efectos distribuidos permanece bajo sus tareas E3, E4, BLOQUE R y paquetes E5 ya existentes.
+
+`INT-PROD-004` permanece reservada exclusivamente para especializar el registro físico del producto terminado en NEXO.
+
+---
+
+#### 38. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se cumple todo lo siguiente:
+
+1. FOGO conserva la propiedad del lote y del cierre productivo;
+2. NEXO conserva la propiedad de los movimientos y existencias físicas;
+3. se diferencian finalización operativa y cierre productivo definitivo;
+4. `OUTPUT_REPORTED` no se interpreta como cierre;
+5. `PRODUCTION_EXECUTION_COMPLETED` no se interpreta como liberación de calidad ni ingreso de inventario;
+6. la ejecución normal no termina con consumos materiales sin conciliar;
+7. la salida real queda separada del rendimiento esperado;
+8. las variaciones no se corrigen sobrescribiendo valores reales o esperados;
+9. merma, desperdicio, coproductos, subproductos y reaprovechamiento conservan clasificación explícita;
+10. la producción parcial conserva el faltante y su causa;
+11. una interrupción no fabrica un terminal normal inexistente;
+12. calidad permanece bajo `VPROC-0035`;
+13. empaque permanece bajo `VPROC-0036`;
+14. el cierre productivo usa `VPROC-0037`;
+15. un reproceso conserva genealogía y no reescribe el lote original;
+16. `INVENTORY_EFFECTS_PENDING` no se confunde con inventario actualizado;
+17. FOGO no declara saldo, ubicación o movimiento NEXO como hecho propio;
+18. `INT-PROD-004` conserva la definición del efecto físico de producto terminado;
+19. el cierre definitivo espera los efectos NEXO exigibles cuando correspondan;
+20. la revisión de cierre comprueba producción, calidad, inventario y pendientes;
+21. un cierre aprobado conserva historia inmutable;
+22. una corrección posterior usa revisión o efecto compensatorio vinculado;
+23. misma identidad idempotente y mismo contenido recuperan el resultado previo;
+24. misma identidad y contenido incompatible producen conflicto;
+25. concurrencia o versión obsoleta no sobrescriben un cierre posterior;
+26. respuestas perdidas se consultan o reconcilian antes de repetir efectos;
+27. eventos tardíos no retroceden ni duplican el lote;
+28. los eventos empresariales vigentes se reutilizan sin crear definiciones paralelas;
+29. el expediente permite reconstruir orden, receta, lote, consumos, salida, calidad, movimientos, merma y cierre;
+30. la implementación actual queda distinguida del diseño canónico;
+31. las brechas físicas quedan vinculadas a tareas existentes;
+32. no se altera el Registro 04A porque la cobertura de prueba ya protege estas obligaciones.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** el comportamiento verificable de esta tarea ya está protegido por requisitos vigentes que cubren el ciclo completo del lote, versión exacta de receta, consumos y efectos físicos auditables, independencia entre finalización productiva, calidad e inventario, cierre conciliado de materiales, salida, calidad, movimientos y pendientes, idempotencia, concurrencia, compensación y correlación entre producción e inventario. La tarea especializa esas obligaciones para el handoff y el cierre FOGO sin introducir una obligación materialmente nueva.
+
+---
+
+#### Cobertura de prueba existente preservada
+
+La tarea consume y especializa, sin modificar texto, estado, relaciones ni secuencia, al menos:
+
+- `TREQ-FOGO-001` — ciclo del lote, producción parcial, consumo, desperdicio, resultado, finalización, cancelación o corrección con efectos auditables;
+- `TREQ-FOGO-002` — receta publicada inmutable, versión exacta, unidades, rendimiento real, merma, sustituciones y desviaciones;
+- `TREQ-FOGO-004` — ejecución productiva, independencia entre finalización, calidad e inventario, reproceso con genealogía y cierre conciliado de materiales, salida, calidad, movimientos y pendientes;
+- `TREQ-NEXO-010` — unidad, conversión, tolerancia y política de operación coherentes;
+- `TREQ-NEXO-011` — fuente canónica de movimientos y proyecciones con atomicidad o idempotencia y compensación verificables;
+- `TREQ-INTEGRATION-003` — identidad idempotente, resultado durable, reintentos, concurrencia, resultado desconocido y conciliación;
+- `TREQ-INTEGRATION-006` — propiedad única del dato y prohibición de fuentes competidoras;
+- `TREQ-INTEGRATION-011` — todo efecto externo de inventario atraviesa contrato NEXO correlacionado e idempotente y no puede cerrar incorrectamente el proceso;
+- `TREQ-INTEGRATION-013` — cadena materiales, ejecución, calidad, inventario y costo correlacionada, idempotente y reconciliable.
+
+No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba.
+
+---
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-PROD-002 — Definir contrato para que NEXO registre el consumo`
+
+**TAREA ACTUAL APROBADA**  
+`INT-PROD-003 — Definir contrato para que FOGO finalice el lote`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado`
+
+
 ### [ ] INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
 ### ✅ INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
 
