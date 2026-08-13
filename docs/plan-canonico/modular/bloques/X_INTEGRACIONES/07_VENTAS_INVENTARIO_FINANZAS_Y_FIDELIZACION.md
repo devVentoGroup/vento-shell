@@ -12580,7 +12580,1632 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
 
 
-### [ ] INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
+### ✅ INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+**Tarea siguiente:** `INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos`
+**Tipo de tarea:** documental; definición normativa permanente del control previo a la creación y emisión de una venta que impide que Makos y PULSO originen como nuevas dos representaciones del mismo hecho comercial, consumiendo la autoridad temporal definida en `INT-SALES-009`, la identidad e idempotencia de fuente externa definida en `INT-POS-013`, la identidad canónica de venta PULSO y los contratos transversales de idempotencia, concurrencia, resultado recuperable y conciliación, sin seleccionar todavía tablas, constraints, RPC, funciones, claims, locks, índices, workers, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta canónica interna y de su emisión empresarial:** `PULSO`
+**Fuente externa anterior de ventas durante la transición:** `Makos`
+**Regla de autoridad de fuente consumida:** `INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+**Contrato de identidad externa consumido:** `INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
+**Registro transversal de idempotencia reutilizado:** `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001`
+**Política transversal de retry reutilizada:** `ENTERPRISE-EVENT-RETRY-POLICY-001`
+**Política transversal de conciliación y partialidad reutilizada:** `ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001`
+**Línea base documental:** `vento-shell@b0d0853162a6e31e3e924e9789ff8a5efc38234b`
+**Línea base técnica PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el control permanente que impide que una misma venta empresarial termine registrada y emitida como dos ventas nuevas porque Makos y PULSO la hayan afirmado, importado, sincronizado o presentado por caminos distintos.
+
+La regla raíz es:
+
+```text
+AFIRMACIÓN DE VENTA
+        ↓
+RESOLVER AUTORIDAD DE FUENTE
+        ↓
+RESOLVER IDENTIDAD DE VENTA
+        ↓
+CONSULTAR ORIGEN Y RESULTADO DURABLE PREVIOS
+        ├── MISMA VENTA + MISMO ORIGEN AUTORIZADO + HUELLA COMPATIBLE
+        │       → RECUPERAR RESULTADO EXISTENTE
+        │       → CERO SEGUNDA VENTA
+        │       → CERO SEGUNDO EVENTO
+        │
+        ├── MISMA VENTA + FUENTE COMPETIDORA
+        │       → CONFLICTO DE AUTORIDAD
+        │       → CERO SEGUNDA VENTA
+        │       → CERO SEGUNDO EVENTO
+        │
+        ├── MISMA IDENTIDAD + HUELLA INCOMPATIBLE
+        │       → CONFLICTO / REVISIÓN SEGÚN CONTRATO
+        │       → CERO SOBRESCRITURA SILENCIOSA
+        │
+        └── IDENTIDAD INSUFICIENTE
+                → BLOQUEO / CONCILIACIÓN
+                → CERO IDENTIDAD INVENTADA
+```
+
+Nunca:
+
+```text
+MISMA VENTA
+→ MAKOS CREA UNA
+→ PULSO CREA OTRA
+→ CONSUMIDORAS INTENTAN DEDUPLICAR DESPUÉS
+```
+
+La barrera principal ocurre antes de permitir una segunda representación canónica de venta y antes de permitir una segunda emisión empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-010` congela las siguientes decisiones permanentes:
+
+1. una venta empresarial tiene un solo origen autorizado;
+2. PULSO es la única propietaria de la representación canónica interna de venta;
+3. Makos puede aportar una afirmación externa únicamente dentro del intervalo en que `INT-SALES-009` le reconoce autoridad;
+4. PULSO puede originar una venta nativa únicamente dentro del intervalo en que `INT-SALES-009` le reconoce autoridad;
+5. la autoridad de fuente se evalúa antes de aceptar una nueva venta;
+6. la autoridad válida no basta por sí sola: también debe comprobarse que la venta no exista ya;
+7. una venta ya representada conserva su origen histórico;
+8. otra fuente no puede reclamarla como venta nueva;
+9. la identidad de fuente externa y la identidad canónica interna permanecen separadas pero correlacionables;
+10. un identificador externo fuerte solo puede usarse cuando la fuente lo haya demostrado como estable e individual;
+11. el flujo agregado `makos_excel` no demuestra identidad individual de venta;
+12. un hash de archivo no identifica una venta;
+13. una fila agregada por producto no identifica una venta;
+14. similitud de fecha no identifica una venta;
+15. similitud de importe no identifica una venta;
+16. similitud de producto no identifica una venta;
+17. similitud de terminal no identifica una venta;
+18. varias similitudes juntas pueden generar un candidato de doble fuente, pero no una fusión automática;
+19. una equivalencia cruzada Makos↔PULSO solo puede afirmarse mediante identidad o correlación determinista acreditada;
+20. si no puede demostrarse equivalencia individual, no se inventa;
+21. si tampoco puede demostrarse que dos afirmaciones son distintas cuando existe un conflicto material de autoridad, el caso permanece bloqueado para una segunda emisión;
+22. una fuente no autorizada para el intervalo produce conflicto de autoridad, aunque su payload sea técnicamente válido;
+23. una fuente autorizada que reenvía la misma venta recupera el resultado previo;
+24. una fuente autorizada que reutiliza la misma identidad con contenido incompatible produce conflicto o revisión conforme al contrato;
+25. dos ejecuciones concurrentes de la misma aceptación tienen un solo ganador empresarial;
+26. dos fuentes concurrentes no pueden producir dos ganadores;
+27. el primer resultado durable compatible se recupera en retries;
+28. una respuesta perdida no habilita crear la venta desde la otra fuente;
+29. una caída de PULSO no habilita Makos como fallback;
+30. replay conserva fuente, identidad y resultado;
+31. backfill conserva fuente, identidad y resultado;
+32. una revisión conserva la venta original;
+33. una anulación conserva la venta original;
+34. una devolución conserva la venta original;
+35. un reembolso conserva la venta original;
+36. una compensación no crea otra venta;
+37. `event_id` se asigna o recupera únicamente después de que la venta haya superado la barrera de origen;
+38. una fuente competidora no obtiene un segundo `event_id` para el mismo hecho;
+39. la deduplicación de inbox de NEXO, NUMERA o PASS no sustituye la barrera de origen;
+40. una infracción histórica que haya atravesado la barrera se reconcilia sin borrar historia;
+41. NEXO corrige únicamente su efecto físico mediante su contrato;
+42. NUMERA corrige únicamente su efecto económico mediante su contrato;
+43. PASS corrige únicamente su efecto de fidelización mediante su contrato;
+44. la conciliación de `INT-SALES-008` conserva la detección y resolución de casos;
+45. `INT-SALES-011` conserva el retiro posterior del adaptador;
+46. la implementación física del control queda para los paquetes propietarios posteriores;
+47. esta tarea no selecciona primitiva de base de datos o infraestructura;
+48. se crean cero requisitos `TREQ-*`;
+49. se modifican cero requisitos `TREQ-*`;
+50. se crean cero objetos físicos;
+51. se modifican cero objetos físicos.
+
+---
+
+#### 3. Dependencias canónicas consumidas
+
+Esta tarea consume sin reabrir:
+
+- `INT-POS-005`, para identidad canónica de venta y línea;
+- `INT-POS-009`, para procedencia, payload original, recepción y evidencia;
+- `INT-POS-010`, para sede y terminal externas cuando estén acreditadas;
+- `INT-POS-013`, para `EXTERNAL_SALE_KEY`, identidad externa fuerte, huella, duplicado, conflicto y concurrencia;
+- `INT-POS-023`, para la barrera de doble fuente previa a consumidoras durante la transición;
+- `INT-SALES-001`, para registro durable de la venta canónica PULSO;
+- `INT-SALES-002`, para emisión canónica y conservación de `source_system` frente a `producer_application`;
+- `INT-SALES-003`, para efecto NEXO independiente;
+- `INT-SALES-004`, para efecto NUMERA independiente;
+- `INT-SALES-005`, para acumulación PASS independiente;
+- `INT-SALES-006`, para redención PASS independiente;
+- `INT-SALES-007`, para distinguir doble fuente de retry técnico;
+- `INT-SALES-008`, para conciliación de convivencia y candidatos de doble fuente;
+- `INT-SALES-009`, para autoridad por sede, terminal y límite efectivo;
+- los contratos transversales vigentes de idempotencia, retry, auditoría, partialidad y propiedad.
+
+No se redefine ninguna identidad, propietaria o resultado aprobado por esas tareas.
+
+---
+
+#### 4. Frontera exacta de esta tarea
+
+`INT-SALES-010` responde una sola pregunta:
+
+```text
+¿PUEDE ESTA AFIRMACIÓN CREAR
+UNA NUEVA VENTA CANÓNICA
+Y UNA NUEVA EMISIÓN?
+```
+
+La respuesta depende de dos puertas acumulativas:
+
+```text
+PUERTA 1
+FUENTE AUTORIZADA SEGÚN INT-SALES-009
+
++
+
+PUERTA 2
+AUSENCIA DEMOSTRADA DE UNA REPRESENTACIÓN PREVIA
+DE LA MISMA VENTA BAJO OTRA FUENTE
+```
+
+Solo si ambas se satisfacen puede continuar la creación de una nueva venta.
+
+---
+
+#### 5. Qué no es este control
+
+El control de doble fuente no es:
+
+- deduplicación de un `event_id`;
+- deduplicación de inbox consumidor;
+- deduplicación de efecto NEXO;
+- deduplicación de hecho NUMERA;
+- guarda de acumulación PASS;
+- hash de archivo;
+- hash de payload;
+- comparación de totales;
+- búsqueda aproximada de tickets;
+- algoritmo de similitud;
+- conciliación posterior usada como sustituto de prevención;
+- transacción distribuida entre todas las aplicaciones.
+
+Es una guardia de **origen de la venta** dentro de la frontera propietaria PULSO.
+
+---
+
+#### 6. Propiedad del control
+
+PULSO conserva:
+
+- la venta canónica;
+- la decisión de aceptar una nueva venta en su dominio;
+- la correlación entre afirmación externa y venta interna;
+- la emisión empresarial posterior.
+
+El adaptador Makos:
+
+- conserva afirmación y evidencia externa;
+- aplica sus contratos de ingestión;
+- no adquiere propiedad de la venta interna;
+- no puede forzar una segunda venta.
+
+NEXO, NUMERA y PASS:
+
+- no deciden qué fuente originó la venta;
+- no corrigen la fuente;
+- no actúan como barrera principal de doble origen.
+
+---
+
+#### 7. Orden obligatorio de evaluación
+
+La secuencia lógica permanente es:
+
+```text
+1. RECIBIR O CAPTURAR LA AFIRMACIÓN
+2. PRESERVAR PROCEDENCIA Y EVIDENCIA
+3. RESOLVER SEDE Y TERMINAL CUANDO APLIQUEN
+4. RESOLVER TIEMPO EMPRESARIAL
+5. RESOLVER AUTORIDAD DE FUENTE
+6. RESOLVER IDENTIDAD INDIVIDUAL DE VENTA
+7. CONSULTAR REPRESENTACIÓN CANÓNICA Y ORIGEN PREVIOS
+8. COMPARAR HUELLA / REVISIÓN / RESULTADO
+9. RECLAMAR O RECUPERAR UN ÚNICO RESULTADO EMPRESARIAL
+10. SOLO ENTONCES PERMITIR CREACIÓN O EMISIÓN NUEVA
+```
+
+No puede invertirse colocando la emisión antes del control de fuente.
+
+---
+
+#### 8. Vínculo lógico durable de origen
+
+Toda venta individual aceptada deberá quedar lógicamente vinculada de forma durable a evidencia suficiente para reconstruir su origen.
+
+Como mínimo, cuando sean aplicables y acreditados:
+
+- identidad canónica de venta;
+- `source_system`;
+- `source_instance_ref`;
+- identidad externa individual de venta;
+- sede;
+- terminal;
+- tiempo empresarial;
+- precisión temporal utilizada;
+- intervalo de autoridad aplicable;
+- revisión o versión;
+- versión de huella;
+- huella lógica;
+- evidencia de origen;
+- resultado de aceptación;
+- evento empresarial emitido cuando exista;
+- estado de conciliación cuando corresponda.
+
+Esta tarea define la obligación semántica y no crea un nombre de tabla, columna, constraint o entidad física.
+
+---
+
+#### 9. Dos guardas complementarias
+
+La protección requiere dos dimensiones distintas.
+
+##### 9.1. Unicidad de identidad dentro de una fuente
+
+Cuando exista identidad externa individual demostrada:
+
+```text
+source_system
++
+source_instance_ref cuando aplique
++
+external_sale_id
+→ COMO MÁXIMO UNA VENTA CANÓNICA
+```
+
+##### 9.2. Unicidad de origen de una venta canónica
+
+```text
+UNA canonical_sale_id
+→ UN SOLO ORIGEN EMPRESARIAL HISTÓRICO
+```
+
+Una segunda fuente no puede reasignar el origen de una venta ya existente.
+
+Las dos guardas protegen riesgos diferentes y ninguna sustituye a la otra.
+
+---
+
+#### 10. `EXTERNAL_SALE_KEY`
+
+Se reutiliza la identidad conceptual aprobada:
+
+```text
+EXTERNAL_SALE_KEY
+=
+source_system
++
+source_instance_ref cuando aplique
++
+external_sale_id
+```
+
+Solo procede cuando `external_sale_id` representa una venta individual estable conforme a evidencia de la fuente.
+
+Queda prohibido fabricar esa clave a partir de:
+
+- fecha;
+- sede interna;
+- terminal inferida;
+- total;
+- subtotal;
+- impuesto;
+- descuento;
+- productos;
+- cantidades;
+- hash de archivo;
+- hash de payload;
+- número de fila;
+- nombre de archivo;
+- timestamp de recepción.
+
+---
+
+#### 11. Identidad PULSO nativa
+
+Una venta nativa PULSO utiliza la identidad empresarial estable definida por el contrato de venta PULSO.
+
+Retry, sincronización offline, refresh, cambio de dispositivo, cambio de worker o reintento de publicación no crean otra venta.
+
+La identidad nativa PULSO no se convierte en una `EXTERNAL_SALE_KEY` ficticia para aparentar simetría con Makos.
+
+---
+
+#### 12. Correlación entre identidades distintas
+
+Makos y PULSO pueden utilizar identificadores diferentes.
+
+Una relación cruzada solo puede declararse cuando exista:
+
+- identificador compartido acreditado;
+- referencia causal común acreditada;
+- binding contractual determinista;
+- crosswalk aprobado;
+- evidencia equivalente que demuestre individualmente que se trata del mismo hecho.
+
+No basta con que dos registros “se parezcan”.
+
+---
+
+#### 13. Similitud no equivale a identidad
+
+Pueden existir dos ventas legítimas con:
+
+- mismo total;
+- misma sede;
+- misma terminal;
+- mismo minuto;
+- mismos productos;
+- mismas cantidades;
+- mismo cajero;
+- mismo medio de pago.
+
+Por tanto:
+
+```text
+SIMILITUD
+≠
+IDENTIDAD
+```
+
+La similitud puede elevar un candidato de doble fuente a conciliación según `INT-SALES-008`, pero no autoriza:
+
+- fusionar;
+- borrar;
+- escoger Makos;
+- escoger PULSO;
+- reasignar procedencia.
+
+---
+
+#### 14. Autoridad primero
+
+Antes de intentar correlación cruzada se evalúa la autoridad de `INT-SALES-009`.
+
+Si:
+
+```text
+FUENTE OBSERVADA
+≠
+FUENTE AUTORIZADA PARA SEDE + TERMINAL + TIEMPO
+```
+
+el resultado es:
+
+```text
+CONFLICTO DE AUTORIDAD
++
+CERO NUEVA VENTA
++
+CERO NUEVO EVENTO
+```
+
+No es necesario “encontrar un duplicado” para rechazar una fuente que carece de autoridad para originar ventas nuevas en ese intervalo.
+
+---
+
+#### 15. Fuente autorizada no significa venta nueva
+
+Que una fuente sea autorizada para el intervalo no demuestra que la afirmación sea nueva.
+
+Después de validar autoridad todavía debe consultarse:
+
+- identidad;
+- huella;
+- revisión;
+- venta canónica previa;
+- vínculo de origen;
+- resultado previo;
+- evento emitido cuando exista.
+
+Una redelivery de la fuente correcta no obtiene una segunda venta.
+
+---
+
+#### 16. Misma fuente, misma identidad, misma huella
+
+Caso:
+
+```text
+MISMA FUENTE AUTORIZADA
++
+MISMA IDENTIDAD
++
+MISMA HUELLA
+```
+
+Resultado:
+
+```text
+RECUPERAR VENTA Y RESULTADO PREVIOS
++
+CERO NUEVA VENTA
++
+CERO NUEVO EVENTO
+```
+
+Cuando el evento ya exista, se recupera la emisión existente conforme al alcance idempotente correspondiente.
+
+---
+
+#### 17. Misma fuente, misma identidad, huella incompatible
+
+Caso:
+
+```text
+MISMA FUENTE
++
+MISMA IDENTIDAD
++
+CONTENIDO MATERIAL INCOMPATIBLE
+```
+
+No se crea otra venta para evitar el conflicto.
+
+El resultado corresponde a:
+
+- revisión válida, si la semántica de versión acreditada lo demuestra;
+- conflicto, si reutiliza identidad de forma incompatible;
+- conciliación, si no puede determinarse con seguridad.
+
+Nunca se aplica `last write wins`.
+
+---
+
+#### 18. Fuente competidora sobre venta ya representada
+
+Caso:
+
+```text
+VENTA CANÓNICA EXISTENTE
++
+ORIGEN HISTÓRICO = MAKOS
++
+AFIRMACIÓN PULSO COMO VENTA NUEVA
+```
+
+o:
+
+```text
+VENTA CANÓNICA EXISTENTE
++
+ORIGEN HISTÓRICO = PULSO
++
+AFIRMACIÓN MAKOS COMO VENTA NUEVA
+```
+
+Resultado:
+
+```text
+CONFLICTO DE DOBLE FUENTE
++
+CERO SEGUNDA VENTA
++
+CERO SEGUNDA EMISIÓN
+```
+
+La evidencia competidora se conserva para conciliación.
+
+---
+
+#### 19. Makos antes del corte
+
+Cuando Makos es la fuente autorizada:
+
+1. la afirmación debe superar identidad e idempotencia externas;
+2. si la misma venta Makos ya existe, recupera resultado;
+3. si PULSO intenta originarla como nativa dentro del intervalo Makos, se bloquea por autoridad;
+4. la representación canónica resultante conserva `source_system = MAKOS`;
+5. PULSO sigue siendo la propietaria interna y productora del evento canónico.
+
+---
+
+#### 20. PULSO después del corte
+
+Cuando PULSO es la fuente autorizada:
+
+1. una venta nativa nueva puede continuar si no existe representación previa;
+2. Makos no puede originar una nueva venta post-corte;
+3. una llegada Makos post-corte se conserva como evidencia conflictiva;
+4. el acceso residual Makos no concede autoridad;
+5. el hecho PULSO conserva `source_system = PULSO`.
+
+---
+
+#### 21. Makos pre-corte recibido tarde
+
+Una venta Makos realmente ocurrida antes del límite puede llegar después.
+
+El control:
+
+1. evalúa el tiempo empresarial, no la recepción;
+2. reconoce Makos como fuente autorizada histórica;
+3. consulta si la venta ya fue representada;
+4. si ya existe con el mismo origen y huella compatible, recupera resultado;
+5. si ya existe bajo fuente competidora, abre conflicto;
+6. no crea una segunda venta solo porque el dato llegó tarde.
+
+---
+
+#### 22. PULSO offline post-corte
+
+Una venta PULSO creada bajo una modalidad offline autorizada después del límite:
+
+- conserva identidad PULSO;
+- conserva tiempo empresarial;
+- conserva fuente PULSO;
+- sincroniza con la misma identidad;
+- consulta resultado previo;
+- no se reenvía a Makos;
+- no se recrea por reconexión.
+
+---
+
+#### 23. Makos post-corte
+
+Una afirmación Makos cuyo hecho empresarial corresponde al intervalo PULSO:
+
+```text
+MAKOS
++
+INTERVALO AUTORIZADO = PULSO
+→ CONFLICTO DE AUTORIDAD
+```
+
+Aunque:
+
+- el archivo sea válido;
+- el hash sea nuevo;
+- el payload sea legible;
+- el mapping de producto esté resuelto;
+- la venta no haya sido encontrada por similitud.
+
+La fuente incorrecta no puede crear una nueva venta.
+
+---
+
+#### 24. PULSO pre-corte no autorizado
+
+Una venta nativa PULSO cuyo hecho empresarial corresponde al intervalo Makos:
+
+```text
+PULSO
++
+INTERVALO AUTORIZADO = MAKOS
+→ CONFLICTO DE AUTORIDAD
+```
+
+No se acepta como excepción por provenir de la futura plataforma objetivo.
+
+---
+
+#### 25. Intervalos superpuestos o contradictorios
+
+`INT-SALES-009` prohíbe intervalos solapados.
+
+Si una materialización futura presenta dos decisiones que autorizan simultáneamente Makos y PULSO para la misma sede, terminal y tiempo:
+
+```text
+AUTORIDAD AMBIGUA
+→ BLOQUEAR NUEVA VENTA
+→ CONCILIAR CONFIGURACIÓN
+```
+
+No se aplica prioridad implícita por:
+
+- fuente preferida;
+- orden de configuración;
+- timestamp técnico;
+- último valor escrito.
+
+---
+
+#### 26. Venta distinta legítima
+
+El control no debe suprimir ventas legítimamente distintas.
+
+Dos ventas pueden coexistir cuando:
+
+- cada una tiene identidad individual demostrable;
+- cada una pertenece a una fuente autorizada para su hecho;
+- sus identidades no colisionan;
+- no existe correlación determinista que las declare la misma venta;
+- no reutilizan indebidamente una identidad previa.
+
+Un valor comercial parecido no es motivo suficiente para deduplicar.
+
+---
+
+#### 27. Candidato de doble fuente sin identidad suficiente
+
+Cuando existe similitud suficiente para investigación pero no identidad determinista:
+
+```text
+CANDIDATO DE DOBLE FUENTE
+→ CASO DE CONCILIACIÓN
+```
+
+La conciliación conserva:
+
+- ambas evidencias;
+- fuente observada;
+- autoridad esperada;
+- señales de similitud;
+- limitaciones de identidad;
+- decisión;
+- responsable;
+- condición de salida.
+
+No se inventa una relación uno-a-uno.
+
+---
+
+#### 28. Evidencia agregada Makos
+
+El flujo `makos_excel` vigente conserva evidencia agregada por archivo y producto.
+
+Por tanto:
+
+```text
+ARCHIVO MAKOS
++
+FILA DE PRODUCTO
+≠
+VENTA INDIVIDUAL
+```
+
+Ese flujo puede:
+
+- demostrar cobertura agregada;
+- revelar diferencias;
+- apoyar conciliación;
+- conservar procedencia de lote.
+
+No puede por sí solo:
+
+- reclamar una venta individual;
+- producir un crosswalk individual;
+- demostrar que una venta PULSO es duplicada;
+- emitir una venta individual canónica;
+- satisfacer la guardia individual de doble fuente.
+
+---
+
+#### 29. Hash de archivo
+
+La unicidad técnica vigente por:
+
+```text
+site_id
++
+sales_date
++
+source
++
+source_file_hash
+```
+
+protege la repetición exacta de un archivo dentro de ese alcance.
+
+No protege por sí sola:
+
+- la misma venta en dos archivos distintos;
+- la misma venta Makos y PULSO;
+- una venta individual;
+- una línea individual.
+
+El hash permanece evidencia de ingestión, no identidad de venta.
+
+---
+
+#### 30. `source_row_number`
+
+`source_row_number` localiza una fila en el archivo.
+
+No se utiliza como:
+
+- identidad de venta;
+- identidad de línea empresarial;
+- crosswalk entre fuentes;
+- guarda de doble fuente.
+
+Reordenar el archivo no puede convertir el mismo hecho empresarial en otro hecho.
+
+---
+
+#### 31. Mapping de producto
+
+Coincidencia de producto, MID, código o nombre no identifica la venta.
+
+Un mapping de producto:
+
+- puede resolver qué producto representa una línea;
+- no demuestra qué ticket la originó;
+- no demuestra que una venta PULSO y una evidencia Makos sean la misma;
+- no puede liberar la barrera de doble fuente.
+
+---
+
+#### 32. Creación de venta y claim lógico
+
+La aceptación de una nueva venta debe producir un único ganador empresarial aun bajo concurrencia.
+
+Contrato:
+
+```text
+MISMA IDENTIDAD LÓGICA
++
+MISMA HUELLA COMPATIBLE
++
+DOS EJECUCIONES CONCURRENTES
+→ UN SOLO GANADOR
+```
+
+Las demás ejecuciones:
+
+- recuperan el resultado previo;
+- permanecen en curso recuperable;
+- o reciben conflicto cuando el contenido o fuente no coinciden.
+
+No satisface esta garantía una secuencia insegura de “buscar y después insertar” sin una exclusión equivalente.
+
+---
+
+#### 33. Concurrencia entre Makos y PULSO
+
+Si dos procesos intentan aceptar simultáneamente afirmaciones que una correlación determinista demuestra como la misma venta, pero desde fuentes distintas:
+
+```text
+DOS FUENTES
++
+UNA VENTA
++
+CONCURRENCIA
+→ COMO MÁXIMO UN ORIGEN ACEPTADO
+```
+
+La decisión válida se determina por la autoridad temporal y el resultado previo.
+
+La otra afirmación:
+
+- no crea venta;
+- no crea evento;
+- conserva evidencia;
+- queda conflictiva o conciliable.
+
+---
+
+#### 34. Atomicidad lógica
+
+La implementación posterior deberá vincular atómicamente o con durabilidad equivalente, dentro de la frontera propietaria:
+
+- decisión de autoridad;
+- identidad de venta;
+- origen;
+- huella;
+- revisión;
+- claim o exclusión concurrente;
+- creación o recuperación de venta;
+- resultado durable;
+- intención de emisión cuando corresponda;
+- evidencia de auditoría.
+
+No es válido:
+
+```text
+VENTA CREADA
++
+ORIGEN NO FIJADO
+```
+
+No es válido:
+
+```text
+EVENTO EMITIDO
++
+GUARDIA DE ORIGEN NO RESUELTA
+```
+
+Esta tarea no selecciona la primitiva física.
+
+---
+
+#### 35. Emisión empresarial
+
+El evento PULSO se produce únicamente después de que el hecho de venta sea durable y la guardia de origen haya concluido.
+
+Reglas:
+
+1. un duplicado verdadero recupera el evento existente cuando corresponda;
+2. una fuente competidora produce cero nueva emisión;
+3. un conflicto de huella produce cero emisión incompatible;
+4. una revisión legítima sigue el contrato de revisión y eventos aprobado;
+5. un evento posterior legítimo de la misma venta no se suprime por usar el mismo `canonical_sale_id`;
+6. no se utiliza `canonical_sale_id` como clave universal de todos los eventos.
+
+---
+
+#### 36. `event_id` no sustituye la guardia de origen
+
+Dos fuentes podrían producir identificadores de evento distintos si la segunda venta se creara indebidamente.
+
+Por tanto:
+
+```text
+DEDUPE POR event_id
+≠
+CONTROL DE DOBLE FUENTE
+```
+
+La barrera de origen debe ocurrir antes de permitir el segundo hecho y segundo evento.
+
+---
+
+#### 37. Consumer inbox no sustituye la guardia
+
+NEXO, NUMERA y PASS deduplican sus recepciones por sus contratos propios.
+
+Pero:
+
+```text
+nexo + event_id
+numera + event_id
+pass + event_id
+```
+
+no pueden saber que dos `event_id` distintos proceden indebidamente de una misma venta si PULSO ya creó dos hechos.
+
+El control primario permanece en la frontera de venta.
+
+---
+
+#### 38. Efectos consumidores
+
+Después de una venta válida, cada dominio mantiene su protección:
+
+- NEXO: inbox, efecto físico, movimientos y receipt;
+- NUMERA: inbox, `SALE_ECONOMIC_FACT` y resultado económico;
+- PASS acumulación: inbox, `LOYALTY_POINTS_ACCRUAL` y guarda cuenta + venta;
+- PASS redención: `redemption_id` y comando propietario.
+
+El control de doble fuente no reemplaza ninguna de estas identidades.
+
+---
+
+#### 39. Duplicado histórico que ya produjo efectos
+
+Si una violación antigua de doble fuente ya generó dos ventas o efectos:
+
+1. no se borra historia;
+2. no se fusionan ledgers destructivamente;
+3. `INT-SALES-008` identifica las dos fuentes y resultados;
+4. PULSO determina la relación entre las representaciones comerciales;
+5. cada consumidora confirma qué efecto ocurrió;
+6. únicamente efectos confirmados elegibles pueden corregirse o compensarse;
+7. NEXO corrige NEXO;
+8. NUMERA corrige NUMERA;
+9. PASS corrige PASS;
+10. el original y la corrección permanecen trazables.
+
+Esta tarea no ejecuta la reparación.
+
+---
+
+#### 40. Retry de la misma fuente
+
+Retry de la misma venta:
+
+- conserva fuente;
+- conserva identidad;
+- conserva huella;
+- conserva revisión;
+- conserva presupuesto;
+- consulta resultado;
+- no crea otra venta;
+- no crea otro evento.
+
+La pérdida de respuesta no modifica esta regla.
+
+---
+
+#### 41. Resultado desconocido
+
+Ante timeout o desconexión después de una posible aceptación:
+
+```text
+RESULTADO DESCONOCIDO
+        ↓
+CONSULTAR IDENTIDAD + ORIGEN + VENTA + RESULTADO
+        ├── CONFIRMADO → RECUPERAR
+        ├── AUSENCIA DEMOSTRADA → RETRY MISMA IDENTIDAD
+        └── INDETERMINADO → RECONCILIACIÓN
+```
+
+Nunca:
+
+```text
+RESULTADO DESCONOCIDO EN MAKOS
+→ INTENTAR CREAR EN PULSO
+```
+
+ni:
+
+```text
+RESULTADO DESCONOCIDO EN PULSO
+→ INTENTAR CREAR EN MAKOS
+```
+
+---
+
+#### 42. Cambio de tecnología
+
+Cambiar:
+
+- archivo por API;
+- polling por webhook;
+- RPC;
+- worker;
+- cola;
+- scheduler;
+- función;
+- base técnica;
+
+no cambia:
+
+- fuente histórica;
+- identidad empresarial;
+- autoridad temporal;
+- vínculo de origen;
+- resultado previo.
+
+Una migración técnica debe conservar la guardia suficiente para no reactivar ventas históricas.
+
+---
+
+#### 43. Replay
+
+Un replay:
+
+- conserva identidad;
+- conserva `source_system`;
+- conserva `occurred_at`;
+- conserva revisión;
+- consulta la venta previa;
+- consulta el origen previo;
+- conserva `event_id` cuando el evento ya existía;
+- no produce otra venta;
+- no cambia Makos por PULSO;
+- no cambia PULSO por Makos.
+
+---
+
+#### 44. Backfill
+
+Un backfill:
+
+- conserva procedencia;
+- identifica lote o ventana;
+- utiliza identidades deterministas cuando existan;
+- compara historia antes de crear;
+- no fabrica identidad individual desde agregados;
+- no crea ventas sensibles por inferencia;
+- no usa el corte como pretexto para reclasificar historia;
+- no crea otra venta para completar una métrica.
+
+---
+
+#### 45. Revisiones
+
+Una revisión legítima:
+
+- conserva la identidad de la venta;
+- conserva el origen histórico;
+- conserva la revisión anterior;
+- produce la revisión sucesora conforme al contrato;
+- no crea otra venta porque cambien importe, líneas o estado;
+- no transfiere la venta a la fuente actualmente autorizada si el original pertenece a otra fuente.
+
+---
+
+#### 46. Anulación, devolución y reembolso
+
+Una anulación, devolución o reembolso posterior:
+
+- referencia la venta original;
+- conserva el origen de la venta original;
+- utiliza identidad propia del hecho posterior cuando corresponda;
+- no se registra como otra venta para evitar el control de doble fuente;
+- no permite que Makos y PULSO representen el mismo hecho correctivo como dos operaciones equivalentes;
+- conserva compensaciones separadas por propietaria.
+
+---
+
+#### 47. Fallo de PULSO después del corte
+
+Una indisponibilidad de PULSO después del corte no modifica la autoridad de fuente.
+
+Queda prohibido:
+
+```text
+PULSO NO DISPONIBLE
+→ CREAR LA VENTA EN MAKOS
+→ IMPORTARLA DESPUÉS COMO NUEVA
+```
+
+Cualquier contingencia válida debe provenir del proceso autorizado y conservar una sola identidad y autoridad.
+
+---
+
+#### 48. Reasignación futura de autoridad
+
+Si una decisión posterior vuelve a asignar autoridad a otra fuente:
+
+1. utiliza otro límite efectivo;
+2. no solapa intervalos;
+3. no reescribe ventas anteriores;
+4. no modifica el origen de ventas PULSO ya válidas;
+5. no modifica el origen de ventas Makos ya válidas;
+6. la guardia consulta el intervalo correspondiente al tiempo empresarial de cada venta.
+
+Una fuente futura autorizada no adquiere propiedad retroactiva sobre la historia.
+
+---
+
+#### 49. Conciliación
+
+`INT-SALES-008` permanece como contrato de conciliación para:
+
+- candidatos de doble fuente;
+- fuente observada distinta de autoridad esperada;
+- identidad cruzada incierta;
+- dos ventas posiblemente equivalentes;
+- duplicados que escaparon a la barrera;
+- eventos duplicados;
+- efectos duplicados;
+- resultado desconocido;
+- residuales.
+
+La conciliación no se convierte en botón de creación, fusión o borrado de ventas.
+
+---
+
+#### 50. Decisiones de conciliación permitidas
+
+Una resolución puede determinar, según evidencia:
+
+- misma venta y mismo origen: recuperar representación previa;
+- misma venta y fuente competidora: conservar conflicto y aplicar corrección propietaria cuando corresponda;
+- ventas distintas: conservar ambas;
+- revisión del mismo hecho: vincular revisión sin segunda venta;
+- evidencia insuficiente: mantener caso abierto;
+- entrada externa agregada: conservar control agregado sin fabricar venta individual.
+
+La decisión conserva autoridad, evidencia y razón.
+
+---
+
+#### 51. Estado técnico actual observado
+
+La línea técnica vigente demuestra:
+
+- lotes `pulso_daily_sales_import_batches`;
+- filas `pulso_daily_sales_import_rows`;
+- `site_id`;
+- `sales_date`;
+- `source = 'makos_excel'`;
+- nombre y hash de archivo;
+- unicidad por sede, fecha, fuente y hash;
+- `source_row_number`;
+- producto externo;
+- cantidades e importes;
+- mapping a catálogo o producto.
+
+No demuestra en ese staging:
+
+- `external_sale_id` individual;
+- identidad individual de terminal;
+- crosswalk individual Makos↔PULSO;
+- claim individual de origen de venta;
+- guardia concurrente cruzada de fuente;
+- resultado durable individual de una venta externa.
+
+Consecuencia:
+
+```text
+GUARDIA DE ARCHIVO ACTUAL
+≠
+CONTROL PERMANENTE DE DOBLE FUENTE POR VENTA
+```
+
+Esta tarea no modifica la implementación.
+
+---
+
+#### 52. Parser PULSO observado
+
+El parser PULSO vigente interpreta el XLSX mediante:
+
+- ID de ítem;
+- producto;
+- categoría;
+- cantidad;
+- subtotal;
+- impuestos;
+- descuentos;
+- devoluciones.
+
+No acredita en esa modalidad:
+
+- ticket individual;
+- venta individual;
+- terminal individual;
+- tiempo empresarial individual;
+- línea individual subordinada a ticket;
+- identidad cruzada frente a una venta PULSO nativa.
+
+La ausencia de esos datos no se corrige inventándolos.
+
+---
+
+#### 53. Frontera de implementación posterior
+
+La materialización física deberá demostrar, como mínimo:
+
+1. resolución de autoridad de `INT-SALES-009`;
+2. identidad de venta PULSO;
+3. identidad externa fuerte cuando exista;
+4. correlación determinista cuando exista;
+5. vínculo durable de origen;
+6. huella versionada;
+7. revisión;
+8. claim o exclusión concurrente equivalente;
+9. un único ganador;
+10. recuperación de resultado;
+11. conflicto por fuente competidora;
+12. conflicto por huella incompatible;
+13. creación de venta dentro de la misma frontera propietaria;
+14. intención de emisión ligada al resultado;
+15. auditoría;
+16. conciliación;
+17. replay;
+18. backfill;
+19. migración sin reactivar historia;
+20. pruebas concurrentes y de doble fuente.
+
+La implementación deberá elegir la primitiva física en sus tareas y paquetes autorizados.
+
+---
+
+#### 54. Handoffs obligatorios
+
+| Pendiente material                             | Propietaria exacta                                                | Condición de salida                                                                                                                                         |
+| ---------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| materialización física de la guardia de origen | paquete PULSO correspondiente que materialice `INT-SALES-010`     | autoridad, identidad, origen, huella, concurrencia, resultado y emisión quedan ligados de forma que una fuente competidora no pueda crear una segunda venta |
+| conciliación de violaciones y candidatos       | `INT-SALES-008`                                                   | cada caso conserva fuentes, evidencia, decisión, responsable, resultado y residual sin borrar historia                                                      |
+| resolución temporal de autoridad               | `INT-SALES-009`                                                   | toda venta evaluable resuelve una única fuente autorizada por sede, terminal y tiempo empresarial                                                           |
+| idempotencia externa individual                | contrato de `INT-POS-013` materializado en el adaptador aplicable | una identidad externa demostrada converge en una sola venta y un resultado recuperable                                                                      |
+| efectos físicos posteriores                    | paquete NEXO correspondiente                                      | una venta válida produce como máximo una vez el efecto físico aplicable                                                                                     |
+| efectos económicos posteriores                 | paquete NUMERA correspondiente                                    | una venta válida produce como máximo una vez el hecho económico aplicable                                                                                   |
+| fidelización posterior                         | `PASS-INT-001` y `PASS-INT-002` según operación                   | acumulación y redención conservan sus guardas propias y no duplican puntos                                                                                  |
+| retiro del adaptador externo                   | `INT-SALES-011`                                                   | consumidoras internas continúan sin depender del adaptador y la historia sigue recuperable                                                                  |
+
+Ningún pendiente material queda sin propietaria y condición de salida.
+
+---
+
+#### 55. Auditoría mínima
+
+Cada decisión de aceptación, recuperación o conflicto deberá permitir reconstruir lógicamente, según aplicabilidad:
+
+- venta canónica;
+- identidad externa;
+- fuente observada;
+- fuente autorizada;
+- sede;
+- terminal;
+- tiempo empresarial;
+- precisión temporal;
+- intervalo de autoridad;
+- revisión;
+- huella y versión;
+- evidencia de origen;
+- representación previa encontrada;
+- resultado previo;
+- resultado del claim;
+- fuente ganadora;
+- fuente competidora;
+- motivo de conflicto;
+- `event_id` cuando exista;
+- actor o principal;
+- intento;
+- correlación;
+- conciliación;
+- acción sucesora o compensatoria cuando exista.
+
+Los timestamps por sí solos no establecen identidad ni causalidad.
+
+---
+
+#### 56. Observabilidad
+
+La observabilidad deberá distinguir:
+
+```text
+AFIRMACIONES RECIBIDAS
+≠
+VENTAS NUEVAS ACEPTADAS
+≠
+DUPLICADOS RECUPERADOS
+≠
+CONFLICTOS DE AUTORIDAD
+≠
+CONFLICTOS DE HUELLA
+≠
+CANDIDATOS DE DOBLE FUENTE
+≠
+EVENTOS EMITIDOS
+≠
+CASOS DE CONCILIACIÓN
+```
+
+Un alto número de archivos, entregas o intentos no implica un alto número de ventas.
+
+---
+
+#### 57. Privacidad y seguridad
+
+El control utiliza la información mínima necesaria para:
+
+- resolver fuente;
+- resolver identidad;
+- resolver autoridad;
+- comparar huella;
+- recuperar resultado;
+- auditar y conciliar.
+
+No necesita copiar por defecto:
+
+- datos personales completos;
+- credenciales;
+- tokens;
+- datos bancarios completos;
+- firmas;
+- secretos del proveedor.
+
+Una interfaz o actor administrativo no puede cambiar silenciosamente el origen de una venta para cerrar un conflicto.
+
+---
+
+#### 58. Sin escritura cruzada
+
+La guardia de origen:
+
+- no escribe inventario NEXO;
+- no escribe hechos NUMERA;
+- no escribe ledger PASS;
+- no escribe saldos PASS;
+- no modifica pagos;
+- no modifica documentos fiscales;
+- no corrige directamente dominios consumidores.
+
+La resolución de una venta duplicada no concede autoridad transversal.
+
+---
+
+#### 59. Prohibiciones
+
+Queda prohibido:
+
+1. permitir dos fuentes de origen para una misma venta;
+2. crear una segunda venta para resolver un conflicto de fuente;
+3. crear un segundo `event_id` porque cambió la fuente;
+4. usar deduplicación de consumidoras como barrera primaria;
+5. usar `event_id` como única guardia de doble fuente;
+6. usar hash de archivo como identidad de venta;
+7. usar hash de payload como identidad única;
+8. usar `source_row_number` como identidad de venta;
+9. usar producto como identidad de venta;
+10. usar total como identidad de venta;
+11. usar fecha como identidad de venta;
+12. usar terminal como identidad de venta por sí sola;
+13. usar similitud como equivalencia determinista;
+14. fusionar automáticamente Makos y PULSO;
+15. elegir Makos por conveniencia;
+16. elegir PULSO por conveniencia;
+17. elevar un agregado Makos a venta individual;
+18. inventar `external_sale_id`;
+19. inventar crosswalk;
+20. inventar terminal;
+21. inventar tiempo empresarial;
+22. aceptar una fuente no autorizada;
+23. ocultar una fuente no autorizada como retry;
+24. ocultar doble fuente como duplicado técnico;
+25. tratar una revisión como venta nueva para evitar conflicto;
+26. tratar una devolución como venta negativa nueva;
+27. usar `last write wins`;
+28. sobrescribir origen histórico;
+29. cambiar `source_system` histórico;
+30. reactivar Makos por fallo de PULSO;
+31. cambiar de canal para obtener otra identidad;
+32. cambiar de RPC o writer para eludir la guardia;
+33. reiniciar la identidad por replay;
+34. reiniciar la identidad por backfill;
+35. reiniciar la identidad por restart;
+36. borrar una venta confirmada para insertar la otra fuente;
+37. borrar eventos o efectos para ocultar doble fuente;
+38. corregir ledgers desde PULSO;
+39. ejecutar rollback distribuido global;
+40. considerar igualdad agregada como paridad individual;
+41. declarar implementada la guardia por existir la unicidad de archivo actual;
+42. declarar implementada la guardia por existir deduplicación downstream;
+43. crear tabla, constraint, índice, RPC, función, trigger, claim, lock, worker o cola desde esta tarea;
+44. modificar código, SQL, migraciones, RLS, datos, Supabase, credenciales o configuración remota;
+45. iniciar o desarrollar `INT-SALES-011`.
+
+---
+
+#### 60. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya exige que toda fuente empresarial competidora sea identificada, comparada y resuelta conservando origen, responsable, resolución y evidencia; que el POS externo y PULSO converjan en contratos canónicos de venta y línea sin doble emisión; que el corte por sede, terminal y fecha efectiva impida que ambas fuentes emitan la misma venta; que identidad, huella, concurrencia y resultado recuperable impidan una segunda mutación; y que retry, replay, respuestas perdidas y conciliación no dupliquen ventas ni efectos. `INT-SALES-010` especializa esas obligaciones en la barrera permanente previa a una segunda venta o emisión sin introducir una obligación verificable material nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 61. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado recuperable, conflicto, concurrencia y resultado desconocido;
+- `TREQ-INTEGRATION-006`, para fuente empresarial única, fuentes competidoras y resolución sin sobrescribir historia;
+- `TREQ-INTEGRATION-011`, para efectos físicos correlacionados e idempotentes;
+- `TREQ-INTEGRATION-014`, para transición POS externo/PULSO sin doble emisión y corte que impide que ambas fuentes emitan la misma venta;
+- `TREQ-INTEGRATION-109`, para entrega al menos una vez y efecto como máximo una vez por alcance;
+- `TREQ-INTEGRATION-112`, para recuperación del resultado con identidad y huella compatibles;
+- `TREQ-INTEGRATION-113`, para conflicto ante reutilización incompatible;
+- `TREQ-INTEGRATION-120`, para un solo ganador empresarial bajo concurrencia;
+- `TREQ-INTEGRATION-121`, para recuperación después de respuesta perdida;
+- `TREQ-INTEGRATION-122`, para atomicidad entre mutación, identidad, resultado y emisión;
+- `TREQ-INTEGRATION-125` a `TREQ-INTEGRATION-127`, para identidad externa, receipt y límite del hash;
+- `TREQ-INTEGRATION-131` y `TREQ-INTEGRATION-132`, para replay y backfill;
+- `TREQ-INTEGRATION-142`, para resultado desconocido antes de reejecución;
+- `TREQ-INTEGRATION-155`, para replay y backfill sin reactivar efectos;
+- `TREQ-INTEGRATION-211`, para conciliación con fuentes, criterio, decisión, autoridad y residual;
+- la cobertura de ownership y prohibición de escrituras cruzadas ya vigente para PULSO, NEXO, NUMERA y PASS.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 62. Decisiones congeladas
+
+1. Una venta tiene un solo origen autorizado.
+2. PULSO conserva la venta canónica interna.
+3. Makos permanece como afirmación externa dentro de su intervalo histórico.
+4. Autoridad se resuelve antes de crear.
+5. Existencia previa se consulta antes de crear.
+6. Fuente autorizada no implica venta nueva.
+7. La venta conserva origen histórico.
+8. Otra fuente no puede reasignar origen.
+9. `EXTERNAL_SALE_KEY` se reutiliza cuando está demostrada.
+10. No se inventa identidad externa.
+11. La identidad PULSO nativa permanece propia.
+12. Cross-source exige correlación determinista.
+13. Similitud no equivale a identidad.
+14. Agregado no equivale a venta.
+15. Hash no equivale a venta.
+16. Fila no equivale a venta.
+17. Mapping de producto no equivale a venta.
+18. Fuente no autorizada produce conflicto.
+19. Misma fuente + misma identidad + misma huella recupera resultado.
+20. Misma identidad + huella incompatible produce conflicto o revisión.
+21. Fuente competidora produce cero segunda venta.
+22. Fuente competidora produce cero segundo evento.
+23. Concurrencia tiene un único ganador.
+24. Retry conserva fuente e identidad.
+25. Resultado desconocido exige consulta.
+26. No existe fallback automático entre fuentes.
+27. Replay conserva origen.
+28. Backfill conserva origen.
+29. Revisión conserva venta.
+30. Anulación conserva venta.
+31. Devolución conserva venta.
+32. Reembolso conserva venta.
+33. Compensación no crea venta.
+34. El evento se emite después de la guardia.
+35. `event_id` no sustituye la guardia.
+36. Inbox consumidor no sustituye la guardia.
+37. NEXO conserva idempotencia propia.
+38. NUMERA conserva idempotencia propia.
+39. PASS conserva idempotencia propia.
+40. Duplicados históricos se corrigen sin borrar historia.
+41. `INT-SALES-008` conserva conciliación.
+42. `INT-SALES-009` conserva autoridad temporal.
+43. `INT-SALES-011` conserva retiro del adaptador.
+44. La implementación física queda diferida al paquete PULSO correspondiente.
+45. `makos_excel` actual no demuestra guardia individual.
+46. No se selecciona primitiva física.
+47. Se crean cero cambios `TREQ-*`.
+48. No se genera una copia del registro canónico de requisitos.
+49. Se crean cero objetos físicos.
+50. Se modifican cero objetos físicos.
+51. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 63. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-009` como tarea anterior aprobada;
+2. mantiene `INT-SALES-011` como única tarea siguiente reservada;
+3. define una sola fuente de origen por venta;
+4. conserva PULSO como propietaria de la venta canónica interna;
+5. conserva Makos como procedencia externa cuando corresponda;
+6. consume la autoridad temporal de `INT-SALES-009`;
+7. evalúa autoridad antes de crear;
+8. evalúa existencia previa antes de crear;
+9. define el vínculo lógico durable de origen;
+10. conserva identidad canónica y externa separadas;
+11. reutiliza `EXTERNAL_SALE_KEY` cuando existe evidencia suficiente;
+12. impide fabricar `external_sale_id`;
+13. define la identidad PULSO nativa sin convertirla en identidad externa ficticia;
+14. exige correlación determinista para equivalencia cross-source;
+15. impide equivalencia por similitud;
+16. impide equivalencia por total;
+17. impide equivalencia por fecha;
+18. impide equivalencia por producto;
+19. impide equivalencia por terminal aislada;
+20. impide equivalencia por hash;
+21. impide equivalencia por fila;
+22. define autoridad como primera puerta;
+23. define existencia previa como segunda puerta;
+24. recupera resultado ante mismo origen e identidad compatible;
+25. produce conflicto ante huella incompatible;
+26. produce conflicto ante fuente competidora;
+27. produce cero segunda venta por fuente competidora;
+28. produce cero segundo evento por fuente competidora;
+29. trata Makos pre-corte conforme a su autoridad;
+30. trata PULSO post-corte conforme a su autoridad;
+31. trata Makos pre-corte tardío sin reclasificarlo;
+32. trata PULSO offline post-corte sin reclasificarlo;
+33. trata Makos post-corte como conflicto;
+34. trata PULSO pre-corte no autorizado como conflicto;
+35. bloquea autoridad solapada;
+36. permite ventas legítimamente distintas;
+37. conserva candidatos inciertos para conciliación sin fusión;
+38. limita agregados a evidencia agregada;
+39. clasifica el hash actual como guardia de archivo y no de venta;
+40. excluye `source_row_number` como identidad;
+41. excluye mapping de producto como identidad de venta;
+42. exige un único ganador concurrente;
+43. trata concurrencia Makos/PULSO sin dos ganadores;
+44. exige atomicidad o durabilidad equivalente;
+45. coloca emisión después de la guardia;
+46. impide usar `event_id` como barrera principal;
+47. impide usar inbox consumidor como barrera principal;
+48. preserva guardas de NEXO;
+49. preserva guardas de NUMERA;
+50. preserva guardas de PASS;
+51. define reparación de duplicado histórico sin borrar historia;
+52. conserva retry con misma fuente;
+53. resuelve resultado desconocido antes de repetir;
+54. conserva identidad ante cambio tecnológico;
+55. conserva replay;
+56. conserva backfill;
+57. conserva revisiones;
+58. conserva anulaciones, devoluciones y reembolsos;
+59. impide fallback Makos por caída de PULSO;
+60. exige nuevo límite para reasignación futura;
+61. reutiliza `INT-SALES-008` para conciliación;
+62. hace explícitas las resoluciones de conciliación;
+63. diagnostica la línea técnica actual sin declararla suficiente;
+64. diagnostica el parser actual sin inventar granularidad;
+65. define la frontera de implementación posterior;
+66. asigna cada pendiente a propietaria y condición de salida;
+67. hace reconstruible la auditoría;
+68. separa métricas de afirmación, aceptación, duplicado y conflicto;
+69. minimiza datos;
+70. prohíbe escritura cruzada;
+71. genera cero requisitos de prueba nuevos;
+72. modifica cero requisitos de prueba;
+73. no genera una copia del registro canónico de requisitos;
+74. crea cero objetos físicos;
+75. modifica cero objetos físicos;
+76. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota;
+77. no inicia ni desarrolla `INT-SALES-011`.
+
+---
+
+#### 64. Resultado de la tarea
+
+`INT-SALES-010` queda definida como la barrera permanente que impide que Makos y PULSO conviertan una misma venta empresarial en dos ventas canónicas o dos emisiones nuevas.
+
+Resultado consolidado:
+
+```text
+AFIRMACIÓN DE VENTA
++
+FUENTE AUTORIZADA
++
+IDENTIDAD INDIVIDUAL DEMOSTRABLE
++
+ORIGEN HISTÓRICO DURABLE
++
+HUELLA VERSIONADA
++
+RESULTADO PREVIO CONSULTABLE
++
+EXCLUSIÓN CONCURRENTE
+        ↓
+UNA SOLA REPRESENTACIÓN CANÓNICA
++
+UNA SOLA FUENTE DE ORIGEN
++
+CERO SEGUNDA EMISIÓN POR FUENTE COMPETIDORA
+```
+
+Con la distinción obligatoria:
+
+```text
+DUPLICADO VERDADERO
+→ RECUPERAR RESULTADO
+```
+
+```text
+FUENTE COMPETIDORA
+→ CONFLICTO DE AUTORIDAD
+→ CERO SEGUNDA VENTA
+```
+
+```text
+SIMILITUD SIN IDENTIDAD
+→ CONCILIACIÓN
+→ CERO FUSIÓN AUTOMÁTICA
+```
+
+sin depender de deduplicación downstream, sin inventar identidad desde agregados y sin modificar físicamente la implementación en esta tarea.
+
+---
+
+#### 65. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos`
+
+
 ### [ ] INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
 
 AURA ↔ PASS / PULSO
