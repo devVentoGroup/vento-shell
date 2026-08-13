@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **758** |
+| Tareas aprobadas | **759** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **836** |
+| Tareas no iniciadas | **835** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.55% (758/1594)** |
+| Porcentaje de completamiento | **47.62% (759/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos** |
-| Tarea actual | **INT-PROD-002 — Definir contrato para que NEXO registre el consumo** |
+| Última tarea aprobada | **INT-PROD-002 — Definir contrato para que NEXO registre el consumo** |
+| Tarea actual | **INT-PROD-003 — Definir contrato para que FOGO finalice el lote** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-PROD-003 — Definir contrato para que FOGO finalice el lote** |
+| Siguiente tarea | **INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 42 de 83 aprobadas; INT-PROD-002 pendiente** |
+| Progreso del bloque | **BLOQUE X: 43 de 83 aprobadas; INT-PROD-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-PROD-001` — Definir contrato para que FOGO solicite o reserve insumos |
-| Tarea actual | `INT-PROD-002` — Definir contrato para que NEXO registre el consumo — **NO INICIADA** |
-| Siguiente tarea | `INT-PROD-003` — Definir contrato para que FOGO finalice el lote |
+| Última aprobada | `INT-PROD-002` — Definir contrato para que NEXO registre el consumo |
+| Tarea actual | `INT-PROD-003` — Definir contrato para que FOGO finalice el lote — **NO INICIADA** |
+| Siguiente tarea | `INT-PROD-004` — Definir contrato para que NEXO registre el producto terminado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 42 DE 83 APROBADAS — ACTUAL INT-PROD-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 43 DE 83 APROBADAS — ACTUAL INT-PROD-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos
-        ↓
-TAREA ACTUAL
 INT-PROD-002 — Definir contrato para que NEXO registre el consumo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-PROD-003 — Definir contrato para que FOGO finalice el lote
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 42 de 83 tareas aprobadas
+BLOQUE X — 43 de 83 tareas aprobadas
 ```

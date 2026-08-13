@@ -889,7 +889,1088 @@ No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de 
 `INT-PROD-002 — Definir contrato para que NEXO registre el consumo`
 
 
-### [ ] INT-PROD-002 — Definir contrato para que NEXO registre el consumo
+### ✅ INT-PROD-002 — Definir contrato para que NEXO registre el consumo
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos`  
+**Tarea siguiente:** `INT-PROD-003 — Definir contrato para que FOGO finalice el lote`  
+**Tipo de tarea:** documental; definición contractual del registro autoritativo de consumo de materiales entre FOGO y NEXO, con separación de captura productiva, efecto físico, movimiento, aceptación, posting, idempotencia, excepciones y conciliación; sin implementación física, migraciones, cambios de datos, despliegue ni modificación de Supabase  
+**Línea base documental:** `vento-shell@7ced408febe244bbb61bf3cdc41aa102365748a8`  
+**Aplicaciones involucradas:** `FOGO`, `NEXO` y `SHELL`; `NUMERA` únicamente como consumidora posterior de resultados económicos cuando corresponda  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma inequívoca cómo el uso real de materiales durante una ejecución productiva de FOGO produce exactamente una vez el efecto físico autoritativo de consumo en NEXO, sin permitir que FOGO escriba directamente el ledger de inventario ni que NEXO reinterprete la receta, la orden o la clasificación productiva.
+
+La regla raíz es:
+
+```text
+MATERIAL RESERVADO Y PREPARADO
++
+EJECUCIÓN PRODUCTIVA VÁLIDA EN FOGO
++
+USO REAL CAPTURADO CONTRA ORDEN, RECETA Y MATERIAL
+        ↓
+SOLICITUD DE EFECTO CORRELACIONADA A NEXO
+        ↓
+VALIDACIÓN AUTORITATIVA DE NEXO
+        ↓
+RETIRO / CONSUMO FÍSICO EN VPROC-0025
+        ↓
+ACEPTACIÓN DEL CONSUMIDOR PRODUCTIVO
+        ↓
+MOVIMIENTO CANÓNICO + PROYECCIONES NEXO
+        ↓
+STOCK_OPERATION_RECONCILED
+        ↓
+FOGO CONCILIA RESERVADO, CONSUMIDO, DEVUELTO Y DESPERDICIADO
+```
+
+La tarea elimina las siguientes ambigüedades:
+
+1. una reserva confirmada no equivale a consumo;
+2. una captura de cantidad utilizada en FOGO no equivale por sí sola a un movimiento físico de inventario;
+3. el movimiento autoritativo pertenece a NEXO;
+4. el consumo productivo debe conservar la referencia a la ejecución, orden, receta, material, fuente física y cantidad reales;
+5. el efecto de inventario no puede ejecutarse dos veces por reintento, respuesta perdida, doble envío, concurrencia u operación fuera de orden;
+6. una diferencia entre reservado y utilizado no puede desaparecer por edición silenciosa;
+7. una devolución no borra el movimiento original;
+8. una merma o desperdicio productivo no puede convertirse automáticamente en un segundo descuento de inventario;
+9. un consumo reconciliado no equivale a lote finalizado, calidad liberada ni producto terminado ingresado;
+10. no se crea un nuevo evento empresarial para representar consumo si el catálogo vigente ya cubre los hitos materiales del proceso.
+
+---
+
+#### 2. Alcance funcional
+
+Esta tarea gobierna exclusivamente el tramo comprendido entre el inicio de ejecución productiva y la conciliación del efecto físico de los materiales utilizados.
+
+Incluye:
+
+- captura productiva del uso real de cada material en FOGO;
+- vínculo con la reserva y operación NEXO originadas por `INT-PROD-001`;
+- validación de producto, unidad, conversión, fuente, lote, LPN, condición y cantidad;
+- retiro o consumo físico autoritativo en NEXO;
+- aceptación del efecto por el proceso consumidor de FOGO;
+- creación exactamente una vez del movimiento y de las proyecciones de inventario correspondientes;
+- consumo total, parcial y dividido entre varias fuentes físicas;
+- uso inferior o superior a la reserva original;
+- sustituciones productivas y físicas;
+- devolución de material no utilizado;
+- desperdicio, merma y diferencias de conciliación;
+- cancelación, anulación, retorno y ajuste;
+- concurrencia, idempotencia, reintento, respuesta perdida y resultado incierto;
+- eventos fuera de orden y dependencias faltantes;
+- auditoría y conciliación entre FOGO y NEXO.
+
+No incluye:
+
+- creación o publicación de recetas;
+- planificación productiva;
+- solicitud o reserva inicial de materiales, ya definida en `INT-PROD-001`;
+- cierre operativo del lote, reservado a `INT-PROD-003`;
+- ingreso de producto terminado, reservado a `INT-PROD-004`;
+- decisión o liberación de calidad;
+- costos finales o asiento económico;
+- implementación de tablas, funciones, RPC, triggers, RLS, colas, workers, jobs o adaptadores;
+- creación de un ledger paralelo en FOGO;
+- creación de eventos empresariales adicionales para duplicar hitos ya existentes.
+
+---
+
+#### 3. Dependencias canónicas preservadas
+
+El contrato consume sin reinterpretación:
+
+- `VPROC-0034` como proceso FOGO de preparación y ejecución productiva contra una versión aprobada;
+- `VPROC-0025` como proceso NEXO de retiro, consumo o traslado de existencias;
+- `VPROC-0016` como fuente del ciclo de versión de receta;
+- `INT-PROD-001` como contrato de requerimiento, solicitud, validación y reserva previa;
+- `EVENT-ENVELOPE-001` como sobre transversal de identidad, contexto, correlación e idempotencia;
+- el contrato de idempotencia de `INT-APP-004`;
+- el contrato de reintentos de `INT-APP-005`;
+- las reglas de compensación, auditoría, estados pendientes, error parcial y prohibición de escrituras cruzadas de `INT-APP-006` a `INT-APP-010`;
+- los contratos de entrada, salida, eventos, auditoría y métricas de `PROC-CAT-015` a `PROC-CAT-019`.
+
+No se crea un proceso alterno de consumo y no se redefine la máquina de estados de `VPROC-0025` ni de `VPROC-0034`.
+
+---
+
+#### 4. Propiedad empresarial
+
+| Elemento                                                                  | Propietaria                         | Regla obligatoria                                                           |
+| ------------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------- |
+| orden productiva, estado y versión de ejecución                           | `FOGO`                              | FOGO determina qué ejecución está ocurriendo y contra qué orden             |
+| receta y versión aplicada                                                 | `FOGO`                              | la ejecución conserva la formulación exacta que explica el uso esperado     |
+| material esperado por receta y revisión                                   | `FOGO`                              | FOGO conserva la necesidad teórica y su contexto productivo                 |
+| cantidad real observada o declarada como utilizada en producción          | `FOGO`                              | FOGO captura el hecho operativo de uso dentro de la ejecución               |
+| clasificación productiva de consumo, devolución, desperdicio o desviación | `FOGO`                              | la clasificación debe conservarse sin reescribir la receta esperada         |
+| stock físico, disponibilidad, reserva y fuente física                     | `NEXO`                              | NEXO conserva la verdad de existencias, ubicaciones, lotes, LPN y condición |
+| retiro o consumo físico de existencias                                    | `NEXO`                              | únicamente NEXO produce el efecto autoritativo sobre el ledger              |
+| movimiento canónico y proyecciones de stock                               | `NEXO`                              | cada efecto físico queda respaldado por movimiento correlacionado           |
+| aceptación del consumo por el proceso productivo                          | `FOGO` como consumidora del handoff | confirma correspondencia con ejecución y material, sin escribir inventario  |
+| contratos compartidos y compatibilidad                                    | `SHELL`                             | no fabrica hechos de producción ni de inventario                            |
+| efecto económico posterior                                                | `NUMERA` cuando aplique             | consume resultados; no altera cantidades físicas ni productivas             |
+
+Regla de segregación:
+
+```text
+FOGO DECLARA QUÉ MATERIAL UTILIZÓ EN SU EJECUCIÓN
+NEXO DECIDE Y REGISTRA EL EFECTO FÍSICO AUTORITATIVO
+FOGO ACEPTA O RECHAZA LA CORRESPONDENCIA DEL HANDOFF
+NEXO CONCILIA EL MOVIMIENTO Y SUS PROYECCIONES
+NINGUNA APLICACIÓN ESCRIBE LA VERDAD PROPIETARIA DE LA OTRA
+```
+
+---
+
+#### 5. Separación obligatoria de conceptos
+
+| Concepto                  | Qué demuestra                                                                  | Qué no demuestra                        |
+| ------------------------- | ------------------------------------------------------------------------------ | --------------------------------------- |
+| requerimiento material    | cantidad teórica necesaria según orden y receta                                | que exista stock o que se haya usado    |
+| reserva                   | cantidad apartada por NEXO                                                     | que haya salido o sido consumida        |
+| material listo            | condiciones productivas suficientes para preparar el inicio                    | que exista consumo                      |
+| uso productivo capturado  | FOGO registró una cantidad real contra la ejecución                            | que NEXO haya aplicado el efecto físico |
+| ejecución física          | NEXO está retirando, consumiendo o trasladando con cantidades reales           | que el posting esté concluido           |
+| aceptación del consumidor | FOGO reconoce cantidad, condición y evidencia del handoff                      | que el ledger ya esté reconciliado      |
+| posting pendiente         | el efecto físico validado espera movimiento canónico y proyecciones            | que el cierre haya terminado            |
+| consumo reconciliado      | NEXO concluyó cantidad, unidad, origen, destino y movimientos sin doble efecto | que el lote productivo haya finalizado  |
+| conciliación productiva   | FOGO explicó reservado, utilizado, devuelto, desperdiciado y diferencias       | que exista liberación de calidad        |
+
+Una interfaz, RPC o registro no podrá usar un único estado genérico para representar simultáneamente reserva, uso productivo, movimiento, posting y conciliación.
+
+---
+
+#### 6. Condiciones de entrada
+
+El tramo de consumo solo podrá ejecutarse cuando existan referencias resolubles y vigentes a:
+
+- una instancia de `VPROC-0034` que haya alcanzado `VPROC-0034.IN_PRODUCTION` mediante la progresión aprobada;
+- una orden productiva autorizada y su versión;
+- una versión exacta de receta;
+- una línea o requerimiento material identificable;
+- una instancia NEXO de `VPROC-0025` relacionada con la necesidad productiva;
+- la reserva aplicable cuando el material haya seguido el flujo ordinario definido en `INT-PROD-001`;
+- `source_stock_ref` válido;
+- `destination_or_consumption_ref` que identifique el uso productivo;
+- producto, cantidad y unidad compatibles;
+- sede y área productiva;
+- actor o principal autorizado;
+- correlación e identidad idempotente suficientes.
+
+Si la reserva previa resulta insuficiente o debe ampliarse por una excepción autorizada, el delta deberá recorrer una operación NEXO vinculada con validación y reserva propias antes del efecto físico. Nunca se interpreta la ausencia de reserva suficiente como permiso para consumir stock sin operación propietaria.
+
+---
+
+#### 7. Fuente del dato de consumo productivo
+
+FOGO deberá conservar por cada material utilizado una captura productiva verificable que permita reconstruir:
+
+- instancia de `VPROC-0034`;
+- orden productiva y versión;
+- receta y versión;
+- lote o ejecución productiva cuando exista su identidad estable;
+- línea o requerimiento material y revisión;
+- producto canónico;
+- cantidad teórica requerida;
+- cantidad real utilizada declarada;
+- unidad de captura;
+- unidad de stock esperada o referencia suficiente para resolverla;
+- sede y área;
+- actor efectivo y principal técnico;
+- turno cuando aplique;
+- momento del hecho;
+- paso, etapa o contexto productivo cuando aporte trazabilidad;
+- desviación o motivo cuando la cantidad difiera del esperado;
+- sustitución aprobada cuando exista;
+- evidencia requerida por materialidad o política.
+
+La captura deberá preservar el valor esperado y el valor real como conceptos distintos. La cantidad real no reescribe la receta ni el requerimiento original.
+
+---
+
+#### 8. Solicitud de efecto desde FOGO hacia NEXO
+
+La captura de FOGO origina una solicitud de efecto hacia NEXO. Esa solicitud es un comando de integración y no un movimiento de inventario.
+
+Información empresarial mínima:
+
+- referencia a la instancia productiva;
+- referencia a la orden y su versión;
+- referencia a la receta y su versión;
+- referencia a la línea de material o requerimiento;
+- referencia a la instancia NEXO de stock relacionada;
+- referencia a la reserva aplicable;
+- producto canónico;
+- cantidad real cuya salida o consumo físico se solicita;
+- unidad de entrada;
+- referencia a la fuente física cuando ya esté determinada;
+- lote, LPN o presentación cuando aplique;
+- uso productivo identificable mediante `destination_or_consumption_ref`;
+- sede y área;
+- momento del hecho productivo;
+- referencia de sustitución, desviación o excepción cuando corresponda.
+
+Contexto transversal mínimo cuando aplique:
+
+- `request_id`;
+- `idempotency_key`;
+- `source_command_id`;
+- `correlation_id`;
+- `causation_id`;
+- `process_instance_id`;
+- versión del agregado o recurso;
+- principal técnico;
+- actor efectivo;
+- sede y área;
+- versión contractual;
+- referencias de evidencia.
+
+FOGO no enviará como autoridad:
+
+- saldo físico resultante;
+- cantidad disponible definitiva;
+- lote o ubicación sustituidos sin validación NEXO;
+- movimiento de inventario ya afirmado;
+- estado `POSTING_PENDING` o `STOCK_OPERATION_RECONCILED`;
+- identificador de movimiento inventado por la interfaz;
+- costo físico definitivo;
+- ajuste del ledger.
+
+---
+
+#### 9. Validación autoritativa de NEXO
+
+Antes de producir el efecto, NEXO deberá revalidar como mínimo:
+
+1. que la operación está vigente y autorizada;
+2. que la referencia productiva de destino o consumo corresponde al contexto recibido;
+3. que el producto coincide con la reserva, sustitución o excepción aprobada;
+4. que la unidad y conversión son deterministas y vigentes;
+5. que `source_stock_ref` existe y pertenece a la sede correcta;
+6. que la ubicación, lote, LPN, condición y disponibilidad permiten la operación;
+7. que la cantidad solicitada es positiva y se encuentra dentro del alcance autorizado;
+8. que el efecto no fue aplicado antes con la misma identidad lógica;
+9. que la versión de la reserva o recurso no quedó obsoleta;
+10. que no existe conflicto concurrente que haya consumido o reasignado la misma cantidad;
+11. que no se producirán saldos negativos no autorizados;
+12. que cualquier sustitución física cumple la política aplicable;
+13. que una sustitución de ingrediente productivo ya cuenta con autoridad FOGO cuando corresponda.
+
+Una validación exitosa no sustituye el movimiento ni demuestra por sí sola que el consumo quedó reconciliado.
+
+---
+
+#### 10. Relación con la reserva definida en INT-PROD-001
+
+La operación de consumo deberá conservar la relación con la reserva que la habilitó cuando exista flujo ordinario.
+
+Por cada línea material deben poder distinguirse al menos:
+
+```text
+requested_qty
+reserved_qty
+issued_qty
+remaining_reserved_qty
+released_without_issue_qty
+```
+
+Reglas:
+
+1. `reserved_qty` no se reduce por una edición del lado FOGO;
+2. `issued_qty` representa la cantidad que NEXO realmente retira o aplica como salida física hacia el uso productivo;
+3. la parte reservada que no llega a salir permanece reservada o recibe una acción propietaria explícita de liberación/cancelación;
+4. una liberación de reserva que nunca produjo salida física no se registra como devolución;
+5. cada cambio conserva referencia a la operación y versión que lo causó;
+6. la suma de efectos de varias fuentes físicas debe ser conciliable con la cantidad emitida hacia producción.
+
+Dentro del mismo alcance y unidad normalizada, al cerrar la obligación de una reserva debe cumplirse:
+
+```text
+reserved_qty
+=
+issued_qty
++ remaining_reserved_qty
++ released_without_issue_qty
+```
+
+Cualquier diferencia permanece abierta para conciliación y no se absorbe mediante redondeo arbitrario.
+
+---
+
+#### 11. Cantidades después de la salida física
+
+FOGO deberá clasificar el destino productivo de la cantidad emitida por NEXO sin alterar el movimiento original.
+
+Para una misma cantidad emitida y normalizada a la misma unidad:
+
+```text
+issued_qty
+=
+actual_consumed_qty
++ returned_qty
++ production_waste_qty
++ unresolved_variance_qty
+```
+
+Interpretación:
+
+- `actual_consumed_qty`: cantidad aplicada efectivamente a la ejecución productiva;
+- `returned_qty`: cantidad emitida hacia producción que luego regresa físicamente a inventario mediante operación NEXO vinculada;
+- `production_waste_qty`: cantidad cuya pérdida o desperdicio se atribuye al proceso productivo y queda clasificada por FOGO;
+- `unresolved_variance_qty`: diferencia todavía no explicada y que bloquea conciliación completa.
+
+Las cuatro cantidades deben compartir alcance, producto equivalente, unidad normalizada y referencias suficientes para reconstruir su origen.
+
+La clasificación productiva no crea por sí sola movimientos adicionales. Si una devolución, disposición, ajuste o cambio de condición produce otro efecto físico, NEXO deberá registrarlo mediante el proceso propietario correspondiente y relacionarlo con el hecho original.
+
+---
+
+#### 12. Progresión canónica de VPROC-0025
+
+La tarea reutiliza exactamente la progresión vigente:
+
+```text
+VPROC-0025.STOCK_OPERATION_REQUESTED
+        ↓
+VPROC-0025.VALIDATION_IN_PROGRESS
+        ↓
+VPROC-0025.RESERVED
+        ↓
+VPROC-0025.READY_FOR_EXECUTION
+        ↓
+VPROC-0025.IN_EXECUTION
+        ↓
+VPROC-0025.DESTINATION_CONFIRMATION_PENDING
+        ↓
+VPROC-0025.POSTING_PENDING
+        ↓
+VPROC-0025.STOCK_OPERATION_RECONCILED
+```
+
+Semántica aplicable al consumo productivo:
+
+- `RESERVED`: cantidad apartada, todavía no consumida;
+- `READY_FOR_EXECUTION`: operación autorizada y preparada físicamente;
+- `IN_EXECUTION`: se retira o consume existencia capturando cantidades reales;
+- `DESTINATION_CONFIRMATION_PENDING`: FOGO, como proceso consumidor, debe aceptar cantidad, condición y evidencia del handoff;
+- `POSTING_PENDING`: el efecto físico validado espera el movimiento canónico y las proyecciones correlacionadas;
+- `STOCK_OPERATION_RECONCILED`: cantidad, unidad, origen, destino, custodia y movimientos quedaron conciliados sin doble efecto.
+
+Ningún estado intermedio se presentará como cierre final de consumo.
+
+---
+
+#### 13. Relación con la progresión de VPROC-0034
+
+FOGO conserva su propia progresión:
+
+```text
+VPROC-0034.MATERIALS_READY
+        ↓
+VPROC-0034.IN_PRODUCTION
+        ↓
+VPROC-0034.OUTPUT_REPORTED
+        ↓
+VPROC-0034.CONSUMPTION_RECONCILIATION_PENDING
+        ↓
+VPROC-0034.READY_FOR_QUALITY
+```
+
+Reglas de acoplamiento:
+
+1. el paso a `IN_PRODUCTION` permite capturar consumos, tiempos y desviaciones;
+2. una captura FOGO puede iniciar o continuar el handoff hacia NEXO, pero no sustituye el efecto NEXO;
+3. `OUTPUT_REPORTED` no implica que todos los consumos estén conciliados;
+4. en `CONSUMPTION_RECONCILIATION_PENDING` FOGO compara materiales reservados, emitidos/consumidos, devueltos, desperdiciados y diferencias;
+5. FOGO no debe tratar el consumo como conciliado mientras exista una operación NEXO pendiente, desconocida, duplicada en conflicto o con diferencia material sin resolver;
+6. el avance a `READY_FOR_QUALITY` requiere que el expediente de consumo sea coherente o que las diferencias hayan recibido el tratamiento canónico autorizado;
+7. este avance no ingresa producto terminado a NEXO.
+
+---
+
+#### 14. Momento autoritativo del efecto físico
+
+El hecho productivo y el efecto físico son dos verdades relacionadas, pero distintas.
+
+```text
+FOGO CAPTURA USO REAL
+        ↓
+NEXO ACEPTA LA OPERACIÓN
+        ↓
+NEXO EJECUTA EL RETIRO / CONSUMO
+        ↓
+FOGO ACEPTA EL HANDOFF
+        ↓
+NEXO PUBLICA MOVIMIENTO Y PROYECCIONES
+        ↓
+NEXO RECONCILIA
+```
+
+La fuente autoritativa de que el inventario quedó afectado es el resultado reconciliado de NEXO con su movimiento canónico. Una respuesta de interfaz, un ACK técnico, un cambio visual o una fila FOGO no sustituyen esa prueba.
+
+---
+
+#### 15. Movimiento canónico de inventario
+
+Por cada efecto físico aplicado, NEXO deberá conservar un movimiento inmutable o una composición de movimientos que permita reconstruir al menos:
+
+- identificador estable del efecto o movimiento;
+- instancia de `VPROC-0025`;
+- tipo semántico de operación;
+- producto;
+- cantidad y signo;
+- cantidad de entrada cuando difiera de la unidad de stock;
+- unidad de entrada;
+- factor o regla de conversión vigente;
+- unidad de stock;
+- sede;
+- ubicación de origen;
+- lote, LPN, posición o presentación cuando aplique;
+- destino o referencia de consumo productivo;
+- orden, lote o ejecución FOGO correlacionada;
+- actor y principal;
+- momento del hecho;
+- referencias de idempotencia, correlación y causalidad;
+- relación con reserva, sustitución, devolución o ajuste cuando exista.
+
+La tarea no congela un nombre físico de tabla, columna, enum o RPC. Esa materialización corresponde a las tareas de arquitectura e implementación ya asignadas.
+
+---
+
+#### 16. Confirmación del consumidor productivo
+
+Cuando `VPROC-0025` alcance `DESTINATION_CONFIRMATION_PENDING`, FOGO deberá poder comprobar que el handoff recibido corresponde a:
+
+- su instancia productiva;
+- la orden y versión esperadas;
+- el material esperado o la sustitución autorizada;
+- la cantidad y unidad aceptables;
+- la fuente física y lote cuando sean relevantes para trazabilidad;
+- la condición material aplicable;
+- el actor y momento razonables;
+- la misma correlación de negocio.
+
+La confirmación de FOGO:
+
+- acepta o rechaza correspondencia con la ejecución;
+- no recalcula el saldo físico;
+- no publica el movimiento de inventario;
+- no modifica la fuente NEXO;
+- no convierte una diferencia en ajuste automático.
+
+Un rechazo o diferencia obliga a mantener el proceso pendiente, aplicar una excepción o reconciliar; no autoriza a borrar el retiro físico ya ocurrido.
+
+---
+
+#### 17. Consumo total
+
+Existe consumo total cuando la cantidad autorizada para la operación queda físicamente emitida hacia producción y la obligación asociada no conserva saldo pendiente dentro de esa operación.
+
+Condiciones mínimas:
+
+- todas las líneas o particiones físicas aplicables fueron ejecutadas;
+- la cantidad normalizada coincide con el alcance autorizado;
+- FOGO acepta la correspondencia productiva;
+- NEXO publica el movimiento y actualiza las proyecciones una sola vez;
+- no existe conflicto idempotente ni movimiento duplicado;
+- el proceso NEXO llega a `STOCK_OPERATION_RECONCILED`.
+
+Consumo total no equivale a finalización del lote.
+
+---
+
+#### 18. Consumo parcial
+
+`VPROC-0025.EX-004 — PARTIAL` gobierna el cumplimiento parcial cuando no toda la cantidad puede o debe ejecutarse.
+
+Debe conservar explícitamente:
+
+- cantidad solicitada;
+- cantidad reservada aplicable;
+- cantidad ejecutada;
+- cantidad pendiente;
+- riesgo o restricción;
+- responsable de la decisión;
+- impacto sobre la ejecución productiva;
+- próxima acción o decisión.
+
+Una operación parcial:
+
+- no puede presentarse como cierre completo;
+- no reduce silenciosamente el requerimiento de FOGO;
+- no crea stock ficticio para cubrir la diferencia;
+- puede requerir que FOGO ajuste plan, escala o ejecución mediante sus propias decisiones;
+- mantiene la diferencia abierta hasta cumplimiento, cancelación, sustitución o reconciliación autorizada.
+
+---
+
+#### 19. Uso inferior a la reserva
+
+Si `issued_qty < reserved_qty`:
+
+1. la diferencia no se consume por inferencia;
+2. puede permanecer reservada si la ejecución todavía la requiere;
+3. puede cancelarse la parte futura mediante la acción propietaria aplicable de NEXO;
+4. si nunca salió físicamente, no se registra como devolución;
+5. FOGO conserva la diferencia entre requerimiento, reserva y uso real;
+6. la liberación de la reserva no reescribe el requerimiento histórico;
+7. la cantidad liberada vuelve a disponibilidad únicamente mediante el efecto propietario NEXO correspondiente.
+
+---
+
+#### 20. Uso superior a la reserva
+
+Si FOGO determina que necesita usar más material del reservado:
+
+1. FOGO no amplía por sí sola la reserva ni el saldo disponible;
+2. NEXO deberá validar el delta adicional antes de producir el efecto;
+3. el delta se representa mediante una operación NEXO vinculada que vuelve a validar y reservar la cantidad adicional antes de ejecutarla, preservando la historia de la cantidad original;
+4. la identidad del delta debe ser distinta de la operación ya aplicada para evitar reutilización conflictiva de la misma clave;
+5. no se autoriza saldo negativo por el solo hecho de que la producción ya haya comenzado;
+6. si no existe stock elegible, se aplica faltante, parcialidad, sustitución o escalamiento según corresponda;
+7. la desviación productiva queda registrada en FOGO.
+
+---
+
+#### 21. División entre varias fuentes físicas
+
+Un mismo material podrá satisfacerse desde varias ubicaciones, lotes, LPN o presentaciones cuando la política NEXO lo permita.
+
+Reglas:
+
+- cada partición conserva fuente, cantidad, unidad y evidencia propias;
+- la suma normalizada de las particiones debe reconciliar con la cantidad física emitida;
+- ninguna partición puede reutilizar la misma identidad lógica para dos efectos distintos;
+- el orden de selección física pertenece a NEXO;
+- FOGO recibe la proyección necesaria para trazabilidad sin convertirse en propietaria de la selección;
+- un fallo en una partición no permite marcar las demás como fallidas si ya produjeron efecto válido;
+- una recuperación posterior debe consultar qué particiones ya fueron aplicadas antes de repetir trabajo.
+
+---
+
+#### 22. Sustitución de ingrediente productivo
+
+Una sustitución que cambia el material de la receta, su equivalencia productiva o la decisión técnica pertenece a FOGO y requiere la autoridad aplicable.
+
+El contrato deberá conservar:
+
+- material originalmente esperado;
+- material sustituto;
+- motivo;
+- actor o autoridad;
+- revisión de la ejecución o referencia de sustitución;
+- cantidades y unidades afectadas;
+- impacto sobre receta, trazabilidad y calidad cuando corresponda.
+
+NEXO no puede convertir un faltante de stock en sustitución de ingrediente por conveniencia operativa.
+
+---
+
+#### 23. Sustitución física dentro de NEXO
+
+`VPROC-0025.EX-002 — SUBSTITUTE` puede sustituir origen, destino o presentación antes de ejecución cuando exista compatibilidad y autoridad.
+
+La sustitución física:
+
+- no cambia silenciosamente el producto de la receta;
+- conserva conversión y trazabilidad;
+- exige que lote, condición, ubicación y presentación sean elegibles;
+- conserva antes y después;
+- queda vinculada a la misma necesidad productiva;
+- requiere nueva aceptación cuando el cambio altere información que FOGO deba conocer.
+
+---
+
+#### 24. Desperdicio y merma
+
+FOGO conserva la clasificación productiva del desperdicio o merma dentro de la ejecución.
+
+Reglas:
+
+1. una cantidad ya emitida por NEXO no se descuenta otra vez por ser clasificada después como desperdicio;
+2. FOGO conserva cantidad, unidad, causa, etapa, actor y relación con la ejecución;
+3. si el desperdicio implica una condición, disposición o efecto físico adicional sobre existencia todavía gobernada por NEXO, se utiliza el proceso NEXO correspondiente;
+4. una merma no explicada permanece como diferencia y no puede ser absorbida mediante ajuste automático;
+5. el cierre productivo posterior deberá conservar la relación entre consumo, desperdicio, rendimiento y salida;
+6. la clasificación no modifica la receta esperada ni el movimiento original.
+
+---
+
+#### 25. Material no utilizado que regresa a inventario
+
+Cuando una cantidad ya salió físicamente hacia producción pero no fue utilizada y regresa a custodia NEXO:
+
+- el movimiento original permanece inmutable;
+- se utiliza `VPROC-0025.CCR-003 — RETURN` o el proceso físico aplicable según el estado y la naturaleza de la devolución;
+- el retorno conserva origen, destino, cantidad, unidad, condición y aceptación;
+- el retorno se vincula explícitamente al efecto original;
+- la disponibilidad solo se actualiza cuando NEXO confirma el retorno físico;
+- FOGO clasifica la cantidad como devuelta dentro de su conciliación productiva;
+- una devolución no se representa reduciendo retrospectivamente `issued_qty`.
+
+---
+
+#### 26. Diferencia posterior y ajuste
+
+Cuando conteo, inspección o conciliación demuestren una diferencia respecto del movimiento registrado:
+
+- no se edita ni elimina el movimiento original;
+- se utiliza `VPROC-0025.CCR-004 — ADJUST` cuando corresponda;
+- se conserva observación, valor original, diferencia, causa, autoridad y evidencia;
+- el ajuste crea un efecto vinculado y actualiza proyecciones mediante NEXO;
+- FOGO recibe la consecuencia necesaria para su expediente productivo;
+- la diferencia puede mantener bloqueado el avance de conciliación mientras sea material y no esté resuelta.
+
+---
+
+#### 27. Cancelación
+
+`VPROC-0025.CCR-001 — CANCEL` detiene únicamente la ejecución restante.
+
+Reglas:
+
+- antes de un efecto físico, la cancelación puede impedir trabajo futuro y liberar obligaciones pendientes según el proceso propietario;
+- después de un efecto confirmado, la cancelación no borra el movimiento;
+- las cantidades ya ejecutadas permanecen y deben conciliarse;
+- las cantidades todavía reservadas reciben el tratamiento propietario aplicable;
+- si una cantidad física debe volver, se usa retorno o movimiento compensatorio, no edición del historial;
+- FOGO conserva el motivo y el impacto sobre la ejecución.
+
+---
+
+#### 28. Anulación
+
+`VPROC-0025.CCR-002 — VOID` solo aplica a una instrucción inválida o duplicada que no produjo un efecto físico válido.
+
+Se prohíbe usar `VOID` para ocultar:
+
+- una salida física ya ocurrida;
+- un consumo confirmado;
+- un movimiento que debe devolverse;
+- una diferencia que requiere ajuste;
+- una operación que simplemente terminó con cantidad distinta de la esperada.
+
+La nulidad conserva el registro original y la causa.
+
+---
+
+#### 29. Hold, faltante y escalamiento
+
+`VPROC-0025.EX-001 — HOLD` podrá suspender la operación antes del posting cuando exista una condición que deba resolverse sin producir efectos parciales adicionales.
+
+`VPROC-0025.EX-003 — ESCALATE` se utilizará cuando exista faltante o restricción durante reserva o ejecución y se requiera decisión.
+
+Ninguna de estas acciones:
+
+- crea stock;
+- concede autoridad adicional;
+- aprueba una sustitución productiva;
+- convierte un consumo pendiente en reconciliado;
+- borra efectos ya confirmados.
+
+---
+
+#### 30. Idempotencia del efecto de consumo
+
+Cada efecto lógico de consumo deberá obtener una identidad idempotente estable antes del primer intento de producir el efecto NEXO.
+
+La huella lógica deberá cubrir, como mínimo cuando aplique:
+
+- operación o efecto solicitado;
+- instancia productiva;
+- orden y versión;
+- línea de material;
+- instancia NEXO o reserva relacionada;
+- producto;
+- cantidad normalizada;
+- unidad y versión de conversión;
+- fuente física o alcance de selección;
+- lote/LPN cuando forme parte del efecto;
+- revisión o versión del recurso.
+
+Reglas:
+
+1. misma identidad y misma huella devuelve el resultado original y no aplica otro movimiento;
+2. misma identidad con contenido incompatible produce conflicto y ningún segundo efecto;
+3. un cambio material de cantidad, fuente, producto o revisión requiere nueva identidad lógica vinculada a la anterior;
+4. un refresh, doble click o timeout no crea una operación nueva;
+5. el identificador técnico de un intento no sustituye la identidad empresarial;
+6. la deduplicación debe existir en la frontera propietaria y no únicamente en la interfaz.
+
+---
+
+#### 31. Respuesta perdida y resultado desconocido
+
+Cuando FOGO no reciba una respuesta concluyente después de enviar la solicitud de efecto:
+
+1. no enviará automáticamente una nueva operación con otra identidad;
+2. consultará o recuperará el resultado de la identidad original;
+3. NEXO devolverá el resultado previo cuando ya exista;
+4. si el resultado sigue incierto, el caso permanece recuperable o requiere conciliación;
+5. una segunda aplicación del efecto queda prohibida hasta conocer el estado de la primera;
+6. la interfaz mostrará un estado verdadero de pendiente o conciliación y no afirmará éxito por timeout;
+7. una recuperación tardía debe converger al mismo movimiento y resultado.
+
+---
+
+#### 32. Reintentos
+
+Los reintentos conservan:
+
+- la misma operación lógica;
+- la misma identidad idempotente;
+- la misma huella lógica;
+- el mismo alcance empresarial;
+- la correlación y causalidad;
+- el presupuesto y política transversal aplicables.
+
+Un reintento no:
+
+- cambia la cantidad para intentar que pase;
+- cambia silenciosamente la fuente física;
+- renueva permisos vencidos;
+- reinicia una operación cancelada;
+- transforma un conflicto en operación nueva;
+- duplica el movimiento porque la respuesta anterior no llegó.
+
+Si el resultado puede haber sido confirmado, se consulta antes de otro envío.
+
+---
+
+#### 33. Concurrencia
+
+NEXO deberá impedir que dos operaciones consuman la misma disponibilidad más allá de lo autorizado.
+
+Se requiere conceptualmente:
+
+- control atómico, versión, claim, bloqueo o mecanismo equivalente en la frontera propietaria;
+- revalidación de disponibilidad al ejecutar;
+- detección de versión obsoleta;
+- reserva y consumo coherentes bajo concurrencia;
+- imposibilidad de que dos efectos válidos reutilicen la misma cantidad reservada;
+- resultado determinista para el perdedor de la carrera;
+- conservación de la intención original para reintento o escalamiento.
+
+La tarea no selecciona una tecnología física específica.
+
+---
+
+#### 34. Eventos fuera de orden
+
+Si una solicitud, evento o confirmación llega antes de una dependencia obligatoria:
+
+- no se aplica el consumo suponiendo la dependencia;
+- se conserva la información recibida con su identidad;
+- se espera la reserva, versión, orden, autorización o relación faltante cuando la política permita diferir;
+- una versión anterior no sobrescribe una posterior;
+- la llegada de la dependencia reanuda evaluación sin crear otra operación;
+- si la relación nunca puede resolverse, el caso pasa a error o conciliación según el contrato transversal.
+
+Ejemplos que no pueden aplicarse por inferencia:
+
+- consumo antes de conocer la instancia productiva;
+- consumo para una revisión de receta distinta;
+- confirmación FOGO antes de existir el handoff NEXO;
+- evento de cierre NEXO recibido antes de conocer el movimiento relacionado.
+
+---
+
+#### 35. Fallo parcial
+
+Cuando una operación dividida produce algunos efectos válidos y otros fallan:
+
+- los efectos aplicados permanecen inmutables;
+- no se revierte todo mediante edición masiva;
+- el estado debe identificar qué particiones se aplicaron, cuáles están pendientes y cuáles fallaron;
+- el reintento se limita a la parte no aplicada;
+- cualquier retorno o compensación posterior se relaciona con el efecto que corrige;
+- FOGO no puede considerar conciliada la línea mientras quede una diferencia material sin tratamiento;
+- NEXO no duplica las particiones ya aplicadas.
+
+---
+
+#### 36. Catálogo de eventos reutilizado
+
+No se crea una nueva definición de evento empresarial para el consumo.
+
+`VPROC-0025` conserva sus seis definiciones normales:
+
+- `VPROC-0025.EVT-001` — operación de stock solicitada; no consume, reserva ni traslada;
+- `VPROC-0025.EVT-002` — validación en curso;
+- `VPROC-0025.EVT-003` — reservado; la cantidad está apartada y todavía no consumida;
+- `VPROC-0025.EVT-004` — confirmación de destino o consumidor pendiente;
+- `VPROC-0025.EVT-005` — posting pendiente;
+- `VPROC-0025.EVT-006` — operación de existencias reconciliada.
+
+`VPROC-0034` conserva sus seis definiciones normales:
+
+- `VPROC-0034.EVT-001` — orden productiva lista;
+- `VPROC-0034.EVT-002` — materiales en reserva;
+- `VPROC-0034.EVT-003` — producción en curso, con captura de consumos, tiempos y desviaciones;
+- `VPROC-0034.EVT-004` — resultado productivo reportado;
+- `VPROC-0034.EVT-005` — conciliación de consumos pendiente;
+- `VPROC-0034.EVT-006` — ejecución productiva completada.
+
+El movimiento NEXO y sus referencias constituyen evidencia del efecto físico dentro del proceso existente. No se introduce un estado adicional de consumido, una definición `EVT-*` adicional ni otro catálogo paralelo.
+
+---
+
+#### 37. Sobre transversal del handoff
+
+Toda proyección o evento relacionado conserva, cuando aplique, los campos pertinentes de `EVENT-ENVELOPE-001`, entre ellos:
+
+- `event_id` cuando exista evento;
+- definición, tipo y versión de evento;
+- `process_id`;
+- `process_instance_id`;
+- aplicación productora;
+- agregado e identidad de recurso;
+- versión del agregado;
+- `occurred_at` y `recorded_at`;
+- principal y actor efectivo;
+- sede, área, turno y dispositivo;
+- estado anterior y actual;
+- `correlation_id`;
+- `causation_id`;
+- `request_id`;
+- `idempotency_key`;
+- `source_command_id`;
+- referencia de resultado;
+- referencias de salida, evidencia y auditoría;
+- versión de esquema y contexto de trazas.
+
+Los datos sensibles se minimizan según finalidad y autorización.
+
+---
+
+#### 38. Auditoría mínima
+
+El expediente deberá permitir reconstruir, como mínimo:
+
+- orden productiva y versión;
+- receta y versión;
+- instancia y estado de `VPROC-0034`;
+- línea o requerimiento material;
+- cantidad esperada y real;
+- reserva NEXO y su versión;
+- instancia y estado de `VPROC-0025`;
+- producto;
+- unidad de captura y unidad de stock;
+- regla o factor de conversión;
+- fuente física;
+- ubicación, lote, LPN o posición aplicables;
+- cantidad emitida;
+- cantidad clasificada como consumida, devuelta, desperdiciada o diferencia;
+- movimiento o movimientos NEXO;
+- aceptación o rechazo del consumidor productivo;
+- actor, principal, sede, área, turno y tiempos;
+- sustituciones y excepciones;
+- cancelaciones, retornos y ajustes;
+- identidad idempotente y resultado recuperado;
+- correlación y causalidad entre FOGO y NEXO;
+- estado final de conciliación.
+
+La auditoría de NEXO mantiene como foco reserva, retiro, consumo, traslado, conversión, disponibilidad, origen/destino, autorización y movimiento resultante. La auditoría FOGO mantiene orden, receta/versión, materiales, consumos, pasos, sustituciones, cantidades, tiempos, desvíos y resultado.
+
+---
+
+#### 39. Reconciliación entre FOGO y NEXO
+
+Antes de considerar completa la conciliación productiva, deberá poder demostrarse por material:
+
+1. qué cantidad fue requerida;
+2. qué cantidad fue reservada;
+3. qué cantidad fue emitida físicamente por NEXO;
+4. qué cantidad FOGO clasificó como consumida;
+5. qué cantidad regresó a inventario;
+6. qué cantidad quedó como desperdicio productivo;
+7. qué diferencia permanece abierta;
+8. qué movimientos NEXO explican los efectos físicos;
+9. qué unidad y conversión permiten comparar las cantidades;
+10. qué sustituciones o revisiones alteraron el alcance;
+11. que no existen efectos sin origen ni origen con efecto perdido;
+12. que no existe el mismo movimiento aplicado más de una vez;
+13. que no existe una reserva todavía bloqueando disponibilidad sin obligación productiva vigente;
+14. que cada devolución o ajuste se vincula al movimiento original;
+15. que cualquier diferencia material tiene propietario y tratamiento canónico.
+
+Si una de estas condiciones no puede demostrarse, el caso permanece en conciliación y no se simula cierre mediante una bandera local.
+
+---
+
+#### 40. Relación con costos
+
+El consumo reconciliado puede alimentar posteriormente el costo productivo, pero:
+
+- NEXO conserva el hecho físico y la cantidad;
+- FOGO conserva orden, receta, lote, rendimiento y clasificación productiva;
+- NUMERA o el dominio económico aplicable consume los resultados según sus contratos;
+- esta tarea no calcula ni publica el costo final;
+- una corrección de inventario o consumo deberá propagarse mediante hechos vinculados y no mediante edición silenciosa del valor económico histórico.
+
+---
+
+#### 41. Regla de no cierre prematuro
+
+Queda prohibido concluir que el consumo está reconciliado únicamente porque:
+
+- FOGO guardó la cantidad real;
+- una llamada técnica respondió sin error;
+- existe una reserva;
+- NEXO inició ejecución;
+- el stock visual disminuyó;
+- existe una fila de movimiento sin relación verificable;
+- el producto de salida ya fue reportado;
+- el lote productivo aparece en estado operativo posterior.
+
+El cierre NEXO requiere `VPROC-0025.STOCK_OPERATION_RECONCILED`. La conciliación FOGO requiere además coherencia entre las cantidades productivas y los efectos NEXO vinculados.
+
+---
+
+#### 42. Estado actual de implementación observado
+
+La implementación vigente demuestra piezas parciales del comportamiento, pero no el contrato integral aprobado en esta tarea.
+
+En FOGO, la superficie de creación de lote captura `actual_qty` por ingrediente y llama la operación `fogo_create_real_production_batch`. La definición física vigente de esa operación encadena una implementación anterior que selecciona existencias, modifica proyecciones de inventario, inserta movimientos `production_consume` y registra consumos del lote durante la creación productiva.
+
+Esto demuestra capacidad técnica de captura y descuento, pero no demuestra la frontera canónica completa porque el efecto de inventario se ejecuta dentro de la operación productiva FOGO en vez de atravesar una instancia NEXO de `VPROC-0025` con reserva, ejecución, aceptación, posting y conciliación independientes.
+
+En NEXO existe una superficie genérica de retiro que utiliza semántica de `consumption`, conversión de unidades, comprobación de existencia y actualización de movimientos/proyecciones. Su flujo observado es manual y no demuestra por sí mismo vínculo determinista con orden, receta, lote, reserva y línea material de FOGO ni el contrato distribuido completo de idempotencia y conciliación.
+
+Estas observaciones son evidencia de implementación parcial y no cambian la propiedad canónica definida por los procesos.
+
+---
+
+#### 43. Propiedad de las brechas de implementación
+
+Las brechas observadas quedan vinculadas a tareas ya existentes del plan y del registro de requisitos.
+
+La implementación FOGO del ciclo productivo y sus superficies permanece cubierta por tareas existentes, entre ellas:
+
+- `FOGO-UX-005`;
+- `FOGO-UX-006`;
+- `FOGO-UX-007`;
+- `FOGO-UX-010`;
+- `FOGO-UX-011`;
+- `FOGO-UX-012`;
+- `FOGO-UX-013`;
+- `FOGO-AUTH-009`;
+- `FOGO-AUTH-010`;
+- `FOGO-AUTH-011`;
+- `FOGO-AUTH-012`;
+- `FOGO-AUTH-014`;
+- `FOGO-AUTH-016`.
+
+La implementación NEXO de ledger, reserva, consumo, movimientos, autorización y superficies permanece cubierta por:
+
+- `NEXO-UX-014` a `NEXO-UX-022`;
+- `NEXO-UX-026` a `NEXO-UX-029`;
+- `NEXO-DOM-002` a `NEXO-DOM-007`;
+- `NEXO-DOM-019` a `NEXO-DOM-024`;
+- `NEXO-AUTH-011` a `NEXO-AUTH-013`;
+- `NEXO-AUTH-021` a `NEXO-AUTH-030`.
+
+La frontera transversal, persistencia, idempotencia y eliminación de escritura cruzada permanece cubierta por:
+
+- `INT-APP-004` a `INT-APP-010`;
+- `INT-DB-005` a `INT-DB-008`;
+- las tareas E3, E4 y BLOQUE R asociadas a ledger, eventos, colas, conciliación y persistencia;
+- los paquetes E5 y certificaciones integrales ya vinculados a los requisitos vigentes.
+
+No se crea un pendiente narrativo adicional ni se adelanta implementación física desde esta tarea documental.
+
+---
+
+#### 44. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se cumple todo lo siguiente:
+
+1. FOGO conserva la verdad productiva y NEXO la verdad física de inventario;
+2. reserva, uso productivo, movimiento, posting y conciliación permanecen como conceptos distintos;
+3. una cantidad real capturada en FOGO no modifica stock por autoridad propia;
+4. el consumo físico atraviesa `VPROC-0025`;
+5. `VPROC-0025.RESERVED` nunca se interpreta como consumo;
+6. `VPROC-0025.IN_EXECUTION` representa retiro, consumo o traslado con cantidad real;
+7. la confirmación del consumidor no sustituye el posting;
+8. `STOCK_OPERATION_RECONCILED` es el cierre autoritativo NEXO de la operación;
+9. FOGO conserva orden, receta, material, cantidad real y desviación;
+10. NEXO revalida fuente, lote, condición, unidad, conversión, cantidad y autoridad;
+11. el movimiento autoritativo conserva referencias suficientes hacia la ejecución productiva;
+12. consumo total y parcial tienen semántica distinta;
+13. una cantidad reservada no utilizada se mantiene o libera explícitamente;
+14. una cantidad superior a la reserva requiere validación NEXO para el delta;
+15. varias fuentes físicas pueden componerse sin doble efecto;
+16. una sustitución productiva requiere autoridad FOGO;
+17. una sustitución física permanece bajo NEXO;
+18. desperdicio productivo no duplica el descuento de stock;
+19. una devolución crea un retorno vinculado y no edita el movimiento original;
+20. una diferencia posterior usa ajuste vinculado cuando corresponda;
+21. cancelación solo detiene trabajo futuro;
+22. anulación no se usa sobre efectos físicos válidos;
+23. misma identidad y misma huella recuperan el resultado previo;
+24. reutilización incompatible de identidad produce conflicto;
+25. respuesta perdida obliga a consultar antes de repetir el efecto;
+26. concurrencia no permite consumir dos veces la misma disponibilidad;
+27. eventos fuera de orden no fabrican dependencias;
+28. un fallo parcial conserva los efectos ya aplicados y reintenta solo lo pendiente;
+29. no se crea un evento empresarial adicional para consumo;
+30. los seis eventos existentes de `VPROC-0025` y `VPROC-0034` se preservan;
+31. la auditoría reconstruye origen, cantidad, unidad, fuente, movimiento, aceptación y resultado;
+32. la conciliación detecta efectos sin origen, origen sin efecto, diferencia y duplicado;
+33. FOGO no avanza desde conciliación de consumos como si una operación NEXO pendiente estuviera cerrada;
+34. consumo reconciliado no equivale a lote finalizado;
+35. consumo reconciliado no equivale a producto terminado ingresado;
+36. la implementación actual se distingue expresamente del contrato futuro;
+37. las brechas observadas quedan asignadas a tareas canónicas existentes;
+38. no se autoriza modificación física desde esta tarea;
+39. el Registro 04A permanece sin cambios porque la cobertura verificable ya existe;
+40. `INT-PROD-003` permanece como siguiente tarea reservada.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la obligación verificable de registrar el consumo productivo exactamente una vez, conservar la versión de receta y las cantidades reales, separar cantidad reservada de cantidad física y disponible, impedir sobreasignación y doble movimiento, aplicar idempotencia y compensación, mantener propiedad única del dato y conciliar la cadena producción–inventario ya está cubierta por requisitos vigentes. Esta tarea especializa esos comportamientos para el handoff FOGO–NEXO sin introducir una obligación materialmente nueva.
+
+---
+
+#### Cobertura de prueba existente preservada
+
+La tarea consume y especializa, sin modificar texto, estado, relaciones ni secuencia, al menos:
+
+- `TREQ-FOGO-001` — ciclo productivo con consumo, desperdicio, resultado, cancelación o corrección y efectos de inventario auditables;
+- `TREQ-FOGO-002` — versión exacta de receta, ingredientes, unidades, escalamiento, rendimiento real, merma, sustituciones y desviaciones sin sobrescritura;
+- `TREQ-FOGO-004` — ejecución productiva con orden, lote, receta/versión, materiales, cantidades, merma y cierre conciliado;
+- `TREQ-NEXO-010` — unidad, conversión, disponibilidad y política de operación equivalentes entre consumidores;
+- `TREQ-NEXO-011` — fuente canónica de movimientos y proyecciones, cantidades físicas/reservadas diferenciadas, consumo atómico o idempotente, compensación, concurrencia y prevención de doble movimiento;
+- `TREQ-INTEGRATION-003` — identidad idempotente, huella lógica, resultado durable, reintento, resultado desconocido y conciliación;
+- `TREQ-INTEGRATION-006` — captura única en la propietaria, propagación por contrato y prohibición de fuentes competidoras;
+- `TREQ-INTEGRATION-011` — consumo FOGO hacia NEXO exactamente una vez, con fuente, evento, documento, línea, versión, cantidad, unidad, lote, ubicación, actor y estado de aplicación;
+- `TREQ-INTEGRATION-013` — cadena materiales–ejecución–calidad–inventario–costo correlacionada e idempotente, con NEXO como fuente de stock, reservas, lotes y movimientos y FOGO como propietaria de plan, orden y lote.
+
+No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba.
+
+---
+
+#### 45. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos`
+
+**TAREA ACTUAL APROBADA**  
+`INT-PROD-002 — Definir contrato para que NEXO registre el consumo`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-PROD-003 — Definir contrato para que FOGO finalice el lote`
+
+
 ### [ ] INT-PROD-003 — Definir contrato para que FOGO finalice el lote
 ### [ ] INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
 ### ✅ INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
