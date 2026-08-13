@@ -43,8 +43,14 @@ jobs:
       - name: Instalar dependencias bloqueadas
         run: npm ci
 
+      - name: Verificar artefactos derivados commiteados antes de compilar
+        run: npm run docs:plan:check
+
       - name: Compilar plan canónico
         run: npm run docs:plan:build
+
+      - name: Verificar que la compilación sea reproducible sin cambios
+        run: git diff --exit-code -- docs/plan-canonico/modular
 
       - name: Probar continuidad documental
         run: npm run docs:plan:test
