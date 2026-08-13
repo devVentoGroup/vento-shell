@@ -9360,7 +9360,1773 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
 
 
-### [ ] INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
+### ✅ INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-007 — Definir control contra efectos duplicados por reintento`
+**Tarea siguiente:** `INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+**Tipo de tarea:** documental; definición normativa permanente de la conciliación durante la convivencia entre el POS externo y PULSO, materializando qué fuentes, ventas, líneas, eventos, entregas, efectos, recibos, diferencias, partialidades, compensaciones y evidencias deben compararse; cómo se clasifican y asignan las divergencias; qué acciones son seguras; y cómo se conserva procedencia sin decidir todavía el corte, la prohibición de doble fuente ni el retiro del adaptador, sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta canónica interna:** `PULSO`
+**Fuente externa transitoria observada:** `Makos`
+**Aplicación propietaria del efecto físico:** `NEXO`
+**Aplicación propietaria del hecho económico:** `NUMERA`
+**Aplicación propietaria de fidelización:** `PASS`
+**Política transversal de errores parciales reutilizada:** `ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001`
+**Máquina transversal de pendientes reutilizada:** `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001`
+**Registro transversal de idempotencia reutilizado:** `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001`
+**Política transversal de retry reutilizada:** `ENTERPRISE-EVENT-RETRY-POLICY-001`
+**Política transversal de compensación reutilizada:** `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`
+**Política transversal de auditoría reutilizada:** `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001`
+**Política transversal de escrituras entre aplicaciones reutilizada:** `ENTERPRISE-CROSS-APPLICATION-WRITE-POLICY-001`
+**Línea base documental:** `vento-shell@b3459ab0247855ff9cae80715bf939c87c4069c1`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base NEXO observada:** `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`
+**Línea base NUMERA observada:** `vento-numera@1b48a5da425d92e19ed89cf175b1dccc4cd960e1`
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la conciliación permanente que debe operar mientras el POS externo y PULSO puedan aportar evidencia relacionada con ventas dentro de una misma etapa de convivencia.
+
+La conciliación debe responder, para cada alcance verificable:
+
+```text
+¿QUÉ FUENTE AFIRMA EL HECHO?
++
+¿QUÉ VENTA CANÓNICA LO REPRESENTA?
++
+¿QUÉ LÍNEAS LO EXPLICAN?
++
+¿QUÉ EVENTO SE EMITIÓ?
++
+¿QUÉ CONSUMIDORAS DEBÍAN RECIBIRLO?
++
+¿QUÉ EFECTOS ERAN APLICABLES?
++
+¿CUÁLES QUEDARON CONFIRMADOS?
++
+¿CUÁLES NO APLICABAN?
++
+¿CUÁLES ESTÁN PENDIENTES, BLOQUEADOS, EN CONFLICTO O DESCONOCIDOS?
++
+¿QUÉ COMPENSACIONES EXISTEN?
++
+¿QUÉ EVIDENCIA SUSTENTA LA DECISIÓN?
+```
+
+El objetivo no es forzar igualdad entre sistemas, sino demostrar convergencia explicable o mantener una diferencia explícita con propietaria, disposición y condición de salida.
+
+---
+
+#### 2. Resultado sustantivo
+
+Quedan fijadas las siguientes decisiones:
+
+1. La conciliación de convivencia reutiliza el contrato de conciliación definido durante la transición y lo convierte en regla permanente mientras existan dos regímenes de fuente potencialmente observables.
+2. PULSO coordina la vista comercial de la conciliación, pero no obtiene autoridad para modificar NEXO, NUMERA, PASS ni el sistema externo.
+3. Makos conserva su procedencia histórica cuando haya sido la fuente real del hecho.
+4. PULSO conserva su procedencia cuando haya originado una venta nativa válida.
+5. La hora de recepción, importación o sincronización no cambia la fuente histórica.
+6. La conciliación no decide todavía el contrato de corte.
+7. La conciliación no decide todavía qué fuente queda habilitada para una sede, terminal y fecha concreta.
+8. La conciliación no sustituye el control que impedirá que ambas fuentes originen la misma venta.
+9. La conciliación sí debe detectar y mantener visible cualquier candidato de doble fuente.
+10. La conciliación no convierte similitud de monto, fecha, producto o terminal en identidad de venta.
+11. Una venta individual requiere identidad individual demostrable para conciliación individual.
+12. Cuando la fuente externa solo aporte agregados, el control queda limitado a cobertura agregada y no puede declarar paridad uno a uno.
+13. Los agregados sirven para detectar huecos o anomalías; no prueban identidad individual.
+14. La unidad primaria de reconciliación es la venta canónica cuando existe identidad suficiente.
+15. Las líneas se concilian individualmente cuando tienen identidad o correlación suficiente.
+16. Los eventos se concilian por su identidad empresarial, no por timestamps aproximados.
+17. Las entregas se concilian por consumidora.
+18. Los efectos se concilian por propietaria y `effect_code` aplicable.
+19. El éxito de publicación no prueba consumo.
+20. El éxito de consumo no prueba efecto empresarial.
+21. El éxito de una consumidora no confirma otra.
+22. Cada efecto esperado se clasifica explícitamente.
+23. Un efecto puede quedar `NO_APLICA` si su propia regla lo determina.
+24. Un efecto bloqueado no se convierte en `NO_APLICA` para cerrar el caso.
+25. Un resultado desconocido no se cierra por inferencia.
+26. Una diferencia confirmada no se “arregla” editando historia.
+27. Una corrección material crea un hecho sucesor o compensatorio según la propietaria.
+28. Un retry seguro conserva identidad e idempotencia.
+29. Un resultado confirmado no se reaplica durante conciliación.
+30. La conciliación puede solicitar recuperación selectiva de una unidad pendiente.
+31. La conciliación puede iniciar una compensación únicamente cuando exista efecto confirmado elegible.
+32. No existe rollback global PULSO–NEXO–NUMERA–PASS.
+33. No existe una clave universal de conciliación que sustituya identidades de negocio.
+34. La clasificación de partialidad reutiliza el vocabulario transversal.
+35. Las acciones manuales reutilizan la allowlist transversal.
+36. Cada diferencia tiene propietaria y siguiente acción.
+37. Cada caso abierto tiene condición de reactivación o resolución.
+38. Una revisión de conciliación conserva la evidencia usada.
+39. Evidencia posterior crea una nueva revisión o actualización append-only del caso; no reescribe la anterior.
+40. Una revisión de cobertura puede finalizar con casos abiertos explícitos.
+41. Un caso individual no puede cerrarse manteniendo resultado desconocido.
+42. La conciliación separa venta, pago, caja, fiscalidad, inventario, economía y fidelización.
+43. Las compensaciones se concilian contra el efecto original y su residual.
+44. Replay y backfill no fabrican efectos históricos.
+45. La conciliación permanece válida durante corte gradual.
+46. `INT-SALES-009` conserva el contrato de corte.
+47. `INT-SALES-010` conserva el enforcement contra doble fuente.
+48. `INT-SALES-011` conserva el retiro del adaptador.
+49. Se crean cero requisitos de prueba.
+50. Se modifican cero requisitos de prueba.
+51. Se crean cero objetos físicos.
+52. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Dependencias canónicas consumidas
+
+La tarea consume y conserva:
+
+- `INT-POS-003`, para autoridad temporal de fuente;
+- `INT-POS-005` a `INT-POS-015`, para venta, línea, procedencia, mapping, cuarentena, idempotencia y evento;
+- `INT-POS-016`, para la frontera NEXO;
+- `INT-POS-017`, para la frontera NUMERA;
+- `INT-POS-018`, para la frontera PASS;
+- `INT-POS-019`, para compensaciones;
+- `INT-POS-020`, para conciliación de venta y efectos durante la transición;
+- `INT-POS-021` y `INT-POS-022`, para separar contrato documental de evidencia operativa;
+- `INT-POS-023`, para corte transitorio por sede, terminal y fecha;
+- `INT-SALES-001`, para venta canónica PULSO;
+- `INT-SALES-002`, para emisión canónica;
+- `INT-SALES-003`, para efecto físico NEXO;
+- `INT-SALES-004`, para efecto económico NUMERA;
+- `INT-SALES-005`, para acumulación PASS;
+- `INT-SALES-006`, para redención PASS;
+- `INT-SALES-007`, para retry, redelivery y recuperación selectiva;
+- `INT-APP-004` a `INT-APP-010`, para idempotencia, retry, compensación, auditoría, pendientes, partialidad y ownership.
+
+No se reabre ninguna de esas decisiones.
+
+---
+
+#### 4. Frontera frente a las tareas siguientes
+
+| Materia                                                        | Propietaria     | Estado en esta tarea |
+| -------------------------------------------------------------- | --------------- | -------------------- |
+| comparar coexistencia de fuentes                               | `INT-SALES-008` | **DEFINIDA**         |
+| detectar candidatos de doble fuente                            | `INT-SALES-008` | **DEFINIDA**         |
+| decidir corte por sede, terminal y fecha                       | `INT-SALES-009` | `RESERVADA`          |
+| impedir técnicamente que ambas fuentes originen la misma venta | `INT-SALES-010` | `RESERVADA`          |
+| retirar el adaptador externo                                   | `INT-SALES-011` | `RESERVADA`          |
+
+Detectar una divergencia no concede a esta tarea autoridad para decidir las reglas que pertenecen a las tres siguientes.
+
+---
+
+#### 5. Qué significa convivencia
+
+Existe convivencia cuando, dentro de un periodo operativo, pueden observarse simultáneamente:
+
+- ventas o agregados provenientes del POS externo;
+- ventas nativas registradas por PULSO;
+- eventos emitidos por PULSO;
+- efectos internos derivados;
+- información tardía o reprocesada de la fuente externa;
+- información nativa posterior a un corte parcial todavía no consolidado para todos los alcances.
+
+La coexistencia de evidencia no significa que ambas fuentes tengan autoridad simultánea para originar la misma venta.
+
+---
+
+#### 6. Unidad de conciliación
+
+La conciliación trabaja de mayor a menor precisión:
+
+1. identidad de fuente;
+2. venta individual;
+3. revisión de venta;
+4. línea;
+5. evento;
+6. entrega por consumidora;
+7. inbox;
+8. efecto consumidor;
+9. receipt o resultado propietario;
+10. compensación;
+11. agregado de cobertura.
+
+La unidad individual solo puede declararse reconciliada cuando existe identidad suficiente.
+
+---
+
+#### 7. Regla de identidad
+
+No se consideran prueba de identidad individual por sí solos:
+
+- fecha;
+- minuto;
+- total;
+- subtotal;
+- impuesto;
+- descuento;
+- producto;
+- cantidad;
+- terminal;
+- cajero;
+- número de fila;
+- posición en archivo;
+- hash del archivo completo.
+
+La equivalencia individual requiere identificadores o correlación determinista sustentada por el contrato de fuente.
+
+---
+
+#### 8. Fuente externa con evidencia agregada
+
+Cuando la fuente externa entregue únicamente filas agregadas por producto, categoría o fecha:
+
+```text
+AGREGADO EXTERNO
+≠
+VENTA INDIVIDUAL
+```
+
+Por tanto:
+
+1. puede comprobarse cobertura;
+2. puede compararse cantidad total;
+3. puede compararse dinero total cuando la semántica sea equivalente;
+4. puede comprobarse mapping;
+5. pueden detectarse desviaciones;
+6. no se asignan ventas individuales por prorrateo;
+7. no se crean `event_id` individuales por inferencia;
+8. no se atribuyen efectos individuales a una fila agregada sin evidencia adicional;
+9. igualdad de agregados no cierra diferencias individuales conocidas.
+
+---
+
+#### 9. Revisión por fecha empresarial
+
+Mientras exista convivencia, debe poder existir una revisión de cobertura por fecha empresarial y alcance aplicable.
+
+La tarea no fija una hora de reloj.
+
+La revisión puede complementarse con conciliación dirigida por evento o caso.
+
+El tiempo empresarial se atribuye por el momento real del hecho y no por:
+
+- importación;
+- recepción;
+- reintento;
+- replay;
+- backfill;
+- cierre del archivo.
+
+---
+
+#### 10. Revisión y nueva evidencia
+
+Una revisión conserva:
+
+- alcance;
+- empresa o unidad cuando aplique;
+- sede;
+- terminal si es resoluble;
+- fecha empresarial;
+- fuentes consultadas;
+- ventanas consultadas;
+- evidencia disponible;
+- diferencias detectadas;
+- casos abiertos;
+- decisiones;
+- actor o principal;
+- momento de revisión.
+
+Nueva evidencia no reemplaza la revisión anterior.
+
+---
+
+#### 11. Niveles de comparación
+
+Se definen cinco niveles:
+
+1. **fuente**;
+2. **venta y línea**;
+3. **evento y entrega**;
+4. **efecto propietario**;
+5. **agregado de control**.
+
+Un nivel agregado no puede cerrar silenciosamente una diferencia de un nivel más específico.
+
+---
+
+#### 12. Cadena de conciliación
+
+Cuando exista identidad individual suficiente:
+
+```text
+FUENTE REAL
+        ↓
+VENTA PULSO
+        ↓
+LÍNEAS
+        ↓
+EVENTO PULSO
+        ├── NEXO
+        ├── NUMERA
+        └── PASS
+                ↓
+COMPENSACIONES CUANDO APLIQUEN
+```
+
+Cada salto conserva identidad, causalidad y resultado independiente.
+
+---
+
+#### 13. Venta y efectos esperados
+
+Para cada venta, la conciliación debe distinguir:
+
+- efecto esperado;
+- efecto no aplicable;
+- efecto pendiente;
+- efecto bloqueado;
+- efecto confirmado;
+- efecto conflictivo;
+- efecto desconocido;
+- efecto compensado;
+- residual.
+
+No se exige que todas las ventas produzcan todos los efectos.
+
+---
+
+#### 14. Aplicabilidad de NEXO
+
+NEXO solo es efecto esperado cuando la disposición física aprobada exige movimiento.
+
+Ejemplos de no aplicación legítima pueden incluir un producto o servicio expresamente clasificado sin efecto de inventario.
+
+Falta de mapping o falta de regla no equivalen automáticamente a no aplicación.
+
+---
+
+#### 15. Aplicabilidad de NUMERA
+
+NUMERA solo es efecto esperado cuando la venta supera la puerta de materialidad económica definida por su contrato.
+
+Un evento válido puede no producir todavía un hecho económico si faltan dimensiones obligatorias.
+
+La conciliación no fabrica entidad legal, moneda, centro de costo, tercero ni reconocimiento para “hacer cuadrar”.
+
+---
+
+#### 16. Aplicabilidad de PASS
+
+PASS acumulación solo es esperada cuando:
+
+- existe cuenta resoluble;
+- la regla aplicable existe;
+- la venta es elegible;
+- la base es demostrable;
+- no existe bloqueo material.
+
+Una venta a consumidor final sin cuenta PASS puede ser legítimamente `NO_APLICA`.
+
+---
+
+#### 17. Redención PASS
+
+La conciliación de una venta puede conservar referencia a una redención si realmente existió.
+
+No se infiere redención desde:
+
+- descuento;
+- propina;
+- pago;
+- importe negativo;
+- fila Makos;
+- beneficio visual.
+
+Una redención confirmada se concilia mediante `redemption_id` y resultado PASS.
+
+---
+
+#### 18. Fuente propietaria de cada hecho
+
+| Hecho                                              | Fuente propietaria                             |
+| -------------------------------------------------- | ---------------------------------------------- |
+| venta y revisión comercial interna                 | `PULSO`                                        |
+| afirmación o archivo externo                       | adaptador / fuente externa                     |
+| movimiento y ledger físicos                        | `NEXO`                                         |
+| hecho económico                                    | `NUMERA`                                       |
+| cuenta, puntos, redención y ledger de fidelización | `PASS`                                         |
+| pago comercial interno                             | `PULSO` y proveedor según frontera             |
+| documento fiscal externo                           | proveedor fiscal autorizado                    |
+| auditoría técnica                                  | política transversal, sin apropiarse del hecho |
+
+La conciliación consulta las propietarias; no las sustituye.
+
+---
+
+#### 19. Diferencias de fuente
+
+Deben detectarse como mínimo:
+
+1. fuente externa con evidencia sin representación PULSO;
+2. venta PULSO atribuida a fuente externa sin evidencia suficiente;
+3. venta nativa PULSO en un alcance todavía ambiguo;
+4. dos fuentes candidatas para el mismo hecho;
+5. fuente declarada distinta de la procedencia demostrada;
+6. sede divergente;
+7. terminal divergente;
+8. fecha empresarial divergente;
+9. revisión o versión divergente;
+10. evidencia externa tardía;
+11. archivo duplicado o hash repetido;
+12. recepción externa no autenticable o incompleta;
+13. mapping de fuente contradictorio.
+
+---
+
+#### 20. Diferencias de venta
+
+Deben detectarse como mínimo:
+
+- venta fuente sin venta canónica;
+- venta canónica sin soporte de fuente cuando sea requerido;
+- identidad duplicada;
+- identidad reutilizada con contenido incompatible;
+- estado comercial divergente;
+- revisión omitida;
+- revisión obsoleta aplicada;
+- líneas faltantes;
+- líneas sobrantes;
+- cantidades divergentes;
+- importes divergentes;
+- moneda divergente;
+- descuentos divergentes;
+- impuestos divergentes;
+- devoluciones divergentes;
+- terminal o sede incompatibles;
+- cliente atribuido sin evidencia;
+- correlación con pedido incorrecta.
+
+---
+
+#### 21. Candidato de doble fuente
+
+Cuando Makos y PULSO aporten registros que podrían representar el mismo hecho:
+
+```text
+SIMILITUD
+→ CANDIDATO DE DOBLE FUENTE
+→ CASO ABIERTO
+```
+
+No:
+
+```text
+SIMILITUD
+→ FUSIÓN AUTOMÁTICA
+```
+
+No:
+
+```text
+SIMILITUD
+→ ELEGIR PULSO
+```
+
+No:
+
+```text
+SIMILITUD
+→ ELEGIR MAKOS
+```
+
+El caso queda abierto hasta que el contrato de autoridad y la evidencia permitan resolverlo.
+
+---
+
+#### 22. Relación con el corte
+
+`INT-SALES-009` será la propietaria de la regla que determine la fuente autorizada por:
+
+- sede;
+- terminal;
+- fecha efectiva.
+
+`INT-SALES-008` puede observar esos atributos y reportar una incompatibilidad, pero no fija sus valores ni adelanta la decisión.
+
+---
+
+#### 23. Relación con el control de doble fuente
+
+`INT-SALES-010` será la propietaria del mecanismo que impida que ambas fuentes emitan la misma venta.
+
+Esta tarea define qué debe detectar la conciliación si esa invariante se viola o aún no está materializada.
+
+---
+
+#### 24. Evento de venta
+
+Deben detectarse:
+
+- venta elegible sin evento;
+- evento sin venta;
+- evento con venta incorrecta;
+- definición incorrecta;
+- versión incompatible;
+- emisión duplicada incompatible;
+- mismo `event_id` con contenido incompatible;
+- `event_id` diferente usado para redelivery de la misma emisión;
+- evento tardío que intenta retroceder versión;
+- audiencia incorrecta;
+- consumidora omitida;
+- consumidora añadida indebidamente en replay.
+
+---
+
+#### 25. Publicación, entrega y efecto
+
+Permanecen separados:
+
+```text
+EVENTO REGISTRADO
+≠
+PUBLICADO
+≠
+ENTREGADO
+≠
+INBOX RECLAMADO
+≠
+EFECTO CONFIRMADO
+```
+
+Un ACK técnico no cierra la conciliación del efecto.
+
+---
+
+#### 26. NEXO — conciliación física
+
+Debe compararse, según aplicabilidad:
+
+- evento causal;
+- inbox NEXO;
+- identidad de efecto;
+- intención de posting;
+- movement group;
+- legs;
+- cantidades;
+- unidad;
+- producto;
+- presentación;
+- lote o condición;
+- origen físico;
+- receipt;
+- proyección;
+- compensación.
+
+Deben detectarse:
+
+1. evento elegible sin efecto;
+2. efecto sin evento;
+3. efecto duplicado;
+4. movimiento sin receipt suficiente;
+5. receipt sin movimiento esperado;
+6. cantidad divergente;
+7. UOM divergente;
+8. producto divergente;
+9. disposición incorrecta;
+10. parcialidad no representada;
+11. proyección divergente del ledger;
+12. mapping bloqueado usado para mover;
+13. mapping liberado con efecto pendiente;
+14. resultado desconocido;
+15. compensación sin original;
+16. original que exige compensación y permanece pendiente.
+
+---
+
+#### 27. NEXO — reparación
+
+Si el movimiento autoritativo ya existe y falla una proyección:
+
+- no se crea otro movimiento;
+- se reconstruye o reejecuta la proyección;
+- se conserva receipt y causalidad.
+
+Si el movimiento confirmado es incorrecto:
+
+- se abre corrección o compensación propietaria;
+- el original permanece.
+
+---
+
+#### 28. NUMERA — conciliación económica
+
+Debe compararse, según aplicabilidad:
+
+- evento causal;
+- inbox NUMERA;
+- identidad de efecto;
+- `SALE_ECONOMIC_FACT`;
+- entidad legal;
+- unidad o marca;
+- sede;
+- centro de costo;
+- tercero;
+- moneda;
+- ocurrencia;
+- reconocimiento;
+- documento;
+- importe;
+- impuestos;
+- estado;
+- evidencia;
+- reversión o compensación.
+
+Deben detectarse:
+
+1. venta material sin hecho económico;
+2. hecho económico sin venta;
+3. hecho duplicado;
+4. monto divergente;
+5. moneda divergente;
+6. entidad legal divergente;
+7. sede divergente;
+8. centro de costo divergente;
+9. impuesto divergente;
+10. documento divergente;
+11. reconocimiento temporal incompatible;
+12. atribución económica fabricada desde una línea bloqueada;
+13. ingreso reconocido dos veces al liberar mapping;
+14. reverso sin original;
+15. original no compensado cuando corresponde;
+16. resultado desconocido.
+
+---
+
+#### 29. NUMERA — pago y caja
+
+La conciliación no fusiona:
+
+```text
+VENTA
+≠
+PAGO
+≠
+APLICACIÓN DE PAGO
+≠
+MOVIMIENTO DE CAJA
+≠
+DEPÓSITO
+≠
+MOVIMIENTO BANCARIO
+```
+
+Una coincidencia de importe no establece identidad entre estos hechos.
+
+---
+
+#### 30. PASS — acumulación
+
+Debe compararse:
+
+- venta;
+- cuenta;
+- regla y versión;
+- base;
+- evento;
+- inbox PASS;
+- efecto `LOYALTY_POINTS_ACCRUAL`;
+- guarda cuenta + venta;
+- movimiento de ledger;
+- saldo derivado;
+- compensación.
+
+Deben detectarse:
+
+1. venta elegible sin acumulación;
+2. puntos sin venta;
+3. acumulación duplicada;
+4. misma venta acreditada a dos cuentas;
+5. cuenta incorrecta;
+6. regla incorrecta;
+7. versión incorrecta;
+8. base divergente;
+9. puntos divergentes;
+10. línea bloqueada usada indebidamente;
+11. no aplicación usada para ocultar bloqueo;
+12. ledger y saldo divergentes;
+13. reverso sin original;
+14. respuesta desconocida;
+15. evento tardío que intenta acreditar otra vez.
+
+---
+
+#### 31. PASS — redención
+
+Cuando la venta tenga redención relacionada, deben detectarse:
+
+- beneficio comercial sin redención confirmada;
+- redención confirmada sin correlación comercial esperada;
+- misma redención consumida dos veces;
+- redención asociada a dos ventas incompatibles;
+- descuento usado como sustituto de `redemption_id`;
+- ledger de gasto divergente;
+- compensación de puntos sin original.
+
+La conciliación no crea una redención faltante.
+
+---
+
+#### 32. Compensaciones
+
+Toda compensación se compara con:
+
+- efecto original;
+- identidad del original;
+- identidad de compensación;
+- causa;
+- propietaria;
+- cantidad o importe compensable;
+- cantidad o importe compensado;
+- residual;
+- resultado;
+- evidencia.
+
+No se considera cerrada por coincidencia de saldo final si falta causalidad.
+
+---
+
+#### 33. Compensación cruzada prohibida
+
+NEXO no corrige NUMERA.
+
+NUMERA no corrige PASS.
+
+PASS no corrige PULSO.
+
+PULSO no corrige NEXO.
+
+La conciliación solicita la acción a cada propietaria mediante el contrato aprobado.
+
+---
+
+#### 34. Partialidad
+
+Toda operación distribuida conserva unidades independientes.
+
+La clasificación transversal reutilizada es:
+
+- `NO_EFFECT_CONFIRMED`;
+- `SOME_EFFECTS_CONFIRMED`;
+- `SOME_EFFECTS_UNKNOWN`;
+- `ALL_EFFECTS_UNKNOWN`;
+- `DEPENDENCY_INCOMPLETE`;
+- `CONFLICTING_RESULTS`;
+- `UNTRUSTED_OR_TAMPERED_INPUT`;
+- `CONTRACT_OR_SCHEMA_INCOMPATIBLE`;
+- `EXTERNAL_STATE_DIVERGENCE`.
+
+No se crea una taxonomía local.
+
+---
+
+#### 35. Alcance del fallo
+
+Se reutilizan:
+
+- `REQUEST_OR_COMMAND`;
+- `OWNER_TRANSACTION`;
+- `EVENT_EMISSION`;
+- `DELIVERY`;
+- `CONSUMER_EFFECT`;
+- `BATCH_OR_BULK_ITEM`;
+- `EXTERNAL_EXCHANGE`;
+- `OFFLINE_OR_EVIDENCE`.
+
+La conciliación debe señalar el alcance real en vez de etiquetar toda la venta como “fallida”.
+
+---
+
+#### 36. Vector de efectos
+
+Para cada venta reconciliable se conserva un vector conceptual:
+
+```text
+VENTA          → estado propietario
+EVENTO         → estado propietario
+NEXO           → estado propio
+NUMERA         → estado propio
+PASS ACUMULAR  → estado propio
+PASS REDIMIR   → estado propio cuando aplique
+COMPENSACIONES → estado por propietaria
+```
+
+El resumen se deriva de esas unidades.
+
+---
+
+#### 37. Resultados mixtos
+
+Es válido observar temporalmente:
+
+```text
+VENTA          = CONFIRMADA
+EVENTO         = CONFIRMADO
+NEXO           = CONFIRMADO
+NUMERA         = PENDIENTE
+PASS           = NO_APLICA
+```
+
+La respuesta correcta es gobernar el pendiente NUMERA.
+
+No se repite la cadena completa.
+
+---
+
+#### 38. Resultado desconocido
+
+Ante incertidumbre:
+
+```text
+RESULT_UNKNOWN
+        ↓
+CONSULTAR FUENTE AUTORITATIVA / RECEIPT / IDENTIDAD
+        ├── CONFIRMADO → RECUPERAR RESULTADO
+        ├── AUSENCIA DEMOSTRADA → RETRY SEGURO
+        └── INDETERMINADO → RECONCILIATION_REQUIRED
+```
+
+Un caso no puede cerrarse todavía como éxito o fracaso.
+
+---
+
+#### 39. Retry
+
+La conciliación puede autorizar retry únicamente cuando:
+
+- corresponde al mismo alcance;
+- conserva identidad;
+- conserva huella;
+- conserva propietaria;
+- la política lo permite;
+- no existe efecto confirmado incompatible;
+- un resultado desconocido ha sido resuelto suficientemente.
+
+Los efectos confirmados permanecen intactos.
+
+---
+
+#### 40. Agotamiento de retry
+
+Agotar el presupuesto:
+
+- no prueba fracaso;
+- no prueba éxito;
+- no inicia compensación automáticamente;
+- no cambia de propietaria;
+- no genera otra identidad;
+- abre la disposición transversal aplicable.
+
+---
+
+#### 41. Acciones manuales permitidas
+
+La conciliación reutiliza únicamente las acciones transversales aplicables:
+
+- `RETRY_AUTHORIZED`;
+- `QUERY_RECEIPT`;
+- `CORRECT_METADATA`;
+- `CREATE_SUCCESSOR`;
+- `RELINK_EVIDENCE`;
+- `REPROCESS_FROM_QUARANTINE`;
+- `REPROCESS_FROM_DEAD_LETTER`;
+- `PERMANENT_REJECT`;
+- `START_RECONCILIATION`;
+- `START_COMPENSATION`.
+
+No se crea una acción local “forzar conciliado”.
+
+---
+
+#### 42. Corrección de metadata
+
+`CORRECT_METADATA` solo puede corregir metadata permitida.
+
+No puede cambiar:
+
+- venta propietaria;
+- fuente real;
+- importe empresarial;
+- producto empresarial;
+- ledger;
+- saldo;
+- efecto confirmado;
+- historial.
+
+Un cambio material requiere la operación propietaria correspondiente.
+
+---
+
+#### 43. Mapping
+
+La conciliación distingue:
+
+- sin mapping;
+- mapping candidato;
+- mapping aprobado;
+- mapping bloqueado;
+- mapping liberado;
+- mapping conflictivo.
+
+Una coincidencia agregada no aprueba mapping individual.
+
+---
+
+#### 44. Cuarentena
+
+Una línea en cuarentena:
+
+- conserva evidencia original;
+- no desaparece de la conciliación;
+- no produce efectos prohibidos;
+- no se marca reconciliada porque los totales diarios coincidan;
+- puede liberar efectos pendientes después de resolución;
+- nunca duplica efectos ya confirmados al liberarse.
+
+---
+
+#### 45. Mapping liberado
+
+Cuando se resuelve un mapping:
+
+1. se conserva el bloqueo histórico;
+2. se reevalúan únicamente efectos que dependían de ese mapping;
+3. se consultan resultados previos;
+4. no se vuelve a reconocer ingreso ya confirmado;
+5. no se vuelve a acreditar puntos ya confirmados;
+6. no se vuelve a mover stock ya confirmado.
+
+---
+
+#### 46. Eventos tardíos
+
+Un evento tardío:
+
+- conserva occurred_at real;
+- conserva procedencia;
+- no se mueve de fecha empresarial para facilitar cierre;
+- no reemplaza una revisión posterior;
+- no se trata como duplicado solo por llegar tarde;
+- puede reabrir o actualizar un caso mediante nueva evidencia.
+
+---
+
+#### 47. Fuera de orden
+
+Un evento fuera de orden:
+
+- puede diferirse;
+- puede resultar stale;
+- puede abrir conflicto;
+- no sobrescribe una versión posterior;
+- no se fuerza para igualar estados entre fuentes.
+
+---
+
+#### 48. Replay
+
+Un replay:
+
+- conserva `event_id`;
+- conserva procedencia;
+- conserva audiencia histórica;
+- conserva el hecho original;
+- permite recuperar resultados;
+- no crea otra venta;
+- no crea otro stock;
+- no crea otro ingreso;
+- no crea otros puntos;
+- no consume otra vez una redención.
+
+---
+
+#### 49. Backfill
+
+Un backfill:
+
+- conserva procedencia;
+- usa identidad determinista;
+- identifica lote o ventana;
+- compara contra historia existente;
+- no activa efectos sensibles por defecto;
+- no se usa para rellenar identidad individual inexistente;
+- no convierte un agregado histórico en ventas individuales inventadas.
+
+---
+
+#### 50. Agregados de cobertura
+
+Pueden utilizarse como controles:
+
+- conteo de registros cuando la fuente lo soporte;
+- cantidad;
+- subtotal;
+- impuesto;
+- descuento;
+- devolución;
+- venta neta;
+- agrupación por sede;
+- fecha;
+- producto;
+- categoría.
+
+Deben compararse únicamente cuando las definiciones de ambos lados sean semánticamente equivalentes.
+
+---
+
+#### 51. Igualdad agregada
+
+```text
+TOTAL A = TOTAL B
+```
+
+no implica:
+
+```text
+CADA VENTA A = CADA VENTA B
+```
+
+La igualdad agregada solo puede cerrar el control agregado específico.
+
+---
+
+#### 52. Diferencia agregada
+
+Una diferencia agregada:
+
+1. abre investigación;
+2. identifica las dimensiones disponibles;
+3. no se reparte arbitrariamente entre ventas;
+4. no genera ajustes automáticos;
+5. no genera movimientos de inventario;
+6. no genera puntos;
+7. no genera hechos económicos.
+
+---
+
+#### 53. Caso de conciliación
+
+Cuando la política transversal requiera un caso, debe conservar como mínimo:
+
+- operación o venta relacionada;
+- proceso;
+- propietaria;
+- alcance;
+- fuente;
+- evento;
+- consumidora;
+- efecto;
+- evidencia;
+- clase de partialidad;
+- diferencia;
+- disposición;
+- responsable;
+- siguiente acción;
+- condición de reactivación;
+- cierre.
+
+No se crea en esta tarea un identificador local alternativo a los contratos transversales.
+
+---
+
+#### 54. Propietaria del caso
+
+La propietaria se determina por el hecho a resolver:
+
+| Diferencia                                     | Propietaria                                  |
+| ---------------------------------------------- | -------------------------------------------- |
+| identidad o estado de venta                    | `PULSO`                                      |
+| afirmación, archivo, mapping o receipt externo | adaptador / frontera externa correspondiente |
+| movimiento físico                              | `NEXO`                                       |
+| hecho económico                                | `NUMERA`                                     |
+| puntos o redención                             | `PASS`                                       |
+| pago                                           | `PULSO` o proveedor según contrato           |
+| fiscal                                         | proveedor fiscal según contrato              |
+| compensación                                   | propietaria del efecto original              |
+
+---
+
+#### 55. Cierre de una revisión
+
+Una revisión de cobertura puede finalizar cuando:
+
+1. el alcance está declarado;
+2. las fuentes consultadas están declaradas;
+3. las limitaciones están declaradas;
+4. los controles agregados están calculados cuando son aplicables;
+5. cada diferencia identificada tiene caso o disposición;
+6. cada caso tiene propietaria;
+7. cada caso tiene siguiente acción;
+8. cada caso tiene condición de reactivación o resolución;
+9. ningún resultado desconocido se transforma en confirmado;
+10. ningún residual desaparece.
+
+Finalizar la revisión no significa que todos los casos estén cerrados.
+
+---
+
+#### 56. Cierre de un caso individual
+
+Un caso puede cerrarse cuando:
+
+- la evidencia permite determinar el resultado;
+- la propietaria confirmó su efecto o ausencia;
+- la diferencia fue corregida mediante contrato autorizado;
+- la compensación necesaria quedó verificada;
+- un rechazo permanente quedó demostrado;
+- un residual permitido fue aceptado por autoridad competente y permanece documentado;
+- no queda outcome desconocido.
+
+Un timeout o antigüedad no cierran el caso.
+
+---
+
+#### 57. Reapertura o revisión sucesora
+
+Nueva evidencia puede exigir:
+
+- nueva revisión;
+- sucesión del caso;
+- cambio de disposición permitido;
+- corrección;
+- compensación;
+- recuperación.
+
+El historial anterior permanece.
+
+---
+
+#### 58. Diferencias aceptadas
+
+Aceptar un residual requiere:
+
+- autoridad;
+- razón;
+- evidencia;
+- alcance;
+- impacto;
+- responsable;
+- condición de cierre o seguimiento.
+
+“Aceptado” no significa “inexistente”.
+
+---
+
+#### 59. Sin escritura cruzada
+
+La conciliación:
+
+- lee;
+- compara;
+- clasifica;
+- correlaciona;
+- solicita acciones propietarias;
+- registra evidencia y decisión.
+
+No escribe directamente ledgers, saldos, ventas o estados privados de otra aplicación.
+
+---
+
+#### 60. Auditoría
+
+Cada revisión y caso debe permitir reconstruir:
+
+- fuentes consultadas;
+- versiones;
+- parámetros;
+- venta;
+- líneas;
+- evento;
+- entregas;
+- inbox;
+- efectos;
+- receipts;
+- retries;
+- mapping;
+- cuarentena;
+- compensaciones;
+- diferencias;
+- decisión;
+- autoridad;
+- actor;
+- tiempo;
+- residual;
+- cierre.
+
+---
+
+#### 61. Causalidad
+
+Los timestamps no establecen causalidad por sí solos.
+
+La conciliación usa:
+
+- identidades;
+- correlación;
+- causación;
+- versiones;
+- source refs;
+- receipts;
+- evidencia.
+
+---
+
+#### 62. Privacidad
+
+La conciliación usa la información mínima necesaria.
+
+No copia por defecto:
+
+- payloads personales completos;
+- secretos;
+- tokens;
+- firmas completas;
+- credenciales;
+- datos financieros sensibles innecesarios.
+
+La evidencia sensible permanece protegida por referencia.
+
+---
+
+#### 63. Visibilidad operativa
+
+Una interfaz posterior deberá distinguir:
+
+- confirmado;
+- no aplicado;
+- bloqueado;
+- conflicto;
+- desconocido;
+- pendiente;
+- aislado;
+- compensado;
+- residual;
+- responsable.
+
+No se reduce todo a “OK” o “Error”.
+
+---
+
+#### 64. Controles durante convivencia
+
+Mientras la coexistencia esté activa, la conciliación debe poder detectar:
+
+1. cobertura externa faltante;
+2. cobertura PULSO faltante;
+3. candidato de doble fuente;
+4. venta sin evento;
+5. evento sin venta;
+6. entrega faltante;
+7. efecto físico faltante;
+8. efecto económico faltante;
+9. fidelización faltante;
+10. efecto huérfano;
+11. duplicado;
+12. conflicto de versión;
+13. mapping pendiente;
+14. cuarentena;
+15. resultado desconocido;
+16. compensación pendiente;
+17. residual sin responsable.
+
+---
+
+#### 65. Estado técnico observado — importación externa
+
+La línea base documental de `vento-shell` conserva una migración de importación diaria con:
+
+- `pulso_daily_sales_import_batches`;
+- `pulso_daily_sales_import_rows`;
+- `source = 'makos_excel'` por defecto;
+- `site_id`;
+- `sales_date`;
+- nombre y hash del archivo;
+- conteos de filas;
+- cantidades;
+- subtotal;
+- impuestos;
+- descuentos;
+- devoluciones;
+- venta neta;
+- mapping a catálogo o producto;
+- estados de matching.
+
+Esta estructura es útil como evidencia de cobertura y procedencia externa.
+
+---
+
+#### 66. Límite de la importación observada
+
+Las filas observadas representan agregados de ítem por archivo y no contienen, en esa estructura, una identidad de venta individual.
+
+Por tanto, esa estructura no demuestra por sí sola:
+
+- paridad venta a venta;
+- identidad individual de ticket;
+- evento individual de venta;
+- efecto individual NEXO;
+- hecho individual NUMERA;
+- movimiento individual PASS.
+
+La conciliación permanente no puede inventar esas identidades.
+
+---
+
+#### 67. Estado técnico observado — posting de inventario
+
+La línea base conserva además:
+
+- `sale_out`;
+- reglas de consumo;
+- `pulso_sales_inventory_postings`;
+- función de publicación del lote;
+- movimientos de inventario;
+- actualizaciones de stock por sede;
+- actualizaciones de stock por ubicación;
+- guardas para evitar repetir el mismo posting de fila/producto/ubicación/modalidad.
+
+Estas piezas demuestran una integración física legacy asociada a la importación agregada.
+
+---
+
+#### 68. Límite del posting observado
+
+La arquitectura observada no se eleva a contrato objetivo por existir.
+
+La conciliación objetivo se apoya en:
+
+- ledger propietario NEXO;
+- receipts;
+- idempotencia;
+- causalidad;
+- efecto consumidor;
+- resultados recuperables.
+
+Una escritura legacy existente puede ser evidencia a comparar, pero no autoridad para reescribir el contrato canónico.
+
+---
+
+#### 69. Estado técnico observado — consumidoras
+
+Las líneas base vigentes de PULSO, NEXO, NUMERA y PASS permanecen distintas y no acreditan por sí solas una conciliación end-to-end desplegada.
+
+Esta tarea no declara implementados:
+
+- reconciler;
+- case store;
+- worker;
+- dashboard;
+- cola;
+- scheduler;
+- nuevas RPC;
+- nuevas migraciones.
+
+---
+
+#### 70. No equivalencia entre documento y operación
+
+La aprobación de esta tarea significa:
+
+- contrato definido;
+- diferencias definidas;
+- propietarias definidas;
+- acciones seguras definidas;
+- fronteras definidas;
+- handoffs definidos.
+
+No significa:
+
+- conciliación ejecutándose;
+- datos reales reconciliados;
+- cutover realizado;
+- doble fuente bloqueada físicamente;
+- adaptador retirado.
+
+---
+
+#### 71. Frontera de implementación posterior
+
+La implementación deberá materializar, según paquete aprobado:
+
+1. fuentes consultables;
+2. correlación;
+3. comparación por identidad;
+4. comparación agregada;
+5. clasificación de partialidad;
+6. casos;
+7. receipts;
+8. acciones permitidas;
+9. auditoría;
+10. reintento selectivo;
+11. compensación;
+12. visibilidad;
+13. ownership;
+14. seguridad;
+15. pruebas.
+
+Esta tarea no escoge tablas, índices, jobs, cron, colas ni endpoints.
+
+---
+
+#### 72. Supabase
+
+Toda futura materialización Supabase de:
+
+- casos;
+- vistas;
+- índices;
+- RPC;
+- funciones;
+- triggers;
+- jobs;
+- tablas;
+- políticas;
+- grants;
+- tipos;
+
+deberá originarse, versionarse y ejecutarse desde `vento-shell`.
+
+No se autoriza ninguna modificación física en esta tarea.
+
+---
+
+#### 73. Handoffs posteriores obligatorios
+
+| Pendiente material                          | Tarea o propietario                       | Condición de salida                                                                            |
+| ------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| contrato de corte                           | `INT-SALES-009`                           | toda combinación aplicable de sede, terminal y fecha efectiva puede resolver fuente autorizada |
+| enforcement contra doble fuente             | `INT-SALES-010`                           | dos fuentes no pueden originar como nuevas dos representaciones de la misma venta              |
+| retiro del adaptador                        | `INT-SALES-011`                           | consumidores internos continúan sin dependencia del POS externo                                |
+| integración física NEXO                     | paquete propietario NEXO                  | venta aplicable produce movimiento y receipt exactamente una vez                               |
+| integración económica NUMERA                | paquete propietario NUMERA                | venta material produce hecho económico exactamente una vez                                     |
+| acumulación PASS                            | `PASS-INT-001`                            | acumulación y compensación son idempotentes y reconciliables                                   |
+| redención PASS                              | `PASS-INT-002`                            | consumo y compensación son idempotentes y reconciliables                                       |
+| infraestructura transversal de conciliación | paquete E3/E4 correspondiente             | casos, receipts, partialidad, auditoría y acciones seguras quedan materializados               |
+| validación operativa de coexistencia        | paquete de piloto/cutover correspondiente | datos controlados demuestran detección, clasificación y resolución sin duplicar efectos        |
+
+Ningún pendiente material queda sin propietaria y condición de salida.
+
+---
+
+#### 74. Prohibiciones
+
+Queda prohibido:
+
+1. declarar paridad individual desde agregados;
+2. inventar identidad de venta;
+3. prorratear un agregado para fabricar ventas;
+4. elegir fuente por cercanía temporal;
+5. elegir fuente por monto coincidente;
+6. elegir fuente por producto coincidente;
+7. elegir fuente por nombre de archivo;
+8. reasignar procedencia por fecha de recepción;
+9. fusionar automáticamente Makos y PULSO;
+10. ocultar un candidato de doble fuente como duplicado técnico;
+11. decidir el corte desde esta tarea;
+12. materializar el control de doble fuente desde esta tarea;
+13. retirar el adaptador desde esta tarea;
+14. tratar publicación como entrega;
+15. tratar entrega como efecto;
+16. tratar inbox como efecto;
+17. tratar éxito de una consumidora como éxito de otra;
+18. tratar bloqueo como no aplicación;
+19. cerrar resultado desconocido;
+20. reintentar ciegamente un resultado desconocido;
+21. repetir efectos confirmados;
+22. repetir la venta completa por un consumidor pendiente;
+23. crear otra identidad durante retry;
+24. compensar un efecto no confirmado;
+25. editar un ledger para “hacer cuadrar”;
+26. editar saldo para “hacer cuadrar”;
+27. editar venta histórica para “hacer cuadrar”;
+28. crear movimiento NEXO desde conciliación;
+29. crear hecho NUMERA desde conciliación;
+30. crear puntos PASS desde conciliación;
+31. crear redención PASS desde conciliación;
+32. inferir cliente para cerrar fidelización;
+33. inferir moneda para cerrar finanzas;
+34. inferir producto para cerrar inventario;
+35. considerar igualdad agregada como evidencia individual;
+36. ocultar partialidad en un total;
+37. cerrar un caso por antigüedad;
+38. usar una acción manual fuera de la allowlist transversal;
+39. forzar éxito;
+40. borrar cola o evidencia como mecanismo de resolución;
+41. usar replay para crear efectos nuevos;
+42. usar backfill para fabricar historia;
+43. reactivar efectos sensibles sin autorización;
+44. crear una nueva taxonomía local de partialidad;
+45. crear una nueva clave universal de conciliación;
+46. crear una nueva definición normal de evento;
+47. crear una transacción distribuida global;
+48. modificar código, SQL, migraciones, RLS, RPC, datos, Supabase, credenciales o configuración remota;
+49. iniciar o desarrollar `INT-SALES-009`.
+
+---
+
+#### 75. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro vigente ya protege la convergencia del POS externo y PULSO hacia contratos canónicos de venta y línea, la detección de ventas sin efectos y efectos sin venta, las fuentes competidoras, la conciliación con propietaria y evidencia, la partialidad por unidad, los resultados desconocidos, la independencia entre consumidoras, la idempotencia, el retry selectivo, la compensación, la auditoría, el mapping, la cuarentena, los hechos físicos, económicos y de fidelización, y la prohibición de reactivar efectos mediante replay o backfill. Esta tarea especializa esas obligaciones a la convivencia permanente de fuentes sin introducir una obligación verificable material nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 76. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para idempotencia, resultado recuperable y conciliación;
+- `TREQ-INTEGRATION-006`, para fuentes competidoras y resolución con historia;
+- `TREQ-INTEGRATION-011`, para conciliación de efectos físicos;
+- `TREQ-INTEGRATION-014`, para coexistencia POS/PULSO, efectos exactamente una vez y diferencias de conciliación;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones;
+- `TREQ-INTEGRATION-017`, para hechos económicos y conciliación NUMERA;
+- `TREQ-INTEGRATION-151`, para retry crítico y conciliación al agotarse;
+- `TREQ-INTEGRATION-155`, para replay y backfill;
+- `TREQ-INTEGRATION-159`, para independencia de consumidoras;
+- `TREQ-INTEGRATION-160` y `TREQ-INTEGRATION-161`, para cierre de retry sin compensación inferida;
+- `TREQ-INTEGRATION-211`, para auditoría de conciliación;
+- `TREQ-INTEGRATION-242`, para estado de conciliación y residuales;
+- `TREQ-INTEGRATION-258` a `TREQ-INTEGRATION-287`, para partialidad, casos, scopes, resultados por unidad, unknown, intervención, conciliación, compensación, auditoría y ownership;
+- `TREQ-INTEGRATION-288` a `TREQ-INTEGRATION-306`, para fronteras propietarias y prohibición de escrituras cruzadas;
+- `TREQ-PULSO-001`, para flujo extremo a extremo de venta;
+- `TREQ-PULSO-005`, para separación de estados comerciales;
+- `TREQ-PULSO-006`, para conciliación de venta, pago, caja, reversos y pendientes;
+- `TREQ-NEXO-011`, para ledger físico reconciliable;
+- `TREQ-NEXO-183` a `TREQ-NEXO-186`, para receipts, proyecciones, reconciliación y compensación;
+- `TREQ-NUMERA-001` a `TREQ-NUMERA-004`, para hechos económicos, trazabilidad, pagos, costos y conciliación;
+- `TREQ-PASS-008` a `TREQ-PASS-011`, para ledger de fidelización, idempotencia, pagos, conciliación y compensaciones.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 77. Decisiones congeladas
+
+1. La convivencia se reconcilia sin elegir fuente por inferencia.
+2. PULSO es propietaria de la venta interna.
+3. Makos conserva procedencia externa histórica cuando aplique.
+4. La recepción tardía no cambia fuente.
+5. La conciliación no define el corte.
+6. La conciliación no implementa el bloqueo de doble fuente.
+7. La conciliación detecta candidatos de doble fuente.
+8. Similitud no equivale a identidad.
+9. Agregado no equivale a venta.
+10. Igualdad agregada no equivale a paridad individual.
+11. Venta, línea, evento, entrega y efecto se concilian por separado.
+12. NEXO, NUMERA y PASS conservan propietarias distintas.
+13. Efecto esperado se evalúa por aplicabilidad.
+14. `NO_APLICA` y bloqueo son distintos.
+15. Resultado desconocido permanece abierto.
+16. Publicación no prueba entrega.
+17. Entrega no prueba efecto.
+18. ACK no prueba efecto.
+19. Cada consumidora conserva resultado independiente.
+20. Se reutiliza la política transversal de partialidad.
+21. Se reutilizan sus nueve clases.
+22. Se reutilizan sus ocho alcances.
+23. Se reutiliza la allowlist de intervención.
+24. No existe acción local de forzar éxito.
+25. Retry es selectivo.
+26. Retry conserva identidad.
+27. Efectos confirmados no se repiten.
+28. Agotamiento no implica compensación.
+29. Compensación exige original confirmado.
+30. Compensación conserva original y residual.
+31. Mapping pendiente permanece visible.
+32. Cuarentena no se cierra por totales.
+33. Mapping liberado no duplica efectos.
+34. Eventos tardíos conservan fecha real.
+35. Eventos fuera de orden no retroceden estado.
+36. Replay conserva identidades.
+37. Backfill no fabrica ventas.
+38. Una revisión puede finalizar con casos abiertos gobernados.
+39. Un caso individual no cierra desconocido.
+40. Nueva evidencia conserva historia.
+41. Residual aceptado requiere autoridad.
+42. La conciliación no hace escrituras cruzadas.
+43. La auditoría conserva fuentes, criterio, decisión y residual.
+44. La información sensible se minimiza.
+45. La importación `makos_excel` observada sirve como evidencia agregada.
+46. La estructura observada no demuestra venta individual.
+47. El posting legacy observado sirve como evidencia, no como arquitectura canónica objetivo.
+48. `INT-SALES-009` conserva corte.
+49. `INT-SALES-010` conserva doble fuente.
+50. `INT-SALES-011` conserva retiro.
+51. Se crean cero cambios `TREQ-*`.
+52. No se genera una copia del registro canónico de requisitos.
+53. Se crean cero objetos físicos.
+54. Se modifican cero objetos físicos.
+55. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 78. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-007` como tarea anterior aprobada;
+2. mantiene `INT-SALES-009` como única tarea siguiente reservada;
+3. define convivencia sin asumir doble autoridad;
+4. conserva PULSO como propietaria de venta interna;
+5. conserva Makos como procedencia histórica cuando corresponda;
+6. impide reclasificar por recepción tardía;
+7. define unidad de conciliación;
+8. define niveles de comparación;
+9. exige identidad individual para paridad individual;
+10. limita agregados a control agregado;
+11. prohíbe prorrateo de agregados;
+12. define revisión por fecha empresarial;
+13. no inventa hora de cierre;
+14. conserva revisión y nueva evidencia;
+15. define cadena fuente–venta–evento–efectos;
+16. define aplicabilidad NEXO;
+17. define aplicabilidad NUMERA;
+18. define aplicabilidad PASS;
+19. mantiene redención separada;
+20. define fuentes propietarias;
+21. define diferencias de fuente;
+22. define diferencias de venta;
+23. define candidato de doble fuente;
+24. no resuelve ese candidato por similitud;
+25. reserva el corte a `INT-SALES-009`;
+26. reserva enforcement a `INT-SALES-010`;
+27. define diferencias de evento;
+28. separa publicación, entrega e impacto;
+29. define conciliación NEXO;
+30. prohíbe segundo movimiento para reparar proyección;
+31. define conciliación NUMERA;
+32. separa venta, pago y caja;
+33. define conciliación PASS acumulación;
+34. define conciliación PASS redención;
+35. define conciliación de compensaciones;
+36. prohíbe compensación cruzada;
+37. reutiliza las clases de partialidad;
+38. reutiliza los scopes de fallo;
+39. conserva vector de efectos;
+40. admite resultados mixtos explícitos;
+41. define resultado desconocido;
+42. define retry seguro;
+43. define agotamiento de retry;
+44. reutiliza acciones manuales;
+45. limita corrección de metadata;
+46. define estados de mapping;
+47. define cuarentena;
+48. define liberación sin duplicados;
+49. define eventos tardíos;
+50. define fuera de orden;
+51. define replay;
+52. define backfill;
+53. define agregados;
+54. prohíbe igualdad agregada como prueba individual;
+55. define tratamiento de diferencia agregada;
+56. define caso de conciliación;
+57. define propietaria del caso;
+58. diferencia cierre de revisión y cierre de caso;
+59. prohíbe cerrar unknown;
+60. define revisión sucesora;
+61. gobierna residual aceptado;
+62. prohíbe escritura cruzada;
+63. hace reconstruible auditoría;
+64. conserva causalidad por IDs y versiones;
+65. minimiza datos;
+66. define estados visibles;
+67. enumera controles de convivencia;
+68. diagnostica importación externa observada;
+69. declara su límite individual;
+70. diagnostica posting legacy observado;
+71. evita canonizarlo por existencia;
+72. diferencia aprobación documental de operación;
+73. asigna implementación posterior;
+74. mantiene Supabase en `vento-shell`;
+75. asigna cada pendiente a propietaria y condición de salida;
+76. genera cero requisitos de prueba nuevos;
+77. modifica cero requisitos de prueba;
+78. no genera una copia del registro canónico de requisitos;
+79. crea cero objetos físicos;
+80. modifica cero objetos físicos;
+81. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota;
+82. no inicia ni desarrolla `INT-SALES-009`.
+
+---
+
+#### 79. Resultado de la tarea
+
+`INT-SALES-008` queda definida como la conciliación permanente que permite operar una coexistencia controlada entre evidencia del POS externo y ventas PULSO sin fabricar identidad, sin ocultar partialidad y sin duplicar efectos.
+
+Resultado consolidado:
+
+```text
+FUENTES IDENTIFICADAS
++
+PROCEDENCIA PRESERVADA
++
+VENTAS Y LÍNEAS CORRELACIONABLES
++
+EVENTOS TRAZABLES
++
+ENTREGAS POR CONSUMIDORA
++
+EFECTOS POR PROPIETARIA
++
+RECEIPTS Y RESULTADOS
++
+PARTIALIDAD EXPLÍCITA
++
+CASOS CON RESPONSABLE
++
+RETRY SELECTIVO
++
+COMPENSACIÓN PROPIETARIA
++
+EVIDENCIA Y AUDITORÍA
+→
+CONVIVENCIA RECONCILIABLE SIN FALSA PARIDAD
+```
+
+Sin decidir todavía el corte, sin elegir automáticamente entre Makos y PULSO y sin materializar el bloqueo permanente de doble fuente.
+
+---
+
+#### 80. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-007 — Definir control contra efectos duplicados por reintento`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+
+
 ### [ ] INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
 ### [ ] INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
 ### [ ] INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos

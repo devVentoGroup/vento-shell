@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **792** |
+| Tareas aprobadas | **793** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **802** |
+| Tareas no iniciadas | **801** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.69% (792/1594)** |
+| Porcentaje de completamiento | **49.75% (793/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-SALES-007 — Definir control contra efectos duplicados por reintento** |
-| Tarea actual | **INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO** |
+| Última tarea aprobada | **INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO** |
+| Tarea actual | **INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva** |
+| Siguiente tarea | **INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 76 de 83 aprobadas; INT-SALES-008 pendiente** |
+| Progreso del bloque | **BLOQUE X: 77 de 83 aprobadas; INT-SALES-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-SALES-007` — Definir control contra efectos duplicados por reintento |
-| Tarea actual | `INT-SALES-008` — Definir conciliación de convivencia entre POS externo y PULSO — **NO INICIADA** |
-| Siguiente tarea | `INT-SALES-009` — Definir corte por sede, terminal y fecha efectiva |
+| Última aprobada | `INT-SALES-008` — Definir conciliación de convivencia entre POS externo y PULSO |
+| Tarea actual | `INT-SALES-009` — Definir corte por sede, terminal y fecha efectiva — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-010` — Definir control que impida que ambas fuentes emitan la misma venta |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 76 DE 83 APROBADAS — ACTUAL INT-SALES-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 77 DE 83 APROBADAS — ACTUAL INT-SALES-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-SALES-007 — Definir control contra efectos duplicados por reintento
-        ↓
-TAREA ACTUAL
 INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 76 de 83 tareas aprobadas
+BLOQUE X — 77 de 83 tareas aprobadas
 ```

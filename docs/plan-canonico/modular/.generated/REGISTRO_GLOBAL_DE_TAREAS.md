@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **792** |
+| Aprobadas | **793** |
 | En propuesta | **0** |
-| No iniciadas | **802** |
+| No iniciadas | **801** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.69% (792/1594)** |
+| Porcentaje de completamiento | **49.75% (793/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-SALES-007` — Definir control contra efectos duplicados por reintento | ✅ APROBADA |
-| Tarea actual | `INT-SALES-008` — Definir conciliación de convivencia entre POS externo y PULSO | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-SALES-009` — Definir corte por sede, terminal y fecha efectiva | ⬜ NO INICIADA |
+| Última aprobada | `INT-SALES-008` — Definir conciliación de convivencia entre POS externo y PULSO | ✅ APROBADA |
+| Tarea actual | `INT-SALES-009` — Definir corte por sede, terminal y fecha efectiva | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-SALES-010` — Definir control que impida que ambas fuentes emitan la misma venta | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1500,7 +1500,7 @@
 | ✅ APROBADA | `INT-SALES-005` | Definir acumulación de puntos en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-006` | Definir procesamiento de redención en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-007` | Definir control contra efectos duplicados por reintento | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
-| ⬜ NO INICIADA | `INT-SALES-008` | Definir conciliación de convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
+| ✅ APROBADA | `INT-SALES-008` | Definir conciliación de convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-010` | Definir control que impida que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-011` | Definir retiro del adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
