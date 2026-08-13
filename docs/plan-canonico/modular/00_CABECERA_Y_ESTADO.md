@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **779** |
+| Tareas aprobadas | **780** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **815** |
+| Tareas no iniciadas | **814** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.87% (779/1594)** |
+| Porcentaje de completamiento | **48.93% (780/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda** |
-| Tarea actual | **INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia** |
+| Última tarea aprobada | **INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia** |
+| Tarea actual | **INT-POS-020 — Definir conciliación diaria entre POS y efectos internos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-020 — Definir conciliación diaria entre POS y efectos internos** |
+| Siguiente tarea | **INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 63 de 83 aprobadas; INT-POS-019 pendiente** |
+| Progreso del bloque | **BLOQUE X: 64 de 83 aprobadas; INT-POS-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-018` — Definir evento de fidelización para PASS cuando corresponda |
-| Tarea actual | `INT-POS-019` — Definir compensación de anulaciones y devoluciones sin borrar historia — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-020` — Definir conciliación diaria entre POS y efectos internos |
+| Última aprobada | `INT-POS-019` — Definir compensación de anulaciones y devoluciones sin borrar historia |
+| Tarea actual | `INT-POS-020` — Definir conciliación diaria entre POS y efectos internos — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-021` — Diseñar piloto sin efectos sobre inventario ni finanzas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 63 DE 83 APROBADAS — ACTUAL INT-POS-019** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 64 DE 83 APROBADAS — ACTUAL INT-POS-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda
-        ↓
-TAREA ACTUAL
 INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-020 — Definir conciliación diaria entre POS y efectos internos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 63 de 83 tareas aprobadas
+BLOQUE X — 64 de 83 tareas aprobadas
 ```

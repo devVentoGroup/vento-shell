@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **779** |
+| Aprobadas | **780** |
 | En propuesta | **0** |
-| No iniciadas | **815** |
+| No iniciadas | **814** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **48.87% (779/1594)** |
+| Porcentaje de completamiento | **48.93% (780/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-018` — Definir evento de fidelización para PASS cuando corresponda | ✅ APROBADA |
-| Tarea actual | `INT-POS-019` — Definir compensación de anulaciones y devoluciones sin borrar historia | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-020` — Definir conciliación diaria entre POS y efectos internos | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-019` — Definir compensación de anulaciones y devoluciones sin borrar historia | ✅ APROBADA |
+| Tarea actual | `INT-POS-020` — Definir conciliación diaria entre POS y efectos internos | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-021` — Diseñar piloto sin efectos sobre inventario ni finanzas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1487,7 +1487,7 @@
 | ✅ APROBADA | `INT-POS-016` | Definir salida de inventario en NEXO exactamente una vez | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-017` | Definir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-018` | Definir evento de fidelización para PASS cuando corresponda | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-019` | Definir compensación de anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-019` | Definir compensación de anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-020` | Definir conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-021` | Diseñar piloto sin efectos sobre inventario ni finanzas | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-022` | Diseñar piloto controlado con efectos habilitados | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |

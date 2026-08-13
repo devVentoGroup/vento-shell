@@ -11070,7 +11070,1181 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia`
 
 
-### [ ] INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia
+### ✅ INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda`
+**Tarea siguiente:** `INT-POS-020 — Definir conciliación diaria entre POS y efectos internos`
+**Tipo de tarea:** documental; especialización normativa del contrato transversal de compensación para anulaciones, devoluciones y efectos posteriores de una venta canónica durante la transición desde el POS externo, separando cancelación, void, devolución física, reembolso, compensación económica, reversión de fidelización y corrección; preservando la venta, los pagos, movimientos, hechos económicos, puntos, documentos, eventos y receipts originales; sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**Aplicación propietaria del hecho comercial:** `PULSO`
+**Política transversal reutilizada:** `ENTERPRISE-EVENT-COMPENSATION-POLICY-001@1.0.0`
+**Proceso comercial de cambio reutilizado:** `VPROC-0042 — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos`
+**Acciones CCR principales reutilizadas:** `VPROC-0038.CCR-003`, `VPROC-0039.CCR-003`, `VPROC-0042.CCR-003`, `VPROC-0043.CCR-003`, `VPROC-0045.CCR-003`
+**Línea base documental:** `vento-shell@8cdc21910ca8f9019f51b923cd2ff6a5da6c2169`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base NEXO observada:** `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`
+**Línea base NUMERA observada:** `vento-numera@1b48a5da425d92e19ed89cf175b1dccc4cd960e1`
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo una anulación, devolución o corrección posterior de una venta canónica debe coordinar los efectos inversos o compensatorios ya confirmados sin borrar la historia original, sin convertir un solo hecho comercial en una mutación transversal y sin asumir que devolver dinero, devolver producto, revertir puntos o corregir un hecho económico son la misma operación.
+
+Regla raíz:
+
+```text
+VENTA / EFECTOS ORIGINALES CONFIRMADOS
+        ↓
+HECHO POSTERIOR VÁLIDO DE CANCELACIÓN, ANULACIÓN O DEVOLUCIÓN
+        ↓
+PULSO CLASIFICA LA ACCIÓN COMERCIAL
+        ↓
+PLAN TRANSVERSAL DE COMPENSACIÓN
+        ↓
+DESCUBRIR EFECTOS ORIGINALES POR RECEIPT
+        ↓
+CADA PROPIETARIA DECIDE Y EJECUTA SU PASO
+        ├── PULSO / PAGO
+        ├── NEXO
+        ├── NUMERA
+        ├── PASS
+        └── PROVEEDOR FISCAL CUANDO APLIQUE
+        ↓
+RESULTADOS IDEMPOTENTES + RESIDUALES EXPLÍCITOS
+        ↓
+CONCILIACIÓN
+```
+
+Nunca:
+
+```text
+DEVOLUCIÓN = BORRAR VENTA
+```
+
+Nunca:
+
+```text
+REEMBOLSO = ENTRADA AUTOMÁTICA DE INVENTARIO
+```
+
+Nunca:
+
+```text
+ANULACIÓN = RESTAR PUNTOS A CIEGAS
+```
+
+Nunca:
+
+```text
+COMPENSACIÓN = UPDATE DIRECTO EN DOMINIOS AJENOS
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-019` deja definidas las siguientes decisiones:
+
+1. La venta, sus líneas y su historia permanecen identificables después de cualquier anulación, devolución, refund, corrección o compensación.
+2. Una acción posterior no borra eventos, receipts, movimientos, pagos, hechos económicos, ledger de fidelización ni documentos ya confirmados.
+3. `CANCEL`, `VOID`, `COMPENSATE`, `RETURN`, `REFUND`, `REVERSE`, `ADJUST` y `CORRECT` conservan significados separados.
+4. `CANCEL` detiene únicamente trabajo futuro o pendiente.
+5. `VOID` neutraliza una instancia inválida o duplicada cuando no produjo un efecto legítimo que deba invertirse.
+6. `COMPENSATE` coordina efectos ya confirmados que requieren restitución, mitigación o efecto inverso.
+7. `RETURN` representa retorno físico y no prueba por sí mismo un refund.
+8. `REFUND` representa una transacción financiera nueva y no prueba por sí mismo retorno físico.
+9. `REVERSE` representa el efecto inverso autorizado de un dominio propietario, por ejemplo puntos en PASS.
+10. `CORRECT` produce una corrección versionada; no sustituye una compensación cuando ya existe efecto confirmado.
+11. Solo se compensa un efecto cuya existencia esté confirmada.
+12. Un efecto cuya existencia sea incierta se reconcilia antes de ejecutar el paso inverso.
+13. Un efecto demostrado como inexistente produce `NOT_REQUIRED` y no un movimiento inverso ficticio.
+14. PULSO coordina el hecho comercial y el expediente de cambio; no escribe directamente las fuentes propietarias de NEXO, NUMERA o PASS.
+15. Cada propietaria ejecuta su paso compensatorio dentro de su propio contrato.
+16. Cada paso conserva identidad, huella, autorización, efecto original, resultado y evidencia propios.
+17. Reintentar el mismo paso no reaplica el efecto; recupera el resultado anterior.
+18. La misma identidad compensatoria con contenido material incompatible produce conflicto.
+19. El plan puede quedar `PARTIALLY_APPLIED`; no se presenta como completo mientras existan pasos obligatorios pendientes, fallidos o residuales no aceptados.
+20. No se impone un orden universal NEXO → NUMERA → PASS ni otro orden fijo; las dependencias reales del plan determinan qué pasos pueden ejecutarse en paralelo o deben esperar.
+21. La compensación física de NEXO solo existe cuando hubo un efecto físico original confirmado y existe una devolución física aceptada o una causa autorizada de compensación de inventario.
+22. Un refund sin devolución física no crea stock.
+23. Una devolución física no vuelve automáticamente el producto a stock vendible.
+24. NEXO determina cantidad realmente aceptada, ubicación, condición, lote, presentación, cuarentena y disposición aplicables.
+25. NEXO conserva el grupo y legs originales y crea un grupo compensatorio enlazado con legs inversos o compensatorios.
+26. NUMERA conserva el hecho económico original y registra un hecho compensatorio o correctivo propio cuando corresponda.
+27. Un periodo cerrado no se reabre ni se refecha silenciosamente para ocultar la compensación.
+28. El tratamiento temporal o contable de NUMERA se resuelve por su política propietaria vigente.
+29. PASS conserva la acumulación original y, cuando corresponda, genera un movimiento compensatorio de puntos.
+30. Si la venta nunca produjo acumulación PASS, no se crea un reverso de puntos.
+31. La redención PASS sigue siendo una operación distinta y no se infiere desde un refund o descuento.
+32. Un pago confirmado que debe reembolsarse utiliza el tratamiento de `VPROC-0043.CCR-003`; el pago original permanece.
+33. Un pago nunca confirmado no genera un refund ficticio.
+34. El proveedor o sistema fiscal autorizado conserva autoridad sobre el documento fiscal; la historia fiscal original no se reescribe desde PULSO.
+35. Una devolución parcial compensa únicamente el alcance demostrado y todavía compensable.
+36. El plan conserva el efecto original, lo compensado acumulado y el residual todavía expuesto.
+37. No se permite sobrecompensar cantidad, dinero, puntos ni otro efecto por encima del original confirmado y no compensado.
+38. Dos solicitudes relacionadas con la misma porción original no producen dos efectos inversos.
+39. Una corrección de metadata no amplía el alcance compensable.
+40. Una nueva revisión comercial no reinicia la identidad de los pasos ya confirmados.
+41. Los eventos posteriores tienen identidad propia y se enlazan por causalidad y correlación; no reutilizan el `event_id` original como si fueran el mismo hecho.
+42. No se crea una nueva definición normal de evento empresarial.
+43. Se reutilizan las familias condicionales de CCR y la política transversal de compensación ya aprobadas.
+44. La importación agregada `makos_excel` no demuestra por sí sola una devolución individual compensable.
+45. El importe agregado de `DEVOLUCIONES` no autoriza por sí mismo refund, movimiento NEXO, reversión NUMERA o reversión PASS.
+46. `INT-POS-020` queda como propietaria de la conciliación diaria de venta, efectos, compensaciones y residuales.
+47. `INT-POS-021` queda como propietaria de demostrar el binding real sin efectos.
+48. `INT-POS-022` queda como propietaria del piloto con efectos.
+49. Se crean cero requisitos `TREQ-*`.
+50. Se modifican cero requisitos `TREQ-*`.
+51. Se crean cero objetos físicos.
+52. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Dependencias consumidas y preservadas
+
+La tarea consume sin reabrir:
+
+- `INT-POS-003`, para autoridad temporal y límites de Makos;
+- `INT-POS-005`, para identidad de venta y línea;
+- `INT-POS-006`, para estados, revisiones y timestamps;
+- `INT-POS-007`, para descuentos, impuestos, propinas y pagos;
+- `INT-POS-008`, para captura de anulaciones, devoluciones y reembolsos sin confundirlos;
+- `INT-POS-009`, para payload original, hash, versión, recepción y procedencia;
+- `INT-POS-010`, para sede, terminal y caja;
+- `INT-POS-011`, para mappings de producto;
+- `INT-POS-012`, para cuarentena por línea;
+- `INT-POS-013`, para identidad e idempotencia de fuente externa;
+- `INT-POS-014`, para convergencia de transportes y replay;
+- `INT-POS-015`, para evento empresarial PULSO;
+- `INT-POS-016`, para efecto físico exactamente una vez en NEXO;
+- `INT-POS-017`, para efecto económico exactamente una vez en NUMERA;
+- `INT-POS-018`, para fidelización PASS cuando corresponda;
+- `PROC-CAT-014`, para las acciones CCR ya aprobadas;
+- `INT-APP-004`, para scopes de idempotencia y recuperación de resultados;
+- `INT-APP-005`, para retry y resultado desconocido;
+- `INT-APP-006`, para la política transversal de compensación;
+- `INT-APP-007`, para auditoría;
+- `INT-APP-008` y `INT-APP-009`, para pendientes, parcialidad y conciliación;
+- `INT-APP-010`, para prohibición de escrituras cruzadas.
+
+Ninguna decisión de esas tareas se modifica.
+
+---
+
+#### 4. Política transversal reutilizada
+
+Esta tarea especializa:
+
+```text
+ENTERPRISE-EVENT-COMPENSATION-POLICY-001@1.0.0
+```
+
+No crea una política paralela.
+
+Se preservan los tratamientos transversales:
+
+| Clase CCR    | Tratamiento                     | Aplicación en esta tarea                                   |
+| ------------ | ------------------------------- | ---------------------------------------------------------- |
+| `CANCEL`     | `FUTURE_STOP_WITH_RESIDUALS`    | detiene trabajo futuro sin deshacer efectos ya confirmados |
+| `VOID`       | `INVALID_RECORD_NEUTRALIZATION` | neutraliza registro inválido sin borrar evidencia          |
+| `COMPENSATE` | `LINKED_COMPENSATION`           | coordina efectos compensatorios en dominios propietarios   |
+| `REVERSE`    | `LINKED_REVERSAL`               | aplica operación inversa autorizada                        |
+| `RETURN`     | `PHYSICAL_RETURN`               | representa retorno físico con custodia y aceptación        |
+| `REFUND`     | `FINANCIAL_REFUND`              | crea transacción financiera inversa                        |
+| `ADJUST`     | `LINKED_ADJUSTMENT`             | registra diferencia y ajuste separado                      |
+| `CORRECT`    | corrección versionada           | preserva antes, después, motivo y autoridad                |
+
+La semántica de una clase no se sustituye por otra para simplificar implementación.
+
+---
+
+#### 5. Acciones CCR de venta consumidas
+
+Las rutas canónicas principales son:
+
+| Acción               | Uso en esta tarea                                         |
+| -------------------- | --------------------------------------------------------- |
+| `VPROC-0038.CCR-003` | compensar efectos ya confirmados de servicio en mesa      |
+| `VPROC-0039.CCR-003` | compensar efectos ya confirmados de venta de mostrador    |
+| `VPROC-0042.CCR-001` | cancelar una solicitud de cambio antes de aplicar efectos |
+| `VPROC-0042.CCR-002` | anular una solicitud duplicada o inválida                 |
+| `VPROC-0042.CCR-003` | compensar un ajuste comercial que ya produjo efectos      |
+| `VPROC-0042.CCR-004` | corregir el expediente sin reescribir efectos confirmados |
+| `VPROC-0043.CCR-003` | reembolsar o revertir un pago confirmado                  |
+| `VPROC-0045.CCR-003` | revertir puntos mediante movimiento compensatorio         |
+
+El hecho de que una solicitud se denomine “devolución” no selecciona por sí solo todos estos CCR. La selección depende de qué ocurrió realmente.
+
+---
+
+#### 6. Separación obligatoria de conceptos
+
+| Concepto               | Qué hace                                                     | Qué no hace                                     |
+| ---------------------- | ------------------------------------------------------------ | ----------------------------------------------- |
+| cancelación            | detiene parte futura todavía no ejecutada                    | no revierte efectos confirmados                 |
+| anulación / void       | neutraliza registro inválido o duplicado sin efecto legítimo | no sustituye un refund ni una devolución física |
+| devolución comercial   | documenta la decisión y alcance comercial                    | no mueve stock ni dinero por sí sola            |
+| devolución física      | devuelve custodia o existencia aceptada                      | no reembolsa automáticamente                    |
+| refund                 | devuelve valor por contrato de pago                          | no crea entrada de inventario                   |
+| compensación económica | crea efecto económico sucesor                                | no edita el hecho económico original            |
+| reversión de puntos    | crea movimiento compensatorio PASS                           | no edita la acumulación original                |
+| corrección             | rectifica datos o clasificación de forma versionada          | no borra hechos ni disfraza una reversa         |
+
+---
+
+#### 7. Puerta de elegibilidad
+
+Antes de crear o ejecutar un paso compensatorio se resuelve:
+
+```text
+¿EXISTE EFECTO ORIGINAL CONFIRMADO?
+├── NO
+│   └── NOT_REQUIRED
+├── NO SE SABE
+│   └── RECONCILIACIÓN ANTES DE COMPENSAR
+└── SÍ
+    ↓
+¿LA ACCIÓN CCR Y LA AUTORIDAD SON VÁLIDAS?
+├── NO
+│   └── ELIGIBILITY_REJECTED
+└── SÍ
+    ↓
+¿EXISTE ALCANCE COMPENSABLE RESTANTE?
+├── NO
+│   └── RESULTADO PREVIO / NOT_REQUIRED
+└── SÍ
+    ↓
+PLANIFICAR O EJECUTAR PASO PROPIETARIO
+```
+
+Reglas:
+
+1. la mera posibilidad de que un efecto haya ocurrido no autoriza invertirlo;
+2. una respuesta perdida obliga a resolver el resultado original;
+3. un `lease` vencido no demuestra que el efecto no ocurrió;
+4. un efecto original confirmado y ya totalmente compensado no admite otra compensación equivalente;
+5. un efecto bloqueado antes de existir no requiere movimiento inverso.
+
+---
+
+#### 8. Plan de compensación
+
+Toda compensación coordinada utiliza la identidad y el contrato ya definidos por `INT-APP-006`.
+
+El plan conserva como mínimo:
+
+- `compensation_plan_id`;
+- `compensation_plan_version`;
+- proceso;
+- acción CCR;
+- referencia al efecto original;
+- evento original o comando fuente cuando aplique;
+- alcance;
+- cantidades o importes;
+- dependencias;
+- autoridad;
+- estado;
+- residuales;
+- timestamps y evidencia.
+
+Reglas específicas:
+
+1. `compensation_plan_id` es estable entre retries;
+2. una revisión del plan incrementa versión sin reemplazar versiones anteriores;
+3. cambiar materialmente efecto original, alcance, cantidad, importe, destinatario o dependencia no se acepta como retry del mismo contenido;
+4. el plan no es una transacción distribuida que permita escritura cruzada;
+5. el plan coordina pasos y recibe resultados propietarios;
+6. el plan puede contener pasos `NOT_REQUIRED`;
+7. el plan puede cerrar con residual únicamente cuando el contrato transversal lo permite y existe propietario y autoridad que lo acepta;
+8. un plan sucesor se enlaza al anterior en lugar de editarlo.
+
+---
+
+#### 9. Contrato de cada paso
+
+Cada efecto inverso o mitigador usa el contrato de paso de `INT-APP-006`, con:
+
+- `compensation_step_id`;
+- `compensation_plan_id`;
+- aplicación propietaria;
+- proceso propietario;
+- `effect_code` correspondiente al dominio;
+- `original_effect_ref`;
+- scope y referencia de idempotencia;
+- huella lógica;
+- autorización;
+- resultado;
+- verificación;
+- evidencia.
+
+No se inventa un `effect_code` transversal único para todos los dominios.
+
+Invariantes:
+
+```text
+UN PASO
+→ UNA PROPIETARIA
+→ UN EFECTO ORIGINAL
+→ UNA IDENTIDAD IDEMPOTENTE
+→ UN RESULTADO RECUPERABLE
+```
+
+y:
+
+```text
+MISMO PASO + MISMA HUELLA
+→ MISMO RESULTADO
+
+MISMO PASO + HUELLA INCOMPATIBLE
+→ CONFLICTO
+```
+
+---
+
+#### 10. Descubrimiento de efectos originales
+
+Antes de planificar pasos, el caso comercial reconstruye qué efectos ocurrieron realmente.
+
+Se consultan las referencias y receipts disponibles de:
+
+- venta y líneas;
+- pago;
+- salida física NEXO;
+- hecho económico NUMERA;
+- acumulación o redención PASS;
+- documento fiscal;
+- otros efectos explícitamente correlacionados.
+
+Cada efecto se clasifica como:
+
+- confirmado;
+- demostrado como no aplicado;
+- resultado desconocido;
+- parcialmente aplicado;
+- ya compensado;
+- residual pendiente.
+
+No se infiere un efecto desde otro.
+
+Ejemplos:
+
+```text
+PAGO CONFIRMADO
+≠
+SALIDA NEXO CONFIRMADA
+```
+
+```text
+SALIDA NEXO CONFIRMADA
+≠
+PUNTOS PASS CONFIRMADOS
+```
+
+```text
+REFUND CONFIRMADO
+≠
+RETORNO FÍSICO CONFIRMADO
+```
+
+---
+
+#### 11. Propiedad de cada efecto compensatorio
+
+| Dominio         | Fuente original                       | Paso compensatorio                                          | Prohibición                                  |
+| --------------- | ------------------------------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| PULSO comercial | venta, línea, cambio comercial        | revisión/expediente sucesor y acción CCR                    | borrar la venta o fingir que nunca existió   |
+| pago            | pago confirmado                       | refund/reverso mediante contrato propietario                | editar monto/estado histórico como sustituto |
+| NEXO            | movimiento físico confirmado          | grupo compensatorio vinculado                               | insertar stock desde PULSO o el adaptador    |
+| NUMERA          | hecho económico confirmado            | hecho económico compensatorio/correctivo                    | editar destructivamente el hecho original    |
+| PASS            | movimiento de fidelización confirmado | movimiento compensatorio                                    | actualizar saldo o borrar la acumulación     |
+| fiscal          | documento confirmado                  | acción o documento permitido por proveedor/autoridad fiscal | editar desde PULSO el documento histórico    |
+
+---
+
+#### 12. PULSO y el expediente comercial
+
+PULSO conserva:
+
+- venta original;
+- líneas originales;
+- revisiones;
+- motivo de anulación o devolución;
+- actor y autoridad;
+- alcance solicitado;
+- alcance autorizado;
+- cantidades;
+- importes comerciales;
+- referencias de pago;
+- referencias de efectos;
+- evidencia;
+- estado del expediente de cambio.
+
+Reglas:
+
+1. una venta cerrada puede tener un cambio o devolución posterior sin perder su cierre histórico;
+2. la proyección vigente puede reflejar un estado posterior, pero la secuencia histórica permanece;
+3. una devolución no vuelve a crear la venta;
+4. una corrección no reemplaza el expediente original;
+5. la misma solicitud externa recibida por webhook, polling o replay converge al mismo caso.
+
+---
+
+#### 13. Cancelación antes de efectos
+
+Cuando la operación todavía no produjo el efecto que se pretende evitar:
+
+```text
+CANCEL
+→ DETENER TRABAJO FUTURO
+→ CONSERVAR RESIDUALES
+→ CERO INVERSIÓN FICTICIA
+```
+
+Ejemplos:
+
+- línea no preparada;
+- pago no confirmado;
+- salida NEXO no aplicada;
+- acumulación PASS no aplicada;
+- hecho NUMERA no aplicado.
+
+Una cancelación no genera por defecto:
+
+- refund;
+- entrada de stock;
+- reversión de puntos;
+- hecho económico negativo.
+
+---
+
+#### 14. Void de registro inválido
+
+`VOID` aplica cuando una instancia o instrumento es inválido, duplicado o nunca produjo un efecto legítimo.
+
+Reglas:
+
+1. el registro original permanece visible;
+2. conserva causa y autoridad;
+3. se enlaza el registro válido cuando exista;
+4. no se usa `VOID` para ocultar una venta legítima que ya produjo efectos;
+5. si existen efectos confirmados, esos efectos requieren su tratamiento propietario;
+6. anular una solicitud duplicada no duplica la compensación ya abierta por la solicitud válida.
+
+---
+
+#### 15. Compensación comercial después de efectos
+
+Cuando la venta o cambio ya produjo uno o más efectos confirmados:
+
+```text
+VPROC-0038.CCR-003
+o
+VPROC-0039.CCR-003
+o
+VPROC-0042.CCR-003
+        ↓
+PLAN DE COMPENSACIÓN
+        ↓
+PASOS POR PROPIETARIA
+```
+
+PULSO no declara el plan `COMPLETED` por haber registrado únicamente la solicitud comercial.
+
+El cierre requiere los pasos obligatorios o residuales aceptados conforme a `INT-APP-006`.
+
+---
+
+#### 16. Devolución física en NEXO
+
+El paso NEXO solo aplica cuando existe un efecto físico original confirmado y una restitución física realmente aceptada o una causa autorizada equivalente.
+
+Debe preservar:
+
+- movimiento/grupo original;
+- receipt original;
+- venta y línea;
+- producto;
+- cantidad;
+- UOM;
+- presentación;
+- lote;
+- condición;
+- origen y destino;
+- custodia;
+- cantidad compensada;
+- cantidad restante;
+- grupo compensatorio;
+- nuevo posting receipt.
+
+Reglas:
+
+1. no se hace `UPDATE` ni `DELETE` del movimiento original;
+2. el grupo compensatorio referencia el original;
+3. los legs compensatorios expresan el efecto físico real;
+4. la cantidad devuelta comercialmente no se confunde con la cantidad físicamente recibida;
+5. un producto recibido puede quedar en cuarentena, daño, merma u otra condición en lugar de disponibilidad vendible;
+6. NEXO decide la ubicación y condición física con sus contratos;
+7. el cliente o PULSO no fijan saldo final;
+8. un refund sin producto recibido produce `NOT_REQUIRED` para el retorno físico cuando la política comercial no exige otro efecto de inventario;
+9. una devolución física sin refund puede existir cuando la decisión comercial así lo determine;
+10. reparar una proyección no crea otro movimiento.
+
+---
+
+#### 17. Límite contra doble entrada de inventario
+
+Antes de cualquier paso físico se verifica:
+
+- efecto original NEXO confirmado;
+- porción original todavía compensable;
+- devoluciones físicas ya confirmadas;
+- receipts previos;
+- estado de conciliación.
+
+Debe cumplirse conceptualmente:
+
+```text
+COMPENSACIÓN FÍSICA ACUMULADA
+<=
+EFECTO FÍSICO ORIGINAL CONFIRMADO
+```
+
+Una solicitud repetida, reintento, recepción duplicada o replay no puede superar la cantidad original pendiente de compensar.
+
+---
+
+#### 18. Refund de pago
+
+Cuando existe pago confirmado y la decisión exige devolución monetaria:
+
+```text
+VPROC-0043.CCR-003
+→ FINANCIAL_REFUND
+→ TRANSACCIÓN NUEVA VINCULADA
+```
+
+Reglas:
+
+1. el pago original permanece;
+2. el refund conserva proveedor, medio, moneda, importe, referencia y estado;
+3. un timeout de refund no se interpreta como refund inexistente;
+4. antes de repetir se consulta el resultado original;
+5. dos refunds no pueden reclamar la misma porción de pago;
+6. un pago parcialmente reembolsado conserva el residual todavía reembolsable;
+7. un pago nunca confirmado produce `NOT_REQUIRED`, no un refund ficticio;
+8. un refund no altera directamente inventario, puntos o hecho económico;
+9. contracargo, refund y void de autorización conservan semánticas del contrato de pago y no se fusionan por etiqueta.
+
+---
+
+#### 19. Límite contra sobre-reembolso
+
+El dominio de pago conserva el valor original confirmado, refunds previos y residual.
+
+Debe impedir:
+
+```text
+REFUNDS CONFIRMADOS ACUMULADOS
+>
+VALOR CONFIRMADO COMPENSABLE DEL PAGO
+```
+
+Si una solicitud excede el residual:
+
+- no se trunca silenciosamente;
+- no se ejecuta una segunda transacción parcial por inferencia;
+- produce conflicto, rechazo o revisión conforme al contrato propietario.
+
+---
+
+#### 20. Compensación económica en NUMERA
+
+Si el hecho original de venta fue aplicado en NUMERA y la devolución o anulación modifica su realidad económica, NUMERA crea un efecto sucesor enlazado.
+
+Debe preservar:
+
+- hecho económico original;
+- identidad y versión;
+- venta y líneas aplicables;
+- entidad legal;
+- sede;
+- centro;
+- moneda;
+- fecha del hecho;
+- fecha de reconocimiento;
+- importe original;
+- importe compensatorio;
+- impuestos aplicables;
+- documento y evidencia;
+- referencia al plan y al hecho causal;
+- periodo;
+- resultado.
+
+Reglas:
+
+1. el hecho original no se borra;
+2. la compensación no se calcula desde un agregado mutable;
+3. un refund y una compensación económica son correlacionados, no idénticos;
+4. una devolución física y una compensación económica son correlacionadas, no idénticas;
+5. si el hecho original nunca existió en NUMERA, no se genera el inverso;
+6. una respuesta desconocida se reconcilia antes de repetir;
+7. un periodo cerrado no se modifica silenciosamente;
+8. la política NUMERA decide el tratamiento permitido para hechos tardíos o periodos cerrados;
+9. PULSO no escribe libros, saldos o asientos de NUMERA.
+
+---
+
+#### 21. Reversión de fidelización en PASS
+
+Cuando una venta produjo una acumulación confirmada y la política aplicable exige revertir total o parcialmente el beneficio:
+
+```text
+VPROC-0045.CCR-003
+→ MOVIMIENTO COMPENSATORIO PASS
+→ LEDGER INMUTABLE
+→ SALDO DERIVADO
+```
+
+Reglas:
+
+1. la acumulación original permanece;
+2. el movimiento inverso referencia la acumulación y la venta;
+3. la regla y versión originales permanecen identificables;
+4. la cantidad de puntos compensada no supera el residual del movimiento original;
+5. reintentos recuperan el resultado anterior;
+6. si la venta nunca acumuló puntos, el paso es `NOT_REQUIRED`;
+7. una cuenta diferente no puede recibir la reversión;
+8. una redención posterior no se borra para resolver una devolución;
+9. si la reversión enfrenta saldo insuficiente o un beneficio ya consumido, PASS conserva el conflicto o residual según su política; no inventa saldo;
+10. el saldo se recalcula desde ledger; no se fija desde PULSO.
+
+---
+
+#### 22. Fiscalidad y documentos
+
+Documento fiscal, venta, pago y compensación permanecen separados.
+
+Reglas:
+
+1. el documento original conserva identidad, estado y evidencia;
+2. una devolución comercial no implica que PULSO pueda editar el documento;
+3. la acción fiscal necesaria se ejecuta únicamente mediante el proveedor o autoridad propietaria vigente;
+4. una nota, void o documento sucesor se correlaciona con el original;
+5. el plan conserva el estado fiscal como un paso o residual cuando sea obligatorio;
+6. un fallo fiscal no justifica reaplicar stock, puntos o refund ya confirmados.
+
+---
+
+#### 23. Partialidad
+
+Una devolución puede afectar solo una parte de la venta.
+
+Por cada dominio deben preservarse:
+
+- alcance original confirmado;
+- alcance solicitado;
+- alcance autorizado;
+- alcance compensado en este paso;
+- compensación acumulada previa;
+- residual compensable;
+- residual bloqueado o no aplicable.
+
+Reglas:
+
+1. una línea puede estar totalmente compensada mientras otra permanece intacta;
+2. el residual no desaparece al cerrar un intento;
+3. un paso parcial no reabre porciones ya compensadas;
+4. un cambio de cantidad requiere nueva versión o plan sucesor cuando altera el contenido lógico;
+5. el mismo fragmento no se ejecuta dos veces;
+6. la partialidad de un dominio no obliga a que los otros tengan la misma cantidad o importe;
+7. cada propietaria explica su propio residual.
+
+---
+
+#### 24. Venta y línea como anclas
+
+Cuando la compensación es atribuible a una línea, la referencia de la línea original permanece obligatoria.
+
+No se permite:
+
+- repartir una devolución agregada entre líneas por conveniencia;
+- seleccionar una línea por nombre aproximado;
+- trasladar un refund de una venta a otra;
+- usar una línea nueva para esconder una línea original errónea;
+- compensar una línea NEXO que nunca produjo movimiento.
+
+Una corrección del mapping puede permitir resolver el caso, pero no crea retrospectivamente un efecto original inexistente.
+
+---
+
+#### 25. Cuarentena de líneas
+
+Una línea `ACTIVE` en cuarentena conserva su identidad.
+
+Si la línea no produjo el efecto original:
+
+- no se genera una reversa ficticia de ese efecto.
+
+Si existe evidencia incompatible sobre si el efecto ocurrió:
+
+- el paso queda pendiente de conciliación.
+
+Si el efecto fue confirmado antes de descubrir el problema de mapping:
+
+- se conserva el original;
+- no se reescribe con el mapping nuevo;
+- la compensación referencia el efecto realmente aplicado;
+- cualquier corrección de identidad o mapping se registra separadamente.
+
+---
+
+#### 26. Identidad, retry y concurrencia
+
+El plan y cada paso heredan `INT-APP-004`, `INT-APP-005` e `INT-APP-006`.
+
+Reglas:
+
+1. retry conserva identidad y huella;
+2. replay conserva procedencia;
+3. workers concurrentes no ejecutan dos veces el mismo paso;
+4. la expiración de claim o lease permite recuperación controlada, no prueba inexistencia de efecto;
+5. una respuesta perdida devuelve el resultado previo cuando el efecto ya fue confirmado;
+6. una huella diferente bajo la misma identidad produce conflicto;
+7. un cambio verdadero de alcance exige revisión o sucesor explícito;
+8. reiniciar cliente, worker o servicio no reinicia el presupuesto;
+9. agotamiento de retry abre conciliación;
+10. un plan incompleto no dispara por inferencia una segunda cadena inversa.
+
+---
+
+#### 27. Eventos y causalidad
+
+Esta tarea no crea una definición normal de evento nueva.
+
+Los hechos posteriores utilizan:
+
+- definiciones normales vigentes cuando un proceso alcanza un hito existente;
+- familias condicionales de CCR para cancelación, void, refund, reversión, compensación o corrección;
+- `event_id` propio por emisión concreta;
+- `correlation_id` para el caso;
+- `causation_id` hacia el hecho inmediato;
+- referencias al evento, efecto y receipt originales.
+
+No se reutiliza el `event_id` de la venta para representar el refund, retorno o reversión.
+
+---
+
+#### 28. Estados del plan
+
+Se preservan los outcomes de `INT-APP-006` aplicables:
+
+| Outcome                  | Uso                                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `NOT_REQUIRED`           | se demostró que no existe efecto que tratar                                                              |
+| `ELIGIBILITY_REJECTED`   | acción, autoridad, ventana o clasificación no permiten compensar                                         |
+| `PLANNED`                | plan autorizado sin pasos confirmados                                                                    |
+| `IN_PROGRESS`            | al menos un paso inició                                                                                  |
+| `PARTIALLY_APPLIED`      | existen pasos confirmados y otros obligatorios pendientes o fallidos                                     |
+| `COMPLETED`              | pasos obligatorios y verificaciones terminaron y los residuales aceptados tienen propietario y autoridad |
+| `SUPERSEDED_BY_NEW_PLAN` | otra versión o plan sucesor asumió el tratamiento                                                        |
+| `BLOCKED_IRREVERSIBLE`   | un efecto no admite reversión literal y requiere residual, mitigación o tratamiento autorizado           |
+
+`COMPLETED` no equivale a “se recibió la devolución”.
+
+---
+
+#### 29. Residuales obligatorios
+
+Cuando un plan no puede restituir literalmente todos los efectos, conserva:
+
+- pasos confirmados;
+- pasos pendientes;
+- pasos fallidos;
+- pasos imposibles o irreversibles;
+- cantidades o importes expuestos;
+- recursos afectados;
+- propietario;
+- fecha;
+- riesgo;
+- control;
+- condición de conciliación;
+- autoridad que acepta el residual.
+
+Un residual sin propietario impide cerrar el plan.
+
+---
+
+#### 30. Dependencias entre pasos
+
+No existe un orden técnico universal.
+
+El plan declara dependencias cuando una propietaria necesita un hecho previo.
+
+Ejemplos de relación permitida:
+
+- un refund puede requerir que la decisión comercial esté autorizada;
+- un retorno NEXO puede requerir recepción física y condición comprobada;
+- un ajuste NUMERA puede requerir monto y documento comercial suficientes;
+- una reversión PASS puede requerir identificar la acumulación original;
+- una acción fiscal puede requerir documento original y causal válida.
+
+Una dependencia no convierte a PULSO en propietaria del efecto dependiente.
+
+---
+
+#### 31. Fallo parcial
+
+Si un refund queda confirmado pero NEXO o PASS fallan después:
+
+```text
+REFUND CONFIRMADO
++ PASO NEXO PENDIENTE
++ PASO PASS PENDIENTE
+=
+PARTIALLY_APPLIED
+```
+
+No:
+
+```text
+REPETIR REFUND PARA REINTENTAR TODO
+```
+
+Cada paso conserva su resultado y retry independiente.
+
+---
+
+#### 32. Efectos irreversibles
+
+Si un hecho no puede deshacerse literalmente:
+
+- no se marca como inexistente;
+- no se elimina de auditoría;
+- no se modifica su timestamp original;
+- no se falsifica un inverso técnico;
+- se registra mitigación, corrección, obligación compensatoria o residual;
+- la autoridad propietaria define el cierre permitido.
+
+La venta original y su evidencia permanecen como hechos históricos.
+
+---
+
+#### 33. Auditoría mínima
+
+La trazabilidad debe permitir reconstruir:
+
+```text
+VENTA ORIGINAL
+→ EVENTO ORIGINAL
+→ EFECTOS ORIGINALES
+→ SOLICITUD DE CAMBIO
+→ ACCIÓN CCR
+→ PLAN Y VERSIÓN
+→ PASOS POR PROPIETARIA
+→ INTENTOS
+→ RESULTADOS
+→ RESIDUALES
+→ CIERRE / CONCILIACIÓN
+```
+
+Debe conservarse, cuando aplique:
+
+- `compensation_plan_id`;
+- versión;
+- acción CCR;
+- `original_effect_ref`;
+- clasificación de reversibilidad;
+- `compensation_step_id`;
+- propietaria;
+- autorización;
+- referencia de idempotencia;
+- intentos;
+- verificación;
+- evidencia;
+- actor;
+- timestamps;
+- error y residual.
+
+---
+
+#### 34. Implementación física observada en la transición
+
+La implementación PULSO observada continúa utilizando `makos_excel`.
+
+El parser actual reconoce una columna `DEVOLUCIONES` y conserva `return_amount` por fila agregada de producto junto con cantidad, subtotal, impuestos y descuentos.
+
+Esa evidencia permite afirmar:
+
+```text
+EXISTE IMPORTE AGREGADO DE DEVOLUCIONES
+```
+
+No permite afirmar:
+
+```text
+EXISTE UNA DEVOLUCIÓN CANÓNICA INDIVIDUAL
+```
+
+porque la fila agregada no demuestra por sí sola:
+
+- venta externa individual;
+- línea externa individual;
+- cliente;
+- pago original;
+- refund;
+- movimiento NEXO original;
+- acumulación PASS original;
+- hecho NUMERA original;
+- documento fiscal afectado;
+- identidad de una devolución;
+- parcialidad por venta;
+- receipts de efectos.
+
+Por tanto, el campo agregado se conserva como señal o evidencia de conciliación y no como comando automático de compensación.
+
+---
+
+#### 35. Límite del posting legacy de inventario
+
+La migración física vigente de PULSO contiene un flujo de posting diario hacia inventario basado en filas agregadas y una tabla de postings por fila, producto, ubicación y tipo.
+
+Ese flujo no materializa el contrato compensatorio objetivo de esta tarea porque el contrato objetivo requiere:
+
+- venta y línea originales;
+- efecto NEXO original confirmado;
+- receipt;
+- acción CCR;
+- plan y paso;
+- cantidad compensable;
+- resultado idempotente;
+- grupo compensatorio append-only.
+
+La existencia del flujo legacy no autoriza a crear un retorno físico con `return_amount`.
+
+Esta tarea no modifica la migración.
+
+---
+
+#### 36. Binding real de Makos
+
+`INT-POS-021` deberá demostrar, sin efectos internos, si la evidencia real del POS permite resolver para una muestra de anulación o devolución:
+
+- venta original;
+- línea original;
+- identificador del hecho posterior;
+- tipo real de acción;
+- timestamp;
+- versión;
+- cantidad;
+- importe;
+- pago y referencia;
+- documento fiscal;
+- producto;
+- cliente cuando aplique;
+- relación con el evento PULSO;
+- efectos originales esperados;
+- partialidad.
+
+Si Makos no expone una identidad suficiente, el adaptador no fabricará una compensación individual a partir de agregados.
+
+---
+
+#### 37. Piloto con efectos
+
+`INT-POS-022` solo podrá habilitar compensaciones cuando demuestre, como mínimo:
+
+1. una devolución individual no borra la venta;
+2. un efecto inexistente produce `NOT_REQUIRED`;
+3. un efecto incierto se reconcilia antes de compensar;
+4. un refund repetido no devuelve dinero dos veces;
+5. un retorno físico repetido no ingresa stock dos veces;
+6. una reversión PASS repetida no resta puntos dos veces;
+7. un ajuste NUMERA repetido no crea dos efectos;
+8. un refund sin retorno físico no crea stock;
+9. un retorno físico no se vuelve automáticamente vendible;
+10. una devolución parcial conserva residual;
+11. el plan puede quedar `PARTIALLY_APPLIED`;
+12. cada paso recupera su propio receipt;
+13. no hay escrituras cruzadas;
+14. la conciliación detecta el residual.
+
+---
+
+#### 38. Transición futura hacia PULSO
+
+Durante la transición:
+
+```text
+MAKOS
+→ ADAPTADOR
+→ PULSO
+→ HECHO COMERCIAL
+→ PLAN DE COMPENSACIÓN
+→ PROPIETARIAS
+```
+
+Después del corte:
+
+```text
+PULSO
+→ HECHO COMERCIAL
+→ MISMO PLAN DE COMPENSACIÓN
+→ PROPIETARIAS
+```
+
+Cambiar la fuente de la venta no cambia:
+
+- las acciones CCR;
+- la política de compensación;
+- la propiedad de NEXO;
+- la propiedad de NUMERA;
+- la propiedad de PASS;
+- el contrato de refund;
+- la regla de no borrar historia.
+
+---
+
+#### 39. Carryover obligatorio
+
+| Pendiente material                                     | Tarea propietaria | Condición de salida                                                                      |
+| ------------------------------------------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
+| conciliación diaria de venta, efectos y compensaciones | `INT-POS-020`     | detecta efecto faltante, exceso, residual, duplicado y diferencia por propietaria        |
+| demostración del binding Makos                         | `INT-POS-021`     | identifica venta, línea, acción y alcance reales sin efectos internos                    |
+| piloto de compensación                                 | `INT-POS-022`     | demuestra idempotencia, partialidad, resultado desconocido y no sobrecompensación        |
+| corte de fuente                                        | `INT-POS-023`     | Makos deja de originar ventas nuevas sin cambiar la semántica de compensación            |
+| efecto físico permanente                               | `INT-SALES-003`   | NEXO materializa el contrato de salida y sus compensaciones bajo su frontera propietaria |
+| efecto económico permanente                            | `INT-SALES-004`   | NUMERA consume la venta y conserva tratamiento correlacionado de efectos sucesores       |
+| acumulación PASS permanente                            | `INT-SALES-005`   | PASS conserva ledger, acumulación y reversión correlacionables                           |
+| redención PASS permanente                              | `INT-SALES-006`   | redención usa su propia identidad y no se deduce de una devolución                       |
+| control transversal contra duplicados                  | `INT-SALES-007`   | retries de ventas y efectos no generan duplicados                                        |
+| conciliación de convivencia                            | `INT-SALES-008`   | efectos de POS externo y PULSO convergen sin doble tratamiento                           |
+
+Ningún pendiente material queda sin tarea propietaria y condición de salida.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para la transición POS externo → PULSO los comportamientos ya protegidos por el registro vigente: separación de cancelación, anulación, devolución, refund y compensación; conservación de la historia; efectos propietarios exactamente una vez; compensaciones correlacionadas al original; ledger físico append-only; hechos económicos no destructivos; reversión de fidelización mediante ledger; idempotencia, retry, resultado desconocido, partialidad y conciliación. No introduce una obligación verificable nueva fuera de esos contratos aprobados.
+
+---
+
+#### 41. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado recuperable, concurrencia y resultado desconocido;
+- `TREQ-INTEGRATION-011`, para movimientos NEXO de venta, anulación o devolución exactamente una vez y compensación vinculada al original;
+- `TREQ-INTEGRATION-014`, para efectos aplicables de venta, anulación o devolución exactamente una vez en NEXO, PASS y NUMERA;
+- `TREQ-INTEGRATION-015`, para compensaciones exactamente una vez y conciliación de efectos;
+- `TREQ-INTEGRATION-017`, para hechos económicos, reversos, periodos y conciliación NUMERA;
+- `TREQ-INTEGRATION-151`, para retry crítico de inventario, pago y puntos;
+- `TREQ-INTEGRATION-155`, para replay sin reactivar efectos sensibles;
+- `TREQ-INTEGRATION-156`, para claim concurrente y lease sin asumir inexistencia de efecto;
+- `TREQ-PULSO-001`, para ciclo E2E con anulación o reversión;
+- `TREQ-PULSO-005`, para modificación o cancelación preservando original y efectos emitidos;
+- `TREQ-PULSO-006`, para semánticas separadas de cancelación, anulación, devolución, reembolso y compensación;
+- `TREQ-NEXO-011`, para movimientos y proyecciones reconciliables con compensación verificable;
+- `TREQ-NEXO-186`, para grupo compensatorio append-only enlazado al original;
+- `TREQ-NEXO-200`, para frontera antes/después del posting y reversa sin update/delete;
+- `TREQ-NEXO-228`, para saldo compensable y grupo compensatorio de ajustes;
+- `TREQ-NUMERA-001`, para correcciones con historia;
+- `TREQ-NUMERA-002`, para hechos económicos y acciones compensatorias no destructivas;
+- `TREQ-PASS-008`, para reversión de puntos mediante contrato de servidor atómico e idempotente;
+- `TREQ-PASS-010`, para ledger inmutable, evento origen, regla, versión y saldo derivado;
+- `TREQ-PASS-011`, para mantener devolución, refund, compensación, cortesía, cupón y puntos como resultados distintos.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia.
+
+---
+
+#### 42. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-POS-018` como tarea anterior;
+2. mantiene `INT-POS-020` como única tarea siguiente;
+3. reutiliza `ENTERPRISE-EVENT-COMPENSATION-POLICY-001@1.0.0`;
+4. crea cero definiciones normales de evento;
+5. reutiliza `VPROC-0038.CCR-003`;
+6. reutiliza `VPROC-0039.CCR-003`;
+7. reutiliza `VPROC-0042.CCR-003`;
+8. reutiliza `VPROC-0043.CCR-003`;
+9. reutiliza `VPROC-0045.CCR-003`;
+10. separa `CANCEL`, `VOID`, `COMPENSATE`, `RETURN`, `REFUND`, `REVERSE` y `CORRECT`;
+11. impide borrar venta o línea originales;
+12. impide borrar pago original;
+13. impide borrar movimiento NEXO original;
+14. impide borrar hecho NUMERA original;
+15. impide borrar acumulación PASS original;
+16. exige confirmar un efecto antes de compensarlo;
+17. envía un resultado incierto a conciliación;
+18. produce `NOT_REQUIRED` cuando el efecto no existió;
+19. impide escrituras cruzadas;
+20. asigna cada paso a su propietaria;
+21. conserva identidad y huella por paso;
+22. hace retry recuperable;
+23. convierte reuse incompatible en conflicto;
+24. soporta `PARTIALLY_APPLIED`;
+25. conserva residuales con propietario;
+26. impide cierre completo con residual huérfano;
+27. no impone orden universal entre dominios;
+28. impide que refund cree stock;
+29. impide que retorno físico cree refund automáticamente;
+30. exige aceptación física para el retorno NEXO;
+31. conserva condición y cuarentena física;
+32. crea grupo compensatorio NEXO en vez de editar el original;
+33. limita compensación física al residual original;
+34. crea refund como transacción nueva;
+35. limita refund al residual confirmado;
+36. conserva periodos y hechos NUMERA;
+37. impide reapertura silenciosa de periodos;
+38. crea reversión PASS como movimiento de ledger;
+39. limita reversión PASS al residual original;
+40. no revierte puntos cuando nunca hubo acumulación;
+41. mantiene redención separada;
+42. conserva fiscalidad bajo su autoridad propietaria;
+43. soporta devolución parcial;
+44. impide ejecutar dos veces el mismo fragmento;
+45. conserva venta y línea como anclas;
+46. no reparte `return_amount` agregado entre ventas por inferencia;
+47. no usa una línea en cuarentena para inventar una reversa;
+48. conserva causalidad de eventos;
+49. diagnostica `makos_excel` como evidencia agregada insuficiente para compensación individual;
+50. diagnostica el posting legacy sin canonizarlo como retorno;
+51. asigna conciliación diaria a `INT-POS-020`;
+52. asigna binding real a `INT-POS-021`;
+53. asigna piloto con efectos a `INT-POS-022`;
+54. mantiene `INT-SALES-003` a `INT-SALES-008` como handoff permanente aplicable;
+55. genera cero cambios `TREQ-*`;
+56. no genera una copia del registro canónico de requisitos;
+57. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 43. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-020 — Definir conciliación diaria entre POS y efectos internos`
+
+
 ### [ ] INT-POS-020 — Definir conciliación diaria entre POS y efectos internos
 ### [ ] INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
 ### [ ] INT-POS-022 — Diseñar piloto controlado con efectos habilitados
