@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **776** |
+| Tareas aprobadas | **777** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **818** |
+| Tareas no iniciadas | **817** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.68% (776/1594)** |
+| Porcentaje de completamiento | **48.75% (777/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-015 — Definir emisión del evento canónico de venta validada** |
-| Tarea actual | **INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez** |
+| Última tarea aprobada | **INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez** |
+| Tarea actual | **INT-POS-017 — Definir evento económico para NUMERA exactamente una vez** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-017 — Definir evento económico para NUMERA exactamente una vez** |
+| Siguiente tarea | **INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 60 de 83 aprobadas; INT-POS-016 pendiente** |
+| Progreso del bloque | **BLOQUE X: 61 de 83 aprobadas; INT-POS-017 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-015` — Definir emisión del evento canónico de venta validada |
-| Tarea actual | `INT-POS-016` — Definir salida de inventario en NEXO exactamente una vez — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-017` — Definir evento económico para NUMERA exactamente una vez |
+| Última aprobada | `INT-POS-016` — Definir salida de inventario en NEXO exactamente una vez |
+| Tarea actual | `INT-POS-017` — Definir evento económico para NUMERA exactamente una vez — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-018` — Definir evento de fidelización para PASS cuando corresponda |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 60 DE 83 APROBADAS — ACTUAL INT-POS-016** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 61 DE 83 APROBADAS — ACTUAL INT-POS-017** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-015 — Definir emisión del evento canónico de venta validada
-        ↓
-TAREA ACTUAL
 INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 60 de 83 tareas aprobadas
+BLOQUE X — 61 de 83 tareas aprobadas
 ```
