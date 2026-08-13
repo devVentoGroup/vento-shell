@@ -3678,7 +3678,7 @@ En particular:
 ### ✅ INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
 
 **Estado:** APROBADA  
-**Tarea anterior dentro del flujo integral:** `INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado` — NO INICIADA
+**Tarea anterior dentro del flujo integral:** `INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado` — APROBADA
 **Tarea siguiente dentro del flujo integral:** `INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente` — NO INICIADA
 **Tipo de tarea:** documental; definición contractual, funcional, cuantitativa, de estados, integración, excepciones, idempotencia, conciliación y handoff para vincular faltantes de remisiones NEXO con planificación y ejecución productiva FOGO  
 **Repositorio propietario:** `vento-shell`  
@@ -4349,16 +4349,16 @@ La tarea se considera documentalmente completa cuando:
 
 ---
 
-#### 25. Continuidad integral rectificada
+#### 25. Continuidad integral vigente
 
 ```text
-PREDECESORA CANÓNICA PENDIENTE
+PREDECESORA CANÓNICA APROBADA
 INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
         ↓
-EVIDENCIA DOCUMENTAL YA APROBADA
+ÚLTIMA TAREA CANÓNICA APROBADA
 INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
         ↓
-SIGUIENTE TAREA DEL FLUJO INTEGRAL
+SIGUIENTE TAREA RESERVADA — NO INICIADA
 INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente
 ```
 

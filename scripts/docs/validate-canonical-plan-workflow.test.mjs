@@ -65,3 +65,19 @@ test('INT-PROD conserva decidir, ejecutar y verificar sin dependencia circular',
   const verified = task.indexOf('`VPROC-0035.EVT-006` — disposición de calidad verificada');
   assert.ok(decided >= 0 && decided < pending && pending < verified);
 });
+
+test('INT-PROD-005 conserva su predecesora aprobada y reserva INT-POS-001', () => {
+  const source = fs.readFileSync(productionIntegrationPath, 'utf8');
+  const start = source.indexOf('### ✅ INT-PROD-005');
+  assert.ok(start >= 0, 'no se pudo aislar INT-PROD-005');
+  const task = source.slice(start);
+
+  assert.match(
+    task,
+    /Tarea anterior dentro del flujo integral[^\n]+INT-PROD-004[^\n]+APROBADA/u,
+  );
+  assert.doesNotMatch(task, /INT-PROD-004[^\n]+NO INICIADA/u);
+  assert.match(task, /PREDECESORA CANÓNICA APROBADA\s+INT-PROD-004/u);
+  assert.match(task, /ÚLTIMA TAREA CANÓNICA APROBADA\s+INT-PROD-005/u);
+  assert.match(task, /SIGUIENTE TAREA RESERVADA — NO INICIADA\s+INT-POS-001/u);
+});
