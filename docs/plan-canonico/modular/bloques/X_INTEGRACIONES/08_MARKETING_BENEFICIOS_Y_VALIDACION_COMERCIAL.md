@@ -1876,4 +1876,1150 @@ SIGUIENTE TAREA RESERVADA
 `INT-MKT-003 — Definir validación comercial desde PULSO`
 
 
-### [ ] INT-MKT-003 — Definir validación comercial desde PULSO
+### ✅ INT-MKT-003 — Definir validación comercial desde PULSO
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-MKT-002 — Definir beneficios publicados en PASS`
+**Tarea siguiente:** `QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes`
+**Tipo de tarea:** documental; definición normativa permanente del contrato mediante el cual PULSO valida, dentro de una operación comercial concreta, si una promoción, cupón, beneficio, recompensa o redención puede producir un efecto sobre pedido o venta, preservando a PASS como propietaria de fidelización, a AURA como propietaria objetivo de intención de marketing cuando su continuidad sea autorizada, a NUMERA como autoridad económica y a PULSO como propietaria de la transacción comercial, sin crear maestros paralelos ni asumir que visibilidad, campaña o elegibilidad equivalen a descuento aplicado o venta
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md`
+**Proceso de fidelización reutilizado:** `VPROC-0045 — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados`
+**Proceso relacionado de marketing:** `VPROC-0056 — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro`
+**Aplicación propietaria de la operación comercial:** `PULSO`
+**Aplicación propietaria de fidelización:** `PASS`
+**Aplicación objetivo de marketing:** `AURA`, sujeta a `AURA-AUD-001` a `AURA-AUD-012`
+**Autoridad económica:** `NUMERA`
+**Línea base documental:** `vento-shell@4a72fc81cc2d3d67d3e19bc6d7fa3a15a94d0c05`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la validación comercial que PULSO debe realizar antes de materializar un efecto promocional o de fidelización dentro de un pedido o una venta.
+
+La regla raíz es:
+
+```text
+BENEFICIO O PROMOCIÓN CONOCIDOS
+≠
+CONDICIONES COMERCIALES VÁLIDAS
+≠
+EFECTO APLICABLE
+≠
+EFECTO APLICADO
+≠
+VENTA CERRADA
+```
+
+Para fidelización se conserva además:
+
+```text
+BENEFICIO VISIBLE EN PASS
+≠
+ELEGIBILIDAD CONFIRMADA
+≠
+REDENCIÓN VÁLIDA
+≠
+EFECTO COMERCIAL APLICABLE
+≠
+EFECTO COMERCIAL APLICADO
+```
+
+Y para marketing:
+
+```text
+CAMPAÑA O INTENCIÓN AURA
+≠
+REGLA TRANSACCIONAL
+≠
+DESCUENTO O BENEFICIO APLICADO EN PULSO
+```
+
+PULSO valida la transacción que administra. No adquiere por ello propiedad sobre el beneficio PASS, la campaña AURA, el ledger de fidelización, la verdad económica de NUMERA ni los maestros de producto, inventario o capacidad.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-MKT-003` congela las siguientes decisiones:
+
+1. PULSO es la aplicación propietaria de la validación comercial dentro del pedido o la venta.
+2. Validar comercialmente no significa crear ni editar la campaña que originó una intención promocional.
+3. Validar comercialmente no significa crear ni editar el beneficio de fidelización.
+4. PULSO no mantendrá un saldo, ledger, consentimiento, recompensa o redención paralelo a PASS.
+5. PULSO no mantendrá una campaña, pieza, calendario o atribución paralelos a AURA.
+6. Una campaña podrá aportar correlación o intención, pero nunca sustituirá la regla que debe validar PULSO.
+7. Un beneficio visible en PASS podrá ser presentado al cliente sin que PULSO lo considere automáticamente aplicable.
+8. Una elegibilidad informada por PASS no sustituye las condiciones comerciales de la venta.
+9. Una redención válida no sustituye las comprobaciones de pedido, línea, precio, sede, canal, modalidad, actor y estado que correspondan.
+10. Una promoción podrá ser válida documentalmente y resultar no aplicable a una transacción concreta.
+11. Una venta válida podrá existir sin campaña, beneficio o cliente identificado cuando el proceso comercial aprobado lo permita.
+12. La denegación de un beneficio no invalida automáticamente una venta que pueda continuar legítimamente sin ese efecto.
+13. PULSO solo aplicará efectos comerciales mediante acciones de servidor autorizadas y auditables.
+14. Ningún parámetro de interfaz, URL, código visible, texto promocional o estado local podrá otorgar autoridad comercial por sí solo.
+15. El acceso general a PULSO no concede automáticamente autoridad para descuento, acumulación, redención, anulación o cambio de precio.
+16. La sede enviada por el cliente no amplía el territorio autorizado del actor.
+17. En terminal compartida deberá conservarse la identidad del trabajador real que ejecuta la acción sensible.
+18. La operación deberá conservar una referencia estable e idempotente para impedir efectos duplicados.
+19. El mismo hecho comercial reintentado no podrá aplicar dos veces el mismo descuento, beneficio, redención o movimiento de puntos.
+20. El mismo identificador de operación con contenido materialmente distinto deberá producir conflicto, no una segunda aplicación silenciosa.
+21. Una respuesta perdida o un resultado desconocido deberá reconciliarse antes de repetir un efecto sensible.
+22. PULSO no mostrará un efecto como aplicado antes de recibir confirmación válida del servidor propietario correspondiente.
+23. El descuento, beneficio, cupón o recompensa aplicado deberá quedar vinculado con la regla y versión utilizadas para reconstruir la transacción.
+24. El snapshot comercial de la línea conservará el efecto realmente aplicado sin depender de cambios futuros de precio, beneficio o campaña.
+25. Cambiar una promoción, beneficio o regla después de la venta no reescribirá la venta histórica.
+26. Anulación, devolución, reembolso, compensación y reversión de fidelización permanecerán efectos distintos y coordinados.
+27. Una reversión comercial no borrará la historia del beneficio o redención original.
+28. PASS seguirá siendo la autoridad para acumulación, redención y ledger.
+29. NUMERA seguirá siendo la autoridad para margen, presupuesto, costo y resultado económico.
+30. NEXO y FOGO seguirán aportando, cuando corresponda, hechos autorizados de producto, disponibilidad o capacidad sin transferir su propiedad a PULSO.
+31. AURA seguirá diferida hasta superar su puerta de continuidad; `INT-MKT-003` no depende de que AURA esté operativa para validar beneficios PASS o reglas comerciales ya autorizadas.
+32. Cuando AURA exista operativamente, su referencia de campaña será correlación y atribución, no autoridad para aplicar el efecto.
+33. No se crean nombres físicos de tablas, columnas, funciones, RPC, endpoints, eventos, colas, triggers o jobs.
+34. No se crean ni modifican requisitos `TREQ-*`.
+
+---
+
+#### 3. Base canónica consumida
+
+Esta tarea consume sin reabrir:
+
+- `INT-MKT-001`, que separa campaña, contenido, publicación, promoción, beneficio y regla transaccional;
+- `INT-MKT-002`, que mantiene el beneficio y su proyección bajo PASS y reserva a PULSO la validación del efecto comercial;
+- `CAP-SCOPE-009`, que mantiene a PULSO como propietaria de pedido, venta, cobro, caja y ejecución comercial;
+- `CAP-SCOPE-010`, especialmente `CAP-10.07 — Gestionar fidelización y beneficios`;
+- `CAP-SCOPE-014`, especialmente `CAP-14.06 — Gestionar promociones y cupones`;
+- `VPROC-0045`, propiedad de PASS con PULSO como consumidora que solicita efectos durante la venta;
+- `VPROC-0056`, propiedad objetivo de AURA con PULSO como consumidora que aplica promociones en la venta;
+- `GAP-OWN-006`, que impide a PULSO mantener saldo, consentimiento o identidad de fidelización paralelos;
+- `PULSO-AUTH-006` a `PULSO-AUTH-013` y `PULSO-AUTH-016`;
+- `PULSO-UX-007` a `PULSO-UX-014` y `PULSO-UX-016` a `PULSO-UX-019`;
+- `PASS-INT-001` a `PASS-INT-005`;
+- `PASS-QA-001` y `PASS-QA-002`;
+- `AURA-DOM-006` y `AURA-INT-002`, que permanecen sujetas a la puerta de AURA;
+- la cobertura vigente de `TREQ-PULSO-004`, `TREQ-PULSO-005`, `TREQ-PULSO-006`, `TREQ-PASS-008`, `TREQ-PASS-010`, `TREQ-PASS-022`, `TREQ-PASS-025`, `TREQ-PASS-026`, `TREQ-PASS-027`, `TREQ-PASS-029`, `TREQ-PASS-032`, `TREQ-AURA-003`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-006`, `TREQ-INTEGRATION-014`, `TREQ-INTEGRATION-015` y `TREQ-INTEGRATION-019`.
+
+Ninguna de estas fuentes cambia de identidad o propietario por esta tarea.
+
+---
+
+#### 4. Definición normativa de validación comercial
+
+La validación comercial es la decisión que PULSO debe obtener o producir, dentro de una operación concreta, para determinar si una regla promocional o de fidelización puede modificar legítimamente el resultado comercial de un pedido o una venta.
+
+Debe responder, según aplicabilidad:
+
+```text
+¿QUÉ REGLA SE INTENTA APLICAR?
+¿A QUÉ PEDIDO, VENTA O LÍNEA?
+¿BAJO QUÉ VERSIÓN?
+¿PARA QUÉ SEDE, CANAL Y MODALIDAD?
+¿PARA QUÉ CLIENTE O CONSUMIDOR FINAL?
+¿QUIÉN EJECUTA LA ACCIÓN?
+¿TIENE AUTORIDAD?
+¿EL ESTADO ACTUAL PERMITE EL EFECTO?
+¿SE CUMPLEN LAS CONDICIONES DE LA REGLA?
+¿EL EFECTO YA FUE APLICADO?
+¿EL RESULTADO QUEDÓ CONFIRMADO?
+```
+
+La validación no crea la regla. Comprueba su aplicabilidad a la transacción y conserva evidencia del resultado.
+
+---
+
+#### 5. Cadena canónica de responsabilidades
+
+La cadena queda definida así:
+
+```text
+AURA
+→ intención promocional y correlación de campaña, cuando corresponda
+
+PASS
+→ identidad, consentimiento, beneficio, regla de fidelización,
+  elegibilidad y ledger
+
+PULSO
+→ pedido, venta, condiciones comerciales,
+  validación de aplicabilidad y efecto aplicado
+
+NUMERA
+→ guardas económicas y resultado económico
+
+NEXO / FOGO
+→ hechos autorizados de producto, disponibilidad o capacidad
+```
+
+Ninguna aplicación podrá resolver por sí sola las responsabilidades de las demás.
+
+---
+
+#### 6. Propiedad empresarial
+
+| Materia                                   | Propietaria o autoridad         | Frontera obligatoria                                           |
+| ----------------------------------------- | ------------------------------- | -------------------------------------------------------------- |
+| pedido, línea, venta y snapshot comercial | `PULSO`                         | no copia el maestro de fidelización ni de campaña              |
+| validación de efecto sobre la transacción | `PULSO`                         | valida el contexto comercial y consume decisiones propietarias |
+| identidad, consentimiento y fidelización  | `PASS`                          | no modifica pedido, precio o caja por sí sola                  |
+| beneficio, recompensa, redención y ledger | `PASS`                          | PULSO solicita y consume el resultado autorizado               |
+| intención promocional y campaña           | `AURA`, cuando supere su puerta | no aplica directamente descuento ni redención                  |
+| margen, presupuesto y resultado económico | `NUMERA`                        | PULSO consume guardas cuando la regla las exija                |
+| producto y atributos maestros             | `NEXO`                          | PULSO consume proyecciones autorizadas                         |
+| inventario y disponibilidad física        | `NEXO`                          | no se convierte en regla comercial editable                    |
+| capacidad productiva                      | `FOGO`                          | no decide la promoción ni el descuento                         |
+| publicación o métrica externa             | canal externo                   | no concede autoridad transaccional                             |
+
+Ninguna fila autoriza escritura cruzada.
+
+---
+
+#### 7. Separación de conceptos comerciales
+
+Se conserva obligatoriamente:
+
+```text
+PRECIO BASE
+≠
+PRECIO PUBLICADO
+≠
+PROMOCIÓN
+≠
+CONVENIO
+≠
+BENEFICIO
+≠
+CUPÓN
+≠
+REDENCIÓN
+≠
+DESCUENTO AUTORIZADO
+≠
+PRECIO APLICADO
+≠
+TOTAL DE VENTA
+```
+
+También:
+
+```text
+DESCUENTO
+≠
+SERVICIO
+≠
+PROPINA
+≠
+RECARGO
+≠
+COMPENSACIÓN
+≠
+REEMBOLSO
+```
+
+PULSO deberá mantener estas diferencias al calcular y conservar el resultado comercial.
+
+---
+
+#### 8. Punto de validación dentro de la operación
+
+La validación comercial debe ocurrir antes de materializar el efecto que modifica el pedido o la venta.
+
+La secuencia conceptual es:
+
+```text
+PEDIDO O VENTA EN ESTADO APLICABLE
+        ↓
+REGLA O BENEFICIO REFERENCIADO
+        ↓
+RESOLUCIÓN DE FUENTES PROPIETARIAS
+        ↓
+VALIDACIÓN DE AUTORIDAD Y CONTEXTO
+        ↓
+VALIDACIÓN DE CONDICIONES
+        ↓
+CONFIRMACIÓN DEL RESULTADO PROPIETARIO
+        ↓
+APLICACIÓN DEL EFECTO COMERCIAL EN PULSO
+        ↓
+SNAPSHOT Y EVIDENCIA
+```
+
+La interfaz no podrá saltar directamente desde una pieza, código o beneficio visible hasta el descuento aplicado.
+
+---
+
+#### 9. Identidad de la operación
+
+Toda validación sensible deberá vincularse con una operación empresarial estable.
+
+Según el caso, la correlación deberá permitir reconstruir:
+
+- pedido o venta;
+- revisión del pedido;
+- línea o conjunto de líneas afectadas;
+- sede;
+- canal;
+- modalidad;
+- terminal o dispositivo cuando corresponda;
+- actor efectivo;
+- cliente cuando la regla lo requiera;
+- regla, beneficio, cupón, recompensa o redención;
+- versión utilizada;
+- efecto solicitado;
+- resultado confirmado.
+
+No se define aquí la forma física de esos identificadores. Su materialización queda distribuida exclusivamente entre las tareas exactas enumeradas en la sección 38.
+
+---
+
+#### 10. Autoridad laboral y sesión
+
+Antes de una acción sensible, PULSO deberá revalidar la autoridad efectiva.
+
+Se preserva:
+
+```text
+ACCESO A PULSO
+≠
+PERMISO PARA DESCUENTO
+≠
+PERMISO PARA ACUMULACIÓN
+≠
+PERMISO PARA REDENCIÓN
+≠
+PERMISO PARA ANULACIÓN
+```
+
+La decisión deberá considerar, según el contrato de autorización vigente:
+
+- principal autenticado;
+- actor humano efectivo;
+- permiso exacto;
+- sede efectiva;
+- turno o contexto operativo cuando aplique;
+- dispositivo compartido cuando aplique;
+- recurso y estado actual;
+- firma del trabajador real para acciones que la exijan.
+
+Una sesión administrativa o un permiso general no podrá transferir autoridad a otro actor.
+
+---
+
+#### 11. Territorio, sede y canal
+
+La sede y el canal forman parte de la validación cuando la regla los utilice.
+
+Invariantes:
+
+1. `site_id` enviado por cliente no amplía territorio;
+2. una regla válida en una sede no se asume válida en otra;
+3. una regla válida para un canal no se asume válida para todos;
+4. una regla válida para salón no se asume válida para recogida, domicilio o canal externo;
+5. una campaña multicanal no elimina restricciones particulares de cada oferta o beneficio;
+6. una redención de otra sede se rechaza cuando el contrato PASS la limite territorialmente.
+
+---
+
+#### 12. Cliente identificado y consumidor final
+
+La validación deberá respetar la decisión comercial de que una venta puede existir sin cliente identificado cuando el proceso lo permita.
+
+Por tanto:
+
+```text
+VENTA VÁLIDA
+≠
+CLIENTE PASS OBLIGATORIO
+```
+
+Pero también:
+
+```text
+BENEFICIO QUE REQUIERE IDENTIDAD
+→
+IDENTIDAD PASS RESUELTA Y VÁLIDA
+```
+
+PULSO no creará una cuenta ficticia para satisfacer una regla. Si el efecto exige identidad, consentimiento, saldo o relación PASS y estos no pueden resolverse, el efecto no se aplicará por inferencia.
+
+---
+
+#### 13. Beneficio visible y elegibilidad
+
+`INT-MKT-002` conserva:
+
+```text
+VISIBLE
+≠
+ELEGIBLE
+```
+
+`INT-MKT-003` añade la frontera comercial:
+
+```text
+ELEGIBLE EN PASS
+≠
+APLICABLE A ESTA VENTA EN PULSO
+```
+
+PULSO deberá comprobar las condiciones comerciales de la transacción aunque PASS pueda indicar que el beneficio existe o que el cliente satisface condiciones propias de fidelización.
+
+---
+
+#### 14. Regla, versión y vigencia
+
+La validación deberá utilizar una regla identificable y una versión aplicable.
+
+Se conserva:
+
+```text
+REGLA
+→ VERSIÓN
+→ VIGENCIA
+→ CONDICIONES
+→ VALIDACIÓN
+→ EFECTO
+```
+
+Queda prohibido:
+
+- aplicar la versión más reciente a una operación histórica por conveniencia;
+- aceptar una regla vencida porque permanezca visible en caché;
+- modificar retrospectivamente el efecto de una venta por cambiar la regla;
+- usar un texto promocional como sustituto de la regla versionada;
+- asumir que la campaña vigente determina el precio aplicado sin contrato comercial.
+
+---
+
+#### 15. Condiciones mínimas de aplicabilidad
+
+Sin crear nuevos campos físicos ni una taxonomía paralela, PULSO deberá poder evaluar las condiciones que la regla aprobada declare, entre ellas cuando correspondan:
+
+- vigencia temporal;
+- marca;
+- sede;
+- canal;
+- modalidad;
+- cliente o segmento autorizado;
+- producto, categoría, presentación u oferta;
+- cantidades mínimas o máximas;
+- importe o umbral comercial;
+- límites de uso;
+- exclusiones;
+- compatibilidad con otros beneficios o promociones;
+- disponibilidad o capacidad cuando sean condición material;
+- presupuesto o margen cuando exista una guarda económica aprobada;
+- estado del pedido, venta, cupón o redención;
+- permisos y autoridad del actor.
+
+La ausencia de una condición requerida no equivale a aprobación.
+
+---
+
+#### 16. Productos, oferta y precio
+
+PULSO deberá aplicar la validación contra la oferta autorizada y conservar un snapshot suficiente para reconstruir la venta.
+
+La cadena aprobada permanece:
+
+```text
+PRODUCTO / ÍTEM
+→ OFERTA POR SEDE Y CANAL
+→ PRECIO BASE
+→ PRECIO PUBLICADO
+→ PROMOCIÓN O CONVENIO
+→ DESCUENTO AUTORIZADO
+→ SNAPSHOT APLICADO A LA LÍNEA
+```
+
+La regla comercial no podrá:
+
+- convertir un producto inactivo en vendible mediante payload manipulado;
+- sustituir un precio histórico por el actual;
+- usar una oferta de otra sede o canal;
+- confundir descuento con impuesto, servicio, propina o recargo;
+- alterar directamente el maestro de producto.
+
+---
+
+#### 17. Beneficios y recompensas de PASS
+
+Cuando el efecto provenga de PASS:
+
+1. PULSO resolverá la identidad necesaria mediante contrato de servidor;
+2. consumirá la regla, versión y estado autorizados;
+3. no calculará un saldo paralelo;
+4. no insertará movimientos directamente en el ledger;
+5. no marcará una redención como usada mediante una copia local;
+6. no inferirá elegibilidad solo por haber mostrado el beneficio;
+7. no aplicará un efecto si PASS rechaza la operación propietaria correspondiente;
+8. conservará la correlación entre la operación comercial y el resultado PASS.
+
+---
+
+#### 18. Acumulación de puntos
+
+La acumulación es un efecto de fidelización posterior o correlacionado con un hecho comercial elegible; no es un descuento sobre la venta.
+
+PULSO deberá:
+
+- identificar la compra elegible;
+- conservar monto y moneda del hecho que origina la solicitud cuando correspondan;
+- usar la regla vigente autorizada;
+- identificar actor, sede y dispositivo según el contexto;
+- usar una referencia empresarial estable e idempotente;
+- solicitar el movimiento a PASS mediante servidor;
+- considerar aplicado el efecto solo cuando PASS confirme el resultado;
+- reutilizar la misma referencia ante reintento del mismo hecho.
+
+PULSO no fijará directamente el saldo final.
+
+---
+
+#### 19. Redención de puntos o recompensa
+
+Cuando una transacción utilice una redención, deberán mantenerse separados:
+
+```text
+SOLICITUD DE REDENCIÓN
+≠
+REDENCIÓN VÁLIDA EN PASS
+≠
+EFECTO COMERCIAL APLICABLE EN PULSO
+≠
+EFECTO APLICADO
+```
+
+La validación deberá respetar, según el contrato PASS vigente:
+
+- código o identidad de redención;
+- cliente;
+- recompensa;
+- sede;
+- estado pendiente aplicable;
+- vigencia;
+- saldo debitado o reservado cuando corresponda;
+- actor efectivo;
+- no utilización previa.
+
+Una redención usada, cancelada, vencida o territorialmente inválida no producirá un efecto comercial nuevo.
+
+---
+
+#### 20. Cupones y promociones
+
+Un cupón o promoción no constituye autoridad por su sola presentación.
+
+Se conserva:
+
+```text
+CÓDIGO O REFERENCIA
+≠
+REGLA VÁLIDA
+≠
+APLICABILIDAD
+≠
+DESCUENTO APLICADO
+```
+
+PULSO deberá resolver la regla autorizada y validar sus condiciones contra la transacción real.
+
+Cuando exista relación con AURA, la referencia de campaña podrá conservarse para atribución, pero no sustituye la regla ni concede un descuento.
+
+---
+
+#### 21. AURA diferida y validación independiente
+
+Mientras AURA permanezca diferida:
+
+- PULSO puede validar reglas comerciales y beneficios PASS que ya pertenezcan a contratos aprobados;
+- no necesita crear una campaña AURA para ejecutar una venta válida;
+- no inventará una campaña para justificar un descuento;
+- no copiará estructuras futuras de AURA;
+- no usará un launcher, placeholder o permiso reservado como fuente de promoción;
+- no ampliará superficies transitorias para llenar el dominio AURA.
+
+La futura apertura de AURA no cambia estas fronteras.
+
+---
+
+#### 22. Correlación de campaña futura
+
+Cuando la puerta de AURA haya sido superada y exista una campaña autorizada, PULSO podrá conservar una correlación para:
+
+- identificar origen promocional;
+- asociar código o referencia autorizada;
+- devolver hechos de venta o redención para medición;
+- permitir atribución posterior con método y confianza.
+
+La correlación no podrá:
+
+- cambiar el precio sin regla válida;
+- crear un beneficio PASS;
+- marcar una redención;
+- modificar el ledger;
+- declarar una venta como incremental;
+- convertir correlación en causalidad.
+
+---
+
+#### 23. Guardas económicas
+
+Cuando una promoción o regla exija guardas económicas, PULSO deberá consumir la decisión o los parámetros autorizados de la fuente correspondiente sin convertirse en propietario de margen, presupuesto o rentabilidad.
+
+Se conserva:
+
+```text
+PRECIO Y EFECTO COMERCIAL
+→ PULSO
+
+MARGEN / PRESUPUESTO / COSTO / RESULTADO ECONÓMICO
+→ NUMERA
+```
+
+La ausencia de una guarda económica obligatoria no se interpreta como autorización.
+
+Un presupuesto de campaña tampoco equivale a permiso automático para aplicar descuentos.
+
+---
+
+#### 24. Guardas físicas y operativas
+
+Cuando la regla dependa de disponibilidad o capacidad, PULSO consumirá hechos autorizados de NEXO o FOGO según corresponda.
+
+Queda prohibido:
+
+- copiar stock a una regla editable de PULSO;
+- asumir que stock mayor que cero garantiza disponibilidad comercial;
+- asumir que stock cero bloquea automáticamente productos preparados o bajo pedido;
+- inventar capacidad productiva desde marketing;
+- permitir que una campaña sustituya una restricción operacional vigente.
+
+---
+
+#### 25. Compatibilidad, exclusiones y acumulación de efectos
+
+PULSO deberá aplicar únicamente la política versionada aprobada sobre compatibilidad entre efectos.
+
+No se asumirá por defecto que:
+
+- dos promociones son acumulables;
+- un cupón se combina con una recompensa;
+- una cortesía se combina con un descuento;
+- una redención puede repetirse sobre la misma operación;
+- un beneficio de campaña puede sumarse a cualquier convenio;
+- un precio manual puede convivir con una promoción.
+
+Cuando la regla no permita resolver la combinación, el sistema deberá fallar cerrado para el efecto en conflicto y conservar la venta sin aplicar silenciosamente un beneficio no validado.
+
+---
+
+#### 26. Precio manual y excepciones
+
+El precio manual, descuento extraordinario, cortesía, compensación o excepción comercial no se tratarán como promoción ordinaria por conveniencia.
+
+Cada acción sensible deberá conservar:
+
+- autoridad correspondiente;
+- motivo;
+- recurso afectado;
+- contexto comercial;
+- valor o efecto;
+- evidencia mínima;
+- relación con la operación original.
+
+La existencia de una campaña no reduce el nivel de autorización exigido por una excepción.
+
+---
+
+#### 27. Idempotencia
+
+La validación y el efecto comercial deberán reutilizar una referencia estable de la operación.
+
+Se conserva:
+
+```text
+MISMA OPERACIÓN
++
+MISMO CONTENIDO MATERIAL
+→
+MISMO RESULTADO
+```
+
+Y:
+
+```text
+MISMO IDENTIFICADOR
++
+CONTENIDO MATERIAL DISTINTO
+→
+CONFLICTO
+```
+
+La referencia no deberá depender únicamente de tiempo, aleatoriedad o estado efímero de interfaz cuando el mismo hecho empresarial pueda reintentarse.
+
+---
+
+#### 28. Concurrencia y doble aplicación
+
+Dos solicitudes concurrentes sobre el mismo beneficio, cupón, redención o descuento no podrán producir dos efectos válidos sobre la misma operación cuando la regla permita solo uno.
+
+Los controles posteriores de implementación deberán impedir, según corresponda:
+
+- doble descuento;
+- doble redención;
+- doble acreditación;
+- doble reserva;
+- doble compensación;
+- doble reversión;
+- dos snapshots incompatibles para la misma revisión de venta.
+
+Esta tarea no selecciona el mecanismo físico de bloqueo o claim. Su materialización corresponde a `QUEUE-ARC-001` a `QUEUE-ARC-010` y a los paquetes que implementen `PASS-INT-001`, `PASS-INT-002`, `PULSO-AUTH-009` y `PULSO-AUTH-010`.
+
+---
+
+#### 29. Respuesta perdida y resultado desconocido
+
+Un timeout o una respuesta perdida no significan automáticamente rechazo.
+
+Cuando exista posibilidad de que el efecto haya ocurrido, PULSO deberá consultar o reconciliar el resultado antes de reenviar una mutación sensible.
+
+La interfaz deberá distinguir, conforme a los contratos ya protegidos:
+
+- error recuperable;
+- duplicado;
+- conflicto;
+- denegación;
+- resultado ya aplicado;
+- resultado todavía desconocido o pendiente de conciliación cuando corresponda.
+
+No se crea una máquina de estados nueva con esta enumeración.
+
+---
+
+#### 30. Confirmación de servidor
+
+La experiencia de PULSO no podrá mostrar como hecho confirmado:
+
+- cliente identificado;
+- puntos otorgados;
+- redención validada;
+- beneficio aplicado;
+- descuento aplicado;
+- reversión completada;
+
+antes de recibir el resultado válido del servidor propietario correspondiente.
+
+Un mensaje local optimista no sustituye la confirmación del efecto.
+
+---
+
+#### 31. Snapshot comercial y reconstrucción
+
+Una vez aplicado el efecto, el pedido o la venta deberá conservar suficiente evidencia para reconstruir el resultado comercial sin consultar reglas futuras.
+
+La reconstrucción deberá poder explicar, según aplicabilidad:
+
+- precio base o publicado relevante;
+- regla o beneficio utilizado;
+- versión;
+- vigencia aplicable;
+- descuento o efecto realmente aplicado;
+- líneas afectadas;
+- actor;
+- sede y canal;
+- referencia PASS o de campaña cuando exista;
+- correlación idempotente;
+- resultado de validación.
+
+La forma física no pertenece al alcance documental de `INT-MKT-003`; su materialización queda distribuida exclusivamente según las tareas exactas de la sección 38.
+
+---
+
+#### 32. Cambios prospectivos
+
+Los cambios de precio, regla, beneficio, promoción o campaña serán prospectivos.
+
+Queda prohibido:
+
+- recalcular una venta histórica con una versión nueva;
+- alterar un descuento aplicado porque cambió una campaña;
+- reabrir una redención usada porque el beneficio fue retirado;
+- borrar la referencia original para mostrar la configuración actual;
+- reconstruir historia desde una proyección mutable sin versión.
+
+---
+
+#### 33. Anulación, devolución, reembolso y reversión
+
+Se mantiene la separación aprobada:
+
+```text
+CANCELACIÓN DE PEDIDO
+≠
+ANULACIÓN DE VENTA
+≠
+DEVOLUCIÓN
+≠
+REEMBOLSO
+≠
+COMPENSACIÓN
+≠
+REVERSIÓN DE FIDELIZACIÓN
+```
+
+Cuando una operación de venta afectada por beneficio o promoción se revierta:
+
+1. PULSO conserva la acción comercial y su motivo;
+2. PASS conserva la reversión o compensación de fidelización que corresponda;
+3. NUMERA conserva el efecto económico aplicable;
+4. NEXO conserva el efecto físico cuando exista;
+5. las aplicaciones se coordinan mediante contratos correlacionados e idempotentes;
+6. la historia original no se borra.
+
+---
+
+#### 34. Venta sin beneficio después de una denegación
+
+Una regla promocional o de fidelización denegada no convierte por sí misma el pedido o venta en inválidos.
+
+Cuando el proceso permita continuar:
+
+```text
+EFECTO DENEGADO
+→
+NO SE APLICA EL BENEFICIO
+→
+LA OPERACIÓN COMERCIAL PUEDE CONTINUAR
+```
+
+siempre que:
+
+- el cliente o actor conozca el resultado cuando corresponda;
+- el total sea recalculado sin el efecto rechazado;
+- no se conserve una apariencia de beneficio aplicado;
+- no se repita silenciosamente la mutación;
+- ninguna otra regla obligatoria quede incumplida.
+
+Esta regla no obliga a continuar una venta que por otra razón deba bloquearse.
+
+---
+
+#### 35. Evidencia mínima exigida a la implementación
+
+Cuando esta capacidad se implemente, deberá poder reconstruirse, según aplicabilidad:
+
+- pedido o venta;
+- revisión;
+- línea afectada;
+- regla, beneficio, cupón, recompensa o redención;
+- versión;
+- actor efectivo;
+- permiso;
+- sede;
+- terminal o dispositivo;
+- cliente cuando aplique;
+- fuente propietaria consultada;
+- condiciones relevantes;
+- referencias económicas u operativas requeridas;
+- referencia de campaña cuando exista;
+- decisión obtenida;
+- motivo de rechazo cuando corresponda;
+- efecto aplicado;
+- clave o referencia idempotente;
+- timestamps;
+- reversión o compensación posterior;
+- evidencia de conciliación ante resultados ambiguos.
+
+La auditoría no concede autoridad ni sustituye las fuentes propietarias. Esta evidencia deberá materializarse junto con las tareas exactas y las condiciones de salida de la sección 38, no mediante una tarea paralela implícita.
+
+---
+
+#### 36. Privacidad y minimización
+
+La validación comercial deberá consumir únicamente los datos de cliente necesarios para decidir el efecto.
+
+PULSO no obtendrá por defecto:
+
+- historial completo de fidelización;
+- documento completo;
+- fecha de nacimiento;
+- contactos no necesarios;
+- segmentos internos ajenos a la regla;
+- notas de servicio;
+- consentimientos no relacionados con la finalidad.
+
+Cuando un dato sea necesario, deberá provenir de una proyección autorizada y conservar su finalidad.
+
+---
+
+#### 37. Dispositivo compartido
+
+En una terminal compartida, una sesión técnica válida no sustituye la identidad del trabajador real para acciones sensibles.
+
+Las acciones de descuento, acumulación, redención, reversión o excepción que requieran firma deberán vincular:
+
+```text
+PRINCIPAL TÉCNICO
++
+ACTOR HUMANO
++
+DISPOSITIVO
++
+SEDE
++
+PERMISO
++
+RECURSO
++
+RESULTADO
+```
+
+La credencial operativa del trabajador permanecerá efímera y no formará parte de la evidencia en texto claro.
+
+---
+
+#### 38. Frontera de implementación posterior
+
+La materialización detallada queda distribuida así:
+
+| Materia                             | Tarea propietaria posterior                    | Condición de salida                                                     |
+| ----------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| permisos de acumulación y redención | `PULSO-AUTH-009`; `PULSO-AUTH-010`             | cada mutación de fidelización queda protegida por capacidad específica  |
+| sede y contexto operativo           | `PULSO-AUTH-011`                               | el efecto no puede ejecutarse fuera del territorio autorizado           |
+| terminal compartida                 | `PULSO-AUTH-012`; `PULSO-AUTH-013`             | principal técnico y trabajador real quedan separados y auditables       |
+| acumulación de puntos               | `PULSO-UX-011`; `PASS-INT-001`                 | venta elegible solicita el movimiento PASS exactamente una vez          |
+| redención                           | `PULSO-UX-012`; `PASS-INT-002`                 | canje se valida y aplica sin doble uso                                  |
+| confirmaciones sensibles            | `PULSO-UX-013`                                 | la interfaz confirma únicamente resultados autorizados                  |
+| actor real                          | `PULSO-UX-014`                                 | la terminal compartida atribuye la acción al trabajador efectivo        |
+| venta con PASS                      | `PULSO-UX-018`                                 | PULSO consume fidelización sin mantener una fuente paralela             |
+| administración de fidelización      | `PASS-INT-003`; `PASS-INT-004`; `PASS-INT-005` | maestros, clientes y separación cliente-trabajador quedan gobernados    |
+| pruebas de acumulación y redención  | `PASS-QA-001`; `PASS-QA-002`; `PULSO-AUTH-016` | los flujos integrales quedan comprobados en sus paquetes autorizados    |
+| promoción y guardas AURA            | `AURA-DOM-006`; `AURA-INT-002`                 | campaña futura consume fuentes internas sin aplicar efectos por sí sola |
+| arquitectura de colas y reintentos  | `QUEUE-ARC-001` a `QUEUE-ARC-010`              | efectos asíncronos y conciliación obtienen infraestructura aprobada     |
+
+No queda un pendiente material sin tarea propietaria y condición de salida.
+
+---
+
+#### 39. Prohibiciones
+
+Queda prohibido:
+
+1. convertir una campaña en autoridad de descuento;
+2. convertir una pieza o publicación en regla transaccional;
+3. convertir un beneficio visible en elegibilidad automática;
+4. convertir elegibilidad PASS en aplicación comercial automática;
+5. aplicar una redención sin confirmación propietaria;
+6. mantener saldo o ledger PASS dentro de PULSO;
+7. mantener campaña AURA dentro de PULSO;
+8. modificar el maestro de producto desde una promoción;
+9. modificar stock desde una validación comercial;
+10. recalcular margen oficial dentro de PULSO como fuente paralela de NUMERA;
+11. aceptar `site_id` de cliente como autoridad territorial;
+12. usar un permiso general como permiso de descuento, acumulación o redención;
+13. atribuir una acción sensible solo a la sesión técnica de un dispositivo compartido;
+14. aplicar dos veces el mismo efecto por doble clic, reintento o respuesta perdida;
+15. generar una clave nueva para repetir el mismo hecho empresarial;
+16. asumir fallo definitivo ante un resultado desconocido;
+17. mostrar éxito antes de confirmación de servidor;
+18. reescribir ventas históricas con reglas nuevas;
+19. borrar historia al anular, devolver o revertir;
+20. tratar descuento, reembolso, compensación y reversión de puntos como equivalentes;
+21. crear una cuenta PASS ficticia para aplicar un beneficio;
+22. impedir toda venta sin cliente identificado cuando el proceso permita consumidor final;
+23. aceptar una regla vencida por caché o texto promocional;
+24. inventar condiciones cuando la regla no las declare;
+25. asumir compatibilidad entre promociones por defecto;
+26. asumir que presupuesto de campaña equivale a autorización de descuento;
+27. declarar correlación de campaña como causalidad o venta incremental;
+28. activar AURA desde esta tarea;
+29. crear definiciones normales de eventos desde esta tarea;
+30. crear objetos físicos de integración desde esta tarea;
+31. modificar código, SQL, migraciones, Supabase, datos, credenciales o configuración remota;
+32. iniciar o desarrollar `QUEUE-ARC-001`.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-MKT-003` consolida en un único contrato documental obligaciones ya protegidas por la cobertura vigente de autorización comercial, fidelización, marketing e integración: permiso y territorio por acción, compra elegible, regla versionada, redención válida, actor real, idempotencia, confirmación de servidor, fuentes propietarias, efectos exactamente una vez y conciliación. La tarea no introduce un comportamiento ejecutable nuevo, una transición nueva ni una regla de integridad no cubierta; define cómo esas obligaciones existentes se combinan en la frontera PULSO–PASS–AURA–NUMERA.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 41. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-PULSO-004`, para que toda mutación valide permiso, sede, estado y columnas permitidas;
+- `TREQ-PULSO-005`, para snapshot de oferta y precio, descuentos, revisiones y estados comerciales separados;
+- `TREQ-PULSO-006`, para descuentos, anulaciones, devoluciones, reembolsos, caja y acciones nombradas y auditables;
+- `TREQ-PASS-008`, para acumulación, gasto, ajuste, reversión y redención mediante contratos autorizados, atómicos e idempotentes;
+- `TREQ-PASS-022`, para permisos exactos por acción en la superficie PULSO relacionada con PASS;
+- `TREQ-PASS-025`, para compra elegible, monto, moneda, regla vigente, actor, dispositivo y referencia estable en acumulación;
+- `TREQ-PASS-026`, para referencia idempotente derivada del hecho empresarial;
+- `TREQ-PASS-027`, para validar código, usuario, recompensa, sede, estado, vigencia y no utilización previa en redención;
+- `TREQ-PASS-029`, para firma del trabajador real en dispositivo compartido;
+- `TREQ-PASS-032`, para que la interfaz refleje únicamente resultados confirmados y tipifique conflictos o duplicados;
+- `TREQ-AURA-003`, para que AURA gobierne intención y PULSO/PASS ejecuten reglas y redenciones;
+- `TREQ-INTEGRATION-003`, para idempotencia, concurrencia, resultado recuperable y conciliación;
+- `TREQ-INTEGRATION-006`, para impedir fuentes empresariales competidoras;
+- `TREQ-INTEGRATION-014`, para efectos de venta exactamente una vez hacia PASS, NEXO y NUMERA;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones integradas sin duplicación;
+- `TREQ-INTEGRATION-019`, para promociones, cupones, redenciones, campañas y métricas con fuentes propietarias e idempotencia.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 42. Decisiones congeladas
+
+1. PULSO conserva pedido, venta y efecto comercial.
+2. PASS conserva identidad, consentimiento, beneficio y ledger de fidelización.
+3. AURA conserva intención de marketing cuando su continuidad sea autorizada.
+4. NUMERA conserva margen, presupuesto, costo y resultado económico.
+5. NEXO conserva producto e inventario.
+6. FOGO conserva capacidad productiva según el hecho.
+7. Un canal externo no concede autoridad comercial.
+8. Beneficio visible no equivale a elegibilidad.
+9. Elegibilidad PASS no equivale a aplicabilidad comercial en PULSO.
+10. Redención válida no equivale a descuento aplicado.
+11. Campaña no equivale a regla transaccional.
+12. Correlación de campaña no equivale a causalidad.
+13. Venta válida no exige cliente PASS cuando el proceso permita consumidor final.
+14. Beneficio que exige identidad sí requiere identidad PASS resuelta.
+15. PULSO valida autoridad laboral y contexto antes del efecto.
+16. El permiso general no autoriza acciones sensibles específicas.
+17. `site_id` de cliente no amplía territorio.
+18. Dispositivo compartido conserva actor humano real.
+19. Regla y versión quedan asociadas con el efecto aplicado.
+20. El snapshot comercial preserva la historia de la transacción.
+21. Cambios posteriores son prospectivos.
+22. El mismo hecho no produce dos efectos por reintento.
+23. Un resultado desconocido se reconcilia antes de repetir la mutación.
+24. La interfaz no confirma éxito antes del servidor.
+25. Acumulación permanece como movimiento PASS originado en venta elegible.
+26. Redención permanece como movimiento PASS consumido por PULSO mediante contrato.
+27. Descuento, compensación, reembolso y reversión de fidelización permanecen distintos.
+28. La denegación del beneficio no invalida automáticamente una venta que pueda continuar sin él.
+29. La ausencia de una guarda requerida no equivale a aprobación.
+30. No se crean estados canónicos nuevos.
+31. No se crean definiciones normales de eventos.
+32. Se crean cero cambios `TREQ-*`.
+33. No se genera una copia del registro canónico de requisitos.
+34. Se crean cero objetos físicos.
+35. Se modifican cero objetos físicos.
+36. No se modifica código, SQL, migraciones, Supabase, datos, credenciales ni configuración remota.
+37. `QUEUE-ARC-001` permanece reservada y no se inicia.
+
+---
+
+#### 43. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-MKT-002` como tarea anterior;
+2. conserva `QUEUE-ARC-001` como única tarea siguiente reservada;
+3. mantiene a PULSO como propietaria de la operación comercial;
+4. mantiene a PASS como propietaria de fidelización;
+5. mantiene a AURA como propietaria objetivo de campaña sujeta a su puerta;
+6. mantiene a NUMERA como autoridad económica;
+7. distingue beneficio visible, elegibilidad, redención, aplicabilidad comercial y efecto aplicado;
+8. distingue campaña de regla transaccional;
+9. distingue promoción, cupón, beneficio, recompensa y descuento aplicado;
+10. preserva la cadena de oferta, precio, promoción y snapshot de línea;
+11. exige validación de regla y versión;
+12. exige validación de vigencia y condiciones aplicables;
+13. exige validación de sede, canal y modalidad cuando correspondan;
+14. respeta venta a consumidor final cuando el proceso la permita;
+15. exige identidad PASS cuando la regla realmente la requiera;
+16. revalida autoridad laboral y acción sensible;
+17. protege territorio frente a parámetros manipulados;
+18. conserva actor real en dispositivo compartido;
+19. impide saldo o ledger paralelo en PULSO;
+20. impide campaña paralela en PULSO;
+21. conserva acumulación mediante contrato PASS;
+22. conserva redención mediante contrato PASS;
+23. conserva compra elegible, monto, moneda, actor, dispositivo y referencia estable para acumulación;
+24. conserva código, recompensa, sede, vigencia, estado y no utilización previa para redención;
+25. conserva guardas económicas en NUMERA cuando correspondan;
+26. conserva hechos de disponibilidad y capacidad en sus fuentes propietarias;
+27. define compatibilidad únicamente por regla aprobada y no por inferencia;
+28. exige idempotencia y conflicto ante reutilización incompatible de identificador;
+29. impide doble aplicación concurrente;
+30. exige reconciliación ante resultado desconocido;
+31. impide confirmación optimista de un efecto sensible;
+32. conserva snapshot y evidencia suficientes para reconstrucción;
+33. mantiene cambios prospectivos sin reescritura histórica;
+34. mantiene anulación, devolución, reembolso, compensación y reversión separados;
+35. permite continuar una venta sin beneficio cuando el proceso lo permita y la única denegación sea el efecto solicitado;
+36. minimiza datos personales en la validación;
+37. asigna cada detalle posterior a una tarea propietaria exacta;
+38. genera cero requisitos de prueba nuevos;
+39. modifica cero requisitos de prueba;
+40. no genera una copia del registro canónico de requisitos;
+41. crea cero objetos físicos;
+42. modifica cero objetos físicos;
+43. no modifica código, SQL, migraciones, Supabase, datos, credenciales ni configuración remota;
+44. no inicia ni desarrolla `QUEUE-ARC-001`.
+
+---
+
+#### 44. Resultado de la tarea
+
+`INT-MKT-003` queda definida como el contrato permanente que separa la existencia de una promoción o beneficio de la decisión de aplicarlo a una transacción concreta.
+
+Resultado consolidado:
+
+```text
+AURA
+→ INTENCIÓN PROMOCIONAL Y CORRELACIÓN, CUANDO CORRESPONDA
+
+PASS
+→ BENEFICIO + REGLA + VERSIÓN + FIDELIZACIÓN
+
+PULSO
+→ PEDIDO / VENTA
+→ VALIDACIÓN DE AUTORIDAD Y CONTEXTO
+→ VALIDACIÓN DE CONDICIONES
+→ CONFIRMACIÓN DE FUENTES PROPIETARIAS
+→ EFECTO COMERCIAL
+→ SNAPSHOT Y EVIDENCIA
+
+NUMERA
+→ GUARDAS Y RESULTADO ECONÓMICO
+```
+
+sin convertir una campaña en descuento, un beneficio visible en elegibilidad automática, una redención en venta, una venta en conversión atribuida ni PULSO en propietario de fidelización o marketing.
+
+Con esta tarea se cierra documentalmente el mini-bloque `INT-MKT-001` a `INT-MKT-003` sin iniciar implementación física.
+
+---
+
+#### 45. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-MKT-002 — Definir beneficios publicados en PASS`
+
+TAREA ACTUAL APROBADA
+
+`INT-MKT-003 — Definir validación comercial desde PULSO`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes`
+
