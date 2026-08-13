@@ -1978,6 +1978,7 @@ No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de 
 **Tarea siguiente:** `INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado`  
 **Tipo de tarea:** documental; definición contractual de finalización de ejecución y cierre productivo del lote en FOGO, con conciliación de materiales, salida, rendimiento, merma, reproceso, calidad, empaque y efectos de inventario, sin implementación física, migraciones, cambios de datos, despliegue ni modificación de Supabase  
 **Línea base documental:** `vento-shell@0712d7332b528b210ce0f53e3e3d2918e8df840d`  
+**Rectificación de coherencia:** `2026-08-12` — se precisa la causalidad `DISPOSITION_DECIDED → ejecución de la disposición → EXECUTION_VERIFICATION_PENDING → QUALITY_DISPOSITION_VERIFIED`, sin cambiar decisiones empresariales, alcance físico ni cobertura TREQ
 **Aplicaciones involucradas:** `FOGO`, `NEXO`, `NUMERA`, `VISO` y `SHELL`; otras aplicaciones únicamente cuando una dependencia canónica ya aprobada consuma un hecho del lote  
 **Cambios físicos autorizados:** ninguno
 
@@ -2193,7 +2194,7 @@ RENDIMIENTO ESPERADO SEGÚN RECETA Y VERSIÓN
 ≠
 SALIDA REAL OBSERVADA
 ≠
-SALIDA LIBERADA POR CALIDAD
+SALIDA CUYA DISPOSICIÓN AUTORIZA LA LIBERACIÓN
 ≠
 SALIDA INGRESADA FÍSICAMENTE EN NEXO
 ```
@@ -2271,7 +2272,11 @@ La finalización operativa entrega el expediente a `VPROC-0035`; no decide la di
 - despacharlo;
 - declararlo conforme.
 
-Solo una disposición de calidad registrada y verificada mediante `VPROC-0035` puede demostrar qué existencia está expresamente liberada y qué existencia queda retenida, rechazada o destinada a reproceso.
+Una `VPROC-0035.DISPOSITION_DECIDED` vigente cuya decisión autorice expresamente la liberación de la cantidad afectada habilita a los procesos responsables para materializar esa disposición. Esta autorización no demuestra todavía que la disposición haya sido aplicada ni verificada.
+
+`VPROC-0035.QUALITY_DISPOSITION_VERIFIED` no constituye una precondición para el ingreso físico en NEXO cuando la propia verificación requiere comprobar la aplicación de la decisión sobre inventario, etiquetas o destinos. El resultado autoritativo y reconciliado de NEXO puede formar parte de la evidencia utilizada durante `VPROC-0035.EXECUTION_VERIFICATION_PENDING` para alcanzar posteriormente `QUALITY_DISPOSITION_VERIFIED`.
+
+Las cantidades retenidas, rechazadas o destinadas a reproceso conservan esa decisión y no quedan habilitadas para el ingreso normal de producto terminado.
 
 El cierre productivo deberá referenciar la disposición de calidad aplicable cuando exista y no podrá reinterpretarla.
 
@@ -2529,7 +2534,9 @@ Un lote puede tener la ejecución terminada y encontrarse:
 
 El cierre debe reflejar el resultado real de cada cantidad sin transformar todas las salidas en “producto terminado disponible”.
 
-Solo la existencia expresamente liberada puede ser candidata a avanzar al efecto físico correspondiente, sujeto al contrato NEXO de `INT-PROD-004`.
+Solo la cantidad cubierta por una `VPROC-0035.DISPOSITION_DECIDED` vigente cuya decisión autorice expresamente su liberación puede ser candidata al efecto físico normal definido por `INT-PROD-004`.
+
+Esto no exige que `VPROC-0035.QUALITY_DISPOSITION_VERIFIED` ya exista: la verificación final puede consumir como evidencia el efecto NEXO posteriormente reconciliado para comprobar que la disposición fue aplicada al lote, inventario, etiquetas y destinos correctos.
 
 ---
 
@@ -2622,7 +2629,9 @@ Se reutilizan, entre otros, los hitos ya canónicos:
 - `VPROC-0034.EVT-004` — resultado productivo reportado;
 - `VPROC-0034.EVT-005` — conciliación de consumos pendiente;
 - `VPROC-0034.EVT-006` — ejecución productiva completada;
-- `VPROC-0035.EVT-006` — disposición de calidad verificada;
+- `VPROC-0035.EVT-004` — disposición decidida; cuando autoriza expresamente la liberación de una cantidad, es el hito que habilita la ejecución de esa disposición por los procesos responsables;
+- `VPROC-0035.EVT-005` — verificación de ejecución pendiente; comprueba la aplicación de la decisión sobre lote, inventario, etiquetas y destinos utilizando, cuando corresponda, el resultado NEXO reconciliado;
+- `VPROC-0035.EVT-006` — disposición de calidad verificada; es el hito posterior que cierra la comprobación y no el evento habilitador obligatorio del ingreso físico NEXO;
 - `VPROC-0036.EVT-006` — ciclo de empaque y almacenamiento conciliado;
 - `VPROC-0037.EVT-001` — cierre productivo abierto;
 - `VPROC-0037.EVT-002` — recopilando datos;
