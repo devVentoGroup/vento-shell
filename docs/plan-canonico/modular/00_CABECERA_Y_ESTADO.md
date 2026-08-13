@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **769** |
+| Tareas aprobadas | **770** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **825** |
+| Tareas no iniciadas | **824** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.24% (769/1594)** |
+| Porcentaje de completamiento | **48.31% (770/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos** |
-| Tarea actual | **INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción** |
+| Última tarea aprobada | **INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción** |
+| Tarea actual | **INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa** |
+| Siguiente tarea | **INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 53 de 83 aprobadas; INT-POS-009 pendiente** |
+| Progreso del bloque | **BLOQUE X: 54 de 83 aprobadas; INT-POS-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos |
-| Tarea actual | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa |
+| Última aprobada | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción |
+| Tarea actual | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-011` — Definir mapeo de producto externo, producto Vento, presentación y receta |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 53 DE 83 APROBADAS — ACTUAL INT-POS-009** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 54 DE 83 APROBADAS — ACTUAL INT-POS-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
-        ↓
-TAREA ACTUAL
 INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 53 de 83 tareas aprobadas
+BLOQUE X — 54 de 83 tareas aprobadas
 ```

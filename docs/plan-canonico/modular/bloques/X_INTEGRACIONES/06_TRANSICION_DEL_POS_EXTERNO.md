@@ -3680,7 +3680,487 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción`
 
 
-### [ ] INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
+### ✅ INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
+**Tarea siguiente:** `INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa`
+**Tipo de tarea:** documental; definición normativa del contrato de procedencia para conservar la representación externa recibida, sus versiones acreditadas, la huella de integridad y el instante técnico de recepción antes de transformar ventas, líneas, pagos o reversos al contrato canónico, sin inventar campos de Makos, implementar almacenamiento, definir transporte, resolver idempotencia completa, modificar código, crear migraciones, modificar Supabase ni producir efectos internos
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**POS externo vigente:** `Makos`
+**POS integral objetivo:** `PULSO`
+**Línea base documental:** `vento-shell@4aa8fcb0a027fb37dd4b1f6928e3970e0316642d`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir el contrato de procedencia que deberá permitir reconstruir qué representación externa fue recibida, en qué contexto y versión, con qué huella de integridad y en qué instante técnico ingresó a Vento antes de cualquier parsing, mapping, normalización, enriquecimiento o efecto empresarial.
+
+La procedencia deberá permanecer separada del contrato canónico de venta y línea definido en `INT-POS-005` y de los hechos de pago y reversión definidos en `INT-POS-007` e `INT-POS-008`.
+
+Regla raíz:
+
+```text
+REPRESENTACIÓN EXTERNA RECIBIDA
+        ↓
+IDENTIDAD DE RECEPCIÓN + REPRESENTACIÓN ORIGINAL PROTEGIDA
+        ↓
+VERSIONES ACREDITADAS + HASH + RECEIVED_AT
+        ↓
+PARSER / ADAPTADOR / MAPPING VERSIONADOS
+        ↓
+CONTRATO CANÓNICO
+        ↓
+EFECTOS POSTERIORES SOLO CUANDO LAS PUERTAS APLICABLES ESTÉN SATISFECHAS
+```
+
+Una transformación normalizada deberá ser trazable hasta su entrada de procedencia sin convertir la evidencia técnica en identidad empresarial de venta, línea, pago o reverso.
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-009` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal de las ventas que se originen dentro de su alcance mientras no ocurra el corte correspondiente.
+2. PULSO será la fuente de las nuevas ventas posteriores al corte aprobado.
+3. Makos y PULSO deberán converger en el mismo contrato canónico de venta y línea.
+4. El adaptador y el transporte no son fuentes empresariales de la venta.
+5. El contrato canónico de venta y línea conserva una referencia de procedencia, no una copia del material externo completo dentro del objeto normalizado.
+6. Una revisión posterior no borra el material previamente recibido ni cambia retroactivamente la identidad de la venta.
+7. `received_at` pertenece a la capa de procedencia y no es el momento comercial de la venta.
+8. `sale_occurred_at`, fecha comercial, creación, actualización, cierre, recepción e importación son conceptos temporales diferentes.
+9. Un hash de contenido no es identidad de venta ni identidad de línea.
+10. Estados, importes, timestamps o identidades no se completan con valores inventados cuando la fuente no los entregue o su semántica no esté acreditada.
+11. Una anulación, devolución o reembolso conserva correlación con el hecho original y no lo reemplaza destructivamente.
+12. Credenciales, secretos, tokens y material de autenticación permanecen separados de permisos, payload empresarial, documentación y logs.
+13. La idempotencia completa por sistema, venta y línea externa permanece reservada para `INT-POS-013`.
+14. El transporte por webhook o polling permanece reservado para `INT-POS-014`.
+15. La conciliación de diferencias permanece reservada para `INT-POS-020`.
+
+---
+
+#### 3. Definición de representación original
+
+Para esta integración, **representación original** significa la unidad de información externa tal como Vento la recibe antes de aplicar interpretación empresarial, mapping, enriquecimiento o normalización.
+
+La unidad de conservación dependerá del transporte acreditado:
+
+| Forma de entrada                       | Representación que puede considerarse original                | Condición                                                                                                                      |
+| -------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| archivo                                | secuencia exacta de bytes recibidos del archivo               | solo cuando esos bytes sean capturados y preservados antes del parsing                                                         |
+| cuerpo HTTP o webhook                  | secuencia exacta de bytes del body                            | solo cuando se capture antes de decodificar o parsear                                                                          |
+| JSON ya parseado por una capa anterior | representación estructurada recibida por esa capa             | no se declarará byte a byte equivalente al body HTTP si los bytes originales no fueron preservados                             |
+| recurso consultado por API             | representación devuelta por la fuente en una lectura concreta | deberá conservar identidad de recepción, versión o revisión disponible y material suficiente para reproducir la transformación |
+| agregado legacy                        | archivo, fila o representación agregada realmente recibida    | no se elevará a una venta individual ni a una granularidad que la fuente no demuestre                                          |
+
+Reglas obligatorias:
+
+1. la representación original se conserva antes de cualquier corrección empresarial;
+2. normalizar nombres, tipos, importes, estados o timestamps no modifica la evidencia de origen;
+3. una representación decodificada no se describirá como bytes originales cuando estos no se hayan preservado;
+4. serializar nuevamente un objeto parseado no reconstruye necesariamente la secuencia de bytes recibida;
+5. un fragmento normalizado podrá referenciar una porción reproducible del material original mediante un localizador técnico;
+6. la evidencia original no se utiliza como sustituto del contrato canónico consumido por NEXO, NUMERA, PASS o PULSO;
+7. el material confidencial de autenticación no forma parte del payload empresarial que esta tarea exige conservar.
+
+---
+
+#### 4. Sobre lógico mínimo de recepción
+
+Toda recepción futura que pretenda alimentar el contrato canónico deberá poder conservar, cuando aplique, las siguientes dimensiones lógicas. Los nombres físicos, tablas, tipos, Storage, políticas y mecanismos concretos pertenecen a la materialización posterior.
+
+| Dimensión lógica                                            | Obligatoriedad                                                                            | Regla                                                                                                               |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| sistema de origen                                           | requerida                                                                                 | identifica la fuente empresarial o técnica acreditada sin inferirla desde la aplicación consumidora                 |
+| instancia o contexto de origen                              | requerida cuando los identificadores puedan repetirse entre tenants, empresas o ambientes | evita colisiones y atribución incorrecta                                                                            |
+| tipo de entrada                                             | requerida                                                                                 | distingue archivo, respuesta API, webhook, consulta u otra modalidad acreditada                                     |
+| identificador externo de mensaje, evento, recurso o archivo | condicional                                                                               | se conserva cuando la fuente entregue una identidad estable                                                         |
+| identidad estable de recepción                              | requerida                                                                                 | utiliza identidad externa confiable o una identidad de recepción asignada de forma estable cuando aquella no exista |
+| instante de recepción                                       | requerida                                                                                 | registra `received_at` conforme a la semántica definida en esta tarea                                               |
+| referencia a representación original protegida              | requerida                                                                                 | permite recuperar la evidencia sin incrustarla en el contrato normalizado                                           |
+| tipo de contenido                                           | condicional                                                                               | se conserva cuando sea material para interpretar o reproducir la entrada                                            |
+| codificación                                                | condicional                                                                               | se conserva cuando afecte reproducción o cálculo de hash                                                            |
+| algoritmo de hash                                           | requerida cuando se utilice huella de integridad                                          | identifica inequívocamente el algoritmo aplicado                                                                    |
+| base del hash                                               | requerida cuando exista hash                                                              | declara exactamente sobre qué bytes o representación se calculó                                                     |
+| digest del hash                                             | requerida cuando exista hash                                                              | conserva la huella sin convertirla en identidad empresarial                                                         |
+| versión o revisión de dato en la fuente                     | condicional                                                                               | se conserva solo cuando la fuente la entregue o documente                                                           |
+| versión de API, esquema o contrato del proveedor            | condicional                                                                               | se conserva solo con evidencia del proveedor                                                                        |
+| versión del parser, adaptador o transformación de Vento     | requerida cuando una transformación dependa de ella                                       | permite reproducir cómo se interpretó la entrada                                                                    |
+| versión de mapping                                          | requerida cuando exista mapping versionado aplicable                                      | permite conocer qué equivalencias se utilizaron                                                                     |
+| versión del contrato canónico resultante                    | requerida                                                                                 | separa evolución interna de Vento de las versiones del proveedor                                                    |
+| localizador de fragmento                                    | condicional                                                                               | identifica fila, elemento, ruta u otra porción reproducible de una recepción compuesta                              |
+| correlación de integración                                  | requerida                                                                                 | relaciona recepción, transformación, contrato canónico y efectos sin sustituir sus identidades propias              |
+| evidencia de autenticidad                                   | condicional                                                                               | conserva referencia o resultado verificable cuando el transporte proporcione firma, checksum u otro mecanismo       |
+
+La ausencia real de una versión opcional o de un identificador externo no se completará con un valor ficticio.
+
+---
+
+#### 5. Taxonomía obligatoria de versiones
+
+La integración distinguirá al menos cuatro conceptos de versión que no se fusionarán:
+
+| Concepto                                                | Significado                                                                            | Regla                                                                      |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| revisión del dato de fuente                             | revisión o versión de una venta, recurso, archivo o mensaje expresada por el proveedor | no se inventa si Makos no la entrega                                       |
+| versión de API, esquema o contrato del proveedor        | versión técnica de la interfaz externa                                                 | no se deriva del parser de Vento ni de la fecha de recepción               |
+| versión del parser, adaptador o transformación de Vento | versión de la lógica que interpreta la entrada                                         | pertenece a Vento y debe poder identificarse cuando determine el resultado |
+| versión del contrato canónico de Vento                  | versión de la representación empresarial producida                                     | no sustituye versiones de la fuente ni del adaptador                       |
+
+Reglas:
+
+1. una revisión de dato y una versión de API no son equivalentes;
+2. cambiar el parser de Vento no cambia retroactivamente la versión que Makos haya declarado;
+3. cambiar el contrato canónico no reescribe la representación externa histórica;
+4. una transformación reproducible deberá poder identificar las versiones de Vento que influyeron en su resultado;
+5. una versión desconocida del proveedor permanece desconocida hasta obtener evidencia;
+6. un nombre interno de parser no se elevará a versión de Makos.
+
+En el flujo Excel vigente, `makos_sales_by_item_v1` se clasifica exclusivamente como **identificador de parser de Vento**. No demuestra versión de API, esquema, recurso ni dato de Makos.
+
+---
+
+#### 6. Regla canónica del hash de integridad
+
+El hash se utilizará como huella de integridad y guardia de equivalencia o conflicto, nunca como identidad empresarial única.
+
+Reglas obligatorias:
+
+1. cada hash deberá declarar el algoritmo utilizado;
+2. deberá declararse la base exacta sobre la cual se calculó;
+3. cuando se busque integridad byte a byte de un archivo o body, el hash se calculará sobre los bytes capturados antes de transformar el contenido;
+4. reserializar JSON, cambiar codificación, normalizar saltos de línea o modificar metadatos puede cambiar los bytes y, por tanto, no deberá presentarse como la misma base sin demostración;
+5. el hash no sustituye `source_system`, identificador externo, identidad de recepción, identidad de venta, identidad de línea, identidad de pago o identidad de reverso;
+6. el hash no será por sí solo la clave completa de idempotencia de `INT-POS-013`;
+7. dos recepciones con el mismo hash y distintas identidades externas confiables no se considerarán automáticamente el mismo hecho;
+8. la reutilización de una misma identidad externa con contenido materialmente incompatible deberá conservar ambos indicios, producir conflicto y pasar a conciliación sin sobrescribir la evidencia previa;
+9. una huella no demuestra autenticidad del proveedor por sí sola; firma, checksum autenticado u otra garantía de origen son conceptos distintos;
+10. la transformación normalizada podrá guardar o referenciar el hash de procedencia sin utilizarlo como ID de negocio.
+
+---
+
+#### 7. Semántica de `received_at`
+
+`received_at` representa el instante técnico en que Vento registra por primera vez de forma durable la recepción de una representación externa identificable.
+
+Debe cumplir:
+
+1. pertenecer a la recepción, no a la venta;
+2. permanecer estable para esa recepción;
+3. no cambiar por parsing, mapping, validación, reintento, replay, conciliación o reproceso;
+4. no sustituir `sale_occurred_at`;
+5. no sustituir `business_date`;
+6. no sustituir `source_created_at`, `source_updated_at` o `source_closed_at`;
+7. no sustituir el timestamp empresarial de un pago o reverso;
+8. no confundirse con el instante técnico de un intento posterior;
+9. conservar una representación temporal inequívoca;
+10. permitir ordenar la recepción técnica sin afirmar por ello orden causal o de versión del hecho empresarial.
+
+Se preserva la desigualdad:
+
+```text
+RECEIVED_AT
+≠
+SALE_OCCURRED_AT
+≠
+SOURCE_CREATED_AT
+≠
+SOURCE_UPDATED_AT
+≠
+SOURCE_CLOSED_AT
+≠
+IMPORTED_AT LEGACY
+≠
+PROCESSED_AT
+```
+
+Una captura tardía conservará el momento empresarial que la fuente acredite y no lo reescribirá con `received_at`.
+
+---
+
+#### 8. Identidad de recepción
+
+La recepción deberá tener identidad estable antes de que reintentos o reprocesos puedan producir una nueva interpretación.
+
+Reglas:
+
+1. cuando la fuente proporcione un identificador externo estable y confiable, se conservará junto con `source_system` y el contexto necesario para hacerlo inequívoco;
+2. cuando el proveedor no entregue un identificador estable, el adaptador deberá asignar una identidad de recepción persistente antes del primer procesamiento que pueda repetirse;
+3. la identidad de recepción no cambia por retry;
+4. `attempt_id`, número de intento, trace, worker, conexión o timestamp técnico no son identidad de recepción;
+5. una recepción puede originar cero, uno o varios hechos canónicos, según la granularidad demostrada;
+6. una venta, línea, pago o reverso conserva su propia identidad y solo referencia la recepción que aportó evidencia;
+7. una segunda representación válida del mismo hecho empresarial puede ser una nueva recepción y conservar correlación con el mismo agregado sin borrar la anterior;
+8. la regla completa de idempotencia y resolución de duplicados pertenece a `INT-POS-013`.
+
+---
+
+#### 9. Procedencia de fragmentos
+
+Cuando una recepción contenga múltiples ventas, líneas, pagos, devoluciones u otros elementos, la transformación deberá conservar un vínculo reproducible entre cada hecho normalizado y el fragmento de la entrada que lo sustentó.
+
+Un localizador de fragmento podrá representar, cuando corresponda y sea reproducible:
+
+- número de fila;
+- índice de elemento;
+- ruta estructural;
+- identificador interno del elemento de fuente;
+- página, sección u otra posición inequívoca dentro del artefacto preservado.
+
+Reglas:
+
+1. el localizador técnico no sustituye la identidad empresarial del elemento;
+2. el localizador se interpreta dentro de una recepción concreta;
+3. cambiar el mapping no cambia el fragmento original;
+4. una transformación posterior deberá poder identificar qué recepción y fragmento utilizó;
+5. cuando la fuente no permita granularidad individual, el localizador no podrá fabricarla.
+
+En el flujo Excel vigente, `source_row_number` se clasifica como **localizador técnico de fila dentro del archivo importado**, no como identidad de línea de venta.
+
+---
+
+#### 10. Protección, minimización y separación de secretos
+
+La conservación de procedencia deberá equilibrar reproducibilidad con seguridad, privacidad y minimización.
+
+Reglas obligatorias:
+
+1. la representación original se clasificará según su sensibilidad antes de exponerla a interfaces o consumidores;
+2. el contrato canónico consumido por dominios internos no cargará innecesariamente el payload bruto;
+3. auditoría y observabilidad preferirán referencias, hashes y metadatos seguros cuando no necesiten el contenido completo;
+4. no se registrarán como contenido empresarial credenciales, tokens, secretos, claves privadas, `service_role`, encabezados de autorización completos ni material equivalente;
+5. una integración externa no recibirá acceso directo a Supabase para depositar su payload en tablas internas;
+6. la autorización de lectura de evidencia será independiente de la autorización para consumir el hecho normalizado;
+7. la retención física y la disposición del material original deberán respetar las reglas de gobierno de información que se materialicen para esa clase de evidencia;
+8. eliminar o archivar una representación no podrá romper silenciosamente la correlación, el hash o la trazabilidad exigida mientras la evidencia deba conservarse.
+
+La materialización física posterior deberá coordinarse, según corresponda, con `EVID-ARC-003`, `EVID-ARC-005`, `EVID-ARC-006`, `EVID-ARC-008` y `EVID-ARC-010`, sin considerar esas tareas ejecutadas por esta definición.
+
+---
+
+#### 11. Clasificación del flujo `makos_excel` vigente
+
+La implementación actual permite establecer únicamente la siguiente evidencia:
+
+| Elemento                                                 | Estado actual verificable                               | Consecuencia canónica                                                                               |
+| -------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| archivo XLSX seleccionado por el usuario                 | disponible en memoria durante el import                 | existe una representación de archivo antes del parsing                                              |
+| cálculo SHA-256                                          | IMPLEMENTADO sobre los bytes del `ArrayBuffer` recibido | la huella actual puede describirse como SHA-256 del archivo leído por el importador                 |
+| persistencia de `source_file_hash`                       | IMPLEMENTADO                                            | se conserva la huella del archivo asociada al lote                                                  |
+| persistencia de `source_file_name`                       | IMPLEMENTADO                                            | conserva nombre técnico de archivo, no identidad empresarial                                        |
+| `source = makos_excel`                                   | IMPLEMENTADO                                            | identifica el mecanismo legacy de importación, no una versión de API Makos                          |
+| metadata `parser = makos_sales_by_item_v1`               | IMPLEMENTADO                                            | identifica parser Vento; no demuestra versión del proveedor                                         |
+| `source_row_number`                                      | IMPLEMENTADO                                            | funciona como localizador técnico de fila; no es identidad de línea                                 |
+| bytes originales del XLSX persistidos después del import | no observados en la línea base revisada                 | no se declarará conservación física del archivo original                                            |
+| celdas o filas brutas completas persistidas              | no observadas                                           | las filas actuales contienen valores parseados y normalizados, no una copia byte a byte del archivo |
+| versión de API o esquema Makos                           | PENDIENTE_DE_EVIDENCIA                                  | deberá obtenerse del binding real si existe y la fuente la expone                                   |
+| revisión individual de venta Makos                       | PENDIENTE_DE_EVIDENCIA                                  | no se inventará desde fecha, fila o hash                                                            |
+| `imported_at` del lote                                   | IMPLEMENTADO como tiempo técnico legacy                 | no se renombra retroactivamente a `received_at` canónico                                            |
+| identidad individual de recepción API/webhook Makos      | PENDIENTE_DE_EVIDENCIA                                  | depende del binding y de `INT-POS-014`                                                              |
+
+La unicidad actual por sede, fecha, fuente y `source_file_hash` pertenece al flujo agregado existente. No se eleva por sí sola a la regla definitiva de idempotencia de ventas individuales.
+
+---
+
+#### 12. Precedente técnico de pagos existente
+
+La fundación actual de pagos de Vento conserva `raw_request`, `raw_response` y payloads JSON de eventos webhook junto con proveedor, identificador de evento y estado de procesamiento.
+
+Esta evidencia demuestra que Vento ya utiliza almacenamiento de representaciones externas o solicitudes como apoyo de trazabilidad, pero no define por sí sola el contrato Makos.
+
+Reglas:
+
+1. un objeto JSON parseado no prueba conservación de los bytes HTTP originales;
+2. los campos y estados Wompi no se trasladan a Makos;
+3. el identificador de evento Wompi no define la identidad que Makos pueda exponer;
+4. los timestamps físicos existentes no se renombran por inferencia a `received_at` del contrato aquí definido;
+5. la existencia de `raw_request` o `raw_response` no autoriza incluir secretos o datos innecesarios;
+6. esta tarea no modifica la fundación de pagos existente.
+
+---
+
+#### 13. Evidencia requerida del binding futuro de Makos
+
+Antes de que una integración transaccional Makos pueda declarar completa su procedencia, deberá existir evidencia del proveedor o del tenant suficiente para resolver esta matriz:
+
+| Área                             | Evidencia requerida                                                                 | Resultado permitido                                                        |
+| -------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| unidad de entrega                | archivo, recurso, respuesta, evento o mensaje real                                  | determina la unidad de recepción                                           |
+| identidad externa                | campo o garantía de identificador estable cuando exista                             | identidad externa preservada o activación de identidad de recepción propia |
+| revisión del recurso o dato      | campo, versión, secuencia, ETag u otra garantía documentada cuando exista           | revisión de fuente sin inferencia                                          |
+| versión de API o esquema         | documentación o metadata técnica del proveedor cuando exista                        | versión externa diferenciada de la versión Vento                           |
+| tipo de contenido y codificación | contrato o headers verificables cuando sean materiales                              | reproducción correcta de bytes o representación                            |
+| autenticidad                     | firma, checksum autenticado, credencial de transporte u otra garantía cuando exista | evidencia de origen separada del hash de integridad                        |
+| semántica de body o payload      | especificación de qué representa la respuesta o evento                              | preservación de la unidad correcta                                         |
+| timestamps de fuente             | campo y significado                                                                 | separación frente a `received_at`                                          |
+| paginación o fragmentación       | garantía de cómo se divide o identifica el conjunto                                 | localizadores reproducibles sin pérdida                                    |
+| restricciones de retención       | obligación contractual aplicable cuando exista                                      | handoff a gobierno de evidencia sin inventar periodos                      |
+
+No se registran nombres de endpoints, propiedades JSON, ETags, headers, versiones, formatos ni valores específicos de Makos porque esa evidencia técnica no forma parte de la línea base disponible.
+
+---
+
+#### 14. Puertas de elegibilidad derivadas
+
+Una transformación proveniente del POS externo no podrá presentarse como completamente reproducible cuando ocurra alguna de estas condiciones:
+
+| Condición                                                               | Tratamiento                                                             | Tarea propietaria de salida                                                      |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| no existe identidad estable de recepción                                | no generar una identidad nueva por cada intento                         | `INT-POS-013`; verificación de binding en `INT-POS-021`                          |
+| no existe referencia recuperable a la representación original requerida | conservar el resultado como insuficiente para reproducibilidad completa | `INT-POS-021`; materialización de evidencia según tareas `EVID-ARC-*` aplicables |
+| existe hash sin base identificada                                       | no utilizarlo como prueba reproducible de integridad                    | `INT-POS-021`; detalle físico en `EVID-ARC-006`                                  |
+| una identidad externa conocida llega con contenido incompatible         | conservar conflicto; no sobrescribir la entrada anterior                | `INT-POS-013`; conciliación en `INT-POS-020`                                     |
+| versión de proveedor desconocida                                        | conservar desconocimiento; no fabricar versión                          | `INT-POS-021` cuando esa versión sea necesaria para demostrar el binding         |
+| parser o mapping aplicado no puede identificarse                        | no presentar la transformación como reproducible                        | `INT-POS-021`; contratos compartidos posteriores                                 |
+| `received_at` no puede distinguirse de tiempos de negocio               | bloquear cualquier uso que dependa de la semántica temporal correcta    | `INT-POS-021`                                                                    |
+| empresa, sede, terminal o caja necesarias no están mapeadas             | conservar procedencia sin habilitar efecto dependiente del alcance      | `INT-POS-010`                                                                    |
+| producto, presentación o receta requeridos no están resueltos           | conservar procedencia de la línea sin efecto de producto                | `INT-POS-011`; `INT-POS-012`                                                     |
+| transporte incremental todavía no está definido                         | no asumir webhook, polling, cursor ni frecuencia                        | `INT-POS-014`                                                                    |
+| venta todavía no satisface las puertas del contrato canónico            | no emitir venta validada                                                | `INT-POS-015`                                                                    |
+
+Una entrada podrá conservarse como evidencia aunque todavía no sea elegible para generar efectos empresariales.
+
+---
+
+#### 15. Fronteras con tareas posteriores
+
+- `INT-POS-010` resolverá empresa, sede, terminal y caja externa sin cambiar la representación original.
+- `INT-POS-011` resolverá producto, presentación y receta conservando procedencia y localizador de cada línea.
+- `INT-POS-012` gobernará cuarentena de líneas sin mapping y deberá conservar la evidencia recibida sin autorizar inventario.
+- `INT-POS-013` definirá idempotencia por sistema, venta y línea externa; consumirá identidad de recepción y hash sin convertir la huella en identidad empresarial.
+- `INT-POS-014` definirá webhook cuando exista y polling de respaldo; el transporte deberá producir el mismo contrato de procedencia.
+- `INT-POS-015` emitirá venta validada únicamente después de satisfacer las puertas aplicables.
+- `INT-POS-020` conciliará recepciones, versiones, contratos y efectos incompatibles sin borrar historia.
+- `INT-POS-021` comprobará con el binding real de Makos la disponibilidad y suficiencia de identidad, versiones, timestamps, contenido y procedencia sin efectos sobre inventario o finanzas.
+- `EVID-ARC-003` definirá clasificación de sensibilidad y acceso para evidencia física.
+- `EVID-ARC-005` definirá vinculación física entre evidencia y recursos empresariales.
+- `EVID-ARC-006` definirá hash, firma, timestamp y validación de integridad de evidencia.
+- `EVID-ARC-008` definirá retención, archivo, eliminación y legal hold.
+- `EVID-ARC-010` definirá auditoría de lectura, modificación y retiro de evidencia.
+- `SHELL-CON-020` y `SHELL-CON-021` materializarán posteriormente los contratos compartidos de venta y línea sin incrustar innecesariamente la representación externa.
+- `SHELL-CON-023` materializará el contrato transversal de idempotencia y conciliación sin redefinir la identidad empresarial desde el hash.
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 16. Decisiones congeladas
+
+1. toda normalización deberá conservar una referencia reproducible a su procedencia;
+2. la representación original se define antes del parsing, mapping, enriquecimiento o normalización empresarial;
+3. un objeto JSON parseado no se declarará equivalente a los bytes HTTP originales cuando estos no se hayan capturado;
+4. la evidencia original permanece separada del contrato canónico consumido por los dominios;
+5. la recepción conserva identidad estable antes de reintentos o reprocesos;
+6. una identidad externa confiable se conserva junto con sistema y contexto de origen;
+7. ausencia de identidad externa estable requiere identidad de recepción propia, no un ID nuevo por intento;
+8. identidad de recepción no sustituye identidad de venta, línea, pago o reverso;
+9. revisión del dato, versión de API, versión del parser y versión del contrato canónico son conceptos distintos;
+10. no se inventará ninguna versión de Makos;
+11. `makos_sales_by_item_v1` es identificador de parser Vento, no versión Makos;
+12. todo hash deberá conservar algoritmo, base y digest;
+13. el hash es guardia de integridad, equivalencia o conflicto, no identidad empresarial;
+14. el hash por sí solo no define idempotencia;
+15. misma identidad externa con contenido incompatible no sobrescribe la evidencia anterior;
+16. mismo hash con identidades externas distintas no demuestra duplicidad por sí solo;
+17. `received_at` es tiempo técnico de primera recepción durable, no tiempo comercial;
+18. retry, replay o reproceso no cambian `received_at` de la recepción original;
+19. `imported_at` del flujo Excel vigente permanece tiempo técnico legacy y no se renombra a `received_at`;
+20. `source_row_number` es localizador técnico y no identidad de línea;
+21. el Excel actual sí calcula y persiste SHA-256 del archivo leído;
+22. la línea base revisada no demuestra persistencia posterior de los bytes originales del XLSX;
+23. la fundación Wompi constituye precedente técnico, no contrato Makos;
+24. credenciales y secretos no forman parte del payload empresarial conservado;
+25. la definición física de almacenamiento, retención, acceso e integridad se materializará en sus tareas propietarias sin adelantarlas;
+26. esta tarea no modifica código, DDL, DML, migraciones, Supabase, Storage, datos, credenciales, endpoints, webhooks ni configuración remota;
+27. `INT-POS-010` permanece exclusivamente reservada.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-009` materializa para la transición Makos → PULSO reglas de procedencia que ya están protegidas explícitamente por la cobertura canónica vigente: conservación de payload original protegido y momento de recepción para hechos externos; identidad estable de recepción cuando el proveedor entrega o no entrega identificador; separación del hash respecto de la identidad empresarial; preservación de versiones y conflictos sin sobrescribir historia; exclusión de secretos; y separación entre tiempos del hecho y tiempos técnicos. La tarea no crea una excepción ejecutable nueva fuera de esas reglas ni modifica su alcance, por lo que el registro 04A permanece sin cambios.
+
+#### 18. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-INTEGRATION-014`, cobertura de la transición del POS externo mediante adaptador, staging, payload original, hash, mapping, cuarentena, idempotencia y efectos exactamente una vez;
+- `TREQ-INTEGRATION-049`, cobertura de afirmación externa, autenticidad, proveedor, identificador externo, payload original protegido, momento de recepción y correlación antes del hecho interno;
+- `TREQ-INTEGRATION-051`, cobertura de exclusión de secretos, tokens, credenciales y material sensible de contratos y ejemplos de integración;
+- `TREQ-INTEGRATION-052`, cobertura de versionado semántico sin reinterpretar historia;
+- `TREQ-INTEGRATION-125`, cobertura de identidad externa confiable, procedencia, payload protegido, recepción y huella antes del hecho interno;
+- `TREQ-INTEGRATION-126`, cobertura de identidad estable de recepción cuando el proveedor no entregue identificador estable;
+- `TREQ-INTEGRATION-127`, cobertura del hash como guardia y prohibición de utilizarlo como identidad empresarial única;
+- `TREQ-INTEGRATION-217`, cobertura de historia append-only y correcciones vinculadas sin eliminación destructiva;
+- `TREQ-INTEGRATION-218`, cobertura de minimización de datos sensibles mediante referencias, hashes o diferencias cuando corresponda;
+- `TREQ-INTEGRATION-222`, cobertura de separación temporal entre ocurrencia, registro y finalización, preservando el momento histórico frente a captura tardía.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 19. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. define representación original como la entrada anterior a interpretación empresarial;
+2. distingue bytes originales de representaciones parseadas o reserializadas;
+3. define un sobre lógico mínimo de recepción sin escoger nombres físicos de tabla o tipo;
+4. exige identidad estable de recepción;
+5. conserva identidad externa cuando la fuente la entregue;
+6. define tratamiento cuando la fuente no entregue identificador estable;
+7. mantiene identidad de recepción separada de venta, línea, pago y reverso;
+8. separa revisión del dato, versión de API o esquema, versión del parser o adaptador y versión del contrato canónico;
+9. prohíbe inventar versiones de Makos;
+10. clasifica `makos_sales_by_item_v1` exclusivamente como identificador de parser Vento;
+11. define algoritmo, base y digest como dimensiones necesarias para interpretar una huella;
+12. prohíbe utilizar el hash como identidad empresarial única;
+13. prohíbe usar el hash como única regla definitiva de idempotencia;
+14. define conflicto para una identidad externa reutilizada con contenido incompatible sin sobrescritura destructiva;
+15. define `received_at` como tiempo técnico de primera recepción durable;
+16. separa `received_at` de tiempos comerciales, de fuente y de procesamiento;
+17. impide cambiar `received_at` por retry, replay o reproceso;
+18. define localizador técnico para fragmentos de una recepción compuesta;
+19. prohíbe convertir el localizador en identidad empresarial;
+20. clasifica la evidencia actual del flujo `makos_excel` campo por campo;
+21. reconoce el SHA-256 actual del archivo leído sin inferir persistencia de sus bytes originales;
+22. clasifica `imported_at` como tiempo técnico legacy y no como `received_at` canónico;
+23. clasifica `source_row_number` como localizador técnico;
+24. clasifica la fundación Wompi como precedente que no define Makos ni prueba conservación de bytes HTTP originales;
+25. define la evidencia mínima que deberá aportar el binding real de Makos;
+26. asigna cada bloqueo a una tarea propietaria exacta con condición de salida;
+27. mantiene separadas procedencia, auditoría, observabilidad y contrato empresarial normalizado;
+28. preserva las tareas `EVID-ARC-*` aplicables como propietarias de materialización física posterior;
+29. genera cero cambios `TREQ-*` por existir cobertura canónica suficiente;
+30. no crea una copia del registro 04A;
+31. no modifica código, Supabase, Storage, migraciones, datos, credenciales, endpoints, webhooks, polling ni configuración remota;
+32. mantiene `INT-POS-010` como única siguiente tarea reservada.
+
+---
+
+#### 20. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa`
+
+
 ### [ ] INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
 ### [ ] INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
 ### [ ] INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
