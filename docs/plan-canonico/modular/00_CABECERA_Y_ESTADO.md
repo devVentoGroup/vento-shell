@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **783** |
+| Tareas aprobadas | **784** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **811** |
+| Tareas no iniciadas | **810** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.12% (783/1594)** |
+| Porcentaje de completamiento | **49.18% (784/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-022 — Diseñar piloto controlado con efectos habilitados** |
-| Tarea actual | **INT-POS-023 — Definir transición futura desde POS externo hacia PULSO** |
+| Última tarea aprobada | **INT-POS-023 — Definir transición futura desde POS externo hacia PULSO** |
+| Tarea actual | **INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente** |
+| Siguiente tarea | **INT-SALES-001 — Definir contrato para que PULSO registre la venta** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 67 de 83 aprobadas; INT-POS-023 pendiente** |
+| Progreso del bloque | **BLOQUE X: 68 de 83 aprobadas; INT-POS-024 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-022` — Diseñar piloto controlado con efectos habilitados |
-| Tarea actual | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente |
+| Última aprobada | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO |
+| Tarea actual | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-001` — Definir contrato para que PULSO registre la venta |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 67 DE 83 APROBADAS — ACTUAL INT-POS-023** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 68 DE 83 APROBADAS — ACTUAL INT-POS-024** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-022 — Diseñar piloto controlado con efectos habilitados
-        ↓
-TAREA ACTUAL
 INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-001 — Definir contrato para que PULSO registre la venta
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 67 de 83 tareas aprobadas
+BLOQUE X — 68 de 83 tareas aprobadas
 ```

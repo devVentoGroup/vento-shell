@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **783** |
+| Aprobadas | **784** |
 | En propuesta | **0** |
-| No iniciadas | **811** |
+| No iniciadas | **810** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.12% (783/1594)** |
+| Porcentaje de completamiento | **49.18% (784/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-022` — Diseñar piloto controlado con efectos habilitados | ✅ APROBADA |
-| Tarea actual | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO | ✅ APROBADA |
+| Tarea actual | `INT-POS-024` — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-SALES-001` — Definir contrato para que PULSO registre la venta | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1491,7 +1491,7 @@
 | ✅ APROBADA | `INT-POS-020` | Definir conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-021` | Diseñar piloto sin efectos sobre inventario ni finanzas | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-022` | Diseñar piloto controlado con efectos habilitados | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-023` | Definir transición futura desde POS externo hacia PULSO | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-023` | Definir transición futura desde POS externo hacia PULSO | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-024` | Definir revocación o reducción de credenciales cuando PULSO asuma la fuente | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-SALES-001` | Definir contrato para que PULSO registre la venta | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-002` | Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
