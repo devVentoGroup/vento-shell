@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  applyNormalRouteSelection,
   applyPriorityReturnPolicy,
   resolvePriorityRoute,
 } from './execution-route.mjs';
@@ -12,6 +13,7 @@ function task(id, state) {
 
 const selector = {
   selected_route_id: 'TEST-LANE-001',
+  latest_treq_task_id: 'PRE-TEST-001',
   priority_entry_task_id: 'ENTRY-TEST-001',
   return_policy: 'RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION',
 };
@@ -134,4 +136,20 @@ test('retorna al flujo normal únicamente después de certificar todo el carril'
   );
   assert.equal(resumed.route_id, 'NORMAL-CANONICAL-FLOW-001');
   assert.equal(resumed.resumed_after_priority_route_id, 'TEST-LANE-001');
+});
+
+test('execution-route conserva la autoridad única sobre latest_treq_task_id en el flujo normal', () => {
+  const selected = applyNormalRouteSelection(
+    {
+      normal_route_id: 'NORMAL-CANONICAL-FLOW-001',
+      latest_treq_task_id: 'NEXO-UX-025',
+    },
+    {
+      route_id: 'NORMAL-CANONICAL-FLOW-001',
+      latest_treq_task_id: 'SUPA-TRANS-006',
+    },
+  );
+
+  assert.equal(selected.generated_from, 'execution-route.json');
+  assert.equal(selected.latest_treq_task_id, 'NEXO-UX-025');
 });

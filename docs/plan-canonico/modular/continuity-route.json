@@ -2,7 +2,6 @@
   "schema_version": 1,
   "route_id": "NORMAL-CANONICAL-FLOW-001",
   "entry_task_id": "AUTH-AUD-001",
-  "latest_treq_task_id": "SUPA-TRANS-006",
   "coverage_policy": "ALL_CANONICAL_TASKS_EXACTLY_ONCE",
   "projection_policy": "PENDING_TASKS_ONLY",
   "ordering_source": "90_ORDEN_DE_IMPLEMENTACION.md",

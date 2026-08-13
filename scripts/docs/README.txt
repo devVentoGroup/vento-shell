@@ -69,6 +69,9 @@ Organización:
   los destinos de implementación; queda prohibido invocar directamente el
   build parcial porque podría adelantar active-sequence.json sin actualizar
   REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md.
+- execution-route.json es la autoridad única de latest_treq_task_id;
+  continuity-route.json define el orden integral sin duplicar ese puntero y
+  active-sequence.json lo recibe del selector durante cada regeneración.
 - el build ejecuta el validador TREQ antes de compilar y bloquea dominios,
   secuencias, columnas, estados, tipos, propietarios, relaciones, cifras o
   evidencia obsoleta.

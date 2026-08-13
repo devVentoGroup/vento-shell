@@ -6,7 +6,7 @@
   "block_code": "BLOQUE X",
   "block_title": "Contratos de integración y transiciones",
   "previous_task_id": "INT-PROD-005",
-  "latest_treq_task_id": "SUPA-TRANS-006",
+  "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "QUEUE-ARC-001",
   "handoff_sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
   "segments": [

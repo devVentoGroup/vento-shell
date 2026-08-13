@@ -350,11 +350,21 @@ export function applyPriorityReturnPolicy(selector, priorityConfig, normalConfig
     };
   }
   return {
+    ...applyNormalRouteSelection(selector, normalConfig),
+    resumed_after_priority_route_id: selector.selected_route_id,
+    priority_route_complete: true,
+  };
+}
+
+export function applyNormalRouteSelection(selector, normalConfig) {
+  if (typeof selector.latest_treq_task_id !== 'string' || selector.latest_treq_task_id.length === 0) {
+    fail('execution-route.json debe declarar latest_treq_task_id como autoridad única de TREQ.');
+  }
+  return {
     ...normalConfig,
     generated_from: 'execution-route.json',
     selected_route_id: selector.normal_route_id,
-    resumed_after_priority_route_id: selector.selected_route_id,
-    priority_route_complete: true,
+    latest_treq_task_id: selector.latest_treq_task_id,
   };
 }
 
@@ -365,11 +375,10 @@ export function readAndResolveExecutionRoute(baseDir, taskMap) {
   }
 
   if (selector.selected_route_id === selector.normal_route_id) {
-    return {
-      ...readAndResolveContinuityRoute(baseDir, taskMap),
-      generated_from: 'execution-route.json',
-      selected_route_id: selector.selected_route_id,
-    };
+    return applyNormalRouteSelection(
+      selector,
+      readAndResolveContinuityRoute(baseDir, taskMap),
+    );
   }
 
   const priorityConfig = resolvePriorityRoute({
