@@ -10712,7 +10712,7 @@ Después de una acumulación:
 - un cambio que altere el derecho de puntos requiere ajuste o compensación;
 - el original permanece;
 - `INT-POS-019` gobierna compensaciones derivadas de anulaciones y devoluciones;
-- `PASS-INT-006` gobierna el diseño detallado de corrección y reversión PASS.
+- `PASS-INT-001` gobierna dentro de la integración de acumulación el diseño detallado de ajuste, corrección, reversión y compensación del efecto PASS originado por una venta, conservando el movimiento original.
 
 ---
 
@@ -10965,10 +10965,10 @@ La procedencia Makos permanece para auditoría, pero no cambia la propiedad del 
 | redención permanente desde PULSO                       | `INT-SALES-006`   | una redención explícita usa identidad PASS y resultado idempotente                                           |
 | integración detallada de acumulación                   | `PASS-INT-001`    | se fija la operación propietaria, cardinalidad de movimientos y contrato físico sin client-side ledger write |
 | integración detallada de redención                     | `PASS-INT-002`    | se fija la operación propietaria, atomicidad y resultado de redención                                        |
-| correlación evento-cuenta-movimiento                   | `PASS-INT-003`    | cada efecto puede reconstruirse desde evento fuente hasta cuenta y ledger                                    |
-| idempotencia detallada de acumulación                  | `PASS-INT-004`    | la identidad de dominio y la huella quedan materializadas en el contrato PASS                                |
-| reversión PASS                                         | `PASS-INT-006`    | ajustes y reversos son append-only, referencian original y no duplican saldo                                 |
-| conciliación PASS                                      | `PASS-INT-007`    | ledger, saldo, venta, redención y efectos externos convergen sin editar historia                             |
+| correlación evento-cuenta-movimiento de acumulación    | `PASS-INT-001`    | cada acumulación puede reconstruirse desde evento fuente hasta cuenta y movimiento del ledger                |
+| idempotencia detallada de acumulación                  | `PASS-INT-001`    | la identidad de dominio y la huella quedan materializadas en el contrato de acumulación PASS                 |
+| reversión o compensación de acumulación PASS           | `PASS-INT-001`    | ajustes y reversos son append-only, referencian original y no duplican saldo                                 |
+| conciliación de acumulación PASS                       | `PASS-INT-001`; `PASS-QA-001` | el contrato propietario reconcilia ledger, saldo y venta sin editar historia, y QA verifica el flujo completo |
 
 Ningún pendiente material queda sin tarea propietaria ni condición de salida.
 

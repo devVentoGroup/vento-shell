@@ -8,6 +8,9 @@ const watcherPath = path.resolve('scripts/docs/watch-plan-canonico.mjs');
 const productionIntegrationPath = path.resolve(
   'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md',
 );
+const posTransitionPath = path.resolve(
+  'docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md',
+);
 
 test('verifica derivados commiteados antes de que el build pueda regenerarlos', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
@@ -80,4 +83,20 @@ test('INT-PROD-005 conserva su predecesora aprobada y reserva INT-POS-001', () =
   assert.match(task, /PREDECESORA CANÓNICA APROBADA\s+INT-PROD-004/u);
   assert.match(task, /ÚLTIMA TAREA CANÓNICA APROBADA\s+INT-PROD-005/u);
   assert.match(task, /SIGUIENTE TAREA RESERVADA — NO INICIADA\s+INT-POS-001/u);
+});
+
+test('INT-POS-018 entrega acumulación, reversión y conciliación a identidades PASS vigentes', () => {
+  const source = fs.readFileSync(posTransitionPath, 'utf8');
+  const start = source.indexOf('### ✅ INT-POS-018');
+  const end = source.indexOf('### ✅ INT-POS-019', start);
+  assert.ok(start >= 0 && end > start, 'no se pudo aislar INT-POS-018');
+  const task = source.slice(start, end);
+
+  assert.doesNotMatch(task, /PASS-INT-006|PASS-INT-007/u);
+  assert.doesNotMatch(task, /correlación evento-cuenta-movimiento[^\n]+PASS-INT-003/u);
+  assert.doesNotMatch(task, /idempotencia detallada de acumulación[^\n]+PASS-INT-004/u);
+  assert.match(task, /correlación evento-cuenta-movimiento de acumulación[^\n]+PASS-INT-001/u);
+  assert.match(task, /idempotencia detallada de acumulación[^\n]+PASS-INT-001/u);
+  assert.match(task, /reversión o compensación de acumulación PASS[^\n]+PASS-INT-001/u);
+  assert.match(task, /conciliación de acumulación PASS[^\n]+PASS-INT-001[^\n]+PASS-QA-001/u);
 });
