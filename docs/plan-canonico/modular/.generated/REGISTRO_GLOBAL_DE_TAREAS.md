@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **795** |
+| Aprobadas | **796** |
 | En propuesta | **0** |
-| No iniciadas | **799** |
+| No iniciadas | **798** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.87% (795/1594)** |
+| Porcentaje de completamiento | **49.94% (796/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-SALES-010` — Definir control que impida que ambas fuentes emitan la misma venta | ✅ APROBADA |
-| Tarea actual | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-MKT-001` — Definir campañas solo después de aprobar AURA | ⬜ NO INICIADA |
+| Última aprobada | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos | ✅ APROBADA |
+| Tarea actual | `INT-MKT-001` — Definir campañas solo después de aprobar AURA | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-MKT-002` — Definir beneficios publicados en PASS | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1503,7 +1503,7 @@
 | ✅ APROBADA | `INT-SALES-008` | Definir conciliación de convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-010` | Definir control que impida que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
-| ⬜ NO INICIADA | `INT-SALES-011` | Definir retiro del adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
+| ✅ APROBADA | `INT-SALES-011` | Definir retiro del adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |

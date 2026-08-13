@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **795** |
+| Tareas aprobadas | **796** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **799** |
+| Tareas no iniciadas | **798** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.87% (795/1594)** |
+| Porcentaje de completamiento | **49.94% (796/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta** |
-| Tarea actual | **INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos** |
+| Última tarea aprobada | **INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos** |
+| Tarea actual | **INT-MKT-001 — Definir campañas solo después de aprobar AURA** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-MKT-001 — Definir campañas solo después de aprobar AURA** |
+| Siguiente tarea | **INT-MKT-002 — Definir beneficios publicados en PASS** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 79 de 83 aprobadas; INT-SALES-011 pendiente** |
+| Progreso del bloque | **BLOQUE X: 80 de 83 aprobadas; INT-MKT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-SALES-010` — Definir control que impida que ambas fuentes emitan la misma venta |
-| Tarea actual | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos — **NO INICIADA** |
-| Siguiente tarea | `INT-MKT-001` — Definir campañas solo después de aprobar AURA |
+| Última aprobada | `INT-SALES-011` — Definir retiro del adaptador externo sin modificar consumidores internos |
+| Tarea actual | `INT-MKT-001` — Definir campañas solo después de aprobar AURA — **NO INICIADA** |
+| Siguiente tarea | `INT-MKT-002` — Definir beneficios publicados en PASS |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 79 DE 83 APROBADAS — ACTUAL INT-SALES-011** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 80 DE 83 APROBADAS — ACTUAL INT-MKT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
-        ↓
-TAREA ACTUAL
 INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-MKT-001 — Definir campañas solo después de aprobar AURA
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-MKT-002 — Definir beneficios publicados en PASS
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 79 de 83 tareas aprobadas
+BLOQUE X — 80 de 83 tareas aprobadas
 ```

@@ -14206,6 +14206,967 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos`
 
 
-### [ ] INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
+### ✅ INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
+**Tarea siguiente:** `INT-MKT-001 — Definir campañas solo después de aprobar AURA`
+**Tipo de tarea:** documental; definición normativa y materializada del retiro permanente del adaptador de ventas del POS externo una vez que PULSO sea la única fuente autorizada para nuevas ventas del alcance correspondiente, preservando identidad, procedencia, historia, conciliación y contratos internos hacia NEXO, NUMERA y PASS, sin retirar físicamente código, rutas, bindings, credenciales, tablas, funciones, migraciones, datos ni configuración durante esta tarea
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**POS externo de transición:** `Makos`
+**Aplicación propietaria del hecho comercial interno:** `PULSO`
+**Contrato transversal de retiro consumido:** `INT-EXT-019 — Definir retiro de integración y revocación de credenciales`
+**Contrato de credenciales consumido:** `INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente`
+**Línea base documental:** `vento-shell@ee281fca8d346df08f87092baa7fb0cefcf79681`
+**Línea base técnica PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+**Estado documental del contrato de retiro:** `ESPECIFICADO`
+**Estado operativo del retiro físico:** `BLOQUEADO`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el cierre permanente de la ruta de entrada Makos → PULSO cuando el POS externo ya no sea necesario para originar nuevas ventas ni para resolver residuales históricos, de forma que el retiro del adaptador no cambie el contrato canónico que reciben las aplicaciones internas.
+
+Regla raíz:
+
+```text
+ANTES DEL RETIRO
+MAKOS
+→ ADAPTADOR EXTERNO
+→ PULSO: VENTA CANÓNICA
+→ EVENTO CANÓNICO PULSO
+→ NEXO / NUMERA / PASS SEGÚN CORRESPONDA
+
+DESPUÉS DEL RETIRO
+PULSO: VENTA NATIVA
+→ MISMA VENTA CANÓNICA
+→ MISMO EVENTO CANÓNICO PULSO
+→ NEXO / NUMERA / PASS SEGÚN CORRESPONDA
+```
+
+El objeto que desaparece es el **camino técnico de incorporación desde la fuente externa**. No desaparecen ni se reinterpretan la venta canónica, el evento PULSO, los efectos de las consumidoras, la historia Makos ni la evidencia requerida para reconstruir lo ocurrido.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-011` deja congeladas las siguientes decisiones:
+
+1. el adaptador Makos no es parte del contrato que NEXO, NUMERA o PASS deben consumir;
+2. el adaptador termina su función únicamente después de que PULSO sea la fuente autorizada de nuevas ventas para todo alcance que dependía de esa ruta y no exista tráfico nuevo legítimo que deba ingresar por Makos;
+3. retirar el adaptador no cambia la identidad, versión, esquema, audiencia ni semántica del evento canónico de venta de PULSO;
+4. ninguna consumidora interna deberá cambiar de endpoint, esquema, `effect_code`, clave idempotente, regla de negocio o fuente de verdad como consecuencia del retiro;
+5. una venta Makos histórica conserva `source_system = Makos` o la procedencia equivalente aprobada;
+6. una venta PULSO posterior al corte conserva origen PULSO y no adquiere una identidad Makos para mantener compatibilidad;
+7. el retiro no recrea ventas históricas ni vuelve a emitir eventos ya existentes;
+8. replay y backfill históricos conservan identidad, procedencia, audiencia y resultados previos;
+9. una revisión, anulación, devolución o reembolso de una venta Makos histórica conserva vínculo con el original aunque el adaptador ya no esté activo;
+10. un residual que todavía necesite consultar o recibir información Makos impide el retiro terminal del adaptador mientras no tenga una ruta autorizada que elimine esa dependencia;
+11. la conciliación debe resolver o asignar explícitamente resultados desconocidos y trabajo pendiente antes del cierre terminal;
+12. retirar credenciales y retirar el adaptador son controles coordinados pero distintos;
+13. una credencial revocada no demuestra por sí sola que el adaptador esté retirado;
+14. eliminar una pantalla, variable o función local no demuestra por sí solo retiro terminal;
+15. el retiro terminal exige que no existan consumidoras internas dependientes del adaptador ni residuales que requieran su runtime;
+16. historia, receipts, mappings, auditoría, evidencias, correlaciones y resultados empresariales se preservan conforme a sus políticas vigentes;
+17. el retiro no elimina la cuenta del proveedor, su historial remoto ni superficies ajenas al flujo de ventas por inferencia;
+18. pagos, caja, documento fiscal y contabilidad oficial no cambian de proveedor ni de autoridad por retirar el adaptador de ventas;
+19. una contingencia posterior de PULSO no reactiva Makos como fuente por fallback silencioso;
+20. cualquier futura reactivación de una fuente externa para nuevas ventas exige una nueva decisión explícita de autoridad y un nuevo intervalo no solapado;
+21. la fase documental actual crea cero objetos físicos, elimina cero objetos físicos y ejecuta cero revocaciones;
+22. el estado físico actual del retiro permanece bloqueado hasta demostrar las puertas definidas en esta tarea.
+
+---
+
+#### 3. Dependencias consumidas y preservadas
+
+La tarea consume sin reabrir:
+
+- `INT-SALES-001`, para propiedad de PULSO sobre la venta canónica;
+- `INT-SALES-002`, para emisión del evento canónico de venta;
+- `INT-SALES-003`, para el efecto físico propietario de NEXO;
+- `INT-SALES-004`, para el efecto económico propietario de NUMERA;
+- `INT-SALES-005`, para acumulación propietaria de PASS cuando corresponda;
+- `INT-SALES-006`, para redención PASS como operación separada;
+- `INT-SALES-007`, para idempotencia y recuperación de efectos frente a retry;
+- `INT-SALES-008`, para conciliación permanente de convivencia y residuales;
+- `INT-SALES-009`, para autoridad temporal por sede, terminal y fecha efectiva;
+- `INT-SALES-010`, para impedir doble origen de una misma venta antes de una segunda emisión;
+- `INT-POS-009`, para procedencia y evidencia original externa;
+- `INT-POS-013`, para identidad e idempotencia del hecho externo;
+- `INT-POS-019`, para compensaciones no destructivas;
+- `INT-POS-020`, para conciliación de ventas y efectos;
+- `INT-POS-023`, para el corte Makos → PULSO y la clasificación de eventos tardíos y residuales;
+- `INT-POS-024`, para reducción, revocación y retiro de referencias de credenciales;
+- `INT-EXT-019`, para las puertas transversales de retiro de una integración;
+- `INT-EXT-020`, para impedir una revocación ciega cuando una credencial esté compartida o su exclusividad no pueda acreditarse;
+- `INT-APP-004` a `INT-APP-010`, para idempotencia, retry, auditoría, partialidad, resultados desconocidos y prohibición de escrituras cruzadas.
+
+Ninguna dependencia cambia de identidad, significado, propietaria ni estado por esta tarea.
+
+---
+
+#### 4. Frontera exacta del adaptador de ventas
+
+Para esta tarea, el adaptador externo es la frontera técnica que incorpora afirmaciones de venta de Makos hacia el dominio comercial interno y puede comprender, según el binding realmente materializado:
+
+- canal de entrada o captura autorizado;
+- autenticación o contexto del proveedor;
+- recepción y preservación de evidencia original;
+- parsing o transformación del formato externo;
+- staging;
+- mapping de contexto y producto;
+- cuarentena;
+- normalización hacia el contrato canónico;
+- idempotencia de la afirmación externa;
+- correlación con la venta canónica;
+- rutas operativas usadas exclusivamente para ese ingreso.
+
+No forman parte del adaptador que esta tarea pretende retirar:
+
+- la venta canónica de PULSO;
+- la línea canónica de venta;
+- el catálogo empresarial de eventos;
+- el contrato de entrega a consumidoras;
+- el inbox de NEXO, NUMERA o PASS;
+- los ledgers o efectos de NEXO, NUMERA o PASS;
+- la auditoría histórica;
+- la evidencia protegida ya preservada;
+- un documento fiscal histórico;
+- un pago histórico;
+- una compensación ya registrada.
+
+---
+
+#### 5. Separación obligatoria de lifecycles
+
+Se mantiene:
+
+```text
+LIFECYCLE DEL POS EXTERNO
+≠
+LIFECYCLE DEL ADAPTADOR
+≠
+LIFECYCLE DE LA CREDENCIAL
+≠
+LIFECYCLE DE LA VENTA
+≠
+LIFECYCLE DEL EVENTO PULSO
+≠
+LIFECYCLE DEL EFECTO CONSUMIDOR
+≠
+RETENCIÓN DE HISTORIA Y EVIDENCIA
+```
+
+Consecuencias:
+
+1. revocar una credencial no borra el adaptador ni la historia;
+2. retirar el adaptador no borra ventas ni eventos;
+3. cerrar el POS como fuente de nuevas ventas no invalida hechos anteriores;
+4. un efecto ya aplicado en NEXO, NUMERA o PASS conserva su identidad después del retiro;
+5. un residual histórico puede mantener abierto el retiro aunque no exista nueva autoridad de venta en Makos;
+6. la retención de evidencia puede continuar después del retiro terminal sin mantener activo el binding.
+
+---
+
+#### 6. Topología antes y después del retiro
+
+| Momento                               | Entrada de nuevas ventas                                                            | Contrato interno                | Consumidoras                       | Regla                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------- |
+| antes del corte del alcance           | Makos mediante adaptador                                                            | venta/evento canónicos de PULSO | NEXO, NUMERA y PASS cuando aplique | Makos conserva la autoridad temporal definida                                    |
+| después del corte pero con residuales | PULSO para nuevas ventas; Makos solo puede sostener historia/residuales autorizados | mismo contrato canónico         | mismas consumidoras                | el adaptador no puede originar nuevas ventas post-corte                          |
+| después del retiro terminal           | PULSO                                                                               | mismo contrato canónico         | mismas consumidoras                | no existe runtime Makos autorizado para nuevas ventas ni residuales dependientes |
+
+La transición no introduce una cuarta topología en la que las consumidoras internas deban conocer si la venta fue recibida mediante Makos o creada nativamente en PULSO para decidir cómo consumirla.
+
+---
+
+#### 7. Invariante de consumidoras internas
+
+La condición central de esta tarea es:
+
+```text
+CONTRATO CONSUMIDO ANTES DEL RETIRO
+=
+CONTRATO CONSUMIDO DESPUÉS DEL RETIRO
+```
+
+El origen de la venta puede continuar disponible como dato de procedencia cuando sea necesario, pero no cambia la interfaz contractual de la consumidora.
+
+| Consumidora | Antes del retiro                                                       | Después del retiro                                        | Cambio permitido por esta tarea                               |
+| ----------- | ---------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------- |
+| NEXO        | recibe el evento/contrato aprobado y decide su efecto físico           | recibe el mismo contrato y decide el mismo tipo de efecto | ninguno                                                       |
+| NUMERA      | recibe el hecho comercial autorizado y materializa su efecto económico | recibe el mismo hecho contractual                         | ninguno                                                       |
+| PASS        | evalúa cuenta, regla y elegibilidad sobre el evento autorizado         | ejecuta la misma evaluación                               | ninguno                                                       |
+| PULSO       | conserva venta canónica y evento empresarial                           | conserva venta canónica y evento empresarial              | deja de necesitar la ruta de ingreso Makos para nuevas ventas |
+
+NEXO, NUMERA y PASS no deberán leer directamente archivos Makos, tablas de staging Makos, hashes de archivo, filas del importador, credenciales Makos ni endpoints del proveedor para cumplir su responsabilidad canónica.
+
+---
+
+#### 8. Condición de independencia real de consumidoras
+
+El retiro terminal solo puede declararse cuando la implementación pueda demostrar que:
+
+1. ninguna consumidora interna autorizada recibe tráfico directamente desde Makos;
+2. ninguna consumidora necesita una tabla, vista, función, cola o endpoint exclusivo del adaptador para aplicar su efecto ordinario;
+3. la información necesaria para cada efecto está presente en el contrato canónico o en referencias gobernadas independientes del adaptador;
+4. el retiro del runtime externo no obliga a cambiar el registro de audiencia;
+5. el retiro no obliga a crear un nuevo `event_definition_id` ni un segundo evento semánticamente equivalente;
+6. la eliminación futura de referencias activas del adaptador no deja jobs, caches, funciones o procesos internos huérfanos;
+7. las pruebas de compatibilidad contractual demuestran el mismo comportamiento consumidor para una venta canónica elegible independientemente de que su procedencia histórica haya sido Makos o PULSO.
+
+La aprobación documental de esta tarea especifica la condición; no constituye evidencia física de que esas siete comprobaciones ya hayan sido ejecutadas.
+
+---
+
+#### 9. Unidad de retiro
+
+La desactivación puede ocurrir progresivamente por alcance durante la transición, pero el **retiro terminal del adaptador de ventas** solo es válido para un binding o superficie cuando:
+
+- no conserva autoridad de nuevas ventas en ninguna sede o terminal incluida en ese binding;
+- no existe un alcance legítimo no transferido que todavía necesite esa ruta;
+- no existen residuales históricos que exijan mantener el runtime;
+- cualquier credencial aplicable está tratada conforme a `INT-POS-024` e `INT-EXT-019`;
+- las consumidoras internas ya operan únicamente sobre el contrato PULSO;
+- la historia necesaria está preservada fuera de la necesidad de runtime activo.
+
+Si una misma implementación del adaptador todavía sirve a una sede o terminal no transferida, no puede declararse retirada globalmente por haber cerrado otros alcances.
+
+---
+
+#### 10. Puertas acumulativas del retiro terminal
+
+El retiro terminal requiere todas las puertas aplicables:
+
+| Puerta                                          | Condición especializada para ventas                                                                                 |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `AUTORIDAD_DE_RETIRO_ACREDITADA`                | existe decisión válida y alcance exacto para cerrar el adaptador de ventas                                          |
+| `AUTORIDAD_DE_FUENTE_TRANSFERIDA`               | PULSO es autoridad de nuevas ventas en todo alcance que dejará de usar el adaptador                                 |
+| `CERO_NUEVAS_INTENCIONES_MAKOS`                 | ninguna venta nueva autorizada puede originarse por el binding retirado                                             |
+| `DOBLE_FUENTE_BLOQUEADA`                        | el control de `INT-SALES-010` impide una segunda venta/emisión desde la fuente anterior                             |
+| `CONSUMIDORAS_INDEPENDIENTES`                   | NEXO, NUMERA y PASS dependen del contrato PULSO, no del adaptador                                                   |
+| `TRABAJO_EN_CURSO_CLASIFICADO`                  | toda recepción, lote, revisión, retry, cuarentena o caso abierto tiene estado y propietario                         |
+| `RESULTADOS_DESCONOCIDOS_RESUELTOS_O_ASIGNADOS` | ningún outcome incierto queda oculto ni habilita repetición ciega                                                   |
+| `RESIDUALES_CERRADOS_O_DESACOPLADOS`            | ningún residual legítimo requiere mantener el runtime Makos                                                         |
+| `BINDING_DESACTIVADO_O_NO_APLICA`               | la ruta técnica ya no admite nuevo uso o se acredita que nunca existió un binding runtime distinto del flujo legacy |
+| `CREDENCIALES_RESUELTAS`                        | material aplicable está reducido, revocado, retirado o clasificado como no aplicable según contrato                 |
+| `REFERENCIAS_ACTIVAS_RESUELTAS`                 | ningún consumidor autorizado apunta a una referencia retirada                                                       |
+| `HISTORIA_PRESERVADA`                           | venta, evento, payload/evidencia, mappings, receipts, auditoría y resultados siguen reconstruibles                  |
+| `CONCILIACION_CERRADA`                          | no quedan diferencias críticas incompatibles con el cierre terminal                                                 |
+| `COMPATIBILIDAD_INTERNA_DEMOSTRADA`             | el retiro no cambia contrato ni resultado esperado de NEXO, NUMERA o PASS                                           |
+
+Una sola puerta falsa impide declarar el adaptador `RETIRADO` en sentido operativo.
+
+---
+
+#### 11. Corte de nuevas intenciones
+
+Cuando un alcance ya ha sido transferido a PULSO:
+
+```text
+NUEVA VENTA POST-CORTE
+→ SOLO PULSO
+```
+
+Queda prohibido que el adaptador:
+
+- acepte una nueva venta Makos como venta válida del intervalo PULSO;
+- use acceso residual para recrear una venta post-corte;
+- acepte una fila, archivo, webhook, polling o replay nuevo como medio para restaurar doble autoridad;
+- genere otra identidad porque el canal externo entregue el dato después;
+- envíe una nueva emisión a consumidoras para una venta ya reconocida;
+- convierta un residual histórico en autorización para tráfico ordinario.
+
+Una entrega nueva que contradiga la autoridad vigente se conserva como evidencia y se lleva a conflicto o conciliación; no prolonga automáticamente la vida del adaptador.
+
+---
+
+#### 12. Trabajo en curso al iniciar retiro
+
+Antes del cierre terminal se clasifican, como mínimo, las unidades conocidas:
+
+| Situación                                    | Tratamiento                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| venta/evento confirmado                      | preservar resultado; no repetir                                                                        |
+| recepción pre-corte pendiente de transformar | completar solo si sigue siendo legítima y mantiene identidad histórica, o asignar resolución explícita |
+| recepción enviada con receipt                | recuperar resultado antes de cerrar                                                                    |
+| resultado desconocido                        | consultar o conciliar antes de repetir o descartar                                                     |
+| retry abierto                                | conservar identidad, presupuesto y autoridad; no generar nueva operación                               |
+| revisión histórica pendiente                 | conservar relación con la venta original                                                               |
+| cuarentena                                   | conservar causa y evidencia; el retiro no la resuelve                                                  |
+| conflicto de doble fuente                    | conservar ambas evidencias y resolver autoridad; no elegir por conveniencia                            |
+| compensación pendiente                       | conservar el original y la propietaria de cada efecto                                                  |
+| residual aceptado                            | conservar responsable y condición objetiva de cierre                                                   |
+
+El retiro no convierte masivamente las unidades existentes en canceladas, exitosas, fallidas o eliminadas.
+
+---
+
+#### 13. Llegadas tardías después del corte
+
+Una llegada Makos posterior al corte puede seguir siendo legítima únicamente si demuestra que corresponde a un hecho anterior al límite efectivo o a una revisión/acción histórica admitida por el contrato.
+
+Mientras exista una ventana real en la que esas llegadas necesiten el runtime del adaptador, el retiro terminal permanece abierto.
+
+El cierre puede ocurrir cuando cada clase aplicable esté en una de estas condiciones:
+
+- la ventana contractual terminó y no quedan pendientes;
+- la evidencia necesaria ya fue preservada y el procesamiento histórico puede realizarse sin binding activo;
+- existe una ruta alternativa autorizada, idempotente y auditable que no reactiva la fuente para nuevas ventas;
+- el residual queda resuelto y conciliado.
+
+No se inventa una fecha de cierre de eventos tardíos si el proveedor o el contrato no la acreditan.
+
+---
+
+#### 14. Replay y backfill después del retiro
+
+Un replay o backfill de historia Makos podrá ejecutarse desde evidencia preservada únicamente conforme a los contratos vigentes y sin reactivar el adaptador como fuente nueva.
+
+Debe conservar:
+
+- identidad histórica;
+- `source_system` histórico;
+- `event_id` cuando el evento ya existía;
+- versión y tiempo del hecho;
+- audiencia histórica;
+- mapping/versiones necesarias;
+- resultados idempotentes previos;
+- correlación con efectos y compensaciones.
+
+Queda prohibido cambiar la fuente histórica a PULSO para simplificar un backfill o crear otro evento porque el runtime original ya fue retirado.
+
+---
+
+#### 15. Preservación de mappings y procedencia
+
+El retiro del adaptador no autoriza borrar la relación histórica entre una afirmación externa y la representación canónica que produjo.
+
+Cuando corresponda a la política de retención vigente deberán conservarse, por referencia o evidencia protegida:
+
+- sistema y contexto de origen;
+- identificador externo disponible;
+- identidad de recepción;
+- payload o evidencia original;
+- hash y versión de canonicalización cuando existan;
+- mapping de sede, terminal y producto utilizado;
+- versión del mapping;
+- decisión de cuarentena/liberación;
+- identidad canónica de venta y línea;
+- evento PULSO correlacionado;
+- receipts y efectos consumidores;
+- decisiones de conciliación y compensación.
+
+La conservación histórica no exige mantener una pantalla de importación, una credencial activa ni un endpoint habilitado.
+
+---
+
+#### 16. Invariante NEXO
+
+El retiro no modifica la frontera física.
+
+NEXO continúa siendo propietario de:
+
+- movimiento físico;
+- cantidad y unidad física;
+- lote y ubicación cuando apliquen;
+- posting/receipt canónico;
+- idempotencia de su efecto;
+- compensación física;
+- conciliación de su ledger.
+
+Una venta Makos histórica y una venta PULSO nativa que satisfagan el mismo contrato de efecto físico no requieren dos interfaces NEXO distintas.
+
+El flujo legacy que haya escrito inventario directamente desde un importador no se convierte en el contrato permanente por existir antes del retiro.
+
+---
+
+#### 17. Invariante NUMERA
+
+El retiro no modifica la frontera económica.
+
+NUMERA continúa recibiendo el hecho económico aplicable desde la fuente interna autorizada y conserva:
+
+- identidad de efecto;
+- monto y moneda;
+- entidad, sede, centro y periodo aplicables;
+- materialidad;
+- idempotencia;
+- reversos o compensaciones;
+- conciliación y evidencia.
+
+Retirar el adaptador Makos no crea otro hecho económico, no recalcula historia y no convierte una importación legacy en fuente contable.
+
+---
+
+#### 18. Invariante PASS
+
+El retiro no modifica la frontera de fidelización.
+
+PASS continúa resolviendo:
+
+- identidad y cuenta elegible;
+- regla y versión;
+- base de cálculo;
+- acumulación;
+- redención como operación distinta;
+- ledger inmutable;
+- balance derivado;
+- compensaciones.
+
+Una venta histórica no acumula puntos de nuevo porque el adaptador se retire. Una venta PULSO posterior usa la misma evaluación PASS cuando corresponda.
+
+---
+
+#### 19. Pagos, caja, fiscalidad y otras superficies
+
+Se conserva:
+
+```text
+ADAPTADOR DE VENTAS MAKOS
+≠
+PROVEEDOR DE PAGO
+≠
+CAJA
+≠
+DOCUMENTO FISCAL
+≠
+CUENTA ADMINISTRATIVA DEL PROVEEDOR
+≠
+CONTABILIDAD OFICIAL
+```
+
+Por tanto, esta tarea no autoriza:
+
+- revocar credenciales de pago por inferencia;
+- retirar un proveedor fiscal;
+- eliminar facturas o documentos históricos;
+- cerrar una cuenta administrativa Makos que conserve otra finalidad autorizada;
+- borrar reportes sujetos a retención;
+- transferir autoridad contable a NUMERA;
+- eliminar otras integraciones que compartan proveedor pero no binding.
+
+Cada superficie conserva su propio contrato y lifecycle.
+
+---
+
+#### 20. Coordinación con credenciales y bindings
+
+El retiro terminal consume la decisión de `INT-POS-024` sin sustituirla.
+
+Se conserva:
+
+```text
+DEJAR DE USAR EL ADAPTADOR
+≠
+DESACTIVAR EL BINDING
+≠
+REVOCAR LA CREDENCIAL
+≠
+RETIRAR REFERENCIAS LOCALES
+```
+
+Para cerrar el adaptador:
+
+1. el binding que permita tráfico nuevo debe estar desactivado o acreditarse como no aplicable;
+2. las credenciales aplicables deben tener tratamiento compatible con el cierre;
+3. una credencial compartida no se revoca a ciegas;
+4. una credencial comprometida se rige por la prioridad de seguridad definida transversalmente;
+5. el valor secreto nunca se conserva como evidencia de retiro;
+6. la ausencia de una credencial Makos acreditada impide fingir una revocación física, pero no impide definir este contrato documental.
+
+---
+
+#### 21. Estado técnico actual observado
+
+La línea base técnica vigente permite observar un flujo legacy de importación diaria desde archivo XLSX:
+
+- `vento-pulso` contiene la superficie `/sales-imports`;
+- la superficie parsea un reporte Makos por artículo;
+- conserva sede, fecha, hash de archivo y filas del reporte;
+- mantiene mappings `source = makos` para productos;
+- crea lotes y filas de importación;
+- invoca `pulso_post_daily_sales_import` para el posting legacy;
+- `vento-shell` contiene las estructuras y funciones Supabase que soportan ese flujo;
+- el RPC legacy puede materializar movimientos de inventario a partir de las filas agregadas.
+
+Ese estado demuestra una dependencia técnica legacy que deberá inventariarse cuando exista una fase autorizada de retiro físico.
+
+No demuestra por sí solo:
+
+- una venta individual canónica por cada transacción Makos;
+- una línea individual canónica por cada transacción;
+- un binding API/webhook Makos operativo;
+- una credencial Makos instanciable;
+- un inbox canónico independiente en cada consumidora;
+- que NEXO, NUMERA o PASS dependan contractualmente de ese importador;
+- que el adaptador ya pueda retirarse físicamente.
+
+---
+
+#### 22. Tratamiento del flujo legacy al implementar el retiro
+
+Cuando una fase posterior autorice cambios físicos, el inventario de retiro deberá identificar exhaustivamente antes de modificar:
+
+- superficie de importación en PULSO;
+- parsing y transformación Makos;
+- mappings externos activos;
+- tablas, vistas, RPC, funciones, triggers y políticas dedicados al flujo;
+- navegación y permisos que expongan la función;
+- jobs o procesos que lean sus estructuras;
+- referencias de auditoría y evidencia;
+- datos históricos que deban conservarse;
+- consumidores técnicos reales;
+- cualquier dependencia compartida que no pueda retirarse con seguridad.
+
+Las modificaciones Supabase que resulten necesarias deberán originarse, versionarse y ejecutarse desde `vento-shell` conforme a las reglas vigentes.
+
+Esta tarea no decide todavía qué objeto físico se elimina, conserva, migra, deshabilita o reemplaza porque la fase documental no autoriza materializar esa mutación y el binding objetivo todavía no está acreditado como operativo.
+
+---
+
+#### 23. Historia física frente a runtime activo
+
+El retiro deberá distinguir entre:
+
+| Elemento                            | Puede dejar de estar activo                   | Puede conservarse históricamente                                                                          |
+| ----------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| pantalla/ruta de ingreso Makos      | sí, cuando se implemente el retiro            | no es necesaria para explicar historia                                                                    |
+| parser o worker de nuevas ventas    | sí                                            | puede conservarse solo si una política técnica lo exige para reproducibilidad sin habilitar tráfico nuevo |
+| credencial/binding de nuevas ventas | sí; debe quedar resuelto para cierre terminal | solo referencia no sensible de lifecycle                                                                  |
+| ventas y líneas históricas          | no                                            | sí                                                                                                        |
+| payload/evidencia histórica         | no por el solo retiro                         | sí según retención y sensibilidad                                                                         |
+| mappings históricos                 | no por el solo retiro                         | sí cuando sean necesarios para reproducibilidad                                                           |
+| auditoría y conciliación            | no por el solo retiro                         | sí                                                                                                        |
+| receipts y resultados idempotentes  | no por el solo retiro                         | sí                                                                                                        |
+| contrato PULSO → consumidoras       | no                                            | sí y continúa operativo                                                                                   |
+
+Retirar runtime no equivale a destruir reproducibilidad.
+
+---
+
+#### 24. Conciliación previa al retiro
+
+`INT-SALES-008` permanece como propietaria de la conciliación de convivencia y deberá permitir demostrar, para el alcance que se pretenda retirar:
+
+- cero ventas nuevas legítimas pendientes de Makos;
+- cero ventas post-corte aceptadas indebidamente desde Makos;
+- cero dobles emisiones sin resolución;
+- cero ventas obligatorias sin evento sin propietario;
+- cero efectos huérfanos críticos sin dueño;
+- cero resultados desconocidos ocultos;
+- cero revisiones históricas pendientes que requieran runtime sin una ruta definida;
+- cero compensaciones históricas que dependan de acceso no resuelto;
+- cero residuales críticos sin propietario y condición de salida.
+
+Una igualdad de totales diarios no satisface estas condiciones si no existe la granularidad necesaria para explicar los hechos individuales del alcance.
+
+---
+
+#### 25. Residuales permitidos
+
+Un residual puede permanecer abierto sin impedir la aprobación documental, pero impide el retiro terminal si necesita runtime Makos.
+
+Cada residual deberá conservar como mínimo:
+
+- identidad o referencia del caso;
+- venta, evento o periodo afectado;
+- sede y terminal cuando apliquen;
+- fuente histórica;
+- evidencia disponible;
+- resultado conocido o incertidumbre;
+- motivo por el cual el adaptador todavía sería necesario;
+- responsable;
+- siguiente acción;
+- condición objetiva de salida.
+
+No son residuales válidos:
+
+- “por si acaso”;
+- posibilidad genérica de volver a Makos;
+- mantener una segunda fuente por comodidad;
+- conservar acceso para evitar definir una ruta de evidencia;
+- dejar un retry sin presupuesto ni propietario;
+- conservar una credencial amplia porque aún existe código legacy.
+
+---
+
+#### 26. Resultado desconocido durante el retiro
+
+Un timeout, receipt parcial, fallo de red o cierre del proveedor no demuestra que un hecho no ocurrió.
+
+Antes de retirar una ruta necesaria para resolver un `RESULT_UNKNOWN` se deberá:
+
+1. consultar el resultado por la identidad disponible cuando sea posible;
+2. recuperar el resultado durable si ya existe;
+3. comparar fuente interna, receipt y evidencia externa aplicable;
+4. clasificar cualquier efecto confirmado;
+5. abrir conciliación cuando no exista certeza suficiente;
+6. asignar propietario y siguiente acción;
+7. impedir una segunda venta o segundo efecto mientras la incertidumbre continúe.
+
+El retiro no se utiliza para convertir incertidumbre en rechazo terminal.
+
+---
+
+#### 27. Cuarentena y conflictos
+
+La existencia de una línea o recepción en cuarentena no se resuelve borrando el adaptador.
+
+Antes del retiro terminal:
+
+- toda cuarentena necesaria para historia debe conservar identidad y causa;
+- un conflicto de mapping se conserva como conflicto;
+- un conflicto de doble fuente conserva ambas evidencias;
+- una revisión incompatible no se sobrescribe;
+- un elemento aislado puede cerrarse, transferirse a una ruta histórica autorizada o conservarse como residual, pero no desaparecer sin decisión;
+- retirar el runtime no cambia el outcome empresarial de una unidad existente.
+
+---
+
+#### 28. Compensaciones después del retiro
+
+Las compensaciones pertenecen a los dominios propietarios y no al adaptador.
+
+Una compensación posterior puede seguir ocurriendo respecto de una venta Makos histórica siempre que conserve:
+
+- venta original;
+- evento original cuando exista;
+- efecto original confirmado;
+- propietaria del efecto;
+- acción compensatoria autorizada;
+- identidad idempotente propia;
+- evidencia suficiente;
+- residual cuando el cierre sea parcial.
+
+Si la compensación todavía requiere consultar Makos y esa consulta no puede reemplazarse por evidencia preservada, el adaptador no alcanza retiro terminal hasta resolver esa dependencia.
+
+---
+
+#### 29. Contingencia posterior al retiro
+
+Después del retiro terminal:
+
+```text
+FALLO DE PULSO
+≠
+AUTORIDAD AUTOMÁTICA DE MAKOS
+```
+
+No se permite:
+
+- restaurar la pantalla legacy como fallback ordinario;
+- reutilizar una credencial revocada;
+- reconstruir ventas PULSO en Makos para volver a importarlas;
+- abrir un nuevo intervalo Makos sin decisión explícita;
+- alterar fechas para clasificar una venta como anterior al retiro;
+- usar replay histórico como canal de nuevas ventas.
+
+Si alguna contingencia futura exige una fuente externa para nuevas ventas, deberá existir una nueva decisión de autoridad, alcance temporal, binding, credenciales, pruebas y reconciliación. No se considera rollback simple de este retiro.
+
+---
+
+#### 30. Reversibilidad del cambio técnico
+
+El contrato de retiro es terminal respecto del binding retirado, pero una implementación defectuosa puede requerir rollback técnico antes de que el cierre sea declarado definitivo.
+
+Ese rollback técnico:
+
+- no puede reactivar autoridad Makos para nuevas ventas si el intervalo ya pertenece a PULSO;
+- no puede reactivar material revocado;
+- puede restaurar únicamente componentes necesarios para corregir una falla técnica dentro del mismo contrato y bajo autorización;
+- debe conservar historia y auditoría del intento de retiro;
+- debe volver a demostrar las puertas antes de declarar cierre.
+
+Una nueva habilitación empresarial de Makos es una decisión distinta y no un rollback técnico.
+
+---
+
+#### 31. Evidencia mínima de retiro terminal
+
+Sin exponer secretos, una futura ejecución deberá poder relacionar:
+
+- alcance y autoridad del retiro;
+- sede, terminal e intervalo de fuente aplicables;
+- referencia del binding o superficie retirada;
+- lista de rutas y consumidores técnicos afectados;
+- prueba de que PULSO es la fuente posterior;
+- prueba de que nuevas intenciones Makos están bloqueadas;
+- resultado del control de doble fuente;
+- clasificación del trabajo en curso;
+- resultados desconocidos y su resolución;
+- residuales y su cierre;
+- estado de credenciales y referencias no sensibles;
+- estado del binding;
+- comprobación de independencia de consumidoras;
+- comprobación de contrato interno sin cambios;
+- evidencia de que historia, mappings, receipts y auditoría siguen disponibles según política;
+- resultado de conciliación;
+- momento efectivo del cierre;
+- actor o principal autorizado que ejecutó la futura operación;
+- cualquier rollback técnico ocurrido;
+- estado final y obligaciones residuales.
+
+Un `404`, una pantalla inexistente, una variable borrada o un deploy exitoso no constituyen por sí solos evidencia suficiente de retiro terminal.
+
+---
+
+#### 32. Matriz de estado actual
+
+| Materia                                                              | Estado actual verificable                          | Propietaria                                              | Condición de salida                                                              |
+| -------------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| contrato documental de retiro                                        | `ESPECIFICADO`                                     | `INT-SALES-011`                                          | contenido aprobado y posteriormente materializado por el paquete autorizado      |
+| corte físico Makos → PULSO                                           | `BLOQUEADO`                                        | `INT-SALES-009` + materialización de `INT-POS-023`       | gates reales de binding/piloto/corte superados para el alcance                   |
+| control físico de doble fuente                                       | `PENDIENTE_DE_EVIDENCIA`                           | `INT-SALES-010`                                          | implementación y prueba demuestran cero segunda venta/emisión                    |
+| binding API/webhook Makos                                            | `BLOQUEADO_POR_EVIDENCIA`                          | integración Makos/PULSO bajo `INT-POS-*`                 | proveedor/tenant acredita binding, identidad, capacidades y autoridad aplicables |
+| credencial Makos instanciable                                        | `BLOQUEADO_POR_EVIDENCIA`                          | `INT-POS-024`                                            | material o ausencia de material quedan acreditados y su lifecycle es resoluble   |
+| flujo legacy `makos_excel`                                           | `IMPLEMENTADO` como importación agregada observada | PULSO + objetos Supabase versionados desde `vento-shell` | implementación futura decide su retiro físico sin destruir historia              |
+| independencia contractual de NEXO/NUMERA/PASS respecto del adaptador | `ESPECIFICADO`                                     | `INT-SALES-002` a `INT-SALES-006` + `INT-SALES-011`      | pruebas de integración demuestran que el retiro no cambia interfaces ni efectos  |
+| conciliación de residuales                                           | `ESPECIFICADO`; ejecución real pendiente           | `INT-SALES-008`                                          | cero residual crítico dependiente del runtime o ruta alternativa autorizada      |
+| retiro físico del adaptador                                          | `BLOQUEADO`                                        | `INT-SALES-011`                                          | todas las puertas acumulativas del apartado 10 quedan demostradas                |
+
+No se declara retirado ningún objeto físico por aprobación de esta definición.
+
+---
+
+#### 33. Handoffs y fronteras exactas
+
+| Materia                          | Propietaria                       | Resultado exigido antes del cierre                                                                   |
+| -------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| autoridad temporal de fuente     | `INT-SALES-009`                   | todo alcance retirado pertenece inequívocamente al intervalo PULSO para nuevas ventas                |
+| doble fuente                     | `INT-SALES-010`                   | ninguna nueva afirmación Makos puede crear segunda venta o segunda emisión                           |
+| conciliación y residuales        | `INT-SALES-008`                   | diferencias críticas y residuales quedan cerrados o desacoplados del runtime                         |
+| credencial/binding               | `INT-POS-024`                     | acceso aplicable resuelto sin fingir revocación inexistente                                          |
+| lifecycle transversal del retiro | `INT-EXT-019`                     | puertas de binding, trabajo en curso, credenciales, referencias e historia satisfechas               |
+| credencial compartida            | `INT-EXT-020`                     | no existe revocación ciega de material usado por otro binding legítimo                               |
+| NEXO                             | `INT-SALES-003`                   | efecto físico conserva el mismo contrato interno                                                     |
+| NUMERA                           | `INT-SALES-004`                   | efecto económico conserva el mismo contrato interno                                                  |
+| PASS                             | `INT-SALES-005` y `INT-SALES-006` | fidelización conserva acumulación/redención bajo sus contratos propios                               |
+| retiro físico posterior          | `INT-SALES-011`                   | implementación autorizada materializa este contrato y demuestra sus puertas sin cambiar consumidoras |
+
+Ninguna frontera anterior autoriza adelantar una mutación física desde esta fase documental.
+
+---
+
+#### 34. Prohibiciones explícitas
+
+Queda prohibido:
+
+1. retirar el adaptador mientras Makos conserve autoridad legítima para nuevas ventas del alcance;
+2. retirar el adaptador mientras exista un residual crítico que requiera su runtime sin ruta alternativa autorizada;
+3. considerar revocación de credencial como sinónimo de retiro de adaptador;
+4. considerar eliminación de una variable o pantalla como retiro completo;
+5. borrar ventas Makos históricas;
+6. reclasificar ventas Makos como PULSO nativas;
+7. cambiar `event_id` histórico por haber retirado el runtime;
+8. crear un nuevo tipo de evento para ventas PULSO posteriores;
+9. modificar la audiencia de consumidoras por el retiro;
+10. exigir a NEXO, NUMERA o PASS leer directamente artefactos Makos;
+11. cambiar las claves idempotentes de efectos consumidores por el retiro;
+12. reemitir ventas históricas para “migrarlas”;
+13. reaplicar inventario, puntos o efectos económicos ya confirmados;
+14. borrar mappings o evidencia necesarios para explicar historia;
+15. resolver cuarentenas borrando su fuente técnica;
+16. resolver un resultado desconocido asumiendo que no ocurrió;
+17. cerrar una conciliación por igualdad agregada sin identidad suficiente;
+18. usar Makos como fallback silencioso después del retiro;
+19. reutilizar una credencial revocada;
+20. inventar endpoints, API, webhook, scopes o credenciales Makos no acreditados;
+21. retirar pagos, fiscalidad, contabilidad u otras superficies por inferencia;
+22. borrar migraciones históricas para ocultar el flujo legacy;
+23. modificar directamente datos de NEXO, NUMERA o PASS para facilitar el retiro;
+24. modificar código, SQL, migraciones, Supabase, datos, credenciales, endpoints, cuentas o configuración remota durante esta tarea;
+25. declarar una validación operativa o física que no haya sido ejecutada;
+26. iniciar o desarrollar `INT-MKT-001` desde esta tarea.
+
+---
+
+#### 35. Decisiones congeladas
+
+1. PULSO permanece como propietaria del hecho comercial interno.
+2. Makos permanece como procedencia histórica de sus ventas pre-corte.
+3. El adaptador es una frontera externa, no una consumidora interna.
+4. NEXO, NUMERA y PASS continúan consumiendo contratos internos, no el transporte Makos.
+5. El retiro no cambia esquemas o tipos de evento por conveniencia técnica.
+6. La eliminación del runtime externo solo es válida después de cerrar sus dependencias reales.
+7. El corte de nuevas ventas precede al retiro terminal.
+8. El control de doble fuente permanece necesario mientras exista cualquier camino que pueda volver a presentar una afirmación Makos.
+9. La conciliación precede al cierre de residuales críticos.
+10. Un resultado desconocido nunca se transforma en “no ocurrió” por retirar el proveedor.
+11. Historial, auditoría y evidencia sobreviven al retiro.
+12. Replay/backfill preservan fuente, identidad y audiencia históricas.
+13. Compensaciones posteriores continúan en las propietarias de los efectos.
+14. El retiro no transfiere pagos, caja, fiscalidad o contabilidad.
+15. El retiro del adaptador y el retiro de credenciales son lifecycles coordinados pero no equivalentes.
+16. El flujo `makos_excel` observado es legacy y no define el contrato permanente de consumidoras.
+17. La existencia del RPC legacy de inventario no redefine la autoridad canónica de NEXO.
+18. La implementación física futura deberá inventariar dependencias reales antes de eliminar o deshabilitar objetos.
+19. Toda modificación Supabase futura de este retiro se origina y versiona desde `vento-shell`.
+20. La aprobación documental no ejecuta el retiro físico.
+21. La siguiente tarea canónica permanece `INT-MKT-001` y no forma parte de este entregable.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el retiro seguro del POS externo, la convergencia de Makos y PULSO en el mismo contrato canónico, la fuente empresarial única, la prohibición de doble emisión, la preservación de historia y auditoría, la idempotencia de efectos, el replay/backfill histórico, la conciliación de pendientes y el lifecycle de integraciones externas ya están protegidos por el registro canónico vigente. Esta tarea especializa esas obligaciones para el cierre permanente del adaptador de ventas sin introducir una conducta ejecutable nueva, una excepción, un permiso, un endpoint, un esquema, una credencial o un efecto empresarial adicional.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 37. Cobertura de prueba existente preservada
+
+Se preservan sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, resultado recuperable, retry, incertidumbre y conciliación;
+- `TREQ-INTEGRATION-006`, para fuente empresarial única, fuentes competidoras y preservación de historia;
+- `TREQ-INTEGRATION-011`, para efecto físico correlacionado e idempotente hacia NEXO;
+- `TREQ-INTEGRATION-014`, que cubre expresamente `INT-SALES-001` a `INT-SALES-011`, la transición POS externo → PULSO, el corte, la doble emisión, los efectos internos y el riesgo de retiro inseguro del POS externo;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones correlacionadas;
+- `TREQ-INTEGRATION-017`, para recepción económica versionada, correlacionada e idempotente en NUMERA;
+- `TREQ-INTEGRATION-098`, para audiencia histórica en replay;
+- `TREQ-INTEGRATION-103`, para separación entre venta, fidelización, mercadeo y economía;
+- `TREQ-INTEGRATION-155`, para replay y backfill sin fan-out ni reactivación indebida de efectos sensibles;
+- `TREQ-INTEGRATION-191`, para resolver resultados externos desconocidos antes de compensar;
+- `TREQ-INTEGRATION-213`, para trazabilidad de adaptadores externos;
+- `TREQ-INTEGRATION-215`, para auditoría de replay y backfill;
+- `TREQ-INTEGRATION-217`, para historia append-only durante rollback, retiro o migración;
+- la cobertura vigente de PULSO, NEXO, NUMERA y PASS asociada a venta, efecto físico, hecho económico, fidelización, idempotencia y compensación.
+
+Ninguna fila cambia de identidad, texto, estado, relación, secuencia, propietaria ni evidencia por esta tarea. El registro canónico permanece sin cambios.
+
+---
+
+#### 38. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-010` como tarea anterior;
+2. mantiene `INT-MKT-001` como única tarea siguiente;
+3. define el retiro como eliminación controlada del camino técnico externo y no como borrado de historia;
+4. separa lifecycle del POS, adaptador, credencial, venta, evento, efecto y evidencia;
+5. preserva PULSO como propietaria de la venta canónica;
+6. preserva Makos como procedencia histórica de sus ventas;
+7. mantiene un único contrato interno de venta/evento antes y después del retiro;
+8. mantiene NEXO, NUMERA y PASS sin cambios de interfaz por el retiro;
+9. prohíbe dependencias directas de consumidoras sobre archivos, staging o credenciales Makos;
+10. define la independencia real que debe demostrarse antes del cierre terminal;
+11. define cuándo un retiro puede ser parcial y cuándo puede ser terminal;
+12. exige cero autoridad Makos para nuevas ventas del alcance retirado;
+13. exige el control de doble fuente antes del cierre;
+14. define puertas acumulativas de retiro terminal;
+15. clasifica trabajo en curso antes del cierre;
+16. preserva resultados confirmados sin repetirlos;
+17. impide cerrar resultados desconocidos por inferencia;
+18. preserva cuarentenas y conflictos hasta resolución;
+19. define tratamiento de llegadas tardías;
+20. impide inventar ventanas de eventos tardíos;
+21. preserva replay y backfill históricos sin reactivar fuente;
+22. preserva mappings y procedencia necesarios para reproducibilidad;
+23. preserva el contrato físico NEXO;
+24. preserva el contrato económico NUMERA;
+25. preserva el contrato de fidelización PASS;
+26. separa pagos, caja, fiscalidad y otras superficies;
+27. coordina binding y credenciales con `INT-POS-024`;
+28. impide revocación ciega de material compartido;
+29. materializa el diagnóstico del flujo legacy `makos_excel` sin elevarlo a contrato canónico;
+30. identifica las familias de objetos que una implementación futura deberá inventariar antes de retirar físicamente;
+31. separa runtime activo de historia preservada;
+32. exige conciliación previa al retiro terminal;
+33. define residuales válidos y no válidos;
+34. asigna todo residual a responsable y condición objetiva de salida;
+35. define tratamiento de `RESULT_UNKNOWN`;
+36. mantiene compensaciones en sus dominios propietarios;
+37. prohíbe fallback automático a Makos después del retiro;
+38. distingue rollback técnico de nueva habilitación empresarial;
+39. define evidencia mínima de retiro terminal;
+40. materializa el estado actual por materia y sus condiciones de salida;
+41. asigna handoffs exactos a `INT-SALES-008`, `INT-SALES-009`, `INT-SALES-010`, `INT-POS-024`, `INT-EXT-019`, `INT-EXT-020`, `INT-SALES-003`, `INT-SALES-004`, `INT-SALES-005` y `INT-SALES-006`;
+42. genera cero requisitos nuevos de prueba;
+43. modifica cero requisitos de prueba;
+44. no genera una copia del registro canónico de requisitos;
+45. no modifica código, SQL, migraciones, Supabase, datos, credenciales, endpoints, cuentas ni configuración remota;
+46. no declara retirado el adaptador en el estado físico actual;
+47. no cambia `active-sequence.json`;
+48. no inicia ni desarrolla `INT-MKT-001`.
+
+---
+
+#### 39. Estado de cierre de la tarea documental
+
+Resultado documental:
+
+```text
+CONTRATO DE RETIRO PERMANENTE DEL ADAPTADOR = ESPECIFICADO
+CAMBIOS EN CONSUMIDORAS INTERNAS = 0
+CAMBIOS TREQ = 0
+CAMBIOS FÍSICOS = 0
+RETIRO OPERATIVO REAL = BLOQUEADO
+```
+
+Bloqueos operativos concretos:
+
+1. el corte real Makos → PULSO no está acreditado como ejecutado para un alcance operativo completo por esta fase;
+2. el binding API/webhook Makos y una credencial técnica instanciable siguen sin evidencia suficiente;
+3. el flujo legacy `makos_excel` continúa observable en el código y esquema vigentes;
+4. la independencia física end-to-end de consumidoras y la conciliación terminal deben demostrarse durante la implementación autorizada;
+5. ninguna de esas brechas autoriza a debilitar el contrato de retiro ni a fingir una eliminación ya ejecutada.
+
+Condición de salida operativa del retiro:
+
+```text
+AUTORIDAD PULSO EFECTIVA
++
+DOBLE FUENTE BLOQUEADA
++
+CONSUMIDORAS INDEPENDIENTES
++
+CERO TRABAJO CRÍTICO SIN CLASIFICAR
++
+CERO RESULTADO DESCONOCIDO SIN PROPIETARIO
++
+CERO RESIDUAL DEPENDIENTE DEL RUNTIME
++
+BINDING Y CREDENCIALES RESUELTOS
++
+HISTORIA PRESERVADA
++
+CONCILIACIÓN CERRADA
++
+COMPATIBILIDAD INTERNA DEMOSTRADA
+=
+ADAPTADOR ELEGIBLE PARA RETIRO TERMINAL
+```
+
+---
+
+#### 40. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-MKT-001 — Definir campañas solo después de aprobar AURA`
+
 
 AURA ↔ PASS / PULSO
