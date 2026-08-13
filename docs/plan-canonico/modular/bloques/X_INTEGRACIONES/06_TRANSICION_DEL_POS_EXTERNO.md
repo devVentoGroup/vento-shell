@@ -614,7 +614,353 @@ La tarea queda documentalmente completa porque:
 `INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`
 
 
-### [ ] INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta
+### ✅ INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-002 — Confirmar información disponible mediante API`  
+**Tarea siguiente:** `INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`  
+**Tipo de tarea:** documental; definición contractual de la autoridad temporal de Makos como sistema de origen de ventas durante la transición hacia PULSO, con frontera explícita frente a inventario, fidelización, finanzas, documento fiscal, transporte de integración y corte de fuente, sin implementar credenciales, adaptadores, endpoints, webhooks, migraciones ni efectos internos  
+**Línea base documental:** `vento-shell@ab8fa7424ecd2740084e6655b4ab75218c2ecdfd`  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente:** `Makos`  
+**POS integral objetivo:** `PULSO`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir con precisión qué significa que Makos sea la fuente temporal del hecho de venta mientras Vento completa la transición hacia PULSO, sin convertir al POS externo en propietario de inventario, fidelización, contabilidad interna, catálogo canónico, autorización ni arquitectura objetivo.
+
+La tarea materializa para Makos la decisión ya aprobada en `CAP-SCOPE-009`:
+
+```text
+POS EXTERNO VIGENTE
+→ FUENTE TEMPORAL DEL HECHO DE VENTA
+→ ADAPTADOR Y STAGING
+→ CONTRATO CANÓNICO DE VENTA
+→ CONSUMIDORES INTERNOS
+
+PULSO
+→ FUENTE OBJETIVO DESPUÉS DEL CORTE
+→ MISMO CONTRATO CANÓNICO DE VENTA
+→ MISMOS CONSUMIDORES INTERNOS
+```
+
+La transición deberá conservar una sola fuente de origen para cada venta y evitar que el mecanismo de integración se convierta en una segunda fuente empresarial.
+
+---
+
+#### 2. Decisión principal
+
+Mientras una sede y terminal permanezcan dentro del alcance operativo del POS externo, **Makos será la fuente temporal del hecho de venta originado en ese alcance**.
+
+Cuando el corte aprobado traslade una sede y terminal a PULSO, **PULSO será la fuente de las nuevas ventas originadas desde la fecha efectiva del corte**.
+
+La autoridad temporal se define por origen y vigencia, no por tecnología de transporte.
+
+Por tanto:
+
+```text
+MAKOS POR EXCEL
+=
+MAKOS POR API
+=
+MAKOS POR OTRO MECANISMO AUTORIZADO
+
+respecto al sistema de origen del hecho
+```
+
+pero:
+
+```text
+TRANSPORTE
+≠
+FUENTE DE VERDAD EMPRESARIAL
+```
+
+El archivo, endpoint, webhook, polling, adaptador o staging que transporte el dato nunca sustituirá a Makos como sistema de origen ni se convertirá en propietario del hecho de venta.
+
+---
+
+#### 3. Significado de “fuente temporal del hecho de venta”
+
+La definición se limita al hecho comercial originado en Makos durante la transición.
+
+Implica que:
+
+1. la existencia del hecho externo y su procedencia deberán conservar a Makos como sistema de origen;
+2. una representación recibida desde Makos deberá conservar trazabilidad suficiente para demostrar de qué fuente provino;
+3. la normalización interna no podrá alterar el sistema de origen ni crear una segunda venta equivalente;
+4. una corrección, anulación, devolución o revisión asociada a una venta originada en Makos deberá conservar correlación con el hecho original y no crear una venta PULSO independiente para sustituirla;
+5. los consumidores internos recibirán el contrato canónico validado y no deberán depender del formato particular con el que Makos haya entregado la información;
+6. la autoridad temporal de Makos terminará únicamente mediante el corte controlado definido por sede, terminal y fecha efectiva.
+
+Esta tarea no define todavía los campos físicos, identificadores externos, payloads ni endpoints con los que se demostrará esa procedencia. Esa materialización pertenece a las tareas posteriores del mini-bloque.
+
+---
+
+#### 4. Frontera de autoridad
+
+La autoridad temporal de Makos no se extiende a otros dominios empresariales de Vento.
+
+| Hecho o responsabilidad                            | Autoridad durante la transición                 | Regla                                                                         |
+| -------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| Venta originada en el POS externo                  | Makos como sistema de origen temporal           | se adapta y valida antes de producir efectos internos                         |
+| Venta originada después del corte en PULSO         | PULSO                                           | no se recrea en Makos como segunda fuente interna                             |
+| Contrato canónico consumido dentro de Vento        | Vento mediante el flujo de integración aprobado | el formato externo no gobierna a los consumidores                             |
+| Inventario y movimientos físicos                   | NEXO                                            | Makos no descuenta ni corrige inventario interno directamente                 |
+| Fidelización                                       | PASS                                            | Makos no modifica saldo, ledger o redenciones de PASS directamente            |
+| Hecho económico interno                            | NUMERA                                          | Makos no contabiliza ni modifica el hecho económico interno                   |
+| Documento fiscal durante la transición             | POS o proveedor fiscal autorizado               | Vento conserva referencia y estado sin asumir emisión no autorizada           |
+| Catálogo, producto, presentación y receta de Vento | dominio canónico interno correspondiente        | los identificadores Makos requieren mapeo; no sustituyen identidades internas |
+| Autorización empresarial                           | modelo de autorización Vento                    | una credencial Makos no concede permisos empresariales internos               |
+
+La integración no transferirá propiedad empresarial desde las aplicaciones propietarias hacia Makos.
+
+---
+
+#### 5. Regla de fuente única
+
+Para una misma venta no podrán coexistir Makos y PULSO como fuentes activas.
+
+La transición deberá resolver la fuente mediante:
+
+- sede;
+- terminal;
+- fecha efectiva de corte.
+
+Dentro de un alcance todavía no cortado:
+
+```text
+ORIGEN DE NUEVA VENTA = MAKOS
+```
+
+Dentro de un alcance ya cortado:
+
+```text
+ORIGEN DE NUEVA VENTA = PULSO
+```
+
+Queda prohibido:
+
+- crear en PULSO una segunda venta para representar una venta que ya tiene origen Makos;
+- tratar una importación repetida de Makos como una nueva venta;
+- permitir que un consumidor interno decida por su cuenta cuál de dos fuentes competidoras es la válida;
+- activar simultáneamente ambos orígenes para la misma sede, terminal y periodo efectivo;
+- modificar retrospectivamente el sistema de origen de una venta para simplificar conciliaciones.
+
+---
+
+#### 6. Corte y temporalidad
+
+El corte no será una sustitución global instantánea de Makos por PULSO.
+
+La unidad mínima aprobada para gobernar la transición será:
+
+```text
+SEDE
++
+TERMINAL
++
+FECHA EFECTIVA
+```
+
+Esto permite que durante una transición controlada existan alcances distintos con fuentes diferentes, sin que una misma venta tenga doble origen.
+
+Una venta cuyo hecho corresponda al periodo anterior al corte conservará origen Makos aunque su recepción, conciliación o recuperación ocurra después. Una venta nueva dentro del alcance posterior al corte deberá originarse en PULSO.
+
+La lógica exacta para conciliación diaria, recuperación y tratamiento de diferencias pertenece a `INT-POS-020`, y el procedimiento de transición hacia PULSO pertenece a `INT-POS-023`.
+
+---
+
+#### 7. Transporte independiente de la autoridad
+
+La decisión de fuente no depende de que la información llegue por Excel, API, webhook o polling.
+
+La implementación actualmente demostrada utiliza `makos_excel`. `INT-POS-002` confirmó además que Makos dispone de una vía de API habilitable bajo solicitud al desarrollador, aunque Vento todavía no tenga especificación ni credenciales provisionadas.
+
+En cualquier caso deberá preservarse:
+
+```text
+MAKOS
+→ ADAPTADOR DEL PROVEEDOR
+→ STAGING Y PAYLOAD ORIGINAL
+→ VALIDACIÓN E IDEMPOTENCIA
+→ MAPEO DE SEDES Y PRODUCTOS
+→ CONTRATO CANÓNICO DE VENTA
+→ NEXO / NUMERA / PASS CUANDO CORRESPONDA
+```
+
+Cambiar el transporte no cambiará el sistema de origen de la venta.
+
+---
+
+#### 8. Condición para producir efectos internos
+
+Que Makos sea la fuente temporal del hecho externo no autoriza a aplicar automáticamente sus datos en los dominios internos.
+
+Antes de cualquier efecto deberán cumplirse las etapas documentadas por el mini-bloque:
+
+1. recepción mediante el adaptador autorizado;
+2. conservación de evidencia de origen;
+3. validación del payload o representación recibida;
+4. aplicación de idempotencia;
+5. resolución de sede, terminal y fuente efectiva;
+6. resolución de producto y demás mapeos requeridos;
+7. cuarentena de líneas no resolubles;
+8. construcción del contrato canónico de venta;
+9. emisión del evento interno validado;
+10. aplicación exactamente una vez por cada dominio consumidor.
+
+Por tanto:
+
+```text
+HECHO EXTERNO RECIBIDO DE MAKOS
+≠
+EFECTO INTERNO YA AUTORIZADO
+```
+
+---
+
+#### 9. Tratamiento del Excel actual
+
+La importación `makos_excel` permanece como el mecanismo físicamente demostrado en Vento, pero su existencia no altera la definición de autoridad.
+
+El Excel demuestra que Makos es la procedencia de información comercial importada, pero la línea base auditada no demuestra todavía el contrato individual completo de venta y línea requerido para automatizar todos los efectos internos.
+
+Por eso:
+
+- el Excel no se promueve por esta tarea a contrato canónico definitivo;
+- la ausencia de identidad individual suficiente no se resuelve inventando claves;
+- `INT-POS-005` definirá el contrato canónico de venta y línea;
+- `INT-POS-006` definirá encabezados, líneas, estados y timestamps;
+- `INT-POS-009` definirá payload original, versión, hash y recepción;
+- `INT-POS-013` definirá idempotencia por sistema, venta y línea externa.
+
+La fuente de origen puede quedar definida antes de que el mecanismo técnico final de integración esté implementado.
+
+---
+
+#### 10. Tratamiento de la API Makos
+
+La disponibilidad de una API habilitable confirmada en `INT-POS-002` no cambia esta autoridad temporal.
+
+Cuando la API sea provisionada, si el plan vigente decide utilizarla, deberá ser otro transporte de la misma fuente Makos y deberá respetar exactamente las mismas fronteras:
+
+- ninguna escritura directa en tablas internas;
+- ningún acceso de Makos a Supabase;
+- ningún permiso empresarial derivado de una credencial técnica;
+- ningún efecto directo sobre NEXO, PASS o NUMERA;
+- ninguna pérdida de payload, procedencia o correlación;
+- ninguna doble venta por coexistencia con el mecanismo anterior.
+
+Los requisitos y procedimiento de la credencial se definirán exclusivamente en `INT-POS-004`.
+
+---
+
+#### 11. Relaciones con las tareas posteriores
+
+| Decisión pendiente                                                   | Tarea propietaria |
+| -------------------------------------------------------------------- | ----------------- |
+| Credencial independiente, revocable y de solo lectura                | `INT-POS-004`     |
+| Identidad y semántica del contrato de venta y línea                  | `INT-POS-005`     |
+| Encabezados, líneas, estados, timestamps e identificadores recibidos | `INT-POS-006`     |
+| Descuentos, impuestos, propinas y medios de pago                     | `INT-POS-007`     |
+| Anulaciones, devoluciones y reembolsos                               | `INT-POS-008`     |
+| Payload original, versión, hash y fecha de recepción                 | `INT-POS-009`     |
+| Empresa, sede, terminal y caja externas                              | `INT-POS-010`     |
+| Producto, presentación y receta                                      | `INT-POS-011`     |
+| Líneas sin mapeo                                                     | `INT-POS-012`     |
+| Idempotencia por sistema, venta y línea externa                      | `INT-POS-013`     |
+| Webhook, polling, límites y conciliación de transporte               | `INT-POS-014`     |
+| Evento canónico de venta validada                                    | `INT-POS-015`     |
+| Efecto exactamente una vez en NEXO                                   | `INT-POS-016`     |
+| Efecto económico exactamente una vez en NUMERA                       | `INT-POS-017`     |
+| Fidelización en PASS                                                 | `INT-POS-018`     |
+| Compensaciones de anulaciones y devoluciones                         | `INT-POS-019`     |
+| Conciliación diaria                                                  | `INT-POS-020`     |
+| Piloto sin efectos                                                   | `INT-POS-021`     |
+| Piloto controlado con efectos                                        | `INT-POS-022`     |
+| Corte futuro desde Makos hacia PULSO                                 | `INT-POS-023`     |
+| Revocación o reducción de credenciales Makos                         | `INT-POS-024`     |
+
+No queda un pendiente sustantivo de esta definición sin tarea propietaria dentro del mini-bloque.
+
+---
+
+#### 12. Decisiones congeladas
+
+1. Makos es la fuente temporal del hecho de venta originado en el POS externo mientras el alcance correspondiente no haya sido transferido a PULSO.
+2. PULSO es la fuente objetivo para las ventas nuevas después del corte efectivo del alcance correspondiente.
+3. Una venta tendrá una sola fuente de origen.
+4. La fuente se resuelve por sede, terminal y fecha efectiva de corte.
+5. El mecanismo de transporte no cambia la fuente de origen.
+6. El adaptador, staging o contrato canónico no se convierten en fuentes empresariales competidoras.
+7. Makos no adquiere autoridad sobre inventario, fidelización, contabilidad interna, catálogo canónico ni autorización Vento.
+8. Un hecho recibido de Makos deberá pasar por validación, mapeo e idempotencia antes de producir efectos internos.
+9. Una línea sin mapeo no producirá efecto de inventario.
+10. La transición no permitirá doble emisión Makos/PULSO para la misma venta.
+11. El documento fiscal seguirá bajo responsabilidad del POS o proveedor fiscal autorizado durante la transición.
+12. La integración con Makos es temporal y no sustituye la construcción posterior del POS integral PULSO.
+13. Esta tarea no solicita credenciales, no inicia la API y no implementa cambios físicos.
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa para Makos una decisión contractual ya protegida por la cobertura canónica existente de transición entre el POS externo y PULSO. No amplía el comportamiento protegido ni modifica identidad, estado, texto, relaciones, propietarios o momento de implementación de requisitos vigentes; por tanto, no requiere crear o modificar requisitos de prueba ni actualizar el registro 04A.
+
+#### 14. Cobertura de prueba existente preservada
+
+Se preserva sin modificación:
+
+- `TREQ-INTEGRATION-014` como cobertura primaria de la transición POS externo ↔ PULSO, fuente única, adaptador, staging, idempotencia y corte controlado;
+- `TREQ-PULSO-005` para la separación del ciclo comercial y los estados asociados;
+- `TREQ-PULSO-006` para venta, pago, caja, documento fiscal, anulación, devolución, reembolso y conciliación como hechos separados y auditables.
+
+Ningún requisito vigente cambia por `INT-POS-003`.
+
+---
+
+#### 15. Criterios de aceptación
+
+La tarea queda documentalmente completa porque:
+
+1. identifica a Makos como fuente temporal del hecho de venta del POS externo;
+2. preserva a PULSO como fuente objetivo después del corte;
+3. define una sola fuente de origen para cada venta;
+4. fija sede, terminal y fecha efectiva como frontera de corte ya aprobada;
+5. separa fuente empresarial de mecanismo de transporte;
+6. impide que adaptador, staging o consumidores se conviertan en fuentes competidoras;
+7. mantiene a NEXO, PASS y NUMERA como propietarios de sus respectivos efectos;
+8. mantiene el documento fiscal bajo el POS o proveedor autorizado durante la transición;
+9. exige validación, mapeo e idempotencia antes de producir efectos internos;
+10. preserva la cuarentena de líneas sin mapeo;
+11. mantiene `makos_excel` como mecanismo actual demostrado sin convertirlo en contrato definitivo;
+12. incorpora la futura API únicamente como posible transporte de Makos, sin inventar especificación técnica;
+13. distribuye todos los detalles pendientes entre `INT-POS-004` a `INT-POS-024` mediante propietarios exactos;
+14. no implementa código, Supabase, credenciales, endpoints, webhooks, polling, efectos ni cutover;
+15. genera cero cambios `TREQ-*` porque `TREQ-INTEGRATION-014` ya protege el comportamiento contractual definido;
+16. mantiene reservada exclusivamente `INT-POS-004` como continuidad inmediata.
+
+---
+
+#### 16. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-POS-002 — Confirmar información disponible mediante API`
+
+**TAREA ACTUAL APROBADA**  
+`INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura`
+
+
 ### [ ] INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
 ### [ ] INT-POS-005 — Definir contrato canónico de venta y línea de venta
 ### [ ] INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps

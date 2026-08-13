@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **763** |
+| Tareas aprobadas | **764** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **831** |
+| Tareas no iniciadas | **830** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **47.87% (763/1594)** |
+| Porcentaje de completamiento | **47.93% (764/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-002 — Confirmar información disponible mediante API** |
-| Tarea actual | **INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta** |
+| Última tarea aprobada | **INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta** |
+| Tarea actual | **INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura** |
+| Siguiente tarea | **INT-POS-005 — Definir contrato canónico de venta y línea de venta** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 47 de 83 aprobadas; INT-POS-003 pendiente** |
+| Progreso del bloque | **BLOQUE X: 48 de 83 aprobadas; INT-POS-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-002` — Confirmar información disponible mediante API |
-| Tarea actual | `INT-POS-003` — Definir al POS vigente como fuente temporal del hecho de venta — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-004` — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura |
+| Última aprobada | `INT-POS-003` — Definir al POS vigente como fuente temporal del hecho de venta |
+| Tarea actual | `INT-POS-004` — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-005` — Definir contrato canónico de venta y línea de venta |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 47 DE 83 APROBADAS — ACTUAL INT-POS-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 48 DE 83 APROBADAS — ACTUAL INT-POS-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-002 — Confirmar información disponible mediante API
-        ↓
-TAREA ACTUAL
 INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-005 — Definir contrato canónico de venta y línea de venta
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 47 de 83 tareas aprobadas
+BLOQUE X — 48 de 83 tareas aprobadas
 ```
