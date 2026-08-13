@@ -6844,7 +6844,854 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-015 — Definir emisión del evento canónico de venta validada`
 
 
-### [ ] INT-POS-015 — Definir emisión del evento canónico de venta validada
+### ✅ INT-POS-015 — Definir emisión del evento canónico de venta validada
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`
+**Tarea siguiente:** `INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez`
+**Tipo de tarea:** documental; definición normativa de la puerta de elegibilidad y de la emisión empresarial que convierte una venta externa ya normalizada, contextualizada e idempotentemente reconocida en una emisión canónica de PULSO usando exclusivamente una definición de evento ya aprobada para el proceso y hecho realmente demostrados, sin crear definiciones de evento paralelas, implementar outbox, colas, endpoints, tablas, migraciones, Supabase ni efectos en NEXO, NUMERA o PASS
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**POS externo vigente:** `Makos`
+**POS integral objetivo:** `PULSO`
+**Aplicación propietaria de la emisión interna:** `PULSO`
+**Línea base documental:** `vento-shell@13648e778ad646acfff4ad5f6c0fe566c43b63ab`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Contratos transversales consumidos:** `ENTERPRISE-EVENT-CATALOG-001`, `ENTERPRISE-EVENT-PRODUCER-REGISTRY-001`, `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001`, `EVENT-ENVELOPE-001`, `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001@1.0.0` y `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir el punto exacto en el que una venta originada en el POS externo deja de ser únicamente una afirmación recibida y pasa a poder producir una emisión empresarial interna de PULSO, conservando la identidad de la venta, su procedencia Makos, la revisión aplicable, el proceso empresarial real, la definición canónica del evento y la separación de los efectos posteriores.
+
+Regla raíz:
+
+```text
+AFIRMACIÓN EXTERNA RECIBIDA
+        ↓
+PROCEDENCIA PRESERVADA
+        ↓
+CONTRATO CANÓNICO DE VENTA Y LÍNEAS
+        ↓
+CONTEXTO + MAPPING + CUARENTENA
+        ↓
+IDEMPOTENCIA Y REVISIÓN RESUELTAS
+        ↓
+HECHO EMPRESARIAL REAL DEMOSTRADO
+        ↓
+DEFINICIÓN VPROC-*.EVT-* APLICABLE
+        ↓
+PULSO PERSISTE EL HECHO INTERNO Y SU EMISIÓN
+        ↓
+EVENT_ID ESTABLE
+        ↓
+CONSUMIDORAS SEGÚN REGISTRO CANÓNICO
+        ↓
+EFECTOS PROPIOS EN TAREAS POSTERIORES
+```
+
+La emisión no convierte el ACK de un webhook, la lectura por polling, la importación de un archivo, el estado técnico de un lote o la coincidencia de un producto en un evento empresarial.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-015` deja definida una única puerta documental de emisión para ventas provenientes del POS externo.
+
+El resultado material es:
+
+1. la expresión **venta validada** queda definida como una condición de elegibilidad de integración y no como un nuevo `event_definition_id`;
+2. una emisión solo puede utilizar una definición normal ya existente en `ENTERPRISE-EVENT-CATALOG-001`;
+3. `PULSO` es la aplicación emisora empresarial de los procesos comerciales que le pertenecen, aunque `source_system` continúe siendo Makos durante la transición;
+4. Makos, el adaptador, un webhook, un poller, Supabase, una tabla, un trigger, una Edge Function o un worker no adquieren condición de emisora empresarial;
+5. la selección del evento se hace por `process_id` y por el hecho durable realmente demostrado, no por una etiqueta local de integración;
+6. la emisión conserva `event_id` estable y el alcance `EVENT_EMISSION`;
+7. la redelivery o retry de la misma emisión conserva el mismo `event_id`;
+8. la audiencia se deriva del registro transversal de consumidoras y no de una lista inventada por el adaptador;
+9. los efectos en NEXO, NUMERA y PASS continúan separados de la emisión y tienen sus propias identidades idempotentes;
+10. la ruta legacy `makos_excel` queda reconocida como implementación agregada que no demuestra por sí sola una venta individual emitible;
+11. se crean **cero** definiciones normales de evento;
+12. se modifican **cero** definiciones normales de evento;
+13. se crean **cero** relaciones productora-consumidora;
+14. se modifican **cero** relaciones productora-consumidora;
+15. se crean o modifican **cero** requisitos de prueba;
+16. no se modifica código, DDL, DML, Supabase, configuración, credenciales ni estado remoto.
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume sin reabrir las siguientes decisiones aprobadas:
+
+1. `INT-POS-003` conserva a Makos como fuente temporal del hecho de venta dentro de su alcance hasta el corte controlado.
+2. `INT-POS-005` define una venta canónica y una línea canónica con identidades estables y separadas de pedido, pago, caja, documento fiscal, inventario, fidelización, economía y entrega.
+3. `INT-POS-006` gobierna encabezados, líneas, estados y timestamps.
+4. `INT-POS-007` gobierna descuentos, impuestos, propinas y medios de pago.
+5. `INT-POS-008` conserva anulaciones, devoluciones y reembolsos como hechos vinculados y no destructivos.
+6. `INT-POS-009` conserva recepción, payload original, versiones, hash, `received_at`, parser, mapping y correlación.
+7. `INT-POS-010` gobierna empresa, sede, terminal y caja externa.
+8. `INT-POS-011` gobierna producto, presentación y receta.
+9. `INT-POS-012` gobierna cuarentena por línea y prohíbe efectos dependientes de producto mientras permanezca `ACTIVE`.
+10. `INT-POS-013` gobierna identidad e idempotencia por sistema, venta y línea y separa el reconocimiento de la venta de sus efectos posteriores.
+11. `INT-POS-014` establece que webhook, polling, archivo y replay son canales de recepción y deben converger en las mismas identidades.
+12. `INT-APP-001` define el catálogo transversal de eventos y prohíbe convertir un ACK técnico o una fila interna en hecho empresarial.
+13. `INT-APP-002` asigna una única aplicación emisora a cada definición según la propietaria del proceso.
+14. `INT-APP-003` gobierna consumidoras, finalidad, proyecciones y audiencia.
+15. `INT-APP-004` separa `EVENT_EMISSION`, `CONSUMER_INBOX` y `CONSUMER_EFFECT`.
+16. `INT-APP-005` gobierna retry, resultado desconocido, backoff y presupuestos.
+17. `INT-APP-010` prohíbe escrituras cruzadas y exige que un evento describa un hecho ya confirmado por su propietaria.
+18. `PROC-CAT-017` continúa siendo la fuente normativa de las definiciones normales `VPROC-####.EVT-###`.
+
+---
+
+#### 4. La “venta validada” no crea una definición de evento nueva
+
+El catálogo vigente no contiene una definición normal denominada `SALE_VALIDATED`, `VALIDATED_SALE` ni una definición equivalente creada específicamente para esta transición.
+
+Por tanto, la expresión **evento canónico de venta validada** se interpreta así:
+
+```text
+VENTA VALIDADA
+=
+VENTA QUE SUPERÓ LA PUERTA DE INTEGRACIÓN
+Y CUYO HECHO EMPRESARIAL PUEDE MAPEARSE
+A UNA DEFINICIÓN VPROC-*.EVT-* YA APROBADA
+```
+
+No así:
+
+```text
+VENTA VALIDADA
+=
+NUEVO EVENT_TYPE GLOBAL INVENTADO POR EL ADAPTADOR
+```
+
+La validación de integración demuestra que la afirmación externa puede participar en el modelo interno. El evento empresarial continúa describiendo el hecho durable definido por el proceso propietario.
+
+Crear un nombre técnico cómodo para la integración no autoriza a añadirlo al catálogo de 395 definiciones normales ni a tratarlo como una verdad empresarial nueva.
+
+---
+
+#### 5. Propietaria empresarial frente a sistema de origen
+
+La transición conserva dos identidades distintas:
+
+| Dimensión                                            | Valor durante la transición                                    | Regla                                                            |
+| ---------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------- |
+| sistema de origen de la venta                        | Makos dentro del alcance todavía no cortado                    | permanece en procedencia y contrato de venta                     |
+| aplicación propietaria del proceso comercial interno | `PULSO`                                                        | valida y persiste el hecho interno que le pertenece              |
+| aplicación emisora empresarial                       | `PULSO` para los procesos PULSO                                | deriva del registro canónico de emisoras                         |
+| adaptador                                            | componente técnico de integración                              | valida, transforma y entrega; no se vuelve propietaria           |
+| transporte                                           | webhook, polling, archivo u otro canal acreditado              | no cambia origen ni emisora                                      |
+| infraestructura                                      | Supabase, trigger, outbox, worker, cola o servicio equivalente | puede materializar transporte; no adquiere autoridad empresarial |
+
+Por tanto:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+```
+
+pueden coexistir durante la transición sin contradicción.
+
+Después del corte, una venta nueva originada en PULSO podrá tener:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+```
+
+sin cambiar el contrato transversal de eventos ni las fronteras de las consumidoras.
+
+---
+
+#### 6. Puerta mínima antes de una emisión
+
+Una venta externa solo podrá llegar a la decisión de emisión cuando se haya demostrado, como mínimo:
+
+| Puerta              | Condición obligatoria                                                                                                                    |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| fuente              | `source_system` y alcance temporal compatibles con la fuente autorizada                                                                  |
+| procedencia         | recepción identificable, referencia a evidencia original y correlación reproducible                                                      |
+| identidad de venta  | identidad canónica y externa resueltas conforme a `INT-POS-013`                                                                          |
+| revisión            | versión o secuencia tratada conforme a la semántica acreditada; sin regresión silenciosa                                                 |
+| idempotencia        | no existe conflicto de reutilización ni resultado desconocido sin resolver                                                               |
+| contrato            | venta y líneas materializan la semántica de `INT-POS-005` a `INT-POS-008`                                                                |
+| contexto            | dimensiones requeridas de `INT-POS-010` resueltas para el hecho o efecto correspondiente                                                 |
+| producto            | cada línea conserva el resultado de mapping de `INT-POS-011`                                                                             |
+| cuarentena          | cada línea conserva explícitamente su estado bajo `INT-POS-012`; ninguna línea `ACTIVE` puede producir un efecto dependiente de producto |
+| proceso             | puede demostrarse a qué `VPROC-*` pertenece el hecho empresarial                                                                         |
+| hito                | puede demostrarse qué definición `VPROC-*.EVT-*` describe realmente el hecho confirmado                                                  |
+| productora          | `producer_application` coincide con la propietaria de esa definición                                                                     |
+| versión contractual | contrato de venta y sobre de evento son identificables y compatibles                                                                     |
+
+Una falla en una puerta no se convierte en una emisión de éxito. La afirmación se conserva y sigue el tratamiento de bloqueo, conciliación o verificación asignado a su tarea propietaria.
+
+---
+
+#### 7. Resolución obligatoria de proceso y definición de evento
+
+La integración no podrá escoger un `process_id` por conveniencia técnica.
+
+Para cada venta emitible deberá demostrarse:
+
+```text
+HECHO EXTERNO
+        ↓
+SEMÁNTICA CANÓNICA DE VENTA
+        ↓
+PROCESO EMPRESARIAL REAL
+        ↓
+HITO DURABLE REAL
+        ↓
+event_definition_id EXISTENTE
+        ↓
+event_type EXISTENTE
+```
+
+No se permite:
+
+```text
+source = makos
+→ process_id fijo por defecto
+```
+
+ni:
+
+```text
+venta recibida
+→ VPROC-0040 por ser “externa”
+```
+
+`VPROC-0040` gobierna el proceso de pedido proveniente de canal externo. Una venta originada en Makos no se clasifica automáticamente como pedido de canal externo solo porque provenga de un sistema tercero.
+
+---
+
+#### 8. Definiciones vigentes especialmente relevantes
+
+Para los procesos comerciales ordinarios actualmente definidos, se preservan entre otras las siguientes definiciones:
+
+| Proceso      | Definición                                                                | Tipo                      | Hecho confirmado                                                                                      |
+| ------------ | ------------------------------------------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `VPROC-0038` | `VPROC-0038.EVT-005` / `vento.process.vproc-0038.table-service-closed.v1` | `PROCESS_COMPLETED`       | la sesión de servicio de mesa quedó cerrada sin borrar reversos, propinas, reclamos o evidencia       |
+| `VPROC-0039` | `VPROC-0039.EVT-005` / `vento.process.vproc-0039.counter-sale-closed.v1`  | `PROCESS_COMPLETED`       | la venta de mostrador quedó cerrada sin sustituir caja, fidelización, reclamos o entrega por terceros |
+| `VPROC-0040` | `VPROC-0040.EVT-001` a `VPROC-0040.EVT-006`                               | proceso de pedido externo | cada definición conserva su hito propio desde recepción hasta conciliación del pedido externo         |
+
+Reglas:
+
+1. una venta de servicio de mesa solo puede usar una definición de `VPROC-0038` cuando la evidencia permita clasificarla como ese proceso y demostrar el hito;
+2. una venta de mostrador o para llevar solo puede usar una definición de `VPROC-0039` cuando la evidencia permita esa clasificación;
+3. `VPROC-0040` no es fallback para cualquier venta de Makos;
+4. una venta perteneciente a otro proceso PULSO utiliza exclusivamente la definición ya aprobada para ese proceso y hito;
+5. no poder distinguir el proceso o el hito impide inventar una definición genérica;
+6. la prueba inicial del binding real y de la suficiencia de estos datos corresponde a `INT-POS-021`.
+
+---
+
+#### 9. Qué significa “validada” en esta tarea
+
+La palabra **validada** expresa que la venta superó las comprobaciones de integración necesarias para ser tratada como hecho interno atribuible a PULSO.
+
+No significa por sí sola:
+
+- venta pagada;
+- pedido completamente entregado;
+- documento fiscal emitido;
+- caja conciliada;
+- inventario descontado;
+- costo calculado;
+- puntos acumulados;
+- puntos redimidos;
+- reversos aplicados;
+- todas las líneas libres de cualquier restricción para cualquier consumidora;
+- todos los efectos posteriores confirmados;
+- proceso empresarial cerrado.
+
+La definición de evento elegida deberá afirmar únicamente lo que su `confirmed_fact` permite.
+
+---
+
+#### 10. Emisión propietaria
+
+La secuencia contractual es:
+
+```text
+ADAPTADOR ENTREGA AFIRMACIÓN VALIDABLE
+        ↓
+PULSO REVALIDA CONTRATO, PROCEDENCIA, CONTEXTO E IDENTIDAD
+        ↓
+PULSO PERSISTE O RECONOCE SU HECHO EMPRESARIAL
+        ↓
+PULSO RESUELVE DEFINICIÓN DE EVENTO EXISTENTE
+        ↓
+PULSO ASIGNA Y PERSISTE EVENT_ID
+        ↓
+REGISTRO DE EMISIÓN DURABLE
+        ↓
+PUBLICACIÓN / ENTREGA POSTERIOR
+```
+
+La emisión no puede anteceder al hecho propietario.
+
+Un éxito técnico del transporte externo no autoriza a construir un evento empresarial si PULSO todavía no ha confirmado el hecho interno correspondiente.
+
+---
+
+#### 11. Sobre canónico de la emisión
+
+Toda emisión deberá utilizar `EVENT-ENVELOPE-001` y conservar, cuando aplique, como mínimo:
+
+| Campo                   | Regla para esta transición                                                                                            |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `event_id`              | identidad única de la emisión concreta; permanece estable en redelivery, retry y replay                               |
+| `event_definition_id`   | definición existente del proceso y hito demostrados                                                                   |
+| `event_type`            | tipo versionado exacto asociado a la definición                                                                       |
+| `event_version`         | versión contractual del evento                                                                                        |
+| `process_id`            | proceso PULSO realmente aplicable                                                                                     |
+| `process_instance_id`   | referencia a la instancia empresarial cuando exista de forma canónica                                                 |
+| `producer_application`  | `pulso` para definiciones de procesos PULSO                                                                           |
+| `aggregate_type`        | tipo empresarial compatible con la definición y el contrato                                                           |
+| `aggregate_id`          | referencia estable al agregado propietario; para una emisión de venta deberá permitir correlacionar la venta canónica |
+| `aggregate_version`     | revisión propietaria aplicable, sin sustituir la versión de fuente                                                    |
+| `occurred_at`           | momento del hecho empresarial descrito por la definición                                                              |
+| `recorded_at`           | momento técnico de persistencia del evento; no sustituye `occurred_at`                                                |
+| `site_id`               | sede canónica cuando sea parte del contexto exigido                                                                   |
+| `correlation_id`        | une recepción, venta, emisión y efectos derivados sin actuar como clave universal                                     |
+| `causation_id`          | referencia causal cuando exista un hecho canónico previo que la justifique                                            |
+| `request_id`            | condicional; no se fabrica para una recepción que no tenga solicitud aplicable                                        |
+| `idempotency_key`       | referencia al alcance idempotente de la emisión                                                                       |
+| `source_command_id`     | condicional; solo existe cuando hubo un comando propietario real                                                      |
+| `result_reference`      | referencia recuperable al resultado de la persistencia/emisión                                                        |
+| `output_references[]`   | referencias a venta, líneas u otros resultados empresariales necesarios                                               |
+| `evidence_references[]` | referencias protegidas a procedencia y evidencia; no copia indiscriminada del payload                                 |
+| `audit_reference`       | vínculo con auditoría transversal                                                                                     |
+| `sensitivity_class`     | hereda la definición aprobada; no se rebaja por conveniencia                                                          |
+| `schema_version`        | versión del sobre o proyección aplicable                                                                              |
+| `trace_context`         | contexto técnico sin convertirse en identidad empresarial                                                             |
+
+Los campos opcionales no se rellenan con identificadores sintéticos si el hecho real no los genera.
+
+---
+
+#### 12. Contenido empresarial de venta y líneas
+
+La emisión no crea un segundo contrato de venta.
+
+La representación empresarial se obtiene del contrato canónico aprobado y debe permitir correlacionar, según la finalidad de la consumidora:
+
+- identidad canónica de venta;
+- sistema e identidad externa de origen;
+- revisión de venta;
+- estado y momento comercial acreditados;
+- sede y contexto aplicables;
+- moneda e importes necesarios;
+- referencias de pago o fiscalidad cuando sean materialmente necesarias y estén autorizadas;
+- identidades canónicas de línea;
+- identidad externa de línea cuando exista;
+- producto de origen;
+- producto, presentación y receta resueltos cuando correspondan;
+- cantidad y unidad;
+- componentes comerciales de línea;
+- resultado de mapping;
+- estado de cuarentena;
+- procedencia y correlación.
+
+El payload bruto de Makos no se copia dentro de cada proyección de evento. Se preserva mediante referencias de evidencia y procedencia.
+
+---
+
+#### 13. Líneas en cuarentena y elegibilidad parcial
+
+La existencia de una línea `ACTIVE` en `EXTERNAL-SALE-LINE-QUARANTINE-001` no autoriza a eliminarla de la venta ni a fingir que la venta nunca ocurrió.
+
+Reglas:
+
+1. la emisión conserva la existencia de la venta y la composición canónica de sus líneas;
+2. una línea `ACTIVE` continúa bloqueada para cualquier efecto dependiente de su producto;
+3. una línea correctamente reconocida e idempotente no deja de ser la misma línea por estar en cuarentena;
+4. las consumidoras no podrán interpretar la ausencia de producto mapeado como `no_inventory`;
+5. las líneas hermanas no se convierten automáticamente en inválidas por la cuarentena de otra línea;
+6. la elegibilidad concreta del efecto físico se define en `INT-POS-016`;
+7. la elegibilidad del efecto económico se define en `INT-POS-017`;
+8. la elegibilidad de fidelización se define en `INT-POS-018`;
+9. liberar una línea de cuarentena no crea una segunda venta ni una nueva identidad de línea;
+10. una liberación posterior tampoco crea por sí sola una nueva definición de evento empresarial;
+11. los efectos que hayan quedado pendientes por una restricción anterior deberán quedar detectables y recuperables mediante la conciliación de `INT-POS-020`.
+
+---
+
+#### 14. Identidad de la emisión
+
+El alcance idempotente aplicable es:
+
+```text
+EVENT_EMISSION
+```
+
+Su identidad es:
+
+```text
+event_id
+```
+
+Invariantes:
+
+1. `event_id` identifica una emisión concreta y no se reutiliza para otro hecho;
+2. el mismo evento redelivered, reintentado o replayed conserva el mismo `event_id`;
+3. una respuesta perdida no crea otro `event_id`;
+4. una segunda recepción externa de la misma venta no crea otra emisión equivalente;
+5. `sale_id` no se usa por sí solo como clave universal porque una misma venta puede producir varios eventos legítimos;
+6. `event_definition_id` no se usa por sí solo como clave de deduplicación;
+7. `correlation_id`, `causation_id`, `aggregate_id` y `process_instance_id` tampoco son claves suficientes por sí solas;
+8. el registro durable de la emisión debe permitir recuperar el `event_id` previamente asignado.
+
+---
+
+#### 15. Relación entre venta, revisión y evento
+
+Una venta puede recibir más de una revisión legítima sin convertirse en múltiples ventas.
+
+Eso no implica que cada revisión de fuente deba producir un nuevo evento.
+
+Reglas:
+
+1. la revisión externa conserva la misma identidad de venta cuando `INT-POS-013` así lo determina;
+2. una nueva revisión solo produce una nueva emisión normal cuando esa revisión demuestra un nuevo hecho durable contemplado por una definición aprobada;
+3. un cambio de mapping interno no constituye por sí solo un nuevo hecho empresarial;
+4. una corrección de procedencia no constituye por sí sola un nuevo evento de venta;
+5. una versión tardía no hace retroceder la proyección ni recrea una emisión anterior;
+6. una revisión incompatible queda en conflicto o conciliación;
+7. anulaciones, devoluciones, reembolsos y correcciones utilizan sus hechos y familias condicionales aplicables; no se expresan reenviando el evento normal original con otro contenido.
+
+---
+
+#### 16. Unicidad lógica de una emisión equivalente
+
+Para esta transición deberá cumplirse:
+
+```text
+MISMA VENTA CANÓNICA
++
+MISMA REVISIÓN EMPRESARIAL APLICABLE
++
+MISMO HECHO DURABLE
++
+MISMA DEFINICIÓN CANÓNICA
+        ↓
+UNA SOLA EMISIÓN EMPRESARIAL
+        ↓
+UN EVENT_ID RECUPERABLE
+```
+
+Si dos procesos concurrentes intentan materializar la misma emisión equivalente, existirá un único ganador empresarial y las demás ejecuciones recuperarán el resultado o conservarán un estado recuperable.
+
+La implementación física de constraint, claim, lock, lease, transacción u outbox se define en los bloques de arquitectura e implementación. Esta tarea fija la invariante, no la tecnología.
+
+---
+
+#### 17. Atomicidad entre hecho propietario y emisión
+
+La arquitectura física posterior deberá garantizar que no sea posible confirmar silenciosamente:
+
+```text
+VENTA INTERNA SIN REGISTRO RECUPERABLE DE SU EMISIÓN OBLIGATORIA
+```
+
+ni:
+
+```text
+EVENTO EMPRESARIAL SIN HECHO PROPIETARIO CONFIRMADO
+```
+
+El límite propietario deberá vincular de forma atómica o equivalentemente durable:
+
+- hecho empresarial;
+- versión aplicable;
+- clave y huella idempotentes;
+- `event_id`;
+- resultado recuperable;
+- registro de publicación pendiente o mecanismo equivalente.
+
+No se selecciona en esta tarea una tabla outbox, broker, cola, trigger, función, job, librería o servicio.
+
+---
+
+#### 18. Publicación no equivale a efecto
+
+Se preserva la cadena:
+
+```text
+HECHO PERSISTIDO
+≠
+EVENTO PERSISTIDO
+≠
+PUBLICACIÓN CONFIRMADA
+≠
+ENTREGA A CONSUMIDORA
+≠
+CLAIM DE CONSUMIDORA
+≠
+EFECTO DE CONSUMIDORA
+```
+
+Por tanto:
+
+- un ACK del transporte no demuestra inventario descontado;
+- una entrega a NEXO no demuestra un movimiento físico;
+- una entrega a NUMERA no demuestra un hecho económico aplicado;
+- una entrega a PASS no demuestra puntos acumulados o redimidos;
+- el fallo de una consumidora no borra el hecho de PULSO;
+- el éxito de una consumidora no confirma a las demás.
+
+---
+
+#### 19. Audiencia y consumidoras
+
+La audiencia de la emisión se resuelve mediante `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001` según:
+
+- `event_definition_id`;
+- proceso;
+- relación directa o condicional;
+- finalidad;
+- perfil de proyección;
+- sensibilidad;
+- versión;
+- condición aplicable.
+
+`INT-POS-015` no crea una lista paralela de suscriptores.
+
+Las relaciones existentes de los procesos comerciales PULSO se conservan. La presencia de NEXO, NUMERA, PASS, FOGO u otra aplicación depende del proceso y de la definición aprobada; esta tarea no añade ni retira consumidoras.
+
+El mini-bloque POS reserva específicamente los efectos posteriores de NEXO, NUMERA y PASS a `INT-POS-016`, `INT-POS-017` e `INT-POS-018` respectivamente.
+
+---
+
+#### 20. Idempotencia de consumidoras y efectos
+
+Después de la emisión:
+
+```text
+CONSUMER_INBOX
+=
+consumer_application + event_id
+```
+
+Cuando una misma consumidora pueda producir varios efectos legítimos:
+
+```text
+CONSUMER_EFFECT
+=
+consumer_application + event_id + effect_code
+```
+
+Consecuencias:
+
+1. redelivery no produce un segundo claim efectivo del mismo evento en una misma consumidora;
+2. NEXO, NUMERA y PASS no comparten una clave universal;
+3. una consumidora no acredita el efecto de otra;
+4. un efecto ya confirmado devuelve su resultado previo o no-op autorizado;
+5. la emisión de PULSO no se regenera porque una consumidora necesite retry;
+6. el perfil de retry del efecto se decide en la frontera propietaria correspondiente.
+
+---
+
+#### 21. Relación con webhook, polling, archivo y replay
+
+Los mecanismos definidos o preservados por `INT-POS-014` alimentan la misma puerta de esta tarea:
+
+```text
+WEBHOOK
+POLLING
+ARCHIVO
+REPLAY
+        ↓
+MISMA IDENTIDAD DE VENTA
+        ↓
+MISMA DECISIÓN DE PROCESO Y HECHO
+        ↓
+MISMA EMISIÓN EQUIVALENTE
+```
+
+Un canal distinto no produce un `event_id` nuevo para el mismo evento ya persistido.
+
+Polling puede descubrir una venta omitida por webhook y provocar su primera emisión legítima. Polling no produce una segunda emisión si la venta y el hecho ya habían sido reconocidos y emitidos.
+
+---
+
+#### 22. Resultado desconocido y conflicto
+
+No habrá emisión de éxito cuando:
+
+- la misma identidad externa tenga contenido material incompatible sin revisión acreditada;
+- la versión aplicable sea incierta;
+- el proceso empresarial no pueda resolverse;
+- el hito durable no pueda resolverse;
+- la productora resultante no coincida con la propietaria canónica;
+- la venta sea stale para el hecho que se intenta emitir;
+- exista `RECONCILIATION_REQUIRED`;
+- la evidencia no permita demostrar si la emisión ya fue persistida.
+
+Ante una respuesta perdida después de una posible persistencia de evento, primero se recuperará el resultado por la identidad idempotente. Solo cuando pueda demostrarse que no existe una emisión aplicada podrá materializarse la primera emisión.
+
+---
+
+#### 23. Anulaciones, devoluciones, reembolsos y correcciones
+
+Una emisión normal de venta no se muta para representar un hecho inverso.
+
+Reglas:
+
+1. el evento original permanece inmutable;
+2. el reverso conserva relación con la venta y con el hecho original;
+3. una anulación, devolución o reembolso utiliza la semántica aprobada correspondiente;
+4. las familias condicionales conservan su propietaria de proceso;
+5. una consumidora no emite una corrección del proceso PULSO como si fuera PULSO;
+6. `INT-POS-019` define las compensaciones internas;
+7. la relación causal entre original y compensación deberá permanecer auditable;
+8. una segunda recepción del mismo reverso no produce una segunda compensación.
+
+---
+
+#### 24. Línea base física observada
+
+La ruta legacy revisada en `vento-pulso`:
+
+1. recibe un XLSX de ventas agregadas por artículo;
+2. calcula SHA-256 del archivo;
+3. crea `pulso_daily_sales_import_batches`;
+4. crea `pulso_daily_sales_import_rows`;
+5. utiliza estados técnicos `draft`, `validated`, `posted` y `cancelled`;
+6. permite ejecutar `pulso_post_daily_sales_import`;
+7. la migración asociada puede crear movimientos `sale_out` y registros de posting de inventario.
+
+Esta línea base no demuestra por sí sola el contrato objetivo de `INT-POS-015`.
+
+En particular:
+
+```text
+BATCH status = validated
+≠
+EVENTO EMPRESARIAL DE VENTA VALIDADA
+```
+
+y:
+
+```text
+FILA AGREGADA POR PRODUCTO
+≠
+VENTA INDIVIDUAL CON event_id
+```
+
+El texto de interfaz que informa ventas “importadas y validadas” describe la operación legacy observada; no constituye evidencia de que exista una emisión normal `VPROC-*.EVT-*` por venta individual.
+
+Esta tarea no modifica esa implementación.
+
+---
+
+#### 25. Estado material de Makos para esta puerta
+
+Con la evidencia actualmente documentada:
+
+- Makos dispone de una vía de API habilitable bajo solicitud, pero el contrato técnico del tenant aún no está provisionado en el plan;
+- el flujo `makos_excel` no demuestra identidad individual completa de venta y línea;
+- el flujo agregado no demuestra clasificación individual entre servicio de mesa, mostrador u otro proceso PULSO;
+- no se puede asignar de forma segura una definición `VPROC-*.EVT-*` por cada venta individual del Excel sin fabricar granularidad o semántica.
+
+Por tanto, la puerta definida queda **ESPECIFICADA**, pero la primera materialización con datos individuales reales permanece condicionada a la evidencia que deberá comprobar `INT-POS-021`.
+
+Esto no difiere la definición de esta tarea: la regla de emisión queda completa y el binding real tiene propietaria documental y condición de salida exactas.
+
+---
+
+#### 26. Transición futura hacia PULSO
+
+La sustitución de Makos como fuente no altera la identidad de las consumidoras ni obliga a crear otro contrato de evento.
+
+Durante la transición:
+
+```text
+MAKOS
+→ ADAPTADOR
+→ PULSO COMO PROPIETARIA INTERNA
+→ EVENTO CANÓNICO
+```
+
+Después del corte:
+
+```text
+PULSO
+→ HECHO PROPIO
+→ EVENTO CANÓNICO
+```
+
+`INT-POS-023` gobierna el cambio de fuente por sede, terminal y fecha efectiva.
+
+`INT-SALES-001` y `INT-SALES-002` preservan el contrato permanente para que PULSO registre la venta y emita el mismo contrato canónico sin obligar a las consumidoras a conocer si la venta se originó antes en Makos o directamente en PULSO.
+
+---
+
+#### 27. Auditoría y evidencia mínima
+
+Cada decisión de emisión deberá permitir reconstruir, como mínimo:
+
+- venta canónica;
+- identidad externa de venta;
+- sistema e instancia de origen;
+- revisión de fuente;
+- recepción o recepciones que aportaron evidencia;
+- versión del contrato canónico;
+- proceso resuelto;
+- definición de evento resuelta;
+- fundamento de la resolución;
+- `event_id`;
+- versión del agregado;
+- momento empresarial y momento de registro;
+- productora empresarial;
+- correlación;
+- mappings aplicables;
+- estado de cuarentena relevante;
+- resultado idempotente;
+- referencia al registro durable de emisión;
+- intentos de publicación y resultado cuando existan;
+- consumidoras y resultados posteriores mediante sus propias referencias;
+- conflicto o conciliación cuando corresponda.
+
+La auditoría utiliza referencias protegidas y no exige copiar secretos ni el payload bruto en logs.
+
+---
+
+#### 28. Prohibiciones explícitas
+
+Queda prohibido:
+
+1. crear `SALE_VALIDATED` como definición normal sin pasar por la fuente funcional propietaria y el gobierno del catálogo;
+2. inventar un `event_type` específico de Makos;
+3. usar `validated` del lote legacy como hecho empresarial equivalente;
+4. emitir desde el adaptador como `producer_application`;
+5. tratar Makos como productora interna;
+6. utilizar webhook, polling, archivo, batch, fila, request o delivery como sustituto del `event_id`;
+7. regenerar `event_id` en retry;
+8. usar `sale_id` como clave única para todos los eventos legítimos de una venta;
+9. seleccionar `VPROC-0040` únicamente porque la venta provenga de un sistema externo;
+10. inferir mesa, mostrador, canal o modalidad desde ausencia de datos;
+11. emitir un hito de cierre cuando la fuente solo demuestra recepción o estado intermedio;
+12. convertir una revisión de mapping en un nuevo evento de venta;
+13. omitir del contrato una línea problemática para aparentar elegibilidad;
+14. permitir que una línea `ACTIVE` produzca efecto dependiente de producto;
+15. interpretar publicación como efecto en NEXO, NUMERA o PASS;
+16. reemitir el evento original para representar una devolución o reembolso;
+17. fan-out hacia consumidoras no registradas;
+18. incluir secretos, tokens o credenciales en el evento;
+19. aplicar escrituras directas en fuentes privadas de NEXO, NUMERA o PASS desde el adaptador;
+20. modificar código, tablas, funciones, migraciones, Supabase, datos o configuración durante esta tarea.
+
+---
+
+#### 29. Carryover obligatorio
+
+| Pendiente material                                                       | Tarea propietaria | Condición de salida                                                                                        |
+| ------------------------------------------------------------------------ | ----------------- | ---------------------------------------------------------------------------------------------------------- |
+| efecto físico de venta en NEXO                                           | `INT-POS-016`     | cada efecto físico usa alcance propio, línea elegible y resultado exactamente una vez                      |
+| efecto económico en NUMERA                                               | `INT-POS-017`     | NUMERA consume el hecho aplicable mediante identidad propia y resultado reconciliable                      |
+| efecto de fidelización                                                   | `INT-POS-018`     | PASS procesa únicamente cuando la venta y el cliente cumplen elegibilidad                                  |
+| compensación de anulaciones y devoluciones                               | `INT-POS-019`     | cada efecto inverso conserva original, causa, identidad y resultado                                        |
+| ventas emitidas sin efectos, efectos faltantes o divergencias            | `INT-POS-020`     | conciliación identifica venta, evento, consumidora, efecto, conflicto y acción pendiente                   |
+| evidencia real de identidad, proceso, hito y capacidad del binding Makos | `INT-POS-021`     | una muestra real demuestra clasificación y emisión potencial sin producir efectos                          |
+| piloto con efectos                                                       | `INT-POS-022`     | se demuestran previamente las puertas de procedencia, mapping, cuarentena, idempotencia, emisión y efectos |
+| cambio de fuente a PULSO                                                 | `INT-POS-023`     | fuente resuelta por sede, terminal y fecha efectiva sin doble emisión                                      |
+| registro permanente de venta PULSO                                       | `INT-SALES-001`   | PULSO materializa la venta bajo el contrato canónico definitivo                                            |
+| emisión permanente desde PULSO                                           | `INT-SALES-002`   | PULSO emite el mismo contrato sin dependencia del adaptador externo                                        |
+
+Ningún pendiente queda sin tarea propietaria ni condición de salida.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para la transición POS externo → PULSO comportamientos verificables que ya están protegidos por el registro canónico vigente: fuente única, catálogo cerrado de eventos, emisora propietaria, consumidoras registradas, afirmación externa validada antes del hecho interno, separación entre evento y ACK técnico, identidad estable de emisión, redelivery idempotente, atomicidad del hecho y su registro de publicación, separación de inbox y efecto consumidor, no duplicación de ventas o efectos, prohibición de escrituras cruzadas y convergencia del POS externo con PULSO. No se introduce una definición normal nueva, una relación productora-consumidora nueva ni una excepción ejecutable nueva.
+
+---
+
+#### 31. Cobertura de prueba existente preservada
+
+Se preserva sin modificación la cobertura vigente, en especial:
+
+- `TREQ-INTEGRATION-014`, que exige convergencia de POS externo y PULSO en contratos canónicos sin doble emisión y con efectos exactamente una vez;
+- `TREQ-INTEGRATION-049`, sobre procedencia, autenticidad, identificador externo, payload protegido, recepción y correlación antes de producir un hecho interno;
+- `TREQ-INTEGRATION-054` a `TREQ-INTEGRATION-068`, sobre catálogo de emisoras, propiedad, exclusión de terceros como emisores internos y PULSO como emisora de sus procesos comerciales;
+- `TREQ-INTEGRATION-080` a `TREQ-INTEGRATION-107`, sobre consumidoras, finalidad, audiencia, proyecciones y trazabilidad;
+- `TREQ-INTEGRATION-108` a `TREQ-INTEGRATION-122`, sobre alcances idempotentes, `event_id`, redelivery, inbox, efectos, concurrencia, respuesta perdida y atomicidad;
+- `TREQ-INTEGRATION-139` a `TREQ-INTEGRATION-163`, sobre retry conservando identidad, perfiles, resultado desconocido, claims y observabilidad;
+- `TREQ-INTEGRATION-298`, que exige que un evento represente un hecho ya confirmado y no una instrucción para editar otra fuente;
+- `TREQ-INTEGRATION-306`, que limita al adaptador a su frontera y exige contratos propietarios para efectos internos;
+- `TREQ-PULSO-005`, sobre separación de pedido, venta, línea, preparación, cumplimiento y estados derivados;
+- `TREQ-PULSO-006`, sobre separación de venta, pago, caja, fiscalidad, reversos y cierre.
+
+Ninguna fila del registro cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 32. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-POS-014` como tarea anterior aprobada;
+2. mantiene `INT-POS-016` como única siguiente tarea reservada;
+3. define “venta validada” como puerta de integración y no como nuevo `event_definition_id`;
+4. crea cero definiciones normales de evento;
+5. modifica cero definiciones normales de evento;
+6. mantiene `PROC-CAT-017` como fuente normativa de `VPROC-*.EVT-*`;
+7. mantiene `PULSO` como emisora empresarial de sus procesos aun cuando Makos sea `source_system`;
+8. impide que Makos, el adaptador o la infraestructura sean emisores empresariales internos;
+9. exige resolver proceso empresarial real antes de emitir;
+10. exige resolver hito durable real antes de emitir;
+11. prohíbe seleccionar `VPROC-0040` como fallback para toda venta externa;
+12. preserva las definiciones existentes de `VPROC-0038` y `VPROC-0039`;
+13. exige `EVENT-ENVELOPE-001`;
+14. exige `event_id` estable;
+15. mantiene `EVENT_EMISSION` separado de `CONSUMER_INBOX` y `CONSUMER_EFFECT`;
+16. impide regenerar evento ante redelivery, retry o polling redundante;
+17. permite que polling produzca la primera emisión cuando descubre una venta realmente omitida;
+18. conserva venta y líneas completas sin ocultar cuarentenas;
+19. bloquea cualquier efecto dependiente de producto para líneas `ACTIVE`;
+20. separa publicación, entrega y efecto;
+21. deriva audiencia exclusivamente del registro transversal de consumidoras;
+22. no añade ni retira consumidoras;
+23. no presenta el éxito de una consumidora como éxito de otra;
+24. exige atomicidad o durabilidad equivalente entre hecho propietario, idempotencia, resultado y registro de emisión;
+25. impide crear evento normal por una simple revisión de mapping;
+26. trata versiones tardías, conflictos y resultados desconocidos sin fabricar éxito;
+27. conserva reversos como hechos separados del evento normal;
+28. documenta que el flujo `makos_excel` agregado no demuestra emisión individual;
+29. asigna la demostración del binding real a `INT-POS-021`;
+30. asigna cada efecto posterior a su tarea exacta;
+31. preserva la transición futura a PULSO y las tareas `INT-SALES-001` e `INT-SALES-002`;
+32. genera cero cambios `TREQ-*`;
+33. no requiere una nueva copia del registro canónico de requisitos;
+34. no modifica código, DDL, DML, Supabase, datos, credenciales, endpoints, colas ni configuración remota.
+
+---
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-015 — Definir emisión del evento canónico de venta validada`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez`
+
+
 ### [ ] INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez
 ### [ ] INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
 ### [ ] INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda
