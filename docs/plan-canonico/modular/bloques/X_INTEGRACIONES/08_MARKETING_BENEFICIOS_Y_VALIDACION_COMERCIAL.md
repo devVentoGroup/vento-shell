@@ -1014,5 +1014,866 @@ SIGUIENTE TAREA RESERVADA
 `INT-MKT-002 — Definir beneficios publicados en PASS`
 
 
-### [ ] INT-MKT-002 — Definir beneficios publicados en PASS
+### ✅ INT-MKT-002 — Definir beneficios publicados en PASS
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-MKT-001 — Definir campañas solo después de aprobar AURA`
+**Tarea siguiente:** `INT-MKT-003 — Definir validación comercial desde PULSO`
+**Tipo de tarea:** documental; definición normativa permanente del contrato por el que PASS conserva la propiedad de los beneficios de fidelización y presenta al cliente una proyección publicada de esos beneficios sin transferir a AURA la propiedad de fidelización, sin transferir a PASS la propiedad de campaña y sin convertir visibilidad en elegibilidad, redención, descuento aplicado o venta
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md`
+**Proceso propietario reutilizado:** `VPROC-0045 — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados`
+**Proceso relacionado de marketing:** `VPROC-0056 — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro`
+**Aplicación propietaria de fidelización:** `PASS`
+**Aplicación objetivo de marketing:** `AURA`, sujeta a `AURA-AUD-001` a `AURA-AUD-012`
+**Aplicación propietaria de la operación comercial:** `PULSO`
+**Autoridad económica:** `NUMERA`
+**Línea base documental:** `vento-shell@26aa14a6c1b5bd789443e6dae0b7bc5753dd2d66`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir qué significa que un beneficio esté publicado en PASS y fijar la frontera permanente entre fidelización, marketing y ejecución comercial.
+
+La regla raíz es:
+
+```text
+BENEFICIO DEFINIDO EN PASS
+≠
+BENEFICIO PUBLICADO EN PASS
+≠
+ELEGIBILIDAD CONFIRMADA
+≠
+REDENCIÓN
+≠
+DESCUENTO APLICADO
+≠
+VENTA
+```
+
+y, cuando exista una campaña relacionada:
+
+```text
+CAMPAÑA AURA
+≠
+BENEFICIO PASS
+≠
+REGLA TRANSACCIONAL
+≠
+EFECTO COMERCIAL PULSO
+```
+
+PASS conserva la identidad del cliente, el consentimiento, la fidelización, sus reglas y el ledger correspondiente. AURA conserva la intención de marketing y la correlación de campaña cuando su continuidad esté formalmente autorizada. PULSO conserva la operación comercial. NUMERA conserva la verdad económica.
+
+Esta tarea define el contrato documental entre esas responsabilidades. No activa publicaciones reales, no crea beneficios, no modifica cuentas PASS y no ejecuta efectos comerciales.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-MKT-002` congela las siguientes decisiones:
+
+1. PASS es la propietaria del beneficio de fidelización y de su proyección visible al cliente.
+2. Publicar un beneficio en PASS significa hacerlo consultable mediante una proyección gobernada por PASS; no significa crear una campaña.
+3. La proyección publicada no se convierte en fuente distinta del beneficio, de su regla ni de su versión.
+4. Un beneficio puede existir en PASS sin pertenecer a una campaña de AURA.
+5. Un beneficio relacionado con una campaña conserva una referencia de correlación sin transferir su propiedad a AURA.
+6. AURA no crea, acredita, gasta, ajusta ni revierte puntos.
+7. AURA no crea ni consume directamente el ledger de fidelización.
+8. AURA no decide por sí sola que un cliente sea elegible.
+9. AURA no valida una redención.
+10. PASS no se convierte en sistema de campañas por mostrar beneficios.
+11. PASS no se convierte en POS por mostrar una recompensa, cupón o beneficio.
+12. La visibilidad de un beneficio no demuestra elegibilidad efectiva.
+13. La elegibilidad no demuestra que exista una redención.
+14. Una redención no demuestra que el efecto comercial haya sido validado o aplicado en PULSO.
+15. Una recompensa, un cupón, una promoción, una cortesía, una membresía, un nivel, puntos y un beneficio por campaña permanecen conceptos distintos.
+16. Una publicación de marketing no crea una regla de fidelización.
+17. Una regla de fidelización no crea una venta.
+18. Una venta no crea una campaña por inferencia.
+19. PASS conserva la versión de regla necesaria para explicar el beneficio y reconstruir su aplicación.
+20. Los cambios de regla son prospectivos y no reescriben movimientos, redenciones o evidencia histórica.
+21. Retirar u ocultar una proyección no borra el beneficio histórico ni revierte automáticamente efectos ya ocurridos.
+22. Vencimiento, cancelación, uso, ajuste y reversión conservan la semántica del dominio de fidelización y no se sustituyen por estados de campaña.
+23. La administración laboral de productos de fidelización permanece reservada a `PASS-INT-003`.
+24. La experiencia visible de puntos, beneficios, recompensas y redención permanece reservada a `PASS-UX-002`, `PASS-UX-005`, `PASS-UX-007` y `PASS-UX-009`.
+25. La acumulación y redención PULSO → PASS permanecen reservadas a `PASS-INT-001` y `PASS-INT-002`.
+26. La validación comercial del efecto permanece reservada a `INT-MKT-003`.
+27. La intención promocional detallada permanece en `AURA-DOM-006` cuando la puerta de AURA permita ejecutarla.
+28. Los contratos internos AURA ↔ PASS permanecen en `AURA-INT-002` cuando correspondan.
+29. No se crean nombres físicos de tablas, columnas, RPC, funciones, endpoints, eventos, colas o jobs.
+30. No se crean ni modifican requisitos `TREQ-*`.
+
+---
+
+#### 3. Base canónica consumida
+
+Esta tarea consume sin reabrir:
+
+- `INT-MKT-001`, que separa campaña, contenido, publicación, promoción, beneficio y regla transaccional;
+- `CAP-SCOPE-009`, que mantiene PULSO como propietaria de pedido, venta, cobro y ejecución comercial, y PASS como fuente de fidelización;
+- `CAP-SCOPE-010`, especialmente `CAP-10.07 — Gestionar fidelización y beneficios`;
+- `CAP-SCOPE-014`, especialmente `CAP-14.06 — Gestionar promociones y cupones`;
+- `VPROC-0045`, propiedad de PASS;
+- `VPROC-0056`, propiedad objetivo de AURA sujeta a su puerta de continuidad;
+- `GAP-OWN-006`, que mantiene fidelización en PASS y la ejecución transaccional de acumulación o redención en PULSO mediante contrato;
+- `PASS-UX-002`, `PASS-UX-005`, `PASS-UX-007` y `PASS-UX-009`;
+- `PASS-INT-001` a `PASS-INT-005`;
+- `PASS-QA-001` y `PASS-QA-002`;
+- `AURA-DOM-006` y `AURA-INT-002`, bloqueadas por la decisión de continuidad de AURA;
+- `PULSO-AUTH-009` y `PULSO-AUTH-010`;
+- la cobertura vigente de `TREQ-PASS-006`, `TREQ-PASS-008`, `TREQ-PASS-010`, `TREQ-AURA-001`, `TREQ-AURA-003`, `TREQ-PROC-021`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-006` y `TREQ-INTEGRATION-019`.
+
+Ninguna de estas fuentes cambia de significado por esta tarea.
+
+---
+
+#### 4. Definición normativa de beneficio publicado
+
+Un beneficio publicado en PASS es una proyección de cliente que representa un beneficio de fidelización gobernado por PASS y permite conocer su existencia y condiciones aplicables sin crear una fuente paralela ni anticipar el resultado de uso.
+
+Se conserva:
+
+```text
+FUENTE PASS
+→ BENEFICIO + REGLA + VERSIÓN
+→ PROYECCIÓN VISIBLE EN PASS
+```
+
+No se admite:
+
+```text
+CAMPAÑA
+→ TEXTO PROMOCIONAL
+→ BENEFICIO CREADO POR INFERENCIA
+```
+
+ni:
+
+```text
+PROYECCIÓN VISIBLE
+→ SALDO MODIFICADO
+```
+
+ni:
+
+```text
+PROYECCIÓN VISIBLE
+→ REDENCIÓN CONFIRMADA
+```
+
+La proyección es una lectura gobernada del beneficio. La mutación del ledger, la reserva o consumo de puntos y la ejecución comercial pertenecen a contratos distintos.
+
+---
+
+#### 5. Taxonomía preservada
+
+Se conserva la separación aprobada en `CAP-SCOPE-010`:
+
+```text
+PUNTOS
+≠
+RECOMPENSA
+≠
+CUPÓN
+≠
+NIVEL
+≠
+MEMBRESÍA
+≠
+PROMOCIÓN
+≠
+CORTESÍA
+≠
+BENEFICIO POR CAMPAÑA
+```
+
+Consecuencias:
+
+1. puntos representan movimientos y saldo proyectado de fidelización;
+2. una recompensa representa aquello que puede obtenerse bajo una regla;
+3. un cupón representa un instrumento o referencia aplicable bajo condiciones;
+4. un nivel o membresía representa una condición de relación o programa;
+5. una promoción expresa una intención comercial y sus condiciones;
+6. una cortesía responde a una decisión distinta de fidelización ordinaria;
+7. un beneficio por campaña es un beneficio PASS correlacionado con una iniciativa de marketing, no una campaña almacenada dentro de PASS;
+8. la interfaz futura no deberá colapsar estas identidades en una sola etiqueta que cambie su autoridad.
+
+---
+
+#### 6. Propiedad empresarial
+
+| Materia                                   | Propietaria o autoridad                          | Frontera                                                         |
+| ----------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| identidad del cliente                     | `PASS`                                           | no se deriva de una campaña                                      |
+| consentimiento y preferencias aplicables  | `PASS`                                           | Marketing consume la autorización; no la fabrica                 |
+| cuenta y ledger de fidelización           | `PASS`                                           | ninguna consumidora mantiene saldo paralelo                      |
+| beneficio y regla de fidelización         | `PASS`                                           | AURA puede referenciar; PULSO puede ejecutar efectos autorizados |
+| proyección de beneficios al cliente       | `PASS`                                           | no convierte PASS en sistema de campañas                         |
+| intención promocional y campaña           | `AURA`, solo después de su puerta de continuidad | no modifica ledger ni venta                                      |
+| validación y efecto comercial de venta    | `PULSO`                                          | no administra el maestro de fidelización                         |
+| presupuesto, margen y resultado económico | `NUMERA`                                         | no publica beneficios ni ejecuta redenciones                     |
+| producto y atributos maestros             | `NEXO`                                           | no crea campañas ni beneficios                                   |
+| disponibilidad y capacidad operacional    | `NEXO` / `FOGO` según el hecho                   | no se convierten en datos editables de PASS o AURA               |
+| publicación o métrica nativa externa      | canal externo                                    | nunca es fuente del beneficio PASS                               |
+
+Ninguna fila autoriza escritura cruzada.
+
+---
+
+#### 7. Contrato conceptual mínimo de publicación
+
+La proyección publicada deberá resolver desde fuentes autorizadas, cuando aplique:
+
+- identidad estable del beneficio o recompensa;
+- tipo de beneficio;
+- regla y versión vigentes;
+- condiciones de aplicación;
+- vigencia o expiración;
+- límites y exclusiones;
+- relación con puntos, recompensa, cupón, nivel, membresía o cortesía según corresponda;
+- alcance de marca, sede, canal o cliente cuando la regla ya lo establezca;
+- referencias autorizadas a producto u oferta;
+- estado necesario para no presentar como utilizable algo vencido, usado, cancelado o no disponible;
+- referencia de campaña únicamente cuando exista una correlación autorizada;
+- información suficiente para que una consumidora solicite validación sin copiar el maestro.
+
+Esta lista es conceptual. No define campos físicos, nombres de API ni estructuras de almacenamiento.
+
+---
+
+#### 8. Publicación y versión
+
+La proyección visible deberá corresponder a una regla de beneficio identificable y versionada.
+
+Se preserva:
+
+```text
+BENEFICIO
+→ REGLA
+→ VERSIÓN
+→ VIGENCIA
+→ PROYECCIÓN
+```
+
+Invariantes:
+
+1. una modificación posterior no reescribe la regla utilizada por un movimiento o redención anterior;
+2. una campaña nueva no cambia silenciosamente la versión de un beneficio existente;
+3. un cambio de nombre, condición, vigencia, límite o exclusión debe conservar la versión aplicable;
+4. una proyección desactualizada no se convierte en autoridad por haber sido mostrada anteriormente;
+5. la historia de fidelización conserva la regla y versión del efecto realmente aplicado.
+
+---
+
+#### 9. Visibilidad y elegibilidad
+
+Se conserva obligatoriamente:
+
+```text
+VISIBLE
+≠
+ELEGIBLE
+```
+
+Mostrar un beneficio significa que PASS puede presentarlo al cliente conforme al contrato vigente. No significa que todas las condiciones necesarias para utilizarlo estén satisfechas en el instante de la transacción.
+
+La elegibilidad efectiva podrá depender de reglas ya autorizadas sobre:
+
+- cliente o cuenta;
+- marca o sede;
+- vigencia;
+- beneficio o recompensa;
+- saldo o reserva aplicable;
+- límites y exclusiones;
+- pedido o venta;
+- condiciones comerciales;
+- disponibilidad o capacidad cuando corresponda.
+
+La consumidora que ejecute un efecto no podrá sustituir la validación por el hecho de que el beneficio haya sido visible.
+
+---
+
+#### 10. Publicación y redención
+
+Se conserva:
+
+```text
+BENEFICIO VISIBLE
+≠
+REDENCIÓN CREADA
+≠
+REDENCIÓN USADA
+```
+
+La publicación:
+
+- no reserva puntos;
+- no descuenta puntos;
+- no crea una redención;
+- no marca una redención como usada;
+- no cancela una redención;
+- no acredita una recompensa;
+- no modifica el ledger.
+
+La redención permanece gobernada por PASS y por los contratos autorizados con PULSO.
+
+---
+
+#### 11. Frontera con AURA
+
+Mientras AURA continúe diferida:
+
+1. PASS no depende de AURA para conservar sus beneficios de fidelización.
+2. AURA no escribe beneficios dentro de PASS.
+3. AURA no publica directamente en PASS por efecto de esta tarea.
+4. AURA no crea audiencias operativas a partir del catálogo de beneficios.
+5. AURA no convierte una pieza o campaña en una regla PASS.
+6. AURA no activa promociones reales.
+7. AURA no recibe autoridad sobre identidad, consentimiento, ledger o redención.
+8. una referencia documental a AURA no demuestra una integración desplegada.
+
+Después de una decisión formal de continuidad, `AURA-DOM-006` podrá definir intención promocional y `AURA-INT-002` el contrato autorizado con PASS, sin modificar estas fronteras.
+
+---
+
+#### 12. Beneficio independiente de campaña
+
+Un beneficio PASS no necesita una campaña para existir.
+
+Se preservan dos casos:
+
+```text
+BENEFICIO PASS
+→ SIN CAMPAÑA
+```
+
+y, cuando exista correlación autorizada:
+
+```text
+CAMPAÑA AURA
+→ REFERENCIA BENEFICIO PASS
+```
+
+La segunda relación no convierte:
+
+- la campaña en beneficio;
+- el beneficio en campaña;
+- PASS en propietaria de campaña;
+- AURA en propietaria del beneficio.
+
+La correlación deberá poder conservarse sin duplicar el objeto de fidelización.
+
+---
+
+#### 13. Beneficio por campaña
+
+Un beneficio por campaña continúa siendo un beneficio gobernado por PASS cuya relación con una campaña sirve para comunicación, atribución o análisis.
+
+Se conserva:
+
+```text
+AURA
+→ INTENCIÓN PROMOCIONAL
+→ REFERENCIA A BENEFICIO PASS
+
+PASS
+→ BENEFICIO + REGLA + VERSIÓN + FIDELIZACIÓN
+```
+
+La relación no autoriza a AURA a:
+
+- determinar el saldo del cliente;
+- crear puntos;
+- gastar puntos;
+- confirmar redención;
+- cambiar la vigencia de una regla PASS;
+- sustituir la elegibilidad;
+- ejecutar el descuento en la venta.
+
+---
+
+#### 14. Frontera con PULSO
+
+PULSO conserva la operación comercial y no obtiene la propiedad del beneficio.
+
+Se preserva:
+
+```text
+PASS
+→ BENEFICIO Y FIDELIZACIÓN
+
+PULSO
+→ PEDIDO / VENTA / EFECTO COMERCIAL
+```
+
+La publicación en PASS no obliga a PULSO a aplicar un efecto sin validación.
+
+`INT-MKT-003` conserva la definición específica de:
+
+- validación comercial;
+- correlación con pedido o venta;
+- condiciones transaccionales;
+- efecto aplicado;
+- rechazo o conflicto;
+- relación con la regla vigente.
+
+`INT-MKT-002` no adelanta esas decisiones.
+
+---
+
+#### 15. Frontera con NUMERA
+
+NUMERA conserva margen, presupuesto, costo, rentabilidad y resultado económico.
+
+Por tanto:
+
+- PASS no calcula la rentabilidad de una promoción por mostrar un beneficio;
+- AURA no declara viable un beneficio únicamente por intención de campaña;
+- una proyección visible no sustituye las guardas económicas aplicables;
+- una redención observada no demuestra por sí sola rentabilidad;
+- el resultado económico no modifica retroactivamente el ledger de fidelización.
+
+---
+
+#### 16. Frontera con NEXO y FOGO
+
+Cuando un beneficio se refiera a producto, disponibilidad o capacidad, PASS deberá consumir el hecho autorizado sin convertirse en su maestro.
+
+Se preserva:
+
+```text
+BENEFICIO
+≠
+PRODUCTO MAESTRO
+≠
+INVENTARIO
+≠
+CAPACIDAD PRODUCTIVA
+```
+
+PASS no podrá convertir una descripción promocional en evidencia de:
+
+- existencia de producto;
+- stock comprometible;
+- capacidad de preparación;
+- composición;
+- disponibilidad territorial;
+- restricción técnica.
+
+La fuente propietaria del hecho conserva autoridad.
+
+---
+
+#### 17. Consentimiento y finalidad
+
+La presencia de un beneficio en PASS no constituye consentimiento de Marketing.
+
+Se conserva:
+
+```text
+CUENTA PASS
+≠
+CONSENTIMIENTO DE MARKETING
+```
+
+y:
+
+```text
+BENEFICIO VISIBLE
+≠
+AUTORIZACIÓN PARA CONTACTAR
+```
+
+Cuando un beneficio sea comunicado mediante una campaña o canal de Marketing:
+
+- la finalidad y el canal deberán estar autorizados;
+- el consentimiento aplicable deberá provenir de PASS;
+- un uso, compra, visita, acumulación o redención no deberá inferirse como opt-in;
+- AURA consumirá únicamente la proyección mínima autorizada.
+
+La consulta normal del cliente sobre sus beneficios no transforma una comunicación operativa o de autoservicio en permiso para campañas.
+
+---
+
+#### 18. Experiencia futura de PASS
+
+La experiencia detallada permanece reservada a las tareas propietarias de PASS:
+
+| Materia                                               | Tarea propietaria |
+| ----------------------------------------------------- | ----------------- |
+| inicio de puntos y beneficios                         | `PASS-UX-002`     |
+| redención visible                                     | `PASS-UX-005`     |
+| catálogo de recompensas                               | `PASS-UX-007`     |
+| estados pendiente, usado y cancelado                  | `PASS-UX-009`     |
+| integración de acumulación                            | `PASS-INT-001`    |
+| integración de redención                              | `PASS-INT-002`    |
+| administración laboral de productos de fidelización   | `PASS-INT-003`    |
+| administración laboral de clientes cuando corresponda | `PASS-INT-004`    |
+| separación cliente-trabajador                         | `PASS-INT-005`    |
+| prueba completa de acumulación                        | `PASS-QA-001`     |
+| prueba completa de redención                          | `PASS-QA-002`     |
+
+Esta tarea no diseña esas pantallas, acciones ni pruebas.
+
+---
+
+#### 19. Administración de beneficios
+
+La autoridad para crear, modificar, activar, retirar o administrar productos de fidelización no se infiere desde la posibilidad de verlos en PASS.
+
+`PASS-INT-003` conserva la definición de administración laboral correspondiente.
+
+Hasta que esa tarea y la autorización aplicable se materialicen:
+
+- la existencia de un catálogo no concede permiso administrativo;
+- una pantalla de cliente no concede autoridad laboral;
+- una cuenta PASS no equivale a perfil de trabajador;
+- una campaña no concede autoridad administrativa;
+- una integración no concede permiso de edición por sí sola.
+
+---
+
+#### 20. Corrección, retiro y vencimiento
+
+La corrección de un beneficio preservará historia.
+
+Se conserva:
+
+```text
+CORREGIR PROYECCIÓN
+≠
+REESCRIBIR LEDGER
+```
+
+```text
+RETIRAR VISIBILIDAD
+≠
+ANULAR MOVIMIENTO HISTÓRICO
+```
+
+```text
+VENCER BENEFICIO
+≠
+BORRAR REDENCIÓN
+```
+
+Toda modificación deberá respetar la regla y versión que originaron movimientos anteriores. Los efectos que requieran reversión o compensación utilizarán el mecanismo propietario correspondiente y no se producirán por ocultar contenido.
+
+---
+
+#### 21. Idempotencia y conciliación
+
+La publicación no crea una excepción a las reglas transversales de idempotencia.
+
+Cuando una integración futura sincronice una referencia de beneficio o campaña:
+
+- un reintento no deberá crear otro beneficio empresarial;
+- una respuesta perdida no justificará duplicar una redención;
+- la misma operación estable deberá poder recuperar su resultado;
+- un identificador reutilizado con contenido incompatible deberá producir conflicto;
+- una proyección divergente deberá reconciliarse contra la fuente PASS;
+- una promoción sin regla aplicable deberá permanecer sin efecto transaccional.
+
+No se define infraestructura física para estas garantías.
+
+---
+
+#### 22. Auditoría mínima futura
+
+Cuando la capacidad quede materializada por sus tareas propietarias, deberá poder reconstruirse, según aplicabilidad:
+
+- beneficio y tipo;
+- regla y versión;
+- vigencia;
+- condiciones, límites y exclusiones;
+- fuente de los hechos externos usados;
+- proyección visible;
+- cuenta o relación PASS cuando corresponda;
+- campaña correlacionada cuando exista;
+- pedido o venta correlacionados cuando exista efecto;
+- movimiento o redención asociados;
+- actor o sistema que produjo el efecto;
+- reversión o compensación;
+- resultado y evidencia.
+
+La auditoría no convierte la proyección en fuente de verdad.
+
+---
+
+#### 23. Sin nueva máquina de estados
+
+`INT-MKT-002` no crea una máquina de estados adicional para beneficios.
+
+Se conservan las responsabilidades ya reservadas:
+
+- el ledger y la fidelización permanecen en PASS;
+- la experiencia de redención visible permanece en `PASS-UX-005`;
+- la diferenciación de pendiente, usado y cancelado permanece en `PASS-UX-009`;
+- los estados de campaña permanecen separados bajo `VPROC-0056`;
+- los estados comerciales permanecen separados en PULSO.
+
+No se introducen equivalencias entre estos ciclos.
+
+---
+
+#### 24. Sin nueva definición normal de evento
+
+Esta tarea no crea una definición normal de evento empresarial.
+
+Los contratos futuros deberán reutilizar las identidades y eventos canónicos aprobados o crear los que correspondan únicamente en su tarea propietaria.
+
+La necesidad de correlacionar campaña, beneficio, redención y venta no autoriza crear un evento transversal improvisado desde `INT-MKT-002`.
+
+---
+
+#### 25. Frontera de implementación posterior
+
+| Materia                                     | Tarea propietaria posterior    | Condición de salida                                       |
+| ------------------------------------------- | ------------------------------ | --------------------------------------------------------- |
+| diseño visible de puntos y beneficios       | `PASS-UX-002`                  | inicio de fidelización queda diseñado                     |
+| catálogo de recompensas                     | `PASS-UX-007`                  | catálogo visible queda diseñado                           |
+| redención y estados visibles                | `PASS-UX-005`; `PASS-UX-009`   | experiencia de uso y estados queda definida               |
+| acumulación PULSO → PASS                    | `PASS-INT-001`                 | contrato de acumulación queda definido                    |
+| redención PULSO → PASS                      | `PASS-INT-002`                 | contrato de redención queda definido                      |
+| administración de productos de fidelización | `PASS-INT-003`                 | autoridad administrativa queda definida                   |
+| identidad cliente-trabajador                | `PASS-INT-004`; `PASS-INT-005` | proyecciones y separación de identidades quedan definidas |
+| campañas, promociones y guardas             | `AURA-DOM-006`                 | solo después de la puerta AURA                            |
+| contrato AURA con PASS                      | `AURA-INT-002`                 | lectura o eventos internos quedan definidos               |
+| validación comercial                        | `INT-MKT-003`                  | PULSO valida el efecto sin apropiarse del beneficio       |
+| prueba E2E de acumulación                   | `PASS-QA-001`                  | flujo queda probado con evidencia                         |
+| prueba E2E de redención                     | `PASS-QA-002`                  | flujo queda probado con evidencia                         |
+
+Ningún pendiente material de esta definición queda sin tarea propietaria.
+
+---
+
+#### 26. Diagnóstico documental actual
+
+El estado demostrable en la línea base de esta tarea es:
+
+```text
+INT-MKT-001 = APROBADA
+INT-MKT-002 = TAREA ACTUAL
+INT-MKT-003 = RESERVADA
+
+PASS = PROPIETARIA DE VPROC-0045
+PASS-UX / PASS-INT / PASS-QA = PENDIENTES
+AURA = DIFERIDA
+AURA-DOM / AUTH / UX / INT = BLOQUEADAS POR SU PUERTA
+CAMBIOS FÍSICOS DE ESTA TAREA = 0
+```
+
+El registro 04A vigente ya contiene cobertura para propiedad, versión, idempotencia, fidelización, campañas e integración. Esta tarea no declara implementada ninguna pantalla, regla, integración o redención.
+
+---
+
+#### 27. Prohibiciones
+
+Queda prohibido interpretar esta tarea como autorización para:
+
+1. crear beneficios reales;
+2. modificar beneficios existentes;
+3. acreditar o descontar puntos;
+4. crear o validar redenciones;
+5. publicar campañas;
+6. habilitar AURA;
+7. contactar clientes;
+8. inferir consentimiento;
+9. crear segmentos de Marketing;
+10. cambiar precios;
+11. aplicar descuentos;
+12. alterar pedidos o ventas;
+13. cambiar margen o presupuesto;
+14. modificar producto, stock o capacidad;
+15. crear una fuente de beneficios dentro de AURA;
+16. crear una fuente de campañas dentro de PASS;
+17. mantener un ledger paralelo en PULSO;
+18. copiar una regla mutable de PASS como maestro de otra aplicación;
+19. tratar visibilidad como elegibilidad;
+20. tratar elegibilidad como redención;
+21. tratar redención como venta;
+22. tratar beneficio por campaña como campaña;
+23. tratar un QR personal como autorización de canje;
+24. crear estados nuevos de fidelización;
+25. crear una definición normal de evento;
+26. crear nombres físicos de tablas, columnas, RPC, funciones, triggers, endpoints, colas o jobs;
+27. modificar código, SQL, migraciones, RLS, datos, Supabase, credenciales o configuración remota;
+28. iniciar o desarrollar `INT-MKT-003`.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-MKT-002` no introduce un comportamiento ejecutable nuevo ni modifica una obligación verificable existente. Materializa la frontera documental ya protegida por `TREQ-PASS-006`, `TREQ-PASS-008` y `TREQ-PASS-010` para consistencia de recompensas, ledger, reglas versionadas, idempotencia y redención; por `TREQ-AURA-001` y `TREQ-AURA-003` para separación de campaña, promoción, beneficio y ejecución; por `TREQ-PROC-021` para impedir duplicidad de propiedad; y por `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-006` y `TREQ-INTEGRATION-019` para idempotencia, fuente única y contratos de marketing. Crear otro requisito repetiría cobertura ya vigente sin añadir una regla verificable material nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 29. Cobertura de prueba existente preservada
+
+Se preserva sin modificación:
+
+- `TREQ-PASS-006`, para convergencia de recompensas e historial entre experiencias;
+- `TREQ-PASS-008`, para acumulación, gasto, ajuste, reversión y redención mediante contratos autorizados, atómicos e idempotentes;
+- `TREQ-PASS-010`, para identidad, consentimiento, reglas versionadas, ledger inmutable y saldo como proyección;
+- `TREQ-AURA-001`, para separar campaña, contenido, publicación y promoción y conservar las fuentes propietarias;
+- `TREQ-AURA-003`, para promociones, redenciones y fronteras AURA/PULSO/PASS/NUMERA;
+- `TREQ-PROC-021`, para impedir duplicidad de fidelización entre aplicaciones;
+- `TREQ-INTEGRATION-003`, para idempotencia, reintento, estado durable y conciliación;
+- `TREQ-INTEGRATION-006`, para una única fuente empresarial y propagación por contrato;
+- `TREQ-INTEGRATION-019`, para marketing, promociones, cupones, redenciones, contratos internos y conciliación.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 30. Decisiones congeladas
+
+1. PASS conserva identidad, consentimiento, fidelización y ledger.
+2. PASS conserva la superficie de beneficios del cliente.
+3. AURA conserva intención promocional y campaña únicamente cuando su continuidad esté autorizada.
+4. PULSO conserva pedido, venta y efecto comercial.
+5. NUMERA conserva verdad económica.
+6. NEXO conserva producto e inventario.
+7. FOGO/NEXO conservan capacidad según el hecho.
+8. beneficio publicado no equivale a campaña.
+9. beneficio publicado no equivale a elegibilidad.
+10. elegibilidad no equivale a redención.
+11. redención no equivale a descuento aplicado ni venta.
+12. puntos, recompensa, cupón, nivel, membresía, promoción, cortesía y beneficio por campaña permanecen distintos.
+13. un beneficio PASS puede existir sin campaña.
+14. una campaña puede correlacionar un beneficio sin apropiárselo.
+15. AURA no modifica ledger ni saldo.
+16. PASS no administra campañas por mostrar beneficios.
+17. PULSO no mantiene un maestro paralelo de fidelización.
+18. la proyección visible se resuelve desde beneficio, regla y versión autorizados.
+19. los cambios no reescriben historia.
+20. ocultar o retirar una proyección no revierte efectos por sí mismo.
+21. la administración permanece en `PASS-INT-003`.
+22. la experiencia permanece en `PASS-UX-*`.
+23. las integraciones de acumulación y redención permanecen en `PASS-INT-001` y `PASS-INT-002`.
+24. la integración futura AURA ↔ PASS permanece en `AURA-INT-002`.
+25. la validación comercial permanece en `INT-MKT-003`.
+26. no se crea una máquina de estados nueva.
+27. no se crea una definición normal de evento.
+28. se crean cero cambios `TREQ-*`.
+29. no se modifica el registro 04A.
+30. se crean cero objetos físicos.
+31. se modifican cero objetos físicos.
+32. no se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 31. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-MKT-001` como tarea anterior;
+2. conserva `INT-MKT-003` como única tarea siguiente reservada;
+3. identifica `VPROC-0045` como proceso propietario de fidelización;
+4. mantiene PASS como propietaria del beneficio y su proyección visible;
+5. mantiene AURA como propietaria objetivo de intención promocional y campaña, sujeta a su puerta;
+6. mantiene PULSO como propietaria de la operación comercial;
+7. mantiene NUMERA como autoridad económica;
+8. distingue beneficio definido de beneficio publicado;
+9. distingue publicación de elegibilidad;
+10. distingue elegibilidad de redención;
+11. distingue redención de descuento aplicado y venta;
+12. preserva la taxonomía de puntos, recompensa, cupón, nivel, membresía, promoción, cortesía y beneficio por campaña;
+13. permite beneficios PASS sin campaña;
+14. permite correlación con campaña sin transferencia de propiedad;
+15. impide que AURA cree o modifique ledger, saldo, puntos o redenciones;
+16. impide que PASS se convierta en sistema de campañas;
+17. impide que PULSO mantenga fidelización paralela;
+18. conserva regla y versión como base de la proyección;
+19. preserva historia ante cambios, retiro o vencimiento;
+20. conserva fuentes propietarias de producto, disponibilidad, capacidad y economía;
+21. preserva consentimiento y finalidad;
+22. mantiene `PASS-UX-002`, `PASS-UX-005`, `PASS-UX-007` y `PASS-UX-009` como propietarias de experiencia posterior;
+23. mantiene `PASS-INT-001` a `PASS-INT-005` como propietarias de integraciones y administración posterior;
+24. mantiene `PASS-QA-001` y `PASS-QA-002` como pruebas futuras;
+25. mantiene `AURA-DOM-006` y `AURA-INT-002` bloqueadas por la puerta AURA;
+26. reserva `INT-MKT-003` para validación comercial;
+27. crea cero definiciones normales de evento;
+28. crea cero requisitos de prueba;
+29. modifica cero requisitos de prueba;
+30. no modifica el registro canónico de requisitos;
+31. crea cero objetos físicos;
+32. modifica cero objetos físicos;
+33. no modifica código, SQL, migraciones, Supabase, datos, credenciales ni configuración remota;
+34. no inicia ni desarrolla `INT-MKT-003`.
+
+---
+
+#### 32. Resultado de la tarea
+
+`INT-MKT-002` queda definida como el contrato permanente que permite representar beneficios de fidelización en PASS sin confundir visibilidad con autoridad transaccional ni marketing con fidelización.
+
+Resultado consolidado:
+
+```text
+PASS
+→ BENEFICIO + REGLA + VERSIÓN
+→ PROYECCIÓN VISIBLE AL CLIENTE
+```
+
+sin producir por sí mismo:
+
+```text
+ELEGIBILIDAD CONFIRMADA
+REDENCIÓN
+DESCUENTO
+VENTA
+CAMPAÑA
+```
+
+y, cuando una campaña autorizada se relacione con el beneficio:
+
+```text
+AURA
+→ INTENCIÓN PROMOCIONAL + CORRELACIÓN
+
+PASS
+→ BENEFICIO + FIDELIZACIÓN
+
+PULSO
+→ VALIDACIÓN Y EFECTO COMERCIAL
+
+NUMERA
+→ RESULTADO ECONÓMICO
+```
+
+sin transferencia de propiedad ni fuentes competidoras.
+
+---
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-MKT-001 — Definir campañas solo después de aprobar AURA`
+
+TAREA ACTUAL APROBADA
+
+`INT-MKT-002 — Definir beneficios publicados en PASS`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-MKT-003 — Definir validación comercial desde PULSO`
+
+
 ### [ ] INT-MKT-003 — Definir validación comercial desde PULSO

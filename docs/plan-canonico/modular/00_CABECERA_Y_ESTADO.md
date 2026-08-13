@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **797** |
+| Tareas aprobadas | **798** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **797** |
+| Tareas no iniciadas | **796** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **50.00% (797/1594)** |
+| Porcentaje de completamiento | **50.06% (798/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-MKT-001 — Definir campañas solo después de aprobar AURA** |
-| Tarea actual | **INT-MKT-002 — Definir beneficios publicados en PASS** |
+| Última tarea aprobada | **INT-MKT-002 — Definir beneficios publicados en PASS** |
+| Tarea actual | **INT-MKT-003 — Definir validación comercial desde PULSO** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-MKT-003 — Definir validación comercial desde PULSO** |
+| Siguiente tarea | **QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 81 de 83 aprobadas; INT-MKT-002 pendiente** |
+| Progreso del bloque | **BLOQUE X: 82 de 83 aprobadas; INT-MKT-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-MKT-001` — Definir campañas solo después de aprobar AURA |
-| Tarea actual | `INT-MKT-002` — Definir beneficios publicados en PASS — **NO INICIADA** |
-| Siguiente tarea | `INT-MKT-003` — Definir validación comercial desde PULSO |
+| Última aprobada | `INT-MKT-002` — Definir beneficios publicados en PASS |
+| Tarea actual | `INT-MKT-003` — Definir validación comercial desde PULSO — **NO INICIADA** |
+| Siguiente tarea | `QUEUE-ARC-001` — Inventariar colas, cron, jobs y automatizaciones existentes |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 81 DE 83 APROBADAS — ACTUAL INT-MKT-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 82 DE 83 APROBADAS — ACTUAL INT-MKT-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-MKT-001 — Definir campañas solo después de aprobar AURA
-        ↓
-TAREA ACTUAL
 INT-MKT-002 — Definir beneficios publicados en PASS
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-MKT-003 — Definir validación comercial desde PULSO
         ↓
+SIGUIENTE TAREA RESERVADA
+QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 81 de 83 tareas aprobadas
+BLOQUE X — 82 de 83 tareas aprobadas
 ```
