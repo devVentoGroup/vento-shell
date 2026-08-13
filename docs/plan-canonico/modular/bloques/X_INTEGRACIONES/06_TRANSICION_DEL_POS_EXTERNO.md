@@ -13269,7 +13269,953 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas`
 
 
-### [ ] INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
+### ✅ INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-020 — Definir conciliación diaria entre POS y efectos internos`
+**Tarea siguiente:** `INT-POS-022 — Diseñar piloto controlado con efectos habilitados`
+**Tipo de tarea:** documental; diseño materializado del piloto de transición Makos → PULSO en modo controlado de lectura, staging y sombra, destinado a demostrar cobertura, binding, normalización, mapping, cuarentena, idempotencia y conciliación antes de habilitar efectos empresariales, sin publicar eventos a consumidoras ni producir movimientos de inventario, hechos económicos, puntos, pagos, caja, fiscalidad, compensaciones o cambios de autoridad de fuente
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**POS externo vigente:** `Makos`
+**Aplicación propietaria de la venta objetivo:** `PULSO`
+**Fronteras consumidoras mantenidas inactivas durante el piloto:** `NEXO`, `NUMERA`, `PASS`
+**Línea base documental:** `vento-shell@9ddaaca54f791deaef1dcd6d0b55e5a6dc380104`
+**Línea base técnica observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+**Estado del gate de evidencia real:** `BLOQUEADO`
+**Bloqueo verificado:** el proyecto remoto `vento-os-dev` contiene las tablas de staging de importación de ventas, pero `pulso_daily_sales_import_batches` no contiene lotes; no existe en el estado remoto observado una muestra Makos disponible para demostrar binding repetible sin efectos
+
+---
+
+#### 1. Propósito
+
+Diseñar el piloto obligatorio que precede a cualquier activación real de efectos de la transición desde Makos hacia PULSO.
+
+El piloto debe demostrar, con evidencia real de la fuente y sin modificar hechos empresariales, si Vento puede recorrer de forma repetible la cadena:
+
+```text
+MAKOS
+→ LECTURA AUTORIZADA / EVIDENCIA ORIGINAL
+→ STAGING
+→ NORMALIZACIÓN
+→ IDENTIDAD PROPUESTA DE VENTA Y LÍNEA
+→ MAPPING / CUARENTENA
+→ EVENTO PULSO PROPUESTO
+→ EFECTOS ESPERADOS EN SOMBRA
+→ CONCILIACIÓN
+```
+
+Durante este piloto la cadena termina antes de cualquier publicación o aplicación real de efectos.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-POS-021` deja definido un piloto con las siguientes decisiones obligatorias:
+
+1. Makos permanece como fuente temporal del hecho de venta durante el alcance aprobado de transición.
+2. La adquisición inicial utiliza únicamente acceso de lectura efectiva o una exportación real autorizada que preserve la evidencia fuente.
+3. El piloto no altera Makos.
+4. El piloto puede preservar evidencia y staging de prueba en un ambiente controlado cuando la implementación correspondiente lo autorice, pero no puede convertir ese staging en hechos empresariales definitivos.
+5. No se publica ningún evento empresarial hacia consumidoras.
+6. NEXO recibe cero movimientos de inventario originados por el piloto.
+7. NUMERA recibe cero hechos económicos originados por el piloto.
+8. PASS recibe cero acumulaciones, redenciones, reversos o ajustes originados por el piloto.
+9. PULSO no inicia cobros, pagos, caja, cierres, documentos fiscales, reembolsos ni compensaciones desde el piloto.
+10. La autoridad de fuente, el corte y las credenciales no cambian por ejecutar el piloto.
+11. El piloto calcula únicamente representaciones y efectos esperados en sombra.
+12. Una representación en sombra nunca se presenta como efecto aplicado.
+13. La evidencia original y su hash permanecen correlacionables con toda normalización posterior.
+14. La repetición deliberada del mismo insumo debe producir el mismo resultado lógico sin crear identidades nuevas.
+15. Un solapamiento de ventana no puede duplicar candidatos.
+16. Una revisión posterior no puede ser sobrescrita por una versión anterior.
+17. La ausencia de información se registra como ausencia; no se completa con inferencias.
+18. Una fila agregada de producto no se convierte en venta individual por suposición.
+19. Un total diario coincidente no demuestra binding individual.
+20. Un mapping no resuelto produce cuarentena y no un producto inventado.
+21. Una línea en cuarentena no habilita efectos dependientes de producto.
+22. Una venta anónima no recibe una identidad PASS fabricada.
+23. Un efecto NEXO esperado se representa solamente como preview.
+24. Un `SALE_ECONOMIC_FACT` esperado se representa solamente como preview.
+25. Una acumulación PASS esperada se representa solamente como preview.
+26. Anulación, devolución y reembolso se preservan como hechos separados cuando la fuente los demuestre.
+27. Una compensación potencial se identifica sin ejecutarla.
+28. Toda diferencia se envía a la conciliación definida en `INT-POS-020`.
+29. El piloto falla cerrado cuando no puede demostrar la granularidad o identidad requerida.
+30. el diseño de `INT-POS-022` no puede considerar habilitable un alcance mientras exista un bloqueo crítico de binding, completitud, idempotencia o no-efecto.
+31. Se crean cero requisitos `TREQ-*`.
+32. Se modifican cero requisitos `TREQ-*`.
+33. Se crean cero objetos físicos.
+34. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Modo canónico del piloto
+
+El modo del piloto se describe documentalmente como:
+
+```text
+LECTURA AUTORIZADA
++
+STAGING CONTROLADO
++
+SHADOW / PREVIEW
++
+NO DISPATCH
++
+NO BUSINESS EFFECT
+```
+
+Estos términos describen comportamiento y no crean enums, tablas, flags o contratos físicos.
+
+El piloto queda prohibido de:
+
+- escribir en Makos;
+- publicar eventos hacia consumidoras reales;
+- llamar fronteras que apliquen inventario;
+- llamar fronteras que apliquen hechos económicos;
+- llamar fronteras que apliquen fidelización;
+- iniciar o alterar pagos;
+- alterar caja;
+- generar o alterar documentos fiscales;
+- ejecutar compensaciones;
+- activar un corte de fuente;
+- revocar o ampliar credenciales;
+- modificar mappings de producción para hacer pasar una muestra;
+- crear datos operativos ficticios presentados como evidencia real.
+
+---
+
+#### 4. Fuentes y dependencias consumidas
+
+El piloto consume sin reabrir:
+
+- `INT-POS-002`, para información realmente confirmada de la interfaz externa;
+- `INT-POS-003`, para autoridad temporal de Makos;
+- `INT-POS-004`, para credencial independiente, revocable y de lectura efectiva;
+- `INT-POS-005`, para identidad de venta y línea;
+- `INT-POS-006`, para encabezados, líneas, estados, revisiones y tiempos;
+- `INT-POS-007`, para descuentos, impuestos, propinas y medios de pago;
+- `INT-POS-008`, para anulaciones, devoluciones y reembolsos;
+- `INT-POS-009`, para payload original, versión, hash y recepción;
+- `INT-POS-010`, para sede, terminal y caja;
+- `INT-POS-011`, para mapping de producto;
+- `INT-POS-012`, para cuarentena;
+- `INT-POS-013`, para idempotencia de recepción;
+- `INT-POS-014`, para adquisición por webhook o polling cuando exista soporte real;
+- `INT-POS-015`, para evento empresarial que solo se proyectará en sombra;
+- `INT-POS-016`, para efecto NEXO que solo se proyectará en sombra;
+- `INT-POS-017`, para efecto NUMERA que solo se proyectará en sombra;
+- `INT-POS-018`, para efecto PASS que solo se proyectará en sombra;
+- `INT-POS-019`, para compensaciones que solo se proyectarán en sombra;
+- `INT-POS-020`, para conciliación y clasificación de diferencias;
+- `INT-APP-004` a `INT-APP-010`, para idempotencia, retry, compensación, auditoría, pendientes, fallos parciales y prohibición de escrituras cruzadas.
+
+Ninguna de estas decisiones se modifica.
+
+---
+
+#### 5. Frontera de lectura de Makos
+
+La credencial de integración conserva el `scope_ceiling` de lectura efectiva definido en `INT-POS-004`.
+
+Durante el piloto:
+
+1. solo pueden consultarse objetos, campos, ventanas y endpoints realmente acreditados por el proveedor;
+2. si el mecanismo disponible es una exportación autorizada, se conserva el archivo original como evidencia de fuente;
+3. no se inventan endpoints para obtener mayor granularidad;
+4. no se usa una cuenta humana compartida como credencial técnica por conveniencia;
+5. no se elevan permisos para completar el piloto;
+6. el piloto registra cualquier límite real de paginación, orden, volumen o rate limit que afecte completitud;
+7. una ventana repetida debe ser segura por identidad y huella, no porque se asuma que la fuente nunca cambia.
+
+Si el acceso real no permite demostrar una dimensión obligatoria, la dimensión queda `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO`, según su impacto.
+
+---
+
+#### 6. Selección de la muestra real
+
+La ejecución posterior del diseño debe utilizar una muestra real autorizada de Makos.
+
+La muestra debe declararse por:
+
+- ambiente real consultado;
+- sede o alcance de sede;
+- fecha o ventana temporal;
+- mecanismo de lectura;
+- versión o formato de la fuente cuando exista;
+- evidencia original;
+- hash de la evidencia;
+- paginación o cobertura aplicada;
+- cantidad observada de registros fuente;
+- criterio de inclusión y exclusión.
+
+No se fija en esta tarea un número arbitrario de ventas, días o sedes.
+
+La suficiencia de la muestra depende de poder demostrar los comportamientos requeridos, no de alcanzar un conteo decorativo.
+
+---
+
+#### 7. Separación entre evidencia real y casos simulados
+
+El piloto distingue estrictamente:
+
+```text
+EVIDENCIA REAL DE MAKOS
+≠
+CASO SIMULADO PARA PROBAR UN ERROR
+```
+
+La evidencia real se utiliza para demostrar binding, granularidad, completitud y repetibilidad.
+
+Los casos simulados pueden utilizarse posteriormente para comprobar ramas de error que no aparezcan naturalmente en la muestra, pero deben quedar identificados como simulados y nunca mezclarse con resultados reales de Makos.
+
+No se fabrican ventas reales, clientes, pagos, cantidades, puntos, documentos o identificadores externos.
+
+---
+
+#### 8. Evidencia mínima por lectura
+
+Cada lectura real debe poder conservar, cuando la fuente lo exponga:
+
+- `source_system`;
+- identidad externa estable;
+- identidad de revisión o versión;
+- timestamp del hecho;
+- timestamp de recepción;
+- sede;
+- terminal;
+- caja;
+- encabezado de venta;
+- líneas;
+- producto externo;
+- cantidad;
+- UOM cuando exista;
+- moneda;
+- subtotal;
+- impuestos;
+- descuentos;
+- propina;
+- pago o referencia de pago;
+- estado;
+- anulación;
+- devolución;
+- reembolso;
+- payload o documento original;
+- hash.
+
+Una dimensión no expuesta se conserva explícitamente como no disponible; no se deriva de nombre, posición, monto, hora o similitud.
+
+---
+
+#### 9. Matriz materializada de binding
+
+Por cada identidad observable de la muestra se deberá producir una decisión con las siguientes dimensiones lógicas:
+
+| Dimensión                | Decisión obligatoria                                                  |
+| ------------------------ | --------------------------------------------------------------------- |
+| granularidad fuente      | venta individual / línea individual / agregado / no demostrable       |
+| identidad externa        | presente / ausente / ambigua                                          |
+| revisión                 | presente / ausente / no aplica                                        |
+| tiempo                   | acreditado / incompleto / ambiguo                                     |
+| sede                     | resuelta / bloqueada / ausente                                        |
+| terminal o caja          | resuelta / no expuesta / ambigua                                      |
+| montos                   | completos / parciales / no demostrables                               |
+| líneas                   | correlacionables / agregadas / ausentes                               |
+| producto                 | mapped / quarantined / no aplica                                      |
+| venta canónica candidata | determinista / bloqueada                                              |
+| línea canónica candidata | determinista / bloqueada                                              |
+| evento candidato         | determinista / bloqueado                                              |
+| NEXO esperado            | aplica / no aplica / bloqueado                                        |
+| NUMERA esperado          | aplica / no aplica / bloqueado                                        |
+| PASS esperado            | aplica / no aplica / bloqueado                                        |
+| resultado                | `ESPECIFICADO` / `PENDIENTE_DE_EVIDENCIA` / `BLOQUEADO` / `NO_APLICA` |
+
+La ejecución futura debe reportar el total esperado y materializado de decisiones, faltantes, duplicados y bloqueos.
+
+---
+
+#### 10. Regla de granularidad
+
+La granularidad es una puerta crítica.
+
+##### 10.1. Venta individual demostrable
+
+Puede proponerse una identidad canónica cuando la fuente permite demostrar una identidad estable y la evidencia requerida por los contratos anteriores.
+
+##### 10.2. Línea individual demostrable
+
+Puede proponerse una línea canónica solo cuando la fuente permite relacionarla con una venta concreta y conservar su identidad o posición estable conforme al contrato aprobado.
+
+##### 10.3. Agregado por producto o día
+
+Un agregado puede utilizarse para:
+
+- cobertura;
+- control de totales;
+- mapping de productos;
+- diagnóstico de diferencias;
+- comparación agregada.
+
+No puede utilizarse para fabricar:
+
+- `sale_id`;
+- `sale_line_id`;
+- pago individual;
+- cliente individual;
+- evento individual;
+- movimiento individual;
+- hecho económico individual;
+- acumulación individual de puntos.
+
+##### 10.4. Granularidad insuficiente
+
+Si la fuente disponible no permite pasar de agregado a venta individual, el resultado del binding individual es `BLOQUEADO`.
+
+Este bloqueo impide considerar habilitable el alcance individual en el diseño posterior de `INT-POS-022`.
+
+---
+
+#### 11. Staging y evidencia original
+
+El diseño admite staging únicamente como capa de evidencia y trabajo previo al hecho empresarial.
+
+El staging debe preservar:
+
+- procedencia;
+- evidencia original;
+- hash;
+- recepción;
+- versión del parser o normalizador cuando exista;
+- identidad externa observada;
+- resultado de normalización;
+- mapping aplicado;
+- estado de cuarentena;
+- huella idempotente;
+- relación con el resultado en sombra.
+
+El staging no es una venta confirmada, un movimiento de inventario, un hecho económico ni un movimiento de fidelización.
+
+---
+
+#### 12. Normalización
+
+La normalización del piloto debe ser determinista y reproducible.
+
+Reglas:
+
+1. mismo insumo y misma versión de contrato producen la misma representación normalizada;
+2. el valor original se conserva;
+3. una normalización no cambia el significado empresarial;
+4. no se rellena información faltante con defaults que parezcan hechos reales;
+5. moneda, cantidades y fechas se interpretan conforme a evidencia acreditada;
+6. una diferencia de formato no crea otra venta;
+7. un cambio de contrato o parser queda versionado y no reescribe la evidencia original.
+
+---
+
+#### 13. Binding de sede, terminal y caja
+
+El piloto aplica `INT-POS-010`.
+
+Cada registro debe clasificar:
+
+- sede resuelta de forma determinista;
+- sede bloqueada;
+- terminal resuelta;
+- terminal no expuesta;
+- caja resuelta;
+- caja no expuesta;
+- conflicto de contexto.
+
+La sede seleccionada manualmente para cargar una exportación no prueba por sí sola que cada venta del contenido pertenezca a esa sede cuando la fuente no lo demuestra.
+
+Terminal y caja no se inventan a partir del dispositivo que ejecuta el piloto.
+
+---
+
+#### 14. Mapping de producto
+
+El piloto usa el contrato de `INT-POS-011` sin cambiar mappings productivos para hacer coincidir la muestra.
+
+Por línea o agregado de producto se determina:
+
+- mapping directo acreditado;
+- mapping por regla canónica vigente;
+- conflicto;
+- ausencia;
+- cuarentena.
+
+No se permite:
+
+- tomar coincidencia por nombre como verdad cuando el contrato exige identidad más fuerte;
+- usar precio parecido como mapping;
+- escoger el primer producto coincidente;
+- ignorar una colisión;
+- crear producto nuevo automáticamente.
+
+---
+
+#### 15. Cuarentena
+
+`INT-POS-012` permanece activa durante todo el piloto.
+
+Una línea queda bloqueada cuando exista, entre otros:
+
+- producto sin mapping;
+- mapping ambiguo;
+- UOM incompatible;
+- identidad insuficiente;
+- estado incompatible;
+- versión desconocida necesaria para interpretar el hecho.
+
+La cuarentena:
+
+1. conserva la evidencia original;
+2. no elimina el registro de cobertura;
+3. no autoriza efectos dependientes de la línea;
+4. permite medir la brecha real;
+5. debe quedar con propietaria y condición de salida.
+
+---
+
+#### 16. Idempotencia y repetición deliberada
+
+El piloto debe demostrar conceptualmente el contrato de `INT-POS-013`.
+
+La ejecución futura incluye al menos una repetición deliberada del mismo insumo o ventana.
+
+Resultado esperado:
+
+```text
+MISMA IDENTIDAD + MISMA HUELLA
+→ MISMO RESULTADO LÓGICO
+→ CERO IDENTIDADES NUEVAS
+→ CERO EFECTOS
+
+MISMA IDENTIDAD + HUELLA DIFERENTE
+→ CONFLICTO O REVISIÓN SEGÚN CONTRATO
+→ CERO SOBRESCRITURA SILENCIOSA
+→ CERO EFECTOS
+```
+
+La repetición no prueba idempotencia si únicamente se compara un total agregado.
+
+---
+
+#### 17. Completitud de lectura
+
+El piloto debe poder responder, con evidencia:
+
+- qué ventana se pidió;
+- cuántas páginas, archivos o unidades de lectura fueron necesarias;
+- qué orden garantiza la fuente, si alguno;
+- qué cursor, watermark o límite real se utilizó, si existe;
+- qué registros quedaron fuera y por qué;
+- si una lectura repetida produce el mismo conjunto o una revisión explicable;
+- si existen eventos tardíos;
+- si el proveedor limita la ventana o volumen.
+
+Una respuesta parcial de la fuente no se declara completa por ausencia de error técnico.
+
+---
+
+#### 18. Evento PULSO en sombra
+
+Cuando el binding sea suficiente, el piloto construye la representación del evento que PULSO debería emitir bajo `INT-POS-015`.
+
+La representación debe permitir verificar:
+
+- identidad;
+- procedencia;
+- revisión;
+- timestamps;
+- correlación con venta y líneas;
+- elegibilidad de consumidoras;
+- contenido canónico requerido.
+
+El evento permanece en sombra:
+
+```text
+CANDIDATO DE EVENTO
+→ VALIDACIÓN
+→ CONCILIACIÓN
+→ NO PUBLICACIÓN
+```
+
+No se crea una entrega real, inbox real, retry real ni efecto real.
+
+---
+
+#### 19. Preview NEXO
+
+Para cada venta o línea cuyo contrato físico sea determinable, el piloto calcula qué efecto NEXO sería esperado.
+
+El preview puede indicar:
+
+- aplica;
+- no aplica;
+- bloqueado por mapping;
+- bloqueado por cantidad/UOM;
+- bloqueado por estado;
+- bloqueado por evidencia.
+
+Cuando aplica, la representación debe conservar producto, cantidad, UOM, causalidad y correlación necesarias para comparar con `INT-POS-016`.
+
+El preview produce:
+
+```text
+0 INSERTS DE MOVIMIENTO
+0 CAMBIOS DE STOCK
+0 CAMBIOS DE PROYECCIONES
+0 POSTING RECEIPTS REALES
+```
+
+---
+
+#### 20. Preview NUMERA
+
+El piloto evalúa la puerta de materialidad definida en `INT-POS-017`.
+
+Puede clasificar:
+
+- `SALE_ECONOMIC_FACT` esperado;
+- no material todavía;
+- bloqueado por venta incompleta;
+- bloqueado por monto o moneda;
+- bloqueado por entidad, sede o contexto;
+- bloqueado por evidencia.
+
+Cuando el hecho sería aplicable, se calcula únicamente su representación esperada.
+
+El preview produce:
+
+```text
+0 HECHOS ECONÓMICOS REALES
+0 ASIENTOS
+0 CARTERA
+0 CAJA
+0 COSTOS APLICADOS
+0 CAMBIOS DE PERIODO
+```
+
+---
+
+#### 21. Preview PASS
+
+El piloto evalúa `INT-POS-018` sin escribir fidelización.
+
+Puede clasificar:
+
+- acumulación aplicable;
+- no aplica por venta anónima o no elegible;
+- bloqueado por identidad;
+- bloqueado por cuenta;
+- bloqueado por regla;
+- bloqueado por línea en cuarentena;
+- bloqueado por evidencia.
+
+Cuando aplica, se calcula la expectativa de cuenta, regla, base y puntos sin aplicarla.
+
+El preview produce:
+
+```text
+0 LOYALTY TRANSACTIONS
+0 CAMBIOS DE SALDO
+0 REDENCIONES
+0 AJUSTES
+0 REVERSOS
+```
+
+Una venta anónima legítima no se transforma en error por producir cero puntos.
+
+---
+
+#### 22. Anulaciones, devoluciones y compensaciones en sombra
+
+Cuando la muestra real contenga anulaciones, devoluciones o reembolsos, el piloto debe conservar su relación con el original según `INT-POS-008`.
+
+`INT-POS-019` se utiliza únicamente para proyectar:
+
+- qué efecto original necesitaría compensación;
+- qué consumidora sería responsable;
+- qué residual quedaría;
+- qué evidencia faltaría.
+
+No se ejecuta ninguna compensación.
+
+Si la muestra no contiene estos casos, su ausencia se declara y los casos de prueba adicionales permanecen claramente simulados.
+
+---
+
+#### 23. Conciliación del piloto
+
+Cada ejecución futura de este diseño se evalúa mediante `INT-POS-020`.
+
+La conciliación compara:
+
+```text
+FUENTE REAL
+↔ STAGING
+↔ NORMALIZACIÓN
+↔ BINDING
+↔ EVENTO EN SOMBRA
+↔ NEXO ESPERADO
+↔ NUMERA ESPERADO
+↔ PASS ESPERADO
+```
+
+Como no existen efectos reales, la conciliación debe demostrar adicionalmente:
+
+- cero movimientos NEXO originados por el piloto;
+- cero hechos NUMERA originados por el piloto;
+- cero movimientos PASS originados por el piloto;
+- cero pagos, caja o fiscalidad originados por el piloto;
+- cero publicación accidental de eventos;
+- cero compensaciones reales.
+
+Una diferencia se conserva con propietaria y condición de salida; no se corrige escribiendo sobre otro dominio.
+
+---
+
+#### 24. Casos obligatorios del piloto
+
+El diseño exige cubrir, con evidencia real cuando el caso exista y con simulación identificada cuando sea necesario probar una rama de error:
+
+| Caso                                       | Resultado esperado                                         |
+| ------------------------------------------ | ---------------------------------------------------------- |
+| lectura autorizada                         | evidencia original preservada y cero mutación de Makos     |
+| repetición del mismo insumo                | mismo resultado lógico y cero duplicados                   |
+| ventana solapada                           | mismos hechos deduplicados                                 |
+| producto mapped                            | candidato estable                                          |
+| producto sin mapping                       | cuarentena, no inferencia                                  |
+| identidad de venta suficiente              | candidato canónico determinista                            |
+| identidad insuficiente                     | binding bloqueado                                          |
+| fila agregada                              | control agregado, no venta inventada                       |
+| evento candidato                           | representación válida sin publicación                      |
+| NEXO aplicable                             | preview sin movimiento                                     |
+| NUMERA aplicable                           | preview sin hecho económico                                |
+| PASS aplicable                             | preview sin puntos                                         |
+| PASS no aplicable                          | no-op legítimo en sombra                                   |
+| anulación o devolución                     | relación original preservada, compensación solo proyectada |
+| conflicto de huella                        | conflicto visible, cero sobrescritura                      |
+| dato tardío o revisión                     | historia preservada                                        |
+| diferencia de conciliación                 | propietaria y condición de salida explícitas               |
+| intento de habilitar efecto antes del gate | bloqueo                                                    |
+
+---
+
+#### 25. Gate de no-efecto
+
+Antes de cualquier ejecución futura, deben existir controles que hagan verificable que el modo no-efecto está activo.
+
+La evidencia debe demostrar que el recorrido del piloto no puede alcanzar por accidente:
+
+- el writer NEXO;
+- el writer NUMERA;
+- el writer PASS;
+- cobros o refunds;
+- caja;
+- fiscalidad;
+- compensaciones;
+- el corte de fuente.
+
+No basta con una instrucción operativa de “no presionar el botón”.
+
+Si el runtime disponible solo puede llegar a la fuente mediante una ruta que también permite publicar efectos sin una separación verificable, la ejecución permanece `BLOQUEADO` hasta contar con una frontera segura.
+
+---
+
+#### 26. Diagnóstico de la implementación actual de PULSO
+
+La implementación observada de `vento-pulso` dispone de `/sales-imports` y parsea un XLSX de ventas por artículo.
+
+El parser actual reconoce, por fila:
+
+- ID externo;
+- producto;
+- categoría;
+- cantidad;
+- subtotal;
+- impuestos;
+- descuentos;
+- devoluciones.
+
+La importación actual calcula hash SHA-256 del archivo y guarda lote y filas de staging con mapping hacia catálogo.
+
+Sin embargo, la granularidad observada es de venta agregada por artículo y no acredita por sí misma:
+
+- encabezado individual de venta;
+- identidad individual de venta;
+- línea ligada a una venta individual;
+- cliente individual;
+- pago individual;
+- terminal o caja individual;
+- `event_id` empresarial por venta.
+
+Por tanto, el código actual sirve como evidencia de que existe una ruta de importación agregada, pero no resuelve por sí mismo el binding individual exigido por los contratos `INT-POS-005` a `INT-POS-010`.
+
+El estado remoto verificado del proyecto VENTO de desarrollo contiene `pulso_daily_sales_import_batches`, `pulso_daily_sales_import_rows` y `pulso_external_sales_item_mappings`, pero la consulta de los lotes de importación devuelve cero registros. En consecuencia:
+
+- existe el mecanismo técnico de staging en código y esquema;
+- no existe una muestra Makos remota actualmente disponible para demostrar correlación repetible;
+- el binding real permanece `PENDIENTE_DE_EVIDENCIA`;
+- el gate de evidencia real queda `BLOQUEADO`;
+- no se autoriza inferir una muestra desde el código ni fabricar filas para declarar superado el gate.
+
+---
+
+#### 27. Frontera segura frente al posting actual
+
+La implementación observada también expone una acción de publicación que llama `pulso_post_daily_sales_import` y presenta el resultado como ventas publicadas e inventario descontado.
+
+Esa acción queda fuera del piloto diseñado aquí.
+
+Durante el piloto sin efectos:
+
+```text
+IMPORTACIÓN / STAGING CONTROLADO
+→ PERMITIDO EN LA EJECUCIÓN AUTORIZADA
+
+PUBLICACIÓN / POSTING DE INVENTARIO
+→ PROHIBIDO
+```
+
+No se invoca `pulso_post_daily_sales_import`.
+
+La existencia actual de esa acción obliga a que el diseño posterior de `INT-POS-022` preserve una separación técnica verificable como condición previa a cualquier futura ejecución con efectos.
+
+---
+
+#### 28. Estados de resultado
+
+Cada dimensión material del piloto utiliza únicamente estados explícitos:
+
+- `ESPECIFICADO`: el contrato de la dimensión está definido y la evidencia suficiente permite una decisión determinista;
+- `PENDIENTE_DE_EVIDENCIA`: falta evidencia que puede obtenerse sin cambiar la decisión canónica;
+- `BLOQUEADO`: la ausencia o contradicción impide avanzar de forma segura;
+- `NO_APLICA`: el contrato demuestra que la dimensión no corresponde al caso.
+
+No se utiliza una categoría genérica que oculte la causa.
+
+Todo `PENDIENTE_DE_EVIDENCIA` o `BLOQUEADO` conserva:
+
+- insumo faltante;
+- propietaria;
+- tarea de resolución;
+- condición de salida.
+
+---
+
+#### 29. Gate previo al diseño de `INT-POS-022`
+
+El alcance posterior de `INT-POS-022` solo puede declararse habilitable cuando una ejecución autorizada del modo de sombra diseñado aquí demuestre, como mínimo:
+
+1. fuente y ambiente acreditados;
+2. lectura no mutante;
+3. muestra real preservada con hash;
+4. cobertura de consulta explicable;
+5. granularidad explícita;
+6. binding determinista para las unidades que se pretenden activar;
+7. cero identidades inventadas;
+8. cero duplicados al repetir el insumo;
+9. mapping determinista o cuarentena explícita;
+10. sede y contexto suficientes para el alcance a activar;
+11. evento PULSO en sombra reproducible;
+12. efecto NEXO esperado reproducible cuando aplica;
+13. efecto NUMERA esperado reproducible cuando aplica;
+14. efecto PASS esperado reproducible cuando aplica;
+15. compensaciones únicamente proyectadas;
+16. conciliación completa de la muestra;
+17. cero efectos empresariales reales producidos por el piloto;
+18. cero bloqueos críticos abiertos para el alcance que vaya a activarse.
+
+Si la fuente disponible continúa siendo únicamente el agregado por artículo observado en el XLSX actual, el binding individual permanece `BLOQUEADO` y el diseño posterior de `INT-POS-022` debe conservar ese alcance como no habilitable.
+
+---
+
+#### 30. Evidencia que deberá conservar la ejecución futura
+
+La ejecución del diseño deberá dejar evidencia suficiente para reproducir:
+
+- origen y ambiente;
+- alcance temporal y territorial;
+- evidencia original y hash;
+- mecanismo de lectura;
+- cobertura/paginación;
+- conteos de fuente;
+- decisiones de granularidad;
+- matriz de binding;
+- mappings utilizados;
+- cuarentenas;
+- huellas idempotentes;
+- repetición deliberada;
+- candidatos de evento;
+- previews por consumidora;
+- diferencias de conciliación;
+- prueba de cero efectos;
+- bloqueos;
+- resultado del gate previo a `INT-POS-022`.
+
+No se considera evidencia una captura aislada que no permita correlacionar fuente, identidad, decisión y resultado.
+
+---
+
+#### 31. Propiedad de bloqueos y handoffs
+
+| Bloqueo o pendiente                                       | Propietaria                  | Tarea de resolución                                               | Condición de salida                                                                                |
+| --------------------------------------------------------- | ---------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| muestra Makos real ausente en el staging remoto observado | integración Makos / PULSO    | gate de `INT-POS-021`                                             | una muestra real autorizada queda preservada con hash y permite repetir la correlación sin efectos |
+| acceso real de solo lectura no disponible                 | integración Makos / PULSO    | `INT-POS-021` como gate de ejecución previo a efectos             | acceso autorizado probado sin mutación                                                             |
+| granularidad real de Makos insuficiente                   | integración Makos / PULSO    | `INT-POS-021` como gate de ejecución previo a efectos             | evidencia real permite binding del alcance que se quiera activar                                   |
+| mapping de sede o producto insuficiente                   | PULSO / catálogo propietario | contratos `INT-POS-010` a `INT-POS-012` aplicados durante el gate | mapping determinista o cuarentena explícita                                                        |
+| idempotencia no demostrada                                | PULSO / adaptador            | `INT-POS-021` como gate de ejecución previo a efectos             | repetición deliberada converge sin duplicados                                                      |
+| separación técnica de no-efecto no demostrada             | PULSO / integración          | gate de `INT-POS-021` antes de `INT-POS-022`                      | una ejecución autorizada demuestra que el recorrido no alcanza writers empresariales               |
+| preview NEXO bloqueado                                    | NEXO / mapping físico        | gate de `INT-POS-021` antes de `INT-POS-022`                      | precondiciones físicas del alcance quedan demostradas en sombra                                    |
+| preview NUMERA bloqueado                                  | NUMERA                       | gate de `INT-POS-021` antes de `INT-POS-022`                      | materialidad y contexto económico quedan demostrados en sombra                                     |
+| preview PASS bloqueado                                    | PASS                         | gate de `INT-POS-021` antes de `INT-POS-022`                      | identidad, cuenta y regla quedan demostradas en sombra cuando aplique                              |
+| corte de fuente                                           | PULSO / integración          | `INT-POS-023`                                                     | autoridad de fuente queda determinada por sede, terminal y fecha efectiva                          |
+| retiro de acceso externo                                  | integración / seguridad      | `INT-POS-024`                                                     | credencial queda reducida o revocada conforme al corte aprobado                                    |
+
+La tarea de diseño queda documentalmente completa, pero el gate de evidencia real permanece `BLOQUEADO` hasta que exista una muestra autorizada; ningún bloqueo de ejecución se presenta como evidencia superada y la continuidad no autoriza saltar ese gate.
+
+---
+
+#### 32. Relación con la conciliación diaria
+
+La salida del piloto debe poder alimentar exactamente la conciliación de `INT-POS-020` sin crear una variante paralela.
+
+La misma lógica de comparación se conserva para:
+
+- fuente;
+- venta;
+- línea;
+- mapping;
+- evento;
+- NEXO;
+- NUMERA;
+- PASS;
+- compensaciones;
+- residuales.
+
+La diferencia es que en `INT-POS-021` los efectos observados deben ser cero por diseño y los efectos esperados son previews.
+
+---
+
+#### 33. Relación con la convivencia y el corte permanente
+
+Este piloto no cambia la fuente autorizada.
+
+La continuidad permanente permanece en:
+
+- `INT-SALES-007`, para control contra efectos duplicados por reintento;
+- `INT-SALES-008`, para conciliación de convivencia entre POS externo y PULSO;
+- `INT-SALES-009`, para corte por sede, terminal y fecha efectiva;
+- `INT-SALES-010`, para impedir doble fuente;
+- `INT-SALES-011`, para retirar el adaptador sin modificar consumidoras.
+
+El éxito del piloto no autoriza por sí mismo el corte.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento que este piloto debe demostrar ya está protegido por la cobertura vigente de la transición POS externo → PULSO, cuya responsabilidad canónica abarca `INT-POS-001` a `INT-POS-024` y exige adaptador, staging, payload original, hash, mapping, cuarentena, idempotencia, ausencia de doble emisión, efectos exactamente una vez y conciliación. La tarea actual concreta el diseño del gate de sombra previo a efectos sin introducir una obligación independiente nueva ni modificar una fila histórica.
+
+---
+
+#### 35. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad, huella, resultado recuperable y conciliación;
+- `TREQ-INTEGRATION-006`, para fuente propietaria única y resolución sin mutación destructiva;
+- `TREQ-INTEGRATION-011`, para efectos NEXO exactamente una vez cuando se habiliten;
+- `TREQ-INTEGRATION-014`, para la transición Makos/POS externo → PULSO y sus gates de integración;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones;
+- `TREQ-INTEGRATION-017`, para NUMERA y efectos económicos;
+- `TREQ-INTEGRATION-023`, para recuperación y conciliación en degradación;
+- `TREQ-INTEGRATION-151`, para retry crítico y conciliación al agotarse;
+- `TREQ-INTEGRATION-154`, para eventos fuera de orden;
+- `TREQ-INTEGRATION-155`, para replay sin fan-out a nuevas consumidoras;
+- `TREQ-INTEGRATION-156`, para claim/lease sin inferir que el efecto anterior no ocurrió;
+- `TREQ-INTEGRATION-159`, para independencia entre consumidoras;
+- `TREQ-INTEGRATION-160`, para destino explícito tras agotamiento;
+- `TREQ-INTEGRATION-161`, para prohibir compensación automática por agotamiento;
+- `TREQ-PULSO-001`, `TREQ-PULSO-005` y `TREQ-PULSO-006`, para venta, estados, efectos y conciliación;
+- `TREQ-NEXO-011`, para ledger y proyecciones físicas reconciliables;
+- `TREQ-NUMERA-001` y `TREQ-NUMERA-002`, para hechos económicos correlacionados y reconciliables;
+- `TREQ-PASS-008` y `TREQ-PASS-010`, para ledger de fidelización atómico, idempotente y reconciliable.
+
+Ninguna identidad, texto, estado, relación, secuencia o evidencia del registro cambia.
+
+---
+
+#### 36. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-POS-020` como tarea anterior;
+2. mantiene `INT-POS-022` como única tarea siguiente;
+3. define el piloto como lectura, staging controlado, sombra y no-efecto;
+4. preserva Makos como fuente temporal;
+5. conserva la credencial con lectura efectiva;
+6. prohíbe mutaciones de Makos;
+7. exige muestra real autorizada en la ejecución;
+8. separa evidencia real de casos simulados;
+9. define evidencia mínima por lectura;
+10. materializa la matriz de binding;
+11. trata granularidad como puerta crítica;
+12. prohíbe convertir agregados en ventas individuales;
+13. preserva payload o documento original y hash;
+14. exige normalización determinista;
+15. gobierna sede, terminal y caja sin inferencias;
+16. gobierna mapping sin coincidencias arbitrarias;
+17. conserva cuarentena;
+18. exige repetición deliberada para idempotencia;
+19. exige evidencia de completitud de lectura;
+20. proyecta evento PULSO sin publicarlo;
+21. proyecta NEXO con cero movimiento;
+22. proyecta NUMERA con cero hecho económico;
+23. proyecta PASS con cero movimiento de fidelización;
+24. proyecta compensaciones sin ejecutarlas;
+25. reutiliza `INT-POS-020` para conciliación;
+26. cubre los casos obligatorios declarados;
+27. establece un gate verificable de no-efecto;
+28. reconoce la granularidad agregada de la importación XLSX observada;
+29. declara que esa granularidad no demuestra binding individual;
+30. excluye explícitamente `pulso_post_daily_sales_import` del piloto;
+31. utiliza estados explícitos para evidencia y bloqueos;
+32. fija el gate previo a `INT-POS-022`;
+33. exige cero efectos reales antes de habilitar efectos controlados;
+34. mantiene los bloqueos con propietaria y condición de salida;
+35. preserva continuidad con `INT-SALES-007` a `INT-SALES-011`;
+36. crea cero requisitos `TREQ-*`;
+37. modifica cero requisitos `TREQ-*`;
+38. no genera una copia del registro canónico de requisitos;
+39. no modifica código, SQL, migraciones, Supabase, datos, credenciales, configuración ni estado remoto.
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-020 — Definir conciliación diaria entre POS y efectos internos`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-022 — Diseñar piloto controlado con efectos habilitados`
+
+
 ### [ ] INT-POS-022 — Diseñar piloto controlado con efectos habilitados
 ### [ ] INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
 ### [ ] INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente

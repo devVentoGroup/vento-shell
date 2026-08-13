@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **781** |
+| Tareas aprobadas | **782** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **813** |
+| Tareas no iniciadas | **812** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.00% (781/1594)** |
+| Porcentaje de completamiento | **49.06% (782/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-020 — Definir conciliación diaria entre POS y efectos internos** |
-| Tarea actual | **INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas** |
+| Última tarea aprobada | **INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas** |
+| Tarea actual | **INT-POS-022 — Diseñar piloto controlado con efectos habilitados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-022 — Diseñar piloto controlado con efectos habilitados** |
+| Siguiente tarea | **INT-POS-023 — Definir transición futura desde POS externo hacia PULSO** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 65 de 83 aprobadas; INT-POS-021 pendiente** |
+| Progreso del bloque | **BLOQUE X: 66 de 83 aprobadas; INT-POS-022 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-020` — Definir conciliación diaria entre POS y efectos internos |
-| Tarea actual | `INT-POS-021` — Diseñar piloto sin efectos sobre inventario ni finanzas — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-022` — Diseñar piloto controlado con efectos habilitados |
+| Última aprobada | `INT-POS-021` — Diseñar piloto sin efectos sobre inventario ni finanzas |
+| Tarea actual | `INT-POS-022` — Diseñar piloto controlado con efectos habilitados — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-023` — Definir transición futura desde POS externo hacia PULSO |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 65 DE 83 APROBADAS — ACTUAL INT-POS-021** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 66 DE 83 APROBADAS — ACTUAL INT-POS-022** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-020 — Definir conciliación diaria entre POS y efectos internos
-        ↓
-TAREA ACTUAL
 INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-022 — Diseñar piloto controlado con efectos habilitados
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 65 de 83 tareas aprobadas
+BLOQUE X — 66 de 83 tareas aprobadas
 ```
