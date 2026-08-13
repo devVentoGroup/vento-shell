@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **789** |
+| Tareas aprobadas | **790** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **805** |
+| Tareas no iniciadas | **804** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **49.50% (789/1594)** |
+| Porcentaje de completamiento | **49.56% (790/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-SALES-004 — Definir recepción del evento de venta en NUMERA** |
-| Tarea actual | **INT-SALES-005 — Definir acumulación de puntos en PASS** |
+| Última tarea aprobada | **INT-SALES-005 — Definir acumulación de puntos en PASS** |
+| Tarea actual | **INT-SALES-006 — Definir procesamiento de redención en PASS** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-SALES-006 — Definir procesamiento de redención en PASS** |
+| Siguiente tarea | **INT-SALES-007 — Definir control contra efectos duplicados por reintento** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 73 de 83 aprobadas; INT-SALES-005 pendiente** |
+| Progreso del bloque | **BLOQUE X: 74 de 83 aprobadas; INT-SALES-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-SALES-004` — Definir recepción del evento de venta en NUMERA |
-| Tarea actual | `INT-SALES-005` — Definir acumulación de puntos en PASS — **NO INICIADA** |
-| Siguiente tarea | `INT-SALES-006` — Definir procesamiento de redención en PASS |
+| Última aprobada | `INT-SALES-005` — Definir acumulación de puntos en PASS |
+| Tarea actual | `INT-SALES-006` — Definir procesamiento de redención en PASS — **NO INICIADA** |
+| Siguiente tarea | `INT-SALES-007` — Definir control contra efectos duplicados por reintento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 73 DE 83 APROBADAS — ACTUAL INT-SALES-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 74 DE 83 APROBADAS — ACTUAL INT-SALES-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-SALES-004 — Definir recepción del evento de venta en NUMERA
-        ↓
-TAREA ACTUAL
 INT-SALES-005 — Definir acumulación de puntos en PASS
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-SALES-006 — Definir procesamiento de redención en PASS
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-SALES-007 — Definir control contra efectos duplicados por reintento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 73 de 83 tareas aprobadas
+BLOQUE X — 74 de 83 tareas aprobadas
 ```

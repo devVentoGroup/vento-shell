@@ -4662,7 +4662,1496 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-005 — Definir acumulación de puntos en PASS`
 
 
-### [ ] INT-SALES-005 — Definir acumulación de puntos en PASS
+### ✅ INT-SALES-005 — Definir acumulación de puntos en PASS
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-004 — Definir recepción del evento de venta en NUMERA`
+**Tarea siguiente:** `INT-SALES-006 — Definir procesamiento de redención en PASS`
+**Tipo de tarea:** documental; definición normativa permanente de la acumulación de puntos que PASS puede aplicar a una venta canónica emitida por PULSO, preservando identidad de cliente y cuenta de fidelización, regla versionada, elegibilidad, base calculable, cuarentena, inbox, efecto idempotente, guarda de dominio cuenta+venta, ledger inmutable, saldo derivado, resultado recuperable, retry, eventos tardíos, compensación y conciliación, sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta y del evento comercial:** `PULSO`
+**Aplicación propietaria de fidelización:** `PASS`
+**Proceso PASS reutilizado:** `VPROC-0045 — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados`
+**Efecto de acumulación reutilizado:** `LOYALTY_POINTS_ACCRUAL`
+**Línea base documental:** `vento-shell@114eb87abdc9e5494af2c503a657bf19add9f457`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma permanente cuándo una venta canónica ya registrada y emitida por PULSO puede producir una acumulación de puntos en PASS y cómo esa acumulación queda aplicada exactamente una vez, sin convertir toda venta en puntos por defecto, sin permitir que PULSO fije saldo de fidelización y sin depender del adaptador del POS externo.
+
+Regla raíz:
+
+```text
+VENTA DURABLE PULSO
+        ↓
+EVENTO EMPRESARIAL PULSO + EVENT_ID ESTABLE
+        ↓
+AUDIENCIA CANÓNICA CONFIRMA QUE PASS APLICA
+        ↓
+CONSUMER_INBOX PASS
+        ↓
+RESOLUCIÓN DE CLIENTE Y CUENTA PASS
+        ↓
+REGLA PASS VERSIONADA APLICABLE
+        ↓
+BASE ELEGIBLE DEMOSTRABLE
+        ↓
+DECISIÓN PASS
+        ├── NO_APLICA
+        ├── BLOQUEADO / CONCILIACIÓN
+        └── ACUMULACIÓN ELEGIBLE
+                    ↓
+            CONSUMER_EFFECT
+                    ↓
+            LOYALTY_POINTS_ACCRUAL
+                    ↓
+            LEDGER PASS INMUTABLE
+                    ↓
+            SALDO DERIVADO
+                    ↓
+            RESULTADO DURABLE Y RECUPERABLE
+```
+
+No:
+
+```text
+VENTA = PUNTOS
+```
+
+No:
+
+```text
+PULSO → UPDATE DEL SALDO PASS
+```
+
+No:
+
+```text
+DESCUENTO / PROPINA / PAGO = REDENCIÓN
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-005` deja definido el contrato permanente PULSO → PASS para acumulación mediante las siguientes decisiones:
+
+1. PULSO conserva la venta, sus líneas, sus revisiones y el evento empresarial.
+2. PASS conserva identidad de fidelización, cuenta, reglas, ledger, saldo, recompensas, acumulaciones, ajustes, reversos y redenciones.
+3. La recepción de un evento PULSO no concede puntos automáticamente.
+4. PASS solo recibe como consumidora cuando la relación vigente del registro transversal la incluye para la definición concreta.
+5. PASS evalúa elegibilidad dentro de su propia frontera.
+6. Una venta válida sin cuenta PASS inequívoca continúa siendo una venta válida y produce cero acumulación automática.
+7. `customer_id` comercial y `loyalty_account_id` permanecen separados.
+8. Correo, teléfono, nombre, documento parcial, coincidencia aproximada o contacto aislado no autorizan fusión ni selección automática de cuenta.
+9. Una cuenta PASS debe resolverse de forma inequívoca antes de aplicar el movimiento.
+10. La política de fidelización es versionada y reproducible.
+11. La regla aplicable se resuelve por el momento empresarial y el contexto del hecho, no por la regla activa al momento de un retry tardío.
+12. La regla define base, exclusiones, fórmula, redondeo, prioridad, stacking, mínimos, máximos, caps y tratamiento de reversos.
+13. No existe una fórmula universal `puntos = total de venta`.
+14. No se usa `net_sales_amount` legacy como base universal.
+15. No se usa el monto pagado como base universal.
+16. Una regla dependiente de producto no usa una línea en cuarentena como si estuviera resuelta.
+17. Una regla independiente del producto puede evaluarse cuando toda su base requerida sea demostrable sin omitir líneas ni importes.
+18. La acumulación utiliza `CONSUMER_INBOX = pass + event_id`.
+19. La acumulación utiliza `CONSUMER_EFFECT = pass + event_id + LOYALTY_POINTS_ACCRUAL`.
+20. PASS conserva además una guarda de dominio `loyalty_account_id + canonical_sale_id + ACCUMULATION`.
+21. La guarda de dominio impide que dos eventos legítimos del mismo ciclo comercial acrediten dos veces la misma compra.
+22. La versión de regla participa en la huella lógica, no en la identidad de la acumulación.
+23. Cambiar de regla después de aplicar no habilita una segunda acumulación silenciosa.
+24. El ledger PASS es la fuente de verdad del movimiento.
+25. El saldo es una proyección derivada y reconciliable del ledger.
+26. Un delta de acumulación ordinaria debe ser positivo y distinto de cero.
+27. Cero puntos calculados no crean un movimiento ficticio.
+28. Retry, redelivery y replay recuperan el resultado previo cuando el mismo efecto ya fue aplicado.
+29. Una respuesta perdida obliga a consultar la identidad original antes de repetir.
+30. La reutilización de la misma identidad con contenido material incompatible produce conflicto.
+31. Una revisión comercial posterior no reescribe un movimiento ya aplicado.
+32. Anulaciones, devoluciones y correcciones conservan el movimiento original y usan ajuste, reversión o compensación append-only cuando corresponda.
+33. Una venta que nunca acumuló no genera un reverso ficticio.
+34. La redención es una operación distinta y permanece reservada a `INT-SALES-006`.
+35. Un descuento, propina, medio de pago, importe negativo o texto comercial no se convierte en redención PASS.
+36. El éxito de NEXO o NUMERA no prueba el éxito de PASS.
+37. El éxito de PASS no prueba inventario ni hecho económico.
+38. El contrato PASS permanece igual para una venta histórica de procedencia Makos y una venta nativa PULSO.
+39. PASS no necesita conocer credenciales, polling, staging, archivos ni lifecycle del adaptador para acumular puntos sobre una venta nativa PULSO.
+40. El retiro posterior del adaptador no modifica identidades ni movimientos PASS históricos.
+41. `VPROC-0045` continúa como proceso propietario de la interacción de fidelización.
+42. No se crea una definición normal de evento nueva.
+43. Se preservan las seis definiciones normales `VPROC-0045.EVT-001` a `VPROC-0045.EVT-006`.
+44. La materialización física del contrato queda asignada a las tareas y paquetes posteriores ya existentes.
+45. Se crean cero requisitos `TREQ-*`.
+46. Se modifican cero requisitos `TREQ-*`.
+47. Se crean cero objetos físicos.
+48. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume sin reabrir:
+
+- `INT-SALES-001`, para venta y líneas durables en PULSO;
+- `INT-SALES-002`, para la emisión permanente desde PULSO;
+- `INT-SALES-003`, para la independencia del efecto físico NEXO;
+- `INT-SALES-004`, para la independencia del efecto económico NUMERA;
+- `INT-POS-018`, para la puerta de fidelización, identidad de cuenta, regla versionada, base, efecto, ledger y saldo definidos durante la transición;
+- `INT-POS-019`, para compensación no destructiva;
+- `INT-POS-020`, para conciliación entre venta y efectos;
+- `INT-POS-023` y `INT-POS-024`, para cambio de fuente y retiro de dependencia de credenciales externas;
+- `INT-APP-001` a `INT-APP-010`, para catálogo, productoras, consumidoras, sobre, idempotencia, retry, auditoría, compensación, error parcial y prohibición de escrituras cruzadas;
+- `ENTERPRISE-EVENT-CATALOG-001`;
+- `ENTERPRISE-EVENT-PRODUCER-REGISTRY-001`;
+- `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001`;
+- `EVENT-ENVELOPE-001`;
+- `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001@1.0.0`;
+- `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0`;
+- `VPROC-0045`;
+- el registro canónico vigente de requisitos de prueba.
+
+La corrección documental vigente de `INT-POS-018` se adopta expresamente:
+
+- correlación evento–cuenta–movimiento de acumulación → `PASS-INT-001`;
+- idempotencia detallada de acumulación → `PASS-INT-001`;
+- reversión o compensación de acumulación → `PASS-INT-001`;
+- conciliación de acumulación → `PASS-INT-001`;
+- verificación integral del flujo de acumulación → `PASS-QA-001`;
+- redención → `PASS-INT-002`;
+- el mini-bloque PASS vigente conserva exactamente `PASS-INT-001` a `PASS-INT-005`, y `PASS-INT-003`, `PASS-INT-004` y `PASS-INT-005` mantienen sus significados documentados sin absorber estas responsabilidades.
+
+---
+
+#### 4. Propiedad empresarial permanente
+
+| Elemento                  | Propietaria o autoridad          | Regla                                           |
+| ------------------------- | -------------------------------- | ----------------------------------------------- |
+| venta y líneas            | `PULSO`                          | conserva el hecho comercial                     |
+| evento comercial          | `PULSO`                          | describe un hecho durable ya confirmado         |
+| audiencia                 | registro transversal             | decide si PASS recibe la definición concreta    |
+| inbox PASS                | `PASS`                           | reconoce una sola vez cada `event_id` aplicable |
+| identidad de fidelización | `PASS`                           | resuelve persona, cuenta y vínculos autorizados |
+| regla de puntos           | `PASS`                           | versionada, vigente y reproducible              |
+| base elegible             | `PASS`                           | se calcula desde la venta conforme a la regla   |
+| acumulación               | `PASS`                           | efecto propio e idempotente                     |
+| ledger de puntos          | `PASS`                           | fuente de verdad de movimientos                 |
+| saldo                     | `PASS`                           | proyección derivada                             |
+| redención                 | `PASS`                           | operación distinta reservada a `INT-SALES-006`  |
+| inventario                | `NEXO`                           | efecto físico independiente                     |
+| hecho económico           | `NUMERA`                         | efecto económico independiente                  |
+| venta histórica externa   | Makos como procedencia histórica | no tiene autoridad sobre el ledger PASS         |
+
+Invariante:
+
+```text
+PULSO AFIRMA LA VENTA
+PASS DECIDE LA FIDELIZACIÓN
+PASS REGISTRA EL MOVIMIENTO
+PASS DERIVA EL SALDO
+```
+
+---
+
+#### 5. Aplicabilidad de PASS como consumidora
+
+PASS no es consumidora universal de todos los eventos PULSO.
+
+Para cada emisión se resuelve:
+
+```text
+event_definition_id
++
+process_id
++
+producer_application = pulso
++
+consumer_application = pass
++
+consumer_relation
++
+condition_ref cuando aplique
++
+projection_profile
++
+finalidad
+```
+
+Reglas:
+
+1. solo una relación vigente y aplicable habilita la recepción;
+2. una relación `CONDITIONAL` falla cerrada cuando su condición no puede demostrarse;
+3. PULSO no mantiene una lista paralela que fuerce a PASS como consumidora;
+4. la ausencia de PASS en la audiencia no se compensa con una escritura directa;
+5. presencia en la audiencia autoriza recepción y evaluación, no acumulación automática;
+6. cada definición conserva su hecho confirmado, versión, finalidad y sensibilidad.
+
+---
+
+#### 6. Hitos comerciales candidatos para evaluación
+
+Para ventas ordinarias, los hitos de cierre ya aprobados continúan como candidatos primarios:
+
+| Definición           | Hecho confirmado           | Tratamiento                                          |
+| -------------------- | -------------------------- | ---------------------------------------------------- |
+| `VPROC-0038.EVT-005` | servicio de mesa cerrado   | puede iniciar evaluación PASS si la regla lo permite |
+| `VPROC-0039.EVT-005` | venta de mostrador cerrada | puede iniciar evaluación PASS si la regla lo permite |
+
+Reglas:
+
+1. `VPROC-0038.EVT-001` a `EVT-004` no acreditan puntos por defecto;
+2. `VPROC-0039.EVT-001` a `EVT-004` no acreditan puntos por defecto;
+3. un evento de pago puede aportar evidencia sin crear otra acumulación;
+4. un evento de cambio comercial puede exigir reevaluación o conciliación sin volver a acreditar la compra;
+5. un pedido externo no acredita puntos solo por provenir de un canal externo;
+6. otra definición solo habilita acumulación cuando su hecho confirmado y la regla PASS lo permitan expresamente;
+7. una misma venta no acumula nuevamente porque otro proceso relacionado emita un evento posterior.
+
+---
+
+#### 7. Matriz de decisión de acumulación
+
+| Condición                                                               | Decisión PASS                         | Efecto                                      |
+| ----------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------- |
+| venta válida + cuenta PASS inequívoca + regla aplicable + base completa | elegible                              | puede materializar `LOYALTY_POINTS_ACCRUAL` |
+| venta válida sin cuenta PASS aplicable                                  | `NO_APLICA`                           | cero movimiento                             |
+| cliente declarado con vínculo ambiguo                                   | `BLOQUEADO`                           | cero movimiento hasta resolver identidad    |
+| cuenta no elegible o inactiva                                           | `NO_APLICA` o `BLOQUEADO` según causa | cero movimiento                             |
+| no existe regla aplicable                                               | `NO_APLICA`                           | cero movimiento                             |
+| falta un dato obligatorio de una regla aplicable                        | `BLOQUEADO`                           | cero movimiento y conciliación              |
+| regla depende de producto y una línea requerida está en cuarentena      | `BLOQUEADO` para el alcance afectado  | cero puntos derivados del dato desconocido  |
+| regla independiente del producto con base demostrable                   | elegible                              | la cuarentena física no bloquea por sí sola |
+| acumulación ya aplicada para cuenta + venta                             | resultado previo                      | cero movimiento adicional                   |
+| misma identidad con huella incompatible                                 | conflicto                             | cero movimiento adicional                   |
+| venta anulada o devuelta después de acumular                            | compensación pendiente                | original inmutable                          |
+| descuento, propina o pago sin regla aplicable                           | `NO_APLICA`                           | no se convierten en puntos                  |
+| redención PASS explícita ya autorizada                                  | correlación                           | no se vuelve a ejecutar desde acumulación   |
+
+---
+
+#### 8. Identidad comercial, persona y cuenta PASS
+
+Se preserva:
+
+```text
+CUSTOMER_ID COMERCIAL
+≠
+PERSONA
+≠
+CUENTA AUTENTICADA
+≠
+LOYALTY_ACCOUNT_ID
+≠
+CONTACTO
+≠
+CONSENTIMIENTO
+```
+
+Reglas:
+
+1. una venta a consumidor final puede existir sin cuenta PASS;
+2. una venta sin cuenta PASS no crea un cliente artificial;
+3. correo, teléfono o nombre coincidentes no fusionan identidades;
+4. un documento parcial no autoriza vinculación automática;
+5. un QR solo identifica cuenta cuando el contrato PASS lo valida;
+6. PASS resuelve atributos protegidos desde su propia fuente;
+7. una relación ambigua bloquea acumulación;
+8. el saldo nunca se acepta como autoridad desde PULSO;
+9. la acumulación no concede consentimiento publicitario;
+10. identidad cliente y trabajador permanecen separadas.
+
+---
+
+#### 9. Vinculación posterior de una venta anónima
+
+Se conserva:
+
+```text
+VINCULAR HISTORIA
+≠
+ACREDITAR PUNTOS RETROACTIVOS
+```
+
+Reglas:
+
+1. la venta conserva su identidad original;
+2. un vínculo posterior no duplica la venta;
+3. crear o vincular una cuenta después no produce acumulación automática;
+4. cualquier acumulación retroactiva requiere política PASS versionada que la autorice;
+5. la operación, evidencia y límites de esa capacidad deberán quedar definidos en `PASS-INT-001` antes de su implementación;
+6. un ajuste manual no sustituye una política retroactiva.
+
+---
+
+#### 10. Regla de fidelización versionada
+
+La regla aplicada debe poder reconstruirse históricamente.
+
+Como mínimo conserva:
+
+- `rule_id`;
+- versión;
+- vigencia;
+- tipo de cálculo;
+- valor o fórmula;
+- elegibilidad;
+- alcance;
+- sedes;
+- canales;
+- productos, categorías o segmentos cuando correspondan;
+- ventanas temporales;
+- prioridad;
+- stacking;
+- exclusiones;
+- mínimo;
+- máximo;
+- caps;
+- redondeo;
+- tratamiento de devoluciones y reversos;
+- política offline cuando corresponda.
+
+Invariante:
+
+```text
+MISMAS ENTRADAS
++
+MISMA VERSIÓN DE REGLA
+=
+MISMO RESULTADO
+```
+
+La versión de regla utilizada por un hecho histórico no se sustituye por la versión vigente hoy.
+
+---
+
+#### 11. Momento de selección de regla
+
+Se distinguen:
+
+```text
+occurred_at
+≠
+received_at
+≠
+recorded_at
+≠
+evaluated_at
+```
+
+La vigencia de la regla se resuelve contra el momento empresarial y la política PASS aplicable.
+
+No:
+
+```text
+RETRY TARDÍO
+→
+REGLA ACTIVA HOY
+```
+
+Un evento tardío conserva el hecho original y su contexto histórico.
+
+---
+
+#### 12. Base elegible
+
+La base de puntos proviene de la regla PASS y del contrato comercial.
+
+La regla puede distinguir, según su versión:
+
+- subtotal;
+- descuentos;
+- impuestos;
+- propinas;
+- devoluciones;
+- líneas excluidas;
+- categorías;
+- productos;
+- sede;
+- canal;
+- segmento;
+- beneficios utilizados.
+
+Queda prohibido asumir universalmente:
+
+```text
+PUNTOS = TOTAL DE VENTA
+```
+
+```text
+PUNTOS = NET_SALES_AMOUNT LEGACY
+```
+
+```text
+PUNTOS = MONTO PAGADO
+```
+
+Si un componente necesario es desconocido, no se inventa cero ni se sustituye por otro importe.
+
+---
+
+#### 13. Descuento, propina, pago y redención
+
+Se preserva:
+
+```text
+DESCUENTO ≠ PUNTOS
+PROPINA ≠ PUNTOS
+PAGO ≠ PUNTOS
+ACUMULACIÓN ≠ REDENCIÓN
+```
+
+Reglas:
+
+1. descuento comercial no prueba uso de puntos;
+2. propina no prueba puntos acumulables;
+3. medio de pago no prueba fidelización;
+4. importe negativo no prueba redención;
+5. línea promocional no prueba regla PASS;
+6. una redención requiere identidad PASS propia;
+7. una referencia explícita de redención puede correlacionarse con la venta;
+8. la acumulación no vuelve a ejecutar una redención ya autorizada.
+
+---
+
+#### 14. Cuarentena y reglas dependientes de producto
+
+Una línea con mapping pendiente permanece visible.
+
+Cuando la regla depende de producto, presentación, categoría, receta, familia u otra dimensión pendiente:
+
+- no se inventa producto;
+- no se aproxima por nombre;
+- no se reclasifica por conveniencia;
+- no se elimina la línea;
+- no se transforma el bloqueo en exclusión.
+
+Reglas:
+
+1. una línea bloqueada no desaparece de la base;
+2. una regla por línea no puede completar el cálculo con una dimensión requerida desconocida;
+3. partialidad solo procede cuando la regla la define de forma reproducible;
+4. una regla independiente del producto puede continuar si la base completa requerida está demostrada;
+5. liberar una línea no crea automáticamente puntos;
+6. si la acumulación ya fue aplicada legítimamente sin depender de ese producto, la liberación no crea otra;
+7. si el efecto estaba bloqueado, se reevalúa conservando la misma identidad de venta.
+
+---
+
+#### 15. Partialidad de base
+
+Una acumulación parcial solo procede cuando la regla permite separar de forma determinista:
+
+```text
+BASE TOTAL CONSIDERADA
+=
+BASE ELEGIBLE
++
+BASE EXCLUIDA
++
+BASE BLOQUEADA
+```
+
+Reglas:
+
+1. la base bloqueada no desaparece;
+2. un componente ya acreditado no se acredita otra vez al resolver el residual;
+3. cada componente conserva venta y regla causales;
+4. el resultado conserva residual pendiente;
+5. no se declara conciliación completa si el residual puede cambiar materialmente el derecho total;
+6. un complemento posterior utiliza el contrato incremental o compensatorio definido por PASS;
+7. `PASS-INT-001` cierra la cardinalidad física de movimientos y componentes.
+
+---
+
+#### 16. Inbox permanente de PASS
+
+La identidad de recepción es:
+
+```text
+CONSUMER_INBOX
+=
+pass + event_id
+```
+
+Reglas:
+
+1. la primera entrega aplicable crea o recupera el reconocimiento durable;
+2. redelivery exacta recupera el mismo inbox;
+3. `delivery_id`, `attempt_id`, worker, batch o archivo no sustituyen `event_id`;
+4. el inbox no acredita puntos;
+5. el inbox puede terminar en evaluación, bloqueo, no aplicación, conflicto o conciliación;
+6. el resultado de NEXO o NUMERA no completa el inbox PASS.
+
+---
+
+#### 17. Identidad transversal del efecto
+
+El efecto es:
+
+```text
+effect_code = LOYALTY_POINTS_ACCRUAL
+```
+
+La identidad transversal es:
+
+```text
+CONSUMER_EFFECT
+=
+pass + event_id + LOYALTY_POINTS_ACCRUAL
+```
+
+Reglas:
+
+1. se fija antes de cualquier mutación del ledger;
+2. retry conserva `event_id`;
+3. redelivery conserva `event_id`;
+4. replay conserva `event_id`;
+5. la misma identidad y huella compatible recuperan el resultado;
+6. la misma identidad con huella incompatible produce conflicto;
+7. dos ejecuciones concurrentes tienen un solo ganador;
+8. una respuesta perdida no crea otro efecto;
+9. `sale_id` no sustituye esta identidad;
+10. el movimiento de ledger resultante tampoco sustituye la identidad del efecto.
+
+---
+
+#### 18. Guarda de dominio cuenta + venta
+
+La clave transversal protege el mismo evento, pero una venta puede producir varios eventos legítimos.
+
+PASS conserva además:
+
+```text
+loyalty_account_id
++
+canonical_sale_id
++
+ACCUMULATION
+```
+
+Dentro del alcance actual representa una sola acumulación ordinaria por cuenta y venta.
+
+Consecuencias:
+
+1. un evento de cierre puede originar la primera acumulación;
+2. un evento posterior de pago no origina otra;
+3. un evento posterior de conciliación no origina otra;
+4. un cambio comercial no origina otra por simple reevaluación;
+5. webhook, polling, replay o redelivery no crean otra compra;
+6. otra cuenta intentando reclamar una venta ya acreditada produce conflicto o conciliación;
+7. la versión de regla no forma parte de la identidad;
+8. modificar la regla después no habilita otra acumulación;
+9. cualquier futuro soporte de programas de puntos independientes deberá versionar esta identidad en `PASS-INT-001` antes de implementación.
+
+---
+
+#### 19. Huella lógica de acumulación
+
+La huella debe incluir, cuando corresponda:
+
+- venta y revisión;
+- evento causal;
+- definición y versión;
+- cliente;
+- cuenta PASS;
+- regla y versión;
+- sede;
+- canal;
+- momento empresarial;
+- moneda cuando la regla la requiera;
+- base total considerada;
+- base elegible;
+- base excluida;
+- base bloqueada;
+- productos o categorías cuando la regla dependa de ellos;
+- fórmula;
+- redondeo;
+- caps;
+- puntos calculados;
+- referencias de evidencia.
+
+No cambia únicamente por:
+
+- retry count;
+- redelivery;
+- worker;
+- `attempt_id`;
+- `delivery_id`;
+- `trace_id`;
+- hora técnica;
+- webhook frente a polling;
+- archivo o número de fila;
+- retiro del adaptador externo.
+
+---
+
+#### 20. Resultado propietario y ledger PASS
+
+Cuando la acumulación se aplica, PASS produce un resultado durable que permite reconstruir:
+
+- `loyalty_account_id`;
+- `canonical_sale_id`;
+- `event_id` causal;
+- identidad del efecto;
+- operación de acumulación;
+- movimiento o movimientos del ledger;
+- regla y versión;
+- delta de puntos;
+- saldo anterior;
+- saldo posterior;
+- sede;
+- canal;
+- momento;
+- principal técnico o actor aplicable;
+- correlación;
+- estado de conciliación;
+- referencias de evidencia.
+
+Invariante:
+
+```text
+MOVIMIENTO DE LEDGER
+→
+FUENTE DE VERDAD
+
+SALDO
+→
+PROYECCIÓN DERIVADA
+```
+
+Queda prohibido tratar una actualización aislada de saldo como sustituto del movimiento causal.
+
+---
+
+#### 21. Delta y saldo
+
+Para acumulación ordinaria:
+
+1. delta aplicado > 0;
+2. delta cero no genera un movimiento ficticio;
+3. saldo anterior se obtiene desde PASS dentro de la frontera propietaria;
+4. saldo posterior se deriva de la mutación confirmada;
+5. PULSO no envía ambos saldos como autoridad;
+6. un ajuste posterior conserva el movimiento original;
+7. saldo no se usa como fuente primaria para reconstruir un retry.
+
+Ajustes negativos, reversos, expiraciones y redenciones conservan semánticas propias.
+
+---
+
+#### 22. Atomicidad lógica
+
+La implementación posterior deberá vincular atómicamente o con durabilidad equivalente:
+
+- inbox;
+- identidad del efecto;
+- guarda cuenta + venta;
+- huella;
+- revisión comercial;
+- cuenta PASS;
+- regla y versión;
+- evaluación de base;
+- resultado de elegibilidad;
+- movimiento o movimientos del ledger;
+- actualización derivada del saldo;
+- resultado recuperable;
+- referencias de auditoría;
+- evento PASS posterior cuando corresponda.
+
+No es válido:
+
+```text
+PUNTOS APLICADOS
+SIN MOVIMIENTO RECUPERABLE
+```
+
+No es válido:
+
+```text
+MOVIMIENTO CREADO
+SIN GUARDA DE DOMINIO
+```
+
+No es válido:
+
+```text
+RESPUESTA PERDIDA
+→
+SEGUNDA ACUMULACIÓN
+```
+
+Esta tarea no selecciona tablas, constraints, RPC, funciones, triggers, workers o mecanismos físicos.
+
+---
+
+#### 23. Proceso propietario `VPROC-0045`
+
+PASS conserva:
+
+- `VPROC-0045.EVT-001` — interacción de fidelización abierta;
+- `VPROC-0045.EVT-002` — identidad en validación;
+- `VPROC-0045.EVT-003` — autorización de acción pendiente;
+- `VPROC-0045.EVT-004` — actualización de consentimiento pendiente;
+- `VPROC-0045.EVT-005` — conciliación pendiente;
+- `VPROC-0045.EVT-006` — interacción de fidelización conciliada.
+
+Reglas:
+
+1. la recepción de la venta no implica emitir todas las definiciones;
+2. `EVT-001` no modifica saldo;
+3. `EVT-002` no acredita una cuenta elegible;
+4. `EVT-003` no equivale al efecto final;
+5. `EVT-004` solo aplica a un cambio real de consentimiento;
+6. `EVT-005` conserva divergencias pendientes;
+7. `EVT-006` solo puede afirmar conciliación cuando el resultado propietario quedó aplicado una vez o cerrado de forma válida;
+8. los eventos PASS son producidos por PASS;
+9. el evento PULSO causal no se reutiliza como un evento PASS nuevo.
+
+---
+
+#### 24. No aplicación y bloqueo
+
+`NO_APLICA` y `BLOQUEADO` son decisiones diferentes.
+
+Ejemplos de `NO_APLICA`:
+
+- consumidor final sin cuenta PASS;
+- cuenta no elegible;
+- regla inexistente para el contexto;
+- fórmula legítimamente produce cero;
+- canal fuera de alcance.
+
+Ejemplos de `BLOQUEADO`:
+
+- cliente ambiguo;
+- dos cuentas candidatas;
+- versión de regla no resoluble;
+- base monetaria ambigua;
+- componente obligatorio desconocido;
+- línea en cuarentena requerida por la regla;
+- revisión de venta incompatible;
+- resultado anterior incierto;
+- misma venta ya asociada a otra cuenta con un efecto aplicado.
+
+Un bloqueo no se convierte en no aplicación para ocultar evidencia faltante.
+
+---
+
+#### 25. Resultados idempotentes
+
+Se reutiliza el vocabulario transversal:
+
+- `APPLIED`;
+- `DUPLICATE_RESULT_RETURNED`;
+- `CONFLICTING_REUSE`;
+- `IN_PROGRESS_RECOVERABLE`;
+- `STALE_VERSION`;
+- `OUT_OF_ORDER_DEFERRED`;
+- `RECONCILIATION_REQUIRED`;
+- `REJECTED`.
+
+Interpretación:
+
+1. `APPLIED` exige movimiento PASS durable;
+2. `DUPLICATE_RESULT_RETURNED` devuelve el resultado anterior sin otra acumulación;
+3. `CONFLICTING_REUSE` crea cero movimiento;
+4. `IN_PROGRESS_RECOVERABLE` conserva el claim original;
+5. `STALE_VERSION` no desplaza una revisión posterior;
+6. `OUT_OF_ORDER_DEFERRED` conserva la dependencia ausente;
+7. `RECONCILIATION_REQUIRED` bloquea retry ciego;
+8. `REJECTED` no se convierte en puntos concedidos.
+
+---
+
+#### 26. Retry, concurrencia y resultado desconocido
+
+Ante timeout o desconexión después de una posible confirmación:
+
+```text
+RESULTADO DESCONOCIDO
+        ↓
+CONSULTAR INBOX + EFECTO + GUARDA CUENTA/VENTA + LEDGER
+        ├── CONFIRMADO → RECUPERAR RESULTADO
+        ├── NO APLICADO DEMOSTRADO → REINTENTAR MISMA IDENTIDAD
+        └── INDETERMINADO → RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. retry conserva identidades y huella;
+2. claim vencido no demuestra ausencia de commit;
+3. restart no reinicia la identidad;
+4. redelivery no duplica puntos;
+5. replay histórico no duplica puntos;
+6. otro evento de la misma venta consulta primero la guarda de dominio;
+7. incompatibilidad produce conflicto;
+8. agotamiento de presupuesto abre conciliación;
+9. no se acreditan puntos por inferencia ante incertidumbre.
+
+`INT-SALES-007` especializará el control transversal contra efectos duplicados por reintento sin modificar estas invariantes.
+
+---
+
+#### 27. Orden y revisiones
+
+Antes de la primera acumulación:
+
+- PASS utiliza la revisión comercial válida que satisface la puerta;
+- una revisión antigua no desplaza una revisión posterior;
+- eventos fuera de orden pueden diferirse.
+
+Después de una acumulación:
+
+- cambio de importe, líneas, cliente o regla material no reescribe el ledger;
+- un cambio que altera el derecho de puntos requiere acción incremental, correctiva o compensatoria;
+- el original permanece;
+- la identidad ya aplicada no se reutiliza con contenido incompatible.
+
+---
+
+#### 28. Anulaciones, devoluciones y compensación
+
+Una anulación o devolución no elimina la acumulación original.
+
+Cuando el efecto original existió:
+
+```text
+MOVIMIENTO ORIGINAL
+        ↓
+HECHO INVERSO O CORRECTIVO
+        ↓
+MOVIMIENTO COMPENSATORIO PASS
+        ↓
+SALDO DERIVADO ACTUALIZADO
+```
+
+Reglas:
+
+1. el compensatorio referencia el movimiento original;
+2. conserva venta, evento, motivo y autoridad;
+3. tiene identidad idempotente propia;
+4. no se ejecuta dos veces;
+5. no presume que NEXO o NUMERA ya compensaron;
+6. devolución parcial afecta únicamente la porción demostrable conforme a la política histórica aplicable;
+7. una venta sin acumulación original no genera reverso ficticio;
+8. `PASS-INT-001` cierra el contrato detallado de ajuste, corrección, reversión y compensación de acumulación;
+9. el movimiento original permanece append-only.
+
+---
+
+#### 29. Redención queda fuera del alcance
+
+La redención permanece separada:
+
+```text
+LOYALTY_POINTS_ACCRUAL
+≠
+LOYALTY_POINTS_REDEMPTION
+```
+
+Esta tarea no:
+
+- reserva puntos para canje;
+- valida recompensa;
+- consume saldo;
+- autoriza una redención;
+- confirma una redención;
+- interpreta un descuento como redención;
+- implementa atomicidad de canje.
+
+El procesamiento permanente de redención corresponde exclusivamente a `INT-SALES-006`, con integración detallada en `PASS-INT-002`.
+
+---
+
+#### 30. Independencia de NEXO y NUMERA
+
+Una misma venta puede originar efectos independientes:
+
+```text
+PULSO EVENT
+        ├── NEXO CONSUMER_EFFECT
+        ├── NUMERA CONSUMER_EFFECT
+        └── PASS CONSUMER_EFFECT
+```
+
+Reglas:
+
+1. PASS no requiere éxito universal NEXO para acumular;
+2. PASS no requiere éxito universal NUMERA para acumular;
+3. NEXO no usa puntos como prueba física;
+4. NUMERA no usa puntos como prueba económica;
+5. un fallo PASS no revierte la venta PULSO;
+6. diferencias permanecen conciliables.
+
+La regla PASS puede depender de hechos concretos expresamente definidos, pero nunca del mero éxito técnico de otra consumidora.
+
+---
+
+#### 31. Venta nativa PULSO y procedencia histórica Makos
+
+Durante historia transicional:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+consumer_application = PASS
+```
+
+Para venta nativa:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+consumer_application = PASS
+```
+
+En ambos casos:
+
+```text
+MISMA AUDIENCIA CANÓNICA
++
+MISMO INBOX PASS
++
+MISMA PUERTA DE IDENTIDAD
++
+MISMA REGLA PASS
++
+MISMO CONSUMER_EFFECT
++
+MISMA GUARDA CUENTA + VENTA
++
+MISMO LEDGER
++
+MISMO RESULTADO
+```
+
+La procedencia se conserva para auditoría, pero no cambia la semántica de acumulación.
+
+---
+
+#### 32. Independencia del adaptador externo
+
+Una venta nativa PULSO no requiere para fidelización:
+
+- API Makos;
+- archivo Makos;
+- webhook Makos;
+- polling Makos;
+- credencial Makos;
+- staging externo;
+- hash de archivo externo;
+- mapping externo inexistente para una venta nativa.
+
+PASS consume el evento PULSO y sus referencias canónicas autorizadas.
+
+El retiro del adaptador:
+
+- no cambia el inbox;
+- no cambia el effect code;
+- no cambia la guarda cuenta + venta;
+- no cambia movimientos históricos;
+- no convierte procedencia histórica en procedencia PULSO.
+
+---
+
+#### 33. Privacidad, consentimiento y sensibilidad
+
+La proyección hacia PASS se minimiza a lo necesario para:
+
+- resolver cuenta;
+- evaluar la regla;
+- calcular la base;
+- aplicar el movimiento;
+- auditar;
+- conciliar.
+
+Reglas:
+
+1. credenciales y secretos no viajan en el evento;
+2. PII no necesaria se conserva por referencia protegida;
+3. acumular puntos no concede consentimiento de marketing;
+4. retirar consentimiento comercial no borra movimientos legítimos del ledger;
+5. identidad de fidelización no concede permisos laborales;
+6. `VPROC-0045` conserva sensibilidad `RESTRICTED_PERSONAL`;
+7. toda mutación posterior se reautoriza en la frontera PASS.
+
+---
+
+#### 34. Auditoría mínima
+
+Cada acumulación deberá poder reconstruir lógicamente:
+
+- venta;
+- revisión;
+- evento PULSO;
+- definición y versión;
+- fuente real;
+- cuenta PASS;
+- fundamento de identidad;
+- regla y versión;
+- base;
+- componentes elegibles, excluidos y bloqueados;
+- fórmula;
+- redondeo;
+- caps;
+- puntos calculados;
+- inbox;
+- identidad del efecto;
+- guarda cuenta + venta;
+- huella;
+- movimiento de ledger;
+- saldo anterior y posterior;
+- actor o principal;
+- correlación;
+- intentos;
+- resultado;
+- compensación cuando exista;
+- estado de conciliación;
+- referencias de evidencia.
+
+La auditoría no sustituye el ledger ni concede autoridad para mutarlo.
+
+---
+
+#### 35. Conciliación permanente PULSO–PASS
+
+La conciliación deberá detectar como mínimo:
+
+- evento PULSO aplicable a PASS sin inbox;
+- inbox sin decisión de fidelización;
+- venta elegible sin acumulación;
+- puntos sin venta;
+- misma venta acreditada dos veces;
+- mismo evento aplicado dos veces;
+- cuenta incorrecta;
+- cliente ambiguo resuelto incorrectamente;
+- regla o versión incorrecta;
+- base elegible divergente;
+- puntos calculados divergentes;
+- línea bloqueada usada por una regla dependiente de producto;
+- línea liberada con efecto pendiente;
+- no aplicación usada para ocultar un bloqueo;
+- saldo divergente del ledger;
+- movimiento sin proyección de saldo correcta;
+- saldo sin movimientos suficientes;
+- acumulación sin guarda cuenta + venta;
+- respuesta desconocida;
+- evento tardío que intentó otra acumulación;
+- reverso sin original;
+- original que requiere compensación y no la tiene;
+- redención inferida desde descuento;
+- divergencia entre procedencia histórica y venta canónica;
+- dependencia residual del adaptador externo en una venta nativa PULSO.
+
+La conciliación no corrige puntos editando el saldo.
+
+---
+
+#### 36. Replay, backfill y recuperación
+
+##### 36.1. Replay
+
+Un replay del mismo evento:
+
+- conserva `event_id`;
+- atraviesa el mismo inbox;
+- consulta la misma guarda cuenta + venta;
+- recupera el efecto previo;
+- no crea otra acumulación.
+
+##### 36.2. Backfill
+
+Un backfill autorizado:
+
+- conserva procedencia;
+- identifica lote o ventana;
+- utiliza identidades deterministas;
+- concilia contra ventas, inbox, guardas y ledger existentes;
+- no acredita puntos sensibles por defecto;
+- requiere la autorización prevista por PASS para cualquier mutación.
+
+##### 36.3. Recuperación
+
+Una recuperación después de fallo:
+
+- parte de la identidad original;
+- consulta movimientos y resultados previos;
+- no interpreta ausencia de respuesta como ausencia de commit;
+- no usa un identificador técnico nuevo para conceder puntos otra vez.
+
+---
+
+#### 37. Diagnóstico de la línea base técnica observada
+
+La línea base `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2` demuestra superficies reales de fidelización, pero no acredita todavía la implementación permanente definida en esta tarea.
+
+Se observan, entre otras piezas:
+
+- lectura del historial desde `loyalty_transactions`;
+- representación de movimientos con `kind`, `points_delta`, descripción, metadata y timestamp;
+- una utilidad de recompensa por Google Reviews que consulta `loyalty_transactions`;
+- esa utilidad realiza actualmente un insert directo en `loyalty_transactions` desde código cliente y después actualiza datos del usuario.
+
+Estas piezas demuestran existencia de ledger y funcionalidades de fidelización, pero no constituyen por sí solas evidencia de:
+
+```text
+EVENTO DE VENTA PULSO
++
+CONSUMER_INBOX PASS
++
+LOYALTY_POINTS_ACCRUAL
++
+GUARDA ACCOUNT + SALE
++
+REGLA HISTÓRICA DE VENTA
++
+ATOMICIDAD LEDGER + SALDO
++
+RESULTADO RECUPERABLE
+```
+
+La mutación cliente observada tampoco se adopta como patrón para acumulación de ventas. La cobertura canónica vigente exige contratos de servidor autorizados, atómicos e idempotentes para mutaciones de puntos.
+
+Esta tarea no modifica la implementación existente.
+
+---
+
+#### 38. Diferencia entre fidelización existente y acumulación canónica de venta
+
+```text
+LEDGER O RECOMPENSA EXISTENTE
+≠
+ACUMULACIÓN PERMANENTE DESDE VENTA PULSO
+```
+
+La acumulación permanente exige además:
+
+- venta canónica;
+- `event_id` estable;
+- audiencia;
+- inbox;
+- cuenta inequívoca;
+- regla histórica;
+- base reproducible;
+- identity effect;
+- guarda cuenta + venta;
+- huella;
+- atomicidad;
+- resultado durable;
+- recuperación ante respuesta perdida;
+- compensación;
+- conciliación.
+
+Una implementación posterior puede reutilizar piezas actuales únicamente si demuestra todas estas invariantes.
+
+---
+
+#### 39. Frontera de implementación posterior
+
+La materialización física debe conservar como mínimo:
+
+1. recepción versionada del evento;
+2. inbox PASS;
+3. resolución autorizada de cuenta;
+4. regla y versión;
+5. base elegible;
+6. identidad de efecto;
+7. guarda cuenta + venta;
+8. huella;
+9. claim atómico o mecanismo equivalente;
+10. ledger inmutable;
+11. saldo derivado;
+12. resultado recuperable;
+13. concurrencia;
+14. resultado desconocido;
+15. compensación;
+16. conciliación;
+17. auditoría;
+18. privacidad y autorización.
+
+`PASS-INT-001` cerrará la integración detallada PULSO → PASS para acumulación, incluyendo operación propietaria, cardinalidad de movimientos, correlación, idempotencia, compensación y conciliación.
+
+`PASS-QA-001` verificará integralmente el flujo de acumulación.
+
+Toda modificación futura de Supabase que materialice estas decisiones pertenece a `vento-shell`.
+
+---
+
+#### 40. Handoffs posteriores obligatorios
+
+| Pendiente material                                  | Tarea o propietario | Condición de salida                                                                                    |
+| --------------------------------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------ |
+| procesamiento permanente de redención               | `INT-SALES-006`     | redención explícita usa identidad PASS, saldo y resultado propios                                      |
+| especialización contra efectos duplicados por retry | `INT-SALES-007`     | retries de venta y consumidoras convergen sin doble efecto                                             |
+| conciliación durante convivencia de fuentes         | `INT-SALES-008`     | diferencias Makos/PULSO y efectos PASS quedan detectables                                              |
+| corte por sede, terminal y fecha                    | `INT-SALES-009`     | nuevas ventas tienen fuente única resoluble                                                            |
+| guardia contra doble fuente                         | `INT-SALES-010`     | una venta no se emite como nueva desde ambas fuentes                                                   |
+| retiro del adaptador externo                        | `INT-SALES-011`     | PASS continúa consumiendo sin dependencia del adaptador                                                |
+| integración detallada de acumulación                | `PASS-INT-001`      | contrato servidor, movimiento, correlación, idempotencia, compensación y conciliación quedan definidos |
+| integración detallada de redención                  | `PASS-INT-002`      | redención queda atómica, autorizada e idempotente                                                      |
+| administración laboral de productos de fidelización | `PASS-INT-003`      | conserva su significado vigente sin absorber acumulación                                               |
+| administración laboral de clientes                  | `PASS-INT-004`      | conserva su significado vigente sin absorber idempotencia de acumulación                               |
+| separación cliente/trabajador                       | `PASS-INT-005`      | identidad laboral y de cliente no se mezclan                                                           |
+| prueba integral de acumulación                      | `PASS-QA-001`       | acumulación completa, retry, no aplicación, bloqueo, compensación y conciliación quedan verificadas    |
+| prueba integral de redención                        | `PASS-QA-002`       | canje completo queda verificado después de su contrato                                                 |
+| protección de acumulación                           | `PULSO-AUTH-009`    | la capacidad visible o ejecutable usa únicamente el contrato autorizado                                |
+
+Ningún pendiente material queda sin propietario y condición de salida.
+
+---
+
+#### 41. Prohibiciones
+
+Queda prohibido:
+
+1. acreditar puntos por toda venta de forma automática;
+2. permitir que PULSO escriba directamente el saldo PASS;
+3. permitir que PULSO inserte movimientos privados PASS;
+4. tratar recepción como acumulación;
+5. tratar entrega técnica como movimiento;
+6. usar `sale_id` como única clave transversal del efecto;
+7. eliminar la guarda cuenta + venta;
+8. generar una identidad nueva por retry;
+9. generar una identidad nueva por redelivery;
+10. generar una acumulación nueva por replay;
+11. usar la regla vigente actual para recalcular silenciosamente una venta histórica;
+12. asumir una base universal de total, neto legacy o monto pagado;
+13. inventar un componente monetario requerido;
+14. omitir una línea bloqueada;
+15. clasificar una línea bloqueada como excluida por conveniencia;
+16. fusionar cuentas por coincidencia aproximada de contacto;
+17. inventar una cuenta para consumidor final;
+18. aceptar un saldo enviado por PULSO como verdad PASS;
+19. crear movimientos de acumulación con delta cero;
+20. editar destructivamente un movimiento aplicado;
+21. restar puntos directamente para representar una devolución;
+22. inferir una redención desde un descuento;
+23. inferir una redención desde una propina;
+24. inferir una redención desde un medio de pago;
+25. usar éxito NEXO como prueba de PASS;
+26. usar éxito NUMERA como prueba de PASS;
+27. usar éxito PASS como prueba NEXO o NUMERA;
+28. volver a acreditar una venta al liberar un mapping cuando ya se aplicó legítimamente;
+29. asumir que timeout significa que no hubo movimiento;
+30. usar saldo como sustituto del ledger durante recuperación;
+31. backfillear puntos sensibles sin autorización;
+32. exigir API, archivo o credencial Makos para una venta nativa PULSO;
+33. cambiar movimientos históricos por retiro del adaptador;
+34. crear una definición normal de evento llamada acumulación de venta por conveniencia;
+35. asignar correlación de acumulación a `PASS-INT-003`;
+36. asignar idempotencia de acumulación a `PASS-INT-004`;
+37. ampliar el mini-bloque PASS con identificadores o responsabilidades no definidos por su fuente propietaria vigente;
+38. modificar código, SQL, migraciones, RLS, RPC, datos, Supabase, credenciales o configuración remota desde esta tarea documental;
+39. iniciar o desarrollar `INT-SALES-006`.
+
+---
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro vigente ya protege expresamente que acumulación, gasto, ajuste, reversión y redención de puntos se ejecuten mediante contratos de servidor autorizados, atómicos e idempotentes; que la fidelización use ledger inmutable con evento origen, regla y versión; que el saldo sea derivado; que los reintentos no dupliquen puntos; que ventas, anulaciones y devoluciones produzcan exactamente una vez los efectos aplicables en PASS durante y después de la transición; y que la conciliación detecte puntos sin venta, efectos duplicados y compensaciones incompletas. `INT-SALES-005` convierte en contrato permanente de ventas PULSO la frontera de acumulación ya protegida, sin introducir una obligación material nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 43. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-PASS-008`, para acumulación, gasto, ajuste, reversión y redención mediante contratos de servidor autorizados, atómicos e idempotentes, sin insert del ledger ni fijación de saldo por el cliente;
+- `TREQ-PASS-010`, para identidad cliente, cuenta, consentimientos, ledger inmutable, evento origen, regla, versión, saldo derivado y ausencia de duplicación por retry;
+- `TREQ-PASS-011`, para separar devolución, reembolso, compensación, cortesía, cupón y puntos;
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado recuperable, concurrencia, retry y resultado desconocido;
+- `TREQ-INTEGRATION-014`, para convergencia POS externo/PULSO, efecto PASS exactamente una vez y no duplicación de puntos;
+- `TREQ-INTEGRATION-015`, para contratos canónicos de cliente, compensación y fidelización, no duplicación y conciliación.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 44. Decisiones congeladas
+
+1. PASS es la única propietaria del ledger y saldo de fidelización.
+2. PULSO conserva venta y evento.
+3. Audiencia no significa puntos automáticos.
+4. Cuenta PASS debe ser inequívoca.
+5. Consumidor final sin cuenta válida produce cero acumulación automática.
+6. Contacto no equivale a cuenta.
+7. Regla PASS es versionada.
+8. Regla histórica no se sustituye por regla vigente actual.
+9. Base de puntos pertenece a la regla.
+10. No existe fórmula universal basada en total de venta.
+11. Descuento, propina y pago no son puntos.
+12. Acumulación y redención permanecen separadas.
+13. Cuarentena permanece visible.
+14. Regla dependiente de producto bloquea el alcance que necesite un mapping ausente.
+15. `CONSUMER_INBOX = pass + event_id`.
+16. `effect_code = LOYALTY_POINTS_ACCRUAL`.
+17. `CONSUMER_EFFECT = pass + event_id + LOYALTY_POINTS_ACCRUAL`.
+18. PASS conserva `loyalty_account_id + canonical_sale_id + ACCUMULATION`.
+19. Versión de regla pertenece a la huella, no a la identidad.
+20. Ledger es fuente de verdad.
+21. Saldo es proyección.
+22. Delta cero no crea acumulación.
+23. Retry recupera resultado.
+24. Respuesta perdida exige indagación.
+25. Reutilización incompatible produce conflicto.
+26. Revisión posterior no reescribe ledger.
+27. Reversión y compensación son append-only.
+28. Venta sin acumulación original no produce reverso ficticio.
+29. NEXO, NUMERA y PASS conservan efectos independientes.
+30. Procedencia Makos y venta nativa PULSO usan la misma puerta PASS.
+31. Venta nativa no depende del adaptador Makos.
+32. `VPROC-0045` conserva sus seis definiciones normales.
+33. No se crea una definición normal nueva.
+34. `PASS-INT-001` conserva correlación, idempotencia, reversión/compensación y conciliación de acumulación.
+35. `PASS-QA-001` verifica integralmente la acumulación.
+36. `PASS-INT-002` conserva la redención.
+37. `PASS-INT-003/004/005` conservan sus significados vigentes.
+38. El mini-bloque PASS se mantiene limitado a `PASS-INT-001` a `PASS-INT-005` conforme a su fuente propietaria vigente.
+39. La implementación física actual no se presenta como cumplimiento del contrato permanente.
+40. Se crean cero cambios `TREQ-*`.
+41. No se genera una copia del registro canónico de requisitos.
+42. Se crean cero objetos físicos.
+43. Se modifican cero objetos físicos.
+44. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 45. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-SALES-004` como tarea anterior;
+2. conserva `INT-SALES-006` como única siguiente tarea reservada;
+3. mantiene PULSO como propietaria de venta y evento;
+4. mantiene PASS como propietaria de fidelización;
+5. deriva aplicabilidad desde el registro transversal;
+6. impide puntos automáticos por mera recepción;
+7. exige cuenta PASS inequívoca;
+8. permite venta sin cuenta y sin cliente artificial;
+9. separa contacto, persona, cuenta y consentimiento;
+10. exige regla PASS versionada;
+11. exige selección histórica correcta de regla;
+12. impide recalcular con la regla vigente por retry tardío;
+13. delega fórmula y base a la regla;
+14. prohíbe base universal por total, neto legacy o monto pagado;
+15. separa descuento, propina, pago, acumulación y redención;
+16. conserva cuarentena;
+17. bloquea el alcance dependiente de producto no resuelto;
+18. permite reglas independientes del producto solo con base completa demostrable;
+19. define partialidad de forma reproducible;
+20. define `CONSUMER_INBOX = pass + event_id`;
+21. define `LOYALTY_POINTS_ACCRUAL`;
+22. define `CONSUMER_EFFECT = pass + event_id + LOYALTY_POINTS_ACCRUAL`;
+23. añade guarda `loyalty_account_id + canonical_sale_id + ACCUMULATION`;
+24. mantiene versión de regla en la huella;
+25. impide doble acumulación por eventos diferentes de una misma venta;
+26. exige ledger inmutable;
+27. mantiene saldo derivado;
+28. impide movimiento con delta cero;
+29. exige atomicidad o durabilidad equivalente;
+30. reutiliza `VPROC-0045`;
+31. conserva sus seis definiciones normales;
+32. separa no aplicación de bloqueo;
+33. reutiliza resultados idempotentes transversales;
+34. recupera resultados frente a respuesta perdida;
+35. impide retry ciego tras posible commit;
+36. conserva orden y revisiones;
+37. mantiene el original ante devolución;
+38. exige compensación append-only;
+39. mantiene redención fuera del alcance;
+40. mantiene independencia de NEXO y NUMERA;
+41. conserva el mismo contrato para procedencia Makos y PULSO nativa;
+42. elimina dependencia del adaptador para venta nativa;
+43. conserva privacidad y consentimiento separados de fidelización;
+44. define auditoría reconstruible;
+45. define conciliación permanente PULSO–PASS;
+46. conserva replay y backfill sin doble acumulación;
+47. diagnostica la implementación actual sin declararla suficiente;
+48. no adopta el insert cliente observado como patrón de acumulación de ventas;
+49. asigna integración detallada de acumulación a `PASS-INT-001`;
+50. asigna prueba integral a `PASS-QA-001`;
+51. conserva redención en `PASS-INT-002`;
+52. conserva `PASS-INT-003/004/005` con sus significados vigentes;
+53. conserva el mini-bloque PASS vigente sin crear identificadores adicionales;
+54. asigna retry permanente a `INT-SALES-007`;
+55. asigna convivencia y corte a `INT-SALES-008` a `INT-SALES-011`;
+56. genera cero requisitos de prueba nuevos;
+57. modifica cero requisitos de prueba;
+58. no genera una copia del registro canónico de requisitos;
+59. crea cero objetos físicos;
+60. modifica cero objetos físicos;
+61. no modifica código, SQL, migraciones, Supabase, datos, credenciales ni configuración remota;
+62. no inicia ni desarrolla `INT-SALES-006`.
+
+---
+
+#### 46. Resultado de la tarea
+
+`INT-SALES-005` queda definida como la frontera permanente que convierte una emisión PULSO aplicable a PASS en una evaluación de fidelización y, cuando venta, cuenta, regla y base son elegibles, en una única acumulación durable y recuperable dentro del ledger PASS.
+
+Resultado consolidado:
+
+```text
+VENTA PULSO DURABLE
++
+EVENTO PULSO APLICABLE A PASS
++
+CUENTA PASS INEQUÍVOCA
++
+REGLA VERSIONADA
++
+BASE ELEGIBLE DEMOSTRABLE
++
+CONSUMER_INBOX
++
+CONSUMER_EFFECT
++
+GUARDA CUENTA + VENTA
++
+LEDGER INMUTABLE
++
+SALDO DERIVADO
++
+RESULTADO RECUPERABLE
+→
+ACUMULACIÓN PASS EXACTAMENTE UNA VEZ
+```
+
+Sin depender del POS externo para ventas nativas, sin mutación cruzada desde PULSO, sin duplicación por retry y sin confundir acumulación con redención.
+
+---
+
+#### 47. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-004 — Definir recepción del evento de venta en NUMERA`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-005 — Definir acumulación de puntos en PASS`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-006 — Definir procesamiento de redención en PASS`
+
+
 ### [ ] INT-SALES-006 — Definir procesamiento de redención en PASS
 ### [ ] INT-SALES-007 — Definir control contra efectos duplicados por reintento
 ### [ ] INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
