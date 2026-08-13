@@ -3099,7 +3099,587 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
 
 
-### [ ] INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
+### ✅ INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`
+**Tarea siguiente:** `INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción`
+**Tipo de tarea:** documental; definición normativa de la importación y normalización de anulaciones, devoluciones y reembolsos vinculados a ventas, líneas y pagos de origen, preservando identidad, procedencia, temporalidad, alcance, cantidades, importes, moneda y relación con el hecho original sin borrado destructivo, sin convertir estados comerciales o de pago en reversos por inferencia, sin ejecutar compensaciones internas, modificar código, crear migraciones, modificar Supabase ni producir efectos en NEXO, NUMERA o PASS
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**POS externo vigente:** `Makos`
+**POS integral objetivo:** `PULSO`
+**Línea base documental:** `vento-shell@eda6beb97db95f3c123e7f811b9158450c1e3848`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo deberá importarse una afirmación externa que represente una anulación, devolución o reembolso relacionado con una venta originada en Makos durante la transición y, posteriormente, con una venta originada en PULSO cuando corresponda, sin destruir ni reinterpretar el hecho original.
+
+La tarea fija la semántica común que deberá conservar el adaptador antes de cualquier compensación interna.
+
+Regla raíz:
+
+```text
+HECHO ORIGINAL DE VENTA / LÍNEA / PAGO
+        +
+AFIRMACIÓN POSTERIOR DE LA FUENTE
+        ↓
+IDENTIDAD + TIPO SEMÁNTICO + OBJETO AFECTADO
++ CANTIDAD / IMPORTE + MOMENTO + PROCEDENCIA
+        ↓
+HECHO DE REVERSO NORMALIZADO Y CORRELACIONADO
+        ↓
+CERO BORRADO DEL ORIGINAL
+        ↓
+COMPENSACIÓN INTERNA POSTERIOR SOLO EN SU TAREA PROPIETARIA
+```
+
+Una señal negativa, una etiqueta parecida, un estado técnico o una diferencia agregada no bastan para fabricar un reverso canónico.
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-008` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal de las ventas originadas dentro de su alcance mientras no ocurra el corte correspondiente.
+2. PULSO será la fuente de las nuevas ventas posteriores al corte aprobado.
+3. Makos y PULSO deberán converger en el mismo contrato canónico de venta y línea.
+4. Una venta y cada una de sus líneas conservan identidad estable a través de revisiones y recepciones posteriores.
+5. Una corrección, anulación, devolución o reembolso no borra la venta, línea, pago, documento o payload que existieron previamente.
+6. Venta, pago, caja, documento fiscal, inventario, fidelización y hecho económico permanecen separados.
+7. El estado comercial `CANCELLED` de una venta no demuestra por sí solo anulación fiscal, devolución de producto, reembolso de dinero ni compensación interna.
+8. El estado `CANCELLED` de una línea no ejecuta devolución, reembolso ni compensación.
+9. El estado `CANCELLED` de un intento de pago no equivale a reembolso.
+10. Un timeout o resultado desconocido de pago no equivale a fallo ni a reverso.
+11. Cantidades o importes negativos no sustituyen silenciosamente la semántica de una devolución, anulación o reembolso.
+12. `INT-POS-007` conserva descuentos, impuestos, propinas y pagos sin absorber los reversos.
+13. El documento fiscal permanece bajo autoridad del POS o proveedor fiscal autorizado mientras corresponda.
+14. La aplicación de compensaciones en dominios internos pertenece a `INT-POS-019`.
+15. La conciliación entre venta, reversos y efectos pertenece a `INT-POS-020`.
+16. La API de Makos está confirmada como habilitable bajo solicitud, pero su especificación técnica, credenciales y campos efectivos para Vento permanecen no provisionados.
+
+Esta tarea no presupone endpoints, nombres de propiedades, códigos, catálogos de causas, identificadores, estados ni garantías de Makos que no estén demostrados.
+
+---
+
+#### 3. Separaciones semánticas obligatorias
+
+La frontera de importación preservará las siguientes desigualdades:
+
+```text
+ESTADO DE VENTA CANCELLED ≠ ANULACIÓN
+ESTADO DE LÍNEA CANCELLED ≠ DEVOLUCIÓN
+ESTADO DE PAGO CANCELLED ≠ REEMBOLSO
+ANULACIÓN ≠ DEVOLUCIÓN
+ANULACIÓN ≠ REEMBOLSO
+DEVOLUCIÓN ≠ REEMBOLSO
+DEVOLUCIÓN ≠ DESCUENTO
+REEMBOLSO ≠ DESCUENTO
+REEMBOLSO ≠ PAGO FALLIDO
+REEMBOLSO ≠ COMPENSACIÓN DE INVENTARIO
+REEMBOLSO ≠ COMPENSACIÓN ECONÓMICA INTERNA
+ANULACIÓN FISCAL ≠ CANCELACIÓN COMERCIAL POR INFERENCIA
+```
+
+Que dos hechos compartan venta, importe, timestamp o referencia no los vuelve equivalentes.
+
+---
+
+#### 4. Tipos semánticos normalizados de reverso
+
+Cuando exista evidencia suficiente, la importación podrá clasificar una afirmación externa mediante uno de estos tipos semánticos:
+
+| Tipo semántico | Significado                                                                                                              | Límite obligatorio                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `VOID`         | la fuente acredita la anulación o invalidación de una operación previamente existente y permite identificar qué se anuló | no significa devolución física, reembolso monetario, anulación fiscal ni compensación interna salvo afirmación expresa de la fuente |
+| `RETURN`       | la fuente acredita una devolución de mercancía, cantidad o valor comercial contra una venta o línea original             | no significa que el dinero ya haya sido reembolsado ni que el inventario interno ya haya sido compensado                            |
+| `REFUND`       | la fuente acredita devolución monetaria contra un pago, una venta o una referencia financiera original                   | no significa devolución física, cancelación comercial, anulación fiscal ni conciliación bancaria final                              |
+
+El estado comercial `CANCELLED` definido en `INT-POS-006` permanece fuera de esta tabla: describe lifecycle comercial y no constituye por sí mismo un hecho `VOID`, `RETURN` o `REFUND`.
+
+Una palabra externa como `void`, `reversed`, `return`, `refund`, `cancelled` o equivalente solo podrá mapearse cuando su significado para el objeto y recurso concretos esté acreditado.
+
+---
+
+#### 5. Resultado de interpretación del reverso
+
+Toda señal de reverso deberá clasificarse mediante:
+
+| Resultado      | Significado                                                                                                   | Tratamiento                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `MAPPED`       | existe evidencia suficiente para afirmar que la señal corresponde a `VOID`, `RETURN` o `REFUND`               | se materializa el tipo semántico conservando la afirmación original y sus referencias                                     |
+| `NOT_PROVIDED` | el binding acreditado no entrega ese tipo de información para el recurso                                      | se conserva la ausencia; no se fabrica reverso                                                                            |
+| `UNRESOLVED`   | existe una señal, estado, importe, cantidad o etiqueta, pero no hay equivalencia suficiente para clasificarla | se conserva la señal original y se bloquean decisiones o efectos que dependan de conocer la naturaleza exacta del reverso |
+
+La ausencia de información no se interpreta como ausencia de reversos históricos fuera del alcance realmente demostrado por la fuente.
+
+---
+
+#### 6. Contrato semántico mínimo de un reverso importado
+
+Todo reverso individual normalizado deberá poder conservar, según aplicabilidad y disponibilidad acreditada:
+
+| Dimensión lógica                          | Obligatoriedad                                                                                       | Regla                                                                                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| sistema de origen                         | requerida                                                                                            | conserva el sistema que afirmó el reverso; el adaptador no se vuelve fuente empresarial                                              |
+| instancia o contexto de origen            | requerida cuando sea necesaria para evitar colisiones                                                | conserva tenant, empresa o ambiente real cuando exista                                                                               |
+| identidad externa del reverso             | requerida cuando la fuente la entregue                                                               | se conserva sin sustituirla por la identidad de la venta; la ausencia fuerte se resuelve posteriormente en `INT-POS-013`             |
+| tipo semántico                            | requerido para un reverso normalizado                                                                | solo `VOID`, `RETURN` o `REFUND` después de mapping acreditado                                                                       |
+| tipo de objeto afectado                   | requerido antes de efectos                                                                           | identifica si la fuente afecta venta, línea, pago u otra referencia explícita; no se infiere por el nombre del endpoint              |
+| venta original relacionada                | requerida antes de cualquier efecto sobre la transición POS                                          | debe vincular el reverso con la venta original; si no puede resolverse, se conserva el reverso sin efecto                            |
+| línea original relacionada                | requerida cuando el reverso sea de línea o cantidad                                                  | no se sustituye por producto, posición de archivo o coincidencia de importe                                                          |
+| pago original relacionado                 | requerida cuando el reembolso se refiera a un pago identificable                                     | un reembolso no crea un pago original ficticio                                                                                       |
+| referencia fiscal relacionada             | condicional                                                                                          | se conserva cuando la fuente la entregue, sin transferir autoridad fiscal a Vento                                                    |
+| revisión o versión de fuente              | condicional                                                                                          | permite ordenar afirmaciones cuando el proveedor la entregue                                                                         |
+| alcance parcial o total                   | condicional                                                                                          | solo se materializa cuando la fuente lo declare o exista equivalencia contractual; no se deduce comparando totales                   |
+| cantidad                                  | requerida para una devolución cuantitativa cuando la fuente la entregue                              | conserva magnitud y signo de origen; no se fuerza para cuadrar                                                                       |
+| unidad                                    | requerida cuando la cantidad no sea autosuficiente                                                   | debe hacer interpretable la devolución                                                                                               |
+| importe                                   | requerido para un reembolso cuantificable cuando la fuente lo entregue                               | conserva magnitud y signo informados; no se deriva automáticamente del total de venta                                                |
+| moneda                                    | requerida antes de conciliación o efecto financiero cuando no exista garantía inequívoca del binding | no se hereda desde defaults de Wompi, interfaz o configuración no acreditada                                                         |
+| código, causa o etiqueta de fuente        | condicional                                                                                          | se conserva como evidencia; no se convierte automáticamente en taxonomía interna                                                     |
+| estado del reverso en la fuente           | condicional                                                                                          | se conserva en bruto; un estado normalizado adicional requerirá equivalencia demostrable                                             |
+| momento del reverso                       | requerido antes de efectos que dependan de temporalidad                                              | debe representar el momento empresarial del reverso según semántica acreditada; no se sustituye por recepción o persistencia técnica |
+| timestamps técnicos o de actualización    | condicional                                                                                          | permanecen separados del momento empresarial                                                                                         |
+| referencia de procedencia                 | requerida                                                                                            | enlaza la afirmación original cuya conservación física corresponde a `INT-POS-009`                                                   |
+| correlación con recepción y procesamiento | requerida para trazabilidad                                                                          | no sustituye identidades empresariales                                                                                               |
+
+Un reverso que no pueda vincularse de forma suficiente con su hecho original no será presentado como compensación ejecutable.
+
+---
+
+#### 7. Importación de anulaciones `VOID`
+
+`VOID` representa una anulación explícita de una operación previamente existente.
+
+Reglas:
+
+1. la anulación deberá identificar el objeto afectado con semántica demostrable;
+2. una anulación de venta no se inferirá desde un pago rechazado o cancelado;
+3. una anulación de pago no se inferirá desde una venta `CANCELLED`;
+4. una anulación fiscal solo se conservará como tal cuando el proveedor fiscal o POS autorizado la exponga con esa semántica;
+5. la anulación no borra la venta, línea, pago ni documento original;
+6. una anulación conserva vínculo al hecho original y a la afirmación de fuente que la produjo;
+7. si la fuente distingue anulación total y parcial, se conserva esa distinción; si no la distingue, no se inventa;
+8. si un término externo puede significar rechazo, expiración, cancelación de intento, reversión financiera o anulación comercial, quedará `UNRESOLVED` hasta acreditar el significado;
+9. una anulación importada no ejecuta por sí misma inventario, fidelización, contabilidad, caja ni documento fiscal interno;
+10. la aplicación de compensaciones posteriores corresponde a `INT-POS-019`.
+
+---
+
+#### 8. Importación de devoluciones `RETURN`
+
+`RETURN` representa una devolución material o comercial contra una venta o línea original cuando la fuente permite afirmar esa semántica.
+
+Reglas:
+
+1. la devolución deberá conservar la venta original relacionada;
+2. cuando afecte productos o líneas concretas, deberá conservar las referencias de línea disponibles y la cantidad/unidad realmente informadas;
+3. una devolución parcial no convierte la línea original en una nueva línea neta ni reduce destructivamente su cantidad histórica;
+4. una devolución total tampoco elimina la línea original;
+5. producto, presentación o receta Vento no se infieren desde la devolución; el mapping aplicable permanece en `INT-POS-011`;
+6. una línea devuelta sin mapping suficiente puede conservarse como evidencia, pero no producirá una compensación física automática;
+7. una cantidad negativa no se clasifica automáticamente como devolución;
+8. un `return_amount` monetario no demuestra por sí solo devolución física ni cantidad devuelta;
+9. devolución y reembolso pueden coexistir, pero una no prueba la otra;
+10. cualquier efecto de inventario inverso deberá ser definido y aplicado posteriormente por la tarea propietaria correspondiente, sin duplicación.
+
+---
+
+#### 9. Importación de reembolsos `REFUND`
+
+`REFUND` representa una devolución monetaria acreditada por la fuente.
+
+Reglas:
+
+1. el reembolso deberá conservar su relación con la venta y, cuando la fuente lo permita, con el pago original;
+2. un reembolso parcial conserva su importe propio y no convierte el pago original en otro importe histórico;
+3. un reembolso total no borra el pago confirmado original;
+4. varios reembolsos legítimos sobre una misma venta o pago se conservan como hechos distintos cuando la fuente los individualice;
+5. si la fuente solo expone un importe agregado de reembolsos, se conserva como agregado y no se fabrican hechos individuales;
+6. `CANCELLED` de pago no equivale a `REFUND`;
+7. `FAILED` de pago no equivale a `REFUND`;
+8. una etiqueta `reversed` solo se normaliza a `REFUND` cuando la fuente demuestre retorno monetario equivalente; en caso contrario queda `UNRESOLVED`;
+9. importe y moneda se conservan según la fuente y no se sustituyen por el total de venta;
+10. un reembolso no acredita por sí solo devolución física, anulación fiscal, cierre de caja ni conciliación bancaria;
+11. cualquier efecto económico posterior deberá producirse mediante el contrato propietario y exactamente una vez.
+
+---
+
+#### 10. Parcialidad y cardinalidad
+
+La estructura deberá admitir, sin consolidación ficticia:
+
+```text
+UNA VENTA ORIGINAL
+        ↓
+0..N ANULACIONES / DEVOLUCIONES / REEMBOLSOS DE FUENTE
+        ↓
+CADA HECHO CONSERVA IDENTIDAD, TIPO, OBJETO, ALCANCE Y PROCEDENCIA
+```
+
+Reglas:
+
+1. una venta puede recibir más de un reverso legítimo a lo largo de su historia;
+2. dos reversos con igual importe no se consideran automáticamente duplicados;
+3. un mismo reverso recibido varias veces no deberá producir más de un efecto cuando la idempotencia sea materializada por `INT-POS-013`;
+4. parcial o total no se deduce únicamente comparando el importe del reverso contra el total de la venta;
+5. parcial o total no se deduce únicamente comparando cantidad devuelta contra cantidad original cuando existan revisiones o unidades no resueltas;
+6. la suma de devoluciones o reembolsos no modifica retroactivamente los snapshots originales;
+7. un exceso aparente sobre cantidad o importe original se conserva como inconsistencia para `INT-POS-020`, no se recorta silenciosamente;
+8. los reversos de monedas distintas no se agregan sin conversión autorizada.
+
+---
+
+#### 11. Relación con estado comercial de venta y línea
+
+La importación podrá conservar simultáneamente:
+
+- estado comercial de venta de `INT-POS-006`;
+- estado de línea de `INT-POS-006`;
+- hechos `VOID`, `RETURN` y `REFUND` de esta tarea.
+
+No existe transición automática universal entre ellos.
+
+Por tanto:
+
+```text
+SALE = CANCELLED
+NO IMPLICA
+VOID + RETURN + REFUND
+```
+
+```text
+LINE = CANCELLED
+NO IMPLICA
+RETURN
+```
+
+Un proveedor puede representar una cancelación comercial y un reembolso como eventos separados, como una revisión de recurso, como registros diferentes o mediante otra estructura. El adaptador deberá respetar la semántica acreditada del binding en vez de imponer un patrón ficticio.
+
+---
+
+#### 12. Relación con pagos
+
+Los hechos de pago definidos en `INT-POS-007` y los reembolsos definidos aquí permanecen separados.
+
+1. un pago original conserva identidad, importe, moneda, proveedor, referencia y estado;
+2. un reembolso conserva su propia identidad cuando la fuente la entregue y referencia el pago original cuando exista esa relación;
+3. un pago no cambia de identidad porque exista un reembolso;
+4. un estado físico `refunded` puede conservarse como señal de fuente, pero no sustituye la identidad ni los datos del hecho de reembolso cuando el proveedor los exponga por separado;
+5. si el proveedor únicamente ofrece estado acumulado y no un recurso o evento individual de reembolso, esa limitación se conserva y el adaptador no inventa identidad ni timestamps individuales;
+6. una respuesta perdida o repetida no autoriza un segundo reembolso ni una segunda compensación.
+
+---
+
+#### 13. Relación con documento fiscal
+
+El documento fiscal conserva autoridad externa durante la transición.
+
+Reglas:
+
+1. una venta `CANCELLED` no demuestra anulación fiscal;
+2. un `VOID` comercial no se eleva a anulación fiscal salvo evidencia expresa del proveedor autorizado;
+3. una devolución o reembolso no demuestra por sí solo nota, anulación, ajuste o documento fiscal específico;
+4. si Makos o el proveedor fiscal expone una referencia de documento de ajuste, se conserva como referencia de fuente;
+5. Vento no genera numeración, documento fiscal ni estado fiscal inventado durante esta importación;
+6. cualquier divergencia entre reverso comercial, monetario y fiscal permanece visible para conciliación en `INT-POS-020`.
+
+---
+
+#### 14. Temporalidad, versiones y eventos fuera de orden
+
+Cada reverso conservará el momento empresarial acreditado de la fuente cuando pueda resolverse.
+
+Reglas:
+
+1. el momento de recepción no sustituye el momento del reverso;
+2. el momento de importación no sustituye el momento del reverso;
+3. una revisión tardía no sobrescribe una revisión posterior ya reconocida;
+4. una anulación, devolución o reembolso recibido tarde conserva su momento histórico;
+5. replay o backfill no convierte el momento del reproceso en momento empresarial;
+6. una señal fuera de orden o incompatible se difiere, rechaza o lleva a conciliación según los contratos transversales; no se aplica silenciosamente;
+7. cuando el proveedor entregue versión o secuencia, se conserva separada de los timestamps;
+8. el orden cronológico de timestamps no sustituye una causalidad o versión explícita cuando exista;
+9. la procedencia física de payload, versión, hash y `received_at` pertenece a `INT-POS-009`.
+
+---
+
+#### 15. Importes, cantidades y signos
+
+1. signo y magnitud de fuente se conservan;
+2. un importe negativo no se vuelve positivo automáticamente;
+3. un importe positivo en una columna llamada devolución no demuestra por sí solo un `RETURN` o `REFUND` individual;
+4. una cantidad negativa no demuestra devolución sin semántica acreditada;
+5. un cero técnico no demuestra ausencia de devolución o reembolso;
+6. ausencia de campo no se convierte en cero confirmado;
+7. un reembolso conserva moneda propia; no hereda moneda desde una tabla interna o integración distinta;
+8. una devolución cuantitativa conserva unidad cuando sea necesaria para interpretar la cantidad;
+9. redondeos o ajustes no se aplican para hacer coincidir reverso y venta;
+10. cualquier diferencia de importe, moneda, cantidad o alcance se conserva para `INT-POS-020`.
+
+---
+
+#### 16. Tratamiento del flujo `makos_excel` existente
+
+La implementación vigente reconoce una columna `DEVOLUCIONES` y persiste `return_amount` tanto en filas como en lotes agregados.
+
+La evidencia física actual permite clasificar:
+
+| Elemento actual                                     | Clasificación para `INT-POS-008` | Consecuencia                                                                                       |
+| --------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------- |
+| columna `DEVOLUCIONES`                              | señal agregada disponible        | demuestra un valor agregado exportable, no un reverso individual                                   |
+| `return_amount` por fila agregada                   | agregado monetario por ítem/día  | no identifica venta original, línea original, pago, causa, timestamp ni hecho individual           |
+| `return_amount` por lote                            | agregado diario                  | sirve como dato de conciliación, no como identidad de devolución o reembolso                       |
+| default técnico `0` cuando no existe la columna     | valor producido por parser       | no demuestra que Makos haya informado cero devoluciones                                            |
+| restricción `return_amount >= 0`                    | regla física legacy              | no define signo, identidad ni semántica del contrato futuro                                        |
+| `net_sales_amount = subtotal - discounts - returns` | cálculo legacy agregado          | no demuestra que `return_amount` sea devolución física, reembolso monetario o anulación individual |
+| identidad individual del reverso                    | no observada                     | no permite crear un `VOID`, `RETURN` o `REFUND` individual                                         |
+| vínculo a venta o pago original                     | no observado                     | bloquea efectos individuales                                                                       |
+| timestamp empresarial del reverso                   | no observado                     | no puede fabricarse desde `sales_date`, `imported_at` o timestamps internos                        |
+
+Por tanto:
+
+```text
+RETURN_AMOUNT AGREGADO
+≠
+RETURN INDIVIDUAL
+```
+
+```text
+RETURN_AMOUNT AGREGADO
+≠
+REFUND INDIVIDUAL
+```
+
+El valor agregado puede conservarse para conciliación histórica, pero no habilita por sí solo compensaciones de inventario, fidelización o economía.
+
+---
+
+#### 17. Tratamiento de la fundación Wompi existente
+
+La línea base técnica de pagos contiene un estado físico `refunded` y el webhook vigente mapea señales de proveedor `refunded` y `reversed` al mismo estado técnico `refunded`. La función vigente de actualización de pago también sincroniza ese estado con `payment_status = refunded` y, salvo estados ya preservados, con cancelación de la orden.
+
+Estas decisiones físicas se clasifican como implementación legacy existente y no como semántica universal de esta tarea.
+
+Reglas:
+
+1. `refunded` de Wompi no define el vocabulario de Makos;
+2. `reversed` no se tratará universalmente como `REFUND` sin acreditar que hubo devolución monetaria;
+3. el acoplamiento actual entre reembolso de pago y cancelación de orden no se convierte en regla del contrato canónico;
+4. una futura reutilización técnica deberá respetar las separaciones aprobadas entre venta, pedido, pago, anulación, devolución y reembolso;
+5. esta tarea no modifica la fundación Wompi ni sus migraciones, funciones o webhook.
+
+---
+
+#### 18. Evidencia requerida del binding futuro de Makos
+
+Antes de que una integración transaccional utilice reversos de Makos, deberá existir evidencia suficiente para resolver:
+
+| Área                       | Evidencia requerida                                                                | Resultado permitido                                   |
+| -------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| disponibilidad de reversos | recursos, campos o garantías que los representen                                   | `MAPPED`, `NOT_PROVIDED` o `UNRESOLVED`               |
+| identidad del reverso      | identificador estable cuando exista                                                | referencia externa conservada                         |
+| tipo de reverso            | semántica que distinga anulación, devolución y reembolso                           | `VOID`, `RETURN` o `REFUND`                           |
+| objeto afectado            | referencia explícita a venta, línea, pago o documento cuando corresponda           | target resoluble sin inferencia                       |
+| venta original             | identidad o relación demostrable                                                   | correlación con venta canónica                        |
+| línea original             | identidad o relación cuando la devolución sea de línea                             | devolución individualizable                           |
+| pago original              | referencia cuando el reembolso se aplique a un pago                                | correlación financiera                                |
+| parcialidad                | campo, relación o garantía que distinga parcial y total                            | alcance preservado cuando exista                      |
+| cantidades y unidades      | valores y semántica                                                                | devolución cuantitativa reproducible                  |
+| importes y moneda          | valores y semántica                                                                | reembolso cuantificable sin defaults inventados       |
+| causa o código             | catálogo o significado cuando exista                                               | preservación de fuente; mapping solo con equivalencia |
+| estado                     | significado del lifecycle del reverso cuando exista                                | conservación o mapping seguro                         |
+| timestamps                 | semántica de creación, ocurrencia, actualización o confirmación                    | momento empresarial resoluble                         |
+| versiones o secuencias     | mecanismo cuando exista                                                            | orden y no regresión de historia                      |
+| relación fiscal            | referencias de documento o ajuste cuando el proveedor las exponga                  | trazabilidad sin apropiación de autoridad fiscal      |
+| granularidad histórica     | ventana y capacidad real de consultar reversos individuales o únicamente agregados | tratamiento acorde a evidencia                        |
+
+No se registran nombres de endpoints, propiedades JSON ni códigos específicos mientras la especificación del tenant Vento no esté provisionada.
+
+---
+
+#### 19. Puertas de elegibilidad y destinos exactos
+
+Una afirmación de reverso podrá conservarse como evidencia aun cuando no sea elegible para efectos. Los bloqueos se resuelven así:
+
+| Condición                                                          | Tratamiento                                          | Tarea propietaria de salida                                             |
+| ------------------------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| no existe identidad estable del reverso cuando sea necesaria       | no generar una identidad nueva por cada intento      | `INT-POS-013`                                                           |
+| no puede correlacionarse con la venta original                     | conservar sin compensar                              | `INT-POS-013`; conciliación en `INT-POS-020`                            |
+| no puede correlacionarse con línea requerida                       | conservar sin efecto dependiente de producto         | `INT-POS-011`; `INT-POS-012`; conciliación en `INT-POS-020`             |
+| tipo `VOID` / `RETURN` / `REFUND` no puede resolverse              | conservar como `UNRESOLVED`                          | `INT-POS-021` deberá demostrar suficiencia antes del piloto con efectos |
+| parcialidad no puede demostrarse                                   | no inferir total o parcial                           | `INT-POS-021`; conciliación en `INT-POS-020`                            |
+| cantidad o unidad requerida no es interpretable                    | bloquear efecto físico                               | `INT-POS-011`; `INT-POS-021`                                            |
+| importe o moneda de reembolso no son resolubles                    | bloquear efecto financiero                           | `INT-POS-021`; conciliación en `INT-POS-020`                            |
+| estado o timestamp crítico del reverso es ambiguo                  | conservar señal sin aplicar transición               | `INT-POS-021`; conciliación en `INT-POS-020`                            |
+| falta procedencia completa, versión, hash o recepción              | no presentar la transformación como reproducible     | `INT-POS-009`                                                           |
+| el mismo reverso puede recibirse más de una vez                    | no producir efectos hasta materializar deduplicación | `INT-POS-013`                                                           |
+| se requiere transporte incremental o recuperación                  | no asumir webhook, polling ni frecuencia             | `INT-POS-014`                                                           |
+| corresponde aplicar compensación interna por efectos ya producidos | no ejecutarla desde el adaptador                     | `INT-POS-019`                                                           |
+| existe divergencia entre venta, reverso y efectos                  | no corregir historia                                 | `INT-POS-020`                                                           |
+| binding Makos sigue sin evidencia suficiente                       | conservar la puerta sin efectos                      | `INT-POS-021`                                                           |
+| se pretende habilitar efectos reales                               | exigir resolución previa de las puertas críticas     | `INT-POS-022`                                                           |
+
+`INT-POS-022` no podrá habilitar efectos sobre un reverso cuyo tipo, correlación, cantidad, importe, moneda o procedencia críticos permanezcan no resueltos.
+
+---
+
+#### 20. Fronteras con efectos internos
+
+`INT-POS-008` normaliza hechos externos; no ejecuta compensaciones.
+
+| Dominio o responsabilidad | Tratamiento posterior                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| NEXO                      | cualquier movimiento físico compensatorio deberá conservar relación con el hecho original y aplicarse exactamente una vez |
+| NUMERA                    | cualquier reverso económico deberá conservar origen y correlación, sin borrar el hecho económico original                 |
+| PASS                      | cualquier reverso de fidelización deberá conservar la venta y el movimiento original, sin recalcular historia por borrado |
+| proveedor fiscal          | mantiene autoridad sobre documentos y ajustes fiscales mientras corresponda                                               |
+| PULSO                     | cuando sea POS fuente, deberá producir la misma semántica de reversos sin acoplarla a estados genéricos                   |
+
+La definición concreta de las compensaciones internas corresponde a `INT-POS-019`; la conciliación de su resultado corresponde a `INT-POS-020`.
+
+---
+
+#### 21. Fronteras con tareas posteriores
+
+- `INT-POS-009` conservará físicamente payload original, versión, hash y momento de recepción de cada afirmación externa.
+- `INT-POS-010` resolverá empresa, sede, terminal y caja cuando sean necesarias para contextualizar el reverso.
+- `INT-POS-011` resolverá producto, presentación y receta para líneas devueltas sin alterar el hecho original.
+- `INT-POS-012` mantendrá en cuarentena líneas no mapeadas e impedirá efectos de inventario.
+- `INT-POS-013` definirá identidad e idempotencia por sistema, venta, línea y recepción externa suficiente para impedir reversos repetidos.
+- `INT-POS-014` definirá webhook y polling sin alterar la semántica de reverso.
+- `INT-POS-015` emitirá la venta validada bajo sus propias puertas; esta tarea no convierte un reverso en una nueva venta.
+- `INT-POS-016` a `INT-POS-018` aplicarán únicamente los efectos directos de ventas elegibles en sus dominios propietarios.
+- `INT-POS-019` definirá las compensaciones derivadas de anulaciones y devoluciones sin borrar historia.
+- `INT-POS-020` conciliará venta, reversos y efectos internos, incluyendo agregados históricos.
+- `INT-POS-021` comprobará con el binding real si las señales de Makos permiten distinguir y correlacionar reversos sin efectos.
+- `INT-POS-022` solo podrá habilitar efectos cuando las puertas críticas estén demostradas.
+- `INT-POS-023` trasladará la fuente futura hacia PULSO preservando el mismo contrato semántico.
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 22. Decisiones congeladas
+
+1. `VOID`, `RETURN` y `REFUND` son hechos semánticos distintos.
+2. El estado comercial `CANCELLED` de venta o línea no constituye por sí mismo un reverso de esta tarea.
+3. El estado de pago `CANCELLED` no constituye un reembolso.
+4. Una anulación identifica qué operación fue anulada; no se interpreta por similitud de etiqueta.
+5. Una devolución conserva venta y línea originales cuando sean identificables.
+6. Un reembolso conserva venta y pago originales cuando la fuente permita esa correlación.
+7. El original nunca se elimina ni se sobrescribe para simular que el hecho no ocurrió.
+8. Parcialidad y totalidad no se infieren únicamente desde igualdad de importes o cantidades.
+9. Un reverso puede llegar después del hecho original y conserva su momento histórico.
+10. Una versión tardía no sobrescribe una revisión posterior.
+11. Un reintento o segunda recepción no autoriza un segundo efecto.
+12. Una cantidad o importe negativo no reemplaza la clasificación semántica del reverso.
+13. Un `return_amount` agregado no es una devolución individual ni un reembolso individual.
+14. El flujo `makos_excel` actual solo aporta un agregado de devoluciones por ítem/día y no demuestra identidad, correlación ni timestamps individuales de reverso.
+15. El default técnico cero del parser no demuestra que Makos haya informado cero devoluciones.
+16. La fundación Wompi actual es evidencia de implementación legacy y no define el contrato Makos ni el POS objetivo.
+17. La señal Wompi `reversed` no se eleva universalmente a `REFUND`.
+18. El acoplamiento físico actual entre `refunded` y cancelación de orden no se convierte en regla canónica.
+19. El documento fiscal conserva autoridad externa y ningún reverso comercial inventa una anulación fiscal.
+20. La importación de un reverso no ejecuta compensación en inventario, economía, fidelización, caja o fiscalidad.
+21. Las compensaciones internas pertenecen a `INT-POS-019` y deben conservar vínculo con el original.
+22. Las diferencias y excesos aparentes permanecen conciliables en `INT-POS-020`.
+23. La especificación técnica de Makos sigue no provisionada; no se inventan sus campos ni catálogos.
+24. Esta tarea no modifica código, DDL, DML, migraciones, Supabase, datos, pagos, inventario, puntos, documentos fiscales, endpoints, credenciales ni configuración remota.
+25. `INT-POS-009` permanece exclusivamente reservada.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-008` materializa para la transición Makos → PULSO comportamientos que ya están protegidos de forma explícita por la cobertura canónica vigente: separación entre cancelación, anulación, devolución, reembolso y compensación; preservación del hecho original; correlación de reversos con su origen; efectos exactamente una vez; tratamiento de eventos repetidos, tardíos o incompatibles; prohibición de mapear representaciones legacy sin equivalencia demostrable; conservación de procedencia externa; correcciones append-only; y compensaciones financieras sin borrado destructivo. La tarea no introduce una capacidad ejecutable nueva ni una excepción fuera de esas reglas ya protegidas. El registro canónico de requisitos permanece sin cambios.
+
+#### 24. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-PULSO-005`, que exige conservar versiones originales y efectos emitidos frente a modificación o cancelación y mantener estados empresariales separados;
+- `TREQ-PULSO-006`, cobertura primaria de anulación, devolución, reembolso y compensación como semánticas separadas, autorizadas, auditables y no destructivas;
+- `TREQ-INTEGRATION-011`, que exige compensaciones físicas correlacionadas con el evento original y exactamente una vez;
+- `TREQ-INTEGRATION-014`, que exige que venta, anulación o devolución produzcan exactamente una vez los efectos aplicables durante la transición POS externo ↔ PULSO;
+- `TREQ-INTEGRATION-017`, que protege reversos económicos versionados, correlacionados e idempotentes hacia NUMERA;
+- `TREQ-INTEGRATION-043`, que impide que una versión tardía sobrescriba una posterior;
+- `TREQ-INTEGRATION-044`, que obliga a diferir, rechazar o conciliar explícitamente eventos fuera de orden, desconocidos o incompatibles;
+- `TREQ-INTEGRATION-045`, que evita efectos sensibles accidentales durante replay o backfill y conserva el momento histórico;
+- `TREQ-INTEGRATION-046`, que exige equivalencia demostrable antes de mapear una representación legacy;
+- `TREQ-INTEGRATION-048`, que exige que cancelaciones, anulaciones, reversos y compensaciones referencien autoridad, razón, hecho original y efecto sin funcionar como borrado genérico;
+- `TREQ-INTEGRATION-049`, que protege afirmación externa, autenticidad, identificador, payload, recepción y correlación antes de producir un hecho interno;
+- `TREQ-INTEGRATION-217`, que exige historia append-only y correcciones mediante nuevas entradas vinculadas;
+- `TREQ-INTEGRATION-222`, que separa momento del hecho, registro y terminación sin reescritura por captura tardía;
+- `TREQ-NUMERA-001`, que exige reconciliación financiera contra hechos y documentos fuente conservando historia;
+- `TREQ-NUMERA-002`, que exige que correcciones y reversos económicos conserven el original y utilicen acciones compensatorias.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 25. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-POS-005`, `INT-POS-006` e `INT-POS-007` sin reabrir identidad, estado comercial, temporalidad ni contrato monetario;
+2. define `VOID`, `RETURN` y `REFUND` como hechos diferenciados;
+3. mantiene `CANCELLED` de venta y línea separado de esos reversos;
+4. mantiene `CANCELLED` de pago separado de `REFUND`;
+5. define `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` para interpretar señales externas;
+6. define el contenido semántico mínimo de un reverso individual;
+7. exige correlación con la venta original antes de efectos;
+8. exige relación con línea cuando la devolución sea de línea;
+9. exige relación con pago cuando el reembolso disponga de esa referencia;
+10. conserva el objeto exacto afectado por una anulación y prohíbe inferirlo;
+11. conserva cantidades y unidades de devolución sin modificar la línea original;
+12. conserva importe y moneda de reembolso sin modificar el pago original;
+13. admite reversos parciales, totales y múltiples sin consolidación ficticia;
+14. prohíbe deducir parcialidad únicamente por igualdad de cantidades o importes;
+15. conserva una inconsistencia por exceso en lugar de recortarla;
+16. impide usar importes o cantidades negativas como sustituto de semántica;
+17. separa reversos comerciales, físicos, monetarios y fiscales;
+18. preserva autoridad fiscal externa;
+19. conserva momento empresarial, revisiones y eventos tardíos sin reescribir historia;
+20. clasifica el `return_amount` del flujo `makos_excel` como agregado no individualizable;
+21. documenta que el Excel actual no contiene identidad, correlación ni timestamp individual suficiente para ejecutar reversos;
+22. documenta que el parser puede producir ceros técnicos que no prueban ausencia de devoluciones;
+23. clasifica la semántica Wompi vigente como implementación legacy no normativa para Makos ni para el POS objetivo;
+24. impide elevar `reversed` a reembolso sin equivalencia monetaria demostrable;
+25. define la evidencia mínima requerida del futuro binding de Makos;
+26. asigna cada bloqueo material a una tarea exacta con condición de salida;
+27. reserva toda compensación interna para `INT-POS-019`;
+28. reserva conciliación de diferencias para `INT-POS-020`;
+29. genera cero cambios `TREQ-*` por existir cobertura canónica específica;
+30. no crea una copia del registro canónico de requisitos de prueba;
+31. no modifica código, DDL, DML, migraciones, Supabase, datos, credenciales, endpoints, webhooks, pagos, inventario, fidelización ni documentos fiscales;
+32. mantiene `INT-POS-009` como única siguiente tarea reservada.
+
+---
+
+#### 26. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción`
+
+
 ### [ ] INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
 ### [ ] INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
 ### [ ] INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **768** |
+| Aprobadas | **769** |
 | En propuesta | **0** |
-| No iniciadas | **826** |
+| No iniciadas | **825** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **48.18% (768/1594)** |
+| Porcentaje de completamiento | **48.24% (769/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-007` — Definir importación de descuentos, impuestos, propinas y medios de pago | ✅ APROBADA |
-| Tarea actual | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos | ✅ APROBADA |
+| Tarea actual | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1476,7 +1476,7 @@
 | ✅ APROBADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-006` | Definir importación de encabezados, líneas, estados y timestamps | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-007` | Definir importación de descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-008` | Definir importación de anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-008` | Definir importación de anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-009` | Definir conservación de payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-010` | Definir mapeo de empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-011` | Definir mapeo de producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |

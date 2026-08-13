@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **768** |
+| Tareas aprobadas | **769** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **826** |
+| Tareas no iniciadas | **825** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.18% (768/1594)** |
+| Porcentaje de completamiento | **48.24% (769/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago** |
-| Tarea actual | **INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos** |
+| Última tarea aprobada | **INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos** |
+| Tarea actual | **INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción** |
+| Siguiente tarea | **INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 52 de 83 aprobadas; INT-POS-008 pendiente** |
+| Progreso del bloque | **BLOQUE X: 53 de 83 aprobadas; INT-POS-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-007` — Definir importación de descuentos, impuestos, propinas y medios de pago |
-| Tarea actual | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción |
+| Última aprobada | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos |
+| Tarea actual | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 52 DE 83 APROBADAS — ACTUAL INT-POS-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 53 DE 83 APROBADAS — ACTUAL INT-POS-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
-        ↓
-TAREA ACTUAL
 INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 52 de 83 tareas aprobadas
+BLOQUE X — 53 de 83 tareas aprobadas
 ```
