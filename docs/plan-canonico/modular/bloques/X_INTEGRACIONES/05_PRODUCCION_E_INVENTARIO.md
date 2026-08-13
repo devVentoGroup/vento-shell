@@ -16,7 +16,879 @@ Esta sección organiza **produccion e inventario** dentro de **X INTEGRACIONES**
 - `INT-PROD-005`: Definir tratamiento de producción insuficiente para remisiones
 <!-- PLAN-SECTION-META:END -->
 
-### [ ] INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos
+### ✅ INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-PROC-005 — Definir control que evite una recepción duplicada`  
+**Tarea siguiente:** `INT-PROD-002 — Definir contrato para que NEXO registre el consumo`  
+**Tipo de tarea:** documental; definición contractual de solicitud, validación y reserva de materiales entre FOGO y NEXO, sin implementación física, migraciones, cambios de datos, despliegue ni modificación de Supabase  
+**Línea base documental:** `vento-shell@5e652947bbcf9820c916ef8385d32984aee787f3`  
+**Aplicaciones involucradas:** `FOGO`, `NEXO` y `SHELL`; `ORIGO`, `NUMERA`, `VISO`, `PULSO` y `PASS` únicamente cuando una dependencia canónica ya aprobada aporte una señal o consuma un resultado  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma inequívoca cómo una orden productiva de FOGO obtiene disponibilidad material verificable sin convertir a FOGO en propietaria del inventario ni permitir que una solicitud se confunda con una reserva, un consumo o un movimiento físico.
+
+La regla raíz es:
+
+```text
+ORDEN PRODUCTIVA AUTORIZADA EN FOGO
++
+VERSIÓN EXACTA DE RECETA
++
+REQUERIMIENTOS MATERIALES DETERMINADOS
+        ↓
+SOLICITUD CORRELACIONADA A NEXO
+        ↓
+VALIDACIÓN AUTORITATIVA DE NEXO
+        ↓
+RESERVA FÍSICA CONFIRMADA POR NEXO
+        ↓
+FOGO PUEDE CONSIDERAR EL MATERIAL PREPARABLE
+        ↓
+EL CONSUMO QUEDA RESERVADO A INT-PROD-002
+```
+
+La tarea elimina las siguientes ambigüedades:
+
+1. `VPROC-0034.MATERIALS_RESERVING` es un estado de preparación del proceso productivo de FOGO y no convierte a FOGO en propietaria de la reserva física;
+2. `VPROC-0025.STOCK_OPERATION_REQUESTED` demuestra que NEXO recibió una operación de existencias válida, pero todavía no demuestra reserva;
+3. `VPROC-0025.RESERVED` es el hecho autoritativo de que una cantidad quedó apartada en NEXO;
+4. reserva no equivale a retiro, consumo, traslado, posting ni conciliación final;
+5. disponibilidad observada no equivale a disponibilidad reservada;
+6. una lectura de stock obtenida por FOGO no autoriza a descontar, apartar ni seleccionar existencias por fuera del proceso propietario de NEXO;
+7. una reserva confirmada no autoriza por sí sola el inicio de producción si faltan las demás condiciones de `VPROC-0034`;
+8. ninguna corrección de cantidad puede sobrescribir silenciosamente la solicitud o reserva anterior.
+
+---
+
+#### 2. Alcance funcional
+
+Esta tarea gobierna exclusivamente el tramo comprendido entre una orden productiva autorizada y la confirmación de reserva de los materiales necesarios para prepararla.
+
+Incluye:
+
+- derivación de requerimientos materiales desde la orden y la versión exacta de receta;
+- construcción de la solicitud de materiales que FOGO entrega a NEXO;
+- validación autoritativa de existencia, unidad, conversión, lote, ubicación, condición y autoridad en NEXO;
+- reserva total o parcial de existencias;
+- tratamiento de faltantes y restricciones;
+- sustituciones autorizadas;
+- concurrencia entre órdenes que compiten por la misma existencia;
+- idempotencia, respuesta perdida, reintento y resultado incierto;
+- cancelación de trabajo todavía no consumido;
+- conciliación entre requerimiento productivo, solicitud y reserva;
+- auditoría y evidencia de todo el handoff.
+
+No incluye:
+
+- consumo efectivo de ingredientes, que corresponde a `INT-PROD-002`;
+- finalización de lote, que corresponde a `INT-PROD-003`;
+- ingreso de producto terminado, que corresponde a `INT-PROD-004`;
+- tratamiento de producción insuficiente para remisiones, ya definido en `INT-PROD-005`;
+- creación o modificación de recetas;
+- aprobación o publicación de planes productivos;
+- decisión de calidad;
+- creación de movimientos alternos de inventario fuera de NEXO;
+- implementación de tablas, funciones, RPC, triggers, políticas RLS, colas, jobs o adaptadores.
+
+---
+
+#### 3. Dependencias canónicas preservadas
+
+El contrato consume sin reinterpretación las siguientes decisiones ya aprobadas:
+
+- `VPROC-0033` como proceso FOGO de planificación productiva;
+- `VPROC-0034` como proceso FOGO de preparación de materiales y ejecución contra una versión aprobada;
+- `VPROC-0025` como proceso NEXO de retiro, consumo o traslado de existencias;
+- `VPROC-0016` como origen de la versión de receta publicada;
+- `EVENT-ENVELOPE-001` como sobre transversal de identidad, contexto, correlación e idempotencia;
+- el contrato transversal de idempotencia de `INT-APP-004`;
+- el contrato transversal de reintentos de `INT-APP-005`;
+- la prohibición de escrituras cruzadas de `INT-APP-010`;
+- las fronteras de propiedad y cantidades ya congeladas por `INT-PROD-005` para el vínculo producción–inventario.
+
+No se crea un proceso paralelo para reservar materiales y no se crea un segundo ledger de existencias en FOGO.
+
+---
+
+#### 4. Propiedad empresarial
+
+| Elemento                                                            | Propietaria                    | Regla obligatoria                                                                                 |
+| ------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| orden productiva, versión y estado de ejecución                     | `FOGO`                         | FOGO conserva la autoridad sobre qué se pretende producir y en qué versión                        |
+| receta y versión aplicada                                           | `FOGO`                         | la ejecución utiliza una versión publicada, estable y trazable                                    |
+| requerimiento material derivado de la orden                         | `FOGO`                         | FOGO calcula qué material requiere la orden según receta, escala y reglas aprobadas               |
+| stock físico                                                        | `NEXO`                         | NEXO conserva cantidad, ubicación, lote, condición, disponibilidad y custodia                     |
+| reserva física                                                      | `NEXO`                         | únicamente NEXO puede afirmar que una cantidad está reservada                                     |
+| selección autoritativa de existencia física                         | `NEXO`                         | lote, LOC, LPN, condición y cantidad aplicable se validan en el dominio de inventario             |
+| sustitución de ingrediente de receta                                | `FOGO` con autoridad aplicable | no puede decidirla NEXO por conveniencia de stock                                                 |
+| sustitución física compatible dentro de la operación de existencias | `NEXO`                         | debe respetar producto, presentación, unidad, política y cualquier restricción productiva vigente |
+| contratos compartidos y compatibilidad                              | `SHELL`                        | SHELL no fabrica hechos de producción ni de inventario                                            |
+| consumo real                                                        | `NEXO`, por contrato posterior | se desarrolla en `INT-PROD-002`                                                                   |
+
+Regla de segregación:
+
+```text
+FOGO DEFINE LA NECESIDAD PRODUCTIVA
+NEXO DEFINE LA RESERVA FÍSICA
+FOGO CONSUME LA CONFIRMACIÓN DE RESERVA
+NINGUNA DE LAS DOS APLICACIONES FABRICA EL HECHO DE LA OTRA
+```
+
+---
+
+#### 5. Semántica obligatoria de solicitud, reserva y consumo
+
+| Concepto               | Qué demuestra                                                                                | Qué no demuestra                             |
+| ---------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| requerimiento material | una orden autorizada necesita una cantidad calculada de un material                          | que exista stock o que esté reservado        |
+| solicitud a NEXO       | FOGO pidió evaluar/apartar una cantidad para un uso productivo concreto                      | que NEXO la haya aceptado o reservado        |
+| validación NEXO        | NEXO está comprobando existencia, unidad, conversión, lote, origen, destino, uso y autoridad | que la reserva exista                        |
+| reserva NEXO           | una cantidad concreta quedó apartada para la operación                                       | que haya salido físicamente o sido consumida |
+| material listo         | la reserva requerida y las demás condiciones aplicables permiten preparar la ejecución       | que la producción haya comenzado             |
+| consumo                | una cantidad real fue retirada o consumida contra la ejecución                               | que el lote haya finalizado                  |
+
+Se prohíbe usar una sola bandera genérica como `materials_ok` o equivalente para representar simultáneamente solicitud, reserva, preparación y consumo.
+
+---
+
+#### 6. Condición de entrada
+
+FOGO solo podrá iniciar el tramo de reserva cuando exista una instancia válida de `VPROC-0034` en `VPROC-0034.PRODUCTION_ORDER_READY` y puedan resolverse, como mínimo:
+
+- referencia estable a la orden productiva;
+- versión vigente de la orden;
+- referencia a la versión exacta de receta;
+- producto de salida y cantidad planificada;
+- sede y área productiva;
+- actor o principal autorizado;
+- contexto temporal aplicable;
+- materiales derivados de la receta;
+- cantidades y unidades compatibles;
+- correlación con el plan o necesidad que originó la orden cuando aplique.
+
+Si cualquiera de esos elementos es ambiguo, obsoleto o incompatible, no se solicita una reserva autoritativa y la orden no debe presentarse como materialmente preparada.
+
+---
+
+#### 7. Derivación de requerimientos materiales
+
+Los requerimientos se derivarán desde la combinación inmutable de:
+
+```text
+ORDEN PRODUCTIVA Y VERSIÓN
++
+RECETA PUBLICADA Y VERSIÓN
++
+CANTIDAD PLANIFICADA DE SALIDA
++
+REGLAS DETERMINISTAS DE ESCALA, UNIDAD, REDONDEO Y TOLERANCIA
+```
+
+Por cada material requerido deberá conservarse, como mínimo:
+
+- referencia a la orden y su versión;
+- referencia a la receta y su versión;
+- referencia estable al material o componente productivo aplicable;
+- producto canónico requerido;
+- cantidad teórica derivada;
+- unidad canónica;
+- precisión, redondeo y tolerancia aplicados cuando correspondan;
+- sede y área productiva;
+- momento requerido cuando exista una política aprobada;
+- restricciones de lote, condición, vencimiento, trazabilidad o calidad cuando correspondan;
+- referencia a una sustitución autorizada cuando exista;
+- revisión del requerimiento.
+
+La cantidad solicitada no podrá depender de un cálculo efectuado únicamente en la interfaz. El cálculo deberá ser reproducible desde la orden, receta y reglas versionadas.
+
+---
+
+#### 8. Regla sobre versiones de receta
+
+Una reserva de materiales deberá quedar vinculada a la versión de receta utilizada para determinarla.
+
+Si cambia materialmente la receta después de creada la solicitud:
+
+1. la solicitud anterior no se transforma silenciosamente;
+2. se calcula una nueva revisión del requerimiento;
+3. las reservas todavía no utilizadas se conservan como hechos históricos y reciben la acción propietaria que corresponda para su liberación, ajuste o sustitución;
+4. las cantidades ya consumidas no se revierten mediante edición del requerimiento;
+5. la nueva revisión debe volver a validar disponibilidad y autorización;
+6. el vínculo entre revisión anterior y posterior queda auditado.
+
+Una versión retirada de receta no podrá originar una nueva orden o una nueva solicitud material, aunque siga siendo consultable para reconstruir historia.
+
+---
+
+#### 9. Contrato mínimo de la solicitud de FOGO a NEXO
+
+La solicitud deberá transportar únicamente la información necesaria para que NEXO pueda crear y validar su propia instancia de `VPROC-0025`.
+
+Información empresarial mínima:
+
+- referencia a la orden productiva;
+- versión de la orden;
+- referencia a la instancia de `VPROC-0034`;
+- referencia a la versión de receta;
+- referencia al requerimiento material y su revisión;
+- producto requerido;
+- cantidad solicitada;
+- unidad canónica;
+- sede y área productiva;
+- uso o destino productivo esperado, suficiente para resolver `destination_or_consumption_ref`;
+- referencia de origen físico cuando ya exista una asignación NEXO válida, o contexto suficiente para que NEXO la resuelva antes de crear la instancia de existencias;
+- momento requerido cuando exista;
+- restricciones materiales autorizadas;
+- referencia de sustitución aprobada cuando aplique.
+
+Contexto transversal mínimo cuando aplique:
+
+- `request_id`;
+- `idempotency_key`;
+- `source_command_id`;
+- `correlation_id`;
+- `causation_id`;
+- `process_instance_id` de la instancia productiva de origen;
+- versión del recurso afectado;
+- principal técnico;
+- actor efectivo;
+- sede y área;
+- versión contractual;
+- referencias de evidencia necesarias.
+
+FOGO no enviará como autoridad:
+
+- saldo disponible definitivo;
+- cantidad reservada definitiva;
+- estado de reserva NEXO;
+- movimiento de inventario;
+- lote físico seleccionado como hecho ya confirmado;
+- ubicación física definitiva como hecho ya confirmado;
+- estado de posting;
+- cantidad consumida;
+- ajuste de inventario.
+
+FOGO podrá proponer restricciones o una asignación conocida cuando el contrato lo permita, pero NEXO deberá revalidarlas contra su fuente de verdad antes de producir cualquier efecto.
+
+Antes de persistir `VPROC-0025.STOCK_OPERATION_REQUESTED`, NEXO deberá haber resuelto un `source_stock_ref` válido y un `destination_or_consumption_ref` válido, porque ambos forman parte del contrato de entrada canónico de `VPROC-0025`. Si FOGO no conoce todavía el origen físico, su solicitud se mantiene como comando de handoff y NEXO resuelve el origen desde su stock, ubicaciones, condiciones y políticas. Si no puede resolver un origen elegible, no fabricará una instancia incompleta ni una reserva ficticia: devolverá el faltante, conflicto o decisión aplicable.
+
+---
+
+#### 10. Creación de la instancia NEXO
+
+Una solicitud aceptable da origen o recupera una instancia de `VPROC-0025` vinculada al requerimiento productivo.
+
+Secuencia canónica aplicable:
+
+```text
+VPROC-0025.STOCK_OPERATION_REQUESTED
+        ↓
+VPROC-0025.VALIDATION_IN_PROGRESS
+        ↓
+VPROC-0025.RESERVED
+```
+
+Interpretación obligatoria:
+
+- `STOCK_OPERATION_REQUESTED`: la solicitud existe; todavía no se descontó, reservó, consumió ni trasladó inventario;
+- `VALIDATION_IN_PROGRESS`: NEXO valida disponibilidad, unidad, conversión, lote, origen, destino, uso y autoridad;
+- `RESERVED`: la cantidad quedó apartada para la operación y dejó de ser libremente asignable a una operación competidora, sin haber sido todavía consumida.
+
+La instancia de `VPROC-0025` conservará identidad propia. FOGO guardará o consumirá su referencia y sus hechos, pero no copiará la máquina de estados como fuente editable propia.
+
+---
+
+#### 11. Significado de `VPROC-0034.MATERIALS_RESERVING`
+
+La transición:
+
+```text
+VPROC-0034.PRODUCTION_ORDER_READY
+→ VPROC-0034.MATERIALS_RESERVING
+```
+
+significa que FOGO comenzó la fase de verificación y obtención de materiales contra la orden.
+
+No significa por sí sola que:
+
+- todos los materiales estén reservados;
+- exista suficiente inventario;
+- NEXO haya aceptado todas las líneas;
+- un lote o LOC concreto esté confirmado;
+- pueda iniciarse consumo;
+- pueda iniciarse producción.
+
+El evento `VPROC-0034.EVT-002` conserva la verdad de FOGO: el proceso está reservando materiales. La prueba de una reserva física individual proviene de NEXO mediante `VPROC-0025.EVT-003` o su resultado durable equivalente.
+
+---
+
+#### 12. Relación con `VPROC-0034.MATERIALS_READY`
+
+La reserva completa es una condición necesaria de preparación material, pero no es por sí sola prueba suficiente de `VPROC-0034.MATERIALS_READY`. El estado canónico de FOGO exige que los insumos y recursos requeridos estén preparados y validados, no solamente apartados en el ledger de NEXO.
+
+Antes de que FOGO pueda considerar satisfecha la dimensión de reserva de cada requerimiento de la revisión vigente, debe existir una de estas condiciones autorizadas:
+
+1. cantidad requerida completamente reservada por NEXO;
+2. cantidad parcialmente reservada y una excepción de parcialidad permite continuar con el alcance explícitamente aprobado;
+3. material sustituido mediante una decisión autorizada y ya reflejada en la revisión vigente del requerimiento;
+4. material no aplicable a esa ejecución por una decisión versionada y auditable que no cambie silenciosamente la receta.
+
+Aun después de cumplir esa dimensión, el avance a `MATERIALS_READY` requiere la evidencia propia de FOGO de que los materiales y demás recursos aplicables están efectivamente preparados y validados. Esta tarea no convierte `VPROC-0025.RESERVED` en un alias de `MATERIALS_READY`.
+
+No bastan para demostrar reserva ni readiness:
+
+- una lectura previa de stock;
+- una cantidad positiva mostrada en una pantalla;
+- una reserva calculada solo por FOGO;
+- una respuesta técnica sin resultado durable;
+- una promesa verbal de bodega;
+- una selección local todavía no confirmada por NEXO.
+
+La falta de una línea requerida impide satisfacer la dimensión de reserva para la cantidad completa, salvo excepción aprobada que declare exactamente la cantidad y alcance que puede continuar. La preparación física y validación final permanecen como hechos propios de `VPROC-0034`.
+
+---
+
+#### 13. Cantidades canónicas
+
+Para cada requerimiento material se preservarán al menos las siguientes magnitudes conceptuales:
+
+```text
+required_qty
+requested_qty
+reserved_qty
+remaining_to_reserve_qty
+```
+
+Con las invariantes:
+
+```text
+required_qty >= 0
+requested_qty >= 0
+reserved_qty >= 0
+remaining_to_reserve_qty >= 0
+
+reserved_qty <= requested_qty
+remaining_to_reserve_qty = max(requested_qty - reserved_qty, 0)
+```
+
+Para una revisión activa sin sustitución o dispensa:
+
+```text
+requested_qty = required_qty
+```
+
+Si existe parcialidad autorizada, la diferencia no desaparece: permanece como cantidad faltante, diferida, sustituida o cancelada mediante una decisión explícita.
+
+La suma de reservas activas vinculadas al mismo requerimiento no podrá superar la cantidad solicitada para esa revisión.
+
+---
+
+#### 14. Disponibilidad y reserva
+
+NEXO distinguirá, como mínimo, cantidad física, cantidad reservada y cantidad disponible según su modelo canónico.
+
+Principio:
+
+```text
+DISPONIBLE PARA NUEVA ASIGNACIÓN
+≠ EXISTENCIA FÍSICA TOTAL
+≠ EXISTENCIA YA RESERVADA
+```
+
+La reserva deberá impedir sobreasignación concurrente.
+
+Una consulta de disponibilidad usada durante planificación puede quedar obsoleta antes de reservar. Por tanto:
+
+- FOGO podrá usar snapshots de inventario como señal para planificar;
+- el snapshot no crea derecho sobre la existencia;
+- NEXO vuelve a validar contra el estado vigente al reservar;
+- si la versión o disponibilidad cambió, la operación falla o queda en tratamiento explícito;
+- FOGO no reescribe su necesidad para hacerla coincidir artificialmente con el stock disponible.
+
+---
+
+#### 15. Selección de lote, ubicación y condición
+
+NEXO resolverá la existencia física que puede respaldar la reserva según:
+
+- producto canónico;
+- unidad y conversión aprobadas;
+- sede;
+- ubicación elegible;
+- lote o LPN cuando aplique;
+- condición utilizable;
+- cuarentena, bloqueo, vencimiento o restricción vigente;
+- política FEFO u otra política canónica aplicable;
+- alcance y autoridad del actor;
+- restricciones productivas transmitidas de forma autorizada.
+
+FOGO no podrá convertir una preferencia de lote o ubicación en un hecho físico confirmado.
+
+Si una receta, especificación o decisión productiva exige un lote o atributo concreto, NEXO deberá validar esa restricción; no podrá sustituirla silenciosamente por disponibilidad genérica.
+
+---
+
+#### 16. Reserva total
+
+Una reserva total ocurre cuando NEXO puede apartar la cantidad completa solicitada para la revisión vigente.
+
+Resultado mínimo consumible por FOGO:
+
+- referencia a la instancia NEXO;
+- referencia a la solicitud de origen;
+- producto;
+- cantidad reservada;
+- unidad;
+- sede;
+- desgloses físicos necesarios por lote, ubicación o LPN cuando correspondan;
+- versión del recurso o ledger relevante;
+- estado `VPROC-0025.RESERVED`;
+- referencia de resultado durable;
+- actor y timestamps autoritativos;
+- correlación e idempotencia.
+
+La reserva total no produce consumo.
+
+---
+
+#### 17. Reserva parcial y faltante
+
+Si NEXO solo puede reservar una parte:
+
+- no reducirá silenciosamente `requested_qty`;
+- conservará cantidad solicitada, reservada y pendiente;
+- la continuación parcial deberá usar `VPROC-0025.EX-004` cuando la política y autoridad permitan cumplimiento parcial;
+- el faltante podrá escalarse mediante `VPROC-0025.EX-003`;
+- FOGO decidirá si la orden puede continuar parcialmente, debe esperar, debe revisar cantidades o requiere una sustitución productiva;
+- NEXO no alterará la receta para cubrir el faltante;
+- FOGO no fabricará stock inexistente para cerrar la línea.
+
+Una reserva parcial no debe presentarse como `MATERIALS_READY` para la cantidad completa, salvo que una decisión autorizada haya reducido o dividido explícitamente el alcance productivo y creado la revisión correspondiente.
+
+---
+
+#### 18. Competencia entre órdenes
+
+Cuando dos o más órdenes productivas compitan por la misma existencia:
+
+1. NEXO aplicará control atómico, versión, bloqueo, claim o mecanismo equivalente sobre el alcance material;
+2. solo una operación podrá confirmar cada unidad de disponibilidad comprometible;
+3. una lectura previa no concede prioridad;
+4. una segunda operación basada en una versión obsoleta deberá revalidar y no sobreasignar;
+5. el resultado perdedor conserva un faltante o conflicto explícito;
+6. FOGO no resolverá la carrera modificando directamente la proyección de inventario;
+7. la conciliación deberá detectar cualquier cantidad simultáneamente reservada a más de un requerimiento incompatible.
+
+---
+
+#### 19. Sustitución de material
+
+Se distinguen dos clases de sustitución.
+
+**Sustitución física compatible dentro del mismo material**
+
+Puede abarcar origen, ubicación, lote, LPN o presentación cuando la equivalencia y conversión estén autorizadas. NEXO la gobierna mediante `VPROC-0025.EX-002` y conserva la trazabilidad física.
+
+**Sustitución que cambia el material productivo**
+
+Cuando cambia ingrediente, especificación o composición productiva, requiere `VPROC-0034.EX-002` y autoridad FOGO. Debe conservar:
+
+- material originalmente requerido;
+- material sustituto;
+- equivalencia o justificación;
+- cantidad y unidad antes y después;
+- impacto en receta o snapshot de ejecución;
+- actor y autoridad;
+- motivo;
+- restricciones de calidad o alérgenos;
+- revisión resultante del requerimiento;
+- nuevas referencias de reserva NEXO.
+
+NEXO nunca sustituirá un ingrediente por otro solo porque haya existencias disponibles.
+
+---
+
+#### 20. Cancelación de una reserva todavía no consumida
+
+Cuando una orden, revisión o requerimiento deja de necesitar material antes del consumo:
+
+- FOGO conserva su decisión productiva de cancelar, reducir o sustituir el requerimiento;
+- NEXO recibe la acción correlacionada sobre su instancia;
+- `VPROC-0025.CCR-001` detiene únicamente el trabajo restante aplicable;
+- la cantidad que deje de estar reservada vuelve a la proyección disponible únicamente mediante el efecto propietario de NEXO;
+- el historial de la reserva permanece consultable;
+- la cancelación no elimina la solicitud original ni reutiliza su identidad para otro requerimiento.
+
+Si ya existe consumo o movimiento válido, no se tratará como una reserva sin usar. La corrección pasa al contrato de consumo y a las acciones compensatorias aplicables.
+
+---
+
+#### 21. Instrucción duplicada o inválida
+
+`VPROC-0025.CCR-002` podrá anular una instrucción duplicada o inválida únicamente cuando no exista un efecto físico válido que deba conservarse o compensarse.
+
+No se utilizará `VOID` para:
+
+- esconder una reserva que sí produjo un efecto legítimo;
+- borrar una carrera de concurrencia;
+- corregir un consumo real;
+- eliminar una historia incómoda;
+- reutilizar el identificador de otra operación.
+
+Si existe un efecto válido incompatible con la intención actual, deberá conservarse y resolverse mediante cancelación residual, retorno, ajuste o conciliación según el estado real.
+
+---
+
+#### 22. Corrección de cantidades
+
+Un cambio de cantidad de la orden o del requerimiento después de solicitar reserva produce una nueva revisión.
+
+**Aumento:**
+
+- conserva la reserva ya válida;
+- solicita únicamente la cantidad adicional necesaria o una nueva operación correlacionada según el contrato materializado;
+- no vuelve a reservar la cantidad ya confirmada.
+
+**Reducción:**
+
+- conserva la solicitud y reserva originales como historia;
+- libera o cancela únicamente el excedente todavía no consumido mediante NEXO;
+- no resta directamente de una proyección FOGO.
+
+**Cambio incompatible:**
+
+- no reutiliza la misma clave idempotente;
+- conserva relación causal con la revisión anterior;
+- exige nueva validación de producto, unidad, receta y autoridad.
+
+---
+
+#### 23. Idempotencia
+
+Cada operación reintentable obtiene una clave estable antes del primer envío y una huella lógica versionada del contenido.
+
+La huella deberá cubrir al menos:
+
+- tipo de acción;
+- orden productiva y versión;
+- requerimiento material y revisión;
+- producto;
+- cantidad;
+- unidad;
+- sede y área;
+- restricciones materiales relevantes;
+- versión contractual.
+
+Resultados lógicos aplicables:
+
+| Resultado                   | Tratamiento                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| `APPLIED`                   | la solicitud o efecto propietario se materializó por primera vez                      |
+| `DUPLICATE_RESULT_RETURNED` | mismo alcance y misma huella; se retorna el resultado durable previo sin nuevo efecto |
+| `CONFLICTING_REUSE`         | misma clave con contenido incompatible; se rechaza antes de efecto parcial            |
+| `IN_PROGRESS_RECOVERABLE`   | existe otra ejecución con claim vigente; se recuperará su resultado                   |
+| `STALE_VERSION`             | la operación se basó en una revisión anterior y no se aplica silenciosamente          |
+| `OUT_OF_ORDER_DEFERRED`     | falta una dependencia o versión previa                                                |
+| `RECONCILIATION_REQUIRED`   | el resultado no puede determinarse con seguridad mediante otro intento automático     |
+
+Una respuesta perdida no autoriza generar una nueva clave para repetir la reserva.
+
+---
+
+#### 24. Respuesta perdida y resultado desconocido
+
+Ante timeout, caída de red o pérdida de respuesta:
+
+1. FOGO conserva `request_id`, `idempotency_key`, `source_command_id` y correlación originales;
+2. consulta o recupera el resultado durable antes de reenviar;
+3. si reintenta, utiliza la misma identidad lógica;
+4. NEXO retorna el resultado previo cuando la misma operación ya fue aplicada;
+5. si el sistema no puede determinar si la reserva ocurrió, el resultado es `RECONCILIATION_REQUIRED`;
+6. no se crea una segunda reserva para “estar seguros”.
+
+---
+
+#### 25. Evento fuera de orden
+
+Si FOGO recibe una confirmación NEXO correspondiente a una revisión anterior:
+
+- no retrocede silenciosamente la revisión vigente;
+- conserva el evento y su correlación;
+- compara orden, requerimiento, versión y cantidad;
+- aplica el resultado únicamente si sigue siendo válido para el alcance actual;
+- en caso contrario lo difiere o abre conciliación;
+- ninguna confirmación tardía libera automáticamente una reserva distinta ni inicia consumo.
+
+---
+
+#### 26. Eventos canónicos utilizados
+
+No se crea un catálogo adicional de eventos.
+
+| Hecho                              | Definición canónica  | Interpretación en este contrato                                                                   |
+| ---------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------- |
+| orden productiva lista             | `VPROC-0034.EVT-001` | habilita la preparación; no demuestra reserva ni consumo                                          |
+| FOGO entra a reserva de materiales | `VPROC-0034.EVT-002` | informa que la orden está verificando y obteniendo materiales; no afirma reserva NEXO             |
+| operación NEXO solicitada          | `VPROC-0025.EVT-001` | NEXO tiene una solicitud válida; no reservó todavía                                               |
+| validación NEXO en curso           | `VPROC-0025.EVT-002` | se comprueban disponibilidad, unidad, lote, origen, destino, uso y autoridad                      |
+| reserva NEXO confirmada            | `VPROC-0025.EVT-003` | la cantidad quedó apartada y todavía no se consumió                                               |
+| confirmación de destino pendiente  | `VPROC-0025.EVT-004` | corresponde a fases posteriores de ejecución física; no se usa como prueba inicial de reserva     |
+| posting pendiente                  | `VPROC-0025.EVT-005` | un efecto físico validado espera su registro canónico; no equivale a reserva inicial              |
+| operación conciliada               | `VPROC-0025.EVT-006` | la operación quedó reconciliada sin doble efecto; no sustituye la semántica específica de consumo |
+
+Los comandos que solicitan una acción no se confunden con estos eventos. Los eventos describen hechos durables ya persistidos por su propietaria.
+
+---
+
+#### 27. Relación con `INT-PROD-002`
+
+`INT-PROD-001` termina conceptualmente cuando el requerimiento material puede demostrar la reserva necesaria o una excepción explícita que permita continuar.
+
+`INT-PROD-002` deberá definir posteriormente:
+
+- cuándo una reserva puede pasar a consumo;
+- qué cantidad real se consume;
+- cómo NEXO registra el movimiento;
+- cómo se comparan reservado, consumido, devuelto y desperdiciado;
+- cómo se impide doble consumo;
+- cómo se compensa una diferencia real.
+
+Por tanto:
+
+```text
+RESERVADO
+≠ CONSUMIDO
+```
+
+Ninguna regla de esta tarea adelanta el cierre de `INT-PROD-002`.
+
+---
+
+#### 28. Relación con `INT-PROD-005`
+
+La evidencia ya aprobada en `INT-PROD-005` se preserva como restricción posterior:
+
+- NEXO sigue siendo propietaria del inventario, reservas y movimientos;
+- FOGO sigue siendo propietaria de receta, plan, orden, lote, ejecución y calidad;
+- una necesidad productiva no crea stock;
+- una salida productiva no queda disponible sin el handoff correspondiente;
+- cantidades parciales conservan saldo pendiente;
+- cada aplicación confirma únicamente sus propios hechos.
+
+Este contrato no redefine las políticas de cumplimiento de remisiones ni las cantidades ya establecidas en esa tarea.
+
+---
+
+#### 29. Autorización y segregación
+
+Cada acción debe validar de nuevo identidad, permiso, recurso, versión y contexto.
+
+Se distinguen al menos:
+
+- crear o modificar una orden productiva;
+- solicitar materiales;
+- validar una solicitud de existencias;
+- reservar existencia;
+- autorizar parcialidad;
+- autorizar sustitución productiva;
+- sustituir origen, destino o presentación física compatible;
+- cancelar cantidad todavía no consumida;
+- ejecutar consumo;
+- ajustar o devolver un efecto físico.
+
+La capacidad de producir no concede por sí sola autoridad para reservar stock; la capacidad de operar inventario no concede autoridad para cambiar la receta.
+
+Un principal técnico no sustituye la identidad del actor efectivo cuando la acción exige responsabilidad humana.
+
+---
+
+#### 30. Privacidad y minimización
+
+La integración transportará solo las referencias necesarias.
+
+NEXO no necesita recibir el contenido completo de la receta para reservar existencias. Debe recibir únicamente los materiales, cantidades, unidades, restricciones y referencias necesarias para su función.
+
+FOGO no necesita copiar el ledger completo de NEXO. Debe consumir el resultado de reserva y las referencias físicas mínimas necesarias para preparar, ejecutar y auditar la producción.
+
+No se incluirán credenciales, secretos, fórmulas completas ni datos personales no necesarios en payloads, logs o proyecciones compartidas.
+
+---
+
+#### 31. Auditoría mínima
+
+Debe poder reconstruirse:
+
+```text
+PLAN O NECESIDAD DE ORIGEN
+→ ORDEN PRODUCTIVA Y VERSIÓN
+→ RECETA Y VERSIÓN
+→ REQUERIMIENTO MATERIAL Y REVISIÓN
+→ SOLICITUD A NEXO
+→ INSTANCIA VPROC-0025
+→ VALIDACIÓN
+→ RESERVA TOTAL O PARCIAL
+→ EXCEPCIÓN, SUSTITUCIÓN O FALTANTE
+→ DECISIÓN DE CONTINUAR O NO
+→ HANDOFF A CONSUMO EN INT-PROD-002
+```
+
+La evidencia conservará, cuando aplique:
+
+- principal técnico y actor efectivo;
+- aplicación emisora y propietaria;
+- orden, receta y revisiones;
+- producto, cantidad y unidad;
+- sede y área;
+- referencias físicas confirmadas por NEXO;
+- versión de recurso;
+- timestamps del hecho y registro;
+- correlación y causalidad;
+- clave idempotente y comando fuente;
+- resultado durable;
+- causa de parcialidad, sustitución, cancelación o conflicto;
+- relación con cualquier corrección o compensación posterior.
+
+---
+
+#### 32. Conciliación
+
+La conciliación deberá detectar al menos:
+
+| Diferencia                                                 | Tratamiento obligatorio                                                                 |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| requerimiento sin solicitud NEXO                           | mantener preparación incompleta y recuperar o volver a emitir con la identidad correcta |
+| solicitud NEXO sin requerimiento vigente                   | bloquear avance y revisar causalidad                                                    |
+| solicitud aplicada dos veces                               | conservar un solo efecto y retornar resultado duplicado                                 |
+| reserva sin solicitud correlacionable                      | `RECONCILIATION_REQUIRED`                                                               |
+| reserva mayor que cantidad solicitada                      | bloquear readiness y resolver excedente mediante acción NEXO autorizada                 |
+| cantidad solicitada mayor que requerimiento vigente        | nueva revisión o corrección antes de continuar                                          |
+| material requerido sin reserva suficiente                  | faltante explícito; no iniciar como si estuviera listo                                  |
+| reserva ligada a receta o revisión obsoleta                | no reutilizar automáticamente; reconciliar y decidir liberación o nueva reserva         |
+| misma existencia reservada a dos operaciones incompatibles | incidente crítico de inventario y corrección propietaria NEXO                           |
+| FOGO muestra reserva que NEXO no puede demostrar           | proyección inválida; NEXO permanece fuente de verdad                                    |
+| NEXO registra cambio de ingrediente sin autorización FOGO  | bloquear y revertir la interpretación; preservar evidencia                              |
+| respuesta técnica sin resultado durable                    | recuperar resultado o mantener incertidumbre explícita                                  |
+
+La conciliación nunca corrige saldos escribiendo directamente una proyección consumidora.
+
+---
+
+#### 33. Estado actual de implementación observado
+
+La implementación vigente de FOGO permite crear un lote real y suministrar cantidades de ingredientes a la operación productiva. El flujo actual llama una operación de base de datos que valida la receta y trabaja directamente con existencias durante la creación del lote.
+
+No se ha demostrado en el estado actual:
+
+- una instancia NEXO de reserva previa por cada requerimiento productivo;
+- separación material entre solicitud, reserva y consumo antes de crear el lote;
+- consumo del hecho `VPROC-0025.EVT-003` como prueba autoritativa de reserva;
+- recuperación durable del resultado de reserva mediante el contrato transversal completo;
+- conciliación independiente entre requerimiento FOGO y reserva NEXO antes del consumo.
+
+Estas observaciones describen una brecha de implementación respecto del diseño aprobado; no convierten el comportamiento actual en contrato canónico.
+
+---
+
+#### 34. Propiedad de la implementación pendiente
+
+La materialización física queda asignada a tareas ya existentes y registradas en el 04A, sin crear un pendiente narrativo nuevo.
+
+Para el dominio FOGO, las tareas ya vinculadas incluyen, según el requisito aplicable:
+
+- `FOGO-UX-001`, `FOGO-UX-003`, `FOGO-UX-004`, `FOGO-UX-005`, `FOGO-UX-008`, `FOGO-UX-009`, `FOGO-UX-010`, `FOGO-UX-014`;
+- `FOGO-AUTH-003`, `FOGO-AUTH-008`, `FOGO-AUTH-009`, `FOGO-AUTH-012`, `FOGO-AUTH-013`, `FOGO-AUTH-014`, `FOGO-AUTH-016`.
+
+Para reserva, ledger, autorización y experiencia NEXO, el registro vigente asigna cobertura a:
+
+- `NEXO-DOM-002` a `NEXO-DOM-007`;
+- `NEXO-DOM-019` a `NEXO-DOM-024`;
+- `NEXO-AUTH-011` a `NEXO-AUTH-013`;
+- `NEXO-AUTH-021` a `NEXO-AUTH-030`;
+- `NEXO-UX-014` a `NEXO-UX-022`;
+- `NEXO-UX-026` a `NEXO-UX-029`.
+
+La arquitectura física, persistencia, idempotencia y conciliación transversal permanece bajo las tareas E3, E4, BLOQUE R y el paquete E5 que corresponda según sus asignaciones canónicas vigentes.
+
+Esta tarea no ejecuta ni adelanta esas implementaciones.
+
+---
+
+#### 35. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se cumple todo lo siguiente:
+
+1. FOGO y NEXO conservan propiedad separada e inequívoca;
+2. la solicitud no se confunde con una reserva;
+3. la reserva no se confunde con consumo;
+4. `VPROC-0034.MATERIALS_RESERVING` se interpreta como fase FOGO y no como ledger de inventario;
+5. `VPROC-0025.RESERVED` es la fuente autoritativa de la reserva física y no equivale por sí sola a `VPROC-0034.MATERIALS_READY`;
+6. `source_stock_ref` y `destination_or_consumption_ref` quedan resueltos antes de crear la instancia NEXO;
+7. el requerimiento se deriva de orden, receta y versiones exactas;
+8. escala, unidad, redondeo y tolerancia son reproducibles;
+9. FOGO no transmite saldo o reserva calculados por cliente como autoridad;
+10. NEXO vuelve a validar disponibilidad y versión al reservar;
+11. la reserva evita sobreasignación concurrente;
+12. una reserva parcial conserva el faltante;
+13. una sustitución que cambia el material requiere autoridad FOGO;
+14. una sustitución física compatible permanece gobernada por NEXO;
+15. una corrección de cantidad crea revisión y no sobrescribe historia;
+16. una cancelación libera únicamente trabajo no consumido mediante el proceso propietario;
+17. una respuesta perdida recupera resultado antes de repetir el efecto;
+18. misma clave y misma huella retorna el resultado previo;
+19. misma clave y contenido incompatible produce conflicto;
+20. eventos fuera de orden no hacen retroceder ni avanzar silenciosamente la orden;
+21. los eventos canónicos existentes se reutilizan sin crear un catálogo paralelo;
+22. la auditoría puede reconstruir requerimiento, solicitud, reserva y excepciones;
+23. la conciliación detecta reserva huérfana, exceso, duplicado, versión obsoleta y doble asignación;
+24. el estado actual de implementación se distingue del diseño canónico;
+25. cada brecha física queda vinculada a tareas ya existentes;
+26. `INT-PROD-002` permanece reservada para el contrato de consumo;
+27. no se altera el Registro 04A porque la cobertura de prueba ya existe.
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** el comportamiento verificable de esta tarea ya está cubierto por requisitos vigentes que protegen la versión exacta de receta y sus materiales, la planificación y sus restricciones, la unidad y conversión comunes, la separación entre existencia física, reservada y disponible, la reserva idempotente y concurrente, el handoff entre aplicaciones, la propiedad única de datos y la cadena correlacionada entre materiales, producción e inventario. La tarea especializa esa cobertura para el handoff FOGO–NEXO sin introducir una obligación de prueba materialmente nueva.
+
+---
+
+#### Cobertura de prueba existente preservada
+
+La tarea consume y especializa, sin modificar su texto, estado, relaciones ni secuencia, al menos la siguiente cobertura vigente:
+
+- `TREQ-FOGO-002` — receta publicada, versión exacta, materiales, unidades, escalamiento, tolerancias y snapshot reproducible;
+- `TREQ-FOGO-003` — planificación, señales, materiales, restricciones, aprobaciones y prohibición de crear producción aprobada desde una señal aislada;
+- `TREQ-NEXO-010` — resolución equivalente de unidad, conversión, disponibilidad y política de solicitud;
+- `TREQ-NEXO-011` — fuente canónica de movimientos y proyecciones, cantidad reservada diferenciada, reserva idempotente, concurrencia y prevención de sobreasignación;
+- `TREQ-INTEGRATION-003` — identidad idempotente, huella lógica, resultado durable, reintento, resultado desconocido y conciliación;
+- `TREQ-INTEGRATION-005` — preservación de proceso, recurso, actor, contexto, estado y revalidación en el handoff;
+- `TREQ-INTEGRATION-006` — propiedad única del dato y prohibición de fuentes competidoras;
+- `TREQ-INTEGRATION-011` — efectos de inventario de producción mediante contrato NEXO correlacionado e idempotente;
+- `TREQ-INTEGRATION-013` — cadena demanda, planificación, capacidad, materiales, ejecución, calidad, inventario y costo correlacionada e idempotente.
+
+No se crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito de prueba.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-PROC-005 — Definir control que evite una recepción duplicada`
+
+**TAREA ACTUAL APROBADA**  
+`INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-PROD-002 — Definir contrato para que NEXO registre el consumo`
+
+
 ### [ ] INT-PROD-002 — Definir contrato para que NEXO registre el consumo
 ### [ ] INT-PROD-003 — Definir contrato para que FOGO finalice el lote
 ### [ ] INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado

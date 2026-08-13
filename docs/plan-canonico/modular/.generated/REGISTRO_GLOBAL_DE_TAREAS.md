@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **757** |
+| Aprobadas | **758** |
 | En propuesta | **0** |
-| No iniciadas | **837** |
+| No iniciadas | **836** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **47.49% (757/1594)** |
+| Porcentaje de completamiento | **47.55% (758/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-PROC-005` — Definir control que evite una recepción duplicada | ✅ APROBADA |
-| Tarea actual | `INT-PROD-001` — Definir contrato para que FOGO solicite o reserve insumos | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-PROD-002` — Definir contrato para que NEXO registre el consumo | ⬜ NO INICIADA |
+| Última aprobada | `INT-PROD-001` — Definir contrato para que FOGO solicite o reserve insumos | ✅ APROBADA |
+| Tarea actual | `INT-PROD-002` — Definir contrato para que NEXO registre el consumo | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-PROD-003` — Definir contrato para que FOGO finalice el lote | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1464,7 +1464,7 @@
 | ✅ APROBADA | `INT-PROC-003` | Definir contrato para que NEXO cree la entrada de inventario | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-PROC-004` | Definir contrato para que NUMERA reciba el evento económico | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-PROC-005` | Definir control que evite una recepción duplicada | `bloques/X_INTEGRACIONES/04_COMPRAS_RECEPCION_E_INVENTARIO.md` |
-| ⬜ NO INICIADA | `INT-PROD-001` | Definir contrato para que FOGO solicite o reserve insumos | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
+| ✅ APROBADA | `INT-PROD-001` | Definir contrato para que FOGO solicite o reserve insumos | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-002` | Definir contrato para que NEXO registre el consumo | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-003` | Definir contrato para que FOGO finalice el lote | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-004` | Definir contrato para que NEXO registre el producto terminado | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
