@@ -4,6 +4,7 @@ import path from 'node:path';
 import test from 'node:test';
 
 const workflowPath = path.resolve('.github/workflows/validate-canonical-plan.yml');
+const watcherPath = path.resolve('scripts/docs/watch-plan-canonico.mjs');
 
 test('verifica derivados commiteados antes de que el build pueda regenerarlos', () => {
   const workflow = fs.readFileSync(workflowPath, 'utf8');
@@ -29,4 +30,17 @@ test('verifica derivados commiteados antes de que el build pueda regenerarlos', 
     workflow.slice(reproducibleBuild),
     /run: git diff --exit-code -- docs\/plan-canonico\/modular/u,
   );
+});
+
+test('el watcher regenera y valida también la guía de tareas pendientes', () => {
+  const watcher = fs.readFileSync(watcherPath, 'utf8');
+
+  assert.match(watcher, /"build-plan-canonico\.mjs"/u);
+  assert.doesNotMatch(watcher, /\[safeBuildScript\]/u);
+  assert.match(watcher, /"sync-pending-task-context\.mjs"/u);
+  assert.match(
+    watcher,
+    /\[pendingTaskContextCheckScript, "--check"\]/u,
+  );
+  assert.match(watcher, /"normalize-retired-priority-route\.mjs"/u);
 });

@@ -62,8 +62,13 @@ Organización:
   histórica y el candidato resultante supera el validador completo. Ante una
   eliminación o una ambigüedad, no reescribe la fuente.
 - el watcher agrupa durante dos segundos los guardados relacionados antes de
-  compilar, evitando validar como definitivo el estado intermedio entre la
-  tarea específica y 04A.
+  ejecutar el build canónico completo, incluida la regeneración de la guía de
+  tareas pendientes, evitando validar como definitivo el estado intermedio
+  entre la tarea específica, active-sequence.json, 04A y los derivados.
+- el watcher valida después de cada build el compilado, la guía pendiente y
+  los destinos de implementación; queda prohibido invocar directamente el
+  build parcial porque podría adelantar active-sequence.json sin actualizar
+  REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md.
 - el build ejecuta el validador TREQ antes de compilar y bloquea dominios,
   secuencias, columnas, estados, tipos, propietarios, relaciones, cifras o
   evidencia obsoleta.

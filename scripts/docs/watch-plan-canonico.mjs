@@ -14,11 +14,11 @@ const watchedDirectory = path.join(
   "modular"
 );
 
-const safeBuildScript = path.join(
+const fullBuildScript = path.join(
   repositoryRoot,
   "scripts",
   "docs",
-  "safe-build-plan-canonico.mjs"
+  "build-plan-canonico.mjs"
 );
 
 const checkScript = path.join(
@@ -26,6 +26,20 @@ const checkScript = path.join(
   "scripts",
   "docs",
   "build-plan-canonico-core.mjs"
+);
+
+const pendingTaskContextCheckScript = path.join(
+  repositoryRoot,
+  "scripts",
+  "docs",
+  "sync-pending-task-context.mjs"
+);
+
+const retiredPriorityRouteCheckScript = path.join(
+  repositoryRoot,
+  "scripts",
+  "docs",
+  "normalize-retired-priority-route.mjs"
 );
 
 const ignoredDirectories = new Set([
@@ -125,8 +139,8 @@ async function rebuild(reason) {
 
   try {
     await runNodeScript(
-      [safeBuildScript],
-      "Sincronizando cabecera, registro global, TREQ y documento compilado..."
+      [fullBuildScript],
+      "Sincronizando continuidad, cabecera, registros global/TREQ, guía pendiente y documento compilado..."
     );
 
     if (changeVersion !== buildVersion) {
@@ -140,6 +154,16 @@ async function rebuild(reason) {
     await runNodeScript(
       [checkScript, "--check"],
       "Validando documento compilado..."
+    );
+
+    await runNodeScript(
+      [pendingTaskContextCheckScript, "--check"],
+      "Validando guía derivada de tareas pendientes..."
+    );
+
+    await runNodeScript(
+      [retiredPriorityRouteCheckScript, "--check"],
+      "Validando rutas y destinos de implementación..."
     );
 
     if (changeVersion !== buildVersion) {
