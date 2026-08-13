@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **787** |
+| Aprobadas | **788** |
 | En propuesta | **0** |
-| No iniciadas | **807** |
+| No iniciadas | **806** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.37% (787/1594)** |
+| Porcentaje de completamiento | **49.44% (788/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-SALES-002` — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición | ✅ APROBADA |
-| Tarea actual | `INT-SALES-003` — Definir registro de salida de inventario en NEXO | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-SALES-004` — Definir recepción del evento de venta en NUMERA | ⬜ NO INICIADA |
+| Última aprobada | `INT-SALES-003` — Definir registro de salida de inventario en NEXO | ✅ APROBADA |
+| Tarea actual | `INT-SALES-004` — Definir recepción del evento de venta en NUMERA | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-SALES-005` — Definir acumulación de puntos en PASS | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1495,7 +1495,7 @@
 | ✅ APROBADA | `INT-POS-024` | Definir revocación o reducción de credenciales cuando PULSO asuma la fuente | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-SALES-001` | Definir contrato para que PULSO registre la venta | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-002` | Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
-| ⬜ NO INICIADA | `INT-SALES-003` | Definir registro de salida de inventario en NEXO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
+| ✅ APROBADA | `INT-SALES-003` | Definir registro de salida de inventario en NEXO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-004` | Definir recepción del evento de venta en NUMERA | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-005` | Definir acumulación de puntos en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-006` | Definir procesamiento de redención en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |

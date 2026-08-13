@@ -2082,7 +2082,1279 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-003 — Definir registro de salida de inventario en NEXO`
 
 
-### [ ] INT-SALES-003 — Definir registro de salida de inventario en NEXO
+### ✅ INT-SALES-003 — Definir registro de salida de inventario en NEXO
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición`
+**Tarea siguiente:** `INT-SALES-004 — Definir recepción del evento de venta en NUMERA`
+**Tipo de tarea:** documental; definición normativa permanente del efecto físico de inventario que NEXO debe registrar a partir de una venta canónica emitida por PULSO, conservando propiedad de dominio, aplicabilidad por evento y línea, identidad del efecto, progresión `VPROC-0025`, producto, presentación, receta, cantidad, UOM, origen físico, group, legs, partialidad, receipt, idempotencia, resultado desconocido, compensación, replay y conciliación, sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta:** `PULSO`
+**Aplicación propietaria del inventario:** `NEXO`
+**Proceso NEXO reutilizado:** `VPROC-0025 — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino`
+**Línea base documental:** `vento-shell@be85d5fb77ab609bbcea51e411e06e2845ae5bc9`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base NEXO observada:** `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato permanente mediante el cual una venta ya registrada y emitida por PULSO puede producir en NEXO el efecto físico de salida, consumo o traslado que realmente corresponda, sin trasladar a PULSO autoridad sobre stock, ubicaciones, lotes, condición, custodia, movimientos o receipts.
+
+Regla raíz:
+
+```text
+VENTA DURABLE PULSO
+        ↓
+EVENTO EMPRESARIAL PULSO + EVENT_ID ESTABLE
+        ↓
+AUDIENCIA CANÓNICA CONFIRMA QUE NEXO APLICA
+        ↓
+INBOX NEXO
+        ↓
+ELEGIBILIDAD POR LÍNEA
+        ↓
+IDENTIDAD DE EFECTO NEXO
+        ↓
+NEXO REVALIDA PRODUCTO + UOM + EXISTENCIA + ORIGEN FÍSICO
+        ↓
+VPROC-0025
+        ↓
+GROUP / LEGS / POSTING / RECEIPT
+        ↓
+RESULTADO DURABLE Y RECUPERABLE
+        ↓
+CONCILIACIÓN SIN DOBLE STOCK
+```
+
+La venta demuestra el hecho comercial. Solo NEXO puede demostrar el hecho físico.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-003` deja definido el contrato permanente de salida de inventario por venta con las siguientes decisiones:
+
+1. NEXO es la única propietaria de stock, movimiento, ubicación, posición, lote, condición, custodia, posting, group, legs y receipt de inventario.
+2. PULSO registra la venta y emite el evento empresarial; no escribe la verdad física de NEXO.
+3. La existencia de un evento PULSO no implica automáticamente que NEXO sea consumidora; la aplicabilidad se resuelve con el registro canónico de consumidoras.
+4. Cuando NEXO sea consumidora aplicable, primero deduplica su inbox por `consumer_application + event_id`.
+5. La unidad primaria de elegibilidad física es una línea canónica de venta.
+6. Cada línea elegible produce como máximo un efecto físico lógico NEXO para el mismo `event_id`, finalidad y código de efecto.
+7. El alcance transversal del efecto es `CONSUMER_EFFECT`.
+8. La identidad del efecto utiliza `consumer_application + event_id + effect_code`.
+9. El `effect_code` debe distinguir de forma estable la finalidad física y la línea o componente empresarial que corresponda, sin sustituir `sale_id`, `sale_line_id`, `product_id`, movimiento, group, leg ni receipt.
+10. Una línea puede generar cero efecto físico únicamente por una disposición empresarial explícita y auditable, nunca por falta de información.
+11. NEXO revalida autoritativamente producto físico, cantidad, UOM, conversión, origen, LOC, posición, lote, condición, disponibilidad y custodia.
+12. PULSO puede transportar contexto y referencias canónicas, pero no imponer saldo disponible, lote, posición ni fuente física como verdad NEXO.
+13. Una línea puede requerir uno o varios componentes físicos y uno o varios legs sin multiplicar la identidad lógica del efecto.
+14. Los splits entre varias existencias físicas permanecen subordinados al mismo efecto.
+15. Partialidad, bloqueo y remanente se conservan explícitos.
+16. Un fragmento ya confirmado no se repite por retry, redelivery, replay o recuperación.
+17. Un timeout o respuesta perdida no se interpreta como ausencia del efecto.
+18. Una reutilización incompatible de identidad produce conflicto antes de una nueva mutación.
+19. Un efecto confirmado se corrige mediante RETURN, ADJUST u otra acción propietaria autorizada; no se edita ni borra el hecho físico original.
+20. La procedencia histórica Makos o nativa PULSO no modifica el contrato consumidor de NEXO.
+21. El retiro futuro del adaptador externo no modifica la identidad ni el significado de los efectos NEXO ya confirmados.
+22. Se crean cero definiciones normales de evento.
+23. Se modifican cero definiciones normales de evento.
+24. Se crean cero requisitos `TREQ-*`.
+25. Se modifican cero requisitos `TREQ-*`.
+26. Se crean cero objetos físicos.
+27. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume sin reabrir las decisiones aprobadas en:
+
+- `INT-SALES-001`, para el registro durable de venta y líneas en PULSO;
+- `INT-SALES-002`, para la emisión permanente desde PULSO usando el catálogo canónico vigente;
+- `INT-POS-016`, para la frontera NEXO demostrada durante la transición y su continuidad posterior;
+- `INT-POS-019`, para compensaciones no destructivas;
+- `INT-POS-020`, para conciliación entre venta, evento y efectos;
+- `INT-POS-023` y `INT-POS-024`, para cambio de fuente sin cambiar consumidoras ni conservar credenciales innecesarias;
+- `INT-APP-001` a `INT-APP-010`, para catálogo, productoras, consumidoras, idempotencia, retry, compensación, auditoría, pendientes, error parcial y prohibición de escrituras cruzadas;
+- `VPROC-0025`, como proceso propietario de retiro, consumo o traslado de existencias;
+- los contratos NEXO ya aprobados para movimientos, groups, legs, receipts, proyecciones, UOM, lotes, posiciones, condition y compensaciones.
+
+Ninguna de estas decisiones cambia de identidad ni de propietaria por esta tarea.
+
+---
+
+#### 4. Propiedad empresarial permanente
+
+| Elemento                                  | Propietaria          | Regla                                                                                         |
+| ----------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------- |
+| venta y línea canónica                    | `PULSO`              | registra el hecho comercial y su revisión                                                     |
+| evento comercial                          | `PULSO`              | describe un hecho durable ya confirmado por PULSO                                             |
+| audiencia de la emisión                   | registro transversal | decide si NEXO es consumidora directa o condicional para la definición concreta               |
+| inbox de NEXO                             | `NEXO`               | reconoce una sola vez cada `event_id` aplicable a NEXO                                        |
+| producto maestro físico                   | `NEXO`               | conserva identidad física y atributos gobernados por inventario                               |
+| receta                                    | `FOGO`               | conserva definición y versión; NEXO consume referencias aprobadas sin apropiarse de la receta |
+| stock                                     | `NEXO`               | única verdad física de cantidad                                                               |
+| LOC, posición, lote, condición y custodia | `NEXO`               | se resuelven en la frontera NEXO                                                              |
+| movimiento, group, legs y posting         | `NEXO`               | solo NEXO los confirma                                                                        |
+| receipt del efecto físico                 | `NEXO`               | prueba durable del resultado físico                                                           |
+| efecto económico                          | `NUMERA`             | permanece separado y se reserva a `INT-SALES-004`                                             |
+| fidelización                              | `PASS`               | permanece separada y se reserva a `INT-SALES-005` y `INT-SALES-006`                           |
+
+Regla cardinal:
+
+```text
+PULSO AFIRMA LA VENTA
+NEXO AFIRMA EL MOVIMIENTO
+NUMERA AFIRMA EL HECHO ECONÓMICO
+PASS AFIRMA EL LEDGER DE FIDELIZACIÓN
+```
+
+Compartir infraestructura no fusiona estas autoridades.
+
+---
+
+#### 5. Aplicabilidad de NEXO como consumidora
+
+`INT-SALES-003` no convierte a NEXO en consumidora universal de todos los eventos PULSO.
+
+Para cada emisión se resolverá:
+
+```text
+event_definition_id
++
+process_id
++
+consumer_application = nexo
++
+consumer_relation
++
+condition_ref cuando aplique
++
+projection_profile
++
+finalidad
+```
+
+Solo una relación vigente y aplicable habilita el ingreso al inbox NEXO.
+
+Consecuencias:
+
+1. una venta puede existir sin que un evento concreto requiera efecto NEXO;
+2. una relación `CONDITIONAL` falla cerrada cuando su condición no puede demostrarse;
+3. la ausencia de NEXO en la audiencia de una emisión no se compensa con una escritura directa;
+4. la presencia de NEXO en la audiencia tampoco prueba que exista una línea físicamente elegible;
+5. PULSO no incluye una lista local de consumidoras para forzar la salida de stock.
+
+---
+
+#### 6. Frontera entre emisión, inbox y efecto
+
+La cadena permanente conserva:
+
+```text
+EVENT_EMISSION PULSO
+        ↓
+DELIVERY
+        ↓
+CONSUMER_INBOX NEXO
+        ↓
+DECISIÓN DE ELEGIBILIDAD
+        ↓
+CONSUMER_EFFECT NEXO
+        ↓
+TRANSACCIÓN PROPIETARIA NEXO
+        ↓
+RESULTADO NEXO
+```
+
+Por tanto:
+
+- publicación no equivale a movimiento;
+- entrega no equivale a movimiento;
+- claim no equivale a movimiento;
+- recepción en inbox no equivale a movimiento;
+- `DUPLICATE_RESULT_RETURNED` puede cerrar correctamente una redelivery sin crear un segundo movimiento;
+- solo un resultado propietario NEXO demuestra el efecto físico;
+- el éxito o fallo de NUMERA o PASS no cambia el resultado NEXO.
+
+---
+
+#### 7. Unidad de elegibilidad: línea canónica de venta
+
+La decisión física se realiza por línea canónica de venta.
+
+Una línea es candidata únicamente cuando:
+
+1. la venta existe bajo `INT-SALES-001`;
+2. `sale_id` está resuelto;
+3. `sale_line_id` está resuelto;
+4. la revisión aplicable de la venta está determinada;
+5. el evento PULSO es válido y conserva `event_id`;
+6. NEXO pertenece a la audiencia aplicable de esa emisión;
+7. la línea pertenece inequívocamente a la venta indicada;
+8. el contexto de sede requerido está resuelto;
+9. el producto canónico requerido para el efecto está resuelto;
+10. presentación y receta están resueltas o acreditadas como no aplicables;
+11. la cantidad comercial y la UOM pueden interpretarse sin ambigüedad;
+12. no existe un bloqueo que impida efectos dependientes del producto;
+13. no existe evidencia de un efecto físico incompatible ya confirmado;
+14. la línea no representa un hecho que deba tratarse como devolución, anulación, compensación o ajuste;
+15. la finalidad física aplicable está identificada.
+
+Una venta puede contener simultáneamente líneas elegibles, líneas con no-op físico autorizado y líneas pendientes o bloqueadas. Ninguna se elimina para aparentar completitud.
+
+---
+
+#### 8. Venta nativa PULSO frente a venta de procedencia externa
+
+El contrato permanente distingue procedencia sin crear dos modelos físicos.
+
+##### 8.1. Venta nativa PULSO
+
+Para una venta cuyo `source_system` empresarial sea PULSO:
+
+- no se exige mapping externo por el solo hecho de existir una salida NEXO;
+- PULSO entrega las identidades canónicas de producto, presentación o referencia aprobada que realmente formen parte del contrato de la línea;
+- NEXO revalida esas referencias contra sus fuentes maestras y condiciones físicas;
+- una identidad canónica inexistente, retirada, incompatible o insuficiente bloquea el efecto en vez de activar una heurística.
+
+##### 8.2. Venta histórica o transicional de origen externo
+
+Cuando la venta conserve procedencia externa:
+
+- se preservan `source_system`, identidad externa, versión de mapping y estado de cuarentena aplicables;
+- una línea todavía bloqueada por mapping o cuarentena continúa bloqueada para el efecto dependiente de producto;
+- liberar una línea no crea otra venta, línea ni emisión empresarial equivalente;
+- la misma identidad pendiente se usa para intentar el efecto todavía faltante.
+
+En ambos casos, la transacción física final pertenece a NEXO.
+
+---
+
+#### 9. Bloqueos de producto y cuarentena
+
+Una línea con producto físico no resuelto o con un estado bloqueante aplicable produce:
+
+```text
+CERO MUTACIÓN FÍSICA
++
+ESTADO PENDIENTE O BLOQUEADO EXPLÍCITO
++
+CONCILIACIÓN CUANDO CORRESPONDA
+```
+
+Queda prohibido convertir falta de mapping, referencia inválida, receta incierta, UOM incompatible o cuarentena en:
+
+- producto genérico;
+- producto parecido;
+- primera coincidencia por nombre;
+- inventario cero;
+- salida sin producto;
+- no-op automático;
+- ajuste posterior supuesto.
+
+La resolución posterior conserva las identidades originales y no otorga derecho a repetir un fragmento ya confirmado.
+
+---
+
+#### 10. Disposición explícita sin efecto de inventario
+
+Una línea puede producir cero movimiento únicamente cuando una regla empresarial vigente demuestre que la línea no consume, retira ni traslada existencia física.
+
+La disposición deberá conservar como mínimo:
+
+- `sale_id`;
+- `sale_line_id`;
+- `event_id`;
+- finalidad física evaluada;
+- fundamento de no aplicación;
+- versión de la regla o configuración que sustenta la decisión;
+- resultado durable recuperable;
+- referencia de auditoría.
+
+Resultado:
+
+```text
+NO_APLICA FÍSICAMENTE
+→ CERO GROUP CUANTITATIVO
+→ CERO LEGS DE INVENTARIO
+→ CERO CAMBIO DE STOCK
+```
+
+`NO_APLICA` no se utiliza para ocultar un dato faltante ni para cerrar una diferencia de conciliación.
+
+---
+
+#### 11. Inbox NEXO
+
+El primer control consumidor es:
+
+```text
+CONSUMER_INBOX
+=
+nexo + event_id
+```
+
+Reglas:
+
+1. la primera recepción aplicable puede crear el reconocimiento durable del inbox;
+2. una redelivery exacta recupera ese reconocimiento;
+3. una nueva entrega técnica no crea un segundo `event_id`;
+4. el inbox no es el efecto físico;
+5. el inbox puede conservar resultado pendiente, bloqueado, aplicado, duplicado, conflictivo o reconciliable;
+6. una misma emisión puede requerir varios efectos legítimos en NEXO únicamente mediante `effect_code` distintos;
+7. el resultado de otro consumidor no completa el inbox NEXO.
+
+---
+
+#### 12. Identidad permanente del efecto NEXO
+
+El alcance es:
+
+```text
+CONSUMER_EFFECT
+```
+
+La identidad transversal es:
+
+```text
+consumer_application + event_id + effect_code
+```
+
+Para esta tarea:
+
+```text
+consumer_application = nexo
+```
+
+El `effect_code` deberá ser estable y suficientemente específico para distinguir el efecto físico aplicable de una línea o componente empresarial dentro del mismo evento.
+
+No se utilizarán como única clave:
+
+- `sale_id`;
+- `sale_line_id`;
+- `product_id`;
+- `site_id`;
+- fecha;
+- importe;
+- cantidad;
+- `movement_id`;
+- `group_id`;
+- `leg_id`;
+- `receipt_id`;
+- hash del payload;
+- correlación;
+- nombre del producto.
+
+Estas referencias participan en huella, trazabilidad o resultado, pero no sustituyen la identidad transversal del efecto.
+
+---
+
+#### 13. Huella lógica del efecto
+
+La identidad se acompaña de una huella versionada que representa el contenido empresarial material.
+
+La huella deberá incorporar, cuando aplique:
+
+- identidad de venta y línea;
+- revisión de venta;
+- definición y versión del evento;
+- finalidad física;
+- producto canónico;
+- presentación;
+- receta y versión cuando sea causal del consumo;
+- cantidad comercial;
+- UOM comercial;
+- factor de conversión aplicable;
+- cantidad base pretendida;
+- sede;
+- disposición física esperada;
+- referencias de procedencia material;
+- versión de contrato.
+
+Deberá excluir metadatos volátiles de transporte como intento, delivery, trace, momento de retry o worker.
+
+```text
+MISMA IDENTIDAD + MISMA HUELLA COMPATIBLE
+→ RECUPERAR RESULTADO PREVIO
+
+MISMA IDENTIDAD + HUELLA INCOMPATIBLE
+→ CONFLICTING_REUSE
+→ CERO EFECTO NUEVO
+```
+
+---
+
+#### 14. Handoff mínimo de PULSO hacia NEXO
+
+La proyección que habilita la evaluación NEXO deberá permitir correlacionar, según aplicabilidad:
+
+```text
+event_id
++ event_definition_id
++ event_version
++ process_id
++ producer_application = pulso
++ aggregate_id / aggregate_version
++ sale_id
++ sale_revision
++ sale_line_id
++ site_id
++ source_system
++ source_sale_reference cuando exista
++ product_id o referencia canónica aplicable
++ presentation_id cuando corresponda
++ recipe_id + recipe_version cuando corresponda
++ commercial_quantity
++ commercial_uom
++ conversion_reference cuando corresponda
++ physical_disposition_reference
++ correlation_id
++ causation_id
++ evidence_references[]
++ schema_version
+```
+
+El handoff no contiene:
+
+- saldo disponible como verdad impuesta por PULSO;
+- LOC final decidido por PULSO;
+- posición final decidida por PULSO;
+- lote final decidido por PULSO;
+- condición física final decidida por PULSO;
+- movement id NEXO creado anticipadamente;
+- receipt NEXO ficticio;
+- afirmación de que el stock ya fue afectado.
+
+---
+
+#### 15. Apertura o recuperación de la operación NEXO
+
+Tras validar inbox, elegibilidad e identidad del efecto, NEXO deberá:
+
+1. recuperar una operación ya existente cuando la identidad del efecto la tenga;
+2. crear la primera operación lógica únicamente cuando pueda demostrar que no existe un efecto equivalente previo;
+3. vincularla con `VPROC-0025`;
+4. conservar `event_id`, venta, línea, finalidad y causalidad;
+5. conservar la clave y huella del efecto antes de la primera mutación;
+6. revalidar autorización, producto, UOM, contexto y versión;
+7. resolver fuentes físicas usando la verdad NEXO;
+8. producir un resultado durable aun cuando el resultado sea bloqueo o no aplicación autorizada.
+
+Un retry no abre otra operación lógica.
+
+---
+
+#### 16. Progresión canónica `VPROC-0025`
+
+Se reutiliza sin alteración la progresión aprobada:
+
+```text
+STOCK_OPERATION_REQUESTED
+        ↓
+VALIDATION_IN_PROGRESS
+        ↓
+RESERVED
+        ↓
+READY_FOR_EXECUTION
+        ↓
+IN_EXECUTION
+        ↓
+DESTINATION_CONFIRMATION_PENDING
+        ↓
+POSTING_PENDING
+        ↓
+STOCK_OPERATION_RECONCILED
+```
+
+Reglas:
+
+1. `STOCK_OPERATION_REQUESTED` no descuenta inventario por sí solo;
+2. validación no equivale a reserva;
+3. reserva no equivale a movimiento confirmado;
+4. ejecución no equivale a posting completo;
+5. `POSTING_PENDING` conserva cualquier trabajo todavía no confirmado;
+6. `STOCK_OPERATION_RECONCILED` exige cantidad, unidad, origen, destino o consumo, custodia y movimientos conciliados sin doble efecto;
+7. no se salta la progresión para acomodar un evento de venta;
+8. los estados de venta PULSO no reemplazan estados NEXO.
+
+---
+
+#### 17. Eventos NEXO preservados
+
+No se crea una definición normal de evento llamada “salida por venta”.
+
+`VPROC-0025` conserva sus seis definiciones normales:
+
+- `VPROC-0025.EVT-001` — operación de stock solicitada;
+- `VPROC-0025.EVT-002` — validación en curso;
+- `VPROC-0025.EVT-003` — cantidad reservada;
+- `VPROC-0025.EVT-004` — confirmación de destino o consumidor pendiente;
+- `VPROC-0025.EVT-005` — posting pendiente;
+- `VPROC-0025.EVT-006` — operación de existencias reconciliada.
+
+Los eventos NEXO describen hitos de su propio proceso. El evento comercial PULSO conserva su identidad y no se republica como si fuera un evento NEXO.
+
+---
+
+#### 18. Resolución autoritativa de la existencia física
+
+PULSO puede indicar la sede y el producto comercial, pero NEXO decide qué existencia física puede cumplir el efecto.
+
+NEXO deberá resolver, cuando corresponda:
+
+- `source_stock_ref`;
+- LOC de origen;
+- posición;
+- LPN;
+- lote;
+- condición;
+- custodia;
+- cantidad física disponible;
+- cantidad reservada;
+- cantidad bloqueada;
+- restricciones por vencimiento, cuarentena o calidad;
+- políticas de selección vigentes;
+- destino o referencia de consumo.
+
+No basta con leer una proyección agregada `current_qty` y restarla sin conservar causalidad física.
+
+Queda prohibido seleccionar una fuente inexistente para poder completar la venta.
+
+---
+
+#### 19. Cantidad, UOM y conversión
+
+La cantidad se conserva en dos planos cuando exista conversión:
+
+```text
+commercial_quantity + commercial_uom
+        ↓ conversión versionada
+base_quantity + stock_uom
+```
+
+El efecto deberá conservar:
+
+- cantidad solicitada;
+- UOM de la línea;
+- presentación aplicable;
+- factor de conversión;
+- versión o referencia de la conversión;
+- cantidad base calculada;
+- cantidad realmente confirmada;
+- diferencia o remanente.
+
+Reglas:
+
+1. no se inventa un factor por conveniencia;
+2. no se usa el factor vigente actual para reescribir un efecto histórico;
+3. no se redondea para forzar coincidencia;
+4. una conversión incompatible bloquea el efecto;
+5. el receipt registra las cantidades realmente confirmadas.
+
+---
+
+#### 20. Producto, presentación y receta
+
+La línea comercial puede corresponder a:
+
+1. un producto físico directo;
+2. una presentación física;
+3. un producto compuesto cuya venta desencadena consumo de componentes según una receta versionada;
+4. una línea autorizadamente sin efecto físico.
+
+Cuando exista receta:
+
+```text
+SALE_LINE
+→ RECIPE_ID + RECIPE_VERSION
+→ COMPONENTES VERSIONADOS
+→ NEXO RESUELVE EXISTENCIAS FÍSICAS
+→ LEGS
+```
+
+NEXO no modifica la receta ni decide qué ingredientes deberían existir. FOGO conserva la autoridad de la receta y NEXO aplica la referencia versionada recibida por contrato.
+
+Una actualización posterior de receta no cambia retroactivamente un efecto ya confirmado.
+
+---
+
+#### 21. Group, componentes y legs
+
+Una sola línea puede requerir varios movimientos físicos.
+
+La estructura lógica es:
+
+```text
+UN CONSUMER_EFFECT
+        ↓
+UN GROUP CAUSAL CUANDO APLIQUE
+        ↓
+UNO O VARIOS COMPONENTES
+        ↓
+UNO O VARIOS LEGS FÍSICOS
+        ↓
+UN RESULTADO RECUPERABLE DEL EFECTO
+```
+
+Cada leg deberá poder conservar, cuando aplique:
+
+- producto;
+- cantidad;
+- UOM;
+- source stock;
+- LOC y posición;
+- lote o LPN;
+- condición;
+- destino o consumo;
+- secuencia;
+- estado;
+- referencia al group;
+- referencia al efecto;
+- receipt o referencia de confirmación.
+
+Crear varios legs legítimos no crea varias ventas ni varios efectos equivalentes.
+
+---
+
+#### 22. Splits entre fuentes físicas
+
+Cuando una misma cantidad deba satisfacerse desde varias existencias:
+
+```text
+EFECTO LÓGICO ÚNICO
+→ LEG A DESDE FUENTE 1
+→ LEG B DESDE FUENTE 2
+→ ...
+```
+
+Reglas:
+
+1. cada fuente se identifica de forma autoritativa;
+2. la suma confirmada de legs se concilia contra la cantidad del efecto;
+3. un retry de un leg confirmado recupera su resultado;
+4. no se vuelve a consumir el leg confirmado porque otro leg haya fallado;
+5. sustituir una fuente exige decisión NEXO válida y trazable;
+6. un split no autoriza a ocultar faltante o condición incompatible.
+
+---
+
+#### 23. Partialidad y remanente
+
+La contabilidad lógica mínima será:
+
+```text
+SOLICITADO
+=
+CONFIRMADO
++
+CANCELADO
++
+BLOQUEADO
++
+REMANENTE
+```
+
+Todo efecto parcial deberá conservar:
+
+- cantidad solicitada;
+- cantidad confirmada;
+- cantidad bloqueada;
+- cantidad cancelada;
+- remanente;
+- legs confirmados;
+- legs pendientes;
+- motivo de cada bloqueo;
+- responsable de resolución;
+- condición de salida.
+
+Queda prohibido declarar el efecto completo mientras exista un remanente obligatorio no resuelto.
+
+La excepción `VPROC-0025.EX-004` permite cumplimiento parcial únicamente bajo la autoridad y reglas aprobadas; no transforma partialidad en cierre completo.
+
+---
+
+#### 24. Posting y atomicidad lógica
+
+La implementación posterior deberá impedir que un mismo efecto quede materialmente fragmentado sin capacidad de recuperación.
+
+El límite propietario deberá vincular de forma atómica o con durabilidad equivalente:
+
+- identidad del efecto;
+- huella;
+- versiones esperadas;
+- operación `VPROC-0025`;
+- selección de source stocks;
+- group;
+- legs;
+- secuencia aplicable;
+- mutaciones de ledger;
+- receipt;
+- resultado recuperable;
+- registro de eventos NEXO publicables cuando corresponda.
+
+No se selecciona en esta tarea una tabla, constraint, RPC, función, trigger, outbox, broker, cola o mecanismo físico concreto.
+
+---
+
+#### 25. Receipt propietario
+
+Un efecto físico confirmado deberá producir una referencia durable que permita demostrar qué hizo NEXO.
+
+El receipt deberá permitir reconstruir, según aplicabilidad:
+
+- identidad del efecto;
+- `event_id` causante;
+- venta y línea;
+- operación NEXO;
+- group;
+- legs;
+- productos y cantidades confirmadas;
+- UOM y conversiones;
+- fuentes físicas;
+- lotes, posiciones o LPN relevantes;
+- estado final;
+- partialidad o remanente;
+- momento de confirmación;
+- actor o principal técnico;
+- resultado idempotente;
+- referencias de auditoría.
+
+Un ACK de entrega no es receipt. Una actualización visual de stock no es receipt.
+
+---
+
+#### 26. Resultados idempotentes
+
+El efecto reutiliza el vocabulario transversal aplicable:
+
+- `APPLIED`;
+- `DUPLICATE_RESULT_RETURNED`;
+- `CONFLICTING_REUSE`;
+- `IN_PROGRESS_RECOVERABLE`;
+- `STALE_VERSION`;
+- `OUT_OF_ORDER_DEFERRED`;
+- `RECONCILIATION_REQUIRED`;
+- `REJECTED`.
+
+Interpretación para NEXO:
+
+1. `APPLIED` exige resultado físico durable;
+2. `DUPLICATE_RESULT_RETURNED` devuelve el resultado previo sin repetir movimiento;
+3. `CONFLICTING_REUSE` produce cero mutación nueva;
+4. `IN_PROGRESS_RECOVERABLE` conserva el claim original;
+5. `STALE_VERSION` no hace retroceder la verdad física;
+6. `OUT_OF_ORDER_DEFERRED` no inventa la dependencia ausente;
+7. `RECONCILIATION_REQUIRED` prohíbe un retry ciego;
+8. `REJECTED` no se transforma en no-op de éxito.
+
+---
+
+#### 27. Retry y respuesta perdida
+
+Ante timeout o desconexión después de una posible confirmación:
+
+```text
+RESULTADO DESCONOCIDO
+        ↓
+CONSULTAR IDENTIDAD DEL EFECTO / OPERACIÓN / RECEIPT
+        ├── CONFIRMADO → RECUPERAR RESULTADO
+        ├── NO APLICADO DEMOSTRADO → REINTENTAR MISMA IDENTIDAD
+        └── INDETERMINADO → RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. un retry conserva `event_id`, `effect_code`, identidad y huella;
+2. no crea otra venta;
+3. no crea otra operación lógica equivalente;
+4. no crea otro movement solo porque la respuesta anterior se perdió;
+5. no vuelve a ejecutar legs ya confirmados;
+6. el agotamiento del retry no genera compensación automática;
+7. `INT-SALES-007` especializará el control transversal de duplicados para la cadena permanente sin cambiar estas invariantes.
+
+---
+
+#### 28. Orden, versiones y eventos tardíos
+
+NEXO no usa el orden de entrega como sustituto de la versión empresarial.
+
+Reglas:
+
+1. `aggregate_id + aggregate_version` gobiernan el orden aplicable cuando corresponda;
+2. una versión inferior tardía no sobrescribe un efecto más nuevo;
+3. una versión superior que dependa de un antecedente ausente queda diferida o conciliable;
+4. una revisión PULSO no produce automáticamente otro movimiento;
+5. un cambio de descripción, mapping, catálogo o presentación no constituye por sí solo un nuevo hecho físico;
+6. una corrección material que requiera efecto adicional utiliza la semántica de compensación o ajuste correspondiente;
+7. una redelivery del mismo evento conserva `event_id`.
+
+---
+
+#### 29. Faltante de stock y restricción física
+
+Cuando NEXO no pueda satisfacer la cantidad:
+
+- no crea stock ficticio;
+- no fuerza el saldo a cero para ocultar la diferencia;
+- no consume desde una ubicación inventada;
+- no toma una existencia bloqueada como disponible;
+- no cambia silenciosamente presentación o UOM;
+- no marca la venta PULSO como inválida por el solo faltante NEXO;
+- conserva el efecto como parcial, bloqueado, rechazado o conciliable según la situación real.
+
+Las excepciones de `VPROC-0025` aplicables son:
+
+- `EX-001` HOLD;
+- `EX-002` SUBSTITUTE;
+- `EX-003` ESCALATE;
+- `EX-004` PARTIAL.
+
+Cada excepción conserva su autoridad, alcance y evidencia aprobados.
+
+---
+
+#### 30. Compensación, retorno y ajuste
+
+Un movimiento confirmado no se modifica destructivamente para representar un reverso.
+
+Las acciones propietarias de `VPROC-0025` preservadas son:
+
+- `CCR-001` CANCEL — detiene la ejecución restante y conserva efectos ya confirmados;
+- `CCR-002` VOID — anula una instrucción inválida o duplicada que no produjo un efecto válido;
+- `CCR-003` RETURN — crea un retorno o movimiento compensatorio vinculado al efecto físico original;
+- `CCR-004` ADJUST — registra una diferencia y ajuste separado conservando el hecho original.
+
+Toda compensación deberá:
+
+1. identificar el efecto original;
+2. conservar la causalidad;
+3. usar identidad propia;
+4. revalidar autorización y fuente física;
+5. conservar cantidades, UOM, condición y custodia;
+6. producir su propio resultado durable;
+7. no borrar movement, group, legs ni receipt originales.
+
+---
+
+#### 31. Conciliación permanente PULSO–NEXO
+
+La conciliación deberá poder detectar, como mínimo:
+
+- evento PULSO aplicable a NEXO sin inbox;
+- inbox sin decisión de efecto;
+- efecto esperado sin resultado;
+- efecto aplicado sin evento fuente;
+- efecto aplicado a una línea equivocada;
+- duplicado de efecto;
+- misma identidad con huella incompatible;
+- línea bloqueada con movimiento confirmado;
+- línea liberada cuyo efecto continúa pendiente;
+- no-op físico sin fundamento suficiente;
+- producto o versión equivocados;
+- diferencia de cantidad;
+- diferencia de UOM o conversión;
+- split cuyos legs no suman lo confirmado;
+- partialidad oculta;
+- group sin legs o legs sin group cuando el modelo aplicable lo exija;
+- receipt ausente o incompatible;
+- ledger y proyección divergentes;
+- saldo agregado que no se explica por movimientos causales;
+- resultado desconocido no resuelto;
+- compensación pendiente o duplicada.
+
+La conciliación no crea el hecho faltante por inferencia. Clasifica la diferencia y conserva la acción pendiente.
+
+`INT-SALES-008` especializará la conciliación durante la convivencia de POS externo y PULSO; esta tarea fija la conciliación física permanente dentro de la frontera NEXO.
+
+---
+
+#### 32. Independencia respecto de la fuente original de la venta
+
+El efecto NEXO no cambia de contrato cuando cambia `source_system`.
+
+Durante historia transicional:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+consumer_application = NEXO
+```
+
+Para ventas nativas posteriores:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+consumer_application = NEXO
+```
+
+En ambos casos, cuando la relación de consumo sea aplicable:
+
+```text
+MISMO EVENT ENVELOPE
++
+MISMO INBOX NEXO
++
+MISMO ALCANCE CONSUMER_EFFECT
++
+MISMO VPROC-0025
++
+MISMAS REGLAS DE LEDGER Y RECEIPT
+```
+
+La procedencia se conserva como evidencia; no crea dos sistemas de inventario.
+
+---
+
+#### 33. Corte de fuente y retiro del adaptador
+
+Las tareas posteriores de corte y retiro no modifican el contrato NEXO definido aquí.
+
+- `INT-SALES-009` define el corte por sede, terminal y fecha efectiva;
+- `INT-SALES-010` impide que dos fuentes emitan la misma venta como nueva;
+- `INT-SALES-011` retira el adaptador externo sin cambiar consumidoras internas.
+
+Cuando el adaptador desaparezca:
+
+- NEXO no cambia su clave de inbox;
+- NEXO no cambia su clave de efecto;
+- los events históricos mantienen productora y procedencia;
+- los receipts históricos mantienen causalidad;
+- no se ejecuta backfill físico por el simple retiro del adaptador.
+
+---
+
+#### 34. Offline, replay y backfill
+
+##### 34.1. Offline
+
+Una intención pendiente deberá conservar identidad, huella, contexto y edad. Al reanudarse, NEXO revalida autorización, versión, producto, UOM, sede y fuente física.
+
+Una cola antigua no puede volver a aplicar un efecto ya confirmado.
+
+##### 34.2. Replay
+
+Replay del mismo evento:
+
+- conserva `event_id`;
+- conserva audiencia histórica salvo migración explícita;
+- pasa por el mismo inbox;
+- recupera un efecto confirmado;
+- no vuelve a ejecutar stock sensible por defecto.
+
+##### 34.3. Backfill
+
+Un backfill autorizado:
+
+- conserva procedencia, lote y ventana;
+- identifica que es backfill;
+- usa identidades deterministas;
+- no ejecuta inventario físico automáticamente;
+- requiere autorización específica para efectos sensibles;
+- concilia contra movimientos y receipts ya existentes antes de cualquier efecto.
+
+---
+
+#### 35. Autorización y auditoría
+
+Toda mutación física deberá poder reconstruir:
+
+- principal técnico;
+- actor efectivo cuando aplique;
+- permiso o capacidad;
+- sede y territorio;
+- dispositivo o sesión cuando sea material;
+- venta y línea causantes;
+- evento PULSO;
+- inbox;
+- identidad y huella del efecto;
+- operación NEXO;
+- producto, UOM y conversión;
+- fuente física;
+- group y legs;
+- intentos;
+- receipt;
+- outcome;
+- compensación o residual cuando exista.
+
+La auditoría no concede autoridad para ejecutar el movimiento y no sustituye el ledger NEXO.
+
+---
+
+#### 36. Diagnóstico de la línea base técnica observada
+
+La línea base actual de NEXO contiene superficies reales de retiro y stock. En la operación de retiro por quiosco observada se ejecutan, entre otras acciones:
+
+1. lectura de `inventory_stock_by_location`;
+2. validación de stock de presentaciones;
+3. consumo o eliminación de filas de `inventory_stock_by_uom_profile`;
+4. ejecución de `consume_inventory_stock_from_positions`;
+5. actualización de `inventory_stock_by_location`;
+6. inserción de `inventory_movements`;
+7. actualización del destino cuando existe traslado;
+8. actualización agregada de `inventory_stock_by_site` cuando no existe destino.
+
+Esta implementación demuestra capacidad operativa parcial de retiro, pero no se eleva por sí sola al contrato permanente de venta definido aquí.
+
+En particular, la superficie observada no constituye evidencia suficiente de una única frontera transaccional que enlace, para una venta PULSO:
+
+```text
+event_id
++
+CONSUMER_INBOX
++
+CONSUMER_EFFECT
++
+VPROC-0025
++
+GROUP / LEGS
++
+RECEIPT
++
+RESULTADO RECUPERABLE
+```
+
+Tampoco se adopta como regla canónica el comportamiento observado que calcula un saldo agregado de sede mediante un límite inferior de cero. Un faltante físico deberá permanecer explícito y reconciliable.
+
+La tarea no modifica esta implementación.
+
+---
+
+#### 37. Diferencia entre retiro operativo existente y efecto de venta canónico
+
+```text
+RETIRO OPERATIVO EXISTENTE
+≠
+EFECTO NEXO POR VENTA CANÓNICA
+```
+
+El segundo exige además:
+
+- causalidad con una venta y línea canónicas;
+- evento PULSO estable;
+- audiencia canónica;
+- inbox NEXO;
+- identidad `CONSUMER_EFFECT`;
+- huella compatible;
+- recuperación ante respuesta perdida;
+- atomicidad o durabilidad equivalente;
+- receipt propietario;
+- conciliación contra el evento fuente;
+- compensación enlazada.
+
+Una implementación futura puede reutilizar piezas existentes únicamente después de demostrar que satisfacen estas invariantes sin introducir doble efecto.
+
+---
+
+#### 38. Handoffs posteriores obligatorios
+
+| Pendiente material                       | Tarea o propietario                                    | Condición de salida                                                                                                           |
+| ---------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| recepción del hecho económico de venta   | `INT-SALES-004`                                        | NUMERA consume el evento aplicable bajo identidad y frontera propias                                                          |
+| acumulación de puntos                    | `INT-SALES-005`                                        | PASS evalúa elegibilidad y registra acumulación exactamente una vez                                                           |
+| redención de puntos                      | `INT-SALES-006`                                        | PASS procesa la redención con autoridad, identidad y ledger propios                                                           |
+| control permanente contra duplicados     | `INT-SALES-007`                                        | retry, redelivery y resultado desconocido recuperan el efecto original sin duplicarlo                                         |
+| conciliación de convivencia de fuentes   | `INT-SALES-008`                                        | diferencias durante convivencia quedan detectables y accionables                                                              |
+| corte permanente de fuente               | `INT-SALES-009`                                        | sede, terminal y fecha efectiva gobiernan nuevas ventas                                                                       |
+| prohibición de doble fuente              | `INT-SALES-010`                                        | una misma venta no puede aparecer como nueva desde dos fuentes                                                                |
+| retiro del adaptador externo             | `INT-SALES-011`                                        | consumidoras internas continúan sin dependencia del adaptador                                                                 |
+| materialización física del contrato NEXO | paquete E5 NEXO y arquitectura/implementación asignada | inbox, efecto, transacción propietaria, ledger, receipt, seguridad, idempotencia y pruebas quedan implementados y demostrados |
+
+Ningún pendiente material queda sin dueño y condición de salida.
+
+---
+
+#### 39. Prohibiciones
+
+Queda prohibido:
+
+1. descontar stock desde PULSO;
+2. escribir directamente una fuente privada NEXO desde PULSO;
+3. asumir que publicar el evento ya descontó inventario;
+4. asumir que recibir el evento ya descontó inventario;
+5. tratar el ACK de transporte como receipt físico;
+6. usar `sale_id` como clave universal de todos los efectos NEXO;
+7. usar `product_id`, cantidad, fecha o sede como clave idempotente suficiente;
+8. generar una identidad nueva por retry;
+9. crear otra operación lógica equivalente ante timeout sin indagación;
+10. repetir un leg ya confirmado porque otro leg falle;
+11. usar una proyección agregada de stock como única prueba de origen físico;
+12. forzar el saldo a cero para ocultar faltante;
+13. producir stock negativo no autorizado;
+14. seleccionar un lote, posición o LOC inventados;
+15. usar producto parecido por nombre cuando la identidad no esté resuelta;
+16. convertir ausencia de mapping en no-op físico;
+17. convertir cuarentena en no-op físico;
+18. omitir una línea problemática de la venta;
+19. cambiar una receta histórica por la versión vigente actual;
+20. cambiar UOM o factor para hacer cuadrar la cantidad;
+21. tratar partialidad como éxito completo;
+22. crear varios efectos equivalentes porque existan varios legs;
+23. borrar o editar destructivamente un movimiento confirmado;
+24. representar una devolución reenviando el evento normal original con otro contenido;
+25. compensar automáticamente por agotamiento de retry;
+26. usar éxito NUMERA o PASS como evidencia de éxito NEXO;
+27. usar éxito NEXO como evidencia de éxito NUMERA o PASS;
+28. backfillear efectos físicos sensibles sin autorización explícita;
+29. cambiar el contrato NEXO por el retiro del adaptador externo;
+30. crear una definición normal de evento específica llamada salida por venta;
+31. modificar código, SQL, migraciones, RLS, RPC, Supabase, datos, tipos, contratos físicos, endpoints o configuración remota desde esta tarea documental;
+32. iniciar o desarrollar `INT-SALES-004`.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la cobertura canónica vigente ya protege expresamente que las ventas y sus líneas produzcan el efecto físico aplicable en NEXO exactamente una vez, conservando fuente, evento, línea, versión, cantidad, unidad, ubicación, actor, estado de aplicación, idempotencia, partialidad, compensación y conciliación. También protege la convergencia del POS externo y PULSO sobre el mismo contrato, la prevención de doble emisión y las garantías NEXO sobre movimientos, proyecciones, reservas, consumo, salida, traslado, concurrencia y compensación. `INT-SALES-003` materializa la frontera permanente PULSO → NEXO dentro de ese comportamiento ya protegido y no introduce una capacidad verificable nueva fuera del registro vigente.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 41. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-NEXO-011`, para movimientos y proyecciones físicas reconciliables, operaciones idempotentes o compensables, separación de estados físicos y ausencia de doble movimiento;
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado recuperable, retry y conflicto;
+- `TREQ-INTEGRATION-004`, para trazabilidad de trigger, intento, resultado y efecto final;
+- `TREQ-INTEGRATION-006`, para fuente empresarial única y diferencias trazables;
+- `TREQ-INTEGRATION-011`, para que toda venta, anulación o devolución produzca el movimiento físico aplicable en NEXO exactamente una vez;
+- `TREQ-INTEGRATION-014`, para convergencia de POS externo y PULSO, prevención de doble emisión y efectos exactamente una vez;
+- `TREQ-INTEGRATION-108` a `TREQ-INTEGRATION-122`, para scopes idempotentes, `event_id`, inbox, consumer effect, concurrencia, respuesta perdida y atomicidad;
+- `TREQ-INTEGRATION-139` a `TREQ-INTEGRATION-163`, para retry, resultado desconocido, claims, orden y observabilidad;
+- `TREQ-INTEGRATION-298`, para impedir que un evento sea una instrucción de edición cruzada;
+- `TREQ-INTEGRATION-306`, para mantener las mutaciones dentro de la frontera propietaria.
+
+Ningún requisito cambia de identidad, texto, estado, relación, secuencia, propietaria ni evidencia por esta tarea.
+
+---
+
+#### 42. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-SALES-002` como única tarea anterior;
+2. mantiene `INT-SALES-004` como única tarea siguiente;
+3. mantiene PULSO como propietaria de venta y emisión;
+4. mantiene NEXO como única propietaria del efecto físico;
+5. deriva aplicabilidad desde el registro canónico de consumidoras;
+6. impide convertir a NEXO en consumidora universal por conveniencia local;
+7. separa emisión, delivery, inbox, efecto y transacción propietaria;
+8. define la línea canónica como unidad primaria de elegibilidad;
+9. permite coexistencia de líneas aplicables, no aplicables y bloqueadas dentro de una venta;
+10. diferencia venta nativa PULSO de procedencia externa sin crear dos contratos NEXO;
+11. impide exigir mapping externo a una venta nativa PULSO sin causa;
+12. preserva mapping y cuarentena cuando la procedencia externa los requiera;
+13. define no-op físico únicamente por disposición explícita y auditable;
+14. define `CONSUMER_INBOX = nexo + event_id`;
+15. define `CONSUMER_EFFECT = nexo + event_id + effect_code`;
+16. exige `effect_code` estable por finalidad física aplicable;
+17. separa identidad de efecto de venta, línea, producto, movement, group, leg y receipt;
+18. exige huella lógica versionada;
+19. trata reutilización incompatible como conflicto sin nueva mutación;
+20. define el handoff mínimo PULSO → NEXO sin imponer verdad física;
+21. exige recuperación de la operación NEXO antes de crear otra equivalente;
+22. reutiliza `VPROC-0025`;
+23. conserva su progresión completa de ocho estados;
+24. conserva las seis definiciones normales `VPROC-0025.EVT-001` a `VPROC-0025.EVT-006`;
+25. crea cero nuevas definiciones normales de evento;
+26. exige que NEXO resuelva autoritativamente origen, LOC, posición, lote, LPN, condición y disponibilidad;
+27. impide usar `current_qty` agregado como autoridad física suficiente;
+28. prohíbe limitar silenciosamente un saldo a cero para ocultar faltante;
+29. conserva cantidad comercial, UOM, factor y cantidad base;
+30. conserva versión de conversión;
+31. conserva producto, presentación y receta versionada;
+32. permite múltiples componentes y legs bajo un único efecto lógico;
+33. permite splits sin repetir fragmentos confirmados;
+34. registra partialidad mediante solicitado, confirmado, cancelado, bloqueado y remanente;
+35. impide cierre completo con remanente obligatorio;
+36. exige atomicidad o durabilidad equivalente entre identidad, operación, ledger, legs, receipt y resultado;
+37. define receipt propietario de NEXO;
+38. reutiliza los outcomes idempotentes transversales;
+39. exige indagación ante resultado desconocido;
+40. impide retry ciego después de posible commit;
+41. preserva orden por agregado y versión sin usar llegada como verdad;
+42. trata faltante de stock como estado explícito y no como ficción de inventario;
+43. preserva HOLD, SUBSTITUTE, ESCALATE y PARTIAL de `VPROC-0025`;
+44. preserva CANCEL, VOID, RETURN y ADJUST de `VPROC-0025`;
+45. impide modificación destructiva del efecto original;
+46. define conciliación permanente PULSO–NEXO;
+47. conserva el mismo contrato NEXO antes y después del corte de fuente;
+48. preserva offline, replay y backfill sin efectos sensibles automáticos;
+49. exige autorización y auditoría del efecto físico;
+50. diagnostica la implementación NEXO observada como capacidad parcial y no como materialización suficiente del contrato permanente;
+51. identifica el comportamiento observado de límite inferior de cero como no canónico para ocultar faltantes;
+52. asigna la materialización física a la fase y paquete de implementación correspondientes;
+53. asigna cada responsabilidad posterior a `INT-SALES-004` a `INT-SALES-011` sin adelantarla;
+54. genera cero requisitos de prueba nuevos;
+55. modifica cero requisitos de prueba;
+56. no genera una copia del registro canónico de requisitos;
+57. no modifica código, SQL, migraciones, RLS, RPC, Supabase, datos, tipos ni configuración remota;
+58. no aplica un movimiento real ni una compensación real;
+59. no inicia `INT-SALES-004`.
+
+---
+
+#### 43. Resultado de la tarea
+
+`INT-SALES-003` queda definida como la frontera permanente que convierte una emisión PULSO aplicable a NEXO en un efecto físico NEXO dueño de su propia identidad, operación, ledger, group, legs, receipt y resultado.
+
+Resultado consolidado:
+
+```text
+VENTA PULSO DURABLE
++
+EVENTO PULSO APLICABLE A NEXO
++
+LÍNEA FÍSICAMENTE ELEGIBLE
++
+CONSUMER_INBOX
++
+CONSUMER_EFFECT
++
+REVALIDACIÓN NEXO
++
+VPROC-0025
++
+POSTING + RECEIPT
+→ EFECTO FÍSICO RECUPERABLE
+→ CERO DOBLE STOCK
+```
+
+Sin convertir PULSO en propietaria del inventario, sin crear un evento paralelo y sin afirmar que la implementación física actual ya cumple todas estas garantías.
+
+---
+
+#### 44. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-003 — Definir registro de salida de inventario en NEXO`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-004 — Definir recepción del evento de venta en NUMERA`
+
+
 ### [ ] INT-SALES-004 — Definir recepción del evento de venta en NUMERA
 ### [ ] INT-SALES-005 — Definir acumulación de puntos en PASS
 ### [ ] INT-SALES-006 — Definir procesamiento de redención en PASS
