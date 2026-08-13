@@ -4161,7 +4161,467 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa`
 
 
-### [ ] INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
+### ✅ INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-009`
+**Tarea siguiente:** `INT-POS-011`
+**Tipo de tarea:** documental — contrato de mapeo contextual del POS externo; no implementa tablas, migraciones, credenciales ni efectos operativos
+**Bloque:** X — Integraciones
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**Fuente POS temporal:** Makos
+**Aplicación objetivo:** PULSO
+**Línea base técnica verificada:** `vento-shell@4aa8fcb0a027fb37dd4b1f6928e3970e0316642d`; `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma completa y reproducible cómo una venta procedente del POS externo conservará y resolverá su contexto de:
+
+- empresa externa;
+- sede externa;
+- terminal externa;
+- caja externa;
+
+desde la identidad declarada por la fuente hasta la referencia canónica que Vento necesite para contextualizar la venta, aplicar el corte de transición y habilitar posteriormente efectos internos.
+
+Esta tarea no inventa identificadores de Makos que no estén demostrados, no convierte el contexto seleccionado manualmente por un operador en una identidad externa y no diseña todavía el mapeo de producto, presentación o receta.
+
+---
+
+#### 2. Decisión principal
+
+Toda venta externa deberá resolver su contexto mediante un **crosswalk versionado y auditable**, separado del payload original y separado del contrato canónico de venta.
+
+El crosswalk deberá permitir responder, para el instante comercial aplicable:
+
+```text
+¿QUÉ IDENTIDAD EXTERNA DECLARÓ LA FUENTE?
+→ ¿QUÉ DIMENSIÓN REPRESENTA?
+→ ¿CON QUÉ REFERENCIA CANÓNICA VENTO SE CORRESPONDE?
+→ ¿CON QUÉ EVIDENCIA SE DEMOSTRÓ?
+→ ¿DESDE CUÁNDO Y HASTA CUÁNDO ES VÁLIDA ESA RELACIÓN?
+```
+
+Ninguna coincidencia por nombre, texto visible, nombre de archivo, usuario importador, IP, posición de una fila, medio de pago o proximidad temporal constituirá por sí sola un mapping válido.
+
+---
+
+#### 3. Cuatro dimensiones independientes
+
+Las cuatro dimensiones se mantienen separadas. Resolver una no autoriza a inferir las demás.
+
+| Dimensión | Semántica externa                                                                              | Referencia interna objetivo                                          | Regla                                                                                |
+| --------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Empresa   | tenant, compañía, negocio o entidad empresarial bajo la cual la fuente identifica la operación | referencia canónica de empresa o alcance empresarial Vento aplicable | no se infiere desde sede, credencial, nombre comercial ni dominio                    |
+| Sede      | establecimiento, local, punto de venta o ubicación empresarial donde se originó la venta       | referencia canónica de sede Vento                                    | debe quedar resuelta antes de cualquier efecto dependiente de territorio o ubicación |
+| Terminal  | terminal, estación o punto lógico/físico del POS que originó la transacción                    | referencia canónica de terminal o estación de venta Vento aplicable  | no se confunde con usuario, dispositivo genérico, sesión, caja ni sede               |
+| Caja      | caja, registro o unidad operativa externa a la que la fuente atribuye la operación             | referencia canónica de caja aplicable                                | no se confunde con terminal, método de pago, cajero, turno ni sesión de caja         |
+
+La ausencia de una dimensión en una fuente no autoriza a copiar el valor de otra dimensión para completar el contexto.
+
+---
+
+#### 4. Contrato conceptual del mapping
+
+Cada relación de mapping deberá conservar como mínimo:
+
+| Campo conceptual        | Obligación                                  | Semántica                                                                                    |
+| ----------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `mapping_id`            | requerida                                   | identidad estable de la relación de mapping                                                  |
+| `source_system`         | requerida                                   | sistema externo de origen; para el alcance actual identifica Makos                           |
+| `source_instance_ref`   | condicional                                 | instancia, tenant, ambiente o contexto de fuente cuando sea necesario para evitar colisiones |
+| `source_entity_type`    | requerida                                   | `COMPANY`, `SITE`, `TERMINAL` o `CASH_REGISTER`                                              |
+| `external_entity_id`    | preferida                                   | identificador estable entregado por la fuente cuando exista                                  |
+| `external_entity_code`  | condicional                                 | código externo conservado como dato de origen, no como identidad canónica automática         |
+| `external_entity_label` | condicional                                 | etiqueta o nombre observado para soporte humano y evidencia                                  |
+| `canonical_entity_type` | requerida para mapping resuelto             | tipo de referencia interna compatible con la dimensión externa                               |
+| `canonical_entity_ref`  | requerida para mapping resuelto             | referencia canónica Vento seleccionada                                                       |
+| `resolution_basis`      | requerida                                   | evidencia que demuestra la relación                                                          |
+| `mapping_status`        | requerida                                   | estado cerrado de resolución definido por esta tarea                                         |
+| `mapping_version`       | requerida                                   | versión estable de la decisión de mapping                                                    |
+| `effective_from`        | requerida para mapping activo               | inicio de vigencia empresarial de la relación                                                |
+| `effective_to`          | condicional                                 | fin de vigencia; abierto únicamente mientras la relación siga vigente                        |
+| `evidence_ref`          | requerida para mapping resuelto             | referencia auditable a la evidencia usada para resolver la relación                          |
+| `verified_at`           | requerida para mapping resuelto             | instante de verificación de la relación                                                      |
+| `verified_by_ref`       | requerida cuando exista verificación humana | referencia al actor o principal que validó la decisión                                       |
+| `supersedes_mapping_id` | condicional                                 | relación anterior sustituida sin reescribir historia                                         |
+
+Los nombres anteriores son semántica documental. Esta tarea no fija tabla, columna, RPC, endpoint ni formato físico.
+
+---
+
+#### 5. Identidad externa fuerte y binding por alcance
+
+El mapping podrá quedar resuelto mediante una de dos bases válidas:
+
+1. **Identidad explícita de fuente:** la fuente entrega un identificador estable de empresa, sede, terminal o caja y existe evidencia suficiente para vincularlo con una referencia canónica Vento.
+2. **Binding de alcance demostrado:** el contrato, credencial, endpoint, exportación o configuración de proveedor está demostrado como restringido inequívocamente a una única entidad de esa dimensión, y esa restricción forma parte de la evidencia del mapping.
+
+Queda prohibido tratar como binding demostrado:
+
+- una selección manual sin evidencia de correspondencia con la fuente;
+- un valor escrito en el nombre del archivo;
+- el nombre visible de una sede;
+- la identidad del usuario que realiza la importación;
+- la red desde la que se cargó el archivo;
+- un valor por defecto de la aplicación;
+- una relación asumida porque actualmente Vento opere una sola empresa, sede, terminal o caja en un contexto determinado.
+
+---
+
+#### 6. Estados cerrados del mapping
+
+Cada dimensión deberá resolver exactamente uno de los siguientes estados para una revisión determinada:
+
+| Estado             | Significado                                                                                                | Elegibilidad                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `RESOLVED`         | identidad externa o binding de alcance demostrados y referencia interna única                              | puede participar en validaciones posteriores                                                |
+| `PENDING_EVIDENCE` | existe necesidad de mapping, pero la evidencia disponible no permite demostrar la relación                 | bloquea los efectos que dependan de esa dimensión                                           |
+| `NOT_PROVIDED`     | existe evidencia suficiente de que la fuente o modalidad no entrega esa dimensión                          | no se inventa valor; la elegibilidad depende de si la dimensión es obligatoria para el caso |
+| `AMBIGUOUS`        | más de una referencia interna resulta plausible o la identidad externa no es suficientemente discriminante | bloquea efectos dependientes y exige resolución explícita                                   |
+| `CONFLICT`         | la evidencia recibida contradice un mapping activo o una misma identidad reclama destinos incompatibles    | bloquea efectos dependientes y exige conciliación                                           |
+| `INACTIVE`         | relación histórica fuera de su intervalo de vigencia                                                       | solo puede usarse para reconstruir hechos pertenecientes a su vigencia histórica            |
+
+`NOT_PROVIDED` solo podrá utilizarse cuando la ausencia esté demostrada por la fuente o por el contrato del canal. No equivale a “no lo vimos todavía”.
+
+---
+
+#### 7. Reglas de unicidad y consistencia
+
+1. Una identidad externa de una dimensión tendrá como máximo un destino canónico activo dentro del mismo `source_system`, `source_instance_ref` y periodo efectivo.
+2. Un cambio de destino no editará retroactivamente la relación anterior: crea una nueva versión y cierra la vigencia previa.
+3. Varias identidades o aliases externos podrán converger en una referencia canónica únicamente cuando cada relación esté demostrada individualmente y no cree ambigüedad histórica.
+4. Empresa, sede, terminal y caja no compartirán una identidad universal ni reutilizarán el mismo mapping como sustituto de otra dimensión.
+5. Una terminal externa no podrá quedar vinculada a un contexto canónico incompatible con la sede resuelta de la misma venta.
+6. Una caja externa no podrá usarse para inferir automáticamente sede o terminal.
+7. Si la fuente modela una relación distinta a uno-a-uno entre terminal y caja, Vento conservará esa realidad; esta tarea no impone cardinalidad uno-a-uno.
+8. La jerarquía externa observada se conserva como procedencia, pero la jerarquía canónica solo se afirma mediante referencias internas válidas.
+
+---
+
+#### 8. Semántica temporal del mapping
+
+El mapping aplicable a una venta se resuelve con respecto al **momento comercial del hecho**, no por el instante en que Vento recibió, importó, reprocesó o concilió el dato.
+
+Reglas:
+
+1. `sale_occurred_at` y la semántica temporal definida para la venta determinan qué revisión efectiva del mapping corresponde.
+2. `received_at` conserva el instante técnico de recepción y no reemplaza la vigencia empresarial del mapping.
+3. una venta tardía perteneciente a un periodo anterior conservará el mapping válido para ese periodo;
+4. corregir un mapping no cambia silenciosamente el contexto histórico de ventas ya atribuidas;
+5. un cambio retroactivo excepcional deberá materializarse como corrección trazable y no como edición destructiva;
+6. cuando no pueda determinarse con seguridad qué revisión era aplicable, la venta queda bloqueada para efectos dependientes y pasa a conciliación.
+
+---
+
+#### 9. Empresa externa
+
+La dimensión empresa responde qué entidad empresarial o tenant de la fuente originó la transacción.
+
+Reglas:
+
+- se conserva el identificador externo cuando exista;
+- si la fuente reutiliza IDs entre tenants, `source_instance_ref` deberá participar en la desambiguación;
+- la credencial o conexión por sí sola no se convierte en empresa, salvo que exista evidencia explícita de binding único y estable;
+- el nombre comercial no sustituye una identidad estable;
+- una venta no puede cambiar de empresa por una actualización posterior del catálogo de sedes;
+- la referencia empresarial resuelta sirve para validar coherencia de las dimensiones subordinadas, no para fabricarlas.
+
+La implementación física exacta de la referencia empresarial interna no queda fijada por esta tarea.
+
+---
+
+#### 10. Sede externa
+
+La sede determina el establecimiento o ubicación empresarial a la que pertenece la venta.
+
+Reglas:
+
+1. la sede externa deberá mapearse explícitamente hacia la referencia canónica de sede Vento cuando la fuente la entregue;
+2. la implementación actual demuestra que `site_id` referencia `public.sites(id)` para la importación diaria;
+3. ese `site_id` actual es seleccionado por el operador antes de cargar el XLSX y, por tanto, representa **contexto interno declarado**, no prueba de que el archivo Makos haya declarado esa sede;
+4. una coincidencia de nombre entre Makos y Vento no basta para declarar `RESOLVED`;
+5. una venta con sede `AMBIGUOUS`, `CONFLICT` o `PENDING_EVIDENCE` no podrá producir efectos que dependan de sede;
+6. si un canal externo queda demostrado como restringido a una única sede, el binding de alcance podrá resolver la dimensión conservando su evidencia y vigencia.
+
+---
+
+#### 11. Terminal externa
+
+La terminal identifica la estación o endpoint de POS que originó la transacción cuando la fuente maneje esta dimensión.
+
+Reglas:
+
+- no se sustituye por `site_id`;
+- no se sustituye por cajero, usuario, caja o método de pago;
+- no se infiere desde navegador, dispositivo utilizado para importar o nombre del archivo;
+- una terminal debe conservar su identidad externa incluso si posteriormente se reasigna físicamente;
+- una reasignación de terminal a otra sede o contexto crea una nueva revisión efectiva del mapping;
+- la transición Makos → PULSO no podrá declarar un corte por terminal si la terminal de origen sigue sin evidencia suficiente.
+
+---
+
+#### 12. Caja externa
+
+La caja externa identifica la unidad operativa de caja o registro que la fuente atribuya a la venta o al cobro.
+
+Reglas:
+
+1. caja externa y terminal externa son dimensiones distintas;
+2. caja externa y sesión de caja son conceptos distintos;
+3. caja externa y medio de pago son conceptos distintos;
+4. caja externa y cajero son conceptos distintos;
+5. si la fuente expone únicamente una sesión, turno o cierre pero no una identidad estable de caja, no se fabricará un `external_cash_register_id`;
+6. un cambio de caja asociada a una terminal no altera retrospectivamente ventas anteriores;
+7. la semántica de apertura, arqueo, cierre y sesión de caja permanece fuera de esta tarea.
+
+---
+
+#### 13. Matriz materializada de la línea base actual
+
+La línea base demostrada de `makos_excel` queda clasificada así:
+
+| Dimensión        | Evidencia visible en la modalidad actual                                                                         | Estado documental actual                                                                            | Decisión                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Empresa externa  | el parser verificado no extrae identidad de empresa Makos                                                        | `PENDING_EVIDENCE`                                                                                  | no declarar mapping de empresa hasta contar con identidad o binding de alcance demostrado |
+| Sede externa     | el parser verificado no extrae una identidad de sede Makos; el usuario selecciona previamente un `site_id` Vento | `PENDING_EVIDENCE` para la identidad externa; contexto interno seleccionado preservado por separado | no presentar el `site_id` seleccionado como dato emitido por Makos                        |
+| Terminal externa | el parser verificado no extrae terminal                                                                          | `PENDING_EVIDENCE`                                                                                  | no declarar corte por terminal ni inferir terminal desde sede, archivo o usuario          |
+| Caja externa     | el parser verificado no extrae caja                                                                              | `PENDING_EVIDENCE`                                                                                  | no inventar caja ni derivarla desde método de pago, terminal o actor                      |
+
+**Total de dimensiones evaluadas:** 4.
+**Dimensiones con mapping externo real demostrado en la modalidad actual:** 0.
+**Dimensiones pendientes de evidencia de fuente:** 4.
+**Dimensiones omitidas del análisis:** 0.
+
+Esto no invalida la importación documental actual como mecanismo de observación. Sí impide presentarla como evidencia suficiente de un crosswalk externo completo.
+
+---
+
+#### 14. Relación con la importación manual vigente
+
+La implementación actual de ventas diarias:
+
+- exige seleccionar `site_id` y fecha antes de importar;
+- calcula SHA-256 del XLSX;
+- parsea ID de producto, producto, categoría, cantidad, subtotal, impuestos, descuentos y devoluciones;
+- guarda el lote bajo `source = makos_excel`;
+- mantiene `site_id` en lote y filas;
+- mapea productos por sede y fuente.
+
+No se observa en ese parser extracción de empresa, sede Makos, terminal ni caja.
+
+Por tanto:
+
+1. `site_id` actual se conserva como declaración de contexto hecha dentro de Vento;
+2. no se reetiqueta como `external_site_id`;
+3. el hash del archivo no prueba la sede ni terminal de origen;
+4. el usuario importador no se convierte en cajero externo;
+5. el mapping de producto existente no resuelve empresa, terminal o caja;
+6. una futura API podrá aportar identidades adicionales sin cambiar estas reglas.
+
+---
+
+#### 15. Puerta de elegibilidad por contexto
+
+Antes de que una venta externa pueda producir un efecto que dependa del contexto territorial u operativo, cada dimensión requerida para ese efecto deberá estar en `RESOLVED`.
+
+La evaluación se realiza por dimensión y por efecto:
+
+| Condición                                                                    | Resultado                                                                           |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| dimensión requerida = `RESOLVED`                                             | puede continuar a las siguientes puertas                                            |
+| dimensión requerida = `PENDING_EVIDENCE`                                     | efecto bloqueado                                                                    |
+| dimensión requerida = `AMBIGUOUS`                                            | efecto bloqueado y caso de resolución                                               |
+| dimensión requerida = `CONFLICT`                                             | efecto bloqueado y conciliación                                                     |
+| dimensión requerida = `NOT_PROVIDED`                                         | solo continúa si el contrato del efecto demuestra que esa dimensión no es necesaria |
+| mapping histórico = `INACTIVE` pero vigente al momento comercial de la venta | puede usarse únicamente para reconstrucción histórica correspondiente               |
+
+Una dimensión no requerida por un efecto específico no debe fabricarse solo para completar un esquema.
+
+---
+
+#### 16. Separación entre mapping contextual y mapping de producto
+
+`INT-POS-010` gobierna únicamente contexto de origen.
+
+No resuelve:
+
+- producto externo;
+- producto Vento;
+- presentación;
+- receta;
+- sustituciones de producto;
+- descuento de inventario de una línea no mapeada.
+
+Esas decisiones pertenecen a `INT-POS-011` y `INT-POS-012`.
+
+Una venta puede tener contexto resuelto y líneas sin mapping; también puede tener productos mapeados y contexto externo no resuelto. Ninguna dimensión compensa la ausencia de la otra.
+
+---
+
+#### 17. Separación entre mapping y autoridad
+
+Resolver un mapping no concede:
+
+- permiso de lectura o escritura;
+- capacidad de mutar Makos;
+- capacidad de escribir tablas internas;
+- autoridad para crear una venta;
+- autoridad para emitir inventario, puntos o hechos económicos;
+- autorización para cambiar el origen histórico de una venta;
+- capacidad para adelantar el corte hacia PULSO.
+
+El mapping solo demuestra correspondencia contextual. La autoridad de fuente continúa gobernada por el alcance temporal definido para Makos y PULSO.
+
+---
+
+#### 18. Uso en el corte Makos → PULSO
+
+La regla canónica de transición exige corte por sede, terminal y fecha efectiva.
+
+Por tanto:
+
+1. la sede usada en el corte deberá corresponder a una referencia canónica resuelta;
+2. la terminal usada en el corte deberá estar resuelta cuando el corte se declare a ese nivel;
+3. una terminal `PENDING_EVIDENCE`, `AMBIGUOUS` o `CONFLICT` no puede usarse como clave de corte;
+4. `received_at` no determina de qué lado del corte pertenece una venta;
+5. una venta anterior al corte conserva origen Makos aunque llegue después;
+6. una venta nueva posterior al corte dentro del alcance transferido deberá originarse en PULSO;
+7. un cambio de mapping no podrá utilizarse para mover retroactivamente una venta de un lado del corte al otro.
+
+La ejecución y procedimiento completo de transición permanecen en `INT-POS-023`.
+
+---
+
+#### 19. Conflictos y conciliación
+
+Se considera conflicto de mapping, como mínimo:
+
+- una identidad externa vinculada simultáneamente con dos destinos canónicos incompatibles;
+- una terminal externa cuya sede inferida por la evidencia contradice la sede canónica resuelta;
+- una caja externa atribuida a un contexto incompatible con la venta;
+- una venta histórica reprocesada bajo una revisión de mapping que no estaba vigente en su momento comercial;
+- una identidad externa reutilizada entre tenants o ambientes sin `source_instance_ref` suficiente;
+- un binding por alcance que deja de ser único o verificable.
+
+Los conflictos se conservan sin corrección silenciosa. `INT-POS-020` deberá definir la conciliación diaria y el tratamiento de diferencias persistentes sin reescribir historia.
+
+---
+
+#### 20. Evidencia operativa pendiente y responsables exactos
+
+Esta tarea define completamente el contrato de mapping, pero no fabrica datos que las fuentes vigentes no demuestran.
+
+| Evidencia pendiente                               | Estado                   | Responsable canónico | Condición de salida                                                                                                 |
+| ------------------------------------------------- | ------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| identificador o binding real de empresa Makos     | `PENDIENTE_DE_EVIDENCIA` | `INT-POS-021`        | piloto sin efectos demuestra la identidad o el alcance único con evidencia reproducible                             |
+| identificador o binding real de sede Makos        | `PENDIENTE_DE_EVIDENCIA` | `INT-POS-021`        | piloto sin efectos demuestra correspondencia inequívoca con sede Vento                                              |
+| identificador real de terminal Makos              | `PENDIENTE_DE_EVIDENCIA` | `INT-POS-021`        | piloto sin efectos demuestra identidad estable y correspondencia contextual                                         |
+| identificador real de caja Makos, cuando exista   | `PENDIENTE_DE_EVIDENCIA` | `INT-POS-021`        | piloto sin efectos demuestra identidad y semántica, o evidencia suficiente confirma que la dimensión no es provista |
+| diferencias persistentes de mapping               | `ESPECIFICADO`           | `INT-POS-020`        | conciliación clasifica diferencia, autoridad, decisión y residual                                                   |
+| habilitación de efectos con mappings demostrados  | `ESPECIFICADO`           | `INT-POS-022`        | piloto controlado verifica puertas críticas antes de habilitar efectos                                              |
+| consumo de sede/terminal para el corte definitivo | `ESPECIFICADO`           | `INT-POS-023`        | transición documenta alcance, fecha efectiva, contingencia y ausencia de doble fuente                               |
+
+No quedan pendientes narrativos sin tarea responsable.
+
+---
+
+#### 21. Handoffs exactos
+
+| Tarea         | Entrega recibida desde `INT-POS-010`                                                                      | Alcance que conserva                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `INT-POS-011` | contexto de origen separado y referencias de sede aplicables                                              | mapping de producto externo, producto Vento, presentación y receta    |
+| `INT-POS-012` | contexto de venta sin usar producto como sustituto                                                        | cuarentena de líneas sin mapping y bloqueo de descuento de inventario |
+| `INT-POS-013` | `source_system`, instancia y referencias contextuales sin convertirlas en identidad idempotente universal | idempotencia por sistema, venta y línea externa                       |
+| `INT-POS-015` | puerta de contexto resuelta por dimensión requerida                                                       | emisión del evento canónico de venta validada                         |
+| `INT-POS-016` | sede y contexto necesarios para el efecto físico                                                          | salida de inventario en NEXO exactamente una vez                      |
+| `INT-POS-017` | contexto empresarial y comercial requerido                                                                | efecto económico NUMERA exactamente una vez                           |
+| `INT-POS-018` | contexto de venta aplicable                                                                               | fidelización PASS cuando corresponda                                  |
+| `INT-POS-020` | mappings versionados, conflictos y evidencia                                                              | conciliación diaria entre POS y efectos internos                      |
+| `INT-POS-021` | contrato de crosswalk y cuatro dimensiones pendientes de evidencia real                                   | piloto sin efectos que prueba bindings reales                         |
+| `INT-POS-022` | mappings demostrados y puertas de elegibilidad                                                            | piloto controlado con efectos habilitados                             |
+| `INT-POS-023` | sede/terminal resueltas y vigencia histórica                                                              | transición futura desde POS externo hacia PULSO                       |
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 22. Decisiones congeladas
+
+1. Empresa, sede, terminal y caja son dimensiones independientes.
+2. Toda relación externa → interna deberá ser explícita, versionada, temporal y auditable.
+3. Un mapping podrá basarse en identidad explícita o binding de alcance demostrado, nunca en suposición.
+4. Nombre, archivo, usuario importador, IP, medio de pago y proximidad temporal no son pruebas suficientes de mapping.
+5. `site_id` seleccionado en la importación manual vigente es contexto interno declarado y no una identidad de sede emitida por Makos.
+6. La línea base `makos_excel` demuestra cero mappings externos reales de empresa, sede, terminal o caja.
+7. Las cuatro dimensiones quedan `PENDING_EVIDENCE` respecto de la fuente actual hasta evidencia operativa reproducible.
+8. Una dimensión requerida que no esté `RESOLVED` bloquea los efectos que dependan de ella.
+9. `NOT_PROVIDED` exige evidencia de ausencia y no puede usarse por simple falta de observación.
+10. La versión aplicable se resuelve por el momento comercial del hecho, no por `received_at`.
+11. Un remapping crea una nueva revisión efectiva y no reescribe historia.
+12. Terminal no equivale a caja; caja no equivale a sesión; caja no equivale a medio de pago.
+13. No se impone cardinalidad uno-a-uno entre terminal y caja sin evidencia de la fuente.
+14. El corte por sede y terminal no puede declararse sobre una terminal no resuelta.
+15. El mapping contextual no concede autorización, propiedad empresarial ni capacidad de producir efectos.
+16. El mapping de producto permanece separado y continúa en `INT-POS-011`.
+17. La evidencia real de los cuatro bindings se demostrará sin efectos en `INT-POS-021`.
+18. Esta tarea no crea tablas, migraciones, RPC, endpoints, credenciales, datos, backfills ni cambios en Supabase.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** el comportamiento materializado aquí ya está protegido por requisitos canónicos vigentes que cubren el mapping durante la transición del POS externo, el corte por sede y terminal, la procedencia y auditoría de mappings externos y el gobierno de referencias compartidas. La tarea especializa esas obligaciones para las cuatro dimensiones de contexto Makos sin crear una conducta verificable adicional ni modificar texto, estado, relación, propietario o momento de implementación de requisitos existentes.
+
+---
+
+#### Cobertura de prueba existente preservada
+
+- `TREQ-INTEGRATION-006` — evita fuentes competidoras y exige resolver diferencias preservando procedencia y evidencia.
+- `TREQ-INTEGRATION-014` — protege el ingreso del POS externo mediante mapping y el corte por sede, terminal y fecha efectiva sin doble emisión.
+- `TREQ-INTEGRATION-049` — conserva afirmación y procedencia originales antes de producir un hecho interno.
+- `TREQ-INTEGRATION-213` — exige trazabilidad de transformación y mapping en todo intercambio externo.
+- `TREQ-INTEGRATION-300` — exige propietaria y versión canónica para referencias compartidas sin catálogos competidores.
+
+---
+
+#### 23. Criterios de aceptación
+
+La tarea queda documentalmente satisfecha cuando:
+
+1. empresa, sede, terminal y caja quedan definidas como cuatro dimensiones independientes;
+2. existe un contrato conceptual completo y versionado para cada relación externa → interna;
+3. existe un vocabulario cerrado de estados de mapping;
+4. se distinguen identidad externa explícita y binding de alcance demostrado;
+5. quedan prohibidas inferencias por nombre, archivo, usuario, IP, pago o valores por defecto;
+6. se define unicidad, consistencia, vigencia y supersesión sin reescritura histórica;
+7. se define que el momento comercial selecciona la revisión aplicable y `received_at` no la sustituye;
+8. se separan terminal, caja, sesión de caja, cajero y medio de pago;
+9. la línea base actual materializa cuatro dimensiones evaluadas, cero mappings externos demostrados y cuatro pendientes de evidencia;
+10. `site_id` actual queda reconocido como contexto interno seleccionado y no como evidencia de sede emitida por Makos;
+11. una dimensión requerida no resuelta bloquea los efectos que dependan de ella;
+12. se impide declarar corte por terminal sin terminal resuelta;
+13. los conflictos quedan dirigidos a conciliación sin corrección silenciosa;
+14. cada evidencia faltante queda asignada a una tarea responsable concreta y con condición de salida;
+15. se preserva la separación con mapping de producto, idempotencia, eventos, efectos y transición;
+16. se generan cero cambios de requisitos de prueba por existir cobertura canónica suficiente;
+17. no se crea ni modifica una copia del registro 04A;
+18. no se realizan cambios físicos ni operativos.
+
+---
+
+#### 24. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `INT-POS-009`
+**TAREA ACTUAL APROBADA:** `INT-POS-010`
+**SIGUIENTE TAREA RESERVADA:** `INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta`
+
+
 ### [ ] INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
 ### [ ] INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
 ### [ ] INT-POS-013 — Definir idempotencia por sistema, venta y línea externa

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **770** |
+| Aprobadas | **771** |
 | En propuesta | **0** |
-| No iniciadas | **824** |
+| No iniciadas | **823** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **48.31% (770/1594)** |
+| Porcentaje de completamiento | **48.37% (771/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-009` — Definir conservación de payload original, versión, hash y fecha de recepción | ✅ APROBADA |
-| Tarea actual | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-011` — Definir mapeo de producto externo, producto Vento, presentación y receta | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-010` — Definir mapeo de empresa, sede, terminal y caja externa | ✅ APROBADA |
+| Tarea actual | `INT-POS-011` — Definir mapeo de producto externo, producto Vento, presentación y receta | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-012` — Definir cuarentena de líneas sin mapeo y sin descuento de inventario | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1478,7 +1478,7 @@
 | ✅ APROBADA | `INT-POS-007` | Definir importación de descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-008` | Definir importación de anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-009` | Definir conservación de payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-010` | Definir mapeo de empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-010` | Definir mapeo de empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-011` | Definir mapeo de producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-012` | Definir cuarentena de líneas sin mapeo y sin descuento de inventario | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-013` | Definir idempotencia por sistema, venta y línea externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
