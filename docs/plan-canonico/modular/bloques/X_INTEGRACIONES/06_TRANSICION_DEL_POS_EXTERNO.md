@@ -6238,7 +6238,612 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`
 
 
-### [ ] INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
+### ✅ INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`  
+**Tarea siguiente:** `INT-POS-015 — Definir emisión del evento canónico de venta validada`  
+**Tipo de tarea:** documental; definición normativa del transporte incremental y de recuperación para ventas del POS externo, usando webhook únicamente cuando la capacidad esté demostrada y polling de conciliación de ingreso como respaldo o mecanismo primario cuando corresponda, preservando procedencia, autenticidad, idempotencia, revisiones y continuidad sin implementar endpoints, workers, cron, colas, credenciales, migraciones, Supabase ni efectos internos  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente:** `Makos`  
+**POS integral objetivo:** `PULSO`  
+**Línea base documental:** `vento-shell@2dc97c4d59e0ba3833778bf9c0f58123295edf2d`  
+**Contratos transversales consumidos:** `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001@1.0.0`; `ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento deberá recibir de forma incremental y recuperar hechos de venta provenientes del POS externo sin depender de que un único canal entregue todo una sola vez.
+
+La tarea establece dos mecanismos complementarios, condicionados por las capacidades realmente acreditadas del proveedor:
+
+```text
+WEBHOOK, CUANDO EXISTA Y ESTÉ DEMOSTRADO
+        ↓
+RECEPCIÓN TEMPRANA DEL HECHO
+        ↓
+MISMO ADAPTADOR + MISMA PROCEDENCIA + MISMA IDEMPOTENCIA
+
+POLLING DE CONCILIACIÓN DE INGRESO
+        ↓
+RECUPERACIÓN DE OMISIONES, TARDÍOS Y REVISIONES
+        ↓
+MISMO ADAPTADOR + MISMA PROCEDENCIA + MISMA IDEMPOTENCIA
+```
+
+Webhook y polling son transportes. Ninguno cambia el sistema de origen, crea una segunda identidad de venta o línea, reemplaza el contrato canónico ni autoriza efectos en NEXO, NUMERA o PASS.
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-014` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal del hecho de venta dentro del alcance todavía no transferido a PULSO.
+2. PULSO será la fuente de nuevas ventas después del corte aplicable; el transporte nunca sustituye la fuente empresarial.
+3. La API de Makos está confirmada únicamente como vía habilitable mediante solicitud al desarrollador del proveedor; Vento no dispone todavía de especificación técnica ni credenciales provisionadas que permitan congelar endpoints, campos, límites o semántica de consulta.
+4. La existencia, catálogo, firma, autenticación, política de reentrega y garantías de un webhook de Makos no están demostrados para el tenant de Vento.
+5. `INT-POS-009` exige conservar identidad de recepción, representación original protegida, versiones acreditadas, hash, `received_at`, localizador de fragmento y correlación antes de normalizar.
+6. `INT-POS-010` y `INT-POS-011` gobiernan el mapping de contexto y producto; el transporte no puede fabricarlos.
+7. `INT-POS-012` mantiene en cuarentena toda línea con mapping insuficiente y bloquea efectos dependientes de producto.
+8. `INT-POS-013` establece que webhook, polling, API, archivo, replay y reenvío deben converger en las mismas identidades de sistema, venta y línea.
+9. La entrega de transporte es `AT_LEAST_ONCE`; la protección empresarial se obtiene mediante idempotencia y recuperación de resultado.
+10. Una misma clave con la misma huella devuelve el resultado previo; una reutilización incompatible produce `CONFLICTING_REUSE`.
+11. `UNKNOWN_OUTCOME` exige indagación o conciliación antes de reejecutar.
+12. `INT-POS-015` es la única tarea inmediata que podrá definir la emisión de la venta validada; recibir el dato no equivale a emitirla.
+13. `INT-POS-020` conserva la conciliación diaria entre ventas y efectos internos; esta tarea limita el polling a completitud y recuperación del ingreso externo.
+
+---
+
+#### 3. Estado técnico actual verificable
+
+La línea base actual demuestra un flujo manual `makos_excel`, no una integración incremental.
+
+| Elemento                                             | Estado verificable actual                                    | Consecuencia                                                                      |
+| ---------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| importación XLSX de ventas                           | implementada                                                 | continúa como flujo legacy y contingencia existente                               |
+| SHA-256 del archivo                                  | implementado                                                 | protege la identidad técnica del lote, no la venta individual                     |
+| unicidad por sede, fecha, fuente y hash              | implementada                                                 | guardia agregada; no sustituye idempotencia de venta y línea                      |
+| `source_row_number`                                  | implementado                                                 | localizador técnico, no identidad empresarial                                     |
+| API Makos para Vento                                 | habilitable bajo solicitud, sin binding técnico provisionado | no pueden congelarse consultas, cursores, límites ni campos                       |
+| webhook Makos para Vento                             | no demostrado                                                | no se diseña un endpoint ficticio ni se declara disponible                        |
+| polling Makos operativo                              | no implementado ni especificado                              | solo puede materializarse después de acreditar una interfaz de lectura suficiente |
+| venta individual y línea individual en `makos_excel` | no demostradas                                               | el flujo agregado no se eleva a transporte transaccional individual               |
+
+La migración legacy `pulso_daily_sales_imports` materializa lotes y filas de importación, pero no demuestra un registro de webhook, cursor de polling, checkpoint incremental ni identidad individual de venta o línea.
+
+---
+
+#### 4. Decisión de arquitectura de transporte
+
+La transición utilizará la siguiente jerarquía lógica:
+
+| Situación acreditada                                                         | Canal de entrada incremental                         | Mecanismo de recuperación                                          | Resultado contractual                                                                   |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| el proveedor ofrece webhook utilizable y una interfaz de lectura conciliable | webhook                                              | polling                                                            | webhook acelera recepción; polling detecta omisiones, tardíos y revisiones              |
+| no existe webhook utilizable, pero existe interfaz de lectura conciliable    | polling                                              | polling sobre ventanas o checkpoints anteriores cuando corresponda | polling actúa como canal primario y como recuperación                                   |
+| existe webhook utilizable, pero no existe lectura conciliable suficiente     | webhook condicionado                                 | sin afirmación de completitud automática                           | el binding no podrá presentarse como recuperable integralmente hasta resolver la brecha |
+| no existe evidencia suficiente de webhook ni de lectura incremental          | `makos_excel` u otra contingencia realmente aprobada | conciliación manual vigente                                        | no se declara automatización inexistente                                                |
+
+La preferencia por webhook no convierte el webhook en fuente de verdad. La ausencia de webhook tampoco invalida una integración basada en polling si la interfaz de lectura puede demostrar completitud suficiente.
+
+---
+
+#### 5. Regla de convergencia entre canales
+
+Todos los canales autorizados deberán converger antes de cualquier efecto interno:
+
+```text
+WEBHOOK
+POLLING
+ARCHIVO AUTORIZADO
+REPLAY CONTROLADO
+        ↓
+ADAPTADOR DEL PROVEEDOR
+        ↓
+PROCEDENCIA DE INT-POS-009
+        ↓
+IDEMPOTENCIA DE INT-POS-013
+        ↓
+MAPPING + CUARENTENA
+        ↓
+VENTA ELEGIBLE PARA INT-POS-015
+```
+
+Invariantes:
+
+1. cambiar de webhook a polling no cambia `source_system`;
+2. una venta recuperada por polling conserva la misma `EXTERNAL_SALE_KEY` que habría utilizado por webhook;
+3. una línea recuperada por otro canal conserva la misma `EXTERNAL_SALE_LINE_KEY`;
+4. `delivery_id`, request de polling, página, cursor, checkpoint, archivo o intento técnico nunca sustituyen esas identidades;
+5. dos canales que observan el mismo hecho no producen dos ventas;
+6. una diferencia material bajo la misma identidad no se resuelve escogiendo el canal preferido: produce conflicto o conciliación;
+7. mapping, cuarentena y efectos posteriores se evalúan sobre el hecho normalizado, no sobre la prioridad del canal.
+
+---
+
+#### 6. Condición de uso del webhook
+
+Un webhook solo podrá activarse cuando exista evidencia técnica del proveedor o del tenant que permita demostrar, como mínimo:
+
+- que el webhook está disponible para Vento;
+- qué hechos o recursos puede notificar;
+- cuál es la semántica de cada notificación;
+- cómo se autentica o verifica el origen cuando aplique;
+- qué identificador externo estable entrega, si alguno;
+- qué timestamps y versiones aporta;
+- qué representación debe preservarse como entrada original;
+- qué comportamiento de redelivery o retry declara el proveedor, cuando exista;
+- qué respuesta técnica espera del receptor;
+- qué límites, ventanas o restricciones contractuales aplican;
+- cómo se recuperan hechos omitidos o fallidos.
+
+Mientras esa evidencia no exista, la capacidad de webhook permanece `PENDIENTE_CONFIRMACION_PROVEEDOR_TENANT` y no se inventarán URL, método HTTP, firma, headers, códigos de respuesta, eventos, payloads ni SLA.
+
+---
+
+#### 7. Recepción lógica de webhook
+
+Cuando exista un webhook acreditado, cada entrega deberá producir una recepción externa trazable antes de interpretar el hecho empresarial.
+
+La recepción conservará, cuando el binding los entregue o los requiera:
+
+- `source_system` y `source_instance_ref` aplicables;
+- identidad externa de evento, mensaje o recurso;
+- identidad estable de recepción;
+- `received_at`;
+- referencia a la representación original protegida;
+- tipo de contenido y codificación cuando sean materiales;
+- hash con algoritmo, base y digest cuando se utilice;
+- versión o secuencia de fuente cuando exista;
+- evidencia de autenticidad o su resultado de validación cuando aplique;
+- versión del adaptador y del contrato interpretativo de Vento;
+- correlación de integración;
+- resultado de recepción y procesamiento inicial.
+
+Una respuesta técnica al proveedor solo representa el estado definido por el binding de transporte. No constituye confirmación de que la venta ya produjo inventario, efecto económico, fidelización, documento fiscal o cualquier otro efecto interno.
+
+---
+
+#### 8. Autenticidad y seguridad del webhook
+
+El receptor deberá fallar de forma cerrada frente a una entrega que no pueda demostrar las condiciones de autenticidad exigidas por el binding.
+
+Reglas:
+
+1. firma inválida, autenticación inválida, contrato revocado o payload incompatible no se convierten en error transitorio por conveniencia;
+2. secretos, tokens y credenciales no forman parte del payload empresarial ni de logs ordinarios;
+3. el proveedor nunca recibe acceso directo a Supabase ni credenciales privilegiadas de Vento;
+4. la autenticación técnica del webhook no concede autorización empresarial para producir efectos internos;
+5. una entrega rechazada conserva la evidencia segura necesaria para auditoría cuando la política de seguridad permita conservarla;
+6. ningún rechazo de autenticidad podrá saltarse mediante polling y presentar el mismo contenido no confiable como hecho válido sin nueva evidencia legítima de fuente.
+
+La selección física de mecanismo criptográfico, secreto, certificado o infraestructura permanece condicionada a la especificación real del proveedor y a las tareas de implementación correspondientes.
+
+---
+
+#### 9. Redelivery y duplicados de webhook
+
+La redelivery de un webhook es un comportamiento esperado de una integración `AT_LEAST_ONCE` y no una nueva operación empresarial.
+
+Cuando la fuente entregue un identificador externo estable y confiable, se preservará dentro del alcance externo definido por `INT-POS-013`. Cuando no exista, Vento asignará una identidad de recepción durable antes del primer procesamiento repetible, sin inventar una identidad Makos de venta o línea.
+
+Resultado esperado:
+
+| Entrada                                          | Resultado                         |
+| ------------------------------------------------ | --------------------------------- |
+| misma identidad + misma huella                   | `DUPLICATE_RESULT_RETURNED`       |
+| misma identidad + procesamiento en curso         | `IN_PROGRESS_RECOVERABLE`         |
+| misma identidad + contenido incompatible         | `CONFLICTING_REUSE`               |
+| respuesta previa perdida y resultado recuperable | recuperación del resultado previo |
+| resultado imposible de determinar                | `RECONCILIATION_REQUIRED`         |
+
+Una redelivery nunca libera por sí sola una línea en cuarentena ni reejecuta efectos ya confirmados.
+
+---
+
+#### 10. Propósito exacto del polling
+
+El polling definido aquí cumple una función de **completitud del ingreso externo**.
+
+Debe poder detectar, cuando la interfaz de lectura acreditada lo permita:
+
+- hechos que no llegaron por webhook;
+- hechos que llegaron tarde;
+- revisiones posteriores de una venta o línea;
+- ventas o líneas visibles en la fuente que no tengan una recepción equivalente en Vento;
+- gaps de paginación, ventana o checkpoint que impidan afirmar completitud;
+- divergencias de identidad o versión que requieran `INT-POS-020`.
+
+El polling de esta tarea no verifica si NEXO descontó inventario, NUMERA registró el efecto económico o PASS registró fidelización. Esa conciliación empresarial permanece en `INT-POS-020`.
+
+---
+
+#### 11. Estrategia de lectura del polling
+
+El binding real deberá escoger la estrategia de lectura más fuerte que la fuente pueda demostrar, en este orden conceptual:
+
+1. cursor o token incremental estable documentado por el proveedor;
+2. versión o secuencia monotónica del recurso;
+3. ventana temporal sobre un timestamp de actualización con semántica y orden demostrados;
+4. snapshot completo o acotado reproducible cuando no exista mecanismo incremental suficiente.
+
+Reglas:
+
+- no se fabricará un cursor desde `received_at`;
+- no se asumirá que un ID crece de forma monotónica sin documentación;
+- no se utilizará el timestamp local de consulta como prueba de que la fuente no contiene hechos anteriores;
+- no se declarará una ventana completa si la fuente puede actualizar retrospectivamente elementos fuera de ella sin mecanismo de detección;
+- cuando la fuente no permita demostrar orden o completitud suficiente, el binding deberá conservar esa limitación y no presentar el polling como captura exacta de todos los cambios.
+
+---
+
+#### 12. Checkpoint y avance seguro
+
+El polling deberá conservar un checkpoint durable únicamente como control técnico de recuperación. El checkpoint no es identidad de venta ni de línea.
+
+Cada checkpoint lógico deberá poder reconstruir:
+
+- sistema e instancia consultados;
+- alcance territorial o recurso consultado;
+- versión del binding de consulta;
+- frontera inicial de la lectura;
+- cursor, secuencia, versión, timestamp o snapshot utilizado solo cuando la fuente lo soporte;
+- páginas o fragmentos esperados y recibidos cuando exista paginación;
+- momento de inicio y cierre de la lectura;
+- última frontera completamente preservada;
+- siguiente frontera candidata;
+- resultado del ciclo;
+- referencia a error, retry o conciliación cuando exista;
+- correlación con las recepciones generadas.
+
+El checkpoint solo podrá avanzar sobre una frontera cuya recepción haya quedado durablemente preservada sin gaps conocidos. Un fallo parcial no podrá adelantar el checkpoint más allá de información no verificada.
+
+---
+
+#### 13. Ventanas solapadas y hechos tardíos
+
+Cuando la fuente utilice timestamps o ventanas que permitan cambios tardíos, el polling deberá usar una estrategia de recuperación capaz de volver a observar un tramo ya consultado sin duplicar efectos.
+
+La amplitud del solapamiento no se fija en esta tarea porque depende de:
+
+- semántica de timestamps del proveedor;
+- retención;
+- consistencia de lectura;
+- latencia de actualización;
+- límites de consulta;
+- rate limits;
+- volumen;
+- garantías de orden.
+
+La repetición deliberada de una ventana es segura únicamente porque `INT-POS-013` obliga a deduplicar el hecho por identidad y huella. El solapamiento no podrá utilizarse para crear IDs nuevos ni para sobrescribir una revisión posterior.
+
+---
+
+#### 14. Paginación y completitud
+
+Cuando una consulta sea paginada:
+
+1. cada página o fragmento pertenece a un único ciclo de polling identificable;
+2. el orden y mecanismo de continuación deberán provenir del contrato del proveedor;
+3. una página fallida no permite declarar completo el rango;
+4. reiniciar un ciclo conserva la frontera ya confirmada y vuelve a procesar de forma idempotente lo necesario;
+5. un elemento repetido entre páginas se deduplica por identidad empresarial, no por posición;
+6. cambios concurrentes del conjunto deberán tratarse de acuerdo con la garantía real de snapshot o consistencia del proveedor;
+7. si la fuente no garantiza una lectura estable, la limitación deberá quedar explícita y la completitud dependerá de ciclos posteriores de recuperación.
+
+No se inventa un tamaño de página ni una forma de paginación para Makos.
+
+---
+
+#### 15. Cadencia de polling y retry son conceptos distintos
+
+La **cadencia de polling** decide cuándo iniciar un nuevo ciclo ordinario de consulta. El **retry** decide cuándo reintentar un ciclo o request que falló dentro de la política transversal.
+
+Por tanto:
+
+```text
+SIGUIENTE CICLO ORDINARIO DE POLLING
+≠
+SIGUIENTE INTENTO DE UNA CONSULTA FALLIDA
+```
+
+No se fija una frecuencia numérica de polling en esta tarea porque todavía no existe evidencia de:
+
+- rate limits Makos;
+- volumen por tenant;
+- retención;
+- SLA;
+- semántica incremental;
+- ventana máxima o mínima de consulta;
+- costo o restricción de peticiones.
+
+La frecuencia operativa deberá quedar versionada en el binding real y ser demostrada antes del piloto de `INT-POS-021`. No podrá configurarse de modo que viole límites del proveedor ni que cree una garantía de frescura que la fuente no pueda cumplir.
+
+---
+
+#### 16. Política de retry aplicable
+
+`INT-POS-014` no crea una política local de reintentos. Reutiliza `ENTERPRISE-EVENT-RETRY-POLICY-001`.
+
+Para intercambios con el proveedor:
+
+- `EXTERNAL_RECEIPT` utiliza ordinariamente `RETRY_PROVIDER_RATE_LIMITED`;
+- `RETRY_EVENT_STANDARD` solo podrá utilizarse cuando el binding demuestre que no aplican cuotas y el perfil resulte compatible;
+- `RATE_LIMITED` respeta `Retry-After` o equivalente válido;
+- `TRANSIENT_CONNECTIVITY` y `TRANSIENT_DEPENDENCY` admiten retry dentro del presupuesto;
+- `AUTH_REFRESH_REQUIRED` exige refrescar y reevaluar antes de intentar nuevamente;
+- `UNKNOWN_OUTCOME` exige consultar o conciliar primero;
+- `PERMANENT_CONTRACT`, `PERMANENT_BUSINESS`, `SECURITY_DENIED`, `CONFLICTING_REUSE` y `CANCELLED_OR_EXPIRED` no admiten retry automático.
+
+Un código HTTP aislado, excepción de SDK o texto de error no reemplaza la clasificación contractual.
+
+---
+
+#### 17. Convergencia webhook–polling
+
+La siguiente matriz gobierna la combinación de canales:
+
+| Observación                                                                          | Tratamiento                                                                                |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| webhook recibe un hecho y polling encuentra el mismo hecho con misma huella          | recuperar el resultado idempotente; cero segunda venta                                     |
+| polling encuentra un hecho y luego llega el mismo webhook                            | recuperar el resultado idempotente; cero segunda venta                                     |
+| webhook y polling entregan la misma identidad con contenido incompatible             | `CONFLICTING_REUSE` o `RECONCILIATION_REQUIRED`; no escoger silenciosamente un canal       |
+| polling encuentra un hecho que nunca tuvo recepción webhook                          | crear la recepción correspondiente y procesar por la misma cadena idempotente              |
+| existe recepción webhook pero la consulta posterior no encuentra el recurso esperado | conservar la recepción y abrir divergencia; no borrar el hecho por ausencia posterior      |
+| una revisión aparece solo en polling                                                 | conservar la misma identidad de venta o línea y aplicar la semántica de versión acreditada |
+| el webhook llega tarde después de una revisión más nueva recuperada por polling      | clasificar por versión; no hacer retroceder el estado                                      |
+| un ciclo de polling repite hechos ya vistos                                          | deduplicar individualmente; no considerar el ciclo completo una operación nueva de venta   |
+
+La existencia de un canal preferente nunca decide cuál contenido es verdadero cuando las evidencias son incompatibles.
+
+---
+
+#### 18. Eventos tardíos, fuera de orden y revisiones
+
+Webhook y polling pueden observar hechos en órdenes distintos.
+
+Reglas:
+
+1. el orden de llegada no sustituye el orden de fuente;
+2. `received_at` no define qué revisión es más nueva;
+3. cuando la fuente provea versión o secuencia acreditada, esa semántica gobierna la comparación;
+4. una revisión anterior tardía produce `STALE_VERSION` o `OUT_OF_ORDER_DEFERRED` según el contrato aplicable;
+5. una versión imposible o contradictoria produce conflicto o conciliación;
+6. ausencia de versión suficiente no autoriza aplicar last-write-wins por hora de recepción;
+7. el polling podrá recuperar una revisión omitida sin reescribir payloads ni recepciones anteriores.
+
+---
+
+#### 19. Separación entre transporte, recepción y venta
+
+Se preservan las siguientes desigualdades:
+
+```text
+WEBHOOK DELIVERY ≠ VENTA
+POLL REQUEST ≠ VENTA
+POLL RESPONSE ≠ VENTA
+CHECKPOINT ≠ VENTA
+CURSOR ≠ VENTA
+RECEIPT_ID ≠ EXTERNAL_SALE_ID
+ACK TÉCNICO ≠ EFECTO EMPRESARIAL
+RECEPCIÓN DURABLE ≠ VENTA VALIDADA
+VENTA VALIDADA ≠ EFECTOS DOWNSTREAM CONFIRMADOS
+```
+
+Una recepción puede contener cero, una o varias ventas. Una venta puede quedar respaldada por varias recepciones legítimas sin convertirse en varias ventas.
+
+---
+
+#### 20. Relación con mapping y cuarentena
+
+El transporte no altera las puertas de mapping de `INT-POS-010` y `INT-POS-011` ni la cuarentena de `INT-POS-012`.
+
+- una venta recuperada por polling no obtiene mapping por haber sido recuperada;
+- una línea recibida por webhook no tiene prioridad sobre una línea equivalente recibida por archivo o polling;
+- una redelivery no libera una línea `ACTIVE`;
+- una revisión de mapping no modifica el checkpoint de la fuente;
+- el checkpoint no prueba que una línea sea elegible para inventario;
+- las líneas sin mapping suficiente continúan bloqueadas aunque la recepción sea auténtica y completa.
+
+---
+
+#### 21. Relación con reversos
+
+Anulaciones, devoluciones y reembolsos podrán llegar por los mismos canales cuando el binding del proveedor los exponga.
+
+El transporte deberá:
+
+1. conservar la identidad y semántica de reverso acreditadas;
+2. deduplicar la redelivery del mismo reverso;
+3. no colapsar reversos distintos por compartir venta, importe o timestamp;
+4. permitir que polling recupere un reverso omitido por webhook;
+5. conservar revisiones tardías sin borrar el original;
+6. no ejecutar compensaciones desde el adaptador.
+
+La aplicación de compensaciones permanece en `INT-POS-019`.
+
+---
+
+#### 22. Frontera con la conciliación diaria
+
+El término “polling de conciliación” en esta tarea significa **conciliación de entrada contra la fuente externa**.
+
+Su alcance termina al poder responder:
+
+- qué hechos externos fueron observados;
+- por qué canal;
+- cuáles se recuperaron por polling;
+- cuáles son duplicados;
+- cuáles son revisiones;
+- cuáles presentan conflicto;
+- qué rango o checkpoint de lectura quedó completo o incompleto.
+
+`INT-POS-020` será responsable de conciliar esos hechos con la venta canónica y con los efectos esperados o confirmados en NEXO, NUMERA y PASS. Esta tarea no adelanta esa matriz empresarial.
+
+---
+
+#### 23. Puertas para el binding real de Makos
+
+Antes de activar webhook o polling deberá existir evidencia suficiente para resolver, según corresponda:
+
+| Decisión                             | Evidencia requerida                               | Tarea de demostración |
+| ------------------------------------ | ------------------------------------------------- | --------------------- |
+| disponibilidad real de webhook       | capacidad del tenant y documentación efectiva     | `INT-POS-021`         |
+| autenticidad del webhook             | firma, credencial o mecanismo real y su semántica | `INT-POS-021`         |
+| identidad de evento o recepción      | campo estable o ausencia demostrada               | `INT-POS-021`         |
+| recursos consultables                | contrato real de API o mecanismo de lectura       | `INT-POS-021`         |
+| cursor, secuencia o versión          | semántica documentada por proveedor               | `INT-POS-021`         |
+| timestamps utilizables para ventanas | campo y significado acreditados                   | `INT-POS-021`         |
+| paginación y consistencia            | reglas reales de lectura                          | `INT-POS-021`         |
+| rate limits y `Retry-After`          | límites efectivos del binding                     | `INT-POS-021`         |
+| retención y ventana histórica        | garantía efectiva del proveedor                   | `INT-POS-021`         |
+| frecuencia operativa de polling      | límites anteriores + frescura requerida           | `INT-POS-021`         |
+
+`INT-POS-021` deberá demostrar estas capacidades sin efectos sobre inventario ni finanzas. Si alguna no existe, deberá conservar la limitación y aplicar el modo de transporte compatible en vez de fabricar la capacidad.
+
+---
+
+#### 24. Carryover obligatorio
+
+| Brecha o decisión pendiente                         | Tarea propietaria                 | Condición de salida                                                                                            |
+| --------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| emisión del evento canónico de venta validada       | `INT-POS-015`                     | una venta elegible produce una emisión estable sin confundir recepción con evento                              |
+| salida física exactamente una vez                   | `INT-POS-016`                     | NEXO aplica su propio alcance idempotente                                                                      |
+| efecto económico exactamente una vez                | `INT-POS-017`                     | NUMERA aplica su propio alcance idempotente                                                                    |
+| fidelización exactamente una vez                    | `INT-POS-018`                     | PASS aplica su propio alcance idempotente cuando corresponda                                                   |
+| compensación de reversos                            | `INT-POS-019`                     | efectos inversos conservan original e identidad propia                                                         |
+| conciliación entre venta y efectos internos         | `INT-POS-020`                     | diferencias de origen, venta y efectos quedan clasificadas y accionables                                       |
+| comprobación del binding Makos real                 | `INT-POS-021`                     | capacidades, autenticidad, consulta, paginación, límites, ventanas y frecuencia quedan demostradas sin efectos |
+| piloto con efectos                                  | `INT-POS-022`                     | transporte, mapping, cuarentena, idempotencia y efectos downstream están demostrados                           |
+| cambio futuro de fuente hacia PULSO                 | `INT-POS-023`                     | el transporte preserva fuente única y evita doble emisión durante el corte                                     |
+| infraestructura transversal de colas y recuperación | `QUEUE-ARC-001` a `QUEUE-ARC-010` | arquitectura física aprobada para scheduling, colas, workers, retry y recuperación                             |
+
+Ninguna brecha detectada queda sin una tarea propietaria y una condición de salida.
+
+---
+
+#### 25. Decisiones congeladas
+
+1. Webhook se utilizará únicamente si la capacidad existe y está demostrada para Vento.
+2. Actualmente no se declara que Makos tenga webhook habilitado para el tenant de Vento.
+3. No se inventan endpoints, payloads, firmas, headers, eventos, códigos, cursores, límites, SLA ni garantías del proveedor.
+4. Polling será el mecanismo de recuperación de ingreso cuando exista una interfaz de lectura suficiente.
+5. Si no existe webhook utilizable, polling podrá ser el canal incremental primario sin cambiar la autoridad de Makos.
+6. Si no existe interfaz de lectura suficiente, no se presentará el flujo como automáticamente recuperable.
+7. Webhook, polling, archivo y replay convergen en el mismo adaptador, procedencia e idempotencia.
+8. Cambiar de canal no cambia identidad de sistema, venta o línea.
+9. Una redelivery no crea una nueva venta.
+10. Polling puede descubrir un hecho omitido sin crear una segunda identidad.
+11. Misma identidad y misma huella recuperan el resultado previo.
+12. Misma identidad y contenido incompatible producen conflicto o conciliación.
+13. El orden de recepción no sustituye una versión de fuente.
+14. `received_at` no se usa como last-write-wins.
+15. Cursor, página, checkpoint y request son identidades técnicas, no empresariales.
+16. Un checkpoint solo avanza sobre una frontera durable y sin gaps conocidos.
+17. Polling ordinario y retry de una consulta fallida son ciclos distintos.
+18. La frecuencia de polling no se fija sin rate limits, retención, volumen y semántica de fuente demostrados.
+19. Los retries usan la política transversal y no una configuración local inventada.
+20. Un `UNKNOWN_OUTCOME` no se resuelve enviando ciegamente otra operación.
+21. Autenticidad técnica del webhook no equivale a autorización empresarial ni a validación de la venta.
+22. Un ACK técnico no demuestra efectos downstream.
+23. Polling de esta tarea concilia ingreso; `INT-POS-020` concilia venta y efectos internos.
+24. Una línea en cuarentena permanece bloqueada sin importar el canal por el que llegó.
+25. Reversos recibidos por cualquiera de los canales conservan identidad propia y no ejecutan compensaciones desde el adaptador.
+26. `makos_excel` permanece como implementación legacy agregada y no se presenta como webhook o polling.
+27. Esta tarea no implementa endpoint, worker, scheduler, cron, cola, tabla, índice, función, Edge Function, secreto, credencial, migración ni cambio de Supabase.
+28. Esta tarea no habilita inventario, finanzas, fidelización ni documentos fiscales.
+29. La siguiente responsabilidad inmediata permanece exclusivamente en `INT-POS-015`.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-014` especializa para la transición del POS externo comportamientos ya protegidos por la cobertura canónica vigente: recepción externa autenticable, deduplicación previa a efectos, webhooks y operaciones reintentables con identidad estable, recuperación de resultados, tratamiento de respuestas inciertas, límites de retry, rate limits, trazabilidad, conciliación y prohibición de efectos duplicados. La tarea no introduce una excepción verificable fuera de esas reglas ni modifica un comportamiento protegido existente; por tanto, el registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 27. Cobertura de prueba existente preservada
+
+Se preservan sin modificación, entre otros:
+
+- `TREQ-INTEGRATION-003` — idempotencia, retry y recuperación para operaciones asíncronas y webhooks;
+- `TREQ-INTEGRATION-004` — trazabilidad de trigger, job, webhook, intento y efecto final;
+- `TREQ-INTEGRATION-014` — transición POS externo → PULSO con adaptador, staging, idempotencia y conciliación;
+- `TREQ-INTEGRATION-049` — autenticidad, payload original, identificador, recepción y correlación de afirmaciones externas;
+- `TREQ-INTEGRATION-061` — validación de la afirmación externa antes de producir un hecho interno;
+- `TREQ-INTEGRATION-125` — deduplicación de afirmaciones externas mediante identidad confiable de fuente;
+- `TREQ-INTEGRATION-126` — `receipt_id` durable cuando el proveedor no entregue identidad estable;
+- `TREQ-INTEGRATION-127` — hash como guardia y no como identidad empresarial;
+- `TREQ-INTEGRATION-139` a `TREQ-INTEGRATION-163` — preservación de identidad, taxonomía de errores, `UNKNOWN_OUTCOME`, full jitter, `Retry-After`, presupuestos, perfiles, claims, aislamiento, agotamiento y observabilidad;
+- `TREQ-INTEGRATION-306` — frontera del adaptador externo sin escritura transversal directa.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 28. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. preserva a Makos como fuente temporal independientemente del transporte;
+2. confirma que la existencia de webhook para el tenant sigue sin demostrarse;
+3. impide inventar detalles técnicos de webhook o API;
+4. define webhook como canal condicional y no requisito supuesto;
+5. define polling como recuperación de ingreso y, cuando no exista webhook, como posible canal primario;
+6. define el comportamiento cuando tampoco exista una interfaz de lectura suficiente;
+7. obliga a webhook y polling a converger en el mismo adaptador y contratos de procedencia;
+8. obliga a preservar las identidades definidas en `INT-POS-013` entre canales;
+9. diferencia identidad externa, recepción, delivery, cursor, página y checkpoint;
+10. define evidencia lógica mínima de una recepción webhook;
+11. exige autenticidad según el binding real y falla cerrado ante evidencia inválida;
+12. prohíbe acceso directo del proveedor a Supabase;
+13. define tratamiento de redelivery y duplicados mediante los outcomes idempotentes existentes;
+14. define el propósito de completitud del polling sin invadir `INT-POS-020`;
+15. define orden preferente de estrategias incrementales según evidencia de fuente;
+16. prohíbe fabricar cursores, secuencias o monotonicidad;
+17. define checkpoint durable y avance solo sobre fronteras completas;
+18. define recuperación de ventanas repetidas o solapadas sin fijar una amplitud inventada;
+19. define reglas de paginación sin inventar tamaño o mecanismo Makos;
+20. separa cadencia ordinaria de polling de retry de una consulta fallida;
+21. evita fijar una frecuencia sin evidencia de límites, retención y volumen;
+22. reutiliza `ENTERPRISE-EVENT-RETRY-POLICY-001` sin política local divergente;
+23. define convergencia webhook–polling para duplicados, revisiones, omisiones y conflictos;
+24. trata eventos tardíos y fuera de orden sin usar `received_at` como versión;
+25. separa recepción durable de venta validada y de efectos downstream;
+26. mantiene mapping y cuarentena independientes del canal;
+27. permite recuperar reversos omitidos sin ejecutar compensaciones;
+28. define explícitamente la frontera con la conciliación diaria de `INT-POS-020`;
+29. asigna la demostración del binding real y la frecuencia operativa a `INT-POS-021`;
+30. asigna cada brecha restante a una tarea exacta con condición de salida;
+31. genera cero cambios `TREQ-*` por existir cobertura canónica suficiente;
+32. no crea una copia innecesaria del registro 04A;
+33. no modifica código, datos, esquema, migraciones, Supabase, credenciales ni configuración remota;
+34. mantiene `INT-POS-015` como única siguiente tarea reservada.
+
+---
+
+#### 29. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-015 — Definir emisión del evento canónico de venta validada`
+
+
 ### [ ] INT-POS-015 — Definir emisión del evento canónico de venta validada
 ### [ ] INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez
 ### [ ] INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
