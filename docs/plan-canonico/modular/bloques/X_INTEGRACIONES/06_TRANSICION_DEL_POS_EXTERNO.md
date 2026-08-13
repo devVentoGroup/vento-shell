@@ -371,7 +371,249 @@ Ningún requisito existente cambia de identidad, texto, estado, relación, propi
 `INT-POS-002 — Confirmar información disponible mediante API`
 
 
-### [ ] INT-POS-002 — Confirmar información disponible mediante API
+### ✅ INT-POS-002 — Confirmar información disponible mediante API
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente`  
+**Tarea siguiente:** `INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`  
+**Tipo de tarea:** documental; confirmación de disponibilidad técnica de la API del POS externo vigente y clasificación de la evidencia realmente disponible, sin solicitar credenciales, iniciar integración, definir endpoints por inferencia, implementar adaptadores, ejecutar webhooks, modificar Supabase ni producir efectos internos  
+**Línea base documental:** `vento-shell@ca823d550fa28f9246f2f296683aa70f63f1d6c0`  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**Sistema externo confirmado:** `Makos`  
+**Aplicación objetivo futura:** `PULSO`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Confirmar qué puede afirmarse de la integración API de Makos después de incorporar la evidencia directa comunicada por el titular de Vento, sin convertir esa confirmación comercial u operativa en una especificación técnica inexistente.
+
+La tarea resuelve la incertidumbre dejada por `INT-POS-001` sobre la existencia de una API habilitable para Vento y conserva como no demostrados todos los detalles técnicos que todavía no han sido entregados por el proveedor.
+
+Regla raíz:
+
+```text
+CONFIRMACIÓN DIRECTA DEL PROVEEDOR TRANSMITIDA AL TITULAR DE VENTO
+        ↓
+API HABILITABLE BAJO SOLICITUD
+        ↓
+PROVISIONAMIENTO Y ACOMPAÑAMIENTO DEL DESARROLLADOR DE MAKOS
+        ↓
+SIN ESPECIFICACIÓN, CREDENCIALES NI CONTRATO TÉCNICO ENTREGADOS TODAVÍA
+        ↓
+CERO ENDPOINTS, CAMPOS, LÍMITES O WEBHOOKS INVENTADOS
+```
+
+---
+
+#### 2. Evidencia incorporada
+
+El titular de Vento confirma que Makos le informó directamente lo siguiente:
+
+1. la API para la integración no se encuentra publicada como un recurso autogestionado del cliente;
+2. la habilitación o generación de la API debe solicitarse al desarrollador de Makos;
+3. Makos indicó que su desarrollador se comunicaría directamente con Vento para realizar o acompañar la integración;
+4. Vento no inició ese proceso y no recibió una especificación técnica, credenciales ni contrato de integración;
+5. por tanto, la ausencia actual de credenciales o documentación técnica no significa que la API no exista, sino que todavía no fue provisionada para Vento.
+
+Esta evidencia cambia la clasificación de la capacidad desde `PENDIENTE_CONFIRMACION_PROVEEDOR_TENANT` sobre la existencia de la API a una confirmación de **API habilitable bajo solicitud**, pero no confirma todavía su contrato técnico.
+
+---
+
+#### 3. Clasificación de evidencia utilizada
+
+| Estado                                  | Significado                                                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIRMADO_PROVEEDOR_VIA_TITULAR`      | El titular de Vento recibió directamente del proveedor la confirmación indicada y la incorpora como evidencia operativa del tenant. |
+| `CONFIRMADO_HABILITABLE`                | La capacidad existe para Vento bajo un proceso de solicitud o provisionamiento del proveedor.                                       |
+| `NO_PROVISIONADO`                       | Vento no dispone todavía de credencial, especificación o acceso técnico emitido para esa integración.                               |
+| `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR` | El detalle solo podrá congelarse cuando Makos entregue evidencia técnica verificable para el tenant.                                |
+| `NO_APLICA_A_ESTA_TAREA`                | La definición pertenece a otra tarea del mini-bloque y no se adelanta aquí.                                                         |
+
+`CONFIRMADO_HABILITABLE` no equivale a `HABILITADO_EN_PRODUCCION`, y `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR` no equivale a `NO_SOPORTADO`.
+
+---
+
+#### 4. Resultado material de la confirmación
+
+La situación de Makos queda congelada documentalmente así:
+
+| Elemento                                             | Resultado                                                                                       |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Existencia de una API habilitable para Vento         | `CONFIRMADO_HABILITABLE`                                                                        |
+| Forma de obtención                                   | solicitud al desarrollador de Makos                                                             |
+| Participación del proveedor                          | el desarrollador de Makos ofreció comunicación directa para realizar o acompañar la integración |
+| API actualmente provisionada a Vento                 | `NO_PROVISIONADO`                                                                               |
+| Credenciales actualmente recibidas                   | `NO_PROVISIONADO`                                                                               |
+| Especificación técnica actualmente recibida          | `NO_PROVISIONADO`                                                                               |
+| Integración API Makos → Vento actualmente iniciada   | no                                                                                              |
+| Integración API Makos → Vento actualmente productiva | no demostrada                                                                                   |
+| Cliente API Makos implementado en Vento              | no demostrado                                                                                   |
+| Webhook Makos implementado en Vento                  | no demostrado                                                                                   |
+| Mecanismo de integración actualmente demostrado      | importación `makos_excel` documentada en `INT-POS-001`                                          |
+
+Conclusión:
+
+```text
+MAKOS TIENE UNA VÍA DE INTEGRACIÓN API HABILITABLE PARA VENTO
+
+pero
+
+VENTO TODAVÍA NO TIENE EL CONTRATO TÉCNICO DE ESA API
+```
+
+---
+
+#### 5. Confirmación de los diecisiete puntos heredados de INT-POS-001
+
+|   Nº | Información requerida                                                          | Resultado de INT-POS-002                                                       | Tarea propietaria del detalle aún no demostrado            |
+| ---: | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+|    1 | API habilitable o habilitada                                                   | `CONFIRMADO_HABILITABLE`; no se demuestra que esté actualmente habilitada      | `INT-POS-004` para provisionamiento y credencial           |
+|    2 | modalidad de acceso y ambiente                                                 | se confirma provisionamiento asistido por desarrollador; ambiente no entregado | `INT-POS-004`                                              |
+|    3 | versión y estabilidad contractual                                              | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`                                              |
+|    4 | objetos consultables                                                           | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`, `INT-POS-007` e `INT-POS-008` según dominio |
+|    5 | campos reales de venta y línea                                                 | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`                                              |
+|    6 | identificadores estables de venta, línea, producto, sede, terminal y documento | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`, `INT-POS-010` e `INT-POS-011`               |
+|    7 | timestamps y semántica temporal                                                | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`                                              |
+|    8 | estados y revisiones de ventas                                                 | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006`                                              |
+|    9 | descuentos, impuestos y propinas                                               | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-007`                                              |
+|   10 | medios y estados de pago                                                       | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-007`                                              |
+|   11 | anulaciones, devoluciones y reembolsos                                         | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-008`                                              |
+|   12 | documentos fiscales y referencias consultables                                 | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-006` y `INT-POS-007`                              |
+|   13 | filtros, cursores, paginación y ordenamiento                                   | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-014`                                              |
+|   14 | límites de consulta                                                            | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-014`                                              |
+|   15 | ventanas históricas o retención                                                | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-014`                                              |
+|   16 | consistencia entre consulta inicial y posterior                                | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-014`                                              |
+|   17 | restricciones por plan, país, empresa o tenant                                 | `PENDIENTE_EVIDENCIA_TECNICA_PROVEEDOR`                                        | `INT-POS-004`                                              |
+
+Los puntos pendientes no se transforman en supuestos. Cada uno queda ligado a la tarea que necesita ese dato para definir el contrato correspondiente.
+
+---
+
+#### 6. Frontera entre confirmación y especificación técnica
+
+Esta tarea confirma la **disponibilidad condicionada** de la API, no su diseño.
+
+Por tanto, permanecen prohibidas por inferencia en esta etapa:
+
+- URL base;
+- versión;
+- protocolo de autenticación;
+- nombre o formato de credenciales;
+- scopes;
+- endpoints;
+- métodos HTTP;
+- parámetros;
+- payloads;
+- campos;
+- códigos de error;
+- rate limits;
+- paginación;
+- retención;
+- webhooks;
+- firmas;
+- reintentos;
+- SLA;
+- garantías de consistencia.
+
+Esos elementos solo podrán incorporarse cuando exista evidencia técnica verificable entregada por Makos para el tenant de Vento.
+
+---
+
+#### 7. Relación con la estrategia del POS propio
+
+La disponibilidad de una API de Makos no cambia la arquitectura objetivo de Vento.
+
+El mini-bloque `INT-POS-001` a `INT-POS-024` continúa siendo un bloque de **transición del POS externo**. Makos puede servir como fuente temporal y como puente de integración mientras exista, pero no se convierte por esta confirmación en el POS objetivo de Vento.
+
+La construcción del POS propio permanece en `BLOQUE N — PULSO`, donde:
+
+- `PULSO-AUTH-001` a `PULSO-AUTH-016` gobiernan autorización de venta y caja;
+- `PULSO-UX-001` a `PULSO-UX-021` gobiernan experiencia POS y operación comercial;
+- `PULSO-UX-021` diseña la arquitectura funcional y técnica del POS integral objetivo.
+
+Dentro del mini-bloque actual, `INT-POS-023` preserva la transición futura desde el POS externo hacia PULSO y `INT-POS-024` preserva la revocación o reducción de credenciales cuando PULSO asuma la fuente.
+
+Por tanto:
+
+```text
+INTEGRAR MAKOS, SI RESULTA NECESARIO COMO TRANSICIÓN
+≠
+CONSTRUIR EL POS DEFINITIVO SOBRE MAKOS
+```
+
+---
+
+#### 8. Regla de contacto técnico con Makos
+
+Cuando una tarea posterior requiera activar la integración, el contacto con el desarrollador de Makos se tratará como una interacción técnica entre proveedores y Vento, no como una obligación del titular de Vento de implementar personalmente el código.
+
+La información mínima que deberá obtenerse antes de cualquier implementación será la especificación efectiva del tenant necesaria para la tarea propietaria correspondiente. Ninguna credencial se documentará en texto plano dentro del plan canónico ni se entregará acceso directo a Supabase.
+
+Esta tarea no solicita todavía la activación de la API ni inicia una integración remota.
+
+---
+
+#### 9. Decisiones congeladas
+
+1. Makos dispone para Vento de una vía de API habilitable bajo solicitud al desarrollador del proveedor.
+2. La API no se considera actualmente provisionada, habilitada en producción ni técnicamente especificada para Vento.
+3. La oferta de acompañamiento directo del desarrollador de Makos confirma un modelo de integración asistida por el proveedor.
+4. No se inferirá ningún detalle técnico a partir de la interfaz, el Excel actual o una descripción comercial.
+5. La ausencia de especificación técnica actual no bloquea el diseño documental general del mini-bloque, pero sí impide congelar detalles dependientes del contrato real del proveedor.
+6. Cada detalle no demostrado queda vinculado a una tarea posterior exacta antes de que sea necesario para diseño o implementación.
+7. Makos permanece como sistema externo de transición; PULSO permanece como POS integral objetivo de Vento.
+8. Esta confirmación no autoriza solicitar credenciales, compartir secretos, crear endpoints, desplegar adaptadores ni modificar Supabase.
+
+---
+
+#### 10. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea cambia el estado documental de la evidencia sobre disponibilidad de una API externa, pero no introduce ni modifica comportamiento ejecutable de Vento, reglas de negocio, autorización, transformaciones, transiciones, integridad o contratos técnicos verificables. Crear una prueba sobre endpoints, límites o payloads todavía no entregados por Makos fabricaría una especificación inexistente. Los comportamientos de venta, pago, reversión e integración continúan cubiertos por los requisitos canónicos vigentes y los detalles técnicos producirán requisitos únicamente cuando una tarea posterior materialice un contrato verificable.
+
+#### 11. Cobertura de prueba existente preservada
+
+Se conserva sin modificación la cobertura vigente, incluyendo `TREQ-PULSO-005` y `TREQ-PULSO-006` para el ciclo comercial, venta, pago, fiscalidad y reversos. Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 12. Criterios de aceptación
+
+La tarea queda documentalmente completa porque:
+
+1. resuelve la incertidumbre sobre si Makos dispone de una API habilitable para Vento;
+2. documenta que el acceso depende de solicitud y provisionamiento por el desarrollador de Makos;
+3. registra que el proveedor ofreció acompañamiento directo para la integración;
+4. distingue API habilitable de API ya provisionada o productiva;
+5. declara que Vento todavía no recibió especificación técnica ni credenciales;
+6. materializa los diecisiete puntos heredados de `INT-POS-001` con estado explícito;
+7. asigna cada detalle técnico todavía no demostrado a una tarea propietaria exacta;
+8. no inventa endpoints, campos, scopes, límites, webhooks ni garantías;
+9. no solicita ni expone credenciales;
+10. no implementa código, adaptadores, webhooks, migraciones ni efectos internos;
+11. confirma que este mini-bloque gobierna la transición desde Makos y no la construcción definitiva del POS propio;
+12. preserva a PULSO como POS integral objetivo dentro de `BLOQUE N`;
+13. genera cero cambios `TREQ-*`;
+14. mantiene reservada exclusivamente `INT-POS-003` como continuidad inmediata.
+
+---
+
+#### 13. Continuidad
+
+**ÚLTIMA TAREA APROBADA**  
+`INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente`
+
+**TAREA ACTUAL APROBADA**  
+`INT-POS-002 — Confirmar información disponible mediante API`
+
+**SIGUIENTE TAREA RESERVADA**  
+`INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta`
+
+
 ### [ ] INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta
 ### [ ] INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
 ### [ ] INT-POS-005 — Definir contrato canónico de venta y línea de venta

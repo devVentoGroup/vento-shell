@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **762** |
+| Aprobadas | **763** |
 | En propuesta | **0** |
-| No iniciadas | **832** |
+| No iniciadas | **831** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **47.80% (762/1594)** |
+| Porcentaje de completamiento | **47.87% (763/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-001` — Auditar documentación, endpoints, webhooks y límites del POS vigente | ✅ APROBADA |
-| Tarea actual | `INT-POS-002` — Confirmar información disponible mediante API | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-003` — Definir al POS vigente como fuente temporal del hecho de venta | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-002` — Confirmar información disponible mediante API | ✅ APROBADA |
+| Tarea actual | `INT-POS-003` — Definir al POS vigente como fuente temporal del hecho de venta | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-004` — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1470,7 +1470,7 @@
 | ✅ APROBADA | `INT-PROD-004` | Definir contrato para que NEXO registre el producto terminado | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-PROD-005` | Definir tratamiento de producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ✅ APROBADA | `INT-POS-001` | Auditar documentación, endpoints, webhooks y límites del POS vigente | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-003` | Definir al POS vigente como fuente temporal del hecho de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-004` | Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
