@@ -1912,7 +1912,544 @@ SIGUIENTE TAREA RESERVADA
 `INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`
 
 
-### [ ] INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
+### ✅ INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
+
+**Estado:** APROBADA  
+**Tarea anterior:** `INT-POS-005 — Definir contrato canónico de venta y línea de venta`  
+**Tarea siguiente:** `INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`  
+**Tipo de tarea:** documental; definición normativa de la importación semántica de encabezados y líneas de venta, del vocabulario canónico mínimo de estado comercial y estado de línea, y de la clasificación, normalización y precedencia de timestamps necesarios para producir el contrato canónico definido en `INT-POS-005`, sin inventar campos de Makos, definir endpoints, incorporar componentes monetarios detallados, modelar anulaciones o reembolsos, conservar físicamente payloads, resolver mappings de sede o producto, implementar idempotencia, modificar código, crear migraciones, modificar Supabase ni producir efectos internos  
+**Fase:** exclusivamente documental  
+**Repositorio propietario:** `vento-shell`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`  
+**POS externo vigente:** `Makos`  
+**POS integral objetivo:** `PULSO`  
+**Línea base documental:** `vento-shell@c0ed9cac938ce54bdb87f59d29899f64a41fd4f3`  
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`  
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir cómo deberá transformarse una representación de venta proveniente del POS externo, y posteriormente una venta originada en PULSO cuando corresponda, en los slots semánticos de encabezado, líneas, estados y tiempo exigidos por el contrato canónico aprobado en `INT-POS-005`.
+
+La tarea fija la semántica que deberá cumplir la importación sin afirmar que Makos ya exponga esos campos mediante su API y sin elevar la importación agregada actual por Excel a una granularidad transaccional que no demuestra.
+
+Regla raíz:
+
+```text
+AFIRMACIÓN REAL DE LA FUENTE
+        ↓
+VALOR ORIGINAL + SEMÁNTICA ACREDITADA
+        ↓
+NORMALIZACIÓN DE ENCABEZADO / LÍNEA / ESTADO / TIEMPO
+        ↓
+CONTRATO CANÓNICO DE VENTA Y LÍNEA
+        ↓
+ELEGIBILIDAD POSTERIOR SEGÚN LAS DEMÁS TAREAS INT-POS
+```
+
+Queda prohibido completar un campo obligatorio mediante inferencia débil cuando la fuente no entregue información suficiente.
+
+---
+
+#### 2. Base canónica preservada
+
+`INT-POS-006` consume sin reabrir las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal de las ventas originadas dentro de su alcance mientras no ocurra el corte correspondiente.
+2. PULSO será la fuente de las nuevas ventas posteriores al corte aprobado.
+3. Makos y PULSO deberán converger en el mismo contrato canónico de venta y línea.
+4. Una venta tiene una sola fuente empresarial de origen.
+5. Venta, pedido, pago, caja, documento fiscal, inventario, fidelización y hecho económico permanecen separados.
+6. Una línea pertenece exactamente a una venta canónica.
+7. Las identidades de venta y línea deben ser estables y no dependen de importes, fechas redondeadas, nombres de producto, hash de archivo o posición física de fila.
+8. Una revisión posterior no crea otra venta ni borra historia.
+9. El Excel agregado actual de Makos no constituye por sí solo una venta individual completa.
+10. Una línea sin mapping requerido puede conservarse como evidencia recibida, pero no producir efectos dependientes de producto.
+11. La validez estructural del contrato no autoriza efectos en NEXO, NUMERA o PASS.
+12. La materialización técnica compartida del contrato permanece reservada para `SHELL-CON-020` y `SHELL-CON-021`.
+
+Esta tarea define únicamente cómo poblar los slots semánticos que `INT-POS-005` reservó para encabezado, línea, estado y temporalidad.
+
+---
+
+#### 3. Capas obligatorias de la importación
+
+La integración deberá distinguir tres capas conceptuales y no fusionarlas:
+
+| Capa                                      | Contenido                                                                                        | Autoridad         | Regla                                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
+| Representación de fuente                  | campos y valores tal como fueron entregados por Makos o por la fuente autorizada                 | sistema de origen | no se corrige ni renombra retrospectivamente para hacer coincidir el contrato Vento      |
+| Representación normalizada de importación | identidades, estados, timestamps y demás slots interpretados con una regla de mapping acreditada | adaptador Vento   | conserva referencia a la afirmación original y registra si la semántica pudo resolverse  |
+| Contrato canónico de venta y línea        | estructura empresarial definida en `INT-POS-005`                                                 | Vento             | desacopla consumidores del formato particular de la fuente sin alterar el hecho original |
+
+Por tanto:
+
+```text
+VALOR EXTERNO
+≠
+VALOR CANÓNICO POR SIMPLE SEMEJANZA DE NOMBRE
+```
+
+```text
+CAMPO AUSENTE
+≠
+VALOR POR DEFECTO INVENTADO
+```
+
+```text
+TIMESTAMP TÉCNICO DE RECEPCIÓN
+≠
+MOMENTO COMERCIAL DE LA VENTA
+```
+
+---
+
+#### 4. Definición de encabezado de venta importable
+
+Para una venta individual, la importación deberá poder resolver las siguientes dimensiones lógicas del encabezado.
+
+| Dimensión                                          | Obligatoriedad para venta individual                                                                           | Regla de importación                                                                                                                   | Propietario de detalle posterior         |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Sistema de origen                                  | requerida                                                                                                      | conserva `Makos` durante su alcance temporal o `PULSO` después del corte; nunca se deriva del transporte                               | `INT-POS-003`; `INT-POS-023`             |
+| Instancia o contexto de origen                     | requerida cuando la fuente pueda reutilizar identificadores entre empresas, tenants o ambientes                | se conserva el contexto real; no se inventa un tenant                                                                                  | binding del proveedor y `INT-POS-010`    |
+| Identidad externa de venta                         | requerida para una venta individual, salvo resolución formal posterior cuando la fuente realmente no la provea | debe proceder de la fuente o del mecanismo estable definido por `INT-POS-013`; no se sustituye por hash, fecha, total o número de fila | `INT-POS-013`                            |
+| Revisión o versión de fuente                       | condicional                                                                                                    | se importa cuando la fuente la entregue; ausencia explícita no autoriza inventar versión del proveedor                                 | `INT-POS-013`                            |
+| Estado de venta en la fuente                       | requerido cuando la fuente lo entregue                                                                         | se conserva el valor original y se intenta mapear al vocabulario canónico de esta tarea                                                | esta tarea                               |
+| Estado comercial canónico                          | requerido antes de que una venta pueda considerarse elegible para efectos                                      | solo se materializa con equivalencia semántica acreditada                                                                              | esta tarea                               |
+| Resultado del mapping de estado                    | requerido                                                                                                      | distingue mapping resuelto, ausencia real de estado y semántica no resoluble                                                           | esta tarea                               |
+| Momento comercial de la venta                      | requerido antes de efectos                                                                                     | debe representar el instante del hecho según semántica acreditada; no se sustituye por hora de recepción o persistencia                | esta tarea                               |
+| Fecha comercial o de negocio                       | condicional                                                                                                    | puede conservarse cuando la fuente la defina; no reemplaza el instante del hecho                                                       | esta tarea                               |
+| Timestamp de creación en la fuente                 | condicional                                                                                                    | solo se importa como creación del registro si esa semántica está documentada                                                           | esta tarea                               |
+| Timestamp de última modificación en la fuente      | condicional                                                                                                    | describe modificación de la representación de fuente y no cambia por sí solo el momento comercial                                      | esta tarea                               |
+| Timestamp de cierre en la fuente                   | condicional                                                                                                    | solo significa cierre cuando el proveedor lo defina así; no implica pago, factura, inventario ni conciliación                          | esta tarea                               |
+| Zona horaria, offset o contexto temporal de fuente | requerido cuando sea necesario para convertir un tiempo local en un instante inequívoco                        | se conserva la evidencia temporal usada para normalizar                                                                                | esta tarea                               |
+| Empresa, sede, terminal y caja de origen           | requeridas según disponibilidad y necesidad del contrato                                                       | se importan como referencias de origen sin convertirlas todavía en identidades internas                                                | `INT-POS-010`                            |
+| Cliente                                            | opcional                                                                                                       | no se crea cliente artificial cuando la venta sea a consumidor final no identificado                                                   | contrato aprobado en `INT-POS-005`       |
+| Referencia a pedido                                | opcional                                                                                                       | se conserva cuando exista equivalencia demostrable; venta y pedido siguen siendo hechos distintos                                      | contratos comerciales posteriores        |
+| Referencia fiscal                                  | condicional                                                                                                    | puede conservar referencia, nunca autoridad fiscal interna por inferencia                                                              | `INT-POS-007` y frontera fiscal aprobada |
+| Colección o referencias de líneas                  | requerida para una venta individual elegible                                                                   | cada línea pertenece a una sola venta                                                                                                  | esta tarea e `INT-POS-005`               |
+| Referencia de procedencia                          | requerida                                                                                                      | enlaza la representación original sin duplicarla dentro del contrato normalizado                                                       | `INT-POS-009`                            |
+
+Una entrada que no permita resolver identidad individual, estado comercial necesario o momento comercial requerido no podrá presentarse como venta individual plenamente normalizada.
+
+---
+
+#### 5. Definición de línea de venta importable
+
+Cada línea individual deberá conservar los siguientes slots cuando correspondan:
+
+| Dimensión                                     | Obligatoriedad                                      | Regla de importación                                                                                                    | Propietario de detalle posterior             |
+| --------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Venta padre                                   | requerida                                           | la línea se relaciona con exactamente una venta canónica                                                                | `INT-POS-005`                                |
+| Identidad externa de línea                    | requerida cuando la fuente la entregue              | se conserva sin reinterpretación; si la fuente no ofrece una identidad estable, la resolución pertenece a `INT-POS-013` | `INT-POS-013`                                |
+| Secuencia o posición externa                  | condicional                                         | puede conservar orden de origen, pero no sustituye por sí sola una identidad estable                                    | `INT-POS-013`                                |
+| Revisión de línea                             | condicional                                         | se conserva cuando la fuente la entregue; no se inventa                                                                 | `INT-POS-013`                                |
+| Producto o ítem de origen                     | requerida                                           | conserva identificador, descripción u otra referencia real del ítem externo                                             | `INT-POS-011`                                |
+| Cantidad                                      | requerida                                           | conserva la cantidad comercial informada por la fuente sin cambiar signo o magnitud para forzar otra semántica          | `INT-POS-007` y `INT-POS-008` cuando aplique |
+| Unidad                                        | requerida cuando la cantidad no sea autosuficiente  | debe permitir interpretar la cantidad de forma inequívoca                                                               | `INT-POS-011`                                |
+| Estado de línea en la fuente                  | condicional                                         | se conserva cuando exista                                                                                               | esta tarea                                   |
+| Estado canónico de línea                      | condicional                                         | solo se materializa cuando exista equivalencia semántica acreditada                                                     | esta tarea                                   |
+| Resultado del mapping de estado de línea      | requerido cuando se intente mapear estado           | distingue equivalencia, ausencia y semántica no resoluble                                                               | esta tarea                                   |
+| Momento propio de línea                       | condicional                                         | solo se usa si la fuente distingue un hecho temporal de línea con semántica verificable                                 | esta tarea                                   |
+| Timestamp de creación o modificación de línea | condicional                                         | no sustituye el momento comercial de la venta ni el de la línea                                                         | esta tarea                                   |
+| Resultado de mapping de producto              | requerido antes de efectos dependientes de producto | no convierte el ítem externo en producto Vento por coincidencia débil                                                   | `INT-POS-011`; `INT-POS-012`                 |
+| Referencia de procedencia                     | requerida                                           | enlaza el fragmento o evidencia que originó la línea                                                                    | `INT-POS-009`                                |
+
+La posición física de una fila de archivo podrá preservarse como evidencia de origen, pero no será identidad empresarial de línea por defecto.
+
+---
+
+#### 6. Vocabulario canónico mínimo de estado comercial de venta
+
+El estado comercial importado de una venta utilizará únicamente el siguiente vocabulario mínimo en esta frontera:
+
+| Estado canónico | Significado exacto                                                                                                               | No implica                                                                                                                           |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `OPEN`          | la fuente acredita que la venta existe y permanece abierta, editable o todavía no finalizada dentro de su propio ciclo comercial | pago pendiente o aprobado, preparación, entrega, documento fiscal, inventario, fidelización o hecho económico                        |
+| `FINALIZED`     | la fuente acredita que el hecho de venta fue finalizado o cerrado comercialmente dentro de su contrato                           | pago conciliado, documento fiscal emitido, inventario aplicado, puntos aplicados, entrega completada, caja cerrada o contabilización |
+| `CANCELLED`     | la fuente acredita que la venta fue cancelada como hecho comercial                                                               | que exista ya una anulación fiscal, devolución, reembolso, compensación de inventario o compensación económica                       |
+
+Este vocabulario representa únicamente el eje **comercial de la venta**.
+
+No se utilizarán como estado comercial de venta:
+
+- estado de pedido;
+- estado de preparación;
+- estado de cumplimiento o entrega;
+- estado de pago;
+- estado fiscal;
+- estado de inventario;
+- estado de fidelización;
+- estado económico;
+- estado del lote de importación;
+- estado técnico de una fila importada;
+- resultado del mapping de producto.
+
+`CANCELLED` no define todavía la naturaleza de una anulación, devolución o reembolso ni autoriza una compensación. Esos hechos permanecen reservados para `INT-POS-008` y `INT-POS-019`.
+
+---
+
+#### 7. Vocabulario canónico mínimo de estado de línea
+
+Cuando la fuente tenga un lifecycle verificable de línea, el mapping podrá utilizar:
+
+| Estado canónico de línea | Significado                                                                              | Límite                                                             |
+| ------------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `ACTIVE`                 | la fuente acredita que la línea forma parte vigente de la venta en la revisión observada | no prueba preparación, entrega, inventario ni pago                 |
+| `CANCELLED`              | la fuente acredita que la línea fue cancelada dentro de la venta                         | no ejecuta devolución, reembolso, anulación fiscal ni compensación |
+
+Si la fuente no expone estado de línea, el contrato no fabricará `ACTIVE` por ausencia de información.
+
+Una cantidad igual a cero, una cantidad negativa, una devolución, una diferencia monetaria, la ausencia de una línea en otra exportación o un `row_status` técnico no podrán utilizarse por sí solos para inferir `CANCELLED`.
+
+---
+
+#### 8. Resultado del mapping de estados
+
+Toda interpretación de estado deberá quedar clasificada mediante uno de estos resultados:
+
+| Resultado      | Significado                                                                                                       | Tratamiento                                                                                                   |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `MAPPED`       | existe evidencia suficiente para afirmar equivalencia entre el valor o garantía de la fuente y el estado canónico | puede poblar el estado canónico correspondiente                                                               |
+| `NOT_PROVIDED` | la fuente acreditada no entrega ese estado o no lo entrega para ese objeto                                        | se conserva la ausencia; si el estado es obligatorio para elegibilidad, el flujo queda bloqueado para efectos |
+| `UNRESOLVED`   | existe un valor o señal, pero su semántica no permite una equivalencia segura                                     | conservar valor original y bloquear cualquier decisión que dependa de ese estado                              |
+
+La ausencia de un estado no se convierte automáticamente en `OPEN`, `FINALIZED`, `ACTIVE` o `CANCELLED`.
+
+---
+
+#### 9. Reglas obligatorias de mapping de estados
+
+1. El valor original de la fuente deberá conservarse por referencia junto con la regla o versión de mapping aplicada.
+2. Un mapping solo será válido cuando exista equivalencia semántica demostrable; igualdad de etiqueta o semejanza lingüística no basta.
+3. Si el proveedor documenta que un recurso o endpoint devuelve exclusivamente ventas finalizadas, esa garantía contractual podrá servir como evidencia de `FINALIZED` aunque no exista un campo de estado separado.
+4. Una garantía implícita observada en la interfaz no bastará para mapear estado.
+5. Un estado de pago no se convertirá en estado de venta.
+6. Un estado fiscal no se convertirá en estado de venta.
+7. Un estado de pedido, preparación o entrega no se convertirá en estado de venta.
+8. Un estado técnico del adaptador o del lote de importación no se convertirá en estado de venta o línea.
+9. Un cambio de mapping deberá versionarse; las interpretaciones históricas no se reescribirán silenciosamente.
+10. Un valor externo nuevo o desconocido quedará `UNRESOLVED` hasta disponer de una equivalencia aprobada.
+11. Una versión tardía no podrá degradar silenciosamente una revisión de venta ya reconocida como posterior.
+12. La relación exacta entre cancelación, anulación, devolución y reembolso se resolverá en `INT-POS-008`; esta tarea no los fusiona.
+
+---
+
+#### 10. Taxonomía temporal obligatoria
+
+La importación distinguirá como conceptos separados:
+
+| Concepto temporal                     | Semántica                                                                        | Obligatoriedad                                                                   | Regla                                                                     |
+| ------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `sale_occurred_at`                    | instante del hecho comercial de venta según la semántica acreditada de la fuente | requerido antes de efectos para una venta individual                             | no se sustituye por recepción, importación, persistencia o fecha agregada |
+| `business_date`                       | fecha comercial, jornada o agrupación de negocio definida por la fuente          | condicional                                                                      | puede diferir del día UTC del instante y no sustituye `sale_occurred_at`  |
+| `source_created_at`                   | instante en que la fuente creó su registro                                       | condicional                                                                      | no se asume igual al hecho comercial salvo contrato explícito             |
+| `source_updated_at`                   | instante de última modificación reportada por la fuente                          | condicional                                                                      | no reescribe el momento original del hecho                                |
+| `source_closed_at`                    | instante en que la fuente declara cierre comercial de la venta                   | condicional                                                                      | no implica cierre de pago, caja, fiscalidad o conciliación                |
+| `line_occurred_at`                    | instante propio de un hecho de línea cuando la fuente lo distingue               | condicional                                                                      | no se inventa a partir del encabezado                                     |
+| `line_created_at` / `line_updated_at` | creación o modificación de la representación de línea en la fuente               | condicional                                                                      | permanecen separadas del momento comercial                                |
+| `received_at`                         | instante en que Vento recibe la representación externa                           | requerido por la capa de procedencia, pero físicamente definido en `INT-POS-009` | no sustituye ningún timestamp de negocio                                  |
+| `imported_at`                         | instante técnico en que una importación local fue persistida                     | técnico                                                                          | no se eleva a timestamp de venta                                          |
+
+El contrato técnico futuro podrá utilizar otros nombres físicos, pero deberá preservar estas separaciones semánticas.
+
+---
+
+#### 11. Normalización de timestamps
+
+La normalización temporal deberá cumplir simultáneamente:
+
+1. conservar el valor original o su referencia de procedencia;
+2. identificar el significado del campo antes de convertirlo;
+3. conservar offset o zona horaria cuando la fuente los entregue;
+4. cuando la fuente entregue hora local sin offset, utilizar únicamente una zona horaria acreditada para ese binding;
+5. cuando una hora local sea ambigua y no exista evidencia suficiente para resolver el instante, clasificarla como no resoluble en vez de escoger una interpretación;
+6. representar el instante normalizado de forma inequívoca para los consumidores, sin perder la evidencia temporal de fuente;
+7. conservar la precisión realmente entregada por la fuente;
+8. no fabricar segundos, milisegundos, offset o zona horaria no recibidos ni acreditados;
+9. no convertir una fecha sin hora en medianoche para simular un instante transaccional;
+10. no usar el timezone de visualización de una interfaz como prueba de la zona temporal del proveedor;
+11. una recepción tardía conservará el `sale_occurred_at` original;
+12. una actualización posterior conservará el momento original del hecho y su timestamp de actualización como dimensiones distintas;
+13. el orden entre revisiones se apoyará en la revisión o causalidad acreditada cuando exista; un timestamp por sí solo no autoriza sobrescribir una revisión posterior;
+14. un backfill o replay conservará el momento histórico del hecho y no convertirá el tiempo del reproceso en momento comercial.
+
+---
+
+#### 12. Precedencia temporal para el contrato de venta
+
+Cuando existan varios tiempos en la fuente, la selección de `sale_occurred_at` seguirá esta regla:
+
+1. se utiliza el campo que la documentación o evidencia técnica del binding defina explícitamente como instante de la venta o hecho comercial equivalente;
+2. si no existe un campo con esa semántica, se podrá utilizar otro campo únicamente cuando exista equivalencia contractual demostrable para ese recurso;
+3. `source_created_at`, `source_updated_at` y `source_closed_at` no sustituyen automáticamente al instante comercial;
+4. `business_date` no sustituye un instante;
+5. `received_at`, `imported_at`, `created_at` de persistencia interna y timestamps de procesamiento jamás se utilizarán como fallback silencioso;
+6. si no puede resolverse un instante comercial inequívoco, la venta podrá conservarse como evidencia recibida pero no será elegible para los efectos que exijan temporalidad transaccional.
+
+---
+
+#### 13. Tratamiento del flujo `makos_excel` existente
+
+La implementación física vigente conserva utilidad para análisis agregado y contingencia, pero no cumple la granularidad individual definida por `INT-POS-005` y esta tarea.
+
+La evidencia actual se clasifica así:
+
+| Elemento actual                                                           | Evidencia disponible                           | Clasificación para `INT-POS-006`  | Consecuencia                                                |
+| ------------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------- | ----------------------------------------------------------- |
+| `sales_date` del lote                                                     | fecha seleccionada para la importación diaria  | `DISPONIBLE_COMO_FECHA_AGREGADA`  | puede conservar contexto diario; no es `sale_occurred_at`   |
+| `imported_at` del lote                                                    | timestamp generado al persistir la importación | `TIEMPO_TECNICO_LOCAL`            | no es momento de venta                                      |
+| `created_at` / `updated_at` de lote o fila                                | timestamps de persistencia local               | `TIEMPO_TECNICO_LOCAL`            | no son timestamps de Makos                                  |
+| `status` del lote con valores `draft`, `validated`, `posted`, `cancelled` | estado del workflow local de importación       | `NO_APLICA_COMO_ESTADO_DE_VENTA`  | no se mapea a `OPEN`, `FINALIZED` o `CANCELLED`             |
+| `row_status` con valores `draft`, `validated`, `posted`, `cancelled`      | estado técnico de la fila importada            | `NO_APLICA_COMO_ESTADO_DE_LINEA`  | no se mapea a `ACTIVE` o `CANCELLED`                        |
+| `match_status`                                                            | resultado local de matching de producto        | `NO_APLICA_COMO_ESTADO_COMERCIAL` | pertenece al mapping, no al lifecycle de la venta           |
+| `source_row_number`                                                       | posición física dentro del archivo             | `LOCALIZADOR_TECNICO`             | no es identidad externa de línea                            |
+| `external_item_id` / nombre / categoría                                   | referencia agregada de ítem                    | `DISPONIBLE_A_NIVEL_AGREGADO`     | no demuestra una línea perteneciente a una venta individual |
+| identidad externa de venta                                                | no observada en el flujo actual                | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | no permite construir venta individual por inferencia        |
+| identidad externa de línea                                                | no observada en el flujo actual                | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | no permite construir línea individual por inferencia        |
+| estado de venta en Makos                                                  | no observado en el flujo actual                | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | no existe mapping comercial acreditado                      |
+| estado de línea en Makos                                                  | no observado en el flujo actual                | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | no existe mapping de línea acreditado                       |
+| timestamp transaccional de venta                                          | no observado en el flujo actual                | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | no puede fabricarse desde `sales_date`                      |
+| timestamps de creación, actualización o cierre de Makos                   | no observados en el flujo actual               | `NO_DISPONIBLE_EN_FLUJO_ACTUAL`   | permanecen sujetos a evidencia del binding futuro           |
+
+Por tanto:
+
+```text
+SALES_DATE DEL ARCHIVO
+≠
+SALE_OCCURRED_AT
+```
+
+```text
+IMPORTED_AT
+≠
+SALE_OCCURRED_AT
+```
+
+```text
+DRAFT / VALIDATED / POSTED / CANCELLED DEL LOTE
+≠
+ESTADO COMERCIAL DE LA VENTA
+```
+
+```text
+SOURCE_ROW_NUMBER
+≠
+IDENTIDAD DE LÍNEA
+```
+
+El flujo Excel no se elimina ni se redefine por esta tarea. Permanece como integración agregada existente hasta que una tarea autorizada decida su evolución física.
+
+---
+
+#### 14. Binding futuro de Makos
+
+La API de Makos está confirmada como habilitable bajo solicitud, pero Vento todavía no dispone en esta línea base de la especificación técnica del binding ni de una credencial provisionada.
+
+Antes de permitir que una integración transaccional Makos produzca ventas individuales, la evidencia técnica deberá permitir completar una matriz equivalente a la siguiente:
+
+| Slot requerido                                 | Evidencia que debe existir                                   | Resultado permitido                              |
+| ---------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| identidad externa de venta                     | campo o garantía estable documentada                         | mapping directo o regla estable de `INT-POS-013` |
+| identidad externa de línea                     | campo estable o evidencia formal de ausencia                 | mapping directo o resolución de `INT-POS-013`    |
+| estado de venta                                | campo, recurso o garantía contractual con semántica conocida | `MAPPED`, `NOT_PROVIDED` o `UNRESOLVED`          |
+| estado de línea                                | campo o declaración verificable de no disponibilidad         | `MAPPED`, `NOT_PROVIDED` o `UNRESOLVED`          |
+| timestamp de venta                             | campo y semántica temporal acreditados                       | `sale_occurred_at` resoluble                     |
+| zona horaria u offset                          | valor por registro o regla verificable del binding           | instante inequívoco                              |
+| timestamps de creación, actualización y cierre | documentación de cada campo cuando exista                    | slots diferenciados sin inferencia               |
+| empresa, sede, terminal y caja                 | referencias reales disponibles en la fuente                  | handoff a `INT-POS-010`                          |
+| producto o ítem de línea                       | referencia externa suficiente                                | handoff a `INT-POS-011`                          |
+
+No se registran aquí nombres de endpoints, propiedades JSON, scopes, formatos ni valores específicos de Makos porque esa evidencia técnica aún no forma parte de la línea base disponible.
+
+---
+
+#### 15. Puertas de elegibilidad derivadas de esta tarea
+
+Una venta individual importada no podrá avanzar hacia la emisión de venta validada de `INT-POS-015` cuando ocurra cualquiera de estas condiciones:
+
+| Condición                                                            | Tratamiento                                                                         | Tarea propietaria de salida                                 |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| no existe identidad externa de venta ni regla estable autorizada     | conservar sin producir una identidad alternativa por intento                        | `INT-POS-013`                                               |
+| la venta no tiene líneas individualizables                           | conservar como agregado o evidencia, sin presentarla como venta individual completa | `INT-POS-013`; reevaluación en `INT-POS-021`                |
+| el estado comercial requerido está `NOT_PROVIDED` o `UNRESOLVED`     | bloquear efectos que dependan de estado                                             | `INT-POS-021` deberá demostrar suficiencia antes del piloto |
+| `sale_occurred_at` no puede resolverse                               | bloquear efectos que exijan temporalidad transaccional                              | `INT-POS-021`                                               |
+| la zona horaria de un timestamp local no puede demostrarse           | no escoger zona por defecto                                                         | `INT-POS-021`                                               |
+| llega una revisión aparentemente anterior a una ya reconocida        | no sobrescribir la versión posterior                                                | `INT-POS-013`; conciliación en `INT-POS-020`                |
+| empresa, sede, terminal o caja requeridas no se pueden mapear        | no habilitar efectos dependientes de alcance                                        | `INT-POS-010`                                               |
+| una línea no puede mapearse al producto requerido                    | conservar línea sin efecto de inventario                                            | `INT-POS-011`; `INT-POS-012`                                |
+| se requiere información monetaria o de pago todavía no materializada | no inferirla desde estado o total                                                   | `INT-POS-007`                                               |
+| la fuente comunica anulación, devolución o reembolso                 | no reducirlo a un simple cambio de estado con efectos implícitos                    | `INT-POS-008`                                               |
+| falta procedencia completa, versión, hash o recepción                | no presentar la transformación como reproducible                                    | `INT-POS-009`                                               |
+| el transporte o recuperación incremental todavía no está definido    | no asumir webhook, polling o frecuencia                                             | `INT-POS-014`                                               |
+
+`INT-POS-021` deberá diseñar el piloto sin efectos de manera que compruebe estas puertas con evidencia del binding real. `INT-POS-022` no podrá diseñar un piloto con efectos habilitados sobre una semántica que permanezca no resuelta.
+
+---
+
+#### 16. Reglas de revisión y eventos fuera de orden
+
+1. Una actualización de una venta conserva la misma identidad canónica cuando corresponde al mismo hecho de origen.
+2. La revisión de fuente, cuando exista, se conserva separada de los timestamps.
+3. Un `source_updated_at` posterior no prueba por sí solo que la versión de negocio sea superior cuando el proveedor disponga de un mecanismo explícito de versión o secuencia.
+4. Una representación tardía no podrá sobrescribir silenciosamente una revisión reconocida como posterior.
+5. Un valor de estado desconocido no se fuerza al estado canónico más cercano.
+6. Una transición aparentemente regresiva se envía a conciliación o queda bloqueada hasta demostrar la semántica del proveedor.
+7. Un replay conserva el instante histórico del hecho; solo el intento técnico de procesamiento ocurre después.
+8. Una corrección autorizada conserva antes, después, motivo o correlación mediante los contratos transversales aplicables; no reescribe el hecho original.
+9. `INT-POS-013` materializará la idempotencia por sistema, venta y línea externa.
+10. `INT-POS-020` materializará la conciliación diaria y el tratamiento de diferencias persistentes.
+
+---
+
+#### 17. Separación entre estados externos, estados canónicos y estados de proceso
+
+Los estados definidos por esta tarea no sustituyen los estados de los procesos empresariales `VPROC-*`.
+
+Por ejemplo, un proceso PULSO puede encontrarse en un estado de preparación, pago, entrega o conciliación mientras el estado comercial de la venta tenga otra semántica.
+
+Por tanto:
+
+```text
+ESTADO EXTERNO DE MAKOS
+→ se interpreta mediante mapping acreditado
+
+ESTADO COMERCIAL CANÓNICO DE VENTA
+→ describe únicamente lifecycle comercial de la venta
+
+ESTADO VPROC DE PULSO
+→ describe el avance del proceso empresarial propietario
+```
+
+Ninguno se deriva automáticamente de otro.
+
+La misma separación aplica a estados de pago, fiscalidad, inventario, fidelización y economía.
+
+---
+
+#### 18. Fronteras con tareas posteriores
+
+- `INT-POS-007` incorporará descuentos, impuestos, propinas y medios de pago sin redefinir identidad, estado comercial ni `sale_occurred_at`.
+- `INT-POS-008` definirá anulaciones, devoluciones y reembolsos como hechos diferenciados; `CANCELLED` no ejecuta esos efectos por sí solo.
+- `INT-POS-009` conservará físicamente payload original, versión, hash y fecha de recepción; `received_at` no sustituirá el momento comercial.
+- `INT-POS-010` materializará el mapping de empresa, sede, terminal y caja externa.
+- `INT-POS-011` materializará mapping de producto, presentación y receta.
+- `INT-POS-012` gobernará cuarentena de líneas sin mapping.
+- `INT-POS-013` definirá identidad e idempotencia por sistema, venta y línea, incluida la ausencia real de identificadores externos fuertes.
+- `INT-POS-014` definirá webhook y polling sin cambiar la semántica temporal o de estados.
+- `INT-POS-015` emitirá el evento canónico únicamente cuando la venta satisfaga las puertas aplicables.
+- `INT-POS-020` conciliará diferencias de estado, temporalidad y efectos sin reescribir historia.
+- `INT-POS-021` deberá probar el binding real sin efectos sobre inventario ni finanzas.
+- `INT-POS-022` solo podrá habilitar efectos después de demostrar que las puertas críticas quedaron resueltas.
+- `SHELL-CON-020` y `SHELL-CON-021` materializarán posteriormente tipos y estructuras físicas compartidas sin alterar estas semánticas.
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 19. Decisiones congeladas
+
+1. La importación distingue representación de fuente, representación normalizada y contrato canónico.
+2. Una venta individual requiere identidad de fuente o resolución formal posterior, líneas individualizables, estado comercial resoluble cuando sea necesario y un momento comercial inequívoco antes de efectos.
+3. El encabezado y las líneas conservan valores de origen sin completarlos con defaults inventados.
+4. El vocabulario comercial mínimo de venta es `OPEN`, `FINALIZED` y `CANCELLED`.
+5. `FINALIZED` no significa pagado, facturado, entregado, conciliado, descontado de inventario, acumulado en fidelización ni contabilizado.
+6. `CANCELLED` no ejecuta anulación, devolución, reembolso o compensación.
+7. El vocabulario de línea, cuando la fuente tenga lifecycle verificable, es `ACTIVE` y `CANCELLED`.
+8. El resultado de mapping de estado distingue `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED`.
+9. Ningún estado técnico del importador es estado comercial de venta o línea.
+10. `sale_occurred_at`, `business_date`, creación, actualización, cierre, recepción e importación son conceptos temporales distintos.
+11. Un timestamp de fuente solo se normaliza cuando su semántica y contexto temporal son verificables.
+12. No se fabrica medianoche para convertir una fecha en instante.
+13. No se inventa zona horaria, offset ni precisión.
+14. Un evento tardío conserva su momento histórico y no retrocede silenciosamente una revisión posterior.
+15. El `sales_date` del flujo Excel vigente no es `sale_occurred_at`.
+16. `imported_at`, `created_at` y `updated_at` locales no son timestamps de venta Makos.
+17. Los estados `draft`, `validated`, `posted` y `cancelled` del lote o fila vigente pertenecen al workflow local de importación y no al lifecycle comercial de Makos.
+18. `source_row_number` no es identidad de línea.
+19. La integración Excel vigente continúa siendo agregada y no puede generar ventas individuales ficticias.
+20. Los nombres físicos y valores reales del futuro binding Makos solo se incorporarán con evidencia técnica del proveedor.
+21. Esta tarea no modifica código, migraciones, Supabase, datos, credenciales, endpoints, webhooks, polling ni efectos internos.
+22. `INT-POS-007` permanece exclusivamente reservada.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `INT-POS-006` instancia para la transición Makos → PULSO reglas ya protegidas por la cobertura canónica vigente: convergencia de POS externo y PULSO en contratos de venta y línea, separación de estados comerciales respecto de pago, fiscalidad e inventario, rechazo de estados incompatibles, preservación de versiones frente a eventos fuera de orden, conservación del momento histórico del hecho en replay o backfill, exigencia de equivalencia semántica para mappings legacy y separación entre momento del hecho, registro técnico y cierre. No introduce una capacidad ejecutable nueva ni una excepción fuera de esas reglas ya protegidas. Por tanto, el registro 04A permanece sin cambios.
+
+#### 21. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-INTEGRATION-014`, como cobertura primaria de convergencia en contratos canónicos de venta y línea, estados incompatibles, parcialidad, eventos fuera de orden y conciliación durante la transición POS externo ↔ PULSO;
+- `TREQ-INTEGRATION-043`, que impide que una versión tardía sobrescriba una revisión posterior;
+- `TREQ-INTEGRATION-044`, que exige tratamiento explícito de eventos fuera de orden, desconocidos o incompatibles;
+- `TREQ-INTEGRATION-045`, que conserva el `occurred_at` histórico en replay o backfill;
+- `TREQ-INTEGRATION-046`, que exige equivalencia demostrable de hecho, momento, agregado, versión y efectos antes de mapear una representación legacy;
+- `TREQ-INTEGRATION-049`, que protege procedencia, identificador externo, recepción y correlación de hechos externos;
+- `TREQ-INTEGRATION-222`, que separa `occurred_at`, `recorded_at` y `completed_at`, conserva contexto temporal y prohíbe reescribir el momento del hecho por una captura tardía;
+- `TREQ-PULSO-005`, que protege la separación de los estados del ciclo comercial;
+- `TREQ-PULSO-006`, que protege la separación entre venta, pago, caja, fiscalidad, devolución y conciliación.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 22. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `INT-POS-005` como contrato semántico base sin cambiar identidad ni propiedad de venta y línea;
+2. distingue representación de fuente, normalización y contrato canónico;
+3. define el contenido semántico mínimo del encabezado de venta individual;
+4. define el contenido semántico mínimo de la línea de venta individual;
+5. mantiene una línea vinculada a exactamente una venta;
+6. define un vocabulario comercial mínimo de venta sin mezclar pago, fiscalidad, inventario, fidelización, economía, preparación o entrega;
+7. define el vocabulario condicional de estado de línea sin inferir lifecycle cuando la fuente no lo exponga;
+8. define resultados explícitos de mapping `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED`;
+9. prohíbe mappings por semejanza de nombre sin equivalencia semántica;
+10. permite garantías contractuales de recurso como evidencia únicamente cuando estén documentadas por la fuente;
+11. impide tratar estados técnicos del importador como estados de negocio;
+12. distingue `sale_occurred_at`, fecha comercial, creación, actualización, cierre, recepción e importación;
+13. prohíbe sustituir el momento comercial por un timestamp técnico;
+14. prohíbe fabricar hora, offset, zona o precisión;
+15. define tratamiento de timestamps locales ambiguos o sin contexto temporal suficiente;
+16. conserva el momento histórico frente a recepción tardía, replay o backfill;
+17. impide que una revisión tardía degrade silenciosamente una posterior;
+18. clasifica uno por uno los campos temporales y de estado de la importación `makos_excel` existente;
+19. documenta que el Excel actual no contiene identidad individual de venta, identidad individual de línea, estado comercial Makos ni timestamp transaccional de venta;
+20. impide convertir `sales_date` en `sale_occurred_at`;
+21. impide convertir `source_row_number` en identidad de línea por defecto;
+22. define la evidencia mínima que deberá aportar el binding futuro de Makos antes de un piloto transaccional;
+23. asigna cada bloqueo o dato faltante a una tarea `INT-POS` exacta con condición de salida;
+24. mantiene `INT-POS-007` como única siguiente tarea reservada;
+25. genera cero cambios `TREQ-*` por existir cobertura canónica específica;
+26. no crea una copia del registro 04A;
+27. no implementa código, DDL, DML, migraciones, Supabase, credenciales, endpoints, webhooks, polling, importaciones remotas ni efectos empresariales;
+28. no presenta como disponible ningún campo o estado de Makos que no esté respaldado por evidencia actual.
+
+---
+
+#### 23. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-005 — Definir contrato canónico de venta y línea de venta`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago`
+
+
 ### [ ] INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
 ### [ ] INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
 ### [ ] INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción

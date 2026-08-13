@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **766** |
+| Tareas aprobadas | **767** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **828** |
+| Tareas no iniciadas | **827** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.06% (766/1594)** |
+| Porcentaje de completamiento | **48.12% (767/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-005 — Definir contrato canónico de venta y línea de venta** |
-| Tarea actual | **INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps** |
+| Última tarea aprobada | **INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps** |
+| Tarea actual | **INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago** |
+| Siguiente tarea | **INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 50 de 83 aprobadas; INT-POS-006 pendiente** |
+| Progreso del bloque | **BLOQUE X: 51 de 83 aprobadas; INT-POS-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-005` — Definir contrato canónico de venta y línea de venta |
-| Tarea actual | `INT-POS-006` — Definir importación de encabezados, líneas, estados y timestamps — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-007` — Definir importación de descuentos, impuestos, propinas y medios de pago |
+| Última aprobada | `INT-POS-006` — Definir importación de encabezados, líneas, estados y timestamps |
+| Tarea actual | `INT-POS-007` — Definir importación de descuentos, impuestos, propinas y medios de pago — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-008` — Definir importación de anulaciones, devoluciones y reembolsos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 50 DE 83 APROBADAS — ACTUAL INT-POS-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 51 DE 83 APROBADAS — ACTUAL INT-POS-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-005 — Definir contrato canónico de venta y línea de venta
-        ↓
-TAREA ACTUAL
 INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 50 de 83 tareas aprobadas
+BLOQUE X — 51 de 83 tareas aprobadas
 ```
