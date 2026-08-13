@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **790** |
+| Aprobadas | **791** |
 | En propuesta | **0** |
-| No iniciadas | **804** |
+| No iniciadas | **803** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **49.56% (790/1594)** |
+| Porcentaje de completamiento | **49.62% (791/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-SALES-005` — Definir acumulación de puntos en PASS | ✅ APROBADA |
-| Tarea actual | `INT-SALES-006` — Definir procesamiento de redención en PASS | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-SALES-007` — Definir control contra efectos duplicados por reintento | ⬜ NO INICIADA |
+| Última aprobada | `INT-SALES-006` — Definir procesamiento de redención en PASS | ✅ APROBADA |
+| Tarea actual | `INT-SALES-007` — Definir control contra efectos duplicados por reintento | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-SALES-008` — Definir conciliación de convivencia entre POS externo y PULSO | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1498,7 +1498,7 @@
 | ✅ APROBADA | `INT-SALES-003` | Definir registro de salida de inventario en NEXO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-004` | Definir recepción del evento de venta en NUMERA | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ✅ APROBADA | `INT-SALES-005` | Definir acumulación de puntos en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
-| ⬜ NO INICIADA | `INT-SALES-006` | Definir procesamiento de redención en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
+| ✅ APROBADA | `INT-SALES-006` | Definir procesamiento de redención en PASS | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-007` | Definir control contra efectos duplicados por reintento | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-008` | Definir conciliación de convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |
 | ⬜ NO INICIADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md` |

@@ -6152,7 +6152,1509 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-006 — Definir procesamiento de redención en PASS`
 
 
-### [ ] INT-SALES-006 — Definir procesamiento de redención en PASS
+### ✅ INT-SALES-006 — Definir procesamiento de redención en PASS
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-005 — Definir acumulación de puntos en PASS`
+**Tarea siguiente:** `INT-SALES-007 — Definir control contra efectos duplicados por reintento`
+**Tipo de tarea:** documental; definición normativa permanente del procesamiento de redención en PASS y de la frontera PULSO → PASS que solicita y confirma su consumo, preservando identidad propietaria de redención, cuenta de fidelización, recompensa y costo versionado, saldo disponible, autoridad por sede y actor, comando propietario idempotente, protección contra doble gasto, ledger inmutable, resultado recuperable, cancelación, compensación, conciliación y separación estricta frente a acumulación, descuento, pago y venta, sin implementar tablas, RPC, funciones, triggers, colas, migraciones, Supabase ni cambios de código
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Aplicación propietaria de la venta y operación POS:** `PULSO`
+**Aplicación propietaria de la redención y del ledger de fidelización:** `PASS`
+**Proceso PASS reutilizado:** `VPROC-0045 — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados`
+**Familia de interacción transversal reutilizada:** `OWNER_COMMAND`
+**Alcance de idempotencia transversal reutilizado:** `OWNER_COMMAND`
+**Identidad propietaria de dominio reutilizada:** `redemption_id`
+**Línea base documental:** `vento-shell@0727d0e163c7aa6ac20d5addd883a872203e0db3`
+**Línea base PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Línea base PASS observada:** `vento-pass@b5a4aec908ef12226f798078577ab089a29ccda2`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma permanente cómo una redención de fidelización perteneciente a PASS puede ser solicitada, autorizada, presentada en PULSO, confirmada y conciliada exactamente una vez, sin convertir una venta, un descuento, un pago, un QR o un cambio de estado técnico en autoridad para gastar puntos.
+
+Regla raíz:
+
+```text
+CUENTA PASS
+        ↓
+RECOMPENSA / BENEFICIO PASS APLICABLE
+        ↓
+SOLICITUD DE REDENCIÓN
+        ↓
+PASS VALIDA CUENTA + REGLA + COSTO + SALDO + VIGENCIA + SEDE
+        ↓
+REDENCIÓN PASS CON IDENTIDAD ESTABLE
+        ↓
+PUNTOS QUEDAN PROTEGIDOS CONTRA DOBLE GASTO
+        ↓
+REFERENCIA O TOKEN PRESENTABLE EN PULSO
+        ↓
+PULSO REVALIDA ACTOR + SEDE + CONTEXTO
+        ↓
+OWNER_COMMAND PULSO → PASS
+        ↓
+PASS RECUPERA O CONFIRMA LA MISMA REDENCIÓN
+        ↓
+CONSUMO EXACTAMENTE UNA VEZ
+        ↓
+LEDGER / RESULTADO PASS DURABLE
+        ↓
+CORRELACIÓN CON PEDIDO O VENTA CUANDO APLIQUE
+        ↓
+CONCILIACIÓN
+```
+
+Nunca:
+
+```text
+QR = REDENCIÓN
+```
+
+Nunca:
+
+```text
+DESCUENTO = REDENCIÓN PASS
+```
+
+Nunca:
+
+```text
+VENTA = GASTO DE PUNTOS
+```
+
+Nunca:
+
+```text
+PULSO → UPDATE DIRECTO DE TABLAS PASS
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-006` deja definido el contrato permanente de redención mediante las siguientes decisiones:
+
+1. PASS es la única propietaria de la redención, la cuenta de fidelización, las recompensas, las reglas, el ledger y el saldo derivado.
+2. PULSO puede presentar, solicitar o confirmar el uso de una redención, pero no crea por autoridad propia el gasto de puntos.
+3. Una redención debe existir como operación PASS real antes de poder consumirse como beneficio de fidelización.
+4. La identidad empresarial de la redención es estable y no se sustituye por QR, código visible, pedido, venta, intento técnico, timestamp o worker.
+5. `redemption_id` es la referencia propietaria que debe conservarse de extremo a extremo.
+6. El QR, token o código de presentación es un instrumento de localización o autorización limitada y no la identidad de negocio.
+7. PULSO solicita a PASS una mutación mediante la familia transversal `OWNER_COMMAND`.
+8. El comando conserva `source_command_id` estable durante retry, timeout, refresh o reenvío.
+9. PASS revalida la mutación dentro de su propia frontera antes de confirmar cualquier consumo.
+10. Una misma redención solo puede producir un consumo confirmado.
+11. Dos comandos diferentes que intenten consumir la misma redención no producen dos gastos; solo uno puede ganar cuando la operación sea válida.
+12. La creación o autorización de una redención debe impedir que los mismos puntos respalden simultáneamente otra redención incompatible.
+13. La representación física de esa protección puede cerrarse después, pero nunca puede existir una ventana válida de doble gasto.
+14. Si la protección se materializa mediante un gasto ya confirmado en ledger, la validación posterior en PULSO no vuelve a gastar los puntos.
+15. Si la protección se materializa mediante una reserva autoritativa, la confirmación convierte esa reserva en un único gasto sin duplicarla.
+16. La elección física entre reserva y gasto anticipado corresponde al contrato detallado de PASS, pero el resultado empresarial debe ser equivalente respecto de no doble gasto, trazabilidad y recuperación.
+17. Una cancelación previa al consumo libera o compensa únicamente lo que haya sido realmente protegido o debitado.
+18. Una redención ya consumida no se revierte mediante edición destructiva del movimiento original.
+19. Una compensación posterior usa un hecho separado, identidad propia y relación explícita con la redención original.
+20. La recompensa o beneficio se revalida por identidad, vigencia, sede, estado y regla aplicable.
+21. El costo en puntos utilizado por la redención queda históricamente trazable y no se recalcula silenciosamente con el valor vigente al momento de un retry.
+22. El saldo disponible se resuelve en PASS; PULSO no envía el saldo como autoridad.
+23. La cuenta PASS se resuelve en PASS y no se infiere desde nombre, teléfono, correo, pedido o QR no validado.
+24. Una redención no puede quedar aplicada a una cuenta distinta de la que la autorizó sin una operación de corrección explícita.
+25. La validación en PULSO exige autoridad de actor, sede, estado y contexto operativo.
+26. La validación exitosa de un token no sustituye la confirmación propietaria de PASS.
+27. Un descuento comercial no demuestra redención.
+28. Una propina no demuestra redención.
+29. Un medio de pago no demuestra redención.
+30. Un importe negativo no demuestra redención.
+31. Un código promocional no demuestra redención PASS salvo que el contrato PASS aplicable lo declare expresamente.
+32. Una venta puede referenciar una redención ya confirmada, pero esa referencia no vuelve a ejecutar el gasto.
+33. Acumulación y redención conservan identidades, reglas y resultados independientes.
+34. Una misma venta puede acumular puntos y usar una redención únicamente si cada operación satisface su propio contrato; ninguna implica la otra.
+35. El resultado de NEXO o NUMERA no confirma la redención.
+36. El resultado PASS no confirma inventario, pago ni hecho económico.
+37. Retry y respuesta perdida se resuelven consultando primero la operación original.
+38. El resultado desconocido no autoriza crear una segunda redención ni volver a gastar puntos.
+39. Replay técnico conserva la identidad original y no vuelve a consumir la redención.
+40. Backfill no ejecuta gastos de puntos por defecto.
+41. Procedencia histórica Makos o venta nativa PULSO no cambia la propiedad de la redención.
+42. PASS no necesita el adaptador Makos para validar o consumir una redención en el contrato permanente.
+43. El retiro futuro del adaptador no modifica redenciones ni movimientos históricos.
+44. `VPROC-0045` continúa como proceso propietario de la interacción de fidelización.
+45. No se crea una definición normal de evento adicional por esta tarea.
+46. Se crean cero requisitos `TREQ-*`.
+47. Se modifican cero requisitos `TREQ-*`.
+48. Se crean cero objetos físicos.
+49. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Base canónica preservada
+
+Esta tarea consume sin reabrir:
+
+- `INT-SALES-001`, para venta y líneas durables en PULSO;
+- `INT-SALES-002`, para emisión permanente de hechos comerciales PULSO;
+- `INT-SALES-003`, para independencia del efecto físico NEXO;
+- `INT-SALES-004`, para independencia del hecho económico NUMERA;
+- `INT-SALES-005`, para propiedad PASS, cuenta, regla, ledger, saldo, acumulación y separación estricta de redención;
+- `INT-POS-018`, para la decisión aprobada de que una redención debe resolver una identidad PASS real, revalidar saldo no expirado, recompensa, vigencia, sede, regla y límites y operar de forma atómica e idempotente;
+- `INT-POS-019`, para compensaciones no destructivas de efectos confirmados durante la transición;
+- `INT-POS-020`, para conciliación de venta y efectos;
+- `INT-APP-004`, para los alcances `REQUEST_ACCEPTANCE`, `OWNER_COMMAND`, `CONSUMER_INBOX`, `CONSUMER_EFFECT` y sus reglas de identidad;
+- `INT-APP-005`, para retry y resultado desconocido;
+- `INT-APP-006`, para compensación;
+- `INT-APP-007`, para auditoría;
+- `INT-APP-008`, para estados de sincronización y recuperación;
+- `INT-APP-009`, para parcialidad;
+- `INT-APP-010`, para prohibición de escrituras cruzadas sin contrato;
+- `PASS-INT-002`, como responsabilidad posterior de integración detallada PULSO → PASS para redención;
+- `PASS-QA-002`, como responsabilidad posterior de prueba integral de redención;
+- `PULSO-AUTH-010`, como responsabilidad posterior de protección de redenciones en PULSO;
+- el registro canónico vigente de requisitos de prueba.
+
+No se redefine la acumulación aprobada en `INT-SALES-005`.
+
+---
+
+#### 4. Propiedad empresarial permanente
+
+| Elemento                         | Propietaria o autoridad                    | Regla                                               |
+| -------------------------------- | ------------------------------------------ | --------------------------------------------------- |
+| venta y pedido                   | `PULSO`                                    | conserva el hecho comercial y el contexto POS       |
+| cuenta de fidelización           | `PASS`                                     | resuelve titularidad y elegibilidad                 |
+| recompensa o beneficio           | `PASS`                                     | define identidad, vigencia, costo y alcance         |
+| redención                        | `PASS`                                     | conserva identidad, estado, resultado y correlación |
+| ledger de puntos                 | `PASS`                                     | fuente de verdad de gastos y compensaciones         |
+| saldo de puntos                  | `PASS`                                     | proyección derivada del ledger                      |
+| solicitud de consumo en terminal | `PULSO`                                    | usa un contrato hacia la propietaria PASS           |
+| autorización de actor POS        | `PULSO` y contrato de autorización vigente | revalida actor, sede y capacidad                    |
+| aceptación del consumo           | `PASS`                                     | única confirmación empresarial del gasto            |
+| correlación con pedido o venta   | ambas mediante contrato                    | no transfiere propiedad                             |
+| inventario                       | `NEXO`                                     | efecto físico separado                              |
+| hecho económico                  | `NUMERA`                                   | efecto económico separado                           |
+
+Invariante:
+
+```text
+PULSO SOLICITA
+PASS DECIDE
+PASS MUTA SU LEDGER
+PASS CONFIRMA EL RESULTADO
+PULSO CONSERVA LA CORRELACIÓN COMERCIAL
+```
+
+---
+
+#### 5. Frontera correcta: comando hacia la propietaria
+
+La confirmación de redención no se modela como una escritura directa desde PULSO sobre datos PASS.
+
+Se reutiliza:
+
+```text
+interaction_family = OWNER_COMMAND
+```
+
+y el alcance transversal:
+
+```text
+OWNER_COMMAND
+→ source_command_id
+→ misma intención autorizada
+→ misma mutación propietaria
+→ resultado recuperable
+```
+
+Reglas:
+
+1. PULSO genera o conserva un `source_command_id` antes del primer intento;
+2. el mismo intento lógico reutiliza esa identidad;
+3. PASS recibe el comando y revalida autoridad y estado;
+4. PASS es la única aplicación que confirma la mutación de su ledger;
+5. PULSO recibe un resultado o receipt propietario;
+6. timeout después de un posible commit exige consulta antes de reejecutar;
+7. un nuevo click, escaneo o refresh no genera otra intención empresarial cuando el objetivo sigue siendo consumir la misma redención;
+8. cambiar materialmente la intención requiere una operación sucesora, no reutilizar la identidad con otra huella.
+
+---
+
+#### 6. Redención real antes de consumo
+
+Una venta o terminal PULSO no puede fabricar una redención desde datos comerciales.
+
+Antes del consumo debe existir una referencia que PASS pueda resolver inequívocamente a una redención propia.
+
+Como mínimo debe poder demostrarse:
+
+- `redemption_id`;
+- cuenta PASS propietaria;
+- recompensa o beneficio aplicable;
+- costo histórico en puntos;
+- regla o contrato aplicable;
+- sede o alcance autorizado;
+- estado empresarial que permita continuar;
+- evidencia de que la operación no fue consumida ya;
+- evidencia suficiente para proteger contra doble gasto;
+- correlación con el instrumento de presentación cuando exista.
+
+No basta con:
+
+- texto “descuento”;
+- nombre de recompensa;
+- puntos escritos por el cliente;
+- importe negativo;
+- QR no resoluble;
+- referencia externa sin identidad PASS;
+- fila Makos;
+- descuento en una venta;
+- metadata no validada.
+
+---
+
+#### 7. Identidad de dominio
+
+La identidad de la redención es:
+
+```text
+redemption_id
+```
+
+Reglas:
+
+1. es emitida o gobernada por PASS;
+2. persiste durante presentación, validación, retry, uso, cancelación y conciliación;
+3. no cambia por un nuevo intento técnico;
+4. no cambia por un nuevo QR de presentación cuando el contrato permita rotarlo;
+5. no cambia por asociarla posteriormente a un pedido o venta;
+6. no se deriva del costo en puntos;
+7. no se deriva del usuario;
+8. no se deriva de la recompensa;
+9. no se deriva del timestamp;
+10. no se deriva de un token aleatorio.
+
+Una redención diferente obtiene otra identidad empresarial aunque use la misma recompensa.
+
+---
+
+#### 8. Identidad del comando y guarda contra doble consumo
+
+La idempotencia transversal del comando usa:
+
+```text
+source_command_id
+```
+
+La protección de dominio adicional exige:
+
+```text
+UNA redemption_id
+→ COMO MÁXIMO UN CONSUMO CONFIRMADO
+```
+
+Por tanto:
+
+1. dos retries del mismo comando recuperan el mismo resultado;
+2. dos comandos distintos contra la misma redención compiten bajo la guarda de dominio;
+3. si uno ya confirmó el consumo, el otro recupera el resultado compatible o recibe conflicto/rechazo;
+4. un pedido diferente no habilita otra vez la misma redención;
+5. una terminal diferente no habilita otra vez la misma redención;
+6. un token re-presentado no habilita otra vez la misma redención;
+7. una pérdida de respuesta no libera la redención para ser consumida nuevamente;
+8. una redención cancelada o vencida no se reactiva mediante retry ordinario.
+
+---
+
+#### 9. Huella lógica del comando
+
+La huella del comando debe representar la intención empresarial y no los detalles volátiles del transporte.
+
+Debe considerar, cuando aplique:
+
+- `redemption_id`;
+- cuenta PASS esperada;
+- recompensa o beneficio esperado;
+- costo histórico en puntos;
+- sede;
+- pedido o venta correlacionados cuando existan;
+- actor efectivo o referencia de autorización;
+- terminal o contexto cuando sea material para la política;
+- acción solicitada;
+- versión contractual;
+- evidencia de presentación;
+- referencias causales.
+
+No cambia únicamente por:
+
+- número de retry;
+- `attempt_id`;
+- `delivery_id`;
+- `trace_id`;
+- worker;
+- refresh;
+- segundo escaneo del mismo instrumento;
+- hora técnica de reenvío;
+- canal de transporte;
+- retiro del adaptador Makos.
+
+La misma identidad de comando con huella material incompatible produce conflicto.
+
+---
+
+#### 10. Cuenta PASS
+
+PASS revalida la cuenta antes de autorizar o confirmar el uso.
+
+Se preserva:
+
+```text
+PERSONA
+≠
+CUENTA AUTENTICADA
+≠
+CUSTOMER_ID COMERCIAL
+≠
+LOYALTY_ACCOUNT
+≠
+CONTACTO
+```
+
+Reglas:
+
+1. la redención pertenece a una cuenta resoluble;
+2. una venta sin cliente no puede adoptar una redención ajena;
+3. correo, teléfono, nombre o documento coincidentes no reasignan la redención;
+4. el token no sustituye la relación de cuenta;
+5. una cuenta bloqueada o no elegible impide nuevas mutaciones conforme a la política aplicable;
+6. una corrección de identidad posterior conserva historia y no reescribe movimientos confirmados.
+
+---
+
+#### 11. Recompensa o beneficio
+
+PASS revalida la recompensa o beneficio que fundamenta la redención.
+
+Debe conservarse como mínimo:
+
+- identidad de la recompensa o beneficio;
+- vigencia aplicable;
+- alcance por sede cuando corresponda;
+- estado de disponibilidad para redención;
+- costo en puntos utilizado;
+- versión o referencia contractual suficiente;
+- restricciones de uso;
+- límites aplicables;
+- evidencia o snapshot histórico suficiente para explicar qué se autorizó.
+
+Un cambio posterior del catálogo no reescribe la redención histórica.
+
+---
+
+#### 12. Costo histórico en puntos
+
+El costo usado por la redención debe quedar históricamente reconstruible.
+
+No es válido:
+
+```text
+RETRY TARDÍO
+→ RELEER COSTO ACTUAL
+→ CAMBIAR LA MISMA REDENCIÓN
+```
+
+Reglas:
+
+1. el costo se fija conforme al contrato vigente al autorizar la redención;
+2. un cambio posterior de recompensa no recostea silenciosamente una operación ya autorizada;
+3. una incompatibilidad material exige cancelación, sucesión o conciliación según la política aplicable;
+4. PULSO no decide el costo;
+5. el cliente no decide el costo;
+6. el monto de una venta no sustituye el costo en puntos.
+
+---
+
+#### 13. Saldo disponible y puntos no expirados
+
+La decisión de gasto pertenece a PASS.
+
+Antes de que la redención quede utilizable, PASS debe poder demostrar:
+
+- saldo derivado del ledger;
+- puntos válidos conforme a expiración y reglas aplicables;
+- ausencia de una reserva o gasto incompatible que ya consuma la misma capacidad;
+- suficiencia para el costo requerido;
+- estado de cuenta compatible;
+- resultado durable de la decisión.
+
+PULSO nunca recibe autoridad para establecer:
+
+- saldo anterior;
+- saldo posterior;
+- puntos disponibles;
+- fecha de expiración;
+- elegibilidad de la cuenta.
+
+Esos valores pueden proyectarse para experiencia cuando corresponda, pero la mutación revalida la fuente PASS.
+
+---
+
+#### 14. Protección contra doble gasto
+
+La redención no puede quedar presentable para consumo mientras los mismos puntos permanezcan simultáneamente disponibles para otra redención incompatible.
+
+Invariante:
+
+```text
+PUNTOS COMPROMETIDOS PARA REDENCIÓN A
++
+REDENCIÓN B CON LOS MISMOS PUNTOS
+→ NO PUEDEN AMBAS CONFIRMARSE
+```
+
+La implementación posterior deberá elegir una representación propietaria que garantice esta exclusión.
+
+Dos estrategias físicas pueden satisfacer el contrato si quedan aprobadas en `PASS-INT-002`:
+
+1. gasto confirmado al autorizar la redención, con compensación si después se cancela sin consumo;
+2. reserva autoritativa de puntos y conversión atómica a gasto al confirmar el consumo.
+
+Esta tarea no selecciona tablas ni mecanismo físico, pero congela estas obligaciones:
+
+- ninguna ventana de doble gasto;
+- una sola verdad PASS;
+- ledger o reserva trazable;
+- resultado recuperable;
+- cancelación segura;
+- conciliación.
+
+---
+
+#### 15. Atomicidad del resultado
+
+El procesamiento deberá vincular atómicamente o con durabilidad equivalente:
+
+- identidad de redención;
+- identidad del comando cuando exista;
+- cuenta;
+- recompensa;
+- costo histórico;
+- protección de puntos;
+- autorización aplicable;
+- estado de la redención;
+- movimiento de ledger cuando corresponda;
+- saldo derivado;
+- pedido o venta correlacionados cuando aplique;
+- actor y sede;
+- resultado propietario;
+- referencias de auditoría.
+
+No es válido:
+
+```text
+REDENCIÓN CONFIRMADA
+SIN PROTECCIÓN DEL GASTO
+```
+
+No es válido:
+
+```text
+PUNTOS GASTADOS
+SIN REDENCIÓN RECUPERABLE
+```
+
+No es válido:
+
+```text
+ESTADO CAMBIADO
+SIN RESULTADO IDEMPOTENTE
+```
+
+---
+
+#### 16. Ledger y saldo
+
+El ledger PASS permanece como fuente de verdad de puntos.
+
+```text
+MOVIMIENTO CONFIRMADO
+→ FUENTE DE VERDAD
+
+SALDO
+→ PROYECCIÓN DERIVADA
+```
+
+Reglas:
+
+1. la redención no fija manualmente el saldo como dato independiente;
+2. un gasto confirmado conserva relación con `redemption_id`;
+3. un retry no crea otro movimiento;
+4. la confirmación en PULSO no crea un segundo movimiento si el gasto ya ocurrió;
+5. una compensación crea otro movimiento relacionado;
+6. no se elimina un movimiento confirmado para “restaurar” el saldo;
+7. una proyección divergente se reconcilia contra el ledger.
+
+---
+
+#### 17. Creación, autorización y consumo son hechos distintos
+
+La redención debe distinguir al menos estas decisiones semánticas:
+
+1. existe una intención o solicitud;
+2. PASS la evalúa;
+3. PASS autoriza o rechaza;
+4. los puntos quedan protegidos contra doble gasto cuando la autorización lo exige;
+5. existe una referencia presentable cuando corresponda;
+6. PULSO solicita el consumo en un contexto autorizado;
+7. PASS confirma o rechaza el consumo;
+8. el beneficio queda correlacionado con el pedido o venta cuando corresponda;
+9. cualquier cancelación o compensación posterior conserva el original.
+
+Estos pasos no obligan a nueve estados físicos distintos. `PASS-INT-002` cierra el modelo de almacenamiento y estados sin perder ninguna de estas decisiones.
+
+---
+
+#### 18. Instrumento de presentación
+
+Un QR, código o token puede permitir localizar y presentar la redención, pero no sustituye la validación empresarial.
+
+El instrumento deberá ser:
+
+- opaco respecto de secretos;
+- mínimo en datos personales;
+- resoluble a una redención propietaria;
+- limitado por estado;
+- limitado por vigencia cuando corresponda;
+- revocable cuando el contrato lo permita;
+- resistente a reutilización;
+- compatible con validación por sede y actor;
+- trazable sin convertirse en la identidad de negocio.
+
+No se considera prueba suficiente de seguridad o idempotencia que el token incluya un timestamp o aleatoriedad.
+
+---
+
+#### 19. Validación en PULSO
+
+PULSO realiza una validación operativa antes de solicitar el consumo.
+
+Debe comprobar, según aplicabilidad:
+
+- acceso a PULSO;
+- capacidad de redención;
+- sede del contexto;
+- actor atribuible;
+- dispositivo o terminal cuando corresponda;
+- formato válido de la referencia;
+- correlación con pedido o venta cuando exista.
+
+Después solicita a PASS la decisión propietaria.
+
+PULSO no determina por sí solo:
+
+- que la recompensa siga vigente;
+- que la cuenta siga habilitada;
+- que los puntos continúen disponibles;
+- que el costo siga siendo el autorizado;
+- que la redención no haya sido consumida en otra terminal;
+- que el ledger deba mutar.
+
+---
+
+#### 20. Validación propietaria en PASS
+
+Al recibir el comando, PASS vuelve a verificar como mínimo:
+
+1. identidad de redención;
+2. estado empresarial compatible;
+3. cuenta propietaria;
+4. recompensa o beneficio;
+5. costo histórico;
+6. vigencia;
+7. sede o alcance;
+8. restricciones y límites;
+9. protección de puntos;
+10. consumo previo;
+11. comando previo equivalente;
+12. huella compatible;
+13. autoridad o contexto requerido;
+14. pedido o venta correlacionados cuando la política lo exija;
+15. resultado previo recuperable;
+16. cualquier bloqueo o conciliación existente.
+
+El cliente o PULSO no pueden omitir esta revalidación enviando un booleano de “válido”.
+
+---
+
+#### 21. Pedido y venta
+
+La redención y la venta son objetos distintos.
+
+```text
+REDENCIÓN PASS
+≠
+PEDIDO PULSO
+≠
+VENTA PULSO
+```
+
+Reglas:
+
+1. una redención puede correlacionarse con pedido o venta cuando se usa;
+2. el pedido no se convierte en fuente del saldo;
+3. la venta no vuelve a ejecutar el gasto;
+4. cerrar una venta no crea una redención ausente;
+5. un descuento de venta no sustituye `redemption_id`;
+6. el mismo `redemption_id` no puede consumirse en dos pedidos o ventas distintos;
+7. una venta que posteriormente emita eventos conserva la referencia a la redención como evidencia, no como orden de volver a gastarla.
+
+---
+
+#### 22. Descuento, precio y fiscalidad
+
+El beneficio comercial que una redención produzca debe conservar semántica separada del movimiento de puntos.
+
+```text
+GASTO DE PUNTOS
+≠
+DESCUENTO
+≠
+PRECIO
+≠
+PAGO
+≠
+DOCUMENTO FISCAL
+```
+
+Reglas:
+
+1. PASS confirma fidelización;
+2. PULSO aplica el tratamiento comercial autorizado por su propio contrato;
+3. la aplicación de un descuento no prueba que PASS haya confirmado la redención;
+4. PASS no modifica precios PULSO por escritura cruzada;
+5. PULSO no fabrica el gasto PASS porque haya aplicado un descuento;
+6. cualquier efecto fiscal sigue la autoridad fiscal aplicable;
+7. conciliación debe poder detectar beneficio aplicado sin redención confirmada o redención confirmada sin beneficio comercial cuando corresponda.
+
+---
+
+#### 23. Acumulación y redención
+
+Se preserva:
+
+```text
+ACUMULACIÓN
+≠
+REDENCIÓN
+```
+
+Consecuencias:
+
+1. una acumulación no autoriza una redención;
+2. una redención no prueba acumulación previa de esa misma venta;
+3. las reglas pueden ser distintas;
+4. las identidades son distintas;
+5. las huellas son distintas;
+6. los movimientos de ledger son distintos;
+7. los retries son distintos;
+8. una misma venta puede contener ambas relaciones sin fusionarlas;
+9. la guarda de acumulación de `INT-SALES-005` no se usa como identidad de redención;
+10. la redención nunca reutiliza un `event_id` de acumulación como identidad propia.
+
+---
+
+#### 24. Concurrencia
+
+Dos terminales, dispositivos o solicitudes pueden intentar usar la misma redención casi simultáneamente.
+
+El contrato exige:
+
+```text
+MISMA redemption_id
++
+DOS INTENTOS CONCURRENTES
+→ UN SOLO CONSUMO POSIBLE
+```
+
+El segundo intento deberá:
+
+- recuperar el resultado compatible previo;
+- o recibir un rechazo o conflicto;
+- nunca gastar otra vez;
+- nunca asociar la misma redención a otra venta como consumo nuevo.
+
+Deshabilitar el botón o esconder el QR después del primer click no satisface esta garantía.
+
+---
+
+#### 25. Retry y resultado desconocido
+
+Se reutiliza `RETRY_OWNER_COMMAND` para el comando propietario cuando resulte aplicable.
+
+Ante timeout después de posible commit:
+
+```text
+RESULTADO DESCONOCIDO
+        ↓
+CONSULTAR source_command_id + redemption_id + RESULTADO PASS
+        ├── CONFIRMADO → RECUPERAR RESULTADO
+        ├── NO APLICADO DEMOSTRADO → REINTENTAR MISMA IDENTIDAD
+        └── INDETERMINADO → CONCILIACIÓN
+```
+
+Reglas:
+
+1. retry conserva `source_command_id`;
+2. retry conserva `redemption_id`;
+3. retry conserva huella;
+4. cambiar de terminal no crea una redención nueva;
+5. reiniciar PULSO no crea una redención nueva;
+6. volver a escanear no crea una redención nueva;
+7. un lease o claim vencido no demuestra ausencia de commit;
+8. agotamiento del presupuesto no presume éxito ni fracaso;
+9. `INT-SALES-007` especializará el control transversal contra duplicados sin alterar estas invariantes.
+
+---
+
+#### 26. Resultado durable
+
+PASS debe devolver o permitir recuperar un resultado suficiente para reconstruir:
+
+- `redemption_id`;
+- `source_command_id` cuando exista;
+- cuenta;
+- recompensa o beneficio;
+- costo histórico;
+- resultado de autorización;
+- resultado de consumo;
+- movimiento de ledger o referencia propietaria cuando corresponda;
+- saldo derivado relevante;
+- sede;
+- actor o principal;
+- pedido o venta correlacionados;
+- tiempo empresarial;
+- huella;
+- resultado de idempotencia;
+- estado de conciliación;
+- referencias de auditoría.
+
+Un ACK de transporte no equivale a este resultado.
+
+---
+
+#### 27. Cancelación antes del consumo
+
+Una redención autorizada pero no consumida puede requerir cancelación conforme a la política PASS.
+
+La cancelación:
+
+1. identifica la redención;
+2. comprueba que no haya consumo confirmado;
+3. conserva motivo;
+4. conserva actor o principal;
+5. conserva evidencia;
+6. revoca el instrumento de presentación cuando corresponda;
+7. libera una reserva autoritativa si esa fue la estrategia física;
+8. compensa mediante ledger si ya existía un gasto confirmado que deba devolverse;
+9. no borra historia para simular que la redención nunca existió;
+10. devuelve un resultado idempotente.
+
+---
+
+#### 28. Cancelación o corrección después del consumo
+
+Una redención consumida no se “desconsume” mediante edición destructiva.
+
+Si un hecho posterior justifica compensación:
+
+```text
+REDENCIÓN ORIGINAL
+        ↓
+CONSUMO ORIGINAL
+        ↓
+DECISIÓN DE CORRECCIÓN / COMPENSACIÓN
+        ↓
+MOVIMIENTO COMPENSATORIO PASS CUANDO CORRESPONDA
+        ↓
+SALDO DERIVADO ACTUALIZADO
+```
+
+Reglas:
+
+1. el original permanece;
+2. la compensación tiene identidad propia;
+3. referencia explícitamente la redención y movimiento originales;
+4. no presume que PULSO, NEXO o NUMERA ya compensaron sus efectos;
+5. no vuelve a habilitar el token original salvo una decisión contractual explícita;
+6. una segunda compensación equivalente no duplica la devolución de puntos;
+7. `PASS-INT-002` cierra el detalle físico de esta operación.
+
+---
+
+#### 29. Expiración y vigencia
+
+Si una redención o instrumento tiene vigencia limitada:
+
+- la vigencia pertenece al contrato PASS;
+- PULSO no amplía la vigencia;
+- un token vencido no se reactiva por reescaneo;
+- un retry iniciado antes del vencimiento no convierte automáticamente una operación incierta en rechazo si pudo haber confirmado antes;
+- PASS consulta el resultado original para distinguir consumo confirmado, no aplicado o desconocido;
+- si existían puntos protegidos, la liberación o compensación se realiza según el resultado real.
+
+La expiración de una redención no equivale a expiración de los puntos de la cuenta.
+
+---
+
+#### 30. Recompensa no disponible al momento de uso
+
+Si la recompensa deja de estar disponible después de autorizar la redención, PASS debe aplicar la política histórica aprobada para esa operación.
+
+No se permite:
+
+- sustituir recompensa silenciosamente;
+- cambiar costo;
+- reasignar beneficio;
+- consumir puntos por una recompensa distinta;
+- marcar éxito solo porque PULSO ya escaneó el token.
+
+La situación debe terminar en resultado válido, cancelación, sucesión o conciliación según el contrato PASS detallado.
+
+---
+
+#### 31. Partialidad
+
+Una redención no se divide por inferencia.
+
+Solo puede existir partialidad cuando el contrato de la recompensa o beneficio la permita expresamente y conserve:
+
+- unidad autorizada;
+- cantidad total;
+- cantidad consumida;
+- cantidad restante;
+- costo correspondiente;
+- identidad estable;
+- movimientos de ledger sin doble gasto;
+- resultados recuperables.
+
+Mientras esa capacidad no esté definida por el contrato propietario, una redención ordinaria se trata como una unidad empresarial única de consumo.
+
+`PASS-INT-002` deberá declarar expresamente si la materialización física admite o no partialidad para cada modalidad soportada.
+
+---
+
+#### 32. Offline
+
+La redención afecta un saldo sensible y requiere impedir doble gasto.
+
+Por defecto, una terminal sin capacidad de consultar o recuperar el resultado autoritativo no debe inventar una confirmación.
+
+Cualquier operación offline futura deberá:
+
+- tener política específica;
+- conservar identidad durable;
+- limitar riesgo de doble gasto;
+- revalidar autoridad;
+- resolver resultado desconocido;
+- reconciliar al volver conectividad.
+
+La mera posesión de un QR no concede capacidad offline para gastar puntos.
+
+---
+
+#### 33. Replay y backfill
+
+##### 33.1. Replay
+
+Un replay técnico:
+
+- conserva la identidad del comando original;
+- conserva `redemption_id`;
+- consulta el resultado previo;
+- no vuelve a gastar;
+- no vuelve a asociar la operación como consumo nuevo.
+
+##### 33.2. Backfill
+
+Un backfill:
+
+- no fabrica redenciones históricas desde descuentos;
+- no fabrica redenciones desde filas Makos agregadas;
+- no ejecuta gasto de puntos automáticamente;
+- conserva procedencia y evidencia;
+- exige autorización explícita para cualquier mutación sensible;
+- concilia primero contra redenciones y ledger existentes.
+
+---
+
+#### 34. Venta nativa PULSO y procedencia histórica externa
+
+El contrato de redención no cambia por la procedencia de la venta.
+
+Venta histórica con procedencia externa:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+redemption_owner = PASS
+```
+
+Venta nativa:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+redemption_owner = PASS
+```
+
+En ambos casos:
+
+```text
+MISMA IDENTIDAD PASS
++
+MISMA REVALIDACIÓN
++
+MISMO OWNER_COMMAND
++
+MISMA GUARDA DE CONSUMO
++
+MISMO LEDGER
++
+MISMO RESULTADO RECUPERABLE
+```
+
+Makos no se convierte en autoridad de puntos.
+
+---
+
+#### 35. Independencia del adaptador externo
+
+Una redención permanente no requiere:
+
+- API Makos;
+- archivo Makos;
+- webhook Makos;
+- polling Makos;
+- credencial Makos;
+- staging de ventas Makos;
+- hash de archivo Makos.
+
+El adaptador puede conservar evidencia histórica de procedencia de la venta, pero no participa en la autoridad de redención.
+
+El retiro del adaptador no cambia:
+
+- `redemption_id`;
+- movimientos PASS históricos;
+- saldo derivado;
+- recompensas;
+- comandos PULSO → PASS;
+- resultados recuperables.
+
+---
+
+#### 36. Proceso propietario `VPROC-0045`
+
+Se conserva `VPROC-0045 — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados`.
+
+Sus definiciones normales existentes permanecen sin crear una variante específica solo para redención:
+
+- `VPROC-0045.EVT-001` — interacción de fidelización abierta;
+- `VPROC-0045.EVT-002` — identidad en validación;
+- `VPROC-0045.EVT-003` — autorización de acción pendiente;
+- `VPROC-0045.EVT-004` — actualización de consentimiento pendiente;
+- `VPROC-0045.EVT-005` — conciliación pendiente;
+- `VPROC-0045.EVT-006` — interacción de fidelización conciliada.
+
+Reglas:
+
+1. abrir la interacción no gasta puntos;
+2. validar identidad no gasta puntos;
+3. autorización pendiente no equivale a consumo confirmado;
+4. consentimiento permanece separado de redención;
+5. divergencias permanecen en conciliación;
+6. cierre normal requiere que la operación haya quedado aplicada una sola vez o cerrada sin efecto de forma válida;
+7. cualquier evento PASS es producido por PASS;
+8. un comando PULSO no se disfraza como evento empresarial PASS.
+
+---
+
+#### 37. Privacidad y seguridad
+
+La redención manipula identidad y saldo de fidelización.
+
+El contrato exige:
+
+- mínima PII en token y comando;
+- cero secretos embebidos en QR;
+- actor atribuible;
+- sede revalidada;
+- permiso revalidado;
+- estado revalidado;
+- rate limit o controles de abuso cuando corresponda;
+- trazabilidad de intentos;
+- protección contra enumeración de redenciones;
+- no exponer saldo completo cuando la finalidad no lo requiera;
+- no convertir una cuenta PASS en cuenta laboral;
+- no inferir consentimiento de marketing por usar puntos.
+
+---
+
+#### 38. Auditoría mínima
+
+Debe poder reconstruirse:
+
+- cuenta PASS;
+- `redemption_id`;
+- recompensa o beneficio;
+- costo histórico;
+- regla o contrato aplicable;
+- solicitud inicial;
+- instrumento presentado cuando exista;
+- `source_command_id`;
+- PULSO solicitante;
+- sede;
+- actor efectivo;
+- pedido o venta correlacionados;
+- protección de puntos;
+- movimiento de ledger;
+- saldo derivado;
+- intentos;
+- resultados;
+- timeout o incertidumbre;
+- cancelación;
+- compensación;
+- conciliación;
+- evidencia.
+
+La auditoría no sustituye la operación propietaria.
+
+---
+
+#### 39. Conciliación permanente PULSO–PASS
+
+La conciliación deberá detectar como mínimo:
+
+- redención PASS sin resultado recuperable;
+- gasto de puntos sin redención;
+- redención consumida sin movimiento o protección coherente;
+- mismo `redemption_id` consumido dos veces;
+- misma redención asociada como consumo a dos pedidos o ventas;
+- mismo comando aplicado dos veces;
+- comando con huella incompatible;
+- token presentado para una redención inexistente;
+- token reutilizado después del consumo;
+- token válido en sede incompatible;
+- actor sin autoridad;
+- costo histórico divergente;
+- recompensa divergente;
+- cuenta divergente;
+- saldo derivado divergente del ledger;
+- doble gasto concurrente;
+- redención cancelada pero consumida posteriormente;
+- redención expirada usada como nueva;
+- beneficio comercial PULSO aplicado sin confirmación PASS;
+- confirmación PASS sin correlación comercial cuando el contrato la requiera;
+- descuento inferido como redención;
+- pago inferido como redención;
+- gasto duplicado por retry;
+- resultado desconocido sin resolución;
+- compensación duplicada;
+- dependencia residual de Makos para una redención nativa.
+
+La conciliación no corrige el saldo mediante edición directa.
+
+---
+
+#### 40. Diagnóstico de la línea base técnica observada
+
+La línea base actual demuestra funcionalidades reales de redención, pero no acredita todavía el contrato permanente de esta tarea.
+
+En PASS se observa un flujo que:
+
+1. consulta una recompensa;
+2. comprueba `loyalty_points`;
+3. genera un QR con tiempo y aleatoriedad;
+4. crea una fila de redención;
+5. crea después, en otra operación, un movimiento `spend` en `loyalty_transactions`;
+6. elimina la fila de redención como rollback si falla el movimiento;
+7. confía en que el saldo se derive posteriormente del ledger.
+
+En PULSO se observa un flujo que:
+
+1. consulta una redención por QR;
+2. exige estado disponible;
+3. revalida acceso a PULSO;
+4. solicita firma de actor en dispositivo compartido;
+5. cambia directamente el estado de la redención PASS a validado;
+6. adjunta después la referencia de firma cuando aplica.
+
+Estas superficies prueban que existe una capacidad funcional parcial, pero no demuestran por sí solas:
+
+- una operación propietaria PASS única;
+- atomicidad entre redención, protección de puntos y ledger;
+- una identidad de comando estable para retry;
+- resultado recuperable frente a respuesta perdida;
+- exclusión de doble gasto entre solicitudes concurrentes;
+- ausencia de escritura cruzada PULSO → datos PASS;
+- atomicidad entre autorización, consumo y evidencia del actor;
+- compensación append-only completa;
+- conciliación permanente.
+
+La tarea no modifica esta implementación.
+
+---
+
+#### 41. Diferencia entre implementación observada y contrato objetivo
+
+```text
+INSERT REDENCIÓN
++
+INSERT SPEND
++
+DELETE COMPENSATORIO
++
+UPDATE POSTERIOR DESDE PULSO
+≠
+OPERACIÓN PASS ATÓMICA E IDEMPOTENTE
+```
+
+El contrato objetivo exige:
+
+```text
+IDENTIDAD ESTABLE
++
+AUTORIDAD PASS
++
+PROTECCIÓN CONTRA DOBLE GASTO
++
+OWNER_COMMAND
++
+REVALIDACIÓN
++
+RESULTADO DURABLE
++
+LEDGER COHERENTE
++
+RECUPERACIÓN
++
+COMPENSACIÓN
++
+CONCILIACIÓN
+```
+
+Una implementación posterior puede reutilizar superficies actuales únicamente si demuestra estas invariantes.
+
+---
+
+#### 42. Frontera de implementación posterior
+
+La materialización física deberá cerrar, como mínimo:
+
+1. identidad propietaria de redención;
+2. contrato de creación o autorización;
+3. protección de puntos;
+4. recompensa y snapshot histórico;
+5. token o referencia de presentación;
+6. `OWNER_COMMAND` PULSO → PASS;
+7. `source_command_id`;
+8. huella lógica;
+9. autorización por actor y sede;
+10. guarda contra doble consumo;
+11. ledger;
+12. saldo derivado;
+13. resultado recuperable;
+14. concurrencia;
+15. timeout y resultado desconocido;
+16. cancelación;
+17. expiración;
+18. compensación;
+19. correlación con pedido o venta;
+20. conciliación;
+21. auditoría;
+22. privacidad;
+23. pruebas.
+
+`PASS-INT-002` cierra el diseño detallado de esta materialización.
+
+Toda futura modificación Supabase que materialice estas decisiones pertenece a `vento-shell`.
+
+---
+
+#### 43. Handoffs posteriores obligatorios
+
+| Pendiente material                                      | Tarea o propietario | Condición de salida                                                                                                  |
+| ------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| especialización transversal contra duplicados por retry | `INT-SALES-007`     | retry de ventas, comandos y efectos no produce una segunda operación                                                 |
+| conciliación durante convivencia POS externo / PULSO    | `INT-SALES-008`     | ventas y efectos PASS pueden reconciliarse durante coexistencia                                                      |
+| corte por sede, terminal y fecha                        | `INT-SALES-009`     | una sola fuente origina nuevas ventas en cada ámbito                                                                 |
+| guardia contra doble emisión de venta                   | `INT-SALES-010`     | ambas fuentes no pueden originar la misma venta como nueva                                                           |
+| retiro del adaptador externo                            | `INT-SALES-011`     | redención y consumidoras internas continúan sin dependencia Makos                                                    |
+| integración detallada PULSO → PASS para redención       | `PASS-INT-002`      | contrato servidor, identidad, protección de puntos, atomicidad, lifecycle, resultado y compensación quedan definidos |
+| prueba integral de redención                            | `PASS-QA-002`       | concurrencia, doble gasto, retry, QR, sede, actor, cancelación, compensación y conciliación quedan verificadas       |
+| protección de redenciones en PULSO                      | `PULSO-AUTH-010`    | toda validación usa capacidad autorizada y el contrato propietario PASS                                              |
+| operación de acumulación independiente                  | `PASS-INT-001`      | acumulación conserva su propia operación y no se fusiona con redención                                               |
+
+Ningún pendiente material queda sin propietario y condición de salida.
+
+---
+
+#### 44. Prohibiciones
+
+Queda prohibido:
+
+1. tratar QR o token como identidad empresarial;
+2. gastar puntos porque el QR tenga formato válido;
+3. permitir que PULSO decida el saldo PASS;
+4. permitir que PULSO inserte movimientos PASS;
+5. permitir que PULSO actualice directamente la redención como contrato objetivo;
+6. inferir redención desde descuento;
+7. inferir redención desde propina;
+8. inferir redención desde medio de pago;
+9. inferir redención desde importe negativo;
+10. inferir redención desde una fila Makos;
+11. inferir redención desde una venta sin `redemption_id` resoluble;
+12. recalcular costo histórico con el valor vigente;
+13. consumir una recompensa distinta a la autorizada;
+14. reasignar la redención a otra cuenta por coincidencia aproximada;
+15. permitir dos consumos de la misma `redemption_id`;
+16. crear otra identidad por retry;
+17. crear otra identidad por refresh;
+18. crear otra identidad por reescaneo;
+19. repetir gasto ante respuesta perdida;
+20. usar un nuevo pedido para volver a consumir la misma redención;
+21. depender solo de ocultar el botón para prevenir concurrencia;
+22. actualizar saldo directamente para corregir divergencias;
+23. borrar un movimiento confirmado;
+24. borrar una redención consumida para representar cancelación;
+25. reactivar un token vencido por retry ordinario;
+26. convertir cancelación en reversión ciega;
+27. crear compensación sin efecto original;
+28. compensar dos veces el mismo efecto;
+29. fusionar acumulación y redención;
+30. usar la guarda de acumulación como identidad de redención;
+31. presentar ACK técnico como resultado empresarial;
+32. backfillear gastos de puntos sin autorización;
+33. permitir uso offline solo por poseer el QR;
+34. depender de Makos para validar una redención nativa;
+35. crear una definición normal de evento por conveniencia;
+36. ampliar el mini-bloque PASS con identidades no definidas por su fuente propietaria;
+37. modificar código, SQL, migraciones, RLS, RPC, datos, Supabase, credenciales o configuración remota desde esta tarea documental;
+38. iniciar o desarrollar `INT-SALES-007`.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro vigente ya exige que las redenciones y demás mutaciones de puntos utilicen contratos de servidor autorizados, atómicos e idempotentes; que el cliente no inserte el ledger ni fije saldo; que la validación del canje limite permiso, sede, estado y actor; que el ledger sea inmutable y el saldo derivado; que retry, concurrencia y resultado desconocido no dupliquen efectos; que acumulación, redención, reversión y compensación conserven evento, regla, versión y trazabilidad; y que la integración de ventas produzca los efectos PASS aplicables exactamente una vez. Esta tarea especializa esas obligaciones al contrato permanente de redención PULSO → PASS sin introducir una obligación verificable nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 46. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-PASS-008`, para acumulación, gasto, ajuste, reversión y redención mediante contratos de servidor autorizados, atómicos e idempotentes, sin inserción de ledger ni fijación de saldo desde cliente, y con validación por permiso, sede, estado y actor;
+- `TREQ-PASS-010`, para identidad, ledger inmutable, evento origen, regla, versión, saldo derivado y ausencia de duplicación por retry;
+- `TREQ-PASS-011`, para mantener separados devolución, reembolso, compensación, descuento, cortesía, cupón y puntos;
+- `TREQ-PULSO-001`, para demostrar fidelización dentro del flujo POS extremo a extremo;
+- `TREQ-PULSO-004`, para impedir mutaciones de fidelización fuera de acciones autorizadas;
+- `TREQ-PULSO-005`, para mantener estados de pedido, pago, inventario y fidelización independientes;
+- `TREQ-PULSO-006`, para mantener venta, pago, caja, descuento, devolución y compensación con semánticas separadas;
+- `TREQ-INTEGRATION-003`, para identidad estable, huella, resultado durable, retry, concurrencia y resultado desconocido;
+- `TREQ-INTEGRATION-014`, para efectos PASS exactamente una vez en la cadena de ventas sin duplicación por retry;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones correlacionadas, idempotentes y conciliables.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 47. Decisiones congeladas
+
+1. PASS es propietaria de redención, cuenta, recompensa, ledger y saldo.
+2. PULSO solicita el consumo pero no muta por autoridad propia el dominio PASS.
+3. La familia transversal correcta para solicitar la mutación es `OWNER_COMMAND`.
+4. `source_command_id` es la identidad idempotente del comando.
+5. `redemption_id` es la identidad propietaria de la redención.
+6. QR o token no son identidad empresarial.
+7. Una redención solo puede tener un consumo confirmado.
+8. Múltiples comandos contra la misma redención no producen doble gasto.
+9. Una redención presentable debe proteger previamente contra doble gasto.
+10. La representación física de reserva frente a gasto anticipado se cierra en `PASS-INT-002`, pero ambas deben cumplir las mismas invariantes.
+11. El costo histórico no se recalcula silenciosamente.
+12. PASS revalida cuenta, recompensa, costo, vigencia, sede, límites y estado.
+13. PULSO revalida actor y contexto POS.
+14. El saldo se resuelve en PASS.
+15. Ledger es fuente de verdad.
+16. Saldo es proyección.
+17. Venta no equivale a redención.
+18. Descuento no equivale a redención.
+19. Pago no equivale a redención.
+20. Acumulación no equivale a redención.
+21. Una venta puede referenciar una redención sin volver a gastar puntos.
+22. Retry conserva comando y redención.
+23. Respuesta perdida exige consulta.
+24. Resultado desconocido no autoriza segundo consumo.
+25. Concurrencia tiene un único ganador.
+26. Cancelación conserva historia.
+27. Compensación es append-only cuando ya existió un gasto confirmado.
+28. Expiración no reactiva tokens por retry.
+29. Offline no se habilita por mera posesión del token.
+30. Replay no vuelve a gastar.
+31. Backfill no crea redenciones desde datos ambiguos.
+32. Procedencia Makos y venta nativa PULSO usan la misma autoridad PASS.
+33. El adaptador externo no participa en el contrato permanente de redención.
+34. `VPROC-0045` se reutiliza.
+35. Sus seis definiciones normales se conservan.
+36. No se crea una definición normal de evento nueva.
+37. `PASS-INT-002` conserva la integración detallada de redención.
+38. `PASS-QA-002` conserva la prueba integral.
+39. `PULSO-AUTH-010` conserva la protección de redenciones.
+40. `INT-SALES-007` permanece como siguiente especialización de retry y duplicados.
+41. La implementación actual se reconoce como parcial y no se declara equivalente al contrato objetivo.
+42. Se crean cero cambios `TREQ-*`.
+43. No se genera una copia del registro canónico de requisitos.
+44. Se crean cero objetos físicos.
+45. Se modifican cero objetos físicos.
+46. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 48. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-005` como tarea anterior aprobada;
+2. mantiene `INT-SALES-007` como única tarea siguiente reservada;
+3. confirma PASS como propietaria de la redención;
+4. confirma PULSO como solicitante del consumo en el POS;
+5. separa venta, descuento, pago, acumulación y redención;
+6. exige una redención PASS real antes del consumo;
+7. conserva `redemption_id`;
+8. impide usar QR como identidad;
+9. adopta `OWNER_COMMAND`;
+10. adopta `source_command_id` para idempotencia del comando;
+11. garantiza máximo un consumo confirmado por redención;
+12. protege contra dos comandos distintos sobre la misma redención;
+13. protege los puntos contra doble gasto antes de que la redención sea utilizable;
+14. permite cerrar la estrategia física de protección en `PASS-INT-002` sin relajar la invariante;
+15. exige cuenta PASS resoluble;
+16. exige recompensa o beneficio resoluble;
+17. exige costo histórico reconstruible;
+18. impide recosteo silencioso;
+19. exige saldo y puntos válidos desde PASS;
+20. impide que PULSO fije saldo;
+21. exige atomicidad o durabilidad equivalente;
+22. mantiene ledger como fuente;
+23. mantiene saldo como proyección;
+24. separa creación, autorización y consumo;
+25. limita el token por estado, vigencia y autoridad cuando aplique;
+26. exige revalidación operativa PULSO;
+27. exige revalidación propietaria PASS;
+28. impide que validación local sustituya confirmación PASS;
+29. conserva correlación con pedido o venta;
+30. impide reutilizar la misma redención en dos pedidos o ventas;
+31. separa fidelización de precio y fiscalidad;
+32. preserva acumulación independiente;
+33. garantiza un solo ganador concurrente;
+34. recupera resultado frente a respuesta perdida;
+35. conserva resultado durable;
+36. define cancelación previa al consumo sin borrar historia;
+37. define compensación posterior no destructiva;
+38. trata expiración sin reactivar automáticamente;
+39. trata recompensa no disponible sin sustitución silenciosa;
+40. prohíbe partialidad por inferencia;
+41. restringe operación offline no demostrada;
+42. preserva replay sin doble gasto;
+43. preserva backfill sin gasto automático;
+44. conserva contrato idéntico para procedencia Makos y PULSO nativa;
+45. elimina dependencia del adaptador externo;
+46. reutiliza `VPROC-0045`;
+47. preserva las seis definiciones normales existentes;
+48. exige privacidad, actor, sede y permiso;
+49. hace reconstruible la auditoría;
+50. define conciliación permanente PULSO–PASS;
+51. diagnostica la implementación existente sin canonizar sus escrituras separadas;
+52. asigna integración detallada a `PASS-INT-002`;
+53. asigna prueba integral a `PASS-QA-002`;
+54. asigna protección PULSO a `PULSO-AUTH-010`;
+55. asigna control transversal de duplicados a `INT-SALES-007`;
+56. mantiene `INT-SALES-008` a `INT-SALES-011` como handoffs de coexistencia y retiro;
+57. genera cero requisitos de prueba nuevos;
+58. modifica cero requisitos de prueba;
+59. no genera una copia del registro canónico de requisitos;
+60. crea cero objetos físicos;
+61. modifica cero objetos físicos;
+62. no modifica código, SQL, migraciones, Supabase, datos, credenciales ni configuración remota;
+63. no inicia ni desarrolla `INT-SALES-007`.
+
+---
+
+#### 49. Resultado de la tarea
+
+`INT-SALES-006` queda definida como la frontera permanente mediante la cual una redención propietaria de PASS puede ser presentada en PULSO y consumida exactamente una vez mediante un comando idempotente hacia PASS, protegiendo los puntos contra doble gasto y conservando ledger, saldo, recompensa, cuenta, actor, sede, resultado y correlación.
+
+Resultado consolidado:
+
+```text
+REDENCIÓN PASS REAL
++
+IDENTIDAD ESTABLE
++
+CUENTA Y RECOMPENSA VÁLIDAS
++
+COSTO HISTÓRICO
++
+PUNTOS PROTEGIDOS
++
+PRESENTACIÓN EN PULSO
++
+ACTOR Y SEDE AUTORIZADOS
++
+OWNER_COMMAND IDEMPOTENTE
++
+REVALIDACIÓN PASS
++
+UN SOLO CONSUMO
++
+LEDGER COHERENTE
++
+RESULTADO RECUPERABLE
+→
+REDENCIÓN PROCESADA EXACTAMENTE UNA VEZ
+```
+
+Sin escritura cruzada desde PULSO, sin doble gasto, sin convertir un descuento en redención y sin depender del adaptador externo.
+
+---
+
+#### 50. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-005 — Definir acumulación de puntos en PASS`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-006 — Definir procesamiento de redención en PASS`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-007 — Definir control contra efectos duplicados por reintento`
+
+
 ### [ ] INT-SALES-007 — Definir control contra efectos duplicados por reintento
 ### [ ] INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
 ### [ ] INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
