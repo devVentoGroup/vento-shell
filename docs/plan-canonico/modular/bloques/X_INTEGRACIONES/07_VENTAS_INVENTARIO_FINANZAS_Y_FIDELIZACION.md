@@ -11127,7 +11127,1459 @@ SIGUIENTE TAREA RESERVADA
 `INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
 
 
-### [ ] INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
+### ✅ INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
+**Tarea siguiente:** `INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
+**Tipo de tarea:** documental; definición normativa permanente del corte de autoridad de origen de nuevas ventas entre el POS externo y PULSO por sede, terminal y fecha efectiva, materializando la regla temporal de resolución, exclusividad de intervalos, tratamiento de ventas tardías, offline, revisiones, devoluciones, replay, backfill, ambigüedad, reasignación posterior y evidencia requerida, sin ejecutar el cutover, sin implementar todavía la guardia física contra doble fuente y sin modificar código, SQL, migraciones, Supabase, datos, credenciales o configuración remota
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/07_VENTAS_INVENTARIO_FINANZAS_Y_FIDELIZACION.md`
+**Contrato transitorio heredado:** `INT-POS-023 — Definir transición futura desde POS externo hacia PULSO`
+**Aplicación propietaria de la venta canónica interna y de su emisión empresarial:** `PULSO`
+**Fuente externa anterior vigente en la transición:** `Makos`
+**Fuente objetivo de nuevas ventas después del corte:** `PULSO`
+**Aplicación propietaria del efecto físico:** `NEXO`
+**Aplicación propietaria del hecho económico:** `NUMERA`
+**Aplicación propietaria de fidelización:** `PASS`
+**Línea base documental:** `vento-shell@91ecb643361d4855cb332908184ba3401d46dfb2`
+**Línea base técnica PULSO observada:** `vento-pulso@71e0184486b5fe11e0a42435baf4024807a80efd`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma permanente cómo se resuelve cuál fuente está autorizada para originar una **nueva venta** durante y después de la transición Makos → PULSO.
+
+La decisión se toma por:
+
+```text
+SEDE
++
+TERMINAL
++
+LÍMITE EFECTIVO
++
+PRECISIÓN TEMPORAL ACREDITADA
++
+TIEMPO EMPRESARIAL DEL HECHO
+```
+
+y nunca por:
+
+```text
+HORA DE RECEPCIÓN
+O
+HORA DE IMPORTACIÓN
+O
+HORA DE SINCRONIZACIÓN
+O
+HORA DE RETRY
+O
+SIMILITUD DE TOTALES
+```
+
+El objetivo es que para toda venta nueva permitida exista una única autoridad de origen resoluble, preservando la historia anterior y sin cambiar los contratos consumidores de NEXO, NUMERA o PASS.
+
+---
+
+#### 2. Resultado sustantivo
+
+`INT-SALES-009` congela las siguientes decisiones permanentes:
+
+1. El corte es un cambio de **autoridad de fuente para nuevas ventas**.
+2. El corte no es una migración destructiva de historia.
+3. El corte se resuelve por sede, terminal y límite efectivo.
+4. No existe un cutover global implícito para toda Vento.
+5. Cortar una terminal no corta automáticamente las demás terminales de la sede.
+6. Makos conserva autoridad histórica sobre ventas cuyo hecho empresarial pertenece al intervalo anterior.
+7. PULSO adquiere autoridad para nuevas ventas del alcance desde el límite efectivo incluido.
+8. La regla temporal es anterior/posterior al límite, no anterior/posterior a la recepción técnica.
+9. Una venta Makos pre-corte recibida tarde continúa siendo Makos.
+10. Una venta PULSO post-corte creada offline continúa siendo PULSO aunque sincronice tarde.
+11. Una venta Makos post-corte de una terminal ya transferida es un conflicto de autoridad.
+12. Una venta PULSO pre-corte en un alcance todavía autorizado a Makos es un conflicto de autoridad salvo que exista otra decisión temporal aprobada que demuestre lo contrario.
+13. Terminal no resoluble implica bloqueo.
+14. Tiempo empresarial insuficiente para ubicar la venta respecto del límite implica bloqueo.
+15. Identidad de venta insuficiente implica cuarentena o conciliación; no se fabrica una venta.
+16. No se inventan segundos, minutos, horas ni terminales para hacer coincidir una venta con un lado del corte.
+17. La fuente histórica no cambia por replay.
+18. La fuente histórica no cambia por backfill.
+19. La fuente histórica no cambia por retry.
+20. La fuente histórica no cambia por retirada futura del adaptador.
+21. La identidad canónica de venta y línea se conserva.
+22. `source_system` conserva la procedencia real.
+23. `producer_application` continúa siendo PULSO para el evento canónico interno cuando corresponda.
+24. El evento consumidor no cambia de esquema por el corte.
+25. La audiencia canónica no cambia por el corte.
+26. NEXO conserva su frontera propietaria.
+27. NUMERA conserva su frontera propietaria.
+28. PASS conserva su frontera propietaria.
+29. Venta, pago, caja, fiscalidad y contabilidad permanecen hechos y autoridades separados.
+30. El corte no transfiere proveedor de pago por inferencia.
+31. El corte no transfiere autoridad fiscal por inferencia.
+32. El corte no ejecuta compensaciones.
+33. Una acción posterior sobre una venta histórica referencia la venta original y su fuente original.
+34. Una devolución post-corte de una venta Makos pre-corte no se transforma en una nueva venta PULSO negativa.
+35. El acceso Makos puede conservarse residual para historia y conciliación sin conservar autoridad sobre nuevas ventas.
+36. La reducción o retiro físico de ese acceso queda fuera de esta tarea.
+37. Una caída de PULSO post-corte no devuelve automáticamente autoridad a Makos.
+38. Reasignar autoridad después de un corte efectivo requiere otra decisión temporal explícita.
+39. Una reasignación futura no puede solapar intervalos ni reescribir los anteriores.
+40. La conciliación de `INT-SALES-008` permanece activa alrededor del corte.
+41. La guardia física contra doble fuente permanece en `INT-SALES-010`.
+42. El retiro del adaptador permanece en `INT-SALES-011`.
+43. Se crean cero requisitos `TREQ-*`.
+44. Se modifican cero requisitos `TREQ-*`.
+45. Se crean cero objetos físicos.
+46. Se modifican cero objetos físicos.
+
+---
+
+#### 3. Dependencias canónicas consumidas
+
+Esta tarea consume sin reabrir:
+
+- `INT-POS-023`, para el contrato transitorio ya aprobado de cambio de autoridad Makos → PULSO;
+- `INT-SALES-001`, para identidad y registro durable de venta y línea;
+- `INT-SALES-002`, para emisión empresarial PULSO y separación entre `source_system` y `producer_application`;
+- `INT-SALES-003`, para efecto físico NEXO;
+- `INT-SALES-004`, para efecto económico NUMERA;
+- `INT-SALES-005`, para acumulación PASS;
+- `INT-SALES-006`, para redención PASS;
+- `INT-SALES-007`, para retry, redelivery, replay y recuperación sin nueva identidad;
+- `INT-SALES-008`, para conciliación de convivencia, candidatos de doble fuente y tratamiento de diferencias.
+
+La tarea no redefine esas fronteras.
+
+---
+
+#### 4. Frontera frente a las tareas siguientes
+
+| Materia                                                                      | Propietaria     | Estado en esta tarea |
+| ---------------------------------------------------------------------------- | --------------- | -------------------- |
+| resolver autoridad temporal de origen                                        | `INT-SALES-009` | **DEFINIDA**         |
+| clasificar venta de fuente no autorizada como conflicto                      | `INT-SALES-009` | **DEFINIDA**         |
+| implementar la guardia que impide una segunda venta desde fuente competidora | `INT-SALES-010` | `RESERVADA`          |
+| retirar el adaptador externo sin cambiar consumidores                        | `INT-SALES-011` | `RESERVADA`          |
+
+Esta tarea define qué fuente **debe** ser autorizada; no implementa todavía el mecanismo físico que impedirá una violación.
+
+---
+
+#### 5. Unidad mínima de decisión
+
+La unidad mínima del corte es:
+
+```text
+SEDE
++
+TERMINAL
++
+LÍMITE EFECTIVO
++
+PRECISIÓN TEMPORAL ACREDITADA
+```
+
+Cada decisión debe poder resolver además:
+
+- fuente anterior;
+- fuente posterior;
+- semántica temporal aplicable;
+- versión contractual;
+- autoridad que aprobó el cambio cuando corresponda;
+- evidencia suficiente del alcance;
+- estado de conciliación previo;
+- residuales conocidos.
+
+No se crea en esta tarea una tabla, un identificador físico ni un enum.
+
+---
+
+#### 6. No existe cutover global implícito
+
+Una sede puede tener varias terminales con límites distintos.
+
+Ejemplo conceptual:
+
+```text
+SEDE A
+├── TERMINAL 1 → PULSO DESDE LÍMITE T1
+├── TERMINAL 2 → MAKOS HASTA LÍMITE T2
+└── TERMINAL 3 → BLOQUEADA SI NO PUEDE RESOLVERSE SU AUTORIDAD
+```
+
+Por tanto:
+
+1. transferir una terminal no transfiere las demás;
+2. una venta sin terminal resoluble no puede heredar por defecto la fuente de otra terminal;
+3. un total agregado por sede no demuestra el origen individual de las ventas de terminales con límites distintos;
+4. una terminal fuera del alcance explícito no adopta autoridad PULSO por inferencia.
+
+---
+
+#### 7. Regla temporal exacta
+
+Para una sede y terminal cuyo límite efectivo sea `T`:
+
+```text
+tiempo_empresarial_del_hecho < T
+→ FUENTE AUTORIZADA = MAKOS
+
+tiempo_empresarial_del_hecho >= T
+→ FUENTE AUTORIZADA = PULSO
+```
+
+La igualdad con el límite pertenece al intervalo posterior.
+
+Esta regla solo puede aplicarse cuando la precisión temporal acreditada permite realizar la comparación sin inventar información.
+
+---
+
+#### 8. Fecha efectiva y precisión
+
+La fecha efectiva es obligatoria.
+
+Si el contrato fuente dispone de mayor precisión temporal, esa precisión se conserva.
+
+Reglas:
+
+1. no se reduce artificialmente un timestamp acreditado a una fecha si eso introduce ambigüedad;
+2. no se inventa una hora cuando la fuente solo acredita precisión diaria;
+3. si la operación requiere un corte intradía pero la evidencia no permite distinguir hechos dentro del día, el alcance permanece bloqueado;
+4. el límite debe ser representable con la precisión realmente acreditada;
+5. la precisión utilizada forma parte de la evidencia del corte;
+6. el cliente o importador no puede “aproximar” el lado del corte.
+
+---
+
+#### 9. Tiempo empresarial frente a tiempos técnicos
+
+Permanecen separados:
+
+```text
+TIEMPO DEL HECHO COMERCIAL
+≠
+TIEMPO DE RECEPCIÓN
+≠
+TIEMPO DE IMPORTACIÓN
+≠
+TIEMPO DE SINCRONIZACIÓN
+≠
+TIEMPO DE RETRY
+≠
+TIEMPO DE REPLAY
+```
+
+La autoridad se determina con el tiempo empresarial aprobado del hecho.
+
+Los tiempos técnicos sirven para auditoría, latencia y diagnóstico, no para reasignar procedencia.
+
+---
+
+#### 10. Intervalos exclusivos
+
+Para una misma sede y terminal:
+
+```text
+INTERVALO MAKOS
+        ↓
+LÍMITE EFECTIVO
+        ↓
+INTERVALO PULSO
+```
+
+Invariantes:
+
+1. no existe solapamiento de autoridad;
+2. no existe un intervalo implícito con ambas fuentes autorizadas;
+3. no existe un intervalo sin autoridad para ventas que la operación permita crear;
+4. el intervalo anterior no se reescribe;
+5. una decisión posterior agrega otro límite; no altera retrospectivamente los anteriores;
+6. el orden de llegada de datos no altera los intervalos.
+
+---
+
+#### 11. Resolver de autoridad
+
+Antes de aceptar una nueva venta como perteneciente a una fuente, el contrato debe poder resolver lógicamente:
+
+1. sede;
+2. terminal;
+3. tiempo empresarial;
+4. precisión suficiente;
+5. intervalo de autoridad aplicable;
+6. fuente observada;
+7. identidad de venta;
+8. revisión aplicable;
+9. huella lógica;
+10. resultado previo cuando exista.
+
+Resultado:
+
+```text
+UN ÚNICO INTERVALO
++
+FUENTE OBSERVADA = FUENTE AUTORIZADA
+→ CONTINUAR CONTRATO CANÓNICO
+```
+
+```text
+CERO INTERVALOS RESOLUBLES
+→ BLOQUEADO
+```
+
+```text
+MÁS DE UN INTERVALO APLICABLE
+→ CONFLICTO DE AUTORIDAD
+```
+
+```text
+FUENTE OBSERVADA ≠ FUENTE AUTORIZADA
+→ CONFLICTO DE AUTORIDAD
+```
+
+---
+
+#### 12. Venta Makos pre-corte recibida antes
+
+Una venta cuyo hecho empresarial ocurre antes de `T` y llega antes del corte:
+
+- conserva Makos como fuente;
+- ingresa por el contrato de transición;
+- conserva procedencia;
+- utiliza la misma venta canónica y evento PULSO cuando corresponda;
+- no se convierte en venta nativa PULSO.
+
+---
+
+#### 13. Venta Makos pre-corte recibida tarde
+
+Una venta cuyo hecho empresarial ocurre antes de `T` y llega después:
+
+```text
+OCURRIÓ ANTES
++
+LLEGÓ DESPUÉS
+→ SIGUE SIENDO MAKOS
+```
+
+Debe conservar:
+
+- identidad original;
+- procedencia;
+- tiempo original;
+- recepción tardía;
+- revisión;
+- evidencia;
+- correlación;
+- resultados previos.
+
+No se reasigna a PULSO por haber llegado después del límite.
+
+---
+
+#### 14. Venta PULSO post-corte
+
+Una venta nueva originada en PULSO dentro del alcance después de `T`:
+
+- tiene PULSO como fuente;
+- utiliza identidad canónica de venta y línea;
+- usa el mismo contrato empresarial;
+- produce el mismo tipo de evento canónico aplicable;
+- utiliza la misma audiencia;
+- se procesa por las mismas fronteras NEXO, NUMERA y PASS.
+
+No existe un “evento post-corte” diferente.
+
+---
+
+#### 15. Venta PULSO offline post-corte
+
+Si una modalidad offline autorizada permite crear la venta después de `T`:
+
+- la venta conserva origen PULSO;
+- conserva su tiempo empresarial original;
+- conserva su identidad durante sincronización;
+- una sincronización posterior no cambia la fuente;
+- retry no crea otra venta;
+- Makos no se usa como fallback para reemitirla.
+
+Esta tarea no crea ni habilita una modalidad offline nueva.
+
+---
+
+#### 16. Venta Makos post-corte
+
+Si una venta atribuida a Makos aparece con tiempo empresarial igual o posterior a `T` para una terminal transferida:
+
+```text
+FUENTE OBSERVADA = MAKOS
++
+FUENTE AUTORIZADA = PULSO
+→ CONFLICTO DE AUTORIDAD
+```
+
+Tratamiento contractual:
+
+1. conservar evidencia;
+2. no reclasificar silenciosamente;
+3. no inventar una venta PULSO equivalente;
+4. consultar identidad y resultado previo;
+5. abrir o continuar conciliación;
+6. impedir conceptualmente una segunda emisión empresarial.
+
+La materialización física de la última guarda corresponde a `INT-SALES-010`.
+
+---
+
+#### 17. Venta PULSO antes del corte
+
+Si PULSO origina una nueva venta antes del límite en un alcance cuya autoridad continúa en Makos:
+
+```text
+FUENTE OBSERVADA = PULSO
++
+FUENTE AUTORIZADA = MAKOS
+→ CONFLICTO DE AUTORIDAD
+```
+
+No se convierte automáticamente en excepción permitida.
+
+Solo otra decisión temporal válida y no solapada podría demostrar que PULSO tenía autoridad para ese hecho.
+
+---
+
+#### 18. Misma venta observada en ambas fuentes
+
+Si existe evidencia Makos y PULSO que podría representar la misma venta:
+
+1. no se fusiona por similitud;
+2. no se elige por timestamp de recepción;
+3. no se elige por importe;
+4. no se elige por producto;
+5. no se elige por archivo;
+6. se resuelve primero el intervalo de autoridad;
+7. se consulta identidad y resultados previos;
+8. permanece conflicto o candidato de duplicado cuando la identidad no pueda demostrarse.
+
+`INT-SALES-010` implementará la guardia permanente contra la segunda originación.
+
+---
+
+#### 19. Terminal no resoluble
+
+Si la terminal no puede resolverse inequívocamente:
+
+```text
+TERMINAL = INDETERMINADA
+→ CORTE NO RESOLUBLE
+→ BLOQUEADO
+```
+
+Queda prohibido:
+
+- usar la primera terminal de la sede;
+- usar la terminal del usuario actual;
+- usar la terminal que “parece” corresponder;
+- copiar la terminal de otra venta;
+- convertir un agregado de sede en evidencia de terminal.
+
+---
+
+#### 20. Tiempo no resoluble
+
+Si el tiempo empresarial no tiene precisión suficiente para ubicar el hecho respecto de `T`:
+
+```text
+TIEMPO INSUFICIENTE
+→ BLOQUEADO
+```
+
+Se conserva la evidencia y se concilia.
+
+No se usa:
+
+- `received_at`;
+- fecha de importación;
+- posición de fila;
+- hora de carga;
+- hora del worker;
+
+como sustituto del tiempo empresarial.
+
+---
+
+#### 21. Identidad insuficiente
+
+Si la fuente no permite demostrar una venta individual:
+
+- no se fabrica `canonical_sale_id`;
+- no se fabrican líneas;
+- no se fabrica `event_id`;
+- no se asigna una venta agregada a una terminal por prorrateo;
+- no se declara paridad individual;
+- el dato puede conservarse como evidencia agregada de cobertura.
+
+---
+
+#### 22. Importación `makos_excel` observada
+
+La línea técnica actual conserva un importador con:
+
+- `site_id`;
+- `sales_date`;
+- `source = 'makos_excel'`;
+- archivo y hash;
+- filas por artículo;
+- cantidad;
+- subtotal;
+- impuestos;
+- descuentos;
+- devoluciones;
+- venta neta;
+- mapping a catálogo o producto.
+
+La estructura observada no contiene en su contrato de staging:
+
+- identidad de venta individual;
+- identidad de terminal individual;
+- identidad de línea dentro de una venta individual.
+
+Consecuencia:
+
+```text
+MAKOS_EXCEL AGREGADO ACTUAL
+≠
+EVIDENCIA SUFICIENTE PARA MATERIALIZAR
+UN CORTE INDIVIDUAL POR TERMINAL
+```
+
+Esta tarea no modifica el importador.
+
+---
+
+#### 23. Parser PULSO observado
+
+La superficie vigente de importación PULSO interpreta el XLSX por filas de producto y cantidad y conserva campos agregados de ventas.
+
+Esa implementación sirve como evidencia del estado técnico actual, pero no acredita:
+
+- venta individual;
+- terminal individual;
+- hora empresarial individual;
+- ticket;
+- cliente;
+- pago individual;
+- evento empresarial individual.
+
+El contrato permanente del corte no se reduce a la granularidad del parser existente.
+
+---
+
+#### 24. Identidad histórica
+
+A través del corte se preservan:
+
+- identidad canónica de venta;
+- identidad de línea;
+- identidad externa cuando exista;
+- fuente;
+- instancia externa cuando aplique;
+- revisión;
+- tiempo empresarial;
+- tiempo de recepción;
+- payload original o referencia;
+- hash;
+- mapping y versión;
+- sede;
+- terminal;
+- correlación con evento;
+- efectos;
+- receipts;
+- compensaciones.
+
+El corte nunca renumera ni recrea historia para uniformar reportes.
+
+---
+
+#### 25. `source_system` y `producer_application`
+
+Se preserva:
+
+Antes del corte:
+
+```text
+source_system = MAKOS
+producer_application = PULSO
+```
+
+Después del corte:
+
+```text
+source_system = PULSO
+producer_application = PULSO
+```
+
+El cambio de `source_system` para nuevas ventas no cambia la productora empresarial del evento PULSO ni la audiencia de consumidoras.
+
+---
+
+#### 26. Evento canónico
+
+Una venta pre-corte Makos y una post-corte PULSO convergen hacia el mismo contrato canónico de venta cuando son válidas.
+
+El corte no modifica:
+
+- catálogo de eventos;
+- definición;
+- versión por conveniencia;
+- `event_id` de eventos ya existentes;
+- reglas de audiencia;
+- finalidad;
+- sensibilidad;
+- correlación;
+- causación.
+
+Replay y redelivery conservan el evento original.
+
+---
+
+#### 27. NEXO
+
+El corte no cambia el contrato físico.
+
+NEXO conserva:
+
+- inbox;
+- identidad de efecto;
+- movement group;
+- legs;
+- UOM;
+- cantidades;
+- origen físico;
+- receipt;
+- proyecciones;
+- correcciones;
+- compensaciones.
+
+Una venta duplicada por fuente competidora no debe producir un segundo movimiento.
+
+La guardia física contra esa segunda originación se materializará conforme a `INT-SALES-010` y los paquetes propietarios.
+
+---
+
+#### 28. NUMERA
+
+El corte no cambia el contrato económico.
+
+NUMERA conserva:
+
+- inbox;
+- `SALE_ECONOMIC_FACT`;
+- entidad;
+- sede;
+- centro;
+- moneda;
+- ocurrencia;
+- reconocimiento;
+- documento;
+- importe;
+- impuestos;
+- resultado;
+- reverso;
+- compensación.
+
+Una venta histórica Makos no se vuelve un hecho económico PULSO nuevo por el corte.
+
+---
+
+#### 29. PASS
+
+El corte no cambia:
+
+- cuenta;
+- regla;
+- versión;
+- base;
+- elegibilidad;
+- ledger;
+- saldo;
+- acumulación;
+- redención;
+- compensación.
+
+Una venta Makos histórica y una venta PULSO nativa utilizan la misma frontera PASS aplicable.
+
+El cambio de fuente de ventas futuras no vuelve a acreditar una venta histórica.
+
+---
+
+#### 30. Pagos, caja y fiscalidad
+
+Se preserva:
+
+```text
+FUENTE DE VENTA
+≠
+PAGO
+≠
+CAJA
+≠
+PROVEEDOR DE PAGO
+≠
+DOCUMENTO FISCAL
+≠
+CONTABILIDAD OFICIAL
+```
+
+El corte no autoriza por sí solo:
+
+- cambiar proveedor de pagos;
+- cerrar caja;
+- emitir documento fiscal;
+- cambiar proveedor fiscal;
+- convertir NUMERA en contabilidad oficial.
+
+Cada frontera conserva su propia tarea y autoridad.
+
+---
+
+#### 31. Revisiones post-corte de ventas pre-corte
+
+Una revisión válida de una venta Makos pre-corte:
+
+- conserva la misma venta;
+- conserva Makos como procedencia del original;
+- conserva el vínculo con la revisión anterior;
+- no crea una venta PULSO nueva;
+- solo altera los efectos que el cambio material realmente requiera;
+- conserva los resultados que no cambian.
+
+---
+
+#### 32. Anulación post-corte
+
+Una anulación posterior al corte:
+
+- referencia la venta original;
+- conserva la fuente original;
+- no borra la venta;
+- no crea una nueva venta negativa;
+- utiliza los contratos de corrección o compensación aplicables;
+- no devuelve autoridad a Makos para nuevas ventas.
+
+---
+
+#### 33. Devolución y reembolso post-corte
+
+Una devolución o reembolso de una venta pre-corte:
+
+```text
+VENTA HISTÓRICA
+→ HECHO POSTERIOR CORRELACIONADO
+→ EFECTOS PROPIETARIOS
+→ COMPENSACIONES CUANDO CORRESPONDA
+```
+
+Nunca:
+
+```text
+HECHO POSTERIOR
+→ REESCRIBIR FUENTE DE LA VENTA ORIGINAL
+```
+
+---
+
+#### 34. Resultado desconocido cruzando el corte
+
+Si un efecto o venta queda con resultado desconocido alrededor de `T`:
+
+1. el corte no resuelve el resultado por sí solo;
+2. se consulta la identidad original;
+3. se consulta receipt o resultado propietario;
+4. retry conserva identidad;
+5. si el hecho ocurrió antes del límite, conserva la autoridad histórica correspondiente;
+6. si no puede determinarse, queda en conciliación;
+7. no se genera otra venta en el otro lado del límite para “asegurar” el registro.
+
+---
+
+#### 35. Retry cruzando el corte
+
+Un retry iniciado después de `T` puede pertenecer a una venta ocurrida antes de `T`.
+
+Por tanto:
+
+```text
+FECHA DEL RETRY
+≠
+FUENTE DE LA VENTA
+```
+
+Retry conserva:
+
+- venta;
+- líneas;
+- fuente;
+- huella;
+- evento;
+- audiencia;
+- consumidoras;
+- resultados previos.
+
+---
+
+#### 36. Replay cruzando el corte
+
+Replay:
+
+- conserva `event_id`;
+- conserva `occurred_at`;
+- conserva fuente;
+- conserva audiencia histórica;
+- no crea otra venta;
+- no transforma Makos en PULSO;
+- no vuelve a aplicar efectos confirmados.
+
+El momento del replay no decide autoridad de origen.
+
+---
+
+#### 37. Backfill cruzando el corte
+
+Backfill:
+
+- conserva procedencia;
+- conserva lote o ventana;
+- utiliza identidades deterministas;
+- concilia contra historia;
+- no convierte agregados en ventas individuales inventadas;
+- no crea eventos sensibles por defecto;
+- no cambia Makos a PULSO para simplificar datos históricos.
+
+---
+
+#### 38. Falla de PULSO después del corte
+
+Para una terminal ya transferida, una degradación de PULSO:
+
+- no reactiva Makos automáticamente;
+- no amplía el acceso Makos;
+- no cambia intervalos históricos;
+- no autoriza reemitir ventas PULSO en Makos;
+- debe utilizar la contingencia aprobada por su proceso y paquete correspondiente.
+
+Si fuera necesario devolver autoridad a Makos, debe existir una nueva decisión explícita de fuente.
+
+---
+
+#### 39. Reasignación futura de autoridad
+
+Después de un intervalo PULSO válido, una reasignación futura exige otro límite explícito.
+
+Ejemplo conceptual:
+
+```text
+MAKOS
+[---------)
+
+        T1
+
+PULSO
+          [----------------)
+
+                           T2
+
+FUENTE FUTURA AUTORIZADA
+                             [---------)
+```
+
+Reglas:
+
+1. no se extiende retrospectivamente Makos;
+2. no se borra PULSO;
+3. no se reescriben ventas;
+4. no se solapan intervalos;
+5. cada nuevo límite conserva razón y autoridad;
+6. las consumidoras no reejecutan efectos por el cambio;
+7. la conciliación verifica diferencias alrededor del nuevo límite.
+
+---
+
+#### 40. Reprogramación antes del límite
+
+Antes de que un límite entre en vigor, una decisión autorizada puede:
+
+- bloquear;
+- cancelar;
+- reprogramar;
+
+el cutover si una precondición deja de cumplirse.
+
+La reprogramación:
+
+- conserva evidencia de la decisión anterior;
+- no altera historia de ventas;
+- no produce compensaciones por sí sola;
+- no convierte PULSO en fuente antes del nuevo límite;
+- exige reevaluar las precondiciones aplicables.
+
+---
+
+#### 41. Corte ya efectivo
+
+Después de que el límite entró en vigor y PULSO originó ventas válidas:
+
+- no se edita el límite para fingir que PULSO nunca tuvo autoridad;
+- no se borra el intervalo;
+- no se reclasifican las ventas PULSO;
+- cualquier cambio futuro utiliza una nueva decisión temporal.
+
+---
+
+#### 42. Acceso Makos residual
+
+Después del corte, el adaptador puede necesitar lectura residual para:
+
+- ventas realmente pre-corte recibidas tarde;
+- evidencia histórica;
+- revisiones históricas;
+- anulaciones;
+- devoluciones;
+- reembolsos;
+- resultados desconocidos;
+- compensaciones;
+- conciliación.
+
+Ese acceso residual:
+
+```text
+LECTURA / EVIDENCIA HISTÓRICA
+≠
+AUTORIDAD PARA NUEVAS VENTAS
+```
+
+---
+
+#### 43. Límite con `INT-SALES-010`
+
+`INT-SALES-009` define:
+
+```text
+QUÉ FUENTE ESTÁ AUTORIZADA
+```
+
+`INT-SALES-010` definirá:
+
+```text
+CÓMO IMPEDIR QUE UNA FUENTE NO AUTORIZADA
+PRODUZCA UNA SEGUNDA VENTA
+```
+
+Por tanto, esta tarea puede clasificar `CONFLICTO DE AUTORIDAD`, pero no selecciona todavía:
+
+- constraint;
+- tabla de guardia;
+- RPC;
+- claim;
+- lock;
+- índice;
+- servicio;
+- middleware;
+- worker;
+- trigger.
+
+---
+
+#### 44. Límite con `INT-SALES-011`
+
+`INT-SALES-011` cerrará el retiro del adaptador externo.
+
+Esta tarea no decide:
+
+- fecha de apagado del adaptador;
+- eliminación de código;
+- eliminación de credenciales;
+- revocación física;
+- borrado de staging;
+- retención física final.
+
+Sí deja congelado que retirar el adaptador no puede cambiar la procedencia histórica ni los contratos de consumidoras.
+
+---
+
+#### 45. Conciliación alrededor del corte
+
+`INT-SALES-008` debe poder comparar:
+
+```text
+INTERVALO DE AUTORIDAD
+↔
+FUENTE OBSERVADA
+↔
+VENTA
+↔
+LÍNEAS
+↔
+EVENTO
+↔
+NEXO
+↔
+NUMERA
+↔
+PASS
+↔
+COMPENSACIONES
+```
+
+Alrededor del límite deben detectarse como mínimo:
+
+- Makos pre-corte faltante;
+- Makos post-corte;
+- PULSO pre-corte no autorizado;
+- misma venta en ambas fuentes;
+- terminal no resoluble;
+- tiempo no resoluble;
+- venta sin evento;
+- evento sin venta;
+- efecto sin venta;
+- efecto faltante;
+- duplicado;
+- revisión tardía;
+- compensación pendiente;
+- residual;
+- resultado desconocido.
+
+---
+
+#### 46. Igualdad agregada no prueba corte correcto
+
+```text
+TOTAL MAKOS = TOTAL PULSO
+```
+
+no demuestra:
+
+- terminal correcta;
+- identidad correcta;
+- intervalo correcto;
+- fuente correcta;
+- ausencia de doble venta.
+
+Los agregados pueden apoyar cobertura, nunca sustituir la decisión individual cuando el alcance exige identidad individual.
+
+---
+
+#### 47. Evidencia mínima de una futura materialización
+
+Una implementación o ejecución futura deberá poder conservar:
+
+- sede;
+- terminal;
+- límite efectivo;
+- precisión temporal;
+- fuente anterior;
+- fuente posterior;
+- versión contractual;
+- autoridad de la decisión;
+- evidencia de readiness;
+- estado de conciliación;
+- última venta válida del intervalo anterior cuando sea determinable;
+- primera venta válida del intervalo posterior cuando sea determinable;
+- ventas tardías;
+- conflictos de autoridad;
+- candidatos de doble fuente;
+- eventos;
+- resultados consumidores;
+- resultados desconocidos;
+- compensaciones;
+- residuales.
+
+Esta tarea no afirma que esa evidencia exista hoy para un alcance real.
+
+---
+
+#### 48. Readiness de un alcance
+
+Antes de una futura activación física, el alcance debe demostrar como mínimo:
+
+1. sede resoluble;
+2. terminal resoluble;
+3. semántica temporal suficiente;
+4. identidad de venta estable;
+5. identidad de línea estable;
+6. fuente externa acreditada para historia previa;
+7. PULSO capaz de originar la venta canónica posterior;
+8. evento PULSO estable;
+9. mapping o cuarentena controlados;
+10. idempotencia;
+11. resultado recuperable;
+12. NEXO reconciliable;
+13. NUMERA reconciliable;
+14. PASS reconciliable;
+15. resultado desconocido investigable;
+16. compensación correlacionable;
+17. conciliación sin bloqueo crítico incompatible con el cutover;
+18. contingencia post-corte sin fallback silencioso a doble fuente.
+
+La implementación y evidencia pertenecen a los paquetes posteriores autorizados.
+
+---
+
+#### 49. Estado técnico actual observado
+
+El contrato permanente queda `ESPECIFICADO`.
+
+La materialización física no se declara implementada por esta tarea.
+
+La evidencia técnica vigente mantiene:
+
+- importación Makos agregada por artículo;
+- `site_id`;
+- `sales_date`;
+- hash de archivo;
+- mapping de catálogo;
+- ausencia de una identidad individual de terminal en el staging observado;
+- ausencia de una identidad individual de venta en ese staging.
+
+Por tanto, el mecanismo observado no acredita por sí solo un cutover individual por terminal.
+
+---
+
+#### 50. Sin escritura cruzada
+
+El resolver de autoridad no concede permiso para:
+
+- escribir NEXO;
+- escribir NUMERA;
+- escribir PASS;
+- editar ledgers;
+- editar saldos;
+- modificar hechos históricos;
+- cambiar fiscalidad;
+- cambiar pagos.
+
+Autoridad de origen de venta no equivale a autoridad sobre dominios consumidores.
+
+---
+
+#### 51. Auditoría
+
+Debe poder reconstruirse lógicamente:
+
+- decisión de corte;
+- sede;
+- terminal;
+- límite;
+- precisión;
+- fuente autorizada por intervalo;
+- fuente observada;
+- venta;
+- revisión;
+- tiempo empresarial;
+- tiempos técnicos;
+- procedencia;
+- huella;
+- evento;
+- resultados previos;
+- conflicto;
+- conciliación;
+- actor o autoridad;
+- evidencia.
+
+La auditoría no sustituye la decisión propietaria ni la venta.
+
+---
+
+#### 52. Prohibiciones
+
+Queda prohibido:
+
+1. hacer un cutover global implícito;
+2. cortar una sede sin resolver el alcance de sus terminales;
+3. asumir que una terminal hereda el corte de otra;
+4. decidir fuente por `received_at`;
+5. decidir fuente por fecha de importación;
+6. decidir fuente por sincronización;
+7. decidir fuente por retry;
+8. decidir fuente por replay;
+9. decidir fuente por total;
+10. decidir fuente por producto coincidente;
+11. decidir fuente por nombre de archivo;
+12. inventar una terminal;
+13. inventar una hora;
+14. inventar una identidad de venta;
+15. prorratear agregados para fabricar ventas individuales;
+16. reclasificar venta Makos histórica como PULSO;
+17. reclasificar venta PULSO nativa como Makos por retraso;
+18. cambiar `source_system` histórico para uniformar datos;
+19. generar otro `event_id` por el corte;
+20. crear un segundo esquema de evento;
+21. cambiar audiencia por el corte;
+22. reemitir efectos históricos;
+23. repetir NEXO;
+24. repetir NUMERA;
+25. repetir PASS;
+26. convertir devolución post-corte en venta negativa nueva;
+27. usar Makos como fallback automático post-corte;
+28. ampliar credenciales Makos para resolver indisponibilidad;
+29. editar un intervalo efectivo ya ejecutado;
+30. extender Makos retroactivamente;
+31. borrar un intervalo PULSO;
+32. solapar dos autoridades;
+33. dejar una venta permitida sin autoridad resoluble;
+34. usar deduplicación consumidora como sustituto del control de fuente;
+35. ocultar una violación de autoridad como retry técnico;
+36. declarar cutover efectivo por igualdad de totales;
+37. tratar el importador agregado actual como prueba suficiente de terminal individual;
+38. transferir pagos por inferencia;
+39. transferir fiscalidad por inferencia;
+40. transferir contabilidad por inferencia;
+41. retirar el adaptador desde esta tarea;
+42. implementar la guardia física de doble fuente desde esta tarea;
+43. crear tablas, índices, constraints, RPC, funciones, triggers, jobs, colas o workers;
+44. modificar código, SQL, migraciones, RLS, datos, Supabase, credenciales o configuración remota;
+45. iniciar o desarrollar `INT-SALES-010`.
+
+---
+
+#### 53. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya protege expresamente que la transición POS externo → PULSO converja en contratos canónicos sin doble emisión; que el corte se defina por sede, terminal y fecha efectiva; que ambas fuentes no emitan la misma venta; que ventas, anulaciones y devoluciones produzcan una sola vez sus efectos aplicables; que fuentes competidoras se identifiquen y resuelvan conservando historia; y que retry, replay, eventos tardíos, compensaciones y conciliación no dupliquen efectos. `INT-SALES-009` convierte el corte transitorio ya definido en `INT-POS-023` en contrato permanente de ventas sin introducir una obligación verificable material nueva.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 54. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, para identidad estable, resultado recuperable, retry, conflicto y conciliación;
+- `TREQ-INTEGRATION-006`, para fuente única, fuentes competidoras, resolución y conservación de historia;
+- `TREQ-INTEGRATION-011`, para efectos físicos correlacionados e idempotentes;
+- `TREQ-INTEGRATION-014`, para transición POS externo/PULSO, corte por sede, terminal y fecha efectiva, prohibición de doble emisión y efectos exactamente una vez;
+- `TREQ-INTEGRATION-015`, para fidelización y compensaciones;
+- `TREQ-INTEGRATION-017`, para hechos económicos correlacionados e idempotentes;
+- `TREQ-INTEGRATION-151`, para retry crítico con conciliación;
+- `TREQ-INTEGRATION-154`, para fuera de orden;
+- `TREQ-INTEGRATION-155`, para replay y backfill preservando identidad y audiencia;
+- `TREQ-INTEGRATION-159`, para independencia de consumidoras;
+- `TREQ-INTEGRATION-160` y `TREQ-INTEGRATION-161`, para agotamiento de retry sin resultado ni compensación inventados;
+- `TREQ-PULSO-001`, `TREQ-PULSO-005` y `TREQ-PULSO-006`, para el ciclo comercial end-to-end, separación de estados y tratamiento de venta, pago, caja y reversos;
+- la cobertura NEXO, NUMERA y PASS ya relacionada por los requisitos transversales anteriores.
+
+Ninguna fila cambia de identidad, texto, estado, relación, propietaria, evidencia ni secuencia por esta tarea.
+
+---
+
+#### 55. Decisiones congeladas
+
+1. El corte gobierna autoridad de nuevas ventas.
+2. PULSO sigue siendo propietaria de la venta canónica interna.
+3. Makos conserva procedencia histórica.
+4. La unidad del corte es sede + terminal + límite efectivo.
+5. La fecha efectiva es obligatoria.
+6. La precisión temporal debe ser suficiente.
+7. Antes del límite corresponde Makos.
+8. Desde el límite incluido corresponde PULSO.
+9. No existe cutover global implícito.
+10. Una terminal no hereda el corte de otra.
+11. No existen intervalos solapados.
+12. No existen gaps implícitos para ventas permitidas.
+13. Tiempo empresarial y recepción son distintos.
+14. Importación no decide fuente.
+15. Sincronización no decide fuente.
+16. Retry no decide fuente.
+17. Replay no decide fuente.
+18. Makos pre-corte tardío conserva Makos.
+19. PULSO post-corte offline conserva PULSO.
+20. Makos post-corte es conflicto de autoridad.
+21. PULSO pre-corte no autorizado es conflicto de autoridad.
+22. Terminal indeterminada bloquea.
+23. Tiempo insuficiente bloquea.
+24. Identidad insuficiente bloquea o cuarentena.
+25. No se inventan valores.
+26. No se reclasifica historia.
+27. Identidad de venta y línea se conserva.
+28. `source_system` conserva procedencia.
+29. `producer_application` permanece PULSO para el evento canónico.
+30. El catálogo de eventos no cambia.
+31. La audiencia no cambia.
+32. NEXO no cambia.
+33. NUMERA no cambia.
+34. PASS no cambia.
+35. Pago no se transfiere por inferencia.
+36. Fiscalidad no se transfiere por inferencia.
+37. Devoluciones conservan original.
+38. Compensaciones conservan original.
+39. Retry conserva identidad.
+40. Replay conserva identidad.
+41. Backfill conserva procedencia.
+42. Fallo PULSO no reactiva Makos.
+43. Reasignación futura requiere otro límite.
+44. Intervalos ejecutados no se reescriben.
+45. Acceso residual Makos no equivale a autoridad.
+46. `INT-SALES-008` conserva conciliación.
+47. `INT-SALES-010` conserva enforcement de doble fuente.
+48. `INT-SALES-011` conserva retiro del adaptador.
+49. `makos_excel` agregado no acredita terminal individual.
+50. Se crean cero cambios `TREQ-*`.
+51. No se genera una copia del registro canónico de requisitos.
+52. Se crean cero objetos físicos.
+53. Se modifican cero objetos físicos.
+54. No se modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota.
+
+---
+
+#### 56. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. mantiene `INT-SALES-008` como tarea anterior aprobada;
+2. mantiene `INT-SALES-010` como única tarea siguiente reservada;
+3. define el corte como autoridad de nuevas ventas;
+4. conserva PULSO como propietaria interna de venta y evento;
+5. conserva Makos como fuente histórica cuando corresponda;
+6. define sede como dimensión obligatoria;
+7. define terminal como dimensión obligatoria;
+8. define límite efectivo como dimensión obligatoria;
+9. exige precisión temporal acreditada;
+10. establece Makos antes del límite;
+11. establece PULSO desde el límite incluido;
+12. impide cutover global implícito;
+13. impide herencia de corte entre terminales;
+14. prohíbe intervalos solapados;
+15. prohíbe gaps implícitos para ventas permitidas;
+16. separa tiempo empresarial de recepción;
+17. separa tiempo empresarial de importación;
+18. separa tiempo empresarial de sincronización;
+19. separa tiempo empresarial de retry;
+20. separa tiempo empresarial de replay;
+21. conserva venta Makos tardía como Makos;
+22. conserva PULSO offline post-corte como PULSO;
+23. clasifica Makos post-corte como conflicto;
+24. clasifica PULSO pre-corte no autorizado como conflicto;
+25. bloquea terminal indeterminada;
+26. bloquea tiempo insuficiente;
+27. evita fabricar identidad;
+28. evita usar agregados como identidad individual;
+29. preserva venta y líneas históricas;
+30. preserva procedencia;
+31. preserva `source_system`;
+32. mantiene productora PULSO;
+33. mantiene un único contrato de evento;
+34. mantiene audiencia;
+35. mantiene NEXO;
+36. mantiene NUMERA;
+37. mantiene PASS;
+38. mantiene pago separado;
+39. mantiene caja separada;
+40. mantiene fiscalidad separada;
+41. mantiene contabilidad separada;
+42. preserva revisiones post-corte del original;
+43. preserva anulaciones post-corte del original;
+44. preserva devoluciones y reembolsos del original;
+45. conserva resultado desconocido sin segunda venta;
+46. conserva retry sin cambio de fuente;
+47. conserva replay sin cambio de fuente;
+48. conserva backfill sin cambio de fuente;
+49. prohíbe fallback automático a Makos;
+50. exige nueva decisión para reasignación;
+51. preserva intervalos ya ejecutados;
+52. permite reprogramación previa sin reescribir historia;
+53. mantiene acceso Makos residual separado de autoridad;
+54. reserva enforcement físico a `INT-SALES-010`;
+55. reserva retiro a `INT-SALES-011`;
+56. reutiliza conciliación de `INT-SALES-008`;
+57. impide considerar igualdad agregada como prueba del corte;
+58. define evidencia mínima para materialización futura;
+59. define readiness mínimo;
+60. diagnostica el staging `makos_excel` actual sin declararlo suficiente;
+61. diagnostica el parser PULSO actual sin canonizar su granularidad;
+62. no declara materialización física implementada;
+63. prohíbe escritura cruzada;
+64. hace auditable la decisión de autoridad;
+65. genera cero requisitos de prueba nuevos;
+66. modifica cero requisitos de prueba;
+67. no genera una copia del registro canónico de requisitos;
+68. crea cero objetos físicos;
+69. modifica cero objetos físicos;
+70. no modifica código, SQL, migraciones, datos, Supabase, credenciales ni configuración remota;
+71. no inicia ni desarrolla `INT-SALES-010`.
+
+---
+
+#### 57. Resultado de la tarea
+
+`INT-SALES-009` queda definida como el contrato permanente que resuelve de manera determinista y auditable la autoridad de origen de toda nueva venta durante la transición Makos → PULSO usando sede, terminal y límite efectivo, preservando historia, identidad y contratos consumidores.
+
+Resultado consolidado:
+
+```text
+SEDE RESOLUBLE
++
+TERMINAL RESOLUBLE
++
+LÍMITE EFECTIVO
++
+PRECISIÓN TEMPORAL SUFICIENTE
++
+TIEMPO EMPRESARIAL DEL HECHO
++
+INTERVALO ÚNICO DE AUTORIDAD
++
+FUENTE OBSERVADA COHERENTE
+→
+FUENTE AUTORIZADA INEQUÍVOCA PARA LA NUEVA VENTA
+```
+
+Con:
+
+```text
+ANTES DEL LÍMITE → MAKOS
+DESDE EL LÍMITE → PULSO
+```
+
+y, ante cualquier ambigüedad o fuente competidora:
+
+```text
+BLOQUEO / CONFLICTO
+→
+CONCILIACIÓN
+```
+
+sin reclasificar historia, sin fallback automático, sin cambiar NEXO/NUMERA/PASS y sin implementar todavía la guardia física contra doble fuente.
+
+---
+
+#### 58. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO`
+
+TAREA ACTUAL APROBADA
+
+`INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta`
+
+
 ### [ ] INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
 ### [ ] INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
 
