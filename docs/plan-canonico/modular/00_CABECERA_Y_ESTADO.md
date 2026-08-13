@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **772** |
+| Tareas aprobadas | **773** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **822** |
+| Tareas no iniciadas | **821** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **48.43% (772/1594)** |
+| Porcentaje de completamiento | **48.49% (773/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta** |
-| Tarea actual | **INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario** |
+| Última tarea aprobada | **INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario** |
+| Tarea actual | **INT-POS-013 — Definir idempotencia por sistema, venta y línea externa** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-POS-013 — Definir idempotencia por sistema, venta y línea externa** |
+| Siguiente tarea | **INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo** |
 | Bloque actual | **BLOQUE X — Contratos de integración y transiciones** |
-| Progreso del bloque | **BLOQUE X: 56 de 83 aprobadas; INT-POS-012 pendiente** |
+| Progreso del bloque | **BLOQUE X: 57 de 83 aprobadas; INT-POS-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-POS-011` — Definir mapeo de producto externo, producto Vento, presentación y receta |
-| Tarea actual | `INT-POS-012` — Definir cuarentena de líneas sin mapeo y sin descuento de inventario — **NO INICIADA** |
-| Siguiente tarea | `INT-POS-013` — Definir idempotencia por sistema, venta y línea externa |
+| Última aprobada | `INT-POS-012` — Definir cuarentena de líneas sin mapeo y sin descuento de inventario |
+| Tarea actual | `INT-POS-013` — Definir idempotencia por sistema, venta y línea externa — **NO INICIADA** |
+| Siguiente tarea | `INT-POS-014` — Definir webhook cuando exista y polling de conciliación como respaldo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE X: 56 DE 83 APROBADAS — ACTUAL INT-POS-012** |
+| CONTINUIDAD ACTIVA | **BLOQUE X: 57 DE 83 APROBADAS — ACTUAL INT-POS-013** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
-        ↓
-TAREA ACTUAL
 INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 56 de 83 tareas aprobadas
+BLOQUE X — 57 de 83 tareas aprobadas
 ```

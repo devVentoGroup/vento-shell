@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **772** |
+| Aprobadas | **773** |
 | En propuesta | **0** |
-| No iniciadas | **822** |
+| No iniciadas | **821** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **48.43% (772/1594)** |
+| Porcentaje de completamiento | **48.49% (773/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-POS-011` — Definir mapeo de producto externo, producto Vento, presentación y receta | ✅ APROBADA |
-| Tarea actual | `INT-POS-012` — Definir cuarentena de líneas sin mapeo y sin descuento de inventario | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-POS-013` — Definir idempotencia por sistema, venta y línea externa | ⬜ NO INICIADA |
+| Última aprobada | `INT-POS-012` — Definir cuarentena de líneas sin mapeo y sin descuento de inventario | ✅ APROBADA |
+| Tarea actual | `INT-POS-013` — Definir idempotencia por sistema, venta y línea externa | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-POS-014` — Definir webhook cuando exista y polling de conciliación como respaldo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1480,7 +1480,7 @@
 | ✅ APROBADA | `INT-POS-009` | Definir conservación de payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-010` | Definir mapeo de empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ✅ APROBADA | `INT-POS-011` | Definir mapeo de producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
-| ⬜ NO INICIADA | `INT-POS-012` | Definir cuarentena de líneas sin mapeo y sin descuento de inventario | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
+| ✅ APROBADA | `INT-POS-012` | Definir cuarentena de líneas sin mapeo y sin descuento de inventario | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-013` | Definir idempotencia por sistema, venta y línea externa | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-014` | Definir webhook cuando exista y polling de conciliación como respaldo | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-015` | Definir emisión del evento canónico de venta validada | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |

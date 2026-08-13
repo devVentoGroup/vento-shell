@@ -5075,7 +5075,538 @@ Se preserva la cobertura vigente para:
 **SIGUIENTE TAREA RESERVADA:** `INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario`
 
 
-### [ ] INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
+### ✅ INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
+
+**Estado:** APROBADA
+**Tarea anterior:** `INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta`
+**Tarea siguiente:** `INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
+**Tipo de tarea:** documental — contrato de cuarentena, bloqueo de efectos físicos y liberación segura de líneas de venta con mapping incompleto
+**Bloque:** X — Integraciones y contratos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md`
+**Sistema externo temporal:** Makos / `EXT-SYS-013`
+**Fuente demostrada actualmente:** `makos_excel`
+**Fase:** exclusivamente documental
+**Implementación técnica:** no autorizada en esta tarea
+**Cambios de datos o esquema:** no autorizados en esta tarea
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento canónico de una línea procedente del POS externo cuando el mapping exigido por `INT-POS-011` no sea suficiente para identificar de forma segura el producto Vento y, cuando correspondan, su presentación operativa y su receta.
+
+La línea deberá conservarse como hecho recibido y quedar aislada de cualquier efecto físico dependiente de producto hasta que exista una resolución explícita, versionada y auditable.
+
+Regla raíz:
+
+```text
+LÍNEA EXTERNA RECIBIDA
+        ↓
+PROCEDENCIA PRESERVADA
+        ↓
+EVALUACIÓN DE MAPPING
+        ├── COMPLETE → continúa a las puertas posteriores
+        └── INCOMPLETE → CUARENTENA DE LÍNEA
+                              ↓
+                     CERO EFECTO DE INVENTARIO
+                              ↓
+               RESOLUCIÓN EXPLÍCITA DEL MAPPING
+                              ↓
+                 LIBERACIÓN AUDITADA DE LA LÍNEA
+                              ↓
+               EFECTO FÍSICO SOLO EN INT-POS-016
+```
+
+La cuarentena no corrige la línea, no crea un producto sustituto, no convierte una coincidencia aproximada en mapping y no representa por sí sola una cancelación comercial.
+
+---
+
+#### 2. Base canónica heredada
+
+Esta tarea conserva sin reinterpretar las siguientes decisiones aprobadas:
+
+1. Makos es la fuente temporal de las ventas originadas dentro de su alcance hasta el corte controlado hacia PULSO.
+2. Venta, línea, pago, reverso, documento fiscal, efecto físico, fidelización y efecto económico permanecen como hechos separados.
+3. La venta y cada línea conservan su procedencia y su representación histórica aunque todavía no sean elegibles para producir efectos internos.
+4. `INT-POS-009` gobierna payload original, versión, hash, recepción y localizador de procedencia.
+5. `INT-POS-010` gobierna el contexto externo de empresa, sede, terminal y caja y no puede reconstruirse desde el producto.
+6. `INT-POS-011` gobierna el mapping entre ítem externo, producto Vento, presentación y receta mediante decisiones explícitas y versionadas.
+7. Un resultado `INCOMPLETE` de `INT-POS-011` bloquea cualquier efecto automático dependiente de ese mapping.
+8. Coincidencias legacy por código o nombre son `CANDIDATE_ONLY` y no equivalen a mapping canónico suficiente.
+9. Una línea sin mapping suficiente no puede descontar inventario, costo ni fidelización automáticamente.
+10. NEXO conserva autoridad sobre el efecto físico de inventario; el adaptador, el staging y PULSO no adquieren esa propiedad por recibir la venta.
+11. La idempotencia transversal se define en `INT-POS-013` y el efecto físico exactamente una vez se define en `INT-POS-016`.
+12. Las diferencias entre hechos, mappings y efectos se concilian en `INT-POS-020` sin reescribir historia.
+
+---
+
+#### 3. Resultado material
+
+Queda definido el contrato lógico `EXTERNAL-SALE-LINE-QUARANTINE-001`.
+
+Su unidad de decisión es **una línea canónica de venta**, no el archivo, el lote, la venta completa, el producto, la sede ni una regla de consumo.
+
+El contrato cumple simultáneamente cuatro funciones:
+
+| Función      | Decisión canónica                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Preservación | la línea y su procedencia permanecen disponibles aunque el mapping sea incompleto                                        |
+| Aislamiento  | la línea no puede producir efectos físicos dependientes de producto mientras la cuarentena esté activa                   |
+| Resolución   | el bloqueo conserva razones concretas vinculadas a los planos de mapping que faltan o presentan conflicto                |
+| Liberación   | la línea solo sale de cuarentena mediante una decisión reproducible que demuestre mapping suficiente y conserve historia |
+
+La cuarentena es una **puerta de seguridad**. No es un catálogo paralelo, un estado comercial de la venta ni una forma de borrar filas problemáticas.
+
+---
+
+#### 4. Alcance de la cuarentena
+
+La cuarentena se aplica por línea.
+
+Una línea entra en cuarentena cuando su evaluación vigente bajo `EXTERNAL-SALE-ITEM-MAPPING-001` produce `INCOMPLETE` o cuando no puede demostrarse qué mapping era aplicable sin inferencia.
+
+La existencia de una línea en cuarentena:
+
+- no elimina la venta;
+- no elimina la línea;
+- no modifica el payload original;
+- no obliga por sí sola a marcar la venta como `CANCELLED`;
+- no convierte el lote completo en un nuevo hecho empresarial;
+- no autoriza descartar importes, impuestos, descuentos, pagos o referencias de la línea;
+- no autoriza producir un efecto físico parcial sobre esa misma línea;
+- no declara automáticamente inválidas las líneas hermanas que sí tengan mapping suficiente.
+
+La elegibilidad de la venta o de otras líneas para eventos y efectos posteriores continúa bajo sus tareas propietarias. Esta tarea solo fija que **la línea cuarentenada queda cerrada para cualquier efecto dependiente de su producto hasta su liberación**.
+
+---
+
+#### 5. Condiciones de entrada obligatoria
+
+Una línea deberá entrar o permanecer en cuarentena cuando ocurra al menos una de estas condiciones:
+
+| Condición                                               | Evidencia heredada                                                                           | Resultado  |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------- |
+| identidad externa insuficiente para resolver el ítem    | `external_item_id` ausente o alcance insuficiente cuando sea necesario                       | cuarentena |
+| producto no resuelto                                    | `product_mapping_status` distinto de `RESOLVED`                                              | cuarentena |
+| presentación obligatoria no resuelta                    | presentación requerida y `presentation_mapping_status` distinto de `RESOLVED`                | cuarentena |
+| receta obligatoria no resuelta                          | receta requerida y `recipe_mapping_status` distinto de `RESOLVED`                            | cuarentena |
+| contexto requerido para resolver el mapping no resuelto | dependencia de `INT-POS-010` no satisfecha                                                   | cuarentena |
+| más de un destino plausible                             | estado `AMBIGUOUS`                                                                           | cuarentena |
+| evidencia incompatible                                  | estado `CONFLICT`                                                                            | cuarentena |
+| mapping no aplicable al momento comercial de la línea   | vigencia no demostrable o mapping `INACTIVE` para nuevas líneas fuera de su periodo          | cuarentena |
+| coincidencia legacy sin decisión explícita              | `matched_code`, `matched_name` u otra coincidencia equivalente sin mapping aprobado          | cuarentena |
+| candidato de catálogo sin suficiencia integral          | `catalog_item_id` sugerido pero falta producto, presentación, receta o evidencia obligatoria | cuarentena |
+
+`NULL`, cadena vacía, valor predeterminado, coincidencia aproximada, categoría o selección automática no sustituyen ninguna de estas decisiones.
+
+---
+
+#### 6. Razones canónicas de cuarentena
+
+Cada decisión de cuarentena conservará una o varias razones cerradas de negocio para explicar qué impide la liberación:
+
+| Razón                             | Significado                                                                                                       |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `EXTERNAL_IDENTITY_INSUFFICIENT`  | la identidad externa o su alcance no permiten resolver inequívocamente el ítem                                    |
+| `SOURCE_CONTEXT_UNRESOLVED`       | falta el contexto requerido para seleccionar el mapping correcto                                                  |
+| `PRODUCT_MAPPING_UNRESOLVED`      | el producto maestro no está `RESOLVED`                                                                            |
+| `PRESENTATION_MAPPING_UNRESOLVED` | una presentación obligatoria no está `RESOLVED`                                                                   |
+| `RECIPE_MAPPING_UNRESOLVED`       | una receta obligatoria no está `RESOLVED`                                                                         |
+| `MAPPING_AMBIGUOUS`               | existen dos o más destinos plausibles sin criterio suficiente                                                     |
+| `MAPPING_CONFLICT`                | las evidencias o decisiones vigentes resultan incompatibles                                                       |
+| `MAPPING_NOT_EFFECTIVE`           | no puede demostrarse una revisión aplicable al momento comercial del hecho                                        |
+| `LEGACY_CANDIDATE_ONLY`           | existe coincidencia técnica por código, nombre, categoría u otra heurística, pero no decisión canónica suficiente |
+
+Las razones anteriores describen la insuficiencia del mapping. No deben reutilizarse para representar stock insuficiente, fallo de transporte, timeout, duplicidad, devolución, error contable o cualquier otra condición con propietaria distinta.
+
+---
+
+#### 7. Estado lógico de la cuarentena
+
+Cada instancia de cuarentena utilizará uno de estos estados conceptuales:
+
+| Estado     | Significado                                                                              | Efecto permitido                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `ACTIVE`   | la línea continúa sin mapping suficiente o existe un conflicto que impide liberarla      | ningún efecto dependiente de producto                                                |
+| `RELEASED` | una decisión posterior demostró mapping `COMPLETE` y se registró la salida de cuarentena | solo queda elegible para las puertas posteriores; no ejecuta inventario por sí misma |
+
+No existe un estado implícito de liberación por desaparición del error, edición de una celda, creación de una regla legacy o cambio de nombre.
+
+Una cuarentena histórica liberada permanece visible como parte de la trazabilidad de la línea.
+
+---
+
+#### 8. Contrato lógico mínimo de una instancia
+
+Cada instancia de `EXTERNAL-SALE-LINE-QUARANTINE-001` deberá poder conservar como mínimo:
+
+| Grupo        | Campo lógico                | Regla                                                                                                  |
+| ------------ | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Identidad    | `quarantine_id`             | identidad estable de la decisión de cuarentena                                                         |
+| Línea        | `canonical_sale_ref`        | venta canónica a la que pertenece la línea                                                             |
+| Línea        | `canonical_sale_line_ref`   | línea exacta afectada                                                                                  |
+| Origen       | `source_system`             | sistema que declaró la línea                                                                           |
+| Origen       | `source_instance_ref`       | instancia externa cuando sea necesaria para evitar colisiones                                          |
+| Procedencia  | `source_receipt_ref`        | recepción preservada por `INT-POS-009`                                                                 |
+| Procedencia  | `source_fragment_ref`       | fragmento, fila o elemento que sustenta la línea cuando exista                                         |
+| Ítem externo | `external_item_id`          | identidad exacta cuando la fuente la haya entregado                                                    |
+| Contexto     | `source_context_ref`        | referencia de contexto usada para evaluar el mapping cuando aplique                                    |
+| Contexto     | `canonical_site_ref`        | sede Vento aplicable cuando esté resuelta                                                              |
+| Mapping      | `mapping_ref`               | mapping evaluado cuando exista una instancia identificable                                             |
+| Mapping      | `mapping_version`           | versión del mapping usada para la decisión                                                             |
+| Mapping      | `mapping_result`            | snapshot `COMPLETE` o `INCOMPLETE` correspondiente a la evaluación                                     |
+| Mapping      | `mapping_status_snapshot`   | estados de producto, presentación y receta que sustentan el resultado                                  |
+| Bloqueo      | `quarantine_reasons`        | una o varias razones canónicas de la sección anterior                                                  |
+| Bloqueo      | `quarantine_status`         | `ACTIVE` o `RELEASED`                                                                                  |
+| Tiempo       | `quarantined_at`            | instante técnico en que Vento materializa la decisión de cuarentena; no sustituye el momento comercial |
+| Auditoría    | `quarantined_by_ref`        | principal técnico o actor autorizado responsable de la decisión cuando aplique                         |
+| Historia     | `quarantine_version`        | versión inmutable de la decisión                                                                       |
+| Historia     | `supersedes_quarantine_ref` | revisión anterior cuando una nueva evaluación requiera sucesión                                        |
+| Liberación   | `release_mapping_ref`       | mapping que demostró suficiencia cuando se libera                                                      |
+| Liberación   | `release_mapping_version`   | versión exacta usada para liberar                                                                      |
+| Liberación   | `release_basis`             | evidencia reproducible de que el bloqueo dejó de aplicar                                               |
+| Liberación   | `released_at`               | instante de liberación, separado del momento de venta y del eventual efecto físico                     |
+| Liberación   | `released_by_ref`           | principal o proceso autorizado que materializó la liberación                                           |
+
+Los nombres físicos, tablas, índices, RLS, RPC, tipos compartidos y almacenamiento quedan para su fase de implementación. Esta tarea fija la semántica, no DDL.
+
+---
+
+#### 9. Puerta absoluta de inventario
+
+Mientras una cuarentena esté `ACTIVE`, la línea tiene una puerta física cerrada.
+
+Queda prohibido que esa línea:
+
+1. genere un movimiento `sale_out` o equivalente;
+2. reste `inventory_stock_by_site` o cualquier proyección equivalente;
+3. reste `inventory_stock_by_location` o cualquier proyección equivalente;
+4. descuente producto terminado almacenado;
+5. consuma ingredientes por receta;
+6. descuente un ingrediente directo;
+7. use una presentación por defecto para calcular cantidad;
+8. use una receta por defecto para calcular componentes;
+9. utilice una categoría como sustituto del producto resuelto;
+10. utilice una coincidencia por código o nombre como autorización suficiente;
+11. produzca un posting físico parcial sobre la misma línea;
+12. se marque como físicamente aplicada por el solo hecho de haber sido importada, validada o revisada.
+
+La ausencia de mapping tampoco puede transformarse en `no_inventory` como fallback. `no_inventory` solo es válido cuando la semántica empresarial correspondiente esté resuelta de forma explícita y no sea un mecanismo para evitar el bloqueo.
+
+---
+
+#### 10. Separación entre cuarentena e ingestión
+
+La cuarentena ocurre después de preservar la línea recibida y no impide conservar evidencia.
+
+Por tanto:
+
+```text
+LÍNEA RECIBIDA
+≠
+LÍNEA ELEGIBLE PARA INVENTARIO
+```
+
+```text
+LÍNEA IMPORTADA
+≠
+LÍNEA LIBERADA
+```
+
+```text
+LÍNEA VALIDADA TÉCNICAMENTE
+≠
+MAPPING COMPLETE
+```
+
+Una línea podrá existir en staging o en la representación canónica preservada mientras su cuarentena permanezca `ACTIVE`.
+
+Los importes y hechos no dependientes de producto se conservan bajo los contratos de `INT-POS-005` a `INT-POS-009`; esta tarea no los descarta ni les concede efectos que pertenezcan a `INT-POS-015`, `INT-POS-017` o `INT-POS-018`.
+
+---
+
+#### 11. Condiciones de liberación
+
+Una cuarentena solo podrá pasar de `ACTIVE` a `RELEASED` cuando se demuestren simultáneamente estas condiciones:
+
+1. la venta y la línea originales continúan identificables y su procedencia sigue correlacionada;
+2. el contexto requerido para escoger el mapping correcto está resuelto;
+3. el mapping aplicable a la línea produce `COMPLETE` bajo `INT-POS-011`;
+4. `product_mapping_status = RESOLVED`;
+5. toda presentación obligatoria está `RESOLVED`;
+6. toda receta obligatoria está `RESOLVED`;
+7. los planos que no apliquen están acreditados como `NOT_APPLICABLE` y no simplemente ausentes;
+8. no permanece un estado `AMBIGUOUS`, `CONFLICT`, `PENDING_EVIDENCE`, `NOT_PROVIDED` o una coincidencia `CANDIDATE_ONLY` en un plano obligatorio;
+9. se identifica la versión exacta del mapping y su vigencia aplicable al momento comercial de la venta;
+10. la liberación conserva `release_basis`, versión, responsable y momento;
+11. no existe evidencia de que la misma línea ya haya producido un efecto físico incompatible o bajo otra resolución; si existe, la salida pasa a conciliación en `INT-POS-020`;
+12. cualquier efecto posterior deberá atravesar la idempotencia de `INT-POS-013` y la puerta física de `INT-POS-016`.
+
+La liberación **no descuenta inventario**. Únicamente cambia la elegibilidad de la línea para las puertas posteriores.
+
+---
+
+#### 12. Liberación automática y resolución humana
+
+La salida de cuarentena podrá ser materializada automáticamente únicamente cuando una reevaluación determinista encuentre un mapping explícito, vigente y `COMPLETE` cuya evidencia ya esté aprobada y no exista conflicto.
+
+Cuando la resolución exija criterio humano:
+
+- el actor deberá estar autorizado por el contrato propietario que se materialice para administrar mappings;
+- la decisión deberá quedar vinculada al mapping creado o corregido;
+- la evidencia y la razón deberán quedar auditadas;
+- la línea no se editará para simular que siempre estuvo resuelta;
+- una acción manual no podrá crear un movimiento de inventario directamente desde la cuarentena.
+
+El contrato de cuarentena no crea un permiso nuevo ni define todavía el nombre de una acción administrativa o superficie de interfaz.
+
+---
+
+#### 13. Mapping histórico y vigencia
+
+La línea se libera con el mapping que sea demostrablemente aplicable a su momento empresarial.
+
+Reglas:
+
+1. un mapping creado hoy no se aplica retroactivamente por defecto a todas las líneas históricas;
+2. una relación con `effective_from` y `effective_to` debe evaluarse contra el momento comercial acreditado de la línea;
+3. una decisión retroactiva requiere evidencia explícita de que la relación también era válida para ese periodo;
+4. una nueva versión del mapping no reescribe la cuarentena histórica;
+5. una línea recibida tarde puede liberarse con un mapping histórico válido si su vigencia está demostrada;
+6. si no puede determinarse la revisión aplicable, la cuarentena continúa `ACTIVE`;
+7. si la línea ya produjo un efecto y un remapping posterior cambia su interpretación, no se libera ni compensa automáticamente: se deriva a `INT-POS-020` y, cuando corresponda, a `INT-POS-019`.
+
+---
+
+#### 14. Concurrencia con anulaciones, devoluciones y reembolsos
+
+Una línea en cuarentena puede coexistir con señales de reverso definidas en `INT-POS-008`.
+
+Reglas:
+
+- una devolución no resuelve el mapping pendiente de la línea original;
+- un reembolso no convierte la línea en `no_inventory`;
+- una cancelación comercial no borra la cuarentena histórica;
+- si un efecto físico nunca ocurrió por la cuarentena, no se fabricará una compensación de inventario;
+- si existe duda sobre si un efecto físico ocurrió, la línea no se compensa por inferencia y pasa a `INT-POS-020`;
+- cualquier compensación real deberá conservar referencia al efecto original y pertenecer a `INT-POS-019`.
+
+---
+
+#### 15. Tratamiento de la implementación legacy vigente
+
+La línea base física existente constituye una base parcial, pero no equivale al contrato objetivo.
+
+| Componente vigente                            | Comportamiento observado                                                                                          | Clasificación canónica                                                                             |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `pulso_daily_sales_import_rows.match_status`  | admite `matched_mid`, `matched_code`, `matched_name` y `unmatched`                                                | estado técnico legacy; código y nombre no son mapping suficiente                                   |
+| `pulso_daily_sales_import_rows.row_status`    | admite `draft`, `validated`, `posted`, `cancelled`                                                                | no contiene un estado canónico de cuarentena                                                       |
+| importador `makos_excel`                      | contabiliza `matched_code` y `matched_name` como filas coincidentes                                               | no debe interpretarse como autorización canónica de efectos                                        |
+| `pulso_sales_import_rows_pending_consumption` | expone `missing_catalog_item` o `missing_consumption_rule`                                                        | vista de diagnóstico; no conserva una instancia histórica de cuarentena ni una liberación auditada |
+| `pulso_post_daily_sales_import`               | omite dentro del recorrido líneas con catálogo o regla faltante y finalmente rechaza el lote si quedan errores    | guardia física legacy más estricta por lote; no equivale a cuarentena persistente por línea        |
+| reglas por categoría                          | pueden participar en selección de consumo después de existir un ítem comercial                                    | no sustituyen mapping explícito de producto, presentación o receta                                 |
+| posting legacy                                | puede producir `sale_out` y actualizar stock por sede y ubicación cuando las guardias técnicas permiten continuar | deberá respetar la puerta canónica antes de un piloto con efectos                                  |
+
+Consecuencia crítica:
+
+`matched_code` y `matched_name` no pueden seguir tratándose como autorización suficiente para inventario bajo el contrato objetivo. Una línea que solo posea esa evidencia debe quedar `ACTIVE` en cuarentena hasta que exista mapping explícito suficiente.
+
+Esta tarea no modifica la implementación legacy.
+
+---
+
+#### 16. Estado remoto observable al cierre documental
+
+La evidencia remota verificada para `vento-os-dev` contiene:
+
+| Conjunto                                    | Instancias observables |
+| ------------------------------------------- | ---------------------: |
+| mappings externos almacenados               |                      0 |
+| líneas de importación almacenadas           |                      0 |
+| reglas de consumo almacenadas               |                      0 |
+| postings de inventario de ventas importadas |                      0 |
+| líneas expuestas como pendientes de consumo |                      0 |
+
+Por tanto:
+
+- líneas reales que actualmente requieren una decisión individual de cuarentena: **0**;
+- cuarentenas reales materializables sin inventar datos: **0**;
+- liberaciones históricas observables: **0**;
+- postings reales que deban conciliarse por esta tarea: **0**.
+
+No se crean filas ficticias ni ejemplos operativos para completar una matriz inexistente. Las primeras líneas reales deberán demostrar este contrato durante `INT-POS-021` antes de habilitar efectos en `INT-POS-022`.
+
+---
+
+#### 17. Matriz de decisión por línea
+
+| Mapping de producto                                                | Presentación requerida  | Receta requerida        | Estado de cuarentena | Efecto físico de la línea                             |
+| ------------------------------------------------------------------ | ----------------------- | ----------------------- | -------------------- | ----------------------------------------------------- |
+| `RESOLVED`                                                         | no                      | no                      | no requerida         | sujeto a puertas posteriores                          |
+| `RESOLVED`                                                         | sí y `RESOLVED`         | no                      | no requerida         | sujeto a puertas posteriores                          |
+| `RESOLVED`                                                         | no                      | sí y `RESOLVED`         | no requerida         | sujeto a puertas posteriores                          |
+| `RESOLVED`                                                         | sí y `RESOLVED`         | sí y `RESOLVED`         | no requerida         | sujeto a puertas posteriores                          |
+| distinto de `RESOLVED`                                             | cualquiera              | cualquiera              | `ACTIVE`             | prohibido                                             |
+| `RESOLVED`                                                         | requerida y no resuelta | cualquiera              | `ACTIVE`             | prohibido                                             |
+| `RESOLVED`                                                         | cualquiera              | requerida y no resuelta | `ACTIVE`             | prohibido                                             |
+| candidato legacy sin mapping explícito                             | cualquiera              | cualquiera              | `ACTIVE`             | prohibido                                             |
+| mapping `COMPLETE` después de reevaluación y liberación registrada | satisfecho              | satisfecho              | `RELEASED`           | sujeto a `INT-POS-013`, `INT-POS-015` e `INT-POS-016` |
+
+La tabla expresa elegibilidad. No ejecuta movimientos.
+
+---
+
+#### 18. Reglas de no pérdida y no corrección silenciosa
+
+1. una línea no se elimina por no tener mapping;
+2. el payload original no se edita cuando se resuelve el mapping;
+3. la identidad externa original no se sustituye por un `product_id` interno;
+4. la cuarentena conserva qué estados de mapping provocaron el bloqueo;
+5. una reevaluación crea una nueva decisión o sucesión y no borra la anterior;
+6. la liberación conserva el mapping exacto que la justificó;
+7. un cambio posterior de producto, presentación o receta no reescribe el mapping histórico usado;
+8. una diferencia entre mapping actual, mapping histórico y efecto existente se conserva para conciliación;
+9. ninguna regla de consumo, categoría o valor predeterminado puede ocultar una ausencia de mapping;
+10. una línea sin mapping nunca se contabiliza como físicamente procesada solo para cerrar un lote.
+
+---
+
+#### 19. Fronteras de responsabilidad
+
+| Dominio o componente | Responsabilidad frente a la cuarentena                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| POS externo / Makos  | declara la línea y sus identidades; no decide el producto maestro Vento                               |
+| Adaptador            | preserva, transforma y evalúa puertas; no crea productos ni descuenta inventario                      |
+| PULSO                | conserva la venta y la línea y consume el estado de mapping; no redefine NEXO                         |
+| NEXO                 | único propietario del movimiento físico cuando una línea liberada llegue por el contrato aprobado     |
+| FOGO                 | conserva receta y producción cuando una preparación sea aplicable; no libera una línea por inferencia |
+| PASS                 | no recibe efectos de producto o fidelización dependientes de un mapping incompleto                    |
+| NUMERA               | conserva sus hechos económicos bajo su contrato; no usa el inventario como sustituto de mapping       |
+| Conciliación         | identifica líneas, mappings y efectos incompatibles sin corregirlos silenciosamente                   |
+
+La cuarentena no concede permisos de escritura cruzada ni acceso directo del proveedor a Supabase.
+
+---
+
+#### 20. Handoffs exactos y condiciones de salida
+
+| Materia                                                    | Estado en esta tarea                               | Tarea propietaria | Condición de salida                                                                                                        |
+| ---------------------------------------------------------- | -------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| identidad e idempotencia de venta y línea                  | `ESPECIFICADO` como dependencia                    | `INT-POS-013`     | existe clave estable que impide procesar la misma línea como un hecho nuevo por reintento                                  |
+| transporte webhook o polling                               | `FUERA_DE_ALCANCE`                                 | `INT-POS-014`     | ambos transportes, cuando existan, producen la misma evaluación de cuarentena                                              |
+| emisión de venta validada                                  | `FUERA_DE_ALCANCE`                                 | `INT-POS-015`     | el contrato define cómo representa o excluye líneas `ACTIVE` sin atribuirles efecto                                        |
+| salida física                                              | `BLOQUEADO` para líneas `ACTIVE`                   | `INT-POS-016`     | solo líneas liberadas atraviesan el contrato hacia NEXO exactamente una vez                                                |
+| efecto económico                                           | `FUERA_DE_ALCANCE`                                 | `INT-POS-017`     | NUMERA consume únicamente la información autorizada por sus propias puertas sin inventar producto                          |
+| fidelización                                               | `BLOQUEADO` cuando dependa del mapping de producto | `INT-POS-018`     | PASS recibe efectos solo con mapping suficiente cuando el producto sea necesario                                           |
+| compensaciones                                             | `FUERA_DE_ALCANCE`                                 | `INT-POS-019`     | cualquier reverso físico referencia un efecto original realmente producido                                                 |
+| conflictos o efecto ya existente bajo mapping incompatible | `BLOQUEADO`                                        | `INT-POS-020`     | conciliación determina diferencia, autoridad, acción y residual sin reescribir historia                                    |
+| primeras líneas Makos reales y liberación sin efectos      | `PENDIENTE_DE_EVIDENCIA`                           | `INT-POS-021`     | se observa una línea real, se reproduce su entrada en cuarentena y su eventual resolución sin mover inventario ni finanzas |
+| piloto con efectos                                         | `BLOQUEADO`                                        | `INT-POS-022`     | se demuestra que una línea `ACTIVE` no produce efecto y una `RELEASED` solo lo produce por las puertas aprobadas           |
+
+Ningún handoff inicia ni aprueba la tarea receptora.
+
+---
+
+#### 21. Decisiones congeladas
+
+1. La cuarentena es por línea de venta.
+2. Una línea se conserva aunque su mapping esté incompleto.
+3. `INCOMPLETE` bajo `INT-POS-011` obliga a cuarentena.
+4. Una cuarentena `ACTIVE` prohíbe cualquier descuento de inventario dependiente de esa línea.
+5. `matched_code` y `matched_name` son evidencia legacy `CANDIDATE_ONLY`, no autorización suficiente.
+6. Una categoría nunca sustituye un mapping explícito de producto.
+7. La ausencia de mapping no puede convertirse automáticamente en `no_inventory`.
+8. El estado técnico `validated` no significa que el mapping sea `COMPLETE`.
+9. El estado técnico `posted` no podrá utilizarse en el contrato objetivo para ocultar una línea que nunca produjo un efecto físico verificable.
+10. La cuarentena no equivale a cancelación de venta, devolución, reembolso ni error de pago.
+11. La cuarentena no elimina, edita ni reemplaza el payload o la línea originales.
+12. Cada instancia conserva razones concretas de bloqueo y snapshot del mapping que la originó.
+13. La liberación requiere un mapping explícito, vigente y `COMPLETE`.
+14. La liberación conserva mapping, versión, evidencia, responsable y momento.
+15. La liberación no produce inventario; solo habilita las puertas posteriores.
+16. Una línea ya afectada físicamente bajo información incompatible no se corrige por liberación automática y pasa a conciliación.
+17. El mapping aplicable se determina por el momento comercial de la línea, no por la fecha de revisión.
+18. La implementación legacy de vista de pendientes y fallo completo del lote es una base técnica parcial, no una cuarentena canónica persistente.
+19. La línea base remota actual contiene cero mappings, cero líneas importadas, cero reglas de consumo, cero postings y cero pendientes observables.
+20. Las primeras líneas reales se probarán sin efectos en `INT-POS-021`.
+21. Los efectos reales permanecen bloqueados hasta `INT-POS-022` y deberán ejecutarse por `INT-POS-016`.
+22. Esta tarea no modifica código, DDL, DML, migraciones, Supabase, datos, RLS, funciones, vistas, RPC, credenciales ni configuración.
+23. La continuidad inmediata queda reservada exclusivamente para `INT-POS-013`.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el comportamiento verificable de esta tarea ya está protegido de forma explícita por la cobertura canónica vigente. `TREQ-INTEGRATION-014` exige que el POS externo ingrese mediante adaptador, staging, payload original, hash, mapeo, **cuarentena** e idempotencia, exige detectar líneas sin mapeo y exige que los efectos aplicables no se dupliquen. `TREQ-INTEGRATION-011` exige que todo hecho externo con efecto de inventario atraviese un contrato correlacionado e idempotente hacia NEXO y produzca el movimiento físico exactamente una vez. `TREQ-INTEGRATION-213` exige conservar transformación, mapping, procedencia y correlación de todo intercambio externo. `TREQ-INTEGRATION-217` exige historia append-only y correcciones mediante nuevas entradas vinculadas. `INT-POS-012` especializa esas obligaciones para la puerta por línea sin introducir una conducta verificable nueva fuera de esa cobertura.
+
+---
+
+#### 23. Cobertura de prueba existente preservada
+
+Se preservan sin modificación:
+
+- `TREQ-INTEGRATION-011` — efecto físico externo hacia NEXO correlacionado e idempotente, exactamente una vez;
+- `TREQ-INTEGRATION-014` — transición POS externo → PULSO mediante staging, mapping, cuarentena e idempotencia, con detección de líneas sin mapping y conciliación;
+- `TREQ-INTEGRATION-213` — trazabilidad de transformación, mapping, payload, huella, respuesta y correlación externa;
+- `TREQ-INTEGRATION-217` — historia append-only y correcciones no destructivas.
+
+Ningún requisito existente cambia de identidad, texto, estado, relación, propietario, evidencia ni secuencia por esta tarea. El registro canónico 04A permanece sin cambios.
+
+---
+
+#### 24. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. define una cuarentena por línea y no por archivo, producto o sede;
+2. conserva la línea y su procedencia aunque el mapping sea incompleto;
+3. enlaza la entrada a cuarentena con el resultado `INCOMPLETE` de `INT-POS-011`;
+4. enumera las condiciones de entrada sin utilizar inferencias de nombre, código o categoría;
+5. define razones canónicas explícitas de cuarentena;
+6. define `ACTIVE` y `RELEASED` sin convertirlos en estados comerciales de venta;
+7. define el contenido lógico mínimo de una instancia de cuarentena;
+8. prohíbe que una línea `ACTIVE` genere movimientos de inventario;
+9. prohíbe restar stock por sede o ubicación desde una línea `ACTIVE`;
+10. prohíbe consumo de receta, ingrediente directo o producto terminado mientras el mapping sea incompleto;
+11. prohíbe usar `no_inventory` como fallback por falta de mapping;
+12. separa ingestión, validación técnica, mapping y elegibilidad física;
+13. mantiene importes y hechos no dependientes de producto sin inventar efectos;
+14. define condiciones completas de liberación;
+15. establece que liberar no equivale a descontar inventario;
+16. exige idempotencia posterior antes de cualquier efecto;
+17. conserva vigencia histórica del mapping y prohíbe aplicar automáticamente el mapping actual a toda línea histórica;
+18. conserva la cuarentena frente a anulaciones y reversos sin fabricar compensaciones;
+19. reconcilia la implementación legacy actual con el contrato objetivo;
+20. clasifica `matched_code` y `matched_name` como insuficientes para autorización de inventario;
+21. clasifica la vista de pendientes como diagnóstico y no como cuarentena histórica persistente;
+22. clasifica el fallo del lote legacy como una guardia física que no sustituye la cuarentena por línea;
+23. materializa el inventario real observable con cero mappings, cero líneas, cero reglas, cero postings y cero pendientes;
+24. asigna cada bloqueo restante a una tarea exacta y una condición de salida;
+25. genera cero cambios `TREQ-*` porque existe cobertura canónica exacta;
+26. no crea una copia innecesaria del registro 04A;
+27. no modifica código, datos, esquema, migraciones, Supabase, credenciales ni estado remoto;
+28. mantiene `INT-POS-013` como única siguiente tarea reservada.
+
+---
+
+#### 25. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta`
+
+TAREA ACTUAL APROBADA
+
+`INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario`
+
+SIGUIENTE TAREA RESERVADA
+
+`INT-POS-013 — Definir idempotencia por sistema, venta y línea externa`
+
+
 ### [ ] INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
 ### [ ] INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
 ### [ ] INT-POS-015 — Definir emisión del evento canónico de venta validada
