@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **815** |
+| Tareas aprobadas | **816** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **779** |
+| Tareas no iniciadas | **778** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **51.13% (815/1594)** |
+| Porcentaje de completamiento | **51.19% (816/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable** |
-| Tarea actual | **DELIV-PKG-005 — Definir alcance incluido, excluido y diferido** |
+| Última tarea aprobada | **DELIV-PKG-005 — Definir alcance incluido, excluido y diferido** |
+| Tarea actual | **DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán** |
+| Siguiente tarea | **DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions** |
 | Bloque actual | **BLOQUE E5 — Paquetes, readiness, cutover e hypercare** |
-| Progreso del bloque | **BLOQUE E5: 4 de 68 aprobadas; DELIV-PKG-005 pendiente** |
+| Progreso del bloque | **BLOQUE E5: 5 de 68 aprobadas; DELIV-PKG-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DELIV-PKG-004` — Definir estado AS-IS y resultado TO-BE verificable |
-| Tarea actual | `DELIV-PKG-005` — Definir alcance incluido, excluido y diferido — **NO INICIADA** |
-| Siguiente tarea | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán |
+| Última aprobada | `DELIV-PKG-005` — Definir alcance incluido, excluido y diferido |
+| Tarea actual | `DELIV-PKG-006` — Definir pantallas, componentes y navegación que se crearán o modificarán — **NO INICIADA** |
+| Siguiente tarea | `DELIV-PKG-007` — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE E5: 4 DE 68 APROBADAS — ACTUAL DELIV-PKG-005** |
+| CONTINUIDAD ACTIVA | **BLOQUE E5: 5 DE 68 APROBADAS — ACTUAL DELIV-PKG-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
-        ↓
-TAREA ACTUAL
 DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
         ↓
+SIGUIENTE TAREA RESERVADA
+DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E5 — 4 de 68 tareas aprobadas
+BLOQUE E5 — 5 de 68 tareas aprobadas
 ```

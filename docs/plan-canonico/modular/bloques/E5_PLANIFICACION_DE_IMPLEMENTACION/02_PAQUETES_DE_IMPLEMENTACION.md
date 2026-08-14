@@ -1805,7 +1805,511 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
 
 
-### [ ] DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
+### ✅ DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
+**Tarea siguiente:** `DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
+**Tipo de tarea:** documental — definición normativa y materialización completa del alcance incluido, excluido y diferido para los 207 `package_id` vigentes
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-005` fija la frontera de alcance de cada una de las **207** raíces `GAP-PKG-001..207` sin alterar identidad, membresía, propiedad, estado AS-IS, perfiles de cierre ni resultados TO-BE aprobados en `DELIV-PKG-001..004`.
+
+La regla central es cerrada: **las 820 brechas reales vigentes permanecen incluidas en su paquete de origen y ninguna brecha miembro se elimina, transfiere, sustituye o difiere por conveniencia de implementación**. Un paquete puede conservar un bloqueo o una condición de activación, pero esa condición no borra su obligación de cierre.
+
+El resultado distingue tres conceptos que no son intercambiables:
+
+1. **incluido:** obligación que pertenece a la raíz del paquete y deberá conservarse hasta satisfacer todos los perfiles de cierre de sus brechas miembro;
+2. **excluido:** elemento que no pertenece a la raíz del paquete y cuya exclusión no elimina una brecha vigente ni transfiere responsabilidad de forma implícita;
+3. **diferido:** parte del alcance incluido cuya definición o ejecución está impedida por una condición canónica concreta, con propietario y condición de salida identificados.
+
+El diferimiento no equivale a descarte, cierre, `NO_APLICA`, retiro de brecha ni cambio automático del estado de un requisito `TREQ-*`.
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+La tarea consume y preserva:
+
+- `DELIV-PKG-001`: **207** identidades raíz estables `GAP-PKG-001..207`;
+- `DELIV-PKG-002`: **820** brechas reales, membresía exclusiva paquete ↔ brecha, capacidades y procesos confirmados, además de **22** referencias de control/evidencia fuera de la membresía;
+- `DELIV-PKG-003`: aplicación, dominio, repositorio primario y bloqueos de propiedad por paquete;
+- `DELIV-PKG-004`: AS-IS, política `REUSE-VERIFY`, perfiles `CLOSE-*`, resultados `TOBE-*` y tratamiento de paquetes multiperfil;
+- la ruta normal vigente, que mantiene `EXT-GOV` como etapa condicional con activación `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS`;
+- el bloqueo AURA ya materializado como `repo_owner = NO_CONFIRMADO` y `ownership_state = BLOQUEADO_REPO_AURA`;
+- la separación entre planificación documental E5 e implementación física posterior.
+
+Ninguna decisión de esta tarea reescribe las fuentes anteriores. Ante una ampliación posterior aprobada, la raíz conserva su `package_id` y la nueva decisión deberá preservar linaje y trazabilidad.
+
+---
+
+#### 3. Contrato canónico de alcance
+
+| Campo                     | Regla canónica                                                                                                                      |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `package_id`              | raíz estable del expediente; no se renumera ni cambia por una decisión de alcance                                                   |
+| `included_scope`          | unión completa de brechas miembro, capacidades aplicables, procesos confirmados, perfiles de cierre y resultados TO-BE del paquete  |
+| `excluded_scope`          | elementos que no pertenecen a la membresía ni a las obligaciones de cierre de la raíz; nunca se usa para retirar una brecha vigente |
+| `deferred_scope`          | subconjunto incluido que conserva una condición de bloqueo o activación explícita                                                   |
+| `deferred_owner`          | tarea o tareas exactas responsables de resolver la condición                                                                        |
+| `deferred_exit_condition` | evidencia o estado canónico que permite retirar el diferimiento sin inferencia                                                      |
+| `scope_status`            | clasificación documental de la raíz en esta tarea; no equivale a estado de implementación                                           |
+| `member_gaps_excluded`    | debe ser **0** para los 207 paquetes en la línea vigente                                                                            |
+
+La ausencia de detalle físico en esta tarea no convierte ese detalle en alcance excluido. Las tareas `DELIV-PKG-006..025` descomponen progresivamente el alcance ya incluido sin autorizar reducción retroactiva.
+
+---
+
+#### 4. Estados de alcance permitidos
+
+| Código                                | Significado                                                                                                                                                                  |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INCLUIDO_COMPLETO`                   | la raíz conserva íntegramente sus brechas y obligaciones; no existe un bloqueo especial de alcance en esta tarea                                                             |
+| `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` | la raíz conserva íntegramente su obligación, pero la definición física dependiente de repositorio no puede cerrarse mientras AURA mantenga `repo_owner = NO_CONFIRMADO`      |
+| `INCLUIDO_CON_ACTIVACION_CONDICIONAL` | la raíz conserva íntegramente su obligación, pero la parte gobernada por `EXT-GOV-001` solo se activa cuando se cumple la condición canónica de expediente externo requerido |
+
+Códigos de diferimiento:
+
+| Código                        | Propietario                                    | Condición de salida                                                                                              |
+| ----------------------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              | no existe condición especial adicional a la descomposición normal de E5                                          |
+| `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` | repositorio y continuidad AURA confirmados canónicamente, sin reasignación inferida                              |
+| `DIFERIDO_ACTIVACION_EXT_GOV` | `EXT-GOV-001`                                  | activación conforme a `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS` y existencia del expediente externo exigible |
+
+---
+
+#### 5. Regla de alcance incluido
+
+Para cada `package_id`, queda incluido de manera inseparable:
+
+1. el **100 % de sus brechas miembro** aprobadas en `DELIV-PKG-002`;
+2. todas las capacidades vinculadas que la fuente canónica asocia con esas brechas;
+3. todos los `process_id` confirmados, conservando cardinalidad cero cuando no exista proceso confirmado;
+4. todos los perfiles `CLOSE-*` presentes en sus brechas;
+5. todos los resultados `TOBE-*` correspondientes, sin reducir paquetes multiperfil al criterio dominante;
+6. la propiedad funcional y técnica fijada en `DELIV-PKG-003`, incluido cualquier bloqueo explícito;
+7. la evidencia y los criterios de salida heredados que sean necesarios para demostrar cierre real;
+8. las obligaciones de compatibilidad, transición, seguridad, datos, operación y evidencia que resulten de tareas posteriores del mismo paquete.
+
+Una implementación parcial podrá satisfacer parte de este alcance, pero no cambia la frontera de la raíz ni autoriza a declarar cerrado el paquete mientras existan brechas u obligaciones pendientes.
+
+---
+
+#### 6. Regla de alcance excluido
+
+Queda excluido **de una raíz determinada**, sin eliminarlo del plan global cuando tenga identidad propia:
+
+- cualquier brecha cuyo `package_id` sea diferente;
+- cualquier capacidad o proceso no vinculado por una fuente canónica a la raíz;
+- las **22 referencias de control/evidencia** que `DELIV-PKG-002` conserva fuera de la membresía paquete ↔ brecha;
+- `VISO-SCHEDULE-MONTHLY-001`, que conserva identidad reservada separada del rango `GAP-PKG-*`;
+- `NEXO-REMISSIONS-001`, que conserva identidad de carril y no se convierte en `package_id` por inferencia;
+- cambios oportunistas, refactors, mejoras cosméticas, normalizaciones, retiros o sustituciones que no sean necesarios para satisfacer el alcance aprobado del paquete;
+- trabajo de otro paquete que comparta aplicación, repositorio, capacidad, proceso, owner o consumidor, salvo que una dependencia posterior lo vincule expresamente.
+
+**Resultado cuantitativo:** **0 de 820 brechas miembro quedan excluidas**. La exclusión se aplica a elementos ajenos a la raíz, no a obligaciones vigentes de cierre.
+
+---
+
+#### 7. Regla de alcance diferido
+
+Un diferimiento es válido únicamente si cumple simultáneamente:
+
+1. el elemento continúa identificado como parte del alcance incluido;
+2. existe una causa concreta y verificable;
+3. existe una tarea propietaria exacta;
+4. existe una condición de salida;
+5. el diferimiento no se usa para cerrar una brecha;
+6. no se cambia por inferencia el estado de un `TREQ-*`;
+7. no se desplaza silenciosamente la responsabilidad a otra aplicación, dominio o repositorio.
+
+La línea vigente materializa **16 paquetes con diferimiento especial**:
+
+- **14 AURA** por repositorio no confirmado;
+- **2** gobernados por `EXT-GOV-001` por activación condicional;
+- **191** sin diferimiento bloqueante especial.
+
+La descomposición documental que sigue en `DELIV-PKG-006..025` aplica a los 207 paquetes, pero no constituye por sí misma un diferimiento de alcance: es el mecanismo obligatorio para especificar cómo se materializará el alcance ya incluido.
+
+---
+
+#### 8. Matriz materializada de alcance de los 207 paquetes
+
+| `package_id`  | Brechas | Perfiles de cierre incluidos                      | Resultados TO-BE incluidos                     | Tarea dominante  | `scope_status`                        | Brechas miembro excluidas | `deferred_scope`              | `deferred_owner`                               |
+| ------------- | ------: | ------------------------------------------------- | ---------------------------------------------- | ---------------- | ------------------------------------- | ------------------------: | ----------------------------- | ---------------------------------------------- |
+| `GAP-PKG-001` |   **1** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-003`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-002` |   **2** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-002`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-003` |   **1** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `SUPA-AUD-015`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-004` |  **22** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-002`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-005` |   **2** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INT-EXT-002`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-006` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-DOM-007`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-007` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PASS-INT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-008` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-DOM-008`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-009` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-EXT-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-010` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-011` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-012` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-DOM-004`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-013` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-014` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-DOM-010`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-015` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-010`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-016` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-017` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-018` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-010`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-019` |   **3** | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `SUPA-AUD-016`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-020` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-INT-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-021` |  **18** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-AUTH-001`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-022` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `DATA-INT-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-023` |  **27** | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `DATA-DOM-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-024` |   **2** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NUMERA-DOM-003` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-025` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INT-DB-008`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-026` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-DOM-002` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-027` |   **2** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `EXT-GOV-001`    | `INCLUIDO_CON_ACTIVACION_CONDICIONAL` |                     **0** | `DIFERIDO_ACTIVACION_EXT_GOV` | `EXT-GOV-001`                                  |
+| `GAP-PKG-028` |   **5** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `VISO-CORE-006`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-029` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-030` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-023`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-031` |  **27** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-005`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-032` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-WORK-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-033` |   **4** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SHELL-CON-016`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-034` |   **5** | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `SHELL-CON-016`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-035` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-036` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-037` |   **7** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-UX-009`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-038` |   **9** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-039` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `ORIGO-UX-014`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-040` |   **3** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `FOGO-AUTH-010`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-041` |   **8** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `UX-QA-027`      | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-042` |   **4** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-MKT-002`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-043` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PROC-CAT-009`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-044` |   **4** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PULSO-UX-009`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-045` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SHELL-CON-002`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-046` |   **4** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-DOM-029`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-047` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INT-DB-008`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-048` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PULSO-UX-020`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-049` |   **9** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-ARC-007`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-050` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-AUTH-003`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-051` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `FOGO-AUTH-008`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-052` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-APP-008`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-053` |   **2** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `CONT-DOM-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-054` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-UX-037`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-055` |   **5** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `SUPA-ARC-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-056` |   **2** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `ANIMA-AUTH-015` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-057` |   **1** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-QA-029`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-058` |   **4** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-QA-029`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-059` |   **1** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AURA-INT-001`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-060` |  **52** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INFO-AUTH-004`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-061` |   **5** | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INFO-AUTH-002`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-062` |   **2** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AUTH-QA-026`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-063` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-WORK-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-064` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `CAP-TAL-003`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-065` |   **3** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-016`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-066` |   **1** | `CLOSE-TEC-IMP`                                   | `TOBE-TEC-IMP`                                 | `ANIMA-AUTH-014` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-067` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-001`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-068` |   **8** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-ARC-020`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-069` |   **2** | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `PULSO-UX-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-070` |   **4** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-INT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-071` |   **2** | `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-IMP`; `TOBE-TEC-VAL`                 | `UX-QA-019`      | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-072` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `TI-INT-003`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-073` |  **18** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-007`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-074` |   **2** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `SUPA-ARC-016`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-075` |   **7** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `DATA-DOM-004`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-076` |   **2** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `CONT-INT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-077` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-009`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-078` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-007`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-079` |   **7** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `PASS-UX-006`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-080` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `AURA-DOM-001`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-081` |   **1** | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `PASS-UX-012`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-082` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-083` |   **4** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-TRANS-006` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-084` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-085` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-013` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-086` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-005` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-087` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-016` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-088` |   **2** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NUMERA-DOM-016` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-089` |   **6** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NUMERA-DOM-014` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-090` |   **3** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-005` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-091` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-009`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-092` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `DATA-DOM-006`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-093` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `VISO-CORE-006`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-094` |   **6** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `PROC-CAT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-095` |   **6** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-096` |   **3** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NEXO-UX-019`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-097` |   **3** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-098` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `OPS-PRD-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-099` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-DOM-029`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-100` |   **4** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `FOGO-UX-009`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-101` |   **2** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-033`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-102` |   **3** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ORIGO-AUTH-004` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-103` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-013`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-104` |  **13** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NEXO-UX-037`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-105` |   **4** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `FOGO-UX-012`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-106` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-107` |   **8** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NEXO-DOM-008`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-108` |   **6** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-109` |  **19** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `FOGO-UX-010`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-110` |  **26** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `PULSO-UX-021`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-111` |   **3** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PULSO-UX-009`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-112` |   **9** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-013`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-113` |  **10** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-114` |   **3** | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `PULSO-UX-010`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-115` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-DOM-029`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-116` |   **8** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-AUTH-031`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-117` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-DOM-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-118` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `AURA-DOM-006`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-119` |  **11** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NFR-REQ-012`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-120` |   **2** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `ORIGO-UX-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-121` |   **4** | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `INFO-DOM-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-122` |   **5** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-026`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-123` |   **4** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `PULSO-UX-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-124` |   **2** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-125` |   **4** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `TI-INT-003`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-126` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-026`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-127` |   **4** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-128` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-129` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-130` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `TI-DOM-001`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-131` |  **19** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-132` |   **4** | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SHELL-APP-001`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-133` |   **8** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-TRANS-005` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-134` |  **12** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-AUD-014`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-135` |   **4** | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SUPA-TRANS-006` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-136` |   **2** | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `PASS-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-137` |   **6** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `DATA-DOM-009`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-138` |   **9** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-139` |   **2** | `CLOSE-TEC-VAL`                                   | `TOBE-TEC-VAL`                                 | `SUPA-AUD-019`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-140` |  **36** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-AUD-011`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-141` |   **6** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `INFO-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-142` |  **11** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-143` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `CONT-DOM-011`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-144` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-007`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-145` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-146` |   **1** | `CLOSE-FUN-VAL`                                   | `TOBE-FUN-VAL`                                 | `PASS-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-147` |   **7** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-002`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-148` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `AURA-DOM-003`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-149` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-005`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-150` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-151` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-014`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-152` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-153` |   **2** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-ARC-004`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-154` |  **11** | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-155` |   **3** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-UX-014`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-156` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-DOM-009` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-157` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `EXT-GOV-001`    | `INCLUIDO_CON_ACTIVACION_CONDICIONAL` |                     **0** | `DIFERIDO_ACTIVACION_EXT_GOV` | `EXT-GOV-001`                                  |
+| `GAP-PKG-158` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-004`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-159` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PULSO-UX-008`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-160` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-010`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-161` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `FOGO-UX-001`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-162` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-006`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-163` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-012`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-164` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NFR-REQ-010`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-165` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-037`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-166` |   **2** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-005`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-167` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-168` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-018`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-169` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `CONT-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-170` |   **9** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-008`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-171` |   **3** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-172` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `EVID-ARC-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-173` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-ACTOR-003` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-174` |   **6** | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `VISO-AUTH-010`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-175` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `INT-EXT-019`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-176` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-177` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-178` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-001`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-179` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SUPA-TRANS-013` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-180` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SUPA-TRANS-013` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-181` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-009`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-182` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `TI-DOM-006`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-183` |   **1** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `TI-DOM-007`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-184` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `TI-DOM-001`     | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-185` |  **24** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-007`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-186` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `GAP-CTRL-007`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-187` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-INT-001`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-188` |   **2** | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-INT-001`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-189` |   **2** | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `AURA-AUTH-001`  | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-190` |   **1** | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-191` |   **2** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-002`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-192` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-AUD-010`   | `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO` |                     **0** | `DIFERIDO_REPO_AURA`          | `AURA-AUD-001`; `AURA-AUD-010`; `AURA-AUD-012` |
+| `GAP-PKG-193` |   **2** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-014`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-194` |   **3** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-AUTH-004`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-195` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-004`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-196` |   **2** | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `ANIMA-UX-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-197` |   **5** | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `CAP-TAL-003`    | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-198` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SHELL-AUD-010`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-199` |   **1** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `NEXO-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-200` |  **10** | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SHELL-CI-007`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-201` |   **4** | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `INFO-DOM-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-202` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `INFO-DOM-012`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-203` |   **1** | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-INT-003`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-204` |   **1** | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-001`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-205` |   **1** | `CLOSE-FUN-VAL`                                   | `TOBE-FUN-VAL`                                 | `DATA-DOM-012`   | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-206` |   **1** | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `NUMERA-DOM-018` | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+| `GAP-PKG-207` |   **1** | `CLOSE-TEC-VAL`                                   | `TOBE-TEC-VAL`                                 | `SHELL-AUD-011`  | `INCLUIDO_COMPLETO`                   |                     **0** | `SIN_DIFERIMIENTO_BLOQUEANTE` | —                                              |
+
+La matriz registra una decisión explícita por identidad. El conteo de brechas proviene de la membresía vigente de `DELIV-PKG-002`; perfiles, resultados y tarea dominante provienen de `DELIV-PKG-004`. Ninguna fila redefine esos valores.
+
+---
+
+#### 9. Reconciliación cuantitativa
+
+| Control                                          |          Resultado |
+| ------------------------------------------------ | -----------------: |
+| `package_id` esperados                           |            **207** |
+| `package_id` materializados                      |            **207** |
+| rango continuo                                   | `GAP-PKG-001..207` |
+| brechas vigentes incluidas                       |            **820** |
+| brechas miembro excluidas                        |              **0** |
+| paquetes `INCLUIDO_COMPLETO`                     |            **191** |
+| paquetes `INCLUIDO_CON_BLOQUEO_DE_REPOSITORIO`   |             **14** |
+| paquetes `INCLUIDO_CON_ACTIVACION_CONDICIONAL`   |              **2** |
+| paquetes con diferimiento especial               |             **16** |
+| paquetes sin diferimiento bloqueante especial    |            **191** |
+| paquetes multiperfil preservados                 |             **41** |
+| paquetes monoperfil preservados                  |            **166** |
+| referencias control/evidencia fuera de membresía |             **22** |
+
+Los tres estados de alcance suman exactamente **207** y no se solapan.
+
+---
+
+#### 10. Tratamiento específico AURA
+
+Los siguientes **14 paquetes** conservan alcance incluido completo y no pierden ninguna brecha: `GAP-PKG-006`, `GAP-PKG-008`, `GAP-PKG-059`, `GAP-PKG-078`, `GAP-PKG-080`, `GAP-PKG-118`, `GAP-PKG-144`, `GAP-PKG-147`, `GAP-PKG-148`, `GAP-PKG-149`, `GAP-PKG-187`, `GAP-PKG-188`, `GAP-PKG-189` y `GAP-PKG-192`.
+
+Su condición es `DIFERIDO_REPO_AURA`. Esto difiere exclusivamente la definición y ejecución que dependa de un repositorio propietario confirmado; no difiere la necesidad funcional, contractual, técnica, operativa o de datos representada por sus brechas.
+
+La salida requiere que `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012` resuelvan canónicamente repositorio y continuidad. Mientras no ocurra, queda prohibido reasignar esos paquetes a `vento-shell` u otro repositorio para eliminar el bloqueo documental.
+
+---
+
+#### 11. Tratamiento específico `EXT-GOV-001`
+
+`GAP-PKG-027` y `GAP-PKG-157` conservan todas sus brechas y resultados TO-BE dentro del alcance, pero la ejecución de la parte gobernada por `EXT-GOV-001` mantiene `DIFERIDO_ACTIVACION_EXT_GOV`.
+
+La condición de salida es la activación canónica `ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS` y la existencia del expediente externo exigible. La ausencia de activación no convierte las brechas en cerradas, descartadas ni inexistentes.
+
+Si la condición nunca se activa para un caso concreto, cualquier cierre posterior deberá quedar respaldado por la decisión canónica aplicable; esta tarea no convierte la condición en una exclusión permanente.
+
+---
+
+#### 12. Descomposición posterior obligatoria del alcance incluido
+
+El alcance fijado aquí se descompone, sin cambiar la frontera de la raíz, mediante las siguientes tareas exactas:
+
+| Tarea           | Responsabilidad reservada                                                               |
+| --------------- | --------------------------------------------------------------------------------------- |
+| `DELIV-PKG-006` | pantallas, componentes y navegación que se crearán o modificarán                        |
+| `DELIV-PKG-007` | lógica de dominio, Server Actions, API, RPC y Edge Functions                            |
+| `DELIV-PKG-008` | tablas, vistas, funciones, políticas, Storage y Realtime afectados                      |
+| `DELIV-PKG-009` | migraciones, backfills, compatibilidad y retiro legacy                                  |
+| `DELIV-PKG-010` | eventos emitidos, consumidos, colas y compensaciones                                    |
+| `DELIV-PKG-011` | impresión, notificaciones, documentos y evidencia requeridos                            |
+| `DELIV-PKG-012` | permisos, modalidad, alcance, contexto y contrato de recurso                            |
+| `DELIV-PKG-013` | requisitos no funcionales aplicables                                                    |
+| `DELIV-PKG-014` | archivos exactos que se crearán, modificarán o retirarán                                |
+| `DELIV-PKG-015` | dependencias, bloqueos y orden de aplicación                                            |
+| `DELIV-PKG-016` | requisitos `TREQ-*` y pruebas unitarias, contractuales, de integración, seguridad y E2E |
+| `DELIV-PKG-017` | observabilidad, métricas, logs, alertas y auditoría                                     |
+| `DELIV-PKG-018` | feature flags, configuración y activación progresiva                                    |
+| `DELIV-PKG-019` | estrategia de despliegue y rollout                                                      |
+| `DELIV-PKG-020` | rollback técnico, funcional y de datos                                                  |
+| `DELIV-PKG-021` | documentación, procedimiento y capacitación                                             |
+| `DELIV-PKG-022` | alcance, actores, datos y duración del piloto                                           |
+| `DELIV-PKG-023` | criterios de aceptación y evidencia de cierre                                           |
+| `DELIV-PKG-024` | vinculación del paquete con el registro canónico de brechas                             |
+| `DELIV-PKG-025` | decisión final de aprobación del paquete antes de implementación física                 |
+
+Estas tareas pueden descubrir que una superficie concreta no aplica a un paquete. Esa conclusión deberá quedar demostrada en la tarea propietaria correspondiente y no podrá reinterpretarse como exclusión retroactiva de una brecha miembro.
+
+---
+
+#### 13. Casos de rechazo
+
+El alcance de `DELIV-PKG-005` es inválido si ocurre cualquiera de los siguientes casos:
+
+- una de las **820** brechas vigentes queda fuera de su paquete sin una decisión canónica posterior que preserve linaje;
+- una brecha se mueve de paquete por similitud de aplicación, repositorio, owner, capability o proceso;
+- un paquete multiperfil elimina alguno de sus perfiles o resultados TO-BE;
+- una exclusión se usa para evitar una obligación de seguridad, datos, operación, contrato, implementación o validación;
+- un diferimiento no identifica tarea propietaria y condición de salida;
+- un paquete AURA recibe repositorio por inferencia;
+- `GAP-PKG-027` o `GAP-PKG-157` se descarta por no estar activa todavía la condición externa;
+- las **22** referencias de control/evidencia se convierten en brechas de paquete;
+- `VISO-SCHEDULE-MONTHLY-001` o `NEXO-REMISSIONS-001` se incorporan al rango `GAP-PKG-*` sin decisión explícita;
+- una tarea posterior amplía trabajo sin conservar la raíz, la brecha y la dependencia que justifican esa ampliación;
+- se confunde ausencia de detalle físico en `DELIV-PKG-005` con autorización para omitirlo en `DELIV-PKG-006..025`.
+
+---
+
+#### 14. Fronteras de responsabilidad
+
+`DELIV-PKG-005` **sí cierra**:
+
+- la frontera de alcance de las **207** raíces;
+- la inclusión de las **820** brechas vigentes;
+- la decisión explícita de **0 brechas miembro excluidas**;
+- la separación entre exclusión real y trabajo perteneciente a otra raíz;
+- la identificación de **14** diferimientos por repositorio AURA;
+- la identificación de **2** diferimientos por activación condicional `EXT-GOV-001`;
+- la preservación integral de los **41** paquetes multiperfil;
+- el destino documental exacto de la descomposición posterior del alcance.
+
+`DELIV-PKG-005` **no cierra**:
+
+- pantallas, componentes o navegación exactos, reservados a `DELIV-PKG-006`;
+- lógica de dominio y servicios, reservados a `DELIV-PKG-007`;
+- objetos físicos de datos y políticas, reservados a `DELIV-PKG-008`;
+- migraciones y transición física, reservadas a `DELIV-PKG-009`;
+- eventos y compensaciones, reservados a `DELIV-PKG-010`;
+- servicios de impresión, notificación y evidencia, reservados a `DELIV-PKG-011`;
+- permisos y contrato de recurso, reservados a `DELIV-PKG-012`;
+- requisitos no funcionales, reservados a `DELIV-PKG-013`;
+- archivos, dependencias, pruebas, observabilidad, configuración, rollout, rollback, capacitación, piloto y cierre, reservados a `DELIV-PKG-014..025` según su responsabilidad exacta;
+- implementación física, ejecución de migraciones, despliegue, piloto o cierre real de brechas.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea fija fronteras documentales de alcance y conserva sin modificación las reglas verificables, perfiles de cierre y requisitos existentes. No introduce comportamiento ejecutable, no modifica runtime y no cambia el estado, contenido, destino o secuencia de ningún `TREQ-*`. La vinculación de requisitos con cada paquete permanece reservada a `DELIV-PKG-016`.
+
+---
+
+#### 16. Criterios de aceptación
+
+- [x] existen exactamente **207** decisiones materializadas, una por `GAP-PKG-001..207`;
+- [x] las **820** brechas vigentes permanecen incluidas en su raíz de origen;
+- [x] existen **0** brechas miembro excluidas;
+- [x] los **41** paquetes multiperfil conservan todos sus perfiles y resultados TO-BE;
+- [x] los **166** paquetes monoperfil conservan su perfil completo;
+- [x] los **14** paquetes AURA quedan incluidos con diferimiento de repositorio y tareas de salida exactas;
+- [x] `GAP-PKG-027` y `GAP-PKG-157` quedan incluidos con activación condicional gobernada por `EXT-GOV-001`;
+- [x] los otros **191** paquetes no reciben un diferimiento bloqueante inventado;
+- [x] las **22** referencias de control/evidencia permanecen fuera de la membresía paquete-brecha;
+- [x] no se incorpora `VISO-SCHEDULE-MONTHLY-001` ni `NEXO-REMISSIONS-001` al rango `GAP-PKG-*`;
+- [x] cada diferimiento especial declara propietario y condición de salida;
+- [x] la ausencia de detalle físico se asigna a tareas exactas `DELIV-PKG-006..025` sin convertirla en exclusión;
+- [x] no se crea, modifica, difiere, descarta ni vuelve obsoleto ningún `TREQ-*`;
+- [x] no se implementa código, configuración, migraciones, DDL, DML, backfills ni cambios de producción.
+
+---
+
+#### 17. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán`
+
+
 ### [ ] DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
 ### [ ] DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
 ### [ ] DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
