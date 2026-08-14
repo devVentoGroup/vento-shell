@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **807** |
+| Aprobadas | **808** |
 | En propuesta | **0** |
-| No iniciadas | **787** |
+| No iniciadas | **786** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.63% (807/1594)** |
+| Porcentaje de completamiento | **50.69% (808/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `QUEUE-ARC-008` — Definir cola de fallos y recuperación manual | ✅ APROBADA |
-| Tarea actual | `QUEUE-ARC-009` — Definir bloqueo de duplicados y concurrencia | ⬜ NO INICIADA |
-| Siguiente reservada | `QUEUE-ARC-010` — Definir estados y eventos canónicos | ⬜ NO INICIADA |
+| Última aprobada | `QUEUE-ARC-009` — Definir bloqueo de duplicados y concurrencia | ✅ APROBADA |
+| Tarea actual | `QUEUE-ARC-010` — Definir estados y eventos canónicos | ⬜ NO INICIADA |
+| Siguiente reservada | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -484,7 +484,7 @@
 | ✅ APROBADA | `QUEUE-ARC-006` | Definir reintentos, backoff y límite máximo | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-007` | Definir cancelación antes y durante ejecución | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-008` | Definir cola de fallos y recuperación manual | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `QUEUE-ARC-009` | Definir bloqueo de duplicados y concurrencia | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
+| ✅ APROBADA | `QUEUE-ARC-009` | Definir bloqueo de duplicados y concurrencia | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-011` | Definir métricas de espera, ejecución y error | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-012` | Definir autorización para crear, cancelar y reintentar trabajos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |

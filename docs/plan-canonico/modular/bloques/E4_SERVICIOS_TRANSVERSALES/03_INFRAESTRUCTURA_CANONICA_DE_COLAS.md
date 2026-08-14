@@ -5279,7 +5279,968 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
 
 
-### [ ] QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
+### ✅ QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
+**Tarea siguiente:** `QUEUE-ARC-010 — Definir estados y eventos canónicos`
+**Tipo de tarea:** documental; especialización canónica de exclusión concurrente, reclamación atómica, lease, fencing, compare-and-set, control de versión, orden causal y bloqueo de efectos duplicados para trabajo asíncrono, con decisión explícita para las 19 identidades `QAI-*`, sin implementar tablas, locks, índices, funciones, workers, estados, métricas ni autorización
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@2670b43c317a1493a5d32fdfbb24d0287b60fabf`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Contrato de retry consumido:** `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`
+**Contrato de cancelación consumido:** `WORK-CANCELLATION-CONTRACT-001@1.0.0`
+**Contrato de recuperación consumido:** `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cómo Vento OS impide que dos solicitudes equivalentes, dos workers, dos dispositivos, dos recuperadores o dos operaciones técnicamente distintas produzcan simultáneamente un efecto que solo puede tener un ganador válido.
+
+La regla raíz es:
+
+```text
+INTENCIÓN YA RESERVADA
++
+TRABAJO ELEGIBLE
++
+FRONTERA DE CONCURRENCIA IDENTIFICADA
+        ↓
+CLAIM ATÓMICO
+        ↓
+LEASE ACOTADO
+        ↓
+FENCING MONOTÓNICO
+        ↓
+EJECUCIÓN BAJO VERSIÓN OBSERVADA
+        ↓
+CIERRE CONDICIONAL
+        ↓
+UN SOLO CIERRE VÁLIDO POR FRONTERA Y VERSIÓN
+```
+
+La separación canónica queda fijada así:
+
+```text
+IDEMPOTENCIA DE INTENCIÓN
+≠ DEDUPLICACIÓN DE FUENTE O TRANSPORTE
+≠ ASIGNACIÓN DE TARGET
+≠ CLAIM DE EJECUCIÓN
+≠ LEASE
+≠ FENCING TOKEN
+≠ ATTEMPT
+≠ VERSIÓN DEL RECURSO
+≠ LOCK FÍSICO
+≠ RESULTADO EMPRESARIAL
+```
+
+`QUEUE-ARC-009` no promete ejecución exactamente una vez. La protección se obtiene mediante reserva idempotente, un único claim válido por frontera, fencing contra ejecutores tardíos, control de versión sobre recursos, deduplicación de fuente y conciliación cuando no puede demostrarse si el efecto ocurrió.
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0` como especialización de exclusión y concurrencia del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. la diferencia entre duplicado de intención, duplicado de fuente, duplicado de claim y duplicado de efecto;
+2. una `concurrency_key` que representa la frontera mínima donde dos ejecuciones no pueden producir simultáneamente efectos incompatibles;
+3. la reclamación atómica de una unidad elegible;
+4. la semántica de `claim_id`, `lease_token`, `lease_expires_at` y `fencing_token`;
+5. la obligación de que un nuevo ganador obtenga una generación de fencing estrictamente posterior dentro de su frontera;
+6. la prohibición de que un worker con lease perdido cierre o siga mutando bajo autoridad obsoleta;
+7. el uso de compare-and-set, versión esperada, constraint o mecanismo equivalente para cambios concurrentes de operación y recurso;
+8. la diferencia entre exclusión por operación y exclusión entre operaciones distintas que convergen sobre el mismo recurso o efecto;
+9. la conducta ante pérdida de lease antes y después de una posible frontera de efecto;
+10. la interacción con reasignación, retry, cancelación, recuperación manual, schedules, dispositivos y webhooks;
+11. el orden obligatorio por recurso, versión, dependencia, evento u ocurrencia cuando la hora de llegada no es criterio suficiente;
+12. la prohibición de `last write wins` para efectos empresariales o físicos;
+13. la reconciliación con controles actuales observados sin declarar cumplimiento transversal completo;
+14. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_CONTROL_DE_CONCURRENCIA`           |    **16** |
+| `PROPAGA_NO_DECIDE_CONCURRENCIA`           |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Frontera primaria `RESOURCE_VERSION_GUARD` |    **10** |
+| Frontera primaria `OPERATION_CLAIM`        |     **2** |
+| Frontera primaria `DEVICE_EFFECT_GUARD`    |     **1** |
+| Frontera primaria `SOURCE_EVENT_GUARD`     |     **3** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+Las fronteras primarias describen el conflicto dominante de cada identidad. Toda identidad aplicable conserva además la exclusión básica de una sola autoridad válida de ejecución por `operation_id`.
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0` no sustituye la idempotencia, el routing, el retry ni la recuperación ya aprobados.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, causalidad, propiedad empresarial, versión contractual, resultado autoritativo y separación entre solicitud, ejecución y resultado;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, reserva atómica, `lease_token`, `fencing_token`, `row_version`, orden causal, conciliación, no duplicidad observable y prohibición de `last write wins`;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, `idempotency_key`, `payload_fingerprint`, ámbito de unicidad y regla de una sola intención registrada para la misma clave y huella;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `schedule_occurrence_id`, `logical_fire_at_utc`, `scheduled_at`, `deadline_at` y separación entre ocurrencia y ejecución real;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version`, target técnico y separación entre asignación y claim;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, `attempt_id`, `attempt_no`, pérdida de lease, mismo trabajo durante retry y prohibición de repetir ciegamente un efecto ambiguo;
+- de `WORK-CANCELLATION-CONTRACT-001@1.0.0`, control concurrente entre cancelación, efecto y terminación;
+- de `WORK-FAILURE-RECOVERY-CONTRACT-001@1.0.0`, `failure_entry_id`, `failure_entry_version`, `recovery_request_id` y obligación de impedir dos recuperadores válidos simultáneos;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y sus fronteras técnicas actuales.
+
+La tarea conserva la autoridad empresarial en la aplicación propietaria. Obtener un claim o poseer una credencial técnica no concede permiso empresarial para crear, cancelar, recuperar o forzar una operación.
+
+---
+
+#### 4. Clases de duplicidad que no pueden confundirse
+
+| Clase                       | Definición                                                                                | Tratamiento propietario                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `DUPLICATE_INTENTION`       | dos submissions representan la misma intención idempotente                                | recuperar la misma operación mediante `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`                        |
+| `DUPLICATE_SOURCE_EVENT`    | el mismo evento, ocurrencia o elemento fuente llega más de una vez                        | reservar/deduplicar por identidad de fuente estable antes del efecto                               |
+| `DUPLICATE_ACTIVE_CLAIM`    | dos ejecutores intentan adquirir autoridad sobre la misma frontera vigente                | admitir un solo ganador atómico                                                                    |
+| `DUPLICATE_EFFECT`          | operaciones distintas o caminos distintos convergen sobre un efecto que no debe repetirse | compartir `concurrency_key` o guardia de recurso/versión aunque sus `operation_id` sean diferentes |
+| `STALE_EXECUTOR`            | un ejecutor conserva memoria de un claim que ya perdió vigencia                           | rechazar cualquier cierre o mutación protegida mediante fencing/versionado                         |
+| `RESOURCE_VERSION_CONFLICT` | dos operaciones intentan modificar versiones incompatibles del mismo recurso              | compare-and-set, bloqueo o conciliación explícita; nunca sobrescritura por llegada tardía          |
+| `OUT_OF_ORDER_DEPENDENCY`   | una unidad llega antes que su predecesora o con una versión causal obsoleta               | bloquear, diferir o conciliar sin violar orden causal                                              |
+| `RECOVERY_RACE`             | dos intervenciones manuales intentan resolver o reejecutar la misma entrada aislada       | un único ganador por `recovery_request_id` y versión observada                                     |
+| `CANCEL_COMPLETION_RACE`    | cancelación y cierre compiten por la misma operación                                      | resolver respecto de versión, fencing y frontera de efecto; incertidumbre entra a conciliación     |
+
+No se usa el término “duplicado” como razón genérica para borrar una unidad. Cada clase conserva evidencia y tratamiento propios.
+
+---
+
+#### 5. Unidad canónica de concurrencia
+
+La unidad básica de autoridad temporal es un **claim sobre una frontera de concurrencia identificada**.
+
+```text
+operation_id
++
+concurrency_key
++
+operation_version / resource_version aplicable
+        ↓
+CLAIM ATÓMICO
+        ↓
+claim_id
+lease_token
+lease_expires_at
+fencing_token
+```
+
+Reglas:
+
+1. `claim_id` identifica una concesión concreta de ejecución y no sustituye `operation_id`, `attempt_id`, `assignment_id` ni `recovery_request_id`.
+2. `concurrency_key` identifica el dominio donde dos efectos serían incompatibles o duplicados; puede ser igual a la operación cuando solo existe exclusión interna, o abarcar varias operaciones cuando comparten un recurso o efecto.
+3. `lease_token` identifica la posesión temporal del claim y no constituye autorización empresarial.
+4. `lease_expires_at` limita la vigencia de la autoridad técnica; no extiende `deadline_at`.
+5. `fencing_token` identifica una generación monotónica o versión equivalente del derecho de cierre dentro de la frontera.
+6. `operation_version` y `resource_version` representan versiones observadas distintas del fencing; no se intercambian.
+7. Un claim no constituye por sí solo un intento. `attempt_id` aparece cuando comienza una ejecución capaz de producir efecto.
+8. Un claim perdido antes de comenzar ejecución no consume por sí solo otro intento.
+9. Un claim perdido después de iniciar ejecución conserva el intento histórico y obliga a aplicar las reglas de resultado conocido o ambiguo.
+10. La persistencia física de estas identidades se decide en implementación; la semántica no depende de una tabla, broker o lock concreto.
+
+---
+
+#### 6. Sobre mínimo de concurrencia
+
+Toda materialización futura deberá poder conservar, cuando aplique:
+
+```text
+operation_id
+operation_version
+idempotency_key
+payload_fingerprint
+concurrency_key
+concurrency_key_version
+claim_id
+claim_owner_identity
+claim_scope
+claimed_at
+lease_token
+lease_expires_at
+fencing_token
+assignment_id
+assignment_version
+attempt_id
+attempt_no
+resource_reference
+resource_version
+expected_resource_version
+schedule_occurrence_id
+provider_event_id
+failure_entry_id
+failure_entry_version
+recovery_request_id
+cancellation_request_id
+result_ref
+reconciliation_status
+```
+
+Reglas:
+
+1. los campos no aplicables se omiten o se declaran `NO_APLICA`;
+2. `concurrency_key_version` identifica la semántica de derivación cuando esta requiera evolución; no permite reinterpretar claves históricas;
+3. `claim_owner_identity` identifica al runtime técnico titular del claim, no al propietario empresarial;
+4. `claim_scope` declara si la exclusión se aplica a operación, recurso/versión, evento fuente, efecto de dispositivo u otra frontera contractualmente aprobada;
+5. ningún token de autenticación, secreto, credencial ni payload sensible completo forma parte del sobre de concurrencia;
+6. la información del claim debe ser suficiente para rechazar cierres obsoletos sin depender de memoria de proceso;
+7. una referencia de recurso puede materializarse de forma protegida u opaca cuando contenga información sensible;
+8. la forma exacta de los estados y eventos que transportan estos campos pertenece a `QUEUE-ARC-010`.
+
+---
+
+#### 7. `concurrency_key` y frontera de efecto
+
+`concurrency_key` responde a la pregunta:
+
+> ¿Qué conjunto mínimo de ejecuciones debe compartir una exclusión para impedir dos efectos incompatibles?
+
+Reglas:
+
+1. toda operación aplicable posee exclusión por `operation_id` aunque su frontera primaria sea más amplia;
+2. operaciones con `operation_id` distintos deben compartir una frontera cuando puedan modificar el mismo recurso, la misma versión o el mismo efecto de manera incompatible;
+3. la frontera no se deriva de worker, request HTTP, PID, proceso, sesión, hora de llegada o posición en una cola;
+4. la frontera puede incorporar `resource_reference`, versión, clase de efecto, ocurrencia, evento fuente o identidad de copia cuando esas dimensiones determinan incompatibilidad;
+5. una clave demasiado amplia que serialice trabajo independiente queda prohibida cuando impida progreso seguro sin necesidad;
+6. una clave demasiado estrecha que permita dos efectos incompatibles queda prohibida;
+7. cambiar de worker, adaptador o dispositivo sustituible no cambia la frontera del efecto;
+8. cuando el dispositivo o proveedor concreto formen parte material de la intención, su identidad ya debe estar protegida por contrato e idempotencia;
+9. la clave no sustituye la validación de `resource_version` cuando el recurso puede cambiar entre claim y commit;
+10. la derivación física y serialización se implementarán de manera versionada y determinista.
+
+##### 7.1. Operaciones diferentes sobre el mismo efecto
+
+La idempotencia no fusiona automáticamente operaciones distintas.
+
+Por tanto:
+
+```text
+operation_id A != operation_id B
+```
+
+puede coexistir con:
+
+```text
+concurrency_key A == concurrency_key B
+```
+
+cuando ambas operaciones compiten por el mismo efecto.
+
+Esta regla es obligatoria para el solapamiento documentado entre `QAI-001` y `QAI-004`, que conservan ocurrencias e identidades distintas pero no pueden producir dos cierres incompatibles sobre el mismo turno abierto.
+
+---
+
+#### 8. Adquisición atómica del claim
+
+Una reclamación válida debe comportarse conceptualmente así:
+
+```text
+RESOLVER OPERACIÓN ELEGIBLE
+        ↓
+RESOLVER CONCURRENCY_KEY
+        ↓
+VALIDAR ASIGNACIÓN + VERSIÓN + VIGENCIA
+        ↓
+INTENTAR CLAIM DE FORMA ATÓMICA
+        ↓
+┌───────────────────────────────────────────────┐
+│ SIN CLAIM VIGENTE                            │
+│ → conceder un único claim                    │
+│ → emitir lease y fencing vigentes            │
+│                                               │
+│ CLAIM VIGENTE COMPATIBLE                     │
+│ → no conceder segundo ganador                │
+│ → conservar la autoridad existente           │
+│                                               │
+│ CLAIM EXPIRADO / REVOCADO                    │
+│ → evaluar seguridad y resultado              │
+│ → solo después conceder nueva generación     │
+└───────────────────────────────────────────────┘
+```
+
+Reglas:
+
+1. seleccionar trabajo y reservarlo para ejecución forman una operación atómica o un mecanismo equivalente que garantice un solo ganador;
+2. leer una fila y actualizarla después sin condición de versión no constituye por sí solo un claim atómico;
+3. marcar localmente una unidad como `syncing`, `processing` o equivalente no constituye exclusión distribuida si otro runtime puede actuar fuera de esa memoria;
+4. un assignment vigente permite ser candidato, pero no constituye claim;
+5. un retry obtiene un claim vigente antes de comenzar otro intento;
+6. una recuperación manual que pueda ejecutar adquiere un claim después de validar la versión observada de la entrada de fallo;
+7. una cancelación o invalidación concurrente puede volver inelegible la operación antes de que el claim produzca efecto;
+8. si la atomicidad no puede mantenerse entre almacenamiento técnico y efecto externo, se exige idempotencia del efecto y conciliación ante respuesta incierta;
+9. la tecnología física puede utilizar transacción, conditional update, unique constraint, row lock, advisory lock, broker claim, compare-and-set u otro mecanismo equivalente, siempre que satisfaga estas garantías;
+10. la tarea no selecciona un producto, motor o primitiva única.
+
+---
+
+#### 9. Semántica del lease
+
+El lease limita temporalmente la autoridad de un claim.
+
+Reglas:
+
+1. un lease siempre pertenece a un claim identificable;
+2. la vigencia se comprueba contra una referencia temporal confiable del componente que custodia la autoridad;
+3. la duración debe ser acotada y adecuada al tipo de trabajo; esta tarea no fija segundos universales;
+4. un lease ordinario no puede ampliar la vigencia empresarial ni convertir una operación vencida en ejecutable;
+5. renovar un lease conserva `claim_id`, `fencing_token` y `attempt_id` mientras continúe la misma ejecución autorizada;
+6. renovar no incrementa `attempt_no`;
+7. solo el titular vigente puede renovar, y la renovación debe comprobar que su generación no fue sustituida;
+8. perder conectividad o heartbeat no demuestra que el efecto no ocurrió;
+9. expirar un lease permite evaluar un nuevo claim, pero no autoriza automáticamente otra emisión de un efecto externo, físico o destructivo;
+10. si el intento anterior pudo cruzar la frontera de efecto, el siguiente paso es conciliación antes de cualquier nueva ejecución capaz de duplicar ese efecto;
+11. una suspensión operativa, cancelación efectiva o vencimiento vuelve inelegible la ejecución aunque el lease técnico todavía no haya vencido;
+12. el mecanismo físico de renovación y heartbeat queda para implementación y observabilidad posterior.
+
+---
+
+#### 10. Semántica del fencing
+
+El fencing impide que una autoridad técnica antigua cierre sobre una generación más nueva.
+
+```text
+CLAIM A
+fencing_token = N
+        ↓
+LEASE A PIERDE VIGENCIA
+        ↓
+CLAIM B
+fencing_token = N+1 o generación estrictamente posterior
+        ↓
+WORKER A INTENTA CERRAR
+        ↓
+RECHAZADO POR GENERACIÓN OBSOLETA
+```
+
+Reglas:
+
+1. cada nuevo ganador dentro de una misma frontera obtiene una generación estrictamente posterior a la anterior;
+2. renovar el mismo claim no crea una generación de fencing nueva;
+3. un ejecutor debe presentar o quedar ligado a su fencing al realizar mutaciones o cierres protegidos;
+4. el custodio de la operación o recurso rechaza una generación anterior a la vigente;
+5. un worker tardío no puede marcar éxito, fallo, cancelación, retry, aislamiento o recovery sobre una versión que ya perdió;
+6. la protección debe alcanzar la escritura autoritativa donde pueda rechazarse un cierre obsoleto, no limitarse a un log;
+7. cuando el efecto externo no soporte fencing, la identidad idempotente del efecto y su receipt constituyen la defensa externa, y cualquier pérdida de confirmación entra a conciliación;
+8. el fencing no sustituye la versión empresarial del recurso;
+9. el fencing no concede autorización empresarial;
+10. la representación física puede ser un contador monotónico, versión comparable o mecanismo equivalente que permita demostrar orden entre generaciones.
+
+---
+
+#### 11. Compare-and-set y control de versión
+
+El control de concurrencia no termina en el claim del trabajo. Antes de mutar una fuente de verdad se debe verificar que el recurso observado continúa siendo compatible con la decisión que originó el efecto.
+
+Reglas:
+
+1. toda mutación sensible utiliza la versión esperada, condición previa o predicado equivalente cuando el recurso pueda cambiar concurrentemente;
+2. el cierre solo tiene éxito si la versión de operación, claim/fencing y versión de recurso aplicables siguen siendo vigentes;
+3. una condición que ya cambió produce conflicto, reevaluación o conciliación; no se sobrescribe el estado más nuevo;
+4. `last write wins` queda prohibido para estados, cantidades, turnos, custodia, pagos, suscripciones, documentos, evidencia y otros efectos empresariales sensibles;
+5. una operación batch protege cada unidad cuya consistencia sea independiente; no utiliza un único lock global si eso permite separar trabajo seguro;
+6. una transacción puede proteger varios recursos cuando su invariancia exige atomicidad conjunta;
+7. una restricción única puede impedir un efecto duplicado, pero no sustituye por sí sola causalidad, resultado recuperable ni conciliación;
+8. un row lock actual puede ser una primitiva compatible, pero la conformidad depende del flujo completo y no del nombre de la instrucción SQL;
+9. una falla de compare-and-set no se convierte automáticamente en retry transitorio; primero se reevalúa contrato, recurso y versión;
+10. los nombres finales de estados derivados del conflicto pertenecen a `QUEUE-ARC-010`.
+
+---
+
+#### 12. Orden causal y dependencia
+
+La hora de llegada no define por sí sola el orden correcto.
+
+Se prioriza, cuando aplique:
+
+1. dependencia explícita entre trabajos;
+2. versión monotónica del recurso o agregado;
+3. `schedule_occurrence_id` y su `logical_fire_at_utc`;
+4. secuencia del evento fuente cuando el proveedor o contrato la garantice;
+5. relación contenedor-hijo;
+6. orden empresarial aprobado para acciones incompatibles;
+7. prioridad únicamente entre unidades independientes después de respetar las restricciones anteriores.
+
+Reglas:
+
+- una operación tardía no sobrescribe una versión posterior;
+- una prioridad mayor no rompe causalidad;
+- dos trabajos independientes no se serializan artificialmente solo por pertenecer a la misma aplicación;
+- una unidad bloqueada por dependencia no consume un intento solo por esperar;
+- un replay antiguo se deduplica, bloquea o concilia según su contrato y no desplaza una consecuencia más nueva;
+- la taxonomía final de estados y eventos de espera pertenece a `QUEUE-ARC-010`.
+
+---
+
+#### 13. Relación con asignación y reasignación
+
+1. `assignment_id` determina el target técnico seleccionado; `claim_id` determina quién posee temporalmente autoridad para ejecutar.
+2. Un target asignado no ejecuta solo por figurar en una asignación.
+3. El claim debe corresponder a la `assignment_version` vigente cuando la operación requiera target específico.
+4. Una reasignación no crea por sí sola una segunda autoridad simultánea.
+5. Si el target anterior todavía conserva un lease válido, la reasignación debe invalidar, esperar o resolver esa autoridad mediante el mecanismo concurrente aprobado antes de habilitar otro efecto incompatible.
+6. Una nueva generación de claim protege el cierre frente al target anterior mediante fencing.
+7. Cambiar target no reinicia idempotencia, deadline ni presupuesto de retry.
+8. Un target que perdió compatibilidad no obtiene un nuevo claim bajo la asignación obsoleta.
+9. La autoridad para forzar una reasignación manual pertenece a `QUEUE-ARC-012`.
+
+---
+
+#### 14. Relación con retry y pérdida de lease
+
+Un retry sigue siendo la misma intención y debe adquirir una autoridad de ejecución vigente.
+
+Reglas:
+
+1. el retry conserva `operation_id`, `idempotency_key` y `payload_fingerprint`;
+2. un nuevo intento obtiene un `attempt_id` nuevo y, cuando corresponda, un claim/fencing vigente;
+3. perder el lease durante un intento obliga al ejecutor a dejar de cerrar o producir nuevas mutaciones protegidas;
+4. si el lease se pierde antes de cualquier efecto y puede probarse esa condición, otro claim puede continuar conforme al presupuesto y deadline vigentes;
+5. si el efecto pudo ocurrir antes de perder el lease, la operación entra a conciliación antes de otro efecto equivalente;
+6. `LEASE_LOST` no crea una intención nueva;
+7. un worker obsoleto que termina después no puede sobrescribir el resultado de la nueva generación;
+8. el nuevo claim no devuelve intentos consumidos ni amplía `max_attempts`;
+9. backoff y elegibilidad continúan gobernados por `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`.
+
+---
+
+#### 15. Carrera entre cancelación y terminación
+
+La cancelación y la ejecución pueden observar versiones diferentes de la misma operación.
+
+Reglas:
+
+1. una solicitud de cancelación no invalida por memoria local un efecto ya confirmado;
+2. antes de una nueva frontera de efecto, el ejecutor verifica que su claim, fencing y versión de operación siguen autorizados técnicamente para continuar;
+3. una cancelación que queda efectiva antes del efecto impide el cierre ordinario posterior del worker obsoleto;
+4. si el efecto quedó confirmado antes de hacerse efectiva la cancelación, se conserva ese resultado;
+5. si no puede probarse cuál decisión precedió a la frontera de efecto, se conserva `RESULT_UNKNOWN` y se concilia;
+6. ningún orden de llegada HTTP o timestamp de UI sustituye el orden transaccional o versionado de las decisiones;
+7. la autoridad para solicitar cancelación pertenece a `QUEUE-ARC-012` y los estados/eventos finales a `QUEUE-ARC-010`.
+
+---
+
+#### 16. Concurrencia de recuperación manual
+
+Una entrada aislada no puede tener dos recuperadores válidos que produzcan efectos concurrentes.
+
+Reglas:
+
+1. `recovery_request_id` identifica una intervención y se procesa idempotentemente;
+2. la decisión de recovery se toma sobre `failure_entry_version` y `operation_version` observadas;
+3. abrir dos solicitudes no concede dos ejecuciones; toda acción de efecto debe adquirir la exclusión de la operación y de su recurso;
+4. una solicitud que ya fue resuelta devuelve su resolución y no inicia otra ejecución;
+5. `SAFE_REEXECUTE_SAME_INTENTION` adquiere un nuevo claim/fencing antes de iniciar el intento extraordinario;
+6. `COMPLETE_MISSING_COMPONENTS` protege cada componente pendiente y no reabre componentes confirmados;
+7. si otro proceso recupera el resultado, cancela, vence o modifica la entrada antes del commit, una solicitud con versión observada anterior pierde elegibilidad;
+8. una liberación masiva no omite el control por entrada o por clave de concurrencia;
+9. el operador no adquiere autoridad por poseer el claim técnico;
+10. la autoridad y segregación de funciones pertenecen a `QUEUE-ARC-012`.
+
+---
+
+#### 17. Schedules y ocurrencias recurrentes
+
+Para `QAI-001..QAI-009` se distinguen tres dimensiones:
+
+```text
+IDENTIDAD DE DEFINICIÓN DEL SCHEDULE
+≠ IDENTIDAD DE OCURRENCIA LÓGICA
+≠ FRONTERA DE EFECTO SOBRE EL RECURSO
+```
+
+Reglas:
+
+1. un replay o retry de la misma ocurrencia conserva `schedule_occurrence_id` y no crea otro efecto por duplicar el fire;
+2. dos fires de la misma ocurrencia resuelven a una sola intención y un único claim válido;
+3. ocurrencias distintas pueden ejecutarse en paralelo únicamente si sus recursos y dependencias son independientes;
+4. una ocurrencia posterior no invalida automáticamente el resultado de una anterior;
+5. cuando dos schedules distintos producen un efecto equivalente sobre el mismo recurso, sus operaciones conservan identidad propia pero comparten la frontera de efecto correspondiente;
+6. `QAI-001` y `QAI-004` mantienen schedules e identidades separados y deben converger a una misma guardia por turno/recurso de cierre para impedir doble efecto;
+7. `QAI-003` y `QAI-014` también deben respetar la versión vigente del turno abierto cuando compitan con cierres ordinarios o por salida de sede;
+8. activar, retirar o reconciliar el schedule legacy `QAI-004` continúa bajo `TSVC-CAT-010`; esta tarea solo define seguridad mientras coexista;
+9. `QAI-008` permanece sin evidencia de despliegue y esta definición no lo activa.
+
+---
+
+#### 18. Trabajos contenedores, hijos y batches
+
+1. un claim del contenedor no concede automáticamente claim sobre todos sus hijos;
+2. cada hijo con efecto independiente conserva `operation_id`, idempotencia y exclusión propias;
+3. el contenedor puede coordinar el orden, pero no justificar dos workers válidos sobre el mismo hijo;
+4. un batch puede ejecutar unidades independientes en paralelo si cada una conserva su frontera de recurso;
+5. una unidad ya confirmada no se repite porque el contenedor reintente;
+6. un hijo en `RESULT_UNKNOWN` se concilia antes de volver a emitir su efecto;
+7. el cierre del contenedor debe basarse en resultados hijos autoritativos y no en la mera ausencia de items pendientes;
+8. un fencing del contenedor no sustituye el fencing o versión de un hijo cuando este posee autoridad independiente.
+
+---
+
+#### 19. Dispositivos, offline e impresión
+
+##### 19.1. Colas offline
+
+1. una marca local `syncing` reduce solapamiento dentro de un runtime, pero no constituye por sí sola exclusión distribuida frente a otro proceso, dispositivo o servidor;
+2. cada evento offline conserva identidad idempotente antes de cruzar la red;
+3. dos dispositivos o dos ejecuciones que envíen el mismo evento deben converger a una sola aplicación del efecto cuando la identidad fuente sea la misma;
+4. eventos diferentes sobre el mismo turno deben respetar versión y orden empresarial, no solo unicidad de evento;
+5. conflictos no se fuerzan como si fueran errores transitorios;
+6. reconectar no crea una nueva generación de intención;
+7. el worker móvil técnico consume decisiones de cada unidad y no se convierte en owner de concurrencia por despertar periódicamente.
+
+##### 19.2. Impresión
+
+1. una intención de copia autorizada tiene una frontera de efecto propia;
+2. solo un dispatch activo válido puede cruzar la frontera hacia el periférico para esa intención y versión;
+3. un callback tardío de BrowserPrint no puede cerrar una generación distinta;
+4. retirar texto de `localStorage` no libera ni prueba el claim físico;
+5. si el envío pudo ser aceptado y el resultado es incierto, no se concede otro dispatch equivalente hasta conciliar;
+6. si se confirma que la impresión no ocurrió y la intención sigue vigente, una recuperación controlada puede obtener un nuevo claim;
+7. una reimpresión deliberada es otra intención de copia y no un bypass de concurrencia;
+8. el detalle especializado permanece bajo `PRINT-ARC-*`.
+
+---
+
+#### 20. Webhooks, replays y eventos externos
+
+1. un webhook se protege primero por identidad estable de evento o clave determinista aprobada;
+2. la reserva de la identidad fuente debe impedir que dos entregas concurrentes se conviertan en dos procesadores válidos del mismo evento;
+3. la comprobación “no procesado” seguida de efectos y registro posterior solo es suficiente si el conjunto conserva una garantía equivalente de un único ganador y resultado recuperable;
+4. un unique constraint posterior puede impedir duplicar el registro del evento, pero no demuestra por sí solo que los efectos ejecutados antes de esa escritura fueron únicos;
+5. una mutación de recurso usa además control de versión o lock compatible sobre el recurso cuando múltiples eventos legítimamente distintos puedan competir;
+6. un evento viejo no sobrescribe un estado más nuevo solo por llegar después;
+7. replays del proveedor recuperan el mismo procesamiento o resultado, no una intención nueva;
+8. un proveedor que no ofrezca un ID estable exige una clave determinista según el contrato de idempotencia; no se inventa una identidad en el worker después del efecto;
+9. si el procesamiento puede haber sido parcial, la siguiente entrega entra a conciliación antes de repetir los componentes ambiguos;
+10. el proveedor no adquiere ownership empresarial por originar el evento.
+
+---
+
+#### 21. Primitivas físicas compatibles sin selección anticipada
+
+La implementación futura puede combinar, según la frontera:
+
+- unique constraint o índice de unicidad para reserva estable;
+- transacción con bloqueo de fila;
+- actualización condicional por estado y versión esperados;
+- compare-and-set sobre versión monotónica;
+- claim con lease persistido;
+- advisory lock con identidad durable y mecanismo de recuperación compatible;
+- mecanismo de broker que entregue claim y visibility timeout con fencing equivalente;
+- fencing token monotónico en la fuente autoritativa;
+- constraint de efecto único;
+- lock de recurso o agregado;
+- serialización por partición o clave cuando preserve paralelismo seguro.
+
+Reglas:
+
+1. ninguna primitiva se considera suficiente solo por existir;
+2. el flujo completo debe impedir dos cierres válidos y conservar resultado recuperable;
+3. un mutex exclusivamente en memoria no es suficiente cuando existen múltiples runtimes, reinicios o handoffs;
+4. un lock sin expiración o recuperación segura puede producir bloqueo permanente y no satisface por sí solo el contrato;
+5. un lease sin fencing permite cierre tardío y no satisface por sí solo el contrato;
+6. un fencing sin idempotencia externa no elimina ambigüedad después de enviar a un proveedor o periférico;
+7. la selección física se materializará en los paquetes de implementación autorizados sin alterar estas invariantes.
+
+---
+
+#### 22. Reconciliación con implementación actual
+
+##### 22.1. Cierre diario de asistencia
+
+La función versionada `public.close_open_attendance_day_end()` selecciona turnos abiertos mediante consulta y `not exists` antes de insertar cierres. El recorrido inspeccionado de esa función no materializa por sí mismo `claim_id`, lease o fencing. Además, el inventario conserva dos schedules distintos, `QAI-001` y `QAI-004`, que invocan la misma función base.
+
+Decisión documental:
+
+```text
+DOS SCHEDULES DISTINTOS
++
+MISMO DOMINIO DE EFECTO DE CIERRE
+=
+IDENTIDADES DE OCURRENCIA SEPARADAS
++
+FRONTERA COMPARTIDA POR TURNO / RECURSO
+```
+
+La tarea no afirma ausencia de toda protección física fuera del recorrido inspeccionado. La implementación deberá demostrar la guardia efectiva completa antes de declarar conformidad.
+
+##### 22.2. Sincronización offline ANIMA
+
+La sincronización actual dispone de `client_event_id` y una unicidad por `employee_id + client_event_id`; el RPC `sync_attendance_events` devuelve `duplicate` ante `unique_violation`. El cliente, además, marca elementos como `syncing` antes de procesarlos.
+
+Decisión documental:
+
+```text
+UNICIDAD DE EVENTO EN SERVIDOR
+= PROTECCIÓN COMPATIBLE DE IDEMPOTENCIA
+
+MARCA LOCAL syncing
+= CONTROL LOCAL ÚTIL
+≠ LEASE DISTRIBUIDO
+≠ FENCING
+```
+
+Eventos distintos sobre el mismo turno continúan requiriendo versión, orden y exclusión del recurso cuando puedan producir efectos incompatibles.
+
+##### 22.3. Reconciliación de checkout PASS/PULSO
+
+`public.reconcile_expired_payment_checkouts()` obtiene locks de las filas de transacción y orden seleccionadas antes de actualizarlas. Esta es una primitiva compatible de exclusión del recurso dentro de ese flujo.
+
+Decisión documental:
+
+```text
+FOR UPDATE SOBRE TRANSACCIÓN + ORDEN
+= PROTECCIÓN ACTUAL RELEVANTE
+
+CONFORMIDAD TRANSVERSAL COMPLETA
+= NO SE INFIERE SOLO POR ESA PRIMITIVA
+```
+
+La ocurrencia raíz conserva identidad y el efecto por checkout debe seguir respetando estado, versión, deadline e idempotencia.
+
+##### 22.4. Eliminación programada de cuentas
+
+El worker vigente lee solicitudes `pending` y después cambia cada registro a `processing` mediante una actualización por `id`. En el recorrido inspeccionado no se observa una condición de compare-and-set sobre el estado previamente leído, `claim_id`, lease o fencing antes de iniciar anonimización y eliminación de Auth.
+
+Decisión documental:
+
+```text
+LECTURA pending
+→ UPDATE POR id
+→ EFECTOS DESTRUCTIVOS
+
+NO ACREDITA POR SÍ SOLO
+UN ÚNICO GANADOR CON CLAIM VERSIONADO
+```
+
+La materialización futura deberá adquirir una autoridad única por solicitud y proteger la transición y las fronteras destructivas. Si un ejecutor pierde autoridad después de un posible efecto, el siguiente procesador concilia antes de repetir.
+
+##### 22.5. Impresión NEXO
+
+La pantalla actual envía ZPL mediante BrowserPrint y retira total o parcialmente los elementos de la cola local inmediatamente después de iniciar el envío, mientras el callback del dispositivo se resuelve por separado.
+
+Decisión documental:
+
+```text
+RETIRAR DE localStorage
+≠ CLAIM DISTRIBUIDO
+≠ RESULTADO FÍSICO
+≠ PERMISO PARA SEGUNDO ENVÍO
+```
+
+La intención de copia requiere guardia de dispatch y conciliación física ante resultado incierto.
+
+##### 22.6. Webhook Wompi
+
+El flujo vigente consulta si el evento ya fue procesado, después ejecuta `mark_payment_transaction_status()` y finalmente registra el evento. La migración actual contiene unicidad `provider + provider_event_id` en el registro mediante `on conflict`, y `mark_payment_transaction_status()` bloquea la transacción con `for update`.
+
+Decisión documental:
+
+```text
+UNICIDAD DE EVENTO
++
+ROW LOCK DE TRANSACCIÓN
+= CONTROLES ACTUALES COMPATIBLES
+
+CONSULTA PREVIA
+→ EFECTO
+→ REGISTRO DEL EVENTO
+= NO EQUIVALE POR SÍ SOLA A CLAIM ATÓMICO DEL EVENTO COMPLETO
+```
+
+La arquitectura objetivo preserva los controles existentes compatibles y exige una única autoridad de procesamiento por evento, además del control de versión del recurso.
+
+##### 22.7. Webhook RevenueCat
+
+El handler vigente procesa suscripción, entitlement y auditoría de forma secuencial. La tabla de suscripciones inspeccionada no declara una unicidad por evento de proveedor, mientras `entitlements` usa `user_id` como clave primaria. El handler observado tampoco materializa una reserva previa de evento o claim de procesamiento.
+
+Decisión documental:
+
+```text
+REPLAY O DOS ENTREGAS CONCURRENTES
+DEBEN CONVERGER PRIMERO A UNA IDENTIDAD DE EVENTO
+ANTES DE PRODUCIR EFECTOS REPETIBLES
+```
+
+No se infiere una identidad de evento a partir de un campo que el contrato actual no haya aprobado como tal. La adopción deberá usar el ID estable del proveedor o la clave determinista definida por el contrato de idempotencia.
+
+---
+
+#### 23. Matriz materializada de concurrencia de las 19 identidades `QAI-*`
+
+| ID        | Clasificación                    | Frontera primaria        | Clave o recurso de exclusión                                 | Regla materializada                                                                                                                                                             | Estado y brecha documental                                                                                                           |
+| --------- | -------------------------------- | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `QAI-001` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | turno abierto / cierre diario aplicable                      | conserva su ocurrencia, pero comparte guardia de efecto con cualquier operación que pretenda cerrar el mismo turno; un claim de schedule no autoriza doble cierre               | `ESPECIFICADO`; coexistencia con `QAI-004` requiere guardia compartida y transición legacy permanece bajo `TSVC-CAT-010`             |
+| `QAI-002` | `APLICA_CONTROL_DE_CONCURRENCIA` | `OPERATION_CLAIM`        | operación raíz y cada trabajo hijo independiente             | cron, SQL, `pg_net` y worker no pueden convertirse en ganadores paralelos del mismo trabajo; cada etapa con efecto independiente obtiene su autoridad propia                    | `ESPECIFICADO`; transporte no constituye claim ni resultado                                                                          |
+| `QAI-003` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | turno stale / versión de asistencia                          | una corrección stale verifica que el turno sigue abierto y compatible antes de cerrar; compite por la misma frontera si otro cierre ya actuó                                    | `ESPECIFICADO`; no se sobrescribe un cierre más nuevo                                                                                |
+| `QAI-004` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | mismo dominio de cierre de `QAI-001`                         | mantiene operación y schedule propios pero usa la misma exclusión por turno/recurso para que dos ocurrencias distintas no produzcan doble efecto                                | `ESPECIFICADO`; schedule transicional no adquiere precedencia por horario de llegada                                                 |
+| `QAI-005` | `APLICA_CONTROL_DE_CONCURRENCIA` | `OPERATION_CLAIM`        | ocurrencia raíz y entregas hijas                             | la ocurrencia se ejecuta con un único claim; cada alerta hija mantiene idempotencia y resultado propios, y `pg_net` no crea otra autoridad                                      | `ESPECIFICADO`; claim raíz no fusiona resultados de destinatarios distintos                                                          |
+| `QAI-006` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | cotización elegible / condición de vigencia                  | dos ejecuciones de mantenimiento no pueden aplicar una mutación incompatible sobre la misma cotización; una unidad ya procesada se omite por condición actual                   | `ESPECIFICADO`; se preserva paralelismo entre recursos independientes                                                                |
+| `QAI-007` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | checkout, transacción y orden afectados                      | cada recurso se procesa bajo condición vigente; los row locks actuales son primitiva compatible, y otra ocurrencia no debe revertir o duplicar un resultado más nuevo           | `ESPECIFICADO`; lock actual no se presenta como certificación transversal completa                                                   |
+| `QAI-008` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | borrador elegible / versión actual                           | si el job llega a desplegarse, dos ejecuciones no podrán purgar dos veces ni actuar sobre una versión que dejó de ser elegible                                                  | `PENDIENTE_DE_EVIDENCIA`; la tarea no activa el schedule ni presume mecanismo físico                                                 |
+| `QAI-009` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | solicitud de eliminación / fase destructiva                  | `pending` debe reclamarse con un único ganador condicionado a versión/estado; el ejecutor obsoleto no continúa anonimización, eliminación ni cierre después de perder autoridad | `ESPECIFICADO`; el worker actual inspeccionado no acredita claim versionado, lease ni fencing end-to-end                             |
+| `QAI-010` | `PROPAGA_NO_DECIDE_CONCURRENCIA` | `UPSTREAM_PROPAGATED`    | autoridad del trabajo upstream                               | `pg_net` transporta una invocación ya identificada; su request ID o visibilidad de cola no sustituyen claim empresarial ni fencing del trabajo                                  | `ESPECIFICADO`; transporte administrado sin ownership de concurrencia                                                                |
+| `QAI-011` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | evento de asistencia + turno/versión afectada                | unicidad de `client_event_id` deduplica el mismo evento; eventos distintos sobre el mismo turno respetan orden y versión, y la marca local `syncing` no es lease distribuido    | `ESPECIFICADO`; se preserva la protección actual sin equipararla a claim transversal completo                                        |
+| `QAI-012` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | descanso + turno/estado vigente                              | compartir worker con asistencia no mezcla exclusiones; start/end y otros eventos del mismo turno se aplican solo contra estado compatible y en orden                            | `ESPECIFICADO`; conflicto no se fuerza como retry ordinario                                                                          |
+| `QAI-013` | `PROPAGA_NO_DECIDE_CONCURRENCIA` | `UPSTREAM_PROPAGATED`    | claims de `QAI-011` y `QAI-012`                              | cada tick consume unidades elegibles sin crear autoridad nueva; solapamientos de sweeps no permiten dos cierres válidos porque la autoridad pertenece a cada operación/recurso  | `ESPECIFICADO`; worker técnico y efímero, no propietario de la exclusión empresarial                                                 |
+| `QAI-014` | `APLICA_CONTROL_DE_CONCURRENCIA` | `RESOURCE_VERSION_GUARD` | turno abierto y evento de salida                             | el callback de background verifica turno y versión antes del autocierre; si un cierre manual o programado ganó, la señal tardía no produce otro checkout                        | `ESPECIFICADO`; ubicación o callback no constituyen claim ni resultado                                                               |
+| `QAI-015` | `APLICA_CONTROL_DE_CONCURRENCIA` | `DEVICE_EFFECT_GUARD`    | intención de copia + dispatch físico                         | solo una autoridad vigente envía la copia; callback obsoleto no cierra otra generación y una aceptación física incierta bloquea segundo envío hasta conciliar                   | `ESPECIFICADO`; `localStorage` + BrowserPrint actuales no acreditan claim/fencing físico durable                                     |
+| `QAI-016` | `NO_APLICA`                      | `NO_APLICA`              | `NO_APLICA`                                                  | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                                                   | `NO_APLICA`; no se fuerza al contrato de concurrencia                                                                                |
+| `QAI-017` | `APLICA_CONTROL_DE_CONCURRENCIA` | `SOURCE_EVENT_GUARD`     | mensaje fuente + intención de notificación derivada          | reejecución del trigger o transporte recupera la misma entrega; el mensaje fuente permanece único y `pg_net` no crea un segundo procesador empresarial                          | `ESPECIFICADO`; resultado de notificación se mantiene separado del mensaje                                                           |
+| `QAI-018` | `APLICA_CONTROL_DE_CONCURRENCIA` | `SOURCE_EVENT_GUARD`     | `provider_event_id` + transacción/orden                      | el evento Wompi se reserva con un único procesador; la transacción mantiene control de recurso y cualquier replay recupera resultado sin aplicar otra transición incompatible   | `ESPECIFICADO`; se preservan unicidad de evento y row lock actuales, pero se exige autoridad única del flujo completo                |
+| `QAI-019` | `APLICA_CONTROL_DE_CONCURRENCIA` | `SOURCE_EVENT_GUARD`     | identidad estable de evento RevenueCat + usuario/entitlement | dos entregas del mismo evento deben converger antes de insertar suscripción, actualizar entitlement o crear auditoría; un evento posterior no se degrada por uno obsoleto       | `ESPECIFICADO`; el handler actual no acredita reserva previa de evento ni claim de procesamiento; adopción física en `DELIV-PKG-001` |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN CONTROL DE CONCURRENCIA
+2 PROPAGAN Y NO DECIDEN CONCURRENCIA
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+FRONTERA PRIMARIA ENTRE LAS 16 APLICABLES
+RESOURCE_VERSION_GUARD = 10
+OPERATION_CLAIM        = 2
+DEVICE_EFFECT_GUARD    = 1
+SOURCE_EVENT_GUARD     = 3
+```
+
+---
+
+#### 24. Reglas transversales por frontera primaria
+
+##### 24.1. `RESOURCE_VERSION_GUARD`
+
+- siempre conserva un claim de operación válido;
+- valida recurso y versión antes del efecto;
+- comparte `concurrency_key` entre operaciones distintas cuando compiten por el mismo efecto;
+- admite row lock, compare-and-set, constraint o versión equivalente;
+- nunca resuelve conflicto mediante sobrescritura tardía.
+
+##### 24.2. `OPERATION_CLAIM`
+
+- un solo ejecutor posee autoridad de cierre por operación y generación;
+- contenedor e hijos no comparten autoridad por inferencia;
+- un transporte o scheduler no recibe claim empresarial por mover o disparar la operación;
+- una pérdida de lease aplica fencing antes de cualquier nuevo cierre.
+
+##### 24.3. `DEVICE_EFFECT_GUARD`
+
+- protege la frontera antes de emitir el efecto al periférico;
+- el receipt del adaptador y el resultado físico permanecen separados;
+- una generación nueva no repite un envío cuya aceptación anterior es incierta;
+- una copia nueva usa identidad nueva y no elude la guardia anterior.
+
+##### 24.4. `SOURCE_EVENT_GUARD`
+
+- reserva la identidad estable de evento antes del efecto;
+- múltiples entregas concurrentes convergen a un único procesamiento válido;
+- los recursos internos afectados mantienen su propia guardia de versión;
+- la ausencia de ID de proveedor exige clave determinista aprobada antes de procesar;
+- el orden entre eventos distintos se decide por versión/causalidad cuando corresponda.
+
+---
+
+#### 25. Handoff exacto a `QUEUE-ARC-010..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                                                                         |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar adquisición o rechazo de claim, renovación y pérdida de lease, cierre válido, rechazo por fencing, conflicto de versión, espera causal y resolución concurrente mediante estados/eventos canónicos sin redefinir esta semántica |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir contención, latencia de claim, expiraciones de lease, rechazos por fencing, conflictos CAS, duplicados suprimidos y colisiones por `concurrency_key` sin convertir métricas en política                                               |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede forzar reasignación, romper o recuperar una exclusión, solicitar recovery, cancelar o ejecutar acciones extraordinarias sin convertir posesión de claim, lease, fencing o credencial técnica en permiso empresarial     |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 26. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. crear tablas, columnas, constraints, índices, locks, funciones, RPC, triggers, queues o leases físicos;
+2. modificar Supabase, datos, RLS, grants, Realtime, cron, Edge Functions, Storage o secretos;
+3. modificar ANIMA, NEXO, PASS ni otro repositorio consumidor;
+4. activar `QAI-008`;
+5. retirar `QAI-004`;
+6. alterar schedules, prioridades, `scheduled_at` o `deadline_at`;
+7. redefinir `idempotency_key`, `payload_fingerprint`, perfiles de retry o presupuestos;
+8. convertir assignment en claim;
+9. convertir `syncing`, `processing`, un mutex de proceso o un request ID en garantía distribuida por inferencia;
+10. conceder un segundo claim mientras el primero conserve autoridad válida sobre la misma frontera incompatible;
+11. permitir que un worker con fencing obsoleto cierre o mutile una versión posterior;
+12. repetir un efecto externo, físico o destructivo únicamente porque venció el lease;
+13. usar `last write wins` para resolver estados o efectos empresariales sensibles;
+14. fusionar `QAI-001` y `QAI-004` como una sola operación para ocultar su coexistencia;
+15. usar un lock global que serialice trabajo independiente sin justificación contractual;
+16. presentar row lock, unique constraint o cualquier primitiva aislada como prueba suficiente de conformidad end-to-end;
+17. inventar un identificador de evento RevenueCat después de producir el efecto;
+18. tratar `pg_net` como propietario de concurrencia empresarial;
+19. cerrar el state machine ni los nombres finales de eventos;
+20. fijar métricas, SLOs o alertas;
+21. conceder autorización para romper locks, cancelar, recuperar o reintentar;
+22. declarar conformidad operativa o física de los activos actuales por esta definición documental;
+23. iniciar o desarrollar `QUEUE-ARC-010`.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para las 19 identidades inventariadas una obligación de confiabilidad ya registrada: reserva atómica de intención, un único ganador concurrente, bloqueo/versionado de recursos, control de claims, lease y fencing, rechazo de workers obsoletos, no duplicidad de efectos, orden causal y conciliación ante resultados inciertos. No introduce una obligación verificable independiente ni modifica alcance, estado, responsable, evidencia, relación o secuencia de requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 28. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que ya exige identidad estable, no duplicidad, claim atómico, bloqueo, versión o mecanismo equivalente, retry controlado, conciliación, cola de fallos y recuperación manual sobre operaciones asíncronas;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, principal técnico, recurso, intento, resultado, error y efecto final de cadenas asíncronas sin pérdida silenciosa ni efectos duplicados;
+- la cobertura específica vigente de ANIMA, PASS, NEXO, Supabase e integraciones relacionada con concurrencia, idempotencia, offline, webhooks, dispositivos, pagos y resultados ambiguos.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 29. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-008` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-010` como única tarea siguiente reservada;
+3. establece `WORK-CONCURRENCY-CONTROL-CONTRACT-001@1.0.0` sin crear una fuente de verdad paralela;
+4. distingue idempotencia, deduplicación, asignación, claim, lease, fencing, attempt, versión de recurso, lock físico y resultado;
+5. define las nueve clases de duplicidad o carrera materializadas sin reducirlas a una etiqueta genérica;
+6. define `concurrency_key` como frontera mínima de efectos incompatibles;
+7. permite que operaciones distintas compartan `concurrency_key` sin fusionar sus identidades;
+8. define `claim_id`, `lease_token`, `lease_expires_at` y `fencing_token` con funciones separadas;
+9. exige adquisición atómica de un único claim válido por frontera;
+10. impide interpretar assignment o estado local como claim distribuido;
+11. define que un claim no consume intento hasta que comienza una ejecución capaz de efecto;
+12. define lease acotado sin ampliar deadline;
+13. conserva claim, fencing y attempt durante una renovación de la misma ejecución;
+14. exige nueva generación de fencing cuando cambia el ganador;
+15. impide cierres y mutaciones de un worker obsoleto;
+16. exige conciliación antes de repetir cuando el lease se pierde después de un posible efecto externo, físico o destructivo;
+17. exige compare-and-set, versión esperada o mecanismo equivalente sobre recursos sensibles;
+18. prohíbe `last write wins` para efectos empresariales sensibles;
+19. conserva paralelismo entre unidades realmente independientes;
+20. ordena por dependencia, versión, ocurrencia y causalidad antes que por mera llegada o prioridad;
+21. separa assignment de claim y evita dos autoridades por reasignación;
+22. integra retry sin reiniciar identidad, deadline ni presupuesto;
+23. resuelve carrera cancelación/terminación por versión, fencing y frontera de efecto;
+24. impide dos recuperadores válidos para la misma entrada o `recovery_request_id`;
+25. exige claim nuevo antes de una reejecución extraordinaria autorizada;
+26. conserva identidad separada de contenedores e hijos;
+27. distingue schedule, ocurrencia y frontera de recurso;
+28. obliga a `QAI-001` y `QAI-004` a compartir guardia de efecto por turno/recurso sin fusionar sus schedules;
+29. obliga a `QAI-003` y `QAI-014` a respetar la versión vigente del turno al competir con otros cierres;
+30. mantiene `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activarlo;
+31. conserva la unicidad actual de eventos de asistencia como protección compatible sin equipararla a lease/fencing;
+32. conserva el row lock actual de reconciliación de checkout como protección compatible sin declararlo certificación completa;
+33. documenta que el worker de eliminación de cuentas no acredita claim versionado end-to-end en el recorrido inspeccionado;
+34. documenta que retirar trabajo de `localStorage` no acredita exclusión física de impresión;
+35. preserva las protecciones actuales de Wompi y exige un único procesamiento válido por evento;
+36. conserva la brecha de replay/concurrencia de RevenueCat sin inventar una identidad de proveedor ausente del contrato inspeccionado;
+37. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+38. obtiene 16 `APLICA_CONTROL_DE_CONCURRENCIA`, 2 `PROPAGA_NO_DECIDE_CONCURRENCIA` y 1 `NO_APLICA`;
+39. obtiene 10 `RESOURCE_VERSION_GUARD`, 2 `OPERATION_CLAIM`, 1 `DEVICE_EFFECT_GUARD` y 3 `SOURCE_EVENT_GUARD` entre las 16 aplicables;
+40. mantiene 0 identidades faltantes y 0 duplicadas;
+41. mantiene `QAI-010` y `QAI-013` como propagadores técnicos, no como autoridades empresariales de concurrencia;
+42. mantiene `QAI-016` como `NO_APLICA`;
+43. reserva estados y eventos exactos para `QUEUE-ARC-010`;
+44. reserva métricas y alertas para `QUEUE-ARC-011`;
+45. reserva autoridad y segregación para `QUEUE-ARC-012`;
+46. declara cero cambios de requisitos de prueba con justificación concreta;
+47. crea cero objetos físicos;
+48. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+49. no inicia ni desarrolla `QUEUE-ARC-010`.
+
+---
+
+#### 30. Resultado de la tarea
+
+`QUEUE-ARC-009` deja establecido el contrato canónico de concurrencia del trabajo asíncrono:
+
+```text
+MISMA INTENCIÓN REPETIDA
+→ MISMA OPERACIÓN
+→ NO SEGUNDO EFECTO
+
+MISMA OPERACIÓN
+→ UN SOLO CLAIM VÁLIDO
+→ LEASE ACOTADO
+→ FENCING MONOTÓNICO
+
+OPERACIONES DISTINTAS
++
+MISMO RECURSO / EFECTO INCOMPATIBLE
+→ MISMA FRONTERA DE CONCURRENCIA
+→ VERSIÓN / CAS / LOCK EQUIVALENTE
+
+LEASE PERDIDO
++
+EFECTO POSIBLE
+→ NO REPETIR A CIEGAS
+→ CONCILIAR
+
+WORKER TARDÍO
+→ FENCING OBSOLETO
+→ CIERRE RECHAZADO
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La concurrencia deja de depender de que “un worker llegue primero” y pasa a exigir una autoridad técnica temporal, verificable y versionada; la idempotencia evita crear otra intención, el claim limita quién puede ejecutar, el fencing neutraliza ejecutores tardíos y la versión del recurso evita que una operación válida en el pasado sobrescriba una realidad empresarial más nueva.
+
+---
+
+#### 31. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-010 — Definir estados y eventos canónicos`
+
+
 ### [ ] QUEUE-ARC-010 — Definir estados y eventos canónicos
 ### [ ] QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
 ### [ ] QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
