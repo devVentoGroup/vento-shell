@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **805** |
+| Aprobadas | **806** |
 | En propuesta | **0** |
-| No iniciadas | **789** |
+| No iniciadas | **788** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.50% (805/1594)** |
+| Porcentaje de completamiento | **50.56% (806/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `QUEUE-ARC-006` — Definir reintentos, backoff y límite máximo | ✅ APROBADA |
-| Tarea actual | `QUEUE-ARC-007` — Definir cancelación antes y durante ejecución | ⬜ NO INICIADA |
-| Siguiente reservada | `QUEUE-ARC-008` — Definir cola de fallos y recuperación manual | ⬜ NO INICIADA |
+| Última aprobada | `QUEUE-ARC-007` — Definir cancelación antes y durante ejecución | ✅ APROBADA |
+| Tarea actual | `QUEUE-ARC-008` — Definir cola de fallos y recuperación manual | ⬜ NO INICIADA |
+| Siguiente reservada | `QUEUE-ARC-009` — Definir bloqueo de duplicados y concurrencia | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -482,7 +482,7 @@
 | ✅ APROBADA | `QUEUE-ARC-004` | Definir prioridad, programación y vencimiento | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-005` | Definir asignación a trabajador, dispositivo o adaptador | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-006` | Definir reintentos, backoff y límite máximo | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `QUEUE-ARC-007` | Definir cancelación antes y durante ejecución | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
+| ✅ APROBADA | `QUEUE-ARC-007` | Definir cancelación antes y durante ejecución | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-008` | Definir cola de fallos y recuperación manual | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-009` | Definir bloqueo de duplicados y concurrencia | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |

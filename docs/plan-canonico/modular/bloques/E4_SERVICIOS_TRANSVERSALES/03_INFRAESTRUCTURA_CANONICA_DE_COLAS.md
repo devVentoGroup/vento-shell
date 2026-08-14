@@ -3657,7 +3657,725 @@ SIGUIENTE TAREA RESERVADA
 `QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
 
 
-### [ ] QUEUE-ARC-007 — Definir cancelación antes y durante ejecución
+### ✅ QUEUE-ARC-007 — Definir cancelación antes y durante ejecución
+
+**Estado:** APROBADA
+**Tarea anterior:** `QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
+**Tarea siguiente:** `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
+**Tipo de tarea:** documental; especialización canónica de solicitud, aceptación y efectividad de cancelación sobre trabajo asíncrono antes y durante ejecución, con frontera de efecto, detención cooperativa, interacción con retry, asignación, trabajo contenedor e hijos y decisión explícita para las 19 identidades `QAI-*`, sin implementar mecanismos físicos de aborto, locks, leases, fencing, estados, métricas ni autorización
+**Fase:** exclusivamente documental
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`
+**Línea base documental:** `vento-shell@dbed0056eeb575a820cde7fc83b480b8d006c103`
+**Contrato base de trabajo:** `TSVC-SVC-001.CONTRACT@1.0.0`
+**Registro de confiabilidad consumido:** `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`
+**Contrato de idempotencia consumido:** `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`
+**Contrato temporal consumido:** `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`
+**Contrato de asignación consumido:** `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`
+**Contrato de retry consumido:** `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`
+**Inventario consumido:** `QUEUE-CURRENT-ASSET-INVENTORY-001` — 19 identidades `QAI-*`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada cómo una operación asíncrona ya aceptada puede recibir una solicitud de cancelación antes de iniciar un efecto o mientras existe una ejecución en curso, sin confundir la intención de cancelar con eliminación de registros, vencimiento, agotamiento de retry, fallo técnico, rollback, compensación empresarial ni certeza de que un efecto externo o físico fue detenido.
+
+La regla raíz es:
+
+```text
+OPERACIÓN IDENTIFICADA
++
+SOLICITUD DE CANCELACIÓN IDENTIFICABLE
++
+AUTORIDAD A VALIDAR POR SU TAREA PROPIETARIA
++
+FRONTERA DE EFECTO CONOCIDA
+        ↓
+DECISIÓN DE CANCELACIÓN RECONSTRUIBLE
+        ↓
+IMPEDIR NUEVOS EFECTOS ORDINARIOS CUANDO AÚN ES SEGURO
+        ↓
+DETENER COOPERATIVAMENTE CUANDO EL INTENTO ESTÁ EN CURSO
+        ↓
+CONCILIAR SI EL EFECTO PUDO OCURRIR Y NO HAY CERTEZA
+```
+
+La separación canónica queda fijada así:
+
+```text
+SOLICITAR CANCELACIÓN
+≠
+CANCELACIÓN EFECTIVA
+≠
+INTERRUMPIR UN PROCESO
+≠
+DESHACER UN EFECTO
+≠
+COMPENSAR UN EFECTO
+≠
+VENCER UNA OPERACIÓN
+≠
+AGOTAR RETRIES
+```
+
+---
+
+#### 2. Resultado sustantivo
+
+Se establece `WORK-CANCELLATION-CONTRACT-001@1.0.0` como especialización de control de cancelación del contrato canónico de trabajo asíncrono.
+
+El resultado material fija:
+
+1. la diferencia entre solicitud de cancelación, aceptación de la solicitud, cancelación efectiva y resultado demasiado tardío;
+2. una identidad propia para la solicitud de control sin reutilizar la clave idempotente del trabajo;
+3. el sobre mínimo que debe permitir reconstruir quién pidió cancelar, qué operación observó y en qué punto de ejecución se resolvió;
+4. cuatro modos cerrados de tratamiento de cancelación para el inventario actual;
+5. la conducta antes de iniciar ejecución y durante un intento ya iniciado;
+6. la obligación de comprobar cancelación antes de cada frontera capaz de producir un efecto nuevo cuando el trabajo admita detención cooperativa;
+7. la interacción entre cancelación, retry pendiente, reasignación y disponibilidad de dispositivo;
+8. la regla para efectos externos o físicos ya enviados o potencialmente aceptados;
+9. la separación entre cancelación, rollback y compensación;
+10. las reglas para trabajos contenedores, trabajos hijos, schedules, colas offline, dispositivos y webhooks;
+11. la frontera exacta con concurrencia, estados, métricas y autorización, que permanecen en sus tareas propietarias;
+12. una decisión explícita para las 19 identidades `QAI-*` del inventario aprobado.
+
+Balance:
+
+| Métrica                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Identidades `QAI-*` esperadas              |    **19** |
+| Identidades materializadas                 |    **19** |
+| `APLICA_CANCELACION_DE_TRABAJO`            |    **16** |
+| `PROPAGA_NO_DECIDE_CANCELACION`            |     **2** |
+| `NO_APLICA`                                |     **1** |
+| Modo `COOPERATIVE_SAFE_POINT`              |    **12** |
+| Modo `BEFORE_EFFECT_BOUNDARY_ONLY`         |     **4** |
+| Modo `UPSTREAM_PROPAGATED`                 |     **2** |
+| Modo `NO_APLICA`                           |     **1** |
+| Identificadores `QAI-*` duplicados         |     **0** |
+| Identidades sin decisión                   |     **0** |
+| Requisitos de prueba creados o modificados |     **0** |
+| Objetos físicos creados o modificados      |     **0** |
+
+---
+
+#### 3. Herencia contractual obligatoria
+
+`WORK-CANCELLATION-CONTRACT-001@1.0.0` no crea otra fuente de verdad del trabajo ni modifica la identidad de la intención original.
+
+Hereda obligatoriamente:
+
+- de `TSVC-SVC-001.CONTRACT@1.0.0`, `operation_id`, `WORK_SUBMISSION`, `WORK_OUTCOME`, `WORK_ERROR`, propiedad empresarial, causalidad, resultado autoritativo y versión contractual;
+- de `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`, el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS`, estado durable, resultado recuperable, tratamiento `RESULT_UNKNOWN` y la regla aprobada que impide efectos tardíos ordinarios de una operación cancelada, vencida o revocada;
+- de `WORK-IDEMPOTENCY-CONTRACT-001@1.0.0`, la identidad estable de la intención, su huella y la prohibición de reutilizar la misma clave para una intención materialmente distinta;
+- de `WORK-SCHEDULING-POLICY-CONTRACT-001@1.0.0`, `scheduled_at`, `deadline_at`, identidad de ocurrencia y la separación entre cancelación y vencimiento;
+- de `WORK-ASSIGNMENT-CONTRACT-001@1.0.0`, `assignment_id`, `assignment_version`, destino técnico y la separación entre asignación, claim, intento y efecto;
+- de `WORK-RETRY-POLICY-CONTRACT-001@1.0.0`, `attempt_id`, presupuesto, `next_retry_at`, clasificación de resultado ambiguo y la obligación de impedir nuevos intentos ordinarios cuando el trabajo deja de ser elegible;
+- de `QUEUE-CURRENT-ASSET-INVENTORY-001`, las 19 identidades materiales y sus fronteras técnicas actuales.
+
+La tarea no define quién posee autoridad para cancelar. Esa decisión pertenece a `QUEUE-ARC-012`.
+
+---
+
+#### 4. Unidad canónica de cancelación
+
+Una solicitud de cancelación es una **acción de control sobre una operación existente**.
+
+No es una nueva ejecución del trabajo ni una mutación silenciosa del descriptor original.
+
+Se fija:
+
+```text
+TRABAJO ORIGINAL
+operation_id = estable
+idempotency_key = estable
+payload_fingerprint = estable
+
+SOLICITUD DE CONTROL
+cancellation_request_id = identidad propia
+operation_id = referencia al trabajo original
+requested_at = instante de solicitud
+request_reason = causa declarada
+```
+
+Reglas:
+
+1. `cancellation_request_id` identifica una solicitud de control concreta y no sustituye `operation_id`, `idempotency_key`, `attempt_id` ni `assignment_id`.
+2. Repetir la misma solicitud de cancelación debe resolver a la misma decisión registrada y no crear acciones de control ilimitadas.
+3. Una solicitud de cancelación no cambia el payload, propietario, contrato ni huella de la intención original.
+4. La posesión de `operation_id`, `receipt_id`, `idempotency_key`, `attempt_id` o una credencial técnica no demuestra autoridad para cancelar.
+5. Una cancelación efectiva impide nuevos efectos ordinarios de la misma operación; no borra su historia ni reutiliza su identidad.
+6. Si el trabajo ya tiene un resultado terminal autoritativo, solicitar cancelación no reescribe retroactivamente ese resultado.
+7. Si el negocio necesita una reversa o compensación después de un efecto confirmado, esa acción es una operación empresarial distinta, con identidad y causalidad propias.
+
+---
+
+#### 5. Sobre mínimo de cancelación
+
+Toda materialización futura deberá poder conservar, cuando aplique:
+
+```text
+operation_id
+cancellation_request_id
+requested_at
+request_reason
+requested_by_reference
+operation_version_observed
+attempt_id_at_request
+assignment_version_at_request
+cancel_mode
+effect_boundary
+cancel_observed_at
+cancel_effective_at
+cancellation_resolution
+result_ref
+reconciliation_status
+```
+
+Definiciones:
+
+| Campo                           | Regla canónica                                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `cancellation_request_id`       | identidad única de una solicitud de control; sus repeticiones recuperan la misma resolución                                    |
+| `requested_by_reference`        | referencia auditada al solicitante o principal que deberá validarse bajo `QUEUE-ARC-012`; no transporta secretos               |
+| `operation_version_observed`    | versión o referencia observable del trabajo al solicitar cancelar; no define por sí sola el mecanismo de exclusión concurrente |
+| `attempt_id_at_request`         | intento conocido al momento de la solicitud cuando exista; no supone que el intento siga siendo el vigente                     |
+| `assignment_version_at_request` | versión de asignación observada cuando aplique; no autoriza al target a ignorar una cancelación posterior                      |
+| `cancel_mode`                   | una de las cuatro decisiones cerradas de esta tarea                                                                            |
+| `effect_boundary`               | punto contractual a partir del cual un efecto puede ser irreversible, externo, físico o no detenible con certeza               |
+| `cancel_observed_at`            | instante en que el ejecutor o coordinador observa la solicitud de cancelación                                                  |
+| `cancel_effective_at`           | instante en que queda garantizado que no se iniciarán nuevos efectos ordinarios de la operación                                |
+| `cancellation_resolution`       | resultado semántico de la solicitud; los nombres de estados y eventos persistidos se cierran en `QUEUE-ARC-010`                |
+| `reconciliation_status`         | condición consultable cuando la solicitud llegó después de una frontera incierta y debe resolverse contra fuente autoritativa  |
+
+La representación física, constraints, locks, versiones, tokens y transacciones se definirán durante implementación y bajo `QUEUE-ARC-009` cuando correspondan.
+
+---
+
+#### 6. Modos canónicos de cancelación
+
+El vocabulario cerrado inicial es:
+
+| Modo                          | Uso                                                                                                             | Regla principal                                                                                                      |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `COOPERATIVE_SAFE_POINT`      | trabajo servidor, recurrente, local u operativo que puede comprobar control entre etapas o unidades             | acepta cancelación antes del efecto y durante ejecución en puntos seguros; no deshace efectos ya confirmados         |
+| `BEFORE_EFFECT_BOUNDARY_ONLY` | operación destructiva, externa o física donde después del envío o commit no existe garantía universal de aborto | garantiza cancelación solo antes de cruzar la frontera; después debe conservar resultado conocido o `RESULT_UNKNOWN` |
+| `UPSTREAM_PROPAGATED`         | transporte o worker técnico que procesa una decisión tomada por el trabajo propietario                          | propaga y respeta la resolución upstream; no crea autoridad ni semántica propia de cancelación                       |
+| `NO_APLICA`                   | mecanismo sin trabajo durable ni efecto empresarial cancelable en el alcance actual                             | no se fuerza al contrato de cancelación                                                                              |
+
+Reglas:
+
+1. `COOPERATIVE_SAFE_POINT` no promete interrupción instantánea; exige puntos seguros suficientes para impedir nuevos efectos después de observar una cancelación efectiva.
+2. `BEFORE_EFFECT_BOUNDARY_ONLY` no convierte un efecto posterior a la frontera en cancelable por nomenclatura.
+3. La elección del modo describe capacidad semántica; no acredita que la implementación actual ya la materialice.
+4. Un contrato especializado puede ser más restrictivo, pero no puede declarar cancelable un efecto irreversible sin evidencia de un mecanismo seguro.
+5. El mecanismo de carrera entre ejecución y cancelación se cierra en `QUEUE-ARC-009`.
+
+##### 6.1. Resoluciones canónicas de la solicitud
+
+El resultado de control utiliza este vocabulario cerrado sin sustituir los estados de operación que definirá `QUEUE-ARC-010`:
+
+| Resolución                               | Significado                                                                                                                      |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `REQUEST_ACCEPTED_PENDING_EFFECTIVENESS` | la solicitud válida fue registrada, pero todavía debe ser observada por la ejecución o coordinador antes de garantizar detención |
+| `EFFECTIVE_BEFORE_EXECUTION`             | se garantiza que no inició una ejecución capaz de producir el efecto                                                             |
+| `EFFECTIVE_AT_SAFE_POINT`                | un intento estaba activo y fue detenido en un punto seguro antes de producir efectos posteriores                                 |
+| `TOO_LATE_EFFECT_CONFIRMED`              | el efecto autoritativo ya quedó confirmado antes de que la cancelación pudiera hacerse efectiva                                  |
+| `RESULT_UNKNOWN_RECONCILIATION_REQUIRED` | la frontera pudo cruzarse, pero no existe confirmación suficiente para afirmar efecto ni cancelación                             |
+| `ALREADY_TERMINAL_NO_CHANGE`             | la operación ya había terminado de forma autoritativa y la solicitud no modifica su resultado                                    |
+| `NOT_CANCELLABLE_BY_CONTRACT`            | el contrato especializado no admite cancelación de esa operación o de esa etapa                                                  |
+
+Reglas:
+
+1. Aceptar la solicitud para evaluación no equivale a hacerla efectiva.
+2. `REQUEST_ACCEPTED_PENDING_EFFECTIVENESS` no autoriza a presentar el trabajo como cancelado.
+3. `EFFECTIVE_BEFORE_EXECUTION` y `EFFECTIVE_AT_SAFE_POINT` impiden efectos ordinarios posteriores de la misma operación.
+4. `TOO_LATE_EFFECT_CONFIRMED` conserva el resultado autoritativo y no inicia compensación automática.
+5. `RESULT_UNKNOWN_RECONCILIATION_REQUIRED` exige conciliación y prohíbe inferir éxito, fallo o cancelación.
+6. `ALREADY_TERMINAL_NO_CHANGE` es idempotente respecto del resultado existente.
+7. La autoridad necesaria para aceptar o rechazar la solicitud se define en `QUEUE-ARC-012`; esta tabla no concede permisos.
+
+---
+
+#### 7. Cancelación antes de iniciar ejecución
+
+Cuando una solicitud válida queda efectiva antes de que comience una ejecución capaz de producir efecto:
+
+1. no se inicia un nuevo `attempt_id` ordinario;
+2. no se consume presupuesto de retry adicional;
+3. un `next_retry_at` pendiente deja de habilitar otra ejecución ordinaria;
+4. una reasignación pendiente no autoriza a otro target a iniciar la misma operación;
+5. despertar un worker, reconectar un dispositivo o reanudar una aplicación no revive el trabajo;
+6. una ocurrencia programada cancelada conserva su identidad e historia; la siguiente ocurrencia del schedule sigue siendo una intención distinta si la definición continúa vigente;
+7. cancelar una ocurrencia no desactiva, elimina ni reprograma la definición del schedule;
+8. retirar físicamente un elemento de una cola no es suficiente: la decisión debe poder reconstruirse por `operation_id` y solicitud de control;
+9. el source record, evento, mensaje, pago, documento o hecho que originó el trabajo no se borra por cancelar su procesamiento asíncrono;
+10. la forma exacta en que se representa la terminalidad pertenece a `QUEUE-ARC-010`.
+
+---
+
+#### 8. Cancelación durante ejecución
+
+Un intento ya iniciado se gobierna mediante cancelación cooperativa y una frontera explícita de efecto.
+
+La regla conceptual es:
+
+```text
+INTENTO EN CURSO
+        ↓
+OBSERVAR SOLICITUD DE CANCELACIÓN
+        ↓
+¿AÚN NO CRUZÓ FRONTERA DE EFECTO?
+        ├─ SÍ → detener en punto seguro
+        │       → no iniciar efectos posteriores
+        │       → conservar historia del intento
+        │
+        └─ NO → ¿RESULTADO AUTORITATIVO CONOCIDO?
+                ├─ SÍ → conservar resultado; cancelación llegó demasiado tarde
+                └─ NO → RESULT_UNKNOWN
+                        → conciliación
+                        → no declarar cancelación efectiva por inferencia
+```
+
+Reglas:
+
+1. Un worker debe volver a evaluar control antes de cada frontera capaz de producir un efecto nuevo cuando el modo sea `COOPERATIVE_SAFE_POINT`.
+2. Una espera larga, backoff, reanudación, reconexión o reasignación requiere reevaluar cancelación antes de iniciar otra ejecución.
+3. Observar la solicitud durante una etapa puramente preparatoria obliga a detener las etapas posteriores que aún no produjeron efecto.
+4. Si una etapa atómica ya confirmó el efecto, cancelar no la revierte.
+5. Si el efecto pudo haber ocurrido pero el ejecutor perdió confirmación, la resolución es incierta y entra en conciliación.
+6. Matar un proceso, cerrar una aplicación o perder conectividad no demuestra cancelación efectiva.
+7. La ausencia de un callback de éxito tampoco demuestra que el efecto fue cancelado.
+8. Una operación cancelada no puede producir nuevos efectos ordinarios después de que la cancelación haya quedado efectiva.
+9. El mecanismo que impide que un worker con visión obsoleta cierre el trabajo pertenece a `QUEUE-ARC-009`.
+
+---
+
+#### 9. Frontera de efecto
+
+Cada operación cancelable deberá identificar conceptualmente la frontera a partir de la cual ya no puede prometerse aborto seguro sin consultar el contrato especializado.
+
+Ejemplos de fronteras válidas según el tipo de trabajo:
+
+- antes de ejecutar una mutación autoritativa de base de datos;
+- antes de emitir una llamada a proveedor con potencial de efecto;
+- antes de enviar una orden a dispositivo o periférico;
+- antes de confirmar una unidad empresarial dentro de un batch;
+- antes de crear un trabajo hijo con efecto independiente;
+- antes de emitir una notificación o documento cuyo envío constituya un efecto observable.
+
+Reglas:
+
+1. La frontera es semántica, no una línea de código universal.
+2. Un ACK de transporte no prueba por sí solo si la frontera empresarial fue cruzada.
+3. Una operación con varias etapas puede tener varias fronteras; la cancelación detiene las etapas aún no iniciadas, pero conserva los efectos ya confirmados.
+4. Si una capa no puede distinguir si la frontera fue cruzada, no puede declarar cancelación efectiva; debe conservar incertidumbre y conciliar.
+5. Diseñar compensación para efectos ya producidos pertenece al contrato empresarial propietario y no se sustituye por este mecanismo de cancelación.
+
+---
+
+#### 10. Cancelación no equivale a rollback ni compensación
+
+Se fija:
+
+```text
+CANCELAR
+= impedir trabajo o efectos futuros de la misma operación cuando todavía es seguro
+
+ROLLBACK TÉCNICO
+= revertir una transacción que aún no fue comprometida según su tecnología
+
+COMPENSAR
+= ejecutar una nueva acción empresarial que contrarresta total o parcialmente un efecto ya confirmado
+```
+
+Reglas:
+
+1. La cancelación nunca reescribe un `WORK_OUTCOME` autoritativo ya confirmado.
+2. Una transacción local que pueda abortarse antes de commit puede formar parte de la detención segura, pero no se generaliza a proveedores ni dispositivos.
+3. Una compensación usa su propia identidad, contrato, autorización y causalidad cuando el dominio la permita.
+4. Una nueva intención no se disfraza como cancelación para conservar una clave previa.
+5. El historial del trabajo original permanece consultable aunque exista compensación posterior.
+
+---
+
+#### 11. Relación con retry
+
+Cancelación y retry se ordenan así:
+
+1. una cancelación efectiva vuelve inelegible cualquier retry ordinario futuro de esa operación;
+2. `next_retry_at` no vence ni prevalece sobre una cancelación efectiva;
+3. un worker que despierta para retry debe reevaluar cancelación antes de iniciar otro intento;
+4. cancelar no devuelve intentos consumidos ni reinicia `max_attempts`;
+5. un intento en curso conserva su identidad aunque se detenga cooperativamente;
+6. un fallo posterior a una cancelación efectiva no crea otra ventana de retry;
+7. `RESULT_UNKNOWN` posterior a una frontera incierta se concilia antes de cualquier decisión adicional;
+8. una operación cancelada no se reactiva mediante retry manual; si el negocio necesita ejecutar otra vez el efecto, debe crear una nueva intención causalmente vinculada y autorizada;
+9. agotamiento de retry, deadline y cancelación son causas distintas y no se intercambian para obtener otra política.
+
+---
+
+#### 12. Relación con asignación y disponibilidad
+
+1. Cancelar un trabajo no cambia su `assignment_id` histórico ni borra targets anteriores.
+2. Una cancelación efectiva impide que una nueva asignación ordinaria se convierta en ejecución.
+3. Si el target desaparece antes de la frontera de efecto, puede detenerse sin consumir otra ejecución y la cancelación puede resolverse sin reasignar.
+4. Si un dispositivo estaba offline, la cancelación debe sobrevivir a reconexión y ser observada antes de reenviar la intención.
+5. Un adaptador no puede ignorar una cancelación efectiva porque conserve una solicitud de transporte pendiente.
+6. Ningún target adquiere autoridad para cancelar por estar asignado.
+7. La reasignación y la cancelación que compitan sobre la misma operación deben resolverse con el mecanismo de versión, claim, lease, fencing o exclusión que defina `QUEUE-ARC-009`.
+
+---
+
+#### 13. Trabajos contenedores, hijos y propagación
+
+La cancelación de un trabajo contenedor no cancela automáticamente todas las operaciones relacionadas por correlación.
+
+Reglas:
+
+1. El contenedor deja de crear nuevos trabajos hijos después de que la cancelación sea efectiva.
+2. Un hijo ya registrado conserva su propio `operation_id`, resultado y control de cancelación.
+3. La cancelación de hijos existentes solo se propaga cuando el contrato propietario declare explícitamente ese alcance y el hijo no haya cruzado su frontera de efecto.
+4. `correlation_id` por sí solo no constituye alcance de cancelación.
+5. En un batch, las unidades ya confirmadas permanecen confirmadas; la cancelación detiene las unidades todavía no iniciadas cuando el contrato lo permita.
+6. Cancelar el batch no autoriza repetir ni borrar efectos hijos ya cerrados.
+7. Los resultados parciales deben permanecer reconstruibles; su representación de estado y eventos pertenece a `QUEUE-ARC-010`.
+
+---
+
+#### 14. Schedules y ocurrencias recurrentes
+
+Para `QAI-001..QAI-009` se distingue obligatoriamente:
+
+```text
+CANCELAR UNA OCURRENCIA
+≠
+DESACTIVAR EL SCHEDULE
+≠
+CAMBIAR SU CALENDARIO
+≠
+CANCELAR FUTURAS OCURRENCIAS
+```
+
+Reglas:
+
+1. La cancelación se aplica a la `schedule_occurrence_id` o al trabajo derivado identificado.
+2. La definición de schedule conserva `schedule_id` y `schedule_version` sin cambios.
+3. La siguiente ocurrencia ordinaria conserva su identidad propia si la definición sigue vigente.
+4. Cambiar calendario, vigencia, misfire o desactivar la definición se gobierna por el contrato temporal y la autoridad correspondiente; no se simula mediante cancelación de una sola ocurrencia.
+5. Una ejecución manual adicional sigue siendo otra intención según las reglas ya aprobadas.
+6. `QAI-001` y `QAI-004` no se resuelven cancelando arbitrariamente uno: la coexistencia y exclusión semántica permanecen en `TSVC-CAT-010` y `QUEUE-ARC-009`.
+
+---
+
+#### 15. Dispositivos, offline e impresión
+
+Para operaciones locales, offline o físicas:
+
+1. una intención cancelada localmente debe conservar una marca o resolución durable suficiente para impedir que reaparezca como trabajo ejecutable después de reinicio o reconexión;
+2. eliminar la fila o texto local sin evidencia de control no demuestra que un servidor, dispositivo o proveedor haya observado la cancelación;
+3. el dispositivo revalida la decisión antes de enviar una operación pendiente cuando recupere conectividad;
+4. si una orden de impresión fue enviada al periférico y no existe confirmación de aborto o de impresión, no se declara cancelada ni fallida por inferencia;
+5. una nueva copia deliberada después de una cancelación o resultado ambiguo es una intención distinta cuando el contrato de impresión la autorice;
+6. la indisponibilidad del dispositivo no extiende `deadline_at` ni vuelve reversible un efecto ya confirmado;
+7. los mecanismos específicos de impresión continúan bajo `PRINT-ARC-*` sin alterar este contrato transversal.
+
+---
+
+#### 16. Webhooks y eventos externos
+
+Una cancelación del procesamiento interno no borra ni niega el evento fuente recibido de un proveedor.
+
+Reglas:
+
+1. `provider_event_id`, firma, payload recibido y evidencia de recepción permanecen como hechos de integración.
+2. La cancelación puede detener procesamiento downstream todavía no ejecutado cuando el contrato empresarial lo permita.
+3. No se utiliza cancelación para ignorar un hecho autoritativo de pago, suscripción, entitlement u otro estado externo que deba conciliarse.
+4. Si el procesamiento ya produjo o pudo producir un efecto externo o empresarial, se conserva el resultado o `RESULT_UNKNOWN` y se concilia.
+5. Un replay del proveedor se resuelve por idempotencia y deduplicación; no se interpreta como revocación de una cancelación anterior.
+6. La autoridad para cancelar procesamiento derivado y sus límites pertenece a `QUEUE-ARC-012` y al contrato de dominio correspondiente.
+
+---
+
+#### 17. Matriz materializada de cancelación de las 19 identidades `QAI-*`
+
+| ID        | Clasificación                   | Modo                          | Frontera principal                                                    | Regla materializada de cancelación                                                                                                                                         | Estado y brecha documental                                                                                                                                                                                 |
+| --------- | ------------------------------- | ----------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QAI-001` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de aplicar cada cierre autoritativo elegible                    | cancelar la ocurrencia impide nuevos cierres de esa operación; si un cierre ya confirmó efecto, se conserva y no se revierte                                               | `ESPECIFICADO`; la exclusión con `QAI-004` permanece bajo `QUEUE-ARC-009`                                                                                                                                  |
+| `QAI-002` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de cada etapa o trabajo hijo con efecto                         | la ocurrencia deja de generar etapas nuevas y cada hijo ya registrado conserva control propio; `pg_net` no decide cancelación                                              | `ESPECIFICADO`; la cadena multi-etapa requiere observación de control entre fronteras durante la implementación                                                                                            |
+| `QAI-003` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de cada corrección de turno stale                               | la ocurrencia cancelada no inicia nuevas correcciones; una corrección ya confirmada permanece como hecho                                                                   | `ESPECIFICADO`; cancelación no sustituye vigencia ni resolución del recurso                                                                                                                                |
+| `QAI-004` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de aplicar cada cierre bajo el schedule transicional            | conserva identidad propia; cancelar su ocurrencia no desactiva el schedule ni resuelve por sí sola la coexistencia con `QAI-001`                                           | `ESPECIFICADO`; transición legacy sigue bajo `TSVC-CAT-010`                                                                                                                                                |
+| `QAI-005` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de crear o enviar cada alerta derivada                          | cancelar el ciclo impide nuevas entregas hijas; una notificación ya enviada conserva su resultado y no se borra                                                            | `ESPECIFICADO`; transporte `pg_net` solo propaga la decisión y la entrega especializada continúa bajo `NOTIFY-ARC-*`                                                                                       |
+| `QAI-006` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de cada mutación de limpieza dentro de la ocurrencia            | detiene unidades aún no procesadas sin restaurar registros ya limpiados válidamente                                                                                        | `ESPECIFICADO`; una reversa empresarial no se inventa como cancelación                                                                                                                                     |
+| `QAI-007` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de cada reconciliación o efecto hijo sobre checkout             | detiene unidades futuras; resultados de checkout ya confirmados permanecen y cualquier efecto ambiguo entra en conciliación                                                | `ESPECIFICADO`; cancelación del batch no invalida la fuente empresarial de expiración o pago                                                                                                               |
+| `QAI-008` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de purgar cada borrador elegible                                | si el job se materializa, una ocurrencia cancelada no borra nuevas unidades; esta tarea no activa ni acredita ejecución                                                    | `PENDIENTE_DE_EVIDENCIA`; despliegue y adopción se reciben en `DELIV-PKG-001`                                                                                                                              |
+| `QAI-009` | `APLICA_CANCELACION_DE_TRABAJO` | `BEFORE_EFFECT_BOUNDARY_ONLY` | antes de anonimizar datos o eliminar la identidad de cada solicitud   | una solicitud pendiente puede detenerse antes del efecto destructivo; después de anonimización o borrado confirmado no existe rollback por cancelación                     | `ESPECIFICADO`; el worker actual observado pasa de `pending` a `processing` sin una revalidación visible de cancelación antes de ambos efectos destructivos; cierre físico a planificar en `DELIV-PKG-001` |
+| `QAI-010` | `PROPAGA_NO_DECIDE_CANCELACION` | `UPSTREAM_PROPAGATED`         | la frontera pertenece al trabajo que originó la solicitud HTTP        | `pg_net` conserva y respeta la decisión upstream cuando el contrato físico lo permita; borrar o retirar un request técnico no sustituye cancelación empresarial            | `ESPECIFICADO`; transporte administrado sin autoridad empresarial                                                                                                                                          |
+| `QAI-011` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de sincronizar la intención offline contra el servidor          | una cancelación durable debe sobrevivir reinicio y reconexión e impedir que el worker vuelva a enviar la misma intención                                                   | `ESPECIFICADO`; el tipo de cola inspeccionado no materializa un estado de cancelación; adopción física a planificar en `DELIV-PKG-001`                                                                     |
+| `QAI-012` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de ejecutar la acción de descanso contra el servidor            | misma regla que asistencia, conservando identidad y control separados; compartir worker no mezcla cancelaciones                                                            | `ESPECIFICADO`; el flujo de cola inspeccionado no materializa un checkpoint explícito de cancelación; adopción física a planificar en `DELIV-PKG-001`                                                      |
+| `QAI-013` | `PROPAGA_NO_DECIDE_CANCELACION` | `UPSTREAM_PROPAGATED`         | antes de iniciar un intento de `QAI-011` o `QAI-012`                  | el loop móvil debe reevaluar la decisión de cada elemento; el tick no cancela ni revive operaciones                                                                        | `ESPECIFICADO`; worker técnico, no autoridad de cancelación                                                                                                                                                |
+| `QAI-014` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de convertir el callback en una mutación autoritativa servidora | una señal todavía no aplicada puede detenerse; si el servidor ya confirmó el cierre, la cancelación no lo deshace                                                          | `ESPECIFICADO`; demora del SO o pérdida de conectividad no demuestra cancelación                                                                                                                           |
+| `QAI-015` | `APLICA_CANCELACION_DE_TRABAJO` | `BEFORE_EFFECT_BOUNDARY_ONLY` | antes de enviar ZPL al periférico                                     | se puede impedir el envío mientras la intención siga local y no haya cruzado la frontera; post-envío sin confirmación de aborto se conserva como resultado físico incierto | `ESPECIFICADO`; la implementación observada vacía la cola local después de invocar el envío sin acreditar resultado físico durable; detalle y transición continúan en `PRINT-ARC-*` y `DELIV-PKG-001`      |
+| `QAI-016` | `NO_APLICA`                     | `NO_APLICA`                   | `NO_APLICA`                                                           | refresco de lectura sin trabajo durable ni efecto empresarial                                                                                                              | `NO_APLICA`; no se fuerza al contrato de cancelación                                                                                                                                                       |
+| `QAI-017` | `APLICA_CANCELACION_DE_TRABAJO` | `COOPERATIVE_SAFE_POINT`      | antes de crear o enviar la notificación derivada                      | cancelar la entrega no elimina el `support_message` fuente; cualquier envío ya aceptado conserva resultado o incertidumbre                                                 | `ESPECIFICADO`; trigger y transporte no adquieren autoridad para borrar el mensaje                                                                                                                         |
+| `QAI-018` | `APLICA_CANCELACION_DE_TRABAJO` | `BEFORE_EFFECT_BOUNDARY_ONLY` | antes de aplicar la consecuencia interna del evento Wompi             | el evento de proveedor no se cancela; solo puede detenerse procesamiento aún no aplicado, y un efecto ya confirmado o incierto se conserva y concilia                      | `ESPECIFICADO`; la protección de replay observada permanece separada de la posibilidad de cancelar procesamiento                                                                                           |
+| `QAI-019` | `APLICA_CANCELACION_DE_TRABAJO` | `BEFORE_EFFECT_BOUNDARY_ONLY` | antes de aplicar suscripción, entitlement o auditoría derivada        | el evento RevenueCat permanece como hecho fuente; la cancelación no oculta replay ni permite ignorar un entitlement que deba reconciliarse                                 | `ESPECIFICADO`; la brecha de replay existente permanece bajo `QUEUE-ARC-009` y no se declara resuelta por este contrato                                                                                    |
+
+Resultado de reconciliación:
+
+```text
+19 IDENTIDADES ESPERADAS
+19 IDENTIDADES MATERIALIZADAS
+16 APLICAN CANCELACIÓN DE TRABAJO
+2 PROPAGAN Y NO DECIDEN CANCELACIÓN
+1 NO APLICA
+0 FALTANTES
+0 DUPLICADOS
+
+DISTRIBUCIÓN DE MODOS
+COOPERATIVE_SAFE_POINT      = 12
+BEFORE_EFFECT_BOUNDARY_ONLY = 4
+UPSTREAM_PROPAGATED         = 2
+NO_APLICA                   = 1
+```
+
+---
+
+#### 18. Reconciliación con implementación actual
+
+##### 18.1. Eliminación programada de cuentas
+
+El esquema vigente de `account_deletion_requests` permite `canceled` y conserva `canceled_at`. El worker programado inspeccionado selecciona solicitudes `pending`, las actualiza a `processing` y después ejecuta anonimización y eliminación de la identidad. En ese flujo inspeccionado no existe una segunda lectura visible de cancelación entre el cambio a `processing` y los dos efectos destructivos.
+
+Decisión documental:
+
+```text
+VOCABULARIO DE CANCELACIÓN EN ESQUEMA
+= EXISTE PARCIALMENTE
+
+GARANTÍA DE CANCELACIÓN ANTES DEL EFECTO DESTRUCTIVO
+= NO ACREDITADA POR EL WORKER INSPECCIONADO
+```
+
+La materialización física deberá planificarse en `DELIV-PKG-001`. La resolución segura de carrera entre cancelación, claim y commit pertenece a `QUEUE-ARC-009`; los estados y eventos exactos a `QUEUE-ARC-010`; la autoridad de cancelación a `QUEUE-ARC-012`.
+
+##### 18.2. Colas offline ANIMA
+
+Los tipos y el worker de las colas de asistencia y descanso inspeccionados conservan `pending`, `syncing`, `failed`, `conflict`, intentos y `nextRetryAt`. No se observó en ese recorrido un campo de cancelación ni un checkpoint explícito que impida un envío posterior después de que una decisión de cancelación haya sido registrada en otra frontera.
+
+Decisión documental:
+
+```text
+CUSTODIA OFFLINE Y RETRY
+= IMPLEMENTADOS
+
+CANCELACIÓN DURABLE TRANSVERSAL
+= NO ACREDITADA EN EL RECORRIDO INSPECCIONADO
+```
+
+La adopción física se recibe en `DELIV-PKG-001`; esta tarea no modifica ANIMA.
+
+##### 18.3. Impresión local NEXO
+
+La cola local observada usa `localStorage`. `printAll()` invoca el envío por BrowserPrint y vacía total o parcialmente la cola local inmediatamente después de iniciar el envío, mientras la confirmación de BrowserPrint ocurre mediante callbacks separados.
+
+Decisión documental:
+
+```text
+RETIRAR EL ELEMENTO DE LA COLA LOCAL
+≠
+CANCELACIÓN CONFIRMADA
+≠
+RESULTADO FÍSICO CONFIRMADO
+```
+
+Una cancelación post-envío no puede declararse efectiva sin evidencia del periférico o conciliación. La arquitectura específica permanece en `PRINT-ARC-*` y su adopción física se recibe en `DELIV-PKG-001`.
+
+---
+
+#### 19. Carrera entre cancelación y terminación
+
+Esta tarea fija la semántica, pero no el mecanismo físico de exclusión.
+
+Reglas:
+
+1. Una solicitud de cancelación y una terminación pueden competir sobre la misma operación.
+2. La decisión válida debe ser reconstruible respecto de la versión del trabajo, intento y frontera de efecto observados.
+3. Un worker no puede cerrar un efecto nuevo usando una vista anterior después de que otra decisión haya hecho efectiva la cancelación.
+4. Si el efecto ganó la carrera y quedó confirmado antes de que la cancelación fuera efectiva, se conserva el resultado.
+5. Si no puede probarse cuál decisión precedió a la frontera de efecto, se conserva incertidumbre y se concilia.
+6. La materialización de claim, lease, fencing, compare-and-set, locking, versión u otro mecanismo equivalente pertenece a `QUEUE-ARC-009`.
+7. Los nombres exactos de estados y eventos para solicitud, aceptación, demasiado tarde e incertidumbre pertenecen a `QUEUE-ARC-010`.
+
+---
+
+#### 20. Handoff exacto a `QUEUE-ARC-008..012`
+
+| Tarea                                                                             | Responsabilidad reservada recibida desde esta tarea                                                                                                                                     |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`                    | aislar y recuperar fallos sin convertir una operación cancelada en trabajo reactivable por defecto ni borrar la historia de cancelación                                                 |
+| `QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia`                    | materializar claim, lease, fencing, exclusión y orden seguro para resolver carreras entre cancelación, ejecución, reasignación, retry y terminación                                     |
+| `QUEUE-ARC-010 — Definir estados y eventos canónicos`                             | representar solicitud, observación, efectividad, resolución demasiado tardía, resultado ambiguo y terminalidad mediante estados/eventos canónicos sin redefinir la semántica de control |
+| `QUEUE-ARC-011 — Definir métricas de espera, ejecución y error`                   | medir solicitudes, latencia hasta observación, cancelaciones efectivas, demasiado tardías, carreras e incertidumbre sin convertir telemetría en política                                |
+| `QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos` | definir quién puede solicitar o forzar cancelación, con qué scope y sobre qué operación, sin convertir identidad técnica, token, worker, dispositivo o posesión de una clave en permiso |
+
+Ninguna de esas responsabilidades se desarrolla en esta tarea.
+
+---
+
+#### 21. Prohibiciones
+
+Esta tarea no autoriza:
+
+1. modificar tablas, columnas, constraints, índices, funciones, RPC, triggers o RLS;
+2. crear endpoints, tokens de cancelación, abort controllers, locks, leases o fencing físicos;
+3. cambiar Edge Functions, GitHub Actions, `pg_cron`, `pg_net`, TaskManager, SecureStore, localStorage o BrowserPrint;
+4. modificar la eliminación de cuentas, ANIMA, NEXO, webhooks o notificaciones actuales;
+5. activar `QAI-008`;
+6. retirar `QAI-004`;
+7. alterar schedules o sus expresiones;
+8. redefinir `deadline_at`, perfiles de retry, backoff o `max_attempts`;
+9. reutilizar `idempotency_key` como identidad de una solicitud de control distinta;
+10. borrar el registro fuente, evento, mensaje o evidencia por cancelar su procesamiento;
+11. declarar rollback o compensación como consecuencia automática de cancelación;
+12. declarar cancelado un efecto externo o físico cuyo resultado permanezca incierto;
+13. reactivar una operación cancelada mediante retry ordinario;
+14. cancelar hijos únicamente por compartir `correlation_id`;
+15. cerrar claims, leases, fencing, locks o algoritmos de concurrencia;
+16. cerrar el vocabulario final de estados o sus transiciones;
+17. fijar métricas, SLOs o umbrales de alerta;
+18. conceder autoridad empresarial para cancelar;
+19. declarar conformidad operativa de activos actuales por esta definición documental;
+20. iniciar o desarrollar `QUEUE-ARC-008`.
+
+---
+
+#### 22. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa para la cancelación del trabajo asíncrono obligaciones de confiabilidad ya registradas y asignadas a la arquitectura de colas: estado durable y recuperable, no duplicidad de efectos, control concurrente, resultado autoritativo, conciliación ante incertidumbre, preservación de historia y la regla transversal ya aprobada que impide efectos tardíos ordinarios después de cancelación o revocación. La materialización documental no introduce una obligación verificable independiente ni modifica alcance, estado, responsable, evidencia, relación o secuencia de requisitos vigentes.
+
+Balance:
+
+- creados: **0**;
+- modificados: **0**;
+- diferidos: **0**;
+- descartados: **0**;
+- obsoletos: **0**.
+
+---
+
+#### 23. Cobertura de prueba existente preservada
+
+Se preserva sin modificación, en especial:
+
+- `TREQ-INTEGRATION-003`, que protege identidad estable, estado durable, resultado recuperable, no duplicidad, claim seguro, conciliación, cola de fallos y recuperación de operaciones asíncronas, y asigna responsabilidad explícita a `QUEUE-ARC-001` a `QUEUE-ARC-010`;
+- `TREQ-INTEGRATION-004`, que exige reconstruir causa, payload, principal técnico, recurso, intento, resultado, error y efecto final de cadenas trigger, función, job, webhook o notificación;
+- la cobertura específica vigente de ANIMA, PASS, NEXO, Supabase e integraciones relacionada con trabajo offline, dispositivos, impresión, webhooks, concurrencia, idempotencia y resultados ambiguos.
+
+Ninguna fila del registro canónico cambia de identificador, dominio, regla protegida, estado, responsable, evidencia, relación o secuencia por esta tarea.
+
+---
+
+#### 24. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `QUEUE-ARC-006` como tarea anterior aprobada;
+2. conserva `QUEUE-ARC-008` como única tarea siguiente reservada;
+3. establece `WORK-CANCELLATION-CONTRACT-001@1.0.0` sin crear una fuente de verdad paralela;
+4. conserva `operation_id`, `idempotency_key`, payload, huella, propietario y contrato durante la cancelación;
+5. distingue solicitud de cancelación, cancelación efectiva, interrupción, rollback, compensación, vencimiento y agotamiento de retry;
+6. define `cancellation_request_id` como identidad propia de control sin sustituir identidades del trabajo;
+7. define el sobre mínimo de cancelación y la frontera de efecto;
+8. define exactamente cuatro modos: `COOPERATIVE_SAFE_POINT`, `BEFORE_EFFECT_BOUNDARY_ONLY`, `UPSTREAM_PROPAGATED` y `NO_APLICA`;
+9. impide iniciar otro intento ordinario después de una cancelación efectiva;
+10. impide que `next_retry_at`, reconexión, wake-up o reasignación revivan trabajo cancelado;
+11. exige reevaluar cancelación antes de una nueva ejecución y antes de fronteras de efecto cuando el modo sea cooperativo;
+12. conserva la identidad e historia de un intento detenido durante ejecución;
+13. conserva resultados ya confirmados y prohíbe reescribirlos como cancelados;
+14. conserva `RESULT_UNKNOWN` cuando una frontera externa o física pudo haberse cruzado sin confirmación;
+15. prohíbe interpretar pérdida de proceso, conexión o callback como cancelación efectiva;
+16. distingue cancelación de rollback técnico y de compensación empresarial;
+17. exige nueva intención para una ejecución empresarial posterior a una operación cancelada cuando realmente se requiera repetir el efecto;
+18. impide cancelar automáticamente hijos solo por correlación;
+19. detiene creación de hijos nuevos después de cancelación efectiva del contenedor;
+20. conserva efectos hijos ya confirmados dentro de batches;
+21. distingue cancelación de una ocurrencia de desactivación o modificación de su schedule;
+22. obliga a conservar una decisión durable de cancelación en trabajo offline antes de reenviar tras reconexión;
+23. impide declarar cancelada una impresión post-envío sin evidencia suficiente;
+24. preserva eventos externos como hechos fuente aunque se cancele procesamiento downstream;
+25. materializa exactamente una decisión para cada `QAI-001..QAI-019`;
+26. obtiene 16 `APLICA_CANCELACION_DE_TRABAJO`, 2 `PROPAGA_NO_DECIDE_CANCELACION` y 1 `NO_APLICA`;
+27. obtiene 12 `COOPERATIVE_SAFE_POINT`, 4 `BEFORE_EFFECT_BOUNDARY_ONLY`, 2 `UPSTREAM_PROPAGATED` y 1 `NO_APLICA`;
+28. mantiene 0 identidades faltantes y 0 duplicadas;
+29. mantiene `QAI-010` y `QAI-013` como propagadores, no como autoridades de cancelación;
+30. mantiene `QAI-016` como `NO_APLICA`;
+31. conserva `QAI-008` como `PENDIENTE_DE_EVIDENCIA` sin activar su schedule;
+32. documenta la brecha de cancelación del worker programado de eliminación de cuentas sin modificarlo;
+33. documenta la ausencia de cancelación durable acreditada en el recorrido inspeccionado de las colas ANIMA sin modificar código;
+34. documenta que vaciar la cola local NEXO después de iniciar BrowserPrint no acredita cancelación ni resultado físico;
+35. reserva carreras de cancelación y terminación para `QUEUE-ARC-009`;
+36. reserva estados y eventos exactos para `QUEUE-ARC-010`;
+37. reserva métricas para `QUEUE-ARC-011`;
+38. reserva autoridad de cancelación para `QUEUE-ARC-012`;
+39. declara cero cambios de requisitos de prueba con justificación concreta;
+40. crea cero objetos físicos;
+41. modifica cero repositorios, Supabase, cron, colas, workers, dispositivos, adaptadores o webhooks;
+42. no inicia ni desarrolla `QUEUE-ARC-008`.
+
+---
+
+#### 25. Resultado de la tarea
+
+`QUEUE-ARC-007` deja establecido el contrato canónico de cancelación del trabajo asíncrono:
+
+```text
+MISMA OPERACIÓN
+        ↓
+SOLICITUD DE CANCELACIÓN IDENTIFICADA
+        ↓
+VALIDACIÓN DE CONTROL
+        ↓
+¿ANTES DE FRONTERA DE EFECTO?
+        ├─ SÍ → IMPEDIR NUEVOS EFECTOS
+        │       → DETENER EN PUNTO SEGURO SI ESTÁ EN CURSO
+        │
+        └─ NO → ¿RESULTADO CONOCIDO?
+                ├─ SÍ → CONSERVAR RESULTADO
+                └─ NO → RESULT_UNKNOWN
+                        → CONCILIACIÓN
+
+CANCELACIÓN
+≠ ROLLBACK
+≠ COMPENSACIÓN
+≠ VENCIMIENTO
+≠ AGOTAMIENTO DE RETRY
+```
+
+Las 19 identidades inventariadas quedan reconciliadas una a una. La cancelación preserva identidad, historia y resultados autoritativos; detiene efectos futuros cuando aún es seguro y no oculta como cancelado aquello que ya ocurrió o cuyo resultado permanece incierto.
+
+---
+
+#### 26. Continuidad
+
+ÚLTIMA TAREA APROBADA
+
+`QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo`
+
+TAREA ACTUAL APROBADA
+
+`QUEUE-ARC-007 — Definir cancelación antes y durante ejecución`
+
+SIGUIENTE TAREA RESERVADA
+
+`QUEUE-ARC-008 — Definir cola de fallos y recuperación manual`
+
+
 ### [ ] QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
 ### [ ] QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
 ### [ ] QUEUE-ARC-010 — Definir estados y eventos canónicos
