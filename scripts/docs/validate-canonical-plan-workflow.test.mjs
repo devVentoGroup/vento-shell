@@ -124,7 +124,11 @@ test('DELIV-PKG-003 conserva un único título canónico en sus referencias de c
   const source = fs.readFileSync(implementationPackagesPath, 'utf8');
   const canonicalTitle = 'Definir aplicación, dominio y repositorio propietarios';
 
-  assert.match(source, new RegExp(`^### \\[ \\] DELIV-PKG-003 — ${canonicalTitle}$`, 'mu'));
+  const taskHeadings = [
+    ...source.matchAll(/^### (?<marker>.*?)DELIV-PKG-003 — (?<title>[^\n]+)$/gmu),
+  ];
+  assert.equal(taskHeadings.length, 1, 'DELIV-PKG-003 debe tener un único marcador canónico');
+  assert.equal(taskHeadings[0].groups.title, canonicalTitle);
   const titledReferences = [
     ...source.matchAll(/`DELIV-PKG-003 — (?<title>[^`\n]+)`/gu),
   ];
@@ -161,13 +165,21 @@ test('DELIV-PKG-002 materializa exactamente los vínculos históricos proceso-pa
   );
   const actual = packageProcessMatrix
     .split(/\r?\n/u)
+    .filter((line) => /^\|/u.test(line))
     .map((line) =>
-      line.match(
-        /^\| `(GAP-PKG-\d{3})` \| `(VPROC-\d{4})` \| `([^`]+)` \| `([^`]+)` \| `(CAP-[^`]+)` \| `([^`]+)` \|$/u,
-      ),
+      line
+        .split('|')
+        .slice(1, -1)
+        .map((cell) => cell.trim().replaceAll('`', '')),
     )
-    .filter(Boolean)
-    .map((match) => match.slice(1).join('|'));
+    .filter(
+      (cells) =>
+        cells.length === 6 &&
+        /^GAP-PKG-\d{3}$/u.test(cells[0]) &&
+        /^VPROC-\d{4}$/u.test(cells[1]) &&
+        /^CAP-[0-9]{2}\.[0-9]{2}$/u.test(cells[4]),
+    )
+    .map((cells) => cells.join('|'));
 
   const historicalGapMatrix = sliceSection(
     gapRegistry,
