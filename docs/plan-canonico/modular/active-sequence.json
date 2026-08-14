@@ -5,7 +5,7 @@
   "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
   "block_code": "BLOQUE E5",
   "block_title": "Paquetes, readiness, cutover e hypercare",
-  "previous_task_id": "AUTH-UI-061",
+  "previous_task_id": "EVID-ARC-010",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "SHELL-CON-001",
   "handoff_sequence_id": "PHASE-03-H-SHARED-FOUNDATION",

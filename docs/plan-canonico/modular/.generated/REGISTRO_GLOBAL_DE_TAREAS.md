@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **810** |
+| Aprobadas | **811** |
 | En propuesta | **0** |
-| No iniciadas | **784** |
+| No iniciadas | **783** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **50.82% (810/1594)** |
+| Porcentaje de completamiento | **50.88% (811/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `QUEUE-ARC-011` — Definir métricas de espera, ejecución y error | ✅ APROBADA |
-| Tarea actual | `QUEUE-ARC-012` — Definir autorización para crear, cancelar y reintentar trabajos | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-001` — Crear identificador estable para cada paquete de implementación | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-001` — Crear identificador estable para cada paquete de implementación | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-002` — Vincular el paquete con capability_id, process_id y gap_id | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -487,7 +487,7 @@
 | ✅ APROBADA | `QUEUE-ARC-009` | Definir bloqueo de duplicados y concurrencia | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `QUEUE-ARC-011` | Definir métricas de espera, ejecución y error | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `QUEUE-ARC-012` | Definir autorización para crear, cancelar y reintentar trabajos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
+| ✅ APROBADA | `QUEUE-ARC-012` | Definir autorización para crear, cancelar y reintentar trabajos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ✅ APROBADA | `PRINT-ARC-001` | Inventariar impresoras por empresa, sede, área y punto operativo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-002` | Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-003` | Inventariar documentos, etiquetas, comandas y comprobantes imprimibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |

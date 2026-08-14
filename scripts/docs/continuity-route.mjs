@@ -140,9 +140,13 @@ export function resolveContinuityRoute(route, taskMap) {
   const approvedBeforePending = firstPendingIndex > 0
     ? active.tasks.slice(0, firstPendingIndex).filter((task) => task.state === 'APROBADA').at(-1)
     : null;
-  const previousTaskId = approvedBeforePending?.id ?? (activeIndex === 0
-    ? route.entry_task_id
-    : stages[activeIndex - 1].tasks.at(-1).id);
+  const previousActionableTask = stages
+    .slice(0, activeIndex)
+    .filter(isActionable)
+    .at(-1)?.tasks.at(-1);
+  const previousTaskId = approvedBeforePending?.id
+    ?? previousActionableTask?.id
+    ?? route.entry_task_id;
   const handoff = stages
     .slice(activeIndex + 1)
     .find((stage) => isActionable(stage)

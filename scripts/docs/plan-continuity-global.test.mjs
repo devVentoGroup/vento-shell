@@ -274,6 +274,48 @@ test('conserva etapas condicionales diferidas sin bloquear el handoff normal', (
   assert.equal(active.route_progress.deferred_pending_tasks, 1);
 });
 
+test('usa como predecesora la última tarea ejecutable y omite una etapa diferida intermedia', () => {
+  const taskMap = new Map([
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
+    ['DONE-TEST-001', task('DONE-TEST-001', 'APROBADA')],
+    ['OPTIONAL-TEST-001', task('OPTIONAL-TEST-001', 'NO INICIADA')],
+    ['MAIN-TEST-001', task('MAIN-TEST-001', 'NO INICIADA')],
+  ]);
+  const active = resolveContinuityRoute({
+    schema_version: 1,
+    route_id: 'TEST-ROUTE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
+    coverage_policy: 'ALL_CANONICAL_TASKS_EXACTLY_ONCE',
+    projection_policy: 'PENDING_TASKS_ONLY',
+    stages: [
+      {
+        sequence_id: 'DONE-SEQUENCE-001',
+        block_code: 'TERMINADO',
+        block_title: 'Terminado',
+        selectors: [{ task_ids: ['PRE-TEST-001', 'DONE-TEST-001'] }],
+      },
+      {
+        sequence_id: 'OPTIONAL-SEQUENCE-001',
+        block_code: 'OPCIONAL',
+        block_title: 'Condicional',
+        activation_state: 'DEFERRED',
+        selectors: [{ prefix: 'OPTIONAL-TEST' }],
+      },
+      {
+        sequence_id: 'MAIN-SEQUENCE-001',
+        block_code: 'PRINCIPAL',
+        block_title: 'Principal',
+        selectors: [{ prefix: 'MAIN-TEST' }],
+      },
+    ],
+  }, taskMap);
+
+  assert.equal(active.sequence_id, 'MAIN-SEQUENCE-001');
+  assert.equal(active.previous_task_id, 'DONE-TEST-001');
+  assert.notEqual(active.previous_task_id, 'OPTIONAL-TEST-001');
+});
+
 test('rechaza una ruta total cuando aparece una tarea canónica sin ubicar', () => {
   const taskMap = new Map([
     ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
