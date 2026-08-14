@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **830** |
+| Aprobadas | **831** |
 | En propuesta | **0** |
-| No iniciadas | **764** |
+| No iniciadas | **763** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **52.07% (830/1594)** |
+| Porcentaje de completamiento | **52.13% (831/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-019` — Definir estrategia de despliegue y rollout | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-020` — Definir rollback técnico, funcional y de datos | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-020` — Definir rollback técnico, funcional y de datos | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-021` — Definir documentación, procedimiento y capacitación | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-022` — Definir alcance, actores, datos y duración del piloto | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -547,7 +547,7 @@
 | ✅ APROBADA | `DELIV-PKG-017` | Definir observabilidad, métricas, logs, alertas y auditoría | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-018` | Definir feature flags, configuración y activación progresiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-019` | Definir estrategia de despliegue y rollout | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-020` | Definir rollback técnico, funcional y de datos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-020` | Definir rollback técnico, funcional y de datos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-021` | Definir documentación, procedimiento y capacitación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-022` | Definir alcance, actores, datos y duración del piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-023` | Definir criterios de aceptación y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
