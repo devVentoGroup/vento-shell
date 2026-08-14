@@ -5318,7 +5318,378 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso`
 
 
-### [ ] DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso
+### ✅ DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos`
+**Tarea siguiente:** `DELIV-PKG-013 — Definir requisitos no funcionales aplicables`
+**Tipo de tarea:** documental — materialización por las 207 raíces `GAP-PKG-001..207` del contrato de autorización aplicable: acción, actor efectivo, permiso atómico, modalidad, alcance, contexto, recurso y frontera autoritativa de servidor; sin implementar permisos, RLS, grants, RPC, código, migraciones ni cambios remotos
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-012` materializa una decisión explícita para cada una de las **207** raíces `GAP-PKG-001..207` y conserva las **820** brechas ya agrupadas. La tarea no crea un segundo modelo de autorización ni deduce permisos por aplicación, pantalla, tabla, endpoint, rol o nombre de tarea.
+
+La resolución obligatoria es:
+
+```text
+PAQUETE
+→ TAREA PRIMARIA Y ACCION REAL
+→ ACTOR EFECTIVO RESUELTO EN SERVIDOR
+→ PERMISSION_KEY ATOMICO CANONICO, SI EXISTE
+→ MODALIDAD + ALCANCE + CONTEXTO + RECURSO DE ESA CLAVE
+→ DENEGACIONES Y ESTADO DEL RECURSO
+→ DECISION AUTORITATIVA DE SERVIDOR
+→ EFECTO SOLO SI LA DECISION ES ALLOW
+```
+
+Si una acción futura requiere autorización y **no existe una clave atómica canónica resoluble**, 012 no fabrica una: la acción permanece no ejecutable hasta que su tarea propietaria materialice la capacidad y esta ingrese al catálogo de autorización. La ausencia de clave, contexto, alcance o recurso nunca se convierte en permiso implícito.
+
+#### 2. Fuentes y contratos consumidos
+
+- `DELIV-PKG-001..011`, especialmente la tarea primaria/propiedad de cada raíz, el perfil runtime de 007 y las superficies de política de 008;
+- `AUTH-CAT-006..010`, que fijan modalidad y clasificaciones de los **112** permisos canónicos activos;
+- `AUTH-CAT-011`, que materializa el alcance admitido de cada permiso;
+- `AUTH-CAT-012..015`, que materializan turno, check-in, área activa, dispositivo compartido y simulación por permiso;
+- `AUTH-CAT-016`, que materializa el contrato de recurso y sus resolutores;
+- `AccessContext` y `AuthorizationDecision` como contratos unificados de identidad/contexto y decisión;
+- contratos de autorización funcionales materializados en sus bloques propietarios, sin sustituirlos por una regla E5 paralela;
+- el registro `04A` vigente, cuya cobertura existente no se reenumera ni se vincula formalmente a paquetes hasta `DELIV-PKG-016`.
+
+#### 3. Invariantes de 012
+
+1. `ROL ≠ PERMISO ≠ ALCANCE ≠ CONTEXTO ≠ RECURSO ≠ AUTORIZACION FINAL`.
+2. La UI puede ocultar, mostrar, explicar o solicitar; nunca produce la decisión autoritativa.
+3. `app.access` solo permite entrada al contenedor y no concede capacidades internas.
+4. Los 21 permisos legacy amplios permanecen no asignables mientras no se descompongan; los 14 permisos técnicos retirados no son capacidades empresariales.
+5. Un alias se normaliza a su clave canónica y no obtiene contrato independiente.
+6. `authorization_requirement = null`, recurso `UNRESOLVED`, `CONFLICT` o `ISOLATED`, contexto obligatorio ausente o alcance incompatible producen denegación.
+7. El territorio se deriva del recurso real; sede seleccionada, sede primaria, dispositivo o valor enviado por cliente no son autoridad.
+8. Un `service role`, `SECURITY DEFINER`, JWT, webhook o integración técnica no sustituyen permiso empresarial ni actor atribuible.
+9. Para `BASE_OR_OPERATIONAL` los carriles se evalúan de forma independiente; para `BASE_AND_OPERATIONAL` ambos deben resultar válidos.
+10. La decisión que precede una mutación se conserva o revalida dentro de la misma frontera autoritativa para evitar usar contexto o recurso obsoletos.
+
+#### 4. Dimensiones cerradas por el contrato
+
+| Dimensión             | Decisión de 012                                                                                                                                     |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Acción                | Es la capacidad empresarial exacta de la tarea propietaria. El título del paquete no se transforma en permiso.                                      |
+| Actor                 | `actor_effective` resuelto en `AccessContext`; rol, dispositivo, proveedor o servicio no lo sustituyen.                                             |
+| Permiso               | `permission_key` atómico canónico. Ausencia o permiso legacy amplio = sin autoridad ejecutable.                                                     |
+| Modalidad             | Exactamente la fila de `AUTH-CAT-006`: `BASE_ONLY`, `OPERATIONAL_ONLY`, `BASE_OR_OPERATIONAL` o `BASE_AND_OPERATIONAL`.                             |
+| Alcance               | Exactamente la fila de `AUTH-CAT-011`; alcance y territorio no se deducen del rol ni de la interfaz.                                                |
+| Contexto              | Exactamente las reglas `AUTH-CAT-012..015`, incluidas turno/check-in, área, dispositivo y simulación.                                               |
+| Recurso               | Exactamente el contrato `AUTH-CAT-016`; el servidor resuelve recurso, territorio, ownership/relación, estado, concurrencia, campos y auditoría.     |
+| Frontera autoritativa | Servidor en la frontera propietaria de la operación; todas las entradas técnicas deben consumir la misma decisión y no crear una política paralela. |
+
+#### 5. Perfiles materiales de autorización por paquete
+
+| Perfil                 | Acción                                                                                          | Actor                                                                                                                | Permiso                                                                                                                         | Modalidad                                                                                                  | Alcance                                                                                       | Contexto                                                                                                   | Recurso                                                                                                                  | Frontera autoritativa                                                                                                                        |
+| ---------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-PKG-ENFORCE-001` | enforcement directo del modelo de autorización o cierre de segregación                          | actor efectivo resuelto en servidor; funciones o roles solo restringen cuando la fuente canónica los declara         | permiso atómico canónico exacto; una clave ausente, legacy amplia o técnica no autoriza                                         | heredar `authorization_requirement` del permiso exacto en `AUTH-CAT-006`                                   | heredar `allowed_scopes` del permiso exacto en `AUTH-CAT-011`                                 | heredar prerrequisitos y políticas de `AUTH-CAT-012..015`; el contexto nunca crea permiso                  | resolver el recurso mediante la fila exacta de `AUTH-CAT-016`; `UNRESOLVED`/`CONFLICT`/`ISOLATED` niega                  | decisión autoritativa en servidor antes del efecto y revalidación dentro de la frontera de mutación cuando corresponda                       |
+| `AUTH-PKG-DIRECT-001`  | contrato de autorización explícitamente dominante en la tarea primaria                          | actor y funciones exactamente declarados por la tarea primaria, resueltos como actor efectivo; no se infieren cargos | solo `permission_key` atómico ya canónico; si la tarea propietaria aún no materializa la clave, la ejecución queda cerrada      | fila exacta `AUTH-CAT-006` de la clave resuelta                                                            | fila exacta `AUTH-CAT-011` de la clave resuelta                                               | `AUTH-CAT-012..015` de la clave resuelta más restricciones de la tarea primaria                            | `AUTH-CAT-016` de la clave resuelta más estado/relación que exija la tarea primaria                                      | servidor resuelve contexto, permiso, alcance y recurso; UI, JWT aislado, service role o `SECURITY DEFINER` no conceden autoridad empresarial |
+| `AUTH-PKG-SERVER-001`  | acción empresarial o técnica del paquete que deba quedar protegida según su tarea primaria      | actor efectivo del `AccessContext`; consumidor técnico conserva atribución y no adquiere rol humano                  | preservar el permiso atómico que la fuente funcional asigne; 012 no crea una clave por nombre de paquete, app, tabla o endpoint | modalidad de la fila canónica del permiso; si no hay clave atómica resuelta no existe modalidad ejecutable | alcance de la fila canónica del permiso; territorio real proviene del recurso, no del cliente | contexto de `AUTH-CAT-012..015`; base y operativo se evalúan como carriles independientes                  | contrato de `AUTH-CAT-016`; listas y operaciones masivas autorizan recursos individualmente salvo permiso bulk explícito | la frontera propietaria de servidor definida por 007 conserva la evaluación; RLS/RPC/API/Edge no inventan permiso alterno                    |
+| `AUTH-PKG-UI-001`      | presentar, solicitar o consumir una operación; la interfaz no posee la acción protegida final   | actor efectivo ya resuelto o referencia de navegación no autoritativa; el cliente nunca declara rol efectivo         | la UI consume la decisión del permiso exacto de la operación fuente; ocultar/mostrar controles no autoriza                      | solo la modalidad de la clave canónica evaluada por servidor                                               | solo el alcance de la clave canónica y recurso resueltos por servidor                         | la UI puede reflejar contexto, pero turno, check-in, área, dispositivo y simulación se validan en servidor | la UI envía referencias; el servidor resuelve el recurso empresarial y su territorio con `AUTH-CAT-016`                  | preflight o navegación son informativos; la decisión final y toda mutación se reevalúan en servidor                                          |
+| `AUTH-PKG-CONTROL-001` | control, QA, auditoría, catálogo o evidencia; no crea por sí mismo una nueva acción empresarial | sin actor empresarial nuevo; cuando inspecciona una decisión conserva el actor de la operación observada             | no crea permiso nuevo; consume o valida contratos existentes y no puede convertir una comprobación en concesión                 | no crea modalidad; valida la modalidad de las claves existentes cuando aplique                             | no crea alcance; valida el alcance de las claves existentes cuando aplique                    | no crea contexto; valida resolución, vigencia y fail-closed cuando aplique                                 | no crea recurso autorizable nuevo; usa la referencia del contrato inspeccionado                                          | sin frontera de autorización propia para negocio; cualquier efecto protegido permanece en la frontera propietaria de servidor                |
+| `AUTH-PKG-FUTURE-001`  | acción futura de TALENTO aún no desplegada                                                      | actor futuro no se declara disponible productivamente                                                                | ningún permiso productivo se da por existente; la futura clave deberá entrar al catálogo canónico antes de ejecutar             | sin modalidad productiva hasta existir permiso canónico atómico                                            | sin alcance productivo hasta existir permiso canónico atómico                                 | sin contexto productivo; el futuro contrato deberá consumir `AUTH-CAT-012..015` vigente al implementarse   | sin recurso productivo declarado; deberá usar `AUTH-CAT-016` vigente                                                     | contrato planificado, no frontera desplegada                                                                                                 |
+| `AUTH-PKG-AURA-001`    | acción AURA bloqueada por ausencia de repositorio confirmado                                    | no se materializa actor ejecutable de AURA por inferencia                                                            | `aura.access` no se expande a capacidades funcionales; ninguna clave funcional AURA se inventa                                  | sin modalidad funcional adicional mientras continúe el bloqueo                                             | sin alcance funcional adicional mientras continúe el bloqueo                                  | sin contexto ejecutable adicional mientras continúe el bloqueo                                             | sin contrato de recurso funcional inventado                                                                              | no existe frontera física AURA autorizada hasta resolver su bloqueo canónico                                                                 |
+| `AUTH-PKG-EXT-001`     | acción externa condicionada a `EXT-GOV-001`                                                     | actor/contraparte solo después de activar el contrato externo aplicable                                              | ningún permiso o credencial se infiere antes de la activación del gobierno externo                                              | modalidad solo si el contrato activado la vincula a un permiso canónico                                    | alcance solo desde el contrato externo y permiso canónico activados                           | contexto solo desde contratos vigentes tras activación                                                     | recurso/contraparte deben resolverse por contrato fuente, sin identificadores libres                                     | frontera externa permanece cerrada hasta la condición de activación y luego conserva autorización de servidor                                |
+
+#### 6. Fuentes funcionales incompletas y regla de no inferencia
+
+La planificación de 012 conserva la diferencia entre un contrato transversal ya definido y una capacidad funcional todavía no materializada. En particular, las tareas `FOGO-AUTH-008`, `FOGO-AUTH-010`, `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `ORIGO-AUTH-004`, `NEXO-AUTH-031` y `VISO-AUTH-010` continúan sin cuerpo funcional aprobado en sus mini-bloques actuales. Sus paquetes no reciben por ello un `permission_key`, actor o recurso inventados. En cambio, `INFO-AUTH-001`, `INFO-AUTH-002`, `INFO-AUTH-004` y `CONT-AUTH-004` ya poseen contrato documental materializado y se consumen sin reinterpretación.
+
+Esta diferencia no modifica por sí sola el estado heredado del paquete en E5: fija una **puerta de implementación**. Antes de ejecutar una acción protegida deberá existir la capacidad atómica canónica y deberá poder resolverse completa en `AUTH-CAT-006`, `AUTH-CAT-011`, `AUTH-CAT-012..016`.
+
+#### 7. Matriz materializada `GAP-PKG-001..207`
+
+| package_id    | Tarea primaria   | Perfil runtime heredado     | Perfil de autorización 012 | Contrato de permiso                            | Puerta de fuente                                         | Estado heredado              |
+| ------------- | ---------------- | --------------------------- | -------------------------- | ---------------------------------------------- | -------------------------------------------------------- | ---------------------------- |
+| `GAP-PKG-001` | `AUTH-DB-003`    | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `AUTH-DB-003`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-002` | `AUTH-DB-002`    | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `AUTH-DB-002`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-003` | `SUPA-AUD-015`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `SUPA-AUD-015`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-004` | `AUTH-DB-002`    | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `AUTH-DB-002`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-005` | `INT-EXT-002`    | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `INT-EXT-002`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-006` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-007` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `PASS-INT-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-008` | `AURA-DOM-008`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-009` | `INT-EXT-001`    | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-EXT-001`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-010` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-011` | `DATA-DOM-002`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-002`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-012` | `INFO-DOM-004`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-004`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-013` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-014` | `INFO-DOM-010`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-010`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-015` | `DATA-DOM-010`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-010`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-016` | `INFO-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-017` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `PASS-INT-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-018` | `SUPA-AUD-010`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-010`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-019` | `SUPA-AUD-016`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-016`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-020` | `INFO-INT-003`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-INT-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-021` | `INFO-AUTH-001`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `INFO-AUTH-001`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-022` | `DATA-INT-003`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-INT-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-023` | `DATA-DOM-017`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-017`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-024` | `NUMERA-DOM-003` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-003`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-025` | `INT-DB-008`     | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-DB-008`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-026` | `NUMERA-DOM-002` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-002`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-027` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`       | `AUTH-PKG-EXT-001`         | `CONDICIONAL_EXT_GOV`                          | `EXT-GOV-001` activado + contrato exacto                 | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-028` | `VISO-CORE-006`  | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `VISO-CORE-006`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-029` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-030` | `SUPA-AUD-023`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-023`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-031` | `PROC-CAT-005`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-005` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-032` | `INT-WORK-002`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-WORK-002`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-033` | `SHELL-CON-016`  | `SHARED_RUNTIME_CONTRACT`   | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SHELL-CON-016`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-034` | `SHELL-CON-016`  | `SHARED_RUNTIME_CONTRACT`   | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SHELL-CON-016`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-035` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-036` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-037` | `NEXO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-009` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-038` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-039` | `ORIGO-UX-014`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ORIGO-UX-014` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-040` | `FOGO-AUTH-010`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `FOGO-AUTH-010`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-041` | `UX-QA-027`      | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `UX-QA-027` + operación de servidor propietaria          | `ESPECIFICADO`               |
+| `GAP-PKG-042` | `INT-MKT-002`    | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-MKT-002`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-043` | `PROC-CAT-009`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-009` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-044` | `PULSO-UX-009`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-009` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-045` | `SHELL-CON-002`  | `SHARED_RUNTIME_CONTRACT`   | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SHELL-CON-002`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-046` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-029`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-047` | `INT-DB-008`     | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-DB-008`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-048` | `PULSO-UX-020`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-020` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-049` | `SUPA-ARC-007`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-ARC-007`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-050` | `DATA-AUTH-003`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `DATA-AUTH-003`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-051` | `FOGO-AUTH-008`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `FOGO-AUTH-008`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-052` | `INT-APP-008`    | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-APP-008`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-053` | `CONT-DOM-003`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-054` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-037` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-055` | `SUPA-ARC-001`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `SUPA-ARC-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-056` | `ANIMA-AUTH-015` | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `ANIMA-AUTH-015`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-057` | `AUTH-QA-029`    | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `AUTH-QA-029`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-058` | `AUTH-QA-029`    | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `AUTH-QA-029`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-059` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-060` | `INFO-AUTH-004`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `INFO-AUTH-004`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-061` | `INFO-AUTH-002`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-ENFORCE-001`     | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `INFO-AUTH-002`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-062` | `AUTH-QA-026`    | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `AUTH-QA-026` consume/valida contrato existente          | `ESPECIFICADO`               |
+| `GAP-PKG-063` | `INT-WORK-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-WORK-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-064` | `CAP-TAL-003`    | `FUTURE_RUNTIME_CONTRACT`   | `AUTH-PKG-FUTURE-001`      | `FUTURO_NO_PRODUCTIVO`                         | TALENTO desplegado + catálogo vigente                    | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-065` | `SHELL-CI-016`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-CI-016` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-066` | `ANIMA-AUTH-014` | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `ANIMA-AUTH-014`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-067` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-001`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-068` | `SUPA-ARC-020`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-ARC-020`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-069` | `PULSO-UX-003`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-003` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-070` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `PASS-INT-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-071` | `UX-QA-019`      | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `UX-QA-019` + operación de servidor propietaria          | `ESPECIFICADO`               |
+| `GAP-PKG-072` | `TI-INT-003`     | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-INT-003`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-073` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-CI-007` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-074` | `SUPA-ARC-016`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-ARC-016`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-075` | `DATA-DOM-004`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-004`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-076` | `CONT-INT-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-INT-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-077` | `PROC-CAT-009`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-009` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-078` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-079` | `PASS-UX-006`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-006` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-080` | `AURA-DOM-001`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-081` | `PASS-UX-012`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-012` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-082` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-012`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-083` | `SUPA-TRANS-006` | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-TRANS-006`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-084` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-085` | `NUMERA-DOM-013` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-013`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-086` | `NUMERA-DOM-005` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-005`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-087` | `NUMERA-DOM-016` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-016`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-088` | `NUMERA-DOM-016` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-016`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-089` | `NUMERA-DOM-014` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-014`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-090` | `NUMERA-DOM-005` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-005`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-091` | `NEXO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-009` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-092` | `DATA-DOM-006`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-006`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-093` | `VISO-CORE-006`  | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `VISO-CORE-006`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-094` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-002` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-095` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-002` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-096` | `NEXO-UX-019`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-019` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-097` | `PROC-CAT-001`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-001` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-098` | `OPS-PRD-001`    | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `OPS-PRD-001`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-099` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-029`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-100` | `FOGO-UX-009`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `FOGO-UX-009` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-101` | `NEXO-DOM-033`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-033`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-102` | `ORIGO-AUTH-004` | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `ORIGO-AUTH-004`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-103` | `CONT-DOM-013`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-013`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-104` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-037` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-105` | `FOGO-UX-012`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `FOGO-UX-012` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-106` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-107` | `NEXO-DOM-008`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-008`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-108` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-109` | `FOGO-UX-010`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `FOGO-UX-010` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-110` | `PULSO-UX-021`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-021` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-111` | `PULSO-UX-009`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-009` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-112` | `NEXO-UX-013`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-013` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-113` | `NEXO-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-114` | `PULSO-UX-010`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-010` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-115` | `NEXO-DOM-029`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-029`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-116` | `NEXO-AUTH-031`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `NEXO-AUTH-031`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-117` | `NEXO-DOM-003`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-118` | `AURA-DOM-006`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-119` | `NFR-REQ-012`    | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `NFR-REQ-012` consume/valida contrato existente          | `ESPECIFICADO`               |
+| `GAP-PKG-120` | `ORIGO-UX-001`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ORIGO-UX-001` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-121` | `INFO-DOM-003`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-122` | `NEXO-DOM-026`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-026`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-123` | `PULSO-UX-017`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-017` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-124` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-125` | `TI-INT-003`     | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-INT-003`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-126` | `NEXO-DOM-026`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-026`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-127` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ANIMA-UX-017` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-128` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ANIMA-UX-017` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-129` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ANIMA-UX-017` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-130` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-001`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-131` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-132` | `SHELL-APP-001`  | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `SHELL-APP-001` + operación de servidor propietaria      | `ESPECIFICADO`               |
+| `GAP-PKG-133` | `SUPA-TRANS-005` | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-TRANS-005`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-134` | `SUPA-AUD-014`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-014`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-135` | `SUPA-TRANS-006` | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-TRANS-006`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-136` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-137` | `DATA-DOM-009`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-009`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-138` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-139` | `SUPA-AUD-019`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-019`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-140` | `SHELL-AUD-011`  | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-AUD-011` consume/valida contrato existente        | `ESPECIFICADO`               |
+| `GAP-PKG-141` | `INFO-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-142` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-143` | `CONT-DOM-011`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-011`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-144` | `AURA-DOM-007`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-145` | `PASS-INT-001`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `PASS-INT-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-146` | `PASS-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PASS-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-147` | `AURA-DOM-002`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-148` | `AURA-DOM-003`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-149` | `AURA-DOM-005`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-150` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-012`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-151` | `SUPA-AUD-014`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-014`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-152` | `PASS-INT-002`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `PASS-INT-002`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-153` | `SUPA-ARC-004`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-ARC-004`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-154` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-155` | `NUMERA-UX-014`  | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NUMERA-UX-014` + operación de servidor propietaria      | `ESPECIFICADO`               |
+| `GAP-PKG-156` | `NUMERA-DOM-009` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-009`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-157` | `EXT-GOV-001`    | `EXT_GOV_CONDITIONAL`       | `AUTH-PKG-EXT-001`         | `CONDICIONAL_EXT_GOV`                          | `EXT-GOV-001` activado + contrato exacto                 | `BLOQUEADO_CONDICIONAL`      |
+| `GAP-PKG-158` | `CONT-DOM-004`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-004`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-159` | `PULSO-UX-008`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `PULSO-UX-008` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-160` | `CONT-DOM-010`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-010`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-161` | `FOGO-UX-001`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `FOGO-UX-001` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-162` | `CONT-DOM-006`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-006`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-163` | `NEXO-UX-012`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-012` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-164` | `NFR-REQ-010`    | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `NFR-REQ-010` consume/valida contrato existente          | `ESPECIFICADO`               |
+| `GAP-PKG-165` | `NEXO-UX-037`    | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `NEXO-UX-037` + operación de servidor propietaria        | `ESPECIFICADO`               |
+| `GAP-PKG-166` | `CONT-DOM-005`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-005`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-167` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-002` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-168` | `PROC-CAT-018`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-018` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-169` | `CONT-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-170` | `CONT-DOM-008`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-008`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-171` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-002` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-172` | `EVID-ARC-001`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `EVID-ARC-001` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-173` | `PROC-ACTOR-003` | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-ACTOR-003` consume/valida contrato existente       | `ESPECIFICADO`               |
+| `GAP-PKG-174` | `VISO-AUTH-010`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `VISO-AUTH-010`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-175` | `INT-EXT-019`    | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INT-EXT-019`                                            | `ESPECIFICADO`               |
+| `GAP-PKG-176` | `SUPA-AUD-012`   | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-AUD-012`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-177` | `ANIMA-UX-017`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ANIMA-UX-017` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-178` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-001`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-179` | `SUPA-TRANS-013` | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-TRANS-013`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-180` | `SUPA-TRANS-013` | `DATABASE_RPC_BOUNDARY`     | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `SUPA-TRANS-013`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-181` | `TI-DOM-009`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-009`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-182` | `TI-DOM-006`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-006`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-183` | `TI-DOM-007`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-007`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-184` | `TI-DOM-001`     | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `TI-DOM-001`                                             | `ESPECIFICADO`               |
+| `GAP-PKG-185` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-CI-007` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-186` | `GAP-CTRL-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `GAP-CTRL-007` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-187` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-188` | `AURA-INT-001`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-189` | `AURA-AUTH-001`  | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-190` | `DATA-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-191` | `PROC-CAT-002`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-002` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-192` | `AURA-AUD-010`   | `AURA_RUNTIME_BLOCKED`      | `AUTH-PKG-AURA-001`        | `BLOQUEADO_AURA`                               | repositorio AURA confirmado + capacidad atómica canónica | `BLOQUEADO`                  |
+| `GAP-PKG-193` | `CONT-DOM-014`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `CONT-DOM-014`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-194` | `CONT-AUTH-004`  | `AUTHORIZATION_RUNTIME`     | `AUTH-PKG-DIRECT-001`      | `PERMISSION_KEY_ATOMICO_EXACTO_O_DENY`         | `CONT-AUTH-004`                                          | `ESPECIFICADO`               |
+| `GAP-PKG-195` | `PROC-CAT-004`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `PROC-CAT-004` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-196` | `ANIMA-UX-001`   | `UI_RUNTIME_CONSUMER`       | `AUTH-PKG-UI-001`          | `CONSUME_PERMISSION_KEY_EXACTO`                | `ANIMA-UX-001` + operación de servidor propietaria       | `ESPECIFICADO`               |
+| `GAP-PKG-197` | `CAP-TAL-003`    | `FUTURE_RUNTIME_CONTRACT`   | `AUTH-PKG-FUTURE-001`      | `FUTURO_NO_PRODUCTIVO`                         | TALENTO desplegado + catálogo vigente                    | `ESPECIFICADO_NO_DESPLEGADO` |
+| `GAP-PKG-198` | `SHELL-AUD-010`  | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-AUD-010` consume/valida contrato existente        | `ESPECIFICADO`               |
+| `GAP-PKG-199` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-200` | `SHELL-CI-007`   | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-CI-007` consume/valida contrato existente         | `ESPECIFICADO`               |
+| `GAP-PKG-201` | `INFO-DOM-003`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-202` | `INFO-DOM-012`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-DOM-012`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-203` | `INFO-INT-003`   | `INTEGRATION_BOUNDARY`      | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `INFO-INT-003`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-204` | `NEXO-DOM-001`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NEXO-DOM-001`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-205` | `DATA-DOM-012`   | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `DATA-DOM-012`                                           | `ESPECIFICADO`               |
+| `GAP-PKG-206` | `NUMERA-DOM-018` | `DOMAIN_RUNTIME`            | `AUTH-PKG-SERVER-001`      | `PRESERVAR_PERMISSION_KEY_DE_LA_ACCION_O_DENY` | `NUMERA-DOM-018`                                         | `ESPECIFICADO`               |
+| `GAP-PKG-207` | `SHELL-AUD-011`  | `CONTROL_NO_DIRECT_RUNTIME` | `AUTH-PKG-CONTROL-001`     | `SIN_PERMISO_EMPRESARIAL_NUEVO`                | `SHELL-AUD-011` consume/valida contrato existente        | `ESPECIFICADO`               |
+
+#### 8. Reconciliación de las 207 decisiones
+
+| Perfil de autorización 012 | Paquetes |
+| -------------------------- | -------: |
+| `AUTH-PKG-SERVER-001`      |  **107** |
+| `AUTH-PKG-UI-001`          |   **38** |
+| `AUTH-PKG-CONTROL-001`     |   **24** |
+| `AUTH-PKG-AURA-001`        |   **14** |
+| `AUTH-PKG-ENFORCE-001`     |   **11** |
+| `AUTH-PKG-DIRECT-001`      |    **9** |
+| `AUTH-PKG-EXT-001`         |    **2** |
+| `AUTH-PKG-FUTURE-001`      |    **2** |
+| **Total**                  |  **207** |
+
+Estados heredados preservados: **189 `ESPECIFICADO`**, **14 `BLOQUEADO`**, **2 `BLOQUEADO_CONDICIONAL`** y **2 `ESPECIFICADO_NO_DESPLEGADO`**. Ningún estado se eleva a `IMPLEMENTADO` o `VALIDADO` por esta definición documental.
+
+El catálogo transversal consumido permanece en **112 permisos activos**: **54 `BASE_ONLY`**, **13 `OPERATIONAL_ONLY`**, **40 `BASE_OR_OPERATIONAL`** y **5 `BASE_AND_OPERATIONAL`**. 012 no cambia esas 112 identidades ni sus clasificaciones.
+
+#### 9. Tratamientos especiales
+
+##### 9.1. AURA
+Los **14** paquetes `AURA_RUNTIME_BLOCKED` conservan `AUTH-PKG-AURA-001`. `aura.access` no se interpreta como autorización funcional general y no se inventan capacidades, recursos o fronteras físicas mientras el repositorio AURA permanezca no confirmado.
+
+##### 9.2. EXT-GOV
+`GAP-PKG-027` y `GAP-PKG-157` conservan `AUTH-PKG-EXT-001` y `BLOQUEADO_CONDICIONAL`. Una contraparte, credencial, recurso o permiso externo solo puede incorporarse después de activar `EXT-GOV-001` conforme a su contrato.
+
+##### 9.3. TALENTO
+`GAP-PKG-064` y `GAP-PKG-197` conservan `AUTH-PKG-FUTURE-001` y `ESPECIFICADO_NO_DESPLEGADO`. No se declara una autorización productiva para una aplicación todavía no desplegada.
+
+#### 10. Fronteras y handoff
+
+`DELIV-PKG-012` **sí cierra**:
+
+- el contrato uniforme por paquete para acción, actor, permiso, modalidad, alcance, contexto, recurso y decisión autoritativa;
+- la clasificación explícita de las 207 raíces en ocho perfiles de autorización;
+- la prohibición de crear permisos por inferencia y la puerta fail-closed cuando falta capacidad atómica;
+- la regla de consumo de `AUTH-CAT-006`, `AUTH-CAT-011`, `AUTH-CAT-012..015` y `AUTH-CAT-016` por cada permiso exacto;
+- la separación entre UI, control, frontera de servidor, AURA, EXT-GOV y TALENTO.
+
+`DELIV-PKG-012` **no cierra**:
+
+- requisitos no funcionales y umbrales, reservados a `DELIV-PKG-013`;
+- archivos, símbolos, políticas RLS, funciones, grants, migraciones y demás identidades físicas, reservados a `DELIV-PKG-014` y a los bloques de implementación;
+- dependencias y orden físico de aplicación, reservados a `DELIV-PKG-015`;
+- vinculación formal `TREQ-*` ↔ paquete y diseño de pruebas, reservados a `DELIV-PKG-016`;
+- implementación, asignación real de permisos, creación de roles, despliegue o cambios remotos.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** 012 materializa la planificación de autorización de las 207 raíces mediante contratos y clasificaciones ya aprobados; no crea ni modifica un comportamiento de autorización ejecutable, un `permission_key`, una modalidad, un alcance, un requisito de contexto, un contrato de recurso, una política RLS, una asignación o una denegación nueva. El registro vigente ya conserva la cobertura de los contratos de autorización consumidos y la vinculación formal requisito ↔ paquete permanece reservada a `DELIV-PKG-016`.
+
+#### 11. Criterios de aceptación
+
+- [x] existen exactamente **207** decisiones, una por `GAP-PKG-001..207`, sin faltantes ni duplicados;
+- [x] las ocho clases suman `107 + 38 + 24 + 14 + 11 + 9 + 2 + 2 = 207`;
+- [x] se preservan los estados `189 + 14 + 2 + 2 = 207`;
+- [x] los **112** permisos activos conservan su catálogo y su distribución de modalidad sin cambios;
+- [x] todo permiso ejecutable debe resolverse a una clave atómica canónica y a sus contratos `AUTH-CAT-006`, `011`, `012..016`;
+- [x] una capacidad funcional aún no materializada no recibe permiso, actor, alcance, contexto o recurso inventados;
+- [x] la UI y los controles documentales no se convierten en autoridad;
+- [x] AURA, EXT-GOV y TALENTO conservan sus bloqueos/estados;
+- [x] no se implementan permisos, roles, RLS, grants, RPC, código, DDL, DML, migraciones, datos ni cambios remotos;
+- [x] se generan **0** cambios de requisitos de prueba.
+
+#### 12. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-013 — Definir requisitos no funcionales aplicables`
+
+
 ### [ ] DELIV-PKG-013 — Definir requisitos no funcionales aplicables
 ### [ ] DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
 ### [ ] DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación

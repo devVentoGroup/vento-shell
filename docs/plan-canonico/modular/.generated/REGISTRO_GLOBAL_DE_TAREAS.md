@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **822** |
+| Aprobadas | **823** |
 | En propuesta | **0** |
-| No iniciadas | **772** |
+| No iniciadas | **771** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **51.57% (822/1594)** |
+| Porcentaje de completamiento | **51.63% (823/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DELIV-PKG-011` — Definir impresión, notificaciones, documentos y evidencia requeridos | ✅ APROBADA |
-| Tarea actual | `DELIV-PKG-012` — Definir permisos, modalidad, alcance, contexto y contrato de recurso | ⬜ NO INICIADA |
-| Siguiente reservada | `DELIV-PKG-013` — Definir requisitos no funcionales aplicables | ⬜ NO INICIADA |
+| Última aprobada | `DELIV-PKG-012` — Definir permisos, modalidad, alcance, contexto y contrato de recurso | ✅ APROBADA |
+| Tarea actual | `DELIV-PKG-013` — Definir requisitos no funcionales aplicables | ⬜ NO INICIADA |
+| Siguiente reservada | `DELIV-PKG-014` — Enumerar archivos exactos que se crearán, modificarán o retirarán | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -539,7 +539,7 @@
 | ✅ APROBADA | `DELIV-PKG-009` | Definir migraciones, backfills, compatibilidad y retiro legacy | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-010` | Definir eventos emitidos, consumidos, colas y compensaciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ✅ APROBADA | `DELIV-PKG-011` | Definir impresión, notificaciones, documentos y evidencia requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-012` | Definir permisos, modalidad, alcance, contexto y contrato de recurso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ✅ APROBADA | `DELIV-PKG-012` | Definir permisos, modalidad, alcance, contexto y contrato de recurso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-013` | Definir requisitos no funcionales aplicables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-014` | Enumerar archivos exactos que se crearán, modificarán o retirarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-015` | Definir dependencias, bloqueos y orden de aplicación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
