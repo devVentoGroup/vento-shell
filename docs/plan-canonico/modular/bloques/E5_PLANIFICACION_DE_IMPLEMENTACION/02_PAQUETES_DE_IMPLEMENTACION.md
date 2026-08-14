@@ -1328,7 +1328,483 @@ SIGUIENTE TAREA RESERVADA
 `DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
 
 
-### [ ] DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
+### ✅ DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
+
+**Estado:** APROBADA
+**Tarea anterior:** `DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
+**Tarea siguiente:** `DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
+**Tipo de tarea:** documental — definición normativa y materialización completa del estado AS-IS y del resultado TO-BE verificable para los 207 `package_id` vigentes
+
+---
+
+#### 1. Resultado canónico
+
+`DELIV-PKG-004` fija para cada una de las **207** raíces `GAP-PKG-001..207` una lectura AS-IS cerrada a la evidencia canónica existente y un resultado TO-BE verificable derivado de todos los perfiles de cierre de sus brechas miembro.
+
+La tarea no convierte existencia parcial en capacidad terminada. Las **820 brechas vigentes continúan abiertas** y ningún paquete puede presentarse como cerrado por disponer de repositorio, código, datos, contrato, mock, fallback, procedimiento o evidencia parcial.
+
+La decisión se expresa en cuatro capas inseparables:
+
+1. **estado AS-IS del paquete:** lo que la evidencia vigente permite afirmar hoy sin completar vacíos por inferencia;
+2. **política de reutilización:** qué información y qué implementación pueden conservarse;
+3. **resultado TO-BE:** condición final que cada perfil de cierre exige demostrar;
+4. **prueba de salida:** evidencia mínima que deberá existir antes de declarar cerradas las brechas correspondientes.
+
+---
+
+#### 2. Fuentes y precedencia documental
+
+La tarea consume, sin reescribirlas, las siguientes decisiones ya aprobadas:
+
+- el registro canónico de brechas de E1, incluida la actualización append-only de `PROC-COVER-010`;
+- la matriz completa brecha → criterio → evidencia, que conserva **820** brechas vigentes y sus perfiles de cierre;
+- `DELIV-PKG-001`, que fija las **207** identidades `GAP-PKG-*`;
+- `DELIV-PKG-002`, que conserva la membresía brecha/capacidad/proceso;
+- `DELIV-PKG-003`, que fija `application_owner`, `domain_owner`, `repo_owner` y sus bloqueos;
+- las reglas de cierre de E1: una tarea cerrada no cierra automáticamente una brecha y una brecha cerrada no cierra automáticamente un paquete.
+
+La actualización `PROC-COVER-010` prevalece en cardinalidad sobre la línea histórica: **820 brechas / 207 paquetes**. No modifica las 814 relaciones históricas salvo las ampliaciones de alcance declaradas expresamente.
+
+---
+
+#### 3. Contrato canónico AS-IS / TO-BE
+
+| Campo                | Regla canónica                                                                                                                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package_id`         | identidad estable `GAP-PKG-*`; no se renumera ni se sustituye                                                                                |
+| `as_is_state`        | estado demostrable del paquete en la línea base vigente; nunca se eleva por inferencia desde existencia parcial                              |
+| `as_is_basis`        | conjunto completo de brechas abiertas miembro y sus evidencias vigentes; para `202..207`, además se conserva el hallazgo explícito del delta |
+| `reuse_policy`       | `REUSE-VERIFY`: conservar trazabilidad y reutilizar físicamente solo aquello que demuestre compatibilidad con todos los perfiles aplicables  |
+| `closure_profiles`   | conjunto de perfiles `CLOSE-*` de todas las brechas miembro; en paquete multi-perfil se conservan todos                                      |
+| `to_be_result`       | unión de resultados exigidos por los perfiles; no se reduce al perfil dominante                                                              |
+| `verification_basis` | unión de evidencias mínimas de los perfiles; la evidencia deberá vincularse a cada brecha que respalda                                       |
+| `result_owner`       | tarea dominante y propiedad definida en `DELIV-PKG-003`; no transfiere la propiedad de brechas a otro dominio                                |
+
+---
+
+#### 4. Estados AS-IS permitidos
+
+Para evitar que E5 invente una clasificación física que E1 no certificó a nivel de paquete, se utilizan estados cerrados y conservadores:
+
+| Código                                           | Significado                                                                                                                                                                              |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ASIS-E1-OPEN-MIXED`                             | paquete histórico con una o varias brechas abiertas; su AS-IS exacto es la unión normativa de las declaraciones de sus brechas miembro; no se presume completitud ni homogeneidad física |
+| `ASIS-OPEN-REPO-AURA-BLOCKED`                    | paquete AURA abierto cuyo `repo_owner` continúa `NO_CONFIRMADO`; el bloqueo de repositorio se conserva además del AS-IS de las brechas                                                   |
+| `ASIS-SIN-OPERACION-VIGENTE-EVIDENCIABLE`        | no existe operación vigente y evidenciable para el ciclo descrito                                                                                                                        |
+| `ASIS-SIN-CICLO-INTERNO-GOBERNADO`               | no existe ciclo interno gobernado para el alcance descrito                                                                                                                               |
+| `ASIS-PROCESO-COMPLETO-NO-CONFIRMADO`            | no se confirmó un proceso completo para el alcance descrito                                                                                                                              |
+| `ASIS-CANALES-PRESENTES-PROCESO-NO-GOBERNADO`    | existen canales o superficies parciales, pero no demuestran el proceso gobernado requerido                                                                                               |
+| `ASIS-ESTRUCTURAS-PARCIALES-SIN-CICLO-GOBERNADO` | existen estructuras o análisis parciales, pero no el ciclo gobernado requerido                                                                                                           |
+| `ASIS-SUPERFICIE-RUNTIME-NO-CONFIRMADA`          | una búsqueda estática no confirmó la superficie equivalente y no prueba inexistencia en runtime                                                                                          |
+
+Un paquete histórico no recibe etiquetas como `BACKEND_REAL`, `MOCK`, `FALLBACK`, `CODIGO_HUERFANO` o `CONTRATO_IMPLEMENTADO` solo por el nombre de una tarea, aplicación o repositorio. Si una tarea posterior demuestra una de esas condiciones, la evidencia podrá refinar el AS-IS sin alterar `package_id` ni ocultar las brechas abiertas.
+
+---
+
+#### 5. Política de conservación y sustitución
+
+La política común es `REUSE-VERIFY`:
+
+1. se conservan siempre identidad del paquete, membresía de brechas, capacidades, procesos, propiedad, historia y evidencia válida;
+2. una implementación existente solo se reutiliza cuando satisface los criterios aplicables o puede adaptarse sin crear una ruta competidora no controlada;
+3. un mock, fallback, código huérfano, duplicado, dato competidor o contrato obsoleto no se conserva por mera existencia;
+4. ningún elemento físico se retira por esta tarea sin evidencia de consumidores, dependencias, migración, compatibilidad y rollback cuando apliquen;
+5. los paquetes con `CLOSE-TEC-VAL` pueden terminar en conservación, corrección o retiro, pero el retiro exige demostrar que no quedan consumidores activos ni dependencias ocultas;
+6. los paquetes con perfiles múltiples deben satisfacer todos sus resultados TO-BE antes de poder cerrar las brechas correspondientes.
+
+Esta tarea decide la **condición de salida**. La superficie física exacta se materializa en las tareas posteriores de E5: pantallas/componentes, lógica de dominio, datos, migraciones, archivos, dependencias, pruebas, despliegue y rollback.
+
+---
+
+#### 6. Catálogo de resultados TO-BE verificables
+
+| Perfil          | Código TO-BE   | Resultado verificable                                                                                          | Evidencia mínima heredada de E1                                                   |
+| --------------- | -------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `CLOSE-FUN-DES` | `TOBE-FUN-DES` | definición funcional aprobada y no ambigua.                                                                    | `EV-01`; `EV-02`; `EV-07` cuando exista interacción humana                        |
+| `CLOSE-FUN-IMP` | `TOBE-FUN-IMP` | comportamiento funcional implementado y aceptado de punta a punta.                                             | `EV-02`; `EV-03`; `EV-04`; `EV-05`; `EV-07`; `EV-11`                              |
+| `CLOSE-FUN-VAL` | `TOBE-FUN-VAL` | cobertura funcional inspeccionada o probada con conclusión reproducible.                                       | `EV-02`; `EV-05`; `EV-07` o `EV-13`; `EV-18` solo como apoyo                      |
+| `CLOSE-CON-CTR` | `TOBE-CON-CTR` | contrato versionado y aprobado, adoptado por productores y consumidores o con transición explícita.            | `EV-01`; `EV-02`; `EV-05`; `EV-11`; `EV-17`                                       |
+| `CLOSE-TEC-DES` | `TOBE-TEC-DES` | diseño técnico ejecutable aprobado con dependencias, riesgos, observabilidad, seguridad, migración y rollback. | `EV-01`; `EV-02`; `EV-16` o `EV-17` cuando aplique                                |
+| `CLOSE-TEC-IMP` | `TOBE-TEC-IMP` | condición técnica corregida en código, configuración y runtime, probada, desplegada y observable.              | `EV-02`; `EV-03`; `EV-04`; `EV-05`; `EV-06`; `EV-11`; `EV-09` si modifica datos   |
+| `CLOSE-TEC-VAL` | `TOBE-TEC-VAL` | conclusión técnica demostrada; si existe retiro, sin consumidores activos ni dependencias ocultas.             | `EV-02`; `EV-04`; `EV-05`; `EV-15`; `EV-17`                                       |
+| `CLOSE-DAT-GOV` | `TOBE-DAT-GOV` | gobierno y contrato de datos aprobados sin fuentes competidoras no gobernadas.                                 | `EV-01`; `EV-02`; `EV-08`; `EV-13` cuando exista obligación profesional o externa |
+| `CLOSE-DAT-MIG` | `TOBE-DAT-MIG` | migración o corrección de datos reversible y reconciliada cuantitativa y semánticamente.                       | `EV-02`; `EV-04`; `EV-08`; `EV-09`; `EV-11`; `EV-17`                              |
+| `CLOSE-SEG-ENF` | `TOBE-SEG-ENF` | control aplicado en capa autoritativa y probado también por denegación.                                        | `EV-01`; `EV-02`; `EV-04`; `EV-10`; `EV-11`; `EV-14` para excepción temporal      |
+| `CLOSE-OPE-ADP` | `TOBE-OPE-ADP` | proceso operativo aprobado, adoptado, repetible y ejecutado correctamente por usuarios reales.                 | `EV-01`; `EV-02`; `EV-07`; `EV-11`; `EV-12`; `EV-16` para continuidad o capacidad |
+
+Los códigos `TOBE-*` no sustituyen los perfiles `CLOSE-*`; son una proyección de E5 para expresar el resultado objetivo sin perder el criterio original de cierre.
+
+---
+
+#### 7. Regla de paquetes multi-perfil
+
+La línea histórica contiene **41 paquetes con más de un perfil** y **160 con un solo perfil**. Las seis extensiones `202..207` son mono-perfil. El universo vigente queda en **166 paquetes mono-perfil + 41 multi-perfil = 207**.
+
+Para un paquete multi-perfil:
+
+- `closure_profiles` es el conjunto completo de perfiles presentes en sus brechas;
+- `to_be_result` es la unión de todos los `TOBE-*` correspondientes;
+- la evidencia mínima se acumula por perfil, pero cada evidencia debe enlazarse individualmente a la brecha que realmente respalda;
+- no se usa el criterio más débil para aprobar brechas de otro perfil;
+- un resultado de diseño no sustituye un resultado de implementación, validación, seguridad, datos u operación cuando ambos coexisten.
+
+---
+
+#### 8. Matriz materializada AS-IS / TO-BE de los 207 paquetes
+
+| `package_id`  | Brechas | `as_is_state`                                    | Perfiles de cierre                                | Resultados TO-BE                               | Tarea dominante  | `repo_owner` / estado                                                     |
+| ------------- | ------: | ------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------- | ---------------- | ------------------------------------------------------------------------- |
+| `GAP-PKG-001` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-003`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-002` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-002`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-003` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `SUPA-AUD-015`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-004` |  **22** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-DB-002`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-005` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INT-EXT-002`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-006` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-DOM-007`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-007` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PASS-INT-001`   | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-008` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-DOM-008`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-009` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-EXT-001`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-010` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-011` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-012` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-DOM-004`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-013` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-014` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-DOM-010`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-015` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-010`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-016` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-017` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-001`   | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-018` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-010`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-019` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `SUPA-AUD-016`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-020` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-INT-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-021` |  **18** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INFO-AUTH-001`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-022` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `DATA-INT-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-023` |  **27** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `DATA-DOM-017`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-024` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NUMERA-DOM-003` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-025` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INT-DB-008`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-026` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-DOM-002` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-027` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `EXT-GOV-001`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-028` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `VISO-CORE-006`  | `devVentoGroup/vento-viso` / `ASIGNADO`                                   |
+| `GAP-PKG-029` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-030` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-023`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-031` |  **27** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-005`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-032` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-WORK-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-033` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SHELL-CON-016`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-034` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `SHELL-CON-016`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-035` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-036` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-037` |   **7** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-UX-009`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-038` |   **9** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-039` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `ORIGO-UX-014`   | `devVentoGroup/vento-origo` / `ASIGNADO`                                  |
+| `GAP-PKG-040` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `FOGO-AUTH-010`  | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-041` |   **8** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `UX-QA-027`      | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-042` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-MKT-002`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-043` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PROC-CAT-009`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-044` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PULSO-UX-009`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-045` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SHELL-CON-002`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-046` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-047` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `INT-DB-008`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-048` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PULSO-UX-020`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-049` |   **9** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `SUPA-ARC-007`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-050` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-AUTH-003`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-051` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `FOGO-AUTH-008`  | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-052` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-APP-008`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-053` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `CONT-DOM-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-054` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-UX-037`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-055` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `SUPA-ARC-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-056` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `ANIMA-AUTH-015` | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-057` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-QA-029`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-058` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AUTH-QA-029`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-059` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `AURA-INT-001`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-060` |  **52** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INFO-AUTH-004`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-061` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-SEG-ENF`                                   | `TOBE-SEG-ENF`                                 | `INFO-AUTH-002`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-062` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AUTH-QA-026`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-063` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INT-WORK-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-064` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `CAP-TAL-003`    | `devVentoGroup/vento-talento` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`       |
+| `GAP-PKG-065` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-016`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-066` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-IMP`                                   | `TOBE-TEC-IMP`                                 | `ANIMA-AUTH-014` | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-067` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-001`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-068` |   **8** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-ARC-020`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-069` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `PULSO-UX-003`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-070` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-INT-001`   | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-071` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-IMP`; `TOBE-TEC-VAL`                 | `UX-QA-019`      | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-072` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `TI-INT-003`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-073` |  **18** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-007`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-074` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `SUPA-ARC-016`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-075` |   **7** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `DATA-DOM-004`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-076` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `CONT-INT-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-077` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-009`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-078` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-007`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-079` |   **7** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `PASS-UX-006`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-080` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `AURA-DOM-001`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-081` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `PASS-UX-012`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-082` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-083` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-TRANS-006` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-084` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-085` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-013` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-086` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-005` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-087` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-016` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-088` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NUMERA-DOM-016` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-089` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NUMERA-DOM-014` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-090` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NUMERA-DOM-005` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-091` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-009`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-092` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `DATA-DOM-006`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-093` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `VISO-CORE-006`  | `devVentoGroup/vento-viso` / `ASIGNADO`                                   |
+| `GAP-PKG-094` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `PROC-CAT-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-095` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-096` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `NEXO-UX-019`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-097` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-098` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `OPS-PRD-001`    | `devVentoGroup/vento-fogo` / `ASIGNADO_PRIMARIO_FOGO_CON_NEXO_CONSUMIDOR` |
+| `GAP-PKG-099` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-100` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `FOGO-UX-009`    | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-101` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-033`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-102` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ORIGO-AUTH-004` | `devVentoGroup/vento-origo` / `ASIGNADO`                                  |
+| `GAP-PKG-103` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-013`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-104` |  **13** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NEXO-UX-037`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-105` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `FOGO-UX-012`    | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-106` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-107` |   **8** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NEXO-DOM-008`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-108` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-109` |  **19** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `FOGO-UX-010`    | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-110` |  **26** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `PULSO-UX-021`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-111` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PULSO-UX-009`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-112` |   **9** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-013`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-113` |  **10** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-UX-001`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-114` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `PULSO-UX-010`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-115` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NEXO-DOM-029`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-116` |   **8** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-AUTH-031`  | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-117` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-DOM-003`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-118` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `AURA-DOM-006`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-119` |  **11** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`; `CLOSE-FUN-VAL` | `TOBE-FUN-DES`; `TOBE-FUN-IMP`; `TOBE-FUN-VAL` | `NFR-REQ-012`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-120` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `ORIGO-UX-001`   | `devVentoGroup/vento-origo` / `ASIGNADO`                                  |
+| `GAP-PKG-121` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `INFO-DOM-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-122` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-026`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-123` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `PULSO-UX-017`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-124` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-125` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `TI-INT-003`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-126` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-026`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-127` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-128` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-129` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-130` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `TI-DOM-001`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-131` |  **19** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-UX-001`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-132` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SHELL-APP-001`  | `devVentoGroup/vento-shell` / `ASIGNADO`                                  |
+| `GAP-PKG-133` |   **8** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-TRANS-005` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-134` |  **12** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SUPA-AUD-014`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-135` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SUPA-TRANS-006` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-136` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `PASS-UX-001`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-137` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `DATA-DOM-009`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-138` |   **9** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `PASS-UX-001`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-139` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-VAL`                                   | `TOBE-TEC-VAL`                                 | `SUPA-AUD-019`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-140` |  **36** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-AUD-011`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-141` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `INFO-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-142` |  **11** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-143` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `CONT-DOM-011`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-144` |   **2** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-007`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-145` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-001`   | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-146` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-VAL`                                   | `TOBE-FUN-VAL`                                 | `PASS-UX-001`    | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-147` |   **7** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-002`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-148` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `AURA-DOM-003`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-149` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-DOM-005`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-150` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-151` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-014`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-152` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PASS-INT-002`   | `devVentoGroup/vento-pass` / `ASIGNADO`                                   |
+| `GAP-PKG-153` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-ARC-004`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-154` |  **11** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`; `CLOSE-DAT-MIG`                  | `TOBE-DAT-GOV`; `TOBE-DAT-MIG`                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-155` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-UX-014`  | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-156` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `NUMERA-DOM-009` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-157` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `EXT-GOV-001`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-158` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-004`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-159` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `PULSO-UX-008`   | `devVentoGroup/vento-pulso` / `ASIGNADO`                                  |
+| `GAP-PKG-160` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-010`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-161` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `FOGO-UX-001`    | `devVentoGroup/vento-fogo` / `ASIGNADO`                                   |
+| `GAP-PKG-162` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-006`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-163` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-012`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-164` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NFR-REQ-010`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-165` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `NEXO-UX-037`    | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-166` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-005`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-167` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-168` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `PROC-CAT-018`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-169` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `CONT-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-170` |   **9** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-008`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-171` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-CAT-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-172` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `EVID-ARC-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-173` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `PROC-ACTOR-003` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-174` |   **6** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-IMP`                  | `TOBE-FUN-DES`; `TOBE-FUN-IMP`                 | `VISO-AUTH-010`  | `devVentoGroup/vento-viso` / `ASIGNADO`                                   |
+| `GAP-PKG-175` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `INT-EXT-019`    | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-176` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `SUPA-AUD-012`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-177` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `ANIMA-UX-017`   | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-178` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-001`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-179` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SUPA-TRANS-013` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-180` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SUPA-TRANS-013` | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-181` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `TI-DOM-009`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-182` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `TI-DOM-006`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-183` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `TI-DOM-007`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-184` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `TI-DOM-001`     | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-185` |  **24** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`; `CLOSE-TEC-VAL` | `TOBE-TEC-DES`; `TOBE-TEC-IMP`; `TOBE-TEC-VAL` | `SHELL-CI-007`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-186` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `GAP-CTRL-007`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-187` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-INT-001`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-188` |   **2** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-DES`                                   | `TOBE-FUN-DES`                                 | `AURA-INT-001`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-189` |   **2** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `AURA-AUTH-001`  | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-190` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-DAT-GOV`                                   | `TOBE-DAT-GOV`                                 | `DATA-DOM-001`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-191` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-002`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-192` |   **1** | `ASIS-OPEN-REPO-AURA-BLOCKED`                    | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `AURA-AUD-010`   | `NO_CONFIRMADO` / `BLOQUEADO_REPO_AURA`                                   |
+| `GAP-PKG-193` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-DOM-014`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-194` |   **3** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `CONT-AUTH-004`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-195` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `PROC-CAT-004`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-196` |   **2** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-FUN-DES`; `CLOSE-FUN-VAL`                  | `TOBE-FUN-DES`; `TOBE-FUN-VAL`                 | `ANIMA-UX-001`   | `devVentoGroup/vento-anima` / `ASIGNADO`                                  |
+| `GAP-PKG-197` |   **5** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-IMP`                  | `TOBE-TEC-DES`; `TOBE-TEC-IMP`                 | `CAP-TAL-003`    | `devVentoGroup/vento-talento` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`       |
+| `GAP-PKG-198` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `SHELL-AUD-010`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-199` |   **1** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-200` |  **10** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`; `CLOSE-TEC-VAL`                  | `TOBE-TEC-DES`; `TOBE-TEC-VAL`                 | `SHELL-CI-007`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-201` |   **4** | `ASIS-E1-OPEN-MIXED`                             | `CLOSE-TEC-DES`                                   | `TOBE-TEC-DES`                                 | `INFO-DOM-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-202` |   **1** | `ASIS-SIN-OPERACION-VIGENTE-EVIDENCIABLE`        | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `INFO-DOM-012`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-203` |   **1** | `ASIS-SIN-CICLO-INTERNO-GOBERNADO`               | `CLOSE-CON-CTR`                                   | `TOBE-CON-CTR`                                 | `INFO-INT-003`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-204` |   **1** | `ASIS-PROCESO-COMPLETO-NO-CONFIRMADO`            | `CLOSE-OPE-ADP`                                   | `TOBE-OPE-ADP`                                 | `NEXO-DOM-001`   | `devVentoGroup/vento-nexo` / `ASIGNADO`                                   |
+| `GAP-PKG-205` |   **1** | `ASIS-CANALES-PRESENTES-PROCESO-NO-GOBERNADO`    | `CLOSE-FUN-VAL`                                   | `TOBE-FUN-VAL`                                 | `DATA-DOM-012`   | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+| `GAP-PKG-206` |   **1** | `ASIS-ESTRUCTURAS-PARCIALES-SIN-CICLO-GOBERNADO` | `CLOSE-FUN-IMP`                                   | `TOBE-FUN-IMP`                                 | `NUMERA-DOM-018` | `devVentoGroup/vento-numera` / `ASIGNADO`                                 |
+| `GAP-PKG-207` |   **1** | `ASIS-SUPERFICIE-RUNTIME-NO-CONFIRMADA`          | `CLOSE-TEC-VAL`                                   | `TOBE-TEC-VAL`                                 | `SHELL-AUD-011`  | `devVentoGroup/vento-shell` / `ASIGNADO_CON_FRONTERA_DISTRIBUIDA`         |
+
+La matriz no duplica las 820 declaraciones de brecha. Para `GAP-PKG-001..201`, `as_is_basis` es por referencia normativa la matriz E1 de brechas miembro ya preservada por `DELIV-PKG-002`; para `202..207`, la síntesis explícita se materializa en la sección siguiente.
+
+---
+
+#### 9. Materialización explícita del AS-IS del delta `202..207`
+
+| `package_id`  | Hallazgo AS-IS vigente                                                                                                                                                                                                             | Resultado TO-BE                                                                                                                      |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `GAP-PKG-202` | No existe una operación vigente y evidenciable para registrar, evaluar, tratar, aceptar, seguir y cerrar riesgos estratégicos, financieros, operativos, legales y tecnológicos.                                                    | `TOBE-OPE-ADP` mediante `INFO-DOM-012`, con procedimiento, responsables, controles, contingencia y evidencia aprobados y repetibles. |
+| `GAP-PKG-203` | No existe un ciclo interno gobernado que asigne propietario, expediente, requerimiento, vencimiento, concepto, respuesta, aceptación, obligación y cierre para relaciones con asesores y autoridades.                              | `TOBE-CON-CTR` mediante `INFO-INT-003`, con contrato versionado, aprobado y adoptado o transición explícita.                         |
+| `GAP-PKG-204` | No se confirmó un proceso completo para determinar requerimiento de EPP, entregar el elemento correcto, obtener aceptación y controlar vigencia, sustitución, devolución, pérdida y evidencia.                                     | `TOBE-OPE-ADP` mediante `NEXO-DOM-001`, sin confundir existencia de inventario con adopción del proceso completo.                    |
+| `GAP-PKG-205` | La existencia de canales de feedback no demuestra un proceso gobernado de satisfacción; faltan población, muestra, canal, consentimiento, respuesta, sesgo, análisis, uso y separación frente a reclamo, incentivo y compensación. | `TOBE-FUN-VAL` mediante `DATA-DOM-012`, con cobertura funcional inspeccionada o probada y conclusión reproducible.                   |
+| `GAP-PKG-206` | Existen estructuras y análisis financieros parciales, pero no un ciclo presupuestal alcanzable y gobernado para versión, supuestos, aprobación, vigencia, consumo, proyección, desviación, reforecast y supersesión.               | `TOBE-FUN-IMP` mediante `NUMERA-DOM-018`, con comportamiento objetivo funcionando de punta a punta.                                  |
+| `GAP-PKG-207` | Para 77 pantallas canónicas no se confirmó una superficie equivalente en snapshots de repositorio; una búsqueda estática no prueba inexistencia en runtime, consumo dinámico, deep link, QR, notificación o integración externa.   | `TOBE-TEC-VAL` mediante `SHELL-AUD-011`; cualquier retiro exige demostrar ausencia de consumidores activos y dependencias ocultas.   |
+
+---
+
+#### 10. Reconciliación cuantitativa
+
+| Control                                      |          Resultado |
+| -------------------------------------------- | -----------------: |
+| `package_id` esperados                       |            **207** |
+| `package_id` materializados                  |            **207** |
+| rango continuo                               | `GAP-PKG-001..207` |
+| brechas vigentes cubiertas                   |            **820** |
+| paquetes mono-perfil                         |            **166** |
+| paquetes multi-perfil                        |             **41** |
+| paquetes sin perfil                          |              **0** |
+| paquetes sin tarea dominante                 |              **0** |
+| paquetes con repositorio primario confirmado |            **193** |
+| paquetes AURA con repositorio no confirmado  |             **14** |
+
+##### 10.1. Cobertura por perfil vigente
+
+| Perfil          | Brechas | Paquetes que lo contienen |
+| --------------- | ------: | ------------------------: |
+| `CLOSE-FUN-DES` | **135** |                    **45** |
+| `CLOSE-FUN-IMP` |  **39** |                    **16** |
+| `CLOSE-FUN-VAL` |  **15** |                    **11** |
+| `CLOSE-CON-CTR` | **103** |                    **37** |
+| `CLOSE-TEC-DES` | **127** |                    **32** |
+| `CLOSE-TEC-IMP` |  **33** |                    **17** |
+| `CLOSE-TEC-VAL` |  **61** |                    **19** |
+| `CLOSE-DAT-GOV` | **115** |                    **44** |
+| `CLOSE-DAT-MIG` |  **11** |                     **4** |
+| `CLOSE-SEG-ENF` |  **98** |                    **12** |
+| `CLOSE-OPE-ADP` |  **83** |                    **28** |
+
+La suma de la columna de paquetes por perfil excede 207 porque un paquete multi-perfil aparece una vez en cada perfil que debe satisfacer.
+
+---
+
+#### 11. Tratamiento del bloqueo AURA
+
+Los **14 paquetes AURA** conservan `repo_owner = NO_CONFIRMADO` y `ownership_state = BLOQUEADO_REPO_AURA`. `DELIV-PKG-004` no usa ese bloqueo para inventar un repositorio ni para convertir la ausencia de repositorio en ausencia funcional.
+
+Su AS-IS se registra como `ASIS-OPEN-REPO-AURA-BLOCKED`, y el resultado TO-BE continúa siendo el derivado de sus perfiles de cierre. La condición de propiedad permanece gobernada por `AURA-AUD-001`, `AURA-AUD-010` y `AURA-AUD-012`, sin reducir los resultados funcionales, contractuales, técnicos o de datos del paquete.
+
+---
+
+#### 12. Casos de rechazo
+
+El resultado de `DELIV-PKG-004` es inválido si ocurre cualquiera de los siguientes casos:
+
+- se declara un paquete cerrado mientras alguna de sus brechas permanece abierta;
+- se trata un código existente, mock, fallback, contrato, tabla, proceso manual o repositorio como prueba automática de capacidad completa;
+- se declara reutilizable una implementación sin contrastarla con todos los perfiles aplicables;
+- se retira una superficie técnica sin demostrar consumidores, dependencias y efectos;
+- se reduce un paquete multi-perfil a un único criterio de salida;
+- se usa la propiedad de `DELIV-PKG-003` como sustituto de evidencia AS-IS;
+- se convierte `NO_CONFIRMADO` en una afirmación de inexistencia;
+- se inventa estado runtime a partir del nombre de tarea, namespace, aplicación o repositorio;
+- se omite el delta `GAP-PKG-202..207`;
+- se modifican identidad, membresía, capability, process o ownership resueltos por tareas anteriores;
+- se anticipa el alcance incluido/excluido/diferido reservado a `DELIV-PKG-005`;
+- se anticipan archivos, migraciones, rollout o rollback reservados a tareas posteriores de E5.
+
+---
+
+#### 13. Fronteras de responsabilidad
+
+`DELIV-PKG-004` **sí cierra**:
+
+- una definición AS-IS conservadora y trazable para los 207 paquetes;
+- la regla única de reutilización `REUSE-VERIFY`;
+- el conjunto completo de perfiles de cierre por paquete;
+- el resultado TO-BE verificable asociado a cada perfil;
+- el tratamiento de paquetes multi-perfil sin pérdida de exigencias;
+- la materialización explícita del delta `202..207`;
+- la prohibición de presentar existencia parcial como capacidad completada.
+
+`DELIV-PKG-004` **no cierra**:
+
+- alcance incluido, excluido o diferido, reservado a `DELIV-PKG-005`;
+- pantallas, componentes y navegación, reservados a `DELIV-PKG-006`;
+- lógica de dominio y servicios, reservados a `DELIV-PKG-007`;
+- datos físicos y políticas, reservados a `DELIV-PKG-008`;
+- migraciones, backfills y retiro legacy, reservados a `DELIV-PKG-009`;
+- archivos exactos, reservados a `DELIV-PKG-014`;
+- pruebas vinculadas por paquete, reservadas a `DELIV-PKG-016`;
+- despliegue y rollback, reservados a `DELIV-PKG-019` y `DELIV-PKG-020`;
+- cierre de brechas o paquetes en ejecución real.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+La tarea organiza estados, perfiles y condiciones de salida documentales ya aprobadas. No crea comportamiento ejecutable ni modifica el contenido de requisitos del registro canónico de pruebas.
+
+---
+
+#### 15. Criterios de aceptación
+
+- [x] existen exactamente **207** filas materializadas y el rango es continuo `GAP-PKG-001..207`;
+- [x] las **820** brechas vigentes quedan representadas por el conteo de brechas de sus paquetes;
+- [x] los **11** perfiles canónicos de cierre están proyectados a resultados TO-BE verificables sin alterar su criterio original;
+- [x] los **41** paquetes multi-perfil conservan todos sus perfiles y no usan un criterio único debilitado;
+- [x] los **6** paquetes `202..207` tienen AS-IS explícito derivado de sus hallazgos append-only;
+- [x] los **14** paquetes AURA conservan el bloqueo de repositorio sin inferir inexistencia funcional;
+- [x] ninguna fila presenta una brecha abierta como capacidad terminada;
+- [x] la reutilización física queda condicionada a verificación, no a mera existencia;
+- [x] ningún retiro técnico queda autorizado sin evidencia de consumidores y dependencias;
+- [x] no se altera la propiedad aprobada en `DELIV-PKG-003`;
+- [x] no se define todavía alcance incluido, excluido o diferido;
+- [x] no se crea ni modifica ningún requisito de prueba;
+- [x] no se inicia implementación física, migración, despliegue ni cambio de producción.
+
+---
+
+#### 16. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios`
+
+TAREA ACTUAL APROBADA
+`DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable`
+
+SIGUIENTE TAREA RESERVADA
+`DELIV-PKG-005 — Definir alcance incluido, excluido y diferido`
+
+
 ### [ ] DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
 ### [ ] DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
 ### [ ] DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
